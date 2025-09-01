@@ -96,6 +96,52 @@ services:
     networks: [internal]
     restart: unless-stopped
 
+  clamav:
+    image: mkodockx/docker-clamav:alpine
+    networks: [internal]
+    expose:
+      - "3310"
+    healthcheck:
+      test: ["CMD", "nc", "-z", "127.0.0.1", "3310"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  minio:
+    build: ./io
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_BUCKET: ${MINIO_BUCKET}
+      MINIO_API_USER: ${MINIO_API_USER}
+      MINIO_API_PASSWORD: ${MINIO_API_PASSWORD}
+
+      # URL publique (important pour presigned derrière proxy)
+      MINIO_SERVER_URL: https://${DOMAIN}/io
+      MINIO_BROWSER_REDIRECT_URL: http://127.0.0.1:9001
+
+      # Hook (facultatif) si tu veux notifier le worker
+      MINIO_NOTIFY_WEBHOOK_ENABLE_miniohook: "on"
+      MINIO_NOTIFY_WEBHOOK_ENDPOINT_miniohook: http://io-worker:4000/hooks/minio
+      MINIO_NOTIFY_WEBHOOK_AUTH_TOKEN_miniohook: ${IO_WEBHOOK_TOKEN}
+
+      # Chemin de la policy custom dans l'image (optionnel)
+      MINIO_POLICY_FILE: /policies/draftdream-readwrite.json
+      MINIO_POLICY_NAME: draftdream-readwrite
+    volumes:
+      - minio_data:/data
+    networks: [internal, edge]
+    expose:
+      - "9000"   # API S3
+      - "9001"   # Console (ne pas publier en prod)
+    healthcheck:
+      test: ["CMD-SHELL", "mc alias set local http://localhost:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
 networks:
   edge:
   internal:
@@ -104,3 +150,4 @@ volumes:
   postgres_data:
   mongo_data:
   redis_data:
+  minio_data:
