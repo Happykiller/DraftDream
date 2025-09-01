@@ -8,6 +8,7 @@ services:
       - frontoffice
       - backoffice
       - showcase
+      - mobile
     ports:
       - "80:80"
     volumes:
@@ -131,7 +132,7 @@ services:
       MINIO_POLICY_NAME: draftdream-readwrite
     volumes:
       - minio_data:/data
-    networks: [internal, edge]
+    networks: [internal]
     expose:
       - "9000"   # API S3
       - "9001"   # Console (ne pas publier en prod)
