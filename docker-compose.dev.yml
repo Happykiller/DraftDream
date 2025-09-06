@@ -1,0 +1,30 @@
+services:
+  # Exposer les DB/queues en local
+  postgres:
+    ports: ["5432:5432"]
+
+  mongo:
+    ports: ["27017:27017"]
+
+  redis:
+    ports: ["6379:6379"]
+
+  clamav:
+    ports: ["3310:3310"]  # optionnel, pratique pour tester localement
+
+  # MinIO : console + API S3 accessibles en local (dev)
+  minio:
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    # en dev, tu peux surcharger l'URL server si tu n'utilises pas Nginx / TLS
+    environment:
+      MINIO_SERVER_URL: http://io.local.fo
+
+  # NGINX : proxy vers l'API lancée en local (host)
+  nginx:
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./nginx/conf.d.dev:/etc/nginx/conf.d:ro
+      - ./nginx/includes:/etc/nginx/includes:r

@@ -14,6 +14,13 @@
     "rootDir": "./",
     "baseUrl": "./",
     "skipLibCheck": true,
-    "incremental": true
+    "incremental": true,
+    "resolveJsonModule": true,
+    "paths": {
+      "@src/*": ["src/*"],
+      "@apis/*": ["src/apis/*"],
+      "@usecases/*": ["src/usecases/*"],
+      "@services/*": ["src/services/*"]
+    }
   }
 }

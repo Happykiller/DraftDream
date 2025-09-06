@@ -64,3 +64,20 @@ stop-%: ## Stoppe un service spécifique (ex: make stop-api)
 
 rebuild-%: ## Rebuild un service spécifique (ex: make rebuild-api)
 	$(DOCKER_COMPOSE) build --no-cache $* && $(DOCKER_COMPOSE) up -d $*
+
+# Dev infra only (pas les apps)
+up-dev: ## Démarre l'infra (DB/queues/minio/nginx) avec ports exposés
+	$(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.dev.yml up -d postgres mongo redis clamav minio nginx
+
+down-dev: ## Stoppe l'infra Dev
+	$(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.dev.yml down
+
+logs-dev: ## Logs infra Dev
+	$(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.dev.yml logs -f --tail=200
+
+# Prod/pseudo-prod (tout)
+up-prod: ## Démarre toute la stack en profil prod
+	DOCKER_DEFAULT_PLATFORM= $(DOCKER_COMPOSE) --profile prod up -d
+
+down-prod:
+	$(DOCKER_COMPOSE) --profile prod down

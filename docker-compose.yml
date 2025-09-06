@@ -1,27 +1,39 @@
 name: draftdream
 
+networks:
+  edge:
+  internal:
+
+volumes:
+  postgres_data:
+  mongo_data:
+  redis_data:
+  minio_data:
+
 services:
+  # --- NGINX ---
   nginx:
     image: nginx:1.27-alpine
     depends_on:
-      - api
-      - frontoffice
-      - backoffice
-      - showcase
-      - mobile
+      - postgres
+      - mongo
+      - redis
+      - minio
     ports:
       - "80:80"
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/includes:/etc/nginx/includes:ro
     networks: [edge, internal]
     restart: unless-stopped
 
+  # --- Apps (profil prod uniquement) ---
   api:
+    profiles: ["prod"]
     build: ./api
     env_file: .env
     networks: [internal]
-    expose:
-      - "3000"
+    expose: ["3000"]
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:3000/health || exit 1"]
       interval: 10s
@@ -30,37 +42,38 @@ services:
     restart: unless-stopped
 
   frontoffice:
+    profiles: ["prod"]
     build: ./frontoffice
     env_file: .env
     networks: [internal]
-    expose:
-      - "3000"
+    expose: ["3000"]
     restart: unless-stopped
 
   backoffice:
+    profiles: ["prod"]
     build: ./backoffice
     env_file: .env
     networks: [internal]
-    expose:
-      - "3000"
+    expose: ["3000"]
     restart: unless-stopped
 
   showcase:
+    profiles: ["prod"]
     build: ./showcase
     env_file: .env
     networks: [internal]
-    expose:
-      - "3000"
+    expose: ["3000"]
     restart: unless-stopped
 
   mobile:
+    profiles: ["prod"]
     build: ./mobile
     env_file: .env
     networks: [internal]
-    expose:
-      - "5173"     # adapte selon ton dev server mobile (ex: Vite)
+    expose: ["5173"]
     restart: unless-stopped
 
+  # --- Infra commune ---
   postgres:
     image: postgres:16-alpine
     environment:
@@ -79,8 +92,13 @@ services:
 
   mongo:
     image: mongo:7
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB}
     volumes:
       - mongo_data:/data/db
+      - ./mongo-init:/docker-entrypoint-initdb.d:ro
     networks: [internal]
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.runCommand({ ping: 1 })"]
@@ -100,8 +118,7 @@ services:
   clamav:
     image: mkodockx/docker-clamav:alpine
     networks: [internal]
-    expose:
-      - "3310"
+    expose: ["3310"]
     healthcheck:
       test: ["CMD", "nc", "-z", "127.0.0.1", "3310"]
       interval: 15s
@@ -117,38 +134,20 @@ services:
       MINIO_BUCKET: ${MINIO_BUCKET}
       MINIO_API_USER: ${MINIO_API_USER}
       MINIO_API_PASSWORD: ${MINIO_API_PASSWORD}
-
-      # URL publique (important pour presigned derrière proxy)
       MINIO_SERVER_URL: https://${DOMAIN}/io
       MINIO_BROWSER_REDIRECT_URL: http://127.0.0.1:9001
-
-      # Hook (facultatif) si tu veux notifier le worker
       MINIO_NOTIFY_WEBHOOK_ENABLE_miniohook: "on"
       MINIO_NOTIFY_WEBHOOK_ENDPOINT_miniohook: http://io-worker:4000/hooks/minio
       MINIO_NOTIFY_WEBHOOK_AUTH_TOKEN_miniohook: ${IO_WEBHOOK_TOKEN}
-
-      # Chemin de la policy custom dans l'image (optionnel)
       MINIO_POLICY_FILE: /policies/draftdream-readwrite.json
       MINIO_POLICY_NAME: draftdream-readwrite
     volumes:
       - minio_data:/data
     networks: [internal]
-    expose:
-      - "9000"   # API S3
-      - "9001"   # Console (ne pas publier en prod)
+    expose: ["9000","9001"]
     healthcheck:
       test: ["CMD-SHELL", "mc alias set local http://localhost:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD >/dev/null 2>&1"]
       interval: 10s
       timeout: 3s
       retries: 5
     restart: unless-stopped
-
-networks:
-  edge:
-  internal:
-
-volumes:
-  postgres_data:
-  mongo_data:
-  redis_data:
-  minio_data:
