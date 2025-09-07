@@ -20,10 +20,14 @@
     "@nestjs/core": "^11.1.6",
     "@nestjs/graphql": "^13.1.0",
     "@nestjs/platform-express": "^11.1.6",
+    "argon2": "^0.44.0",
     "dotenv": "^17.2.2",
     "graphql": "^16.11.0",
     "mongodb": "^6.19.0",
-    "reflect-metadata": "^0.2.2"
+    "mongoose": "^8.18.0",
+    "reflect-metadata": "^0.2.2",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.10",

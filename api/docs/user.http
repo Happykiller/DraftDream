@@ -1,0 +1,32 @@
+### Create a user (GraphQL)
+POST http://localhost:3000/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation CreateUser($input: CreateUserInput!) { user_create(input: $input) { id type first_name last_name email phone createdAt updatedAt } }",
+  "variables": {
+    "input": {
+      "type": "coach",
+      "first_name": "Alex",
+      "last_name": "Martin",
+      "email": "alex.martin@example.com",
+      "phone": "+33612345678",
+      "password": "SuperSecret123!",
+      "address": {
+        "name": "12 rue des Fleurs",
+        "city": "Lyon",
+        "code": "69003",
+        "country": "FR"
+      },
+      "company": {
+        "name": "FitDesk SAS",
+        "address": {
+          "name": "10 avenue de la République",
+          "city": "Paris",
+          "code": "75011",
+          "country": "FR"
+        }
+      }
+    }
+  }
+}

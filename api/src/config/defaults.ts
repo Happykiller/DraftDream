@@ -26,8 +26,8 @@ export const defaults: Configuration = {
     },
   },
   mongo: {
-    connection_string: env.DB_CONN_STRING ?? 'mongodb://root:password@localhost:27017/admin?authSource=admin',
-    name: env.DB_NAME ?? 'fitdesk',
+    connection_string: env.DB_CONN_STRING ?? 'mongodb://draftdream:password@localhost:27017/draftdream?authSource=draftdream',
+    name: env.DB_NAME ?? 'draftdream',
   },
   throttle: [
     {

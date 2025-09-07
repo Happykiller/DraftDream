@@ -18,7 +18,7 @@
     "resolveJsonModule": true,
     "paths": {
       "@src/*": ["src/*"],
-      "@apis/*": ["src/apis/*"],
+      "@nestjs/*": ["src/nestjs/*"],
       "@usecases/*": ["src/usecases/*"],
       "@services/*": ["src/services/*"]
     }
