@@ -23,6 +23,7 @@
     "argon2": "^0.44.0",
     "dotenv": "^17.2.2",
     "graphql": "^16.11.0",
+    "jose": "^6.1.0",
     "mongodb": "^6.19.0",
     "mongoose": "^8.18.0",
     "reflect-metadata": "^0.2.2",

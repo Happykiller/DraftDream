@@ -15,9 +15,7 @@ export class Configuration {
   jwt: {
     refreshTokenName: string;
     secret: string;
-    signOptions: {
-      expiresIn: string;
-    };
+    expire: number;
   };
   mongo: {
     connection_string: string;

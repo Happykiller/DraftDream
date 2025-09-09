@@ -36,13 +36,23 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type SessionGql {
+  access_token: String!
+}
+
 type Query {
   hello: Hello!
   db_test: Hello!
 }
 
 type Mutation {
+  auth(input: AuthInput!): SessionGql!
   user_create(input: CreateUserInput!): UserGql!
+}
+
+input AuthInput {
+  email: String!
+  password: String!
 }
 
 input CreateUserInput {

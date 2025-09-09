@@ -21,9 +21,7 @@ export const defaults: Configuration = {
   jwt: {
     refreshTokenName: 'fitdesk-refresh-token',
     secret: env.JWT_SECRET ?? 'secretKey',
-    signOptions: {
-      expiresIn: '8h',
-    },
+    expire: 8,
   },
   mongo: {
     connection_string: env.DB_CONN_STRING ?? 'mongodb://draftdream:password@localhost:27017/draftdream?authSource=draftdream',

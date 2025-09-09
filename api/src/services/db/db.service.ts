@@ -12,4 +12,5 @@ export interface BddService{
    * User
    */
   createUser(input: NewUser): Promise<UserPojo>
+  getByEmail(email: string, opts?: { includePassword?: boolean }): Promise<UserPojo | null>
 }
