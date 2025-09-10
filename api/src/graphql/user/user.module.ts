@@ -1,7 +1,7 @@
 // src\nestjs\user\user.module.ts
 import { DynamicModule, Module } from '@nestjs/common';
 
-import { UserResolver } from '@nestjs/user/user.resolver';
+import { UserResolver } from '@graphql/user/user.resolver';
 
 export interface UserModuleOptions {
   inversify: any;

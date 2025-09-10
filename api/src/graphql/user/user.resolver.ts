@@ -3,7 +3,7 @@ import { Resolver, Mutation, Args } from '@nestjs/graphql';
 
 import inversify from '@src/inversify/investify';
 import { CreateUserUsecase } from '@usecases/user/create.user.usecase';
-import { CreateUserInput, UserGql } from '@nestjs/user/user.gql.types';
+import { CreateUserInput, UserGql } from '@graphql/user/user.gql.types';
 import { UserUsecaseModel } from '@usecases/user/model/user.usecase.model';
 import { CreateUserUsecaseDto } from '@usecases/user/dto/create.user.usecase.dto';
 

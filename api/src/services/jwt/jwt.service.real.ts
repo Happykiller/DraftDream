@@ -15,7 +15,7 @@ type Cfg = {
 
 export class JwtServiceReal implements JwtService {
   private readonly key: Uint8Array;
-  private readonly expire: number;
+  private readonly expireSec: number;
   private readonly issuer?: string;
   private readonly audience?: string;
   private readonly clockTolerance: number;
@@ -23,18 +23,19 @@ export class JwtServiceReal implements JwtService {
   constructor(cfg: Cfg) {
     if (!cfg?.jwt?.secret) throw new Error('JWT_SECRET_MISSING');
     this.key = new TextEncoder().encode(cfg.jwt.secret);
-    this.expire = cfg.jwt.expire ?? 900;
+    this.expireSec = (cfg.jwt.expire ?? 8) * 60;
     this.issuer = cfg.jwt.issuer;
     this.audience = cfg.jwt.audience;
     this.clockTolerance = cfg.jwt.clockToleranceSec ?? 5;
   }
 
-  async sign(claims: Record<string, any>, opts?: { expiresInSec?: number; subject?: string }): Promise<string> {
+  async sign(claims: Record<string, any>, opts?: { expire?: number; subject?: string }): Promise<string> {
     const nowSec = Math.floor(Date.now() / 1000);
+    const ttlSec = opts?.expire ? opts.expire * 60 : this.expireSec;
     let builder = new SignJWT({ ...claims })
       .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
       .setIssuedAt(nowSec)
-      .setExpirationTime(nowSec + (opts?.expiresInSec ?? this.expire));
+      .setExpirationTime(nowSec + ttlSec);
 
     if (this.issuer) builder = builder.setIssuer(this.issuer);
     if (this.audience) builder = builder.setAudience(this.audience);

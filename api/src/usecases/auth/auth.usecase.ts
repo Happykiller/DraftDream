@@ -21,7 +21,7 @@ export class AuthUsecase {
 
       const token = await this.inversify.jwtService.sign({
         id: user._id,
-        role: user.type,
+        role: user.type.toUpperCase(),
         email: user.email,
         type: 'access',
       });

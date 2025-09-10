@@ -2,6 +2,7 @@
 ###
 POST http://localhost:3000/graphql
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YmRjZjU0Nzk5ZGNiN2Q3NTVkY2UwZiIsInJvbGUiOiJDT0FDSCIsImVtYWlsIjoiYWxleC5tYXJ0aW5AZXhhbXBsZS5jb20iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzU3NTI3NzMwLCJleHAiOjE3NTc1NTY1MzB9.2UKz8nQovXj3Z8K5qzXKcs1Mhr1uy4VClTl1pLPtEfE
 X-REQUEST-TYPE: GraphQL
 
 query {

@@ -4,8 +4,8 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 
 import inversify from '@src/inversify/investify';
 import { HelloResolver } from './hello.resolver';
-import { UserModule } from '@nestjs/user/user.module';
-import { AuthModule } from '@nestjs/auth/auth.module';
+import { UserModule } from '@graphql/user/user.module';
+import { AuthModule } from '@graphql/auth/auth.module';
 
 @Module({
   imports: [
@@ -16,6 +16,7 @@ import { AuthModule } from '@nestjs/auth/auth.module';
       driver: ApolloDriver,
       autoSchemaFile: 'gqlschema.gql',
       playground: true,
+      context: ({ req, res }) => ({ req, res }),
     })
   ],
   providers: [HelloResolver],
