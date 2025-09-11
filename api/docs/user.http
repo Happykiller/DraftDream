@@ -30,3 +30,13 @@ Content-Type: application/json
     }
   }
 }
+
+
+### Create a user (GraphQL)
+POST http://localhost:3000/graphql
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YmRjZjU0Nzk5ZGNiN2Q3NTVkY2UwZiIsInJvbGUiOiJDT0FDSCIsImVtYWlsIjoiYWxleC5tYXJ0aW5AZXhhbXBsZS5jb20iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzU3NjExMTM2LCJleHAiOjE3NTc2Mzk5MzZ9.jHPBgQongI0LWbkFGennabtfkrm3ET7Lav6TnAQb8w0
+Content-Type: application/json
+
+{
+  "query": "query Me { me { id type first_name last_name email phone createdAt updatedAt } }"
+}

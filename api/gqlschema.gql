@@ -43,6 +43,7 @@ type SessionGql {
 type Query {
   hello: Hello!
   db_test: Hello!
+  me: UserGql!
 }
 
 type Mutation {
