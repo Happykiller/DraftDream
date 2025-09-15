@@ -1,13 +1,13 @@
 ### Create a user (GraphQL)
-POST http://localhost:3000/graphql
+POST {{host}}/graphql
 Content-Type: application/json
 
 {
   "query": "mutation Auth($input: AuthInput!) { auth(input: $input) { access_token } }",
   "variables": {
     "input": {
-      "email": "alex.martin@example.com",
-      "password": "SuperSecret123!"
+      "email": "{{email}}",
+      "password": "{{password}}"
     }
   }
 }

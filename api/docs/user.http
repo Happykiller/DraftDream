@@ -1,5 +1,5 @@
 ### Create a user (GraphQL)
-POST http://localhost:3000/graphql
+POST {{host}}/graphql
 Content-Type: application/json
 
 {
@@ -33,8 +33,8 @@ Content-Type: application/json
 
 
 ### Create a user (GraphQL)
-POST http://localhost:3000/graphql
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YmRjZjU0Nzk5ZGNiN2Q3NTVkY2UwZiIsInJvbGUiOiJDT0FDSCIsImVtYWlsIjoiYWxleC5tYXJ0aW5AZXhhbXBsZS5jb20iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzU3NjExMTM2LCJleHAiOjE3NTc2Mzk5MzZ9.jHPBgQongI0LWbkFGennabtfkrm3ET7Lav6TnAQb8w0
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {

@@ -5,6 +5,7 @@ import { UserUsecaseModel } from '@usecases/user/model/user.usecase.model';
 /**
  * Map a UserUsecaseModel (domain/usecase) to UserGql (GraphQL output type).
  * Pure function: no NestJS dependency.
+ * 
  */
 export function mapUserUsecaseToGql(model: UserUsecaseModel): UserGql {
   return {
