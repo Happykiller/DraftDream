@@ -17,6 +17,7 @@ async function bootstrap() {
     logger: new NestLogger(),
     // logger: ['error', 'warn', 'log', 'debug', 'verbose'],
   });
+  app.enableCors();
   await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
