@@ -1,8 +1,31 @@
 // src/pages/HomePage.tsx
-// ⚠️ Comment in English: Simple protected home.
 import * as React from 'react';
-import { Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Typography, Button, Stack } from '@mui/material';
+
+import { session } from '@stores/session';
 
 export function HomePage(): React.JSX.Element {
-  return <Typography variant="h3">Home</Typography>;
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Reset the persisted session
+    session.getState().reset?.();
+    // Navigate back to login
+    navigate('/login', { replace: true });
+  };
+
+  return (
+    <Stack spacing={3} alignItems="center" sx={{ mt: 6 }}>
+      <Typography variant="h3">Home</Typography>
+      <Button
+        variant="outlined"
+        color="secondary"
+        onClick={handleLogout}
+        aria-label="Logout"
+      >
+        Logout
+      </Button>
+    </Stack>
+  );
 }

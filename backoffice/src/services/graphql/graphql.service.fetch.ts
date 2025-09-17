@@ -1,6 +1,8 @@
-import { env } from "@app/config/env";
-
 // src\services\graphql\graphql.service.fetch.ts
+
+import { env } from "@app/config/env";
+import { session } from '@stores/session';
+
 export class GraphqlServiceFetch {
   private inversify: any;
 
@@ -12,24 +14,12 @@ export class GraphqlServiceFetch {
 
   async send(datas: any): Promise<any> {
     try {
-      const storageRaw = localStorage.getItem(env.accessTokenStorageKey);
-      let token: string | undefined;
-
-      if (storageRaw) {
-        try {
-          const storage = JSON.parse(storageRaw);
-          token = storage?.state?.access_token;
-        } catch (err) {
-          this.inversify.loggerService.warn('GraphqlServiceFetch#send => Failed to parse localStorage');
-        }
-      }
-
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
       };
 
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
+      if (session.getState().access_token) {
+        headers['Authorization'] = `Bearer ${session.getState().access_token}`;
       }
 
       const response = await fetch(env.graphqlEndpoint, {

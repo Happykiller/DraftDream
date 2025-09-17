@@ -1,21 +1,21 @@
 // src/pages/LoginPage.tsx
-// ⚠️ Comment in English: Auth page using useAsyncTask to wrap useAuthReq, with flash feedback.
-
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, TextField, Stack, Typography } from '@mui/material';
-import { useAsyncTask } from '@hooks/useAsyncTask';
+
+import { session } from '@stores/session';
+import { CODES } from '@app/commons/CODES';
 import { useAuthReq } from '@hooks/useAuthReq';
 import { useLoaderStore } from '@stores/loader';
+import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
-import { CODES } from '@app/commons/CODES';
 
 export function LoginPage(): React.JSX.Element {
-  const navigate = useNavigate();
-  const { execute: runTask } = useAsyncTask();
-  const { execute: auth } = useAuthReq();
-  const loading = useLoaderStore((s) => s.loading);
   const flash = useFlashStore();
+  const navigate = useNavigate();
+  const { execute: auth } = useAuthReq();
+  const { execute: runTask } = useAsyncTask();
+  const loading = useLoaderStore((s) => s.loading);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -36,11 +36,8 @@ export function LoginPage(): React.JSX.Element {
       return;
     }
 
-    console.log('Auth result:', result);
-
     if (result.message === CODES.SUCCESS && result.data) {
-      const { name_first, name_last } = result.data;
-      flash.success(`Welcome ${name_first} ${name_last}`);
+      flash.success(`Login successful : ${result.data.name_first}!`);
       navigate('/', { replace: true });
     } else {
       // Prefer server message if present

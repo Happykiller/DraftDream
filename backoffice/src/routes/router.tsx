@@ -1,6 +1,7 @@
 // src/routes/router.tsx
 import { createBrowserRouter, redirect } from 'react-router-dom';
 
+import { session } from '@stores/session';
 import { PublicLayout } from '@layouts/PublicLayout';
 import { ProtectedLayout } from '@layouts/ProtectedLayout';
 
@@ -8,7 +9,7 @@ import { ProtectedLayout } from '@layouts/ProtectedLayout';
 export async function requireAuthLoader() {
   // Replace with your own auth source (context/inversify/jwt)
   //const ok = await authService.isAuthenticated();
-  const ok =  false;
+  const ok =  session.getState().access_token !== null;
   if (!ok) {
     // Use redirect helper from RR to avoid client flicker
     throw redirect('/login');
