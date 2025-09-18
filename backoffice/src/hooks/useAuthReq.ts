@@ -1,7 +1,7 @@
 // src\hooks\useAuthReq.ts
 import { session } from '@stores/session';
-import { CODES } from '@app/commons/CODES';
-import inversify from '@app/commons/inversify';
+import { CODES } from '@src/commons/CODES';
+import inversify from '@src/commons/inversify';
 
 export const useAuthReq = () => {
   const execute = async (dto: {

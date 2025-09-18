@@ -18,7 +18,7 @@
     /* Paths (aliases for app) */
     "baseUrl": ".",
     "paths": {
-      "@app/*": ["src/*"],
+      "@src/*": ["src/*"],
       "@components/*": ["src/components/*"],
       "@hooks/*": ["src/hooks/*"],
       "@services/*": ["src/services/*"],
@@ -35,8 +35,10 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
+    "resolveJsonModule": true,                   // Allow importing JSON files as modules
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]            // Exclude directories
 }

@@ -1,6 +1,6 @@
 // src\services\graphql\graphql.service.fetch.ts
 
-import { env } from "@app/config/env";
+import { env } from "@src/config/env";
 import { session } from '@stores/session';
 
 export class GraphqlServiceFetch {

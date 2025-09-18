@@ -1,5 +1,5 @@
 // src\commons\inversify.ts
-import { GraphqlServiceFetch } from "@app/services/graphql/graphql.service.fetch";
+import { GraphqlServiceFetch } from "@src/services/graphql/graphql.service.fetch";
 
 
 export class Inversify {

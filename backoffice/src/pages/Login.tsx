@@ -3,14 +3,13 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, TextField, Stack, Typography } from '@mui/material';
 
-import { session } from '@stores/session';
-import { CODES } from '@app/commons/CODES';
+import { CODES } from '@src/commons/CODES';
 import { useAuthReq } from '@hooks/useAuthReq';
 import { useLoaderStore } from '@stores/loader';
 import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 
-export function LoginPage(): React.JSX.Element {
+export function Login(): React.JSX.Element {
   const flash = useFlashStore();
   const navigate = useNavigate();
   const { execute: auth } = useAuthReq();

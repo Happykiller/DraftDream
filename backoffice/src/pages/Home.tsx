@@ -1,11 +1,11 @@
-// src/pages/HomePage.tsx
+// src/pages/Home.tsx
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Typography, Button, Stack } from '@mui/material';
 
 import { session } from '@stores/session';
 
-export function HomePage(): React.JSX.Element {
+export function Home(): React.JSX.Element {
   const navigate = useNavigate();
 
   const handleLogout = () => {
