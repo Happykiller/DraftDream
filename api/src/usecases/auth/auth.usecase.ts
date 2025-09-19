@@ -14,10 +14,10 @@ export class AuthUsecase {
   async execute(dto: AuthUsecaseDto): Promise<SessionUsecaseModel> {
     try {
       const user = await this.inversify.bddService.getByEmail(dto.email, { includePassword: true });
-      if (!user || !user.password) throw new Error('INVALID_CREDENTIALS');
+      if (!user || !user.password) throw new Error(ERRORS.INVALID_CREDENTIALS);
 
       const ok = await this.inversify.cryptService.verify({ message: dto.password, hash: user.password });
-      if (!ok) throw new Error('INVALID_CREDENTIALS');
+      if (!ok) throw new Error(ERRORS.INVALID_CREDENTIALS);
 
       const token = await this.inversify.jwtService.sign({
         id: user._id,
@@ -31,7 +31,15 @@ export class AuthUsecase {
       };
     } catch (e) {
       this.inversify.loggerService.error(`AuthUsecase#execute=>${e.message}`);
-      throw new Error(ERRORS.CREATE_USER_USECASE);
+
+      // Check if error message is in ERRORS values
+      const knownErrors = Object.values(ERRORS);
+      if (knownErrors.includes(e.message)) {
+        throw e; // rethrow as-is
+      }
+
+      // Fallback: standardize as AUTH_USECASE_FAIL
+      throw new Error(ERRORS.AUTH_USECASE_FAIL);
     }
   }
 }

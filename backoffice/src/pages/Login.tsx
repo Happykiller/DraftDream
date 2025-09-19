@@ -1,134 +1,196 @@
-// src/pages/LoginPage.tsx
+// src/pages/Login.tsx
+import { t } from 'i18next';
 import * as React from 'react';
 import { Trans } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import { Box, Button, Stack, Typography, Paper } from '@mui/material';
-import { Done, Visibility, VisibilityOff, Info as InfoIcon, Person, Lock } from '@mui/icons-material';
+import {useNavigate } from 'react-router-dom';
+import {
+  Box,
+  Button,
+  Stack,
+  Typography,
+  Paper,
+} from '@mui/material';
+import {
+  Done,
+  Visibility,
+  VisibilityOff,
+  Info as InfoIcon,
+  Person,
+  Lock,
+} from '@mui/icons-material';
 
 import { Input } from '@components/Input';
 import { CODES } from '@src/commons/CODES';
+import { REGEX } from '@src/commons/REGEX';
 import { useAuthReq } from '@hooks/useAuthReq';
 import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 
+type Entity = { value: string; valid: boolean };
+
 export function Login(): React.JSX.Element {
-  /**
-   * Instance
-   */
+  // Stores / services
   const flash = useFlashStore();
   const navigate = useNavigate();
   const { execute: auth } = useAuthReq();
   const { execute: runTask } = useAsyncTask();
 
-  /**
-   * Variables
-   */
-  const [formEntities, setFormEntities] = React.useState({
+  // Local state
+  const [formEntities, setFormEntities] = React.useState<{
+    email: Entity;
+    password: Entity;
+  }>({
     email: { value: '', valid: false },
     password: { value: '', valid: false },
   });
 
-  /**
-   * Methods
-   */
+  // Submit
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const result: any = await runTask(() => auth({ email: formEntities.email.value, password: formEntities.password.value }));
-    // runTask returns T | null (null when task throws)
+    const result: any = await runTask(() =>
+      auth({
+        email: formEntities.email.value,
+        password: formEntities.password.value,
+      }),
+    );
     if (!result) {
       flash.error('Unexpected error, please try again.');
       return;
     }
-
     if (result.message === CODES.SUCCESS && result.data) {
-      flash.success(`Login successful : ${result.data.name_first}!`);
+      flash.success(t('login.success', { name: result.data.name_first }));
       navigate('/', { replace: true });
     } else {
-      // Prefer server message if present
-      flash.error(result.error || 'Invalid credentials');
+      flash.error(t(`ERRORS.${result.error}`));
     }
   };
 
-  /**
-   * Render
-   */
+  const canSubmit = formEntities.email.valid && formEntities.password.valid;
+
   return (
     <Box
+      // Full viewport black background
       sx={{
-        flex: 1,
+        minHeight: '100vh',
+        bgcolor: 'common.black',
         display: 'flex',
         alignItems: 'center',
-          backgroundColor: 'black',
         justifyContent: 'center',
-        padding: 4,
+        p: { xs: 2, sm: 3 },
       }}
     >
       <Paper
-        elevation={0}
+        elevation={8}
         sx={{
-          p: 4,
-          borderRadius: `4px`,
-          backgroundColor: 'white',
-          backdropFilter: 'blur(2px)',
+          width: '100%',
+          maxWidth: 400,
+          borderRadius: 2.5, // 20px
+          px: { xs: 3, sm: 4 },
+          py: { xs: 3, sm: 4 },
+          boxShadow:
+            '0 10px 30px rgba(0,0,0,0.24), 0 6px 10px rgba(0,0,0,0.18)',
         }}
+        role="dialog"
+        aria-labelledby="login-title"
       >
-        <Box textAlign="center" mb={3}>
-          <Typography variant="h1" gutterBottom>
+        {/* Header */}
+        <Box textAlign="center" mb={2}>
+          {/* Logo */}
+          <Box
+            component="img"
+            src="/logo.png"
+            alt="FitDesk Logo"
+            sx={{
+              width: 80,
+              height: 80,
+              mb: 1.5,                // espace sous le logo
+              objectFit: 'contain',
+            }}
+          />
+
+          {/* Brand title */}
+          <Typography
+            id="login-title"
+            variant="h4"
+            sx={{
+              fontWeight: 800,
+              letterSpacing: 0.5,
+              lineHeight: 1.1,
+            }}
+          >
             FitDesk
+          </Typography>
+
+          {/* Subtitle */}
+          <Typography
+            variant="body2"
+            sx={{ color: 'text.secondary', mt: 0.5 }}
+          >
+            <Trans>login.connect_space</Trans>
           </Typography>
         </Box>
 
-          <form onSubmit={onSubmit}>
-            <Stack spacing={3}>
-              <Input
-                label={<Trans>login.login</Trans>}
-                tooltip={<Trans>REGEX.LOGIN</Trans>}
-                startIcon={<Person fontSize="small"/>}
-                icons={{
-                  visibility : <Visibility fontSize="small"/>,
-                  visibilityOff : <VisibilityOff fontSize="small"/>,
-                  help : <InfoIcon fontSize="small"/>,
-                }}
-                regex="^[a-zA-Z0-9._-]{3,}$"
-                entity={formEntities.email}
-                onChange={(entity: any) =>
-                  setFormEntities((prev) => ({ ...prev, email: entity }))
-                }
-                require
-                virgin
-              />
+        {/* Form */}
+        <Box component="form" onSubmit={onSubmit} noValidate>
+          <Stack spacing={2.25}>
+            {/* Email */}
+            <Input
+              label={<Trans>login.email</Trans>}
+              tooltip={<Trans>REGEX.LOGIN.EMAIL</Trans>}
+              startIcon={<Person fontSize="small" />}
+              icons={{
+                visibility: <Visibility fontSize="small" />,
+                visibilityOff: <VisibilityOff fontSize="small" />,
+                help: <InfoIcon fontSize="small" />,
+              }}
+              regex={REGEX.LOGIN.EMAIL}
+              entity={formEntities.email}
+              onChange={(entity: Entity) =>
+                setFormEntities((prev) => ({ ...prev, email: entity }))
+              }
+              require
+              virgin
+            />
 
-              <Input
-                label={<Trans>login.password</Trans>}
-                tooltip={<Trans>REGEX.PASSWORD</Trans>}
-                startIcon={<Lock fontSize="small"/>}
-                icons={{
-                  visibility : <Visibility fontSize="small"/>,
-                  visibilityOff : <VisibilityOff fontSize="small"/>,
-                  help : <InfoIcon fontSize="small"/>,
-                }}
-                regex=".{6,}"
-                type="password"
-                entity={formEntities.password}
-                onChange={(entity: any) =>
-                  setFormEntities((prev) => ({ ...prev, password: entity }))
-                }
-                require
-                virgin
-              />
+            {/* Password */}
+            <Input
+              label={<Trans>login.password</Trans>}
+              tooltip={<Trans>REGEX.LOGIN.PASSWORD</Trans>}
+              startIcon={<Lock fontSize="small" />}
+              icons={{
+                visibility: <Visibility fontSize="small" />,
+                visibilityOff: <VisibilityOff fontSize="small" />,
+                help: <InfoIcon fontSize="small" />,
+              }}
+              regex={REGEX.LOGIN.PASSWORD}
+              type="password"
+              entity={formEntities.password}
+              onChange={(entity: Entity) =>
+                setFormEntities((prev) => ({ ...prev, password: entity }))
+              }
+              require
+              virgin
+            />
 
-              <Button
-                type="submit"
-                variant="contained"
-                fullWidth
-                startIcon={<Done fontSize="small"/>}
-                disabled={!(formEntities.email.valid && formEntities.password.valid)}
-              >
-                <Trans>login.button</Trans>
-              </Button>
-            </Stack>
-          </form>
+            {/* Submit */}
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              startIcon={<Done fontSize="small" />}
+              disabled={!canSubmit}
+              aria-disabled={!canSubmit}
+              sx={{
+                textTransform: 'uppercase',
+                py: 1.2,
+                fontWeight: 700,
+                letterSpacing: 0.6,
+              }}
+            >
+              <Trans>Se connecter</Trans>
+            </Button>
+          </Stack>
+        </Box>
       </Paper>
     </Box>
   );

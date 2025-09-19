@@ -1,7 +1,12 @@
 {
   "REGEX": {
-    "LOGIN": "Doit contenir au moins 3 caractères alphanumériques, '.', '_' ou '-'.",
-    "PASSWORD": "Doit contenir au moins 6 caractères."
+    "LOGIN": {
+      "EMAIL": "Format email : identifiant@domaine.ext",
+      "PASSWORD": "Doit contenir au moins 6 caractères."
+    }
+  },
+  "ERRORS": {
+    "INVALID_CREDENTIALS": "Identifiants invalides."
   },
   "common": {
     "field_incorrect": "Champs incorrect"
@@ -10,8 +15,10 @@
     "page": {
       "title": "Connexion"
     },
-    "login": "Addresse e-mail",
+    "email": "Addresse e-mail",
     "password": "Mot de passe",
+    "connect_space": "Connectez-vous à votre espace",
+    "success": "Connexion réussie : {{name}} !",
     "button": "Se connecter"
   },
   "home": {

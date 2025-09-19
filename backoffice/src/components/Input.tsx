@@ -70,10 +70,11 @@ export const Input: React.FC<InputProps> = ({
   }, [entity.value, entity.valid]);
 
   const calcValid = (value: string): boolean => {
-    if (require && value.length === 0) return false;
-    if (regex && value.length !== 0) {
-      const reg = new RegExp(regex, 'g');
-      return reg.test(value);
+    const v = value.trim();
+    if (require && v.length === 0) return false;
+    if (regex && v.length !== 0) {
+      const reg = new RegExp(regex);
+      return reg.test(v);
     }
     return true;
   };
@@ -121,20 +122,20 @@ export const Input: React.FC<InputProps> = ({
           </Tooltip>
         )}
         {endActions?.map((action, idx) =>
-        action.hide ? null : (
-          <Tooltip key={idx} title={action.title ?? ''}>
-            <IconButton
-              size="small"
-              edge="end"
-              onClick={action.onClick}
-              disabled={action.disabled}
-              sx={{ color: theme.palette.text.secondary }}
-            >
-              {action.icon}
-            </IconButton>
-          </Tooltip>
-        )
-      )}
+          action.hide ? null : (
+            <Tooltip key={idx} title={action.title ?? ''}>
+              <IconButton
+                size="small"
+                edge="end"
+                onClick={action.onClick}
+                disabled={action.disabled}
+                sx={{ color: theme.palette.text.secondary }}
+              >
+                {action.icon}
+              </IconButton>
+            </Tooltip>
+          )
+        )}
       </Box>
     </InputAdornment>
   );
