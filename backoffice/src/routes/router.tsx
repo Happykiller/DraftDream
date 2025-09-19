@@ -1,17 +1,16 @@
 // src/routes/router.tsx
+import { t } from 'i18next';
 import { createBrowserRouter, redirect } from 'react-router-dom';
 
 import { session } from '@stores/session';
+import { withTitle } from '@src/routes/withTitle';
 import { PublicLayout } from '@layouts/PublicLayout';
 import { ProtectedLayout } from '@layouts/ProtectedLayout';
 
 // Guard loader for protected branches
 export async function requireAuthLoader() {
-  // Replace with your own auth source (context/inversify/jwt)
-  //const ok = await authService.isAuthenticated();
   const ok = session.getState().access_token !== null;
   if (!ok) {
-    // Use redirect helper from RR to avoid client flicker
     throw redirect('/login');
   }
   return null;
@@ -27,7 +26,7 @@ export const router = createBrowserRouter([
         // Route-level lazy import (newest pattern)
         lazy: async () => {
           const mod = await import('@src/pages/Login');
-          return { Component: mod.Login };
+          return { Component: withTitle(mod.Login, t('login.page.title')) };
         },
       },
     ],

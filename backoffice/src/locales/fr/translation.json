@@ -1,5 +1,32 @@
 {
+  "REGEX": {
+    "LOGIN": "Doit contenir au moins 3 caractères alphanumériques, '.', '_' ou '-'.",
+    "PASSWORD": "Doit contenir au moins 6 caractères."
+  },
   "common": {
     "field_incorrect": "Champs incorrect"
+  },
+  "login": {
+    "page": {
+      "title": "Connexion"
+    },
+    "login": "Addresse e-mail",
+    "password": "Mot de passe",
+    "button": "Se connecter"
+  },
+  "home": {
+    "page": {
+      "title": "Accueil"
+    }
+  },
+  "sandbox": {
+    "page": {
+      "title": "Bac à sable"
+    }
+  },
+  "not_found": {
+    "page": {
+      "title": "Non trouvé"
+    }
   }
 }
