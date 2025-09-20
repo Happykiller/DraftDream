@@ -1,10 +1,26 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
+// src/main.tsx
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { RouterProvider } from 'react-router-dom';
+import { ThemeProvider, CssBaseline } from '@mui/material';
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+import initI18n from '@src/i18n';
+import { theme } from '@theme/index';
+import { router } from '@routes/router';
+import LoaderOverlay from '@components/layout/LoaderOverlay';
+import { FlashMessage } from '@components/layout/FlashMessage';
+
+(async () => {
+  await initI18n();
+
+  ReactDOM.createRoot(document.getElementById('root')!).render(
+    <React.StrictMode>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <FlashMessage />
+        <LoaderOverlay />
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    </React.StrictMode>
+  );
+})();

@@ -32,6 +32,8 @@ services:
     profiles: ["prod"]
     build: ./api
     env_file: .env
+    environment:
+      NODE_ENV: prod
     networks: [internal]
     expose: ["3000"]
     healthcheck:

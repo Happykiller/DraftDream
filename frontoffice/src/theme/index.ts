@@ -6,5 +6,5 @@ export const theme = createTheme({
 });
 
 export const gradients = {
-  logo: 'linear-gradient(135deg, #0D00FF 0%, #DC0023 100%)',
+  logo: 'linear-gradient(135deg, #DC0023 0%, #0D00FF 100%)',
 };

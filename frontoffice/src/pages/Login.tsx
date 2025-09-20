@@ -167,7 +167,7 @@ export function Login(): React.JSX.Element {
               variant="h5"
               sx={{ fontWeight: 800, letterSpacing: 0.5, lineHeight: 1.1 }}
             >
-              FitDesk - BO
+              FitDesk
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
               <Trans>login.connect_space</Trans>
@@ -207,7 +207,7 @@ export function Login(): React.JSX.Element {
               variant="h4"
               sx={{ fontWeight: 800, letterSpacing: 0.5, lineHeight: 1.1 }}
             >
-              FitDesk -BO
+              FitDesk
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
               <Trans>login.connect_space</Trans>
