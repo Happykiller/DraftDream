@@ -2,13 +2,16 @@
 import { t } from 'i18next';
 import * as React from 'react';
 import { Trans } from 'react-i18next';
-import {useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useTheme } from '@mui/material/styles';
 import {
   Box,
   Button,
   Stack,
   Typography,
   Paper,
+  useMediaQuery,
+  Container,
 } from '@mui/material';
 import {
   Done,
@@ -30,6 +33,7 @@ type Entity = { value: string; valid: boolean };
 
 export function Login(): React.JSX.Element {
   // Stores / services
+  const theme = useTheme();
   const flash = useFlashStore();
   const navigate = useNavigate();
   const { execute: auth } = useAuthReq();
@@ -43,6 +47,7 @@ export function Login(): React.JSX.Element {
     email: { value: '', valid: false },
     password: { value: '', valid: false },
   });
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   // Submit
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -67,131 +72,152 @@ export function Login(): React.JSX.Element {
 
   const canSubmit = formEntities.email.valid && formEntities.password.valid;
 
+  // Shared form content (desktop & mobile)
+  const FormContent = (
+    <Stack spacing={2.25}>
+      {/* Email */}
+      <Input
+        label={<Trans>login.email</Trans>}
+        tooltip={<Trans>REGEX.LOGIN.EMAIL</Trans>}
+        startIcon={<Person fontSize="small" />}
+        icons={{
+          visibility: <Visibility fontSize="small" />,
+          visibilityOff: <VisibilityOff fontSize="small" />,
+          help: <InfoIcon fontSize="small" />,
+        }}
+        regex={REGEX.LOGIN.EMAIL}
+        entity={formEntities.email}
+        onChange={(entity: Entity) =>
+          setFormEntities((prev) => ({ ...prev, email: entity }))
+        }
+        require
+        virgin
+      />
+
+      {/* Password */}
+      <Input
+        label={<Trans>login.password</Trans>}
+        tooltip={<Trans>REGEX.LOGIN.PASSWORD</Trans>}
+        startIcon={<Lock fontSize="small" />}
+        icons={{
+          visibility: <Visibility fontSize="small" />,
+          visibilityOff: <VisibilityOff fontSize="small" />,
+          help: <InfoIcon fontSize="small" />,
+        }}
+        regex={REGEX.LOGIN.PASSWORD}
+        type="password"
+        entity={formEntities.password}
+        onChange={(entity: Entity) =>
+          setFormEntities((prev) => ({ ...prev, password: entity }))
+        }
+        require
+        virgin
+      />
+
+      {/* Submit */}
+      <Button
+        type="submit"
+        variant="contained"
+        fullWidth
+        startIcon={<Done fontSize="small" />}
+        disabled={!canSubmit}
+        aria-disabled={!canSubmit}
+        sx={{
+          textTransform: 'uppercase',
+          py: 1.2,
+          fontWeight: 700,
+          letterSpacing: 0.6,
+        }}
+      >
+        <Trans>Se connecter</Trans>
+      </Button>
+    </Stack>
+  );
+
   return (
     <Box
-      // Full viewport black background
+      // Full viewport background:
+      // - mobile: theme default background (no black)
+      // - desktop: black background for focus
       sx={{
         minHeight: '100vh',
-        bgcolor: 'common.black',
+        bgcolor: isMobile ? 'background.default' : 'common.black',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         p: { xs: 2, sm: 3 },
       }}
     >
-      <Paper
-        elevation={8}
-        sx={{
-          width: '100%',
-          maxWidth: 400,
-          borderRadius: 2.5, // 20px
-          px: { xs: 3, sm: 4 },
-          py: { xs: 3, sm: 4 },
-          boxShadow:
-            '0 10px 30px rgba(0,0,0,0.24), 0 6px 10px rgba(0,0,0,0.18)',
-        }}
-        role="dialog"
-        aria-labelledby="login-title"
-      >
-        {/* Header */}
-        <Box textAlign="center" mb={2}>
-          {/* Logo */}
-          <Box
-            component="img"
-            src="/logo.png"
-            alt="FitDesk Logo"
-            sx={{
-              width: 80,
-              height: 80,
-              mb: 1.5,                // espace sous le logo
-              objectFit: 'contain',
-            }}
-          />
-
-          {/* Brand title */}
-          <Typography
-            id="login-title"
-            variant="h4"
-            sx={{
-              fontWeight: 800,
-              letterSpacing: 0.5,
-              lineHeight: 1.1,
-            }}
-          >
-            FitDesk
-          </Typography>
-
-          {/* Subtitle */}
-          <Typography
-            variant="body2"
-            sx={{ color: 'text.secondary', mt: 0.5 }}
-          >
-            <Trans>login.connect_space</Trans>
-          </Typography>
-        </Box>
-
-        {/* Form */}
-        <Box component="form" onSubmit={onSubmit} noValidate>
-          <Stack spacing={2.25}>
-            {/* Email */}
-            <Input
-              label={<Trans>login.email</Trans>}
-              tooltip={<Trans>REGEX.LOGIN.EMAIL</Trans>}
-              startIcon={<Person fontSize="small" />}
-              icons={{
-                visibility: <Visibility fontSize="small" />,
-                visibilityOff: <VisibilityOff fontSize="small" />,
-                help: <InfoIcon fontSize="small" />,
-              }}
-              regex={REGEX.LOGIN.EMAIL}
-              entity={formEntities.email}
-              onChange={(entity: Entity) =>
-                setFormEntities((prev) => ({ ...prev, email: entity }))
-              }
-              require
-              virgin
+      {/* MOBILE LAYOUT (no card) */}
+      {isMobile ? (
+        <Container maxWidth="sm" component="section" role="form" aria-labelledby="login-title">
+          {/* Header */}
+          <Box textAlign="center" mb={2}>
+            {/* Logo */}
+            <Box
+              component="img"
+              src="/logo.png"
+              alt="FitDesk Logo"
+              sx={{ width: 64, height: 64, mb: 1.25, objectFit: 'contain' }}
             />
-
-            {/* Password */}
-            <Input
-              label={<Trans>login.password</Trans>}
-              tooltip={<Trans>REGEX.LOGIN.PASSWORD</Trans>}
-              startIcon={<Lock fontSize="small" />}
-              icons={{
-                visibility: <Visibility fontSize="small" />,
-                visibilityOff: <VisibilityOff fontSize="small" />,
-                help: <InfoIcon fontSize="small" />,
-              }}
-              regex={REGEX.LOGIN.PASSWORD}
-              type="password"
-              entity={formEntities.password}
-              onChange={(entity: Entity) =>
-                setFormEntities((prev) => ({ ...prev, password: entity }))
-              }
-              require
-              virgin
-            />
-
-            {/* Submit */}
-            <Button
-              type="submit"
-              variant="contained"
-              fullWidth
-              startIcon={<Done fontSize="small" />}
-              disabled={!canSubmit}
-              aria-disabled={!canSubmit}
-              sx={{
-                textTransform: 'uppercase',
-                py: 1.2,
-                fontWeight: 700,
-                letterSpacing: 0.6,
-              }}
+            <Typography
+              id="login-title"
+              variant="h5"
+              sx={{ fontWeight: 800, letterSpacing: 0.5, lineHeight: 1.1 }}
             >
-              <Trans>Se connecter</Trans>
-            </Button>
-          </Stack>
-        </Box>
-      </Paper>
+              FitDesk
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
+              <Trans>login.connect_space</Trans>
+            </Typography>
+          </Box>
+
+          {/* Form (full-width, no Paper) */}
+          <Box component="form" onSubmit={onSubmit} noValidate>
+            {FormContent}
+          </Box>
+        </Container>
+      ) : (
+        // DESKTOP/TABLET LAYOUT (card + black bg)
+        <Paper
+          elevation={8}
+          sx={{
+            width: '100%',
+            maxWidth: 400,
+            borderRadius: 2.5,
+            px: { sm: 4 },
+            py: { sm: 4 },
+            boxShadow: '0 10px 30px rgba(0,0,0,0.24), 0 6px 10px rgba(0,0,0,0.18)',
+          }}
+          role="dialog"
+          aria-labelledby="login-title"
+        >
+          {/* Header */}
+          <Box textAlign="center" mb={2}>
+            <Box
+              component="img"
+              src="/logo.png"
+              alt="FitDesk Logo"
+              sx={{ width: 80, height: 80, mb: 1.5, objectFit: 'contain' }}
+            />
+            <Typography
+              id="login-title"
+              variant="h4"
+              sx={{ fontWeight: 800, letterSpacing: 0.5, lineHeight: 1.1 }}
+            >
+              FitDesk
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
+              <Trans>login.connect_space</Trans>
+            </Typography>
+          </Box>
+
+          {/* Form */}
+          <Box component="form" onSubmit={onSubmit} noValidate>
+            {FormContent}
+          </Box>
+        </Paper>
+      )}
     </Box>
   );
 }
