@@ -1,18 +1,16 @@
 // src/services/crypt/crypt.service.real.ts
 import * as argon2 from 'argon2';
-import inversify from '@src/inversify/investify';
+import { config } from '@src/config';
 import { ERRORS } from '@src/common/ERROR';
-import {
-  CryptService,
-} from '@services/crypt/crypt.service';
-import { CryptServiceDto, CryptVerifyDto } from './dto/crypt.service.dto';
+import inversify from '@src/inversify/investify';
+import { CryptService } from '@services/crypt/crypt.service';
+import { CryptServiceDto, CryptVerifyDto } from '@services/crypt/dto/crypt.service.dto';
 
 type Argon2Config = {
   timeCost?: number;      // itérations (défaut: 2/3)
   memoryCost?: number;    // en KiB (défaut: 19_456 = ~19MB)
   parallelism?: number;   // threads (défaut: 1/2 selon machine)
   hashLength?: number;    // octets de hash (défaut: 32)
-  // tu peux ajouter 'salt' si tu veux gérer toi-même, mais argon2 en génère un aléatoire par défaut
 };
 
 export class CryptServiceReal implements CryptService {
@@ -26,6 +24,7 @@ export class CryptServiceReal implements CryptService {
         memoryCost: this.config.argon2?.memoryCost ?? 19456, // ~19MB
         parallelism: this.config.argon2?.parallelism ?? 1,
         hashLength: this.config.argon2?.hashLength ?? 32,
+        secret: Buffer.from(config.jwt.secret),
       };
       // Génère un sel aléatoire automatiquement; renvoie une chaîne $argon2id$... portable
       return await argon2.hash(dto.message, opts);
@@ -37,7 +36,9 @@ export class CryptServiceReal implements CryptService {
 
   async verify(dto: CryptVerifyDto): Promise<boolean> {
     try {
-      return await argon2.verify(dto.hash, dto.message);
+      return await argon2.verify(dto.hash, dto.message, {
+        secret: Buffer.from(config.jwt.secret),
+      });
     } catch (e: any) {
       inversify.loggerService.warn(`CryptServiceReal#verify => ${e?.message ?? e}`);
       // Par sécurité on peut retourner false si le hash est corrompu

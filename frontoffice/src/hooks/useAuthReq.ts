@@ -42,6 +42,8 @@ export const useAuthReq = () => {
         }
       );
 
+      session.setState({ id: who.data.me.id, name_first: who.data.me.first_name, name_last: who.data.me.last_name, role: who.data.me.type });
+
       return {
         message: CODES.SUCCESS,
         data: {

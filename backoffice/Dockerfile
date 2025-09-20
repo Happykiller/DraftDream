@@ -1,3 +1,4 @@
+# backoffice\Dockerfile
 # -------- Builder (compile le front) --------
 FROM node:22-alpine AS builder
 WORKDIR /app
@@ -7,7 +8,11 @@ COPY package*.json ./
 RUN npm ci --ignore-scripts
 
 # Build
-COPY . .
+COPY vite.config.* tsconfig*.json ./
+COPY src ./src
+COPY public ./public
+COPY .env.docker ./.env
+COPY index.html ./index.html
 RUN npm run build
 
 # -------- Runtime (Nginx qui sert les fichiers statiques) --------

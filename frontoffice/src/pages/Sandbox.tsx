@@ -25,14 +25,7 @@ export function Sandbox(): React.JSX.Element {
   };
 
   return (
-    <Grid container spacing={3} sx={{ mt: 6 }}>
-      {/* Title row */}
-      <Grid size={{ xs: 12 }}>
-        <Typography variant="h3" align="center">
-          Sandbox
-        </Typography>
-      </Grid>
-
+    <Grid container spacing={3} sx={{ mt: 2 }}>
       {/* Card 1 */}
       <Grid size={{ xs: 12, sm: 6, md: 4 }}>
         <Card variant="outlined" sx={{ height: '100%' }}>

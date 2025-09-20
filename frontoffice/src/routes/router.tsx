@@ -26,7 +26,7 @@ export const router = createBrowserRouter([
         // Route-level lazy import (newest pattern)
         lazy: async () => {
           const mod = await import('@src/pages/Login');
-          return { Component: withTitle(mod.Login, t('login.page.title')) };
+          return { Component: withTitle(mod.Login, t('login.title')) };
         },
       },
     ],
@@ -41,7 +41,7 @@ export const router = createBrowserRouter([
         index: true, // "/" as index under this branch
         lazy: async () => {
           const mod = await import('@src/pages/Home');
-          return { Component: mod.Home };
+          return { Component: withTitle(mod.Home, t('home.title'))  };
         },
       },
       // Add more protected children later...
@@ -58,7 +58,7 @@ export const router = createBrowserRouter([
         index: true, // "/" as index under this branch
         lazy: async () => {
           const mod = await import('@src/pages/Sandbox');
-          return { Component: mod.Sandbox };
+          return { Component: withTitle(mod.Sandbox, t('sandbox.title'))  };
         },
       },
       // Add more protected children later...
@@ -69,7 +69,7 @@ export const router = createBrowserRouter([
     path: '*',
     lazy: async () => {
       const mod = await import('@src/pages/NotFound');
-      return { Component: mod.NotFound };
+      return { Component: withTitle(mod.NotFound, t('notfound.title'))  };
     },
   },
 ]);

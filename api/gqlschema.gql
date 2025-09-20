@@ -2,10 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Hello {
-  message: String!
-}
-
 type AddressGql {
   name: String!
   city: String!
@@ -40,10 +36,14 @@ type SessionGql {
   access_token: String!
 }
 
+type System {
+  message: String!
+}
+
 type Query {
-  hello: Hello!
-  db_test: Hello!
   me: UserGql!
+  version: System!
+  db_test: System!
 }
 
 type Mutation {

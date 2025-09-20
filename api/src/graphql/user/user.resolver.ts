@@ -1,23 +1,23 @@
 // src/nestjs/user/user.resolver.ts
 import { Resolver, Mutation, Args, Query, Context } from '@nestjs/graphql';
 
+import { Role } from '@graphql/common/ROLE';
 import inversify from '@src/inversify/investify';
+import { Auth } from '@graphql/decorators/auth.decorator';
+import { mapUserUsecaseToGql } from '@graphql/user/user.mapper';
 import { CreateUserInput, UserGql } from '@graphql/user/user.gql.types';
 import { UserUsecaseModel } from '@usecases/user/model/user.usecase.model';
 import { CreateUserUsecaseDto } from '@usecases/user/dto/create.user.usecase.dto';
-import { Role } from '../common/ROLE';
-import { Auth } from '../decorators/auth.decorator';
-import { mapUserUsecaseToGql } from './user.mapper';
 
 
 @Resolver(() => UserGql)
 export class UserResolver {
-  // ---- Nouvelle mutation: crée un utilisateur ----
+
   @Mutation(() => UserGql, { name: 'user_create' })
+  @Auth(Role.ADMIN)
   async user_create(
     @Args('input') input: CreateUserInput,
   ): Promise<UserGql> {
-    // Map 1:1 vers le DTO du usecase
     const dto: CreateUserUsecaseDto = {
       type: input.type,
       first_name: input.first_name,

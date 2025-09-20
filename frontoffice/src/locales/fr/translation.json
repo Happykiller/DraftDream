@@ -12,9 +12,7 @@
     "field_incorrect": "Champs incorrect"
   },
   "login": {
-    "page": {
-      "title": "Connexion"
-    },
+    "title": "Connexion",
     "email": "Addresse e-mail",
     "password": "Mot de passe",
     "connect_space": "Connectez-vous à votre espace",
@@ -22,14 +20,10 @@
     "button": "Se connecter"
   },
   "home": {
-    "page": {
-      "title": "Accueil"
-    }
+    "title": "Accueil"
   },
   "sandbox": {
-    "page": {
-      "title": "Bac à sable"
-    }
+    "title": "Bac à sable"
   },
   "not_found": {
     "page": {

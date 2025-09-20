@@ -7,6 +7,7 @@ export interface SessionStoreModel {
   access_token: string | null;
   name_first: string | null;
   name_last: string | null;
+  role: string | null;
   reset?: () => void;
 }
 
@@ -14,7 +15,8 @@ const initialState: SessionStoreModel = {
   id: null,
   access_token: null,
   name_first: null,
-  name_last: null
+  name_last: null,
+  role: null
 }
 
 const contextPersist = persist<SessionStoreModel>(

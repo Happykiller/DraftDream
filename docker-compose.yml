@@ -48,7 +48,7 @@ services:
     build: ./frontoffice
     env_file: .env
     networks: [internal]
-    expose: ["3000"]
+    expose: ["80"]
     restart: unless-stopped
 
   backoffice:
@@ -56,7 +56,7 @@ services:
     build: ./backoffice
     env_file: .env
     networks: [internal]
-    expose: ["3000"]
+    expose: ["80"]
     restart: unless-stopped
 
   showcase:
@@ -64,7 +64,7 @@ services:
     build: ./showcase
     env_file: .env
     networks: [internal]
-    expose: ["3000"]
+    expose: ["80"]
     restart: unless-stopped
 
   mobile:
@@ -72,7 +72,7 @@ services:
     build: ./mobile
     env_file: .env
     networks: [internal]
-    expose: ["5173"]
+    expose: ["80"]
     restart: unless-stopped
 
   # --- Infra commune ---

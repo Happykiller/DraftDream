@@ -26,5 +26,4 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
-      - ./nginx/conf.d.dev:/etc/nginx/conf.d:ro
       - ./nginx/includes:/etc/nginx/includes:r
