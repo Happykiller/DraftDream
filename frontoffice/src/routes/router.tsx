@@ -7,7 +7,6 @@ import { withTitle } from '@src/routes/withTitle';
 import { PublicLayout } from '@layouts/PublicLayout';
 import { ProtectedLayout } from '@layouts/ProtectedLayout';
 
-// Guard loader for protected branches
 export async function requireAuthLoader() {
   const ok = session.getState().access_token !== null;
   if (!ok) {
@@ -18,12 +17,10 @@ export async function requireAuthLoader() {
 
 export const router = createBrowserRouter([
   {
-    // Public routes branch
     element: <PublicLayout />,
     children: [
       {
         path: '/login',
-        // Route-level lazy import (newest pattern)
         lazy: async () => {
           const mod = await import('@src/pages/Login');
           return { Component: withTitle(mod.Login, t('login.title')) };
@@ -32,36 +29,62 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    // Protected routes branch with loader guard
     element: <ProtectedLayout />,
     loader: requireAuthLoader,
     children: [
       {
         // Home
-        index: true, // "/" as index under this branch
+        index: true,
         lazy: async () => {
           const mod = await import('@src/pages/Home');
           return { Component: withTitle(mod.Home, t('home.title'))  };
         },
       },
-      // Add more protected children later...
     ],
   },
   {
-    // Protected routes branch with loader guard
     path: '/sandbox',
     element: <ProtectedLayout />,
     loader: requireAuthLoader,
     children: [
       {
         // Home
-        index: true, // "/" as index under this branch
+        index: true,
         lazy: async () => {
           const mod = await import('@src/pages/Sandbox');
           return { Component: withTitle(mod.Sandbox, t('sandbox.title'))  };
         },
       },
-      // Add more protected children later...
+    ],
+  },
+  {
+    path: '/programs-coach',
+    element: <ProtectedLayout />,
+    loader: requireAuthLoader,
+    children: [
+      {
+        // ProgramsCoach
+        index: true,
+        lazy: async () => {
+          const mod = await import('@src/pages/ProgramsCoach');
+          return { Component: withTitle(mod.ProgramsCoach, t('programs-coatch.title'))  };
+        },
+      },
+    ],
+  },
+  {
+    path: '/clients',
+    element: <ProtectedLayout />,
+    loader: requireAuthLoader,
+    children: [
+      {
+        // ProgramsCoach
+        index: true,
+        lazy: async () => {
+          const mod = await import('@src/pages/Clients');
+          return { Component: withTitle(mod.Clients, t('client.title'))  };
+        },
+      },
     ],
   },
   {

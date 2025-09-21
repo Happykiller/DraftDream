@@ -27,6 +27,8 @@ import {
   Logout,
   Home,
   Settings,
+  FitnessCenter,
+  Group
 } from '@mui/icons-material';
 import { keyframes } from '@mui/system';
 
@@ -40,10 +42,28 @@ const RAIL_WIDTH = 72;
 
 type NavItem = { label: string; icon: React.ReactNode; path: string; external?: boolean };
 
-const NAV_ITEMS: NavItem[] = [
-  { label: t('home.title'), icon: <Home />, path: '/' },
-  { label: t('sandbox.title'), icon: <Settings />, path: '/sandbox' },
-];
+function getNavItems(role: string | undefined): NavItem[] {
+  const base: NavItem[] = [
+    { label: t('home.title'), icon: <Home />, path: '/' }
+  ];
+
+  if (role === 'coach') {
+    base.push({
+      label: t('clients.title'),
+      icon: <Group />,
+      path: '/clients',
+    });
+    base.push({
+      label: t('programs-coatch.title'),
+      icon: <FitnessCenter />,
+      path: '/programs-coach',
+    });
+  }
+
+  base.push({ label: t('sandbox.title'), icon: <Settings />, path: '/sandbox' });
+
+  return base;
+}
 
 const pulse = keyframes`
   0%   { transform: scale(1); opacity: .85; }
@@ -60,9 +80,12 @@ export function ProtectedLayout(): React.JSX.Element {
   const location = useLocation();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  
+  const role = session.getState().role || 'guest';
 
   const handleDrawerToggle = () => setMobileOpen(v => !v);
 
+  const NAV_ITEMS = React.useMemo(() => getNavItems(role), [role]);
   const currentNav = NAV_ITEMS.find((item) => item.path === location.pathname);
   const pageTitle = currentNav?.label ?? 'home';
 

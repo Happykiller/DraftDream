@@ -1,5 +1,51 @@
 {
   "common": {
-    "field_incorrect": "Field incorrect"
+    "field_incorrect": "Incorrect field"
+  },
+
+  "login": {
+    "title": "Login",
+    "email": "Email address",
+    "password": "Password",
+    "connect_space": "Log in to your account",
+    "success": "Successfully logged in: {{name}}!",
+    "button": "Sign in"
+  },
+
+  "home": {
+    "title": "Dashboard"
+  },
+
+  "programs-coatch": {
+    "title": "Programs"
+  },
+
+  "sandbox": {
+    "title": "Sandbox"
+  },
+
+  "not_found": {
+    "page": {
+      "title": "Not found"
+    }
+  },
+
+  "sidebar": {
+    "go_home": "Go to home"
+  },
+
+  "header": {
+    "logout": "Log out"
+  },
+
+  "ERRORS": {
+    "INVALID_CREDENTIALS": "Invalid credentials."
+  },
+
+  "REGEX": {
+    "LOGIN": {
+      "EMAIL": "Email format: username@domain.ext",
+      "PASSWORD": "Must contain at least 6 characters."
+    }
   }
 }

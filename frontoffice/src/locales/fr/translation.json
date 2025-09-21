@@ -1,39 +1,55 @@
 {
-  "REGEX": {
-    "LOGIN": {
-      "EMAIL": "Format email : identifiant@domaine.ext",
-      "PASSWORD": "Doit contenir au moins 6 caractères."
-    }
-  },
-  "ERRORS": {
-    "INVALID_CREDENTIALS": "Identifiants invalides."
-  },
   "common": {
     "field_incorrect": "Champs incorrect"
   },
+
   "login": {
     "title": "Connexion",
-    "email": "Addresse e-mail",
+    "email": "Adresse e-mail",
     "password": "Mot de passe",
     "connect_space": "Connectez-vous à votre espace",
     "success": "Connexion réussie : {{name}} !",
     "button": "Se connecter"
   },
+
   "home": {
     "title": "Tableau de bord"
   },
+
+  "clients": {
+    "title": "Clients"
+  },
+
+  "programs-coatch": {
+    "title": "Programmes"
+  },
+
   "sandbox": {
     "title": "Bac à sable"
   },
+
   "not_found": {
     "page": {
       "title": "Non trouvé"
     }
   },
+
   "sidebar": {
     "go_home": "Aller à l'accueil"
   },
+
   "header": {
     "logout": "Se déconnecter"
+  },
+
+  "ERRORS": {
+    "INVALID_CREDENTIALS": "Identifiants invalides."
+  },
+
+  "REGEX": {
+    "LOGIN": {
+      "EMAIL": "Format email : identifiant@domaine.ext",
+      "PASSWORD": "Doit contenir au moins 6 caractères."
+    }
   }
 }
