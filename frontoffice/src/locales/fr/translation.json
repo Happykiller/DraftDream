@@ -20,7 +20,7 @@
     "button": "Se connecter"
   },
   "home": {
-    "title": "Accueil"
+    "title": "Tableau de bord"
   },
   "sandbox": {
     "title": "Bac à sable"
@@ -29,5 +29,11 @@
     "page": {
       "title": "Non trouvé"
     }
+  },
+  "sidebar": {
+    "go_home": "Aller à l'accueil"
+  },
+  "header": {
+    "logout": "Se déconnecter"
   }
 }
