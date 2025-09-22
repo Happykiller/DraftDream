@@ -1,6 +1,7 @@
 // src/pages/Sandbox.tsx
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
+import { useNavigate } from 'react-router-dom';
 import { Typography, Card, CardContent, Button, Stack } from '@mui/material';
 
 import { Input } from '@src/components/Input';
@@ -8,7 +9,7 @@ import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 
 export function Sandbox(): React.JSX.Element {
-
+  const navigate = useNavigate();
   const [email, setEmail] = React.useState({ value: '', valid: false });
   const { success, error, warning, info, open } = useFlashStore();
   const { execute } = useAsyncTask();
@@ -19,20 +20,13 @@ export function Sandbox(): React.JSX.Element {
         new Promise<void>((resolve) => {
           setTimeout(() => {
             resolve();
-          }, 2000); // simulate 2s async task
+          }, 2000);
         }),
     );
   };
 
   return (
-    <Grid container spacing={3} sx={{ mt: 6 }}>
-      {/* Title row */}
-      <Grid size={{ xs: 12 }}>
-        <Typography variant="h3" align="center">
-          Sandbox
-        </Typography>
-      </Grid>
-
+    <Grid container spacing={3} sx={{ mt: 2 }}>
       {/* Card 1 */}
       <Grid size={{ xs: 12, sm: 6, md: 4 }}>
         <Card variant="outlined" sx={{ height: '100%' }}>
@@ -119,6 +113,21 @@ export function Sandbox(): React.JSX.Element {
             </Typography>
             <Button variant="contained" onClick={simulateTask}>
               Run Task
+            </Button>
+          </CardContent>
+        </Card>
+      </Grid>
+
+      {/* Card 4 - NotFound */}
+      <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+        <Card variant="outlined" sx={{ height: '100%' }}>
+          <CardContent>
+            <Typography variant="h5" gutterBottom>
+              NotFound
+            </Typography>
+
+            <Button variant="contained" onClick={() => navigate('/non-existent-page')}>
+              Go unkown
             </Button>
           </CardContent>
         </Card>

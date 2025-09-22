@@ -42,6 +42,19 @@ export const useAuthReq = () => {
         }
       );
 
+      // 3) Role check
+      // Comment in English: Only "admin" role is allowed to proceed.
+      if (who.type !== 'admin') {
+        // reset session and return a deterministic forbidden error
+        session.getState().reset();
+        return {
+          message: CODES.AUTH_FAIL_WRONG_ROLE,
+          error: CODES.AUTH_FAIL_WRONG_ROLE,
+        };
+      }
+
+      session.setState({ id: who.data.me.id, name_first: who.data.me.first_name, name_last: who.data.me.last_name, role: who.data.me.type });
+
       return {
         message: CODES.SUCCESS,
         data: {

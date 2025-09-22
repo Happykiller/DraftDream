@@ -22,7 +22,6 @@ import {
   Lock,
 } from '@mui/icons-material';
 
-import { gradients } from '@src/theme';
 import { Input } from '@components/Input';
 import { CODES } from '@src/commons/CODES';
 import { REGEX } from '@src/commons/REGEX';
@@ -130,7 +129,7 @@ export function Login(): React.JSX.Element {
           letterSpacing: 0.6,
         }}
       >
-        <Trans>Se connecter</Trans>
+        <Trans>login.button</Trans>
       </Button>
     </Stack>
   );
@@ -142,8 +141,7 @@ export function Login(): React.JSX.Element {
       // - desktop: black background for focus
       sx={{
         minHeight: '100vh',
-        bgcolor: isMobile ? 'background.default' : undefined,
-        background: isMobile ? undefined : gradients.logo,
+        bgcolor: isMobile ? 'background.default' : 'black',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

@@ -26,7 +26,7 @@ export const router = createBrowserRouter([
         // Route-level lazy import (newest pattern)
         lazy: async () => {
           const mod = await import('@src/pages/Login');
-          return { Component: withTitle(mod.Login, t('login.page.title')) };
+          return { Component: withTitle(mod.Login, t('login.title')) };
         },
       },
     ],

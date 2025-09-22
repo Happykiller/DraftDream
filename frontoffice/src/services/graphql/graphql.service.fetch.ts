@@ -1,13 +1,10 @@
 // src/services/graphql/graphql.service.fetch.ts
-// ⚠️ Comment in English: GraphQL fetch with robust UNAUTHORIZED handling (HTTP 401 or GQL errors).
-
 import { env } from '@src/config/env';
-// NOTE: If your store path is '@stores/context', switch the import accordingly:
 import { session } from '@stores/session';
 
 type GraphQLErrorExt = {
   code?: string;
-  stacktrace?: string[]; // shape as sent by Apollo/Nest (optional)
+  stacktrace?: string[];
   [k: string]: unknown;
 };
 
@@ -30,7 +27,6 @@ export class GraphqlServiceFetch {
     this.inversify = inversify ?? {};
   }
 
-  // ⚠️ Comment in English: Centralized unauthorized handler.
   private handleUnauthorized(reason: string): void {
     try {
       session.getState().reset?.();
@@ -38,11 +34,9 @@ export class GraphqlServiceFetch {
       // ignore reset failures
     }
     this.inversify?.loggerService?.error?.(`[GraphQL] Unauthorized → ${reason}`);
-    // Hard redirect outside router to ensure clean app state
     window.location.replace('/login');
   }
 
-  // ⚠️ Comment in English: Detect common UNAUTHORIZED patterns in GraphQL errors.
   private hasUnauthorizedError(errors?: GraphQLErrorItem[]): boolean {
     if (!errors || errors.length === 0) return false;
     return errors.some((e) => {
@@ -76,7 +70,6 @@ export class GraphqlServiceFetch {
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : String(e);
       this.inversify?.loggerService?.error?.(`[GraphQL] Network error: ${msg}`);
-      // Network errors are not auth-related; return a GQL-like error shape
       return { data: null as any, errors: [{ message: msg }] };
     }
 
@@ -95,17 +88,14 @@ export class GraphqlServiceFetch {
       return { data: null as any, errors: [{ message: msg }] };
     }
 
-    // GraphQL-level unauthorized
     if (this.hasUnauthorizedError(json.errors)) {
       this.handleUnauthorized('GQL errors[].message/code');
       return { data: null as any, errors: json.errors };
     }
 
-    // Non-ok HTTP but not 401 → log and pass through
     if (!response.ok) {
       const msg = `[GraphQL] HTTP ${response.status}`;
       this.inversify?.loggerService?.error?.(msg);
-      // Keep the payload so caller can decide
       return json ?? ({ data: null as any, errors: [{ message: msg }] } as GraphQLResponse<TData>);
     }
 

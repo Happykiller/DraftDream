@@ -25,7 +25,7 @@ const contextPersist = persist<SessionStoreModel>(
     reset: () => set(initialState)
   }),
   {
-    name: "draftdream-storage",
+    name: "fitdesk-session",
     storage: createJSONStorage(() => localStorage),
   }
 );

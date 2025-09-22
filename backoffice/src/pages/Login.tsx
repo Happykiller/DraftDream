@@ -130,7 +130,7 @@ export function Login(): React.JSX.Element {
           letterSpacing: 0.6,
         }}
       >
-        <Trans>Se connecter</Trans>
+        <Trans>login.button</Trans>
       </Button>
     </Stack>
   );
