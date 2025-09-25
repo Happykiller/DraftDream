@@ -1,5 +1,5 @@
-// src\services\db\models\muscle.ts
-export interface Muscle {
+// src/services/db/models/tag.model.ts
+export interface Tag {
   id: string;
   slug: string;
   locale: string;

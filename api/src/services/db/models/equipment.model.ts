@@ -1,5 +1,5 @@
-// src\services\db\models\muscle.ts
-export interface Muscle {
+// src/services/db/models/equipment.model.ts
+export interface Equipment {
   id: string;
   slug: string;
   locale: string;

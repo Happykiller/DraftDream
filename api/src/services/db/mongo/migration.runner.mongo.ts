@@ -18,7 +18,9 @@ export class MongoMigrationRunner {
     // @ts-ignore
     const admin: Migration = require('./migrations/0001_create_admin').default;
     const muscles: Migration = require('./migrations/0002_seeds_muscle').default;
-    return [admin, muscles];
+    const equipments: Migration = require('./migrations/0003_seeds_equipment').default;
+    const categories: Migration = require('./migrations/0004_seeds_category').default;
+    return [admin, muscles, equipments, categories];
   }
 
   private colMigrations(db: mongoDB.Db) {

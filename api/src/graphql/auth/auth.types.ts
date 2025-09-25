@@ -1,7 +1,5 @@
 // src/graphql/types/auth.types.ts
-
 import { Role } from '../common/ROLE';
-
 
 export type AccessTokenClaims = {
   id: string;

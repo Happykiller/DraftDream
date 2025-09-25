@@ -1,7 +1,7 @@
 // src\usecase\user\create.user.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
 import { Inversify } from '@src/inversify/investify';
-import { UserPojo } from '@services/db/mongo/user/service.db.mongo.user';
+import { User } from '@services/db/models/user.model';
 import { UserUsecaseModel } from '@usecases/user/model/user.usecase.model';
 import { GetUserUsecaseDto } from '@usecases/user/dto/get.user.usecase.dto';
 
@@ -14,19 +14,21 @@ export class GetUserUsecase {
 
   async execute(dto: GetUserUsecaseDto): Promise<UserUsecaseModel> {
     try {
-      const userPojo:UserPojo = await this.inversify.bddService.getById(dto.id);
+      const user:User|null = await this.inversify.bddService.getUserById(dto.id);
+
+      if (!user) throw new Error(ERRORS.USER_NOT_FOUND);
 
       return {
-        id: userPojo._id,
-        type: userPojo.type,
-        first_name: userPojo.first_name,
-        last_name: userPojo.last_name,
-        email: userPojo.email,
-        phone: userPojo.phone,
-        address: userPojo.address,
-        company: userPojo.company,
-        createdAt: userPojo.createdAt,
-        updatedAt: userPojo.updatedAt
+        id: user.id,
+        type: user.type,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+        phone: user.phone,
+        address: user.address,
+        company: user.company,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt
       };
     } catch (e) {
       this.inversify.loggerService.error(`GetUserUsecase#execute=>${e.message}`);

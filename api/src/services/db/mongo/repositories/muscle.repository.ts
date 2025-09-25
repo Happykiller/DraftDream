@@ -1,14 +1,15 @@
-// src/services/db/mongo/muscle/bdd.service.muscle.mongo.ts
+// src/services/db/mongo/muscle.repository.ts
 import { Collection, ObjectId, Db } from 'mongodb';
 
 import inversify from '@src/inversify/investify';
-import { Muscle } from '@src/services/db/models/muscle.model';
-import { CreateMuscleDto, GetMuscleDto, ListMusclesDto, UpdateMuscleDto } from '@src/services/db/dtos/muscle.dto';
+import { Muscle } from '@services/db/models/muscle.model';
+import { CreateMuscleDto, GetMuscleDto, ListMusclesDto, UpdateMuscleDto } from '@services/db/dtos/muscle.dto';
 
 type MuscleDoc = {
   _id: ObjectId;
   slug: string;
   locale: string;
+  visibility: 'private' | 'public';
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
@@ -35,6 +36,7 @@ export class BddServiceMuscleMongo {
     const doc: Omit<MuscleDoc, '_id'> = {
       slug: dto.slug.toLowerCase().trim(),
       locale: dto.locale.toLowerCase().trim(),
+      visibility: dto.visibility,
       createdBy: dto.createdBy,
       createdAt: now,
       updatedAt: now,
@@ -141,6 +143,7 @@ export class BddServiceMuscleMongo {
     id: doc._id.toHexString(),
     slug: doc.slug,
     locale: doc.locale,
+    visibility: doc.visibility,
     createdBy: doc.createdBy,
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt,

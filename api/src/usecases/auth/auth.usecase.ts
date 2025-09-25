@@ -13,14 +13,14 @@ export class AuthUsecase {
 
   async execute(dto: AuthUsecaseDto): Promise<SessionUsecaseModel> {
     try {
-      const user = await this.inversify.bddService.getByEmail(dto.email, { includePassword: true });
+      const user = await this.inversify.bddService.getUserByEmail(dto.email, { includePassword: true });
       if (!user || !user.password) throw new Error(ERRORS.INVALID_CREDENTIALS);
 
       const ok = await this.inversify.cryptService.verify({ message: dto.password, hash: user.password });
       if (!ok) throw new Error(ERRORS.INVALID_CREDENTIALS);
 
       const token = await this.inversify.jwtService.sign({
-        id: user._id,
+        id: user.id,
         role: user.type.toUpperCase(),
         email: user.email,
         type: 'access',

@@ -70,6 +70,7 @@ const migration: Migration = {
             $setOnInsert: {
               slug,
               locale: "fr",
+              visibility: "public",
               createdBy: createdBy.toHexString ? createdBy.toHexString() : String(createdBy),
               createdAt: now,
             },
