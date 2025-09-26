@@ -14,7 +14,7 @@ export class BddServiceInitMongo {
     this.inversify.mongo = clientMongo.db(this.config.mongo.name);
     this.inversify.loggerService.log(
       'info',
-      `Successfully connected to database: ${this.inversify.mongo.databaseName}`,
+      `Successfully connected to database: ${this.inversify.mongo.databaseName} ✅`,
     );
 
     const runner = new MongoMigrationRunner(this.inversify as any);

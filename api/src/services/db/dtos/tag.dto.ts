@@ -6,7 +6,7 @@ export type CreateTagDto = {
   createdBy: string;
 };
 
-export type UpdateTagDto = Partial<Pick<CreateTagDto, 'slug' | 'locale' | 'visibility'>> & { id: string };
+export type UpdateTagDto = Partial<Pick<CreateTagDto, 'slug' | 'locale' | 'visibility'>>;
 
 export type GetTagDto = { id: string };
 

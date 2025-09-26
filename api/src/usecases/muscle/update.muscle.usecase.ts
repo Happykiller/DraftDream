@@ -1,0 +1,22 @@
+// src/usecases/muscle/update.muscle.usecase.ts
+import { ERRORS } from '@src/common/ERROR';
+import { Inversify } from '@src/inversify/investify';
+import { MuscleUsecaseModel } from '@usecases/muscle/muscle.usecase.model';
+import { UpdateMuscleUsecaseDto } from '@usecases/muscle/muscle.usecase.dto';
+
+export class UpdateMuscleUsecase {
+  constructor(private readonly inversify: Inversify) {}
+
+  async execute(dto: UpdateMuscleUsecaseDto): Promise<MuscleUsecaseModel | null> {
+    try {
+      const updated = await this.inversify.bddService.updateMuscle(dto.id, {
+        slug: dto.slug,
+        locale: dto.locale,
+      });
+      return updated ? { ...updated } : null;
+    } catch (e: any) {
+      this.inversify.loggerService.error(`UpdateMuscleUsecase#execute => ${e?.message ?? e}`);
+      throw new Error(ERRORS.UPDATE_MUSCLE_USECASE);
+    }
+  }
+}

@@ -1,0 +1,79 @@
+// src/graphql/equipment/equipment.resolver.ts
+import { Args, Context, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Auth } from '@graphql/decorators/auth.decorator';
+import { Role } from '@graphql/common/ROLE';
+import inversify from '@src/inversify/investify';
+
+import {
+  CreateEquipmentInput,
+  EquipmentGql,
+  EquipmentListGql,
+  ListEquipmentInput,
+  UpdateEquipmentInput,
+} from '@graphql/equipment/equipment.gql.types';
+import { mapEquipmentUsecaseToGql } from '@graphql/equipment/equipment.mapper';
+
+@Resolver(() => EquipmentGql)
+export class EquipmentResolver {
+  @Mutation(() => EquipmentGql, { name: 'equipment_create', nullable: true })
+  @Auth(Role.ADMIN)
+  async equipment_create(
+    @Args('input') input: CreateEquipmentInput,
+    @Context('req') req: any,
+  ): Promise<EquipmentGql | null> {
+    const created = await inversify.createEquipmentUsecase.execute({
+      slug: input.slug,
+      locale: input.locale,
+      visibility: input.visibility,
+      createdBy: req?.user?.id,
+    });
+    return created ? mapEquipmentUsecaseToGql(created) : null;
+  }
+
+  @Query(() => EquipmentGql, { name: 'equipment_get', nullable: true })
+  @Auth(Role.ADMIN, Role.COACH)
+  async equipment_get(@Args('id', { type: () => ID }) id: string): Promise<EquipmentGql | null> {
+    const found = await inversify.getEquipmentUsecase.execute({ id });
+    return found ? mapEquipmentUsecaseToGql(found) : null;
+  }
+
+  @Query(() => EquipmentListGql, { name: 'equipment_list' })
+  @Auth(Role.ADMIN, Role.COACH)
+  async equipment_list(
+    @Args('input', { nullable: true }) input?: ListEquipmentInput,
+  ): Promise<EquipmentListGql> {
+    const res = await inversify.listEquipmentUsecase.execute({
+      q: input?.q,
+      locale: input?.locale,
+      createdBy: input?.createdBy,
+      visibility: input?.visibility,
+      limit: input?.limit,
+      page: input?.page,
+    });
+    return {
+      items: res.items.map(mapEquipmentUsecaseToGql),
+      total: res.total,
+      page: res.page,
+      limit: res.limit,
+    };
+  }
+
+  @Mutation(() => EquipmentGql, { name: 'equipment_update', nullable: true })
+  @Auth(Role.ADMIN)
+  async equipment_update(
+    @Args('input') input: UpdateEquipmentInput,
+  ): Promise<EquipmentGql | null> {
+    const updated = await inversify.updateEquipmentUsecase.execute({
+      id: input.id,
+      slug: input.slug,
+      locale: input.locale,
+    });
+    return updated ? mapEquipmentUsecaseToGql(updated) : null;
+  }
+
+  @Mutation(() => Boolean, { name: 'equipment_delete' })
+  @Auth(Role.ADMIN)
+  async equipment_delete(@Args('id', { type: () => ID }) id: string): Promise<boolean> {
+    return inversify.deleteEquipmentUsecase.execute({ id });
+  }
+}
