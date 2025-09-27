@@ -44,7 +44,7 @@ export const useAuthReq = () => {
 
       // 3) Role check
       // Comment in English: Only "admin" role is allowed to proceed.
-      if (who.type !== 'admin') {
+      if (who.data.me.type !== 'admin') {
         // reset session and return a deterministic forbidden error
         session.getState().reset();
         return {

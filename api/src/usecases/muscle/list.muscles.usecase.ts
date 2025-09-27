@@ -16,7 +16,7 @@ export class ListMusclesUsecase {
 
   async execute(dto: ListMusclesUsecaseDto = {}): Promise<ListMusclesUsecaseResult> {
     try {
-      const res = await this.inversify.bddService.listMuscles(dto);
+      const res = await this.inversify.bddService.muscle.listMuscles(dto);
       return {
         items: res.items.map(i => ({ ...i })),
         total: res.total,

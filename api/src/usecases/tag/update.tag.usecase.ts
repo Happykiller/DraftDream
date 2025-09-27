@@ -9,7 +9,7 @@ export class UpdateTagUsecase {
 
   async execute(dto: UpdateTagUsecaseDto): Promise<TagUsecaseModel | null> {
     try {
-      const updated = await this.inversify.bddService.updateTag(dto.id, {
+      const updated = await this.inversify.bddService.tag.update(dto.id, {
         slug: dto.slug,
         locale: dto.locale,
         visibility: dto.visibility

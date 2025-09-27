@@ -14,7 +14,9 @@ export class GetUserUsecase {
 
   async execute(dto: GetUserUsecaseDto): Promise<UserUsecaseModel> {
     try {
-      const user:User|null = await this.inversify.bddService.getUserById(dto.id);
+      const user:User|null = await this.inversify.bddService.user.getUser({
+        id: dto.id
+      });
 
       if (!user) throw new Error(ERRORS.USER_NOT_FOUND);
 

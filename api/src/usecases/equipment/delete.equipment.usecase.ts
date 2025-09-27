@@ -8,7 +8,7 @@ export class DeleteEquipmentUsecase {
 
   async execute(dto: DeleteEquipmentUsecaseDto): Promise<boolean> {
     try {
-      return await this.inversify.bddService.deleteEquipment(dto.id);
+      return await this.inversify.bddService.equipment.delete(dto.id);
     } catch (e: any) {
       this.inversify.loggerService.error(`DeleteEquipmentUsecase#execute => ${e?.message ?? e}`);
       throw new Error(ERRORS.DELETE_EQUIPMENT_USECASE);

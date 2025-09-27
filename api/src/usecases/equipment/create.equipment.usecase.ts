@@ -9,7 +9,7 @@ export class CreateEquipmentUsecase {
 
   async execute(dto: CreateEquipmentUsecaseDto): Promise<EquipmentUsecaseModel | null> {
     try {
-      const created = await this.inversify.bddService.createEquipment({
+      const created = await this.inversify.bddService.equipment.create({
         slug: dto.slug,
         locale: dto.locale,
         visibility: dto.visibility,

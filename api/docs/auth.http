@@ -1,4 +1,5 @@
-### Create a user (GraphQL)
+// docs\auth.http
+### auth
 POST {{host}}/graphql
 Content-Type: application/json
 

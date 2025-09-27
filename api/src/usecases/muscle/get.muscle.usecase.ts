@@ -9,7 +9,7 @@ export class GetMuscleUsecase {
 
   async execute(dto: GetMuscleUsecaseDto): Promise<MuscleUsecaseModel | null> {
     try {
-      const found = await this.inversify.bddService.getMuscle({ id: dto.id });
+      const found = await this.inversify.bddService.muscle.get({ id: dto.id });
       return found ? { ...found } : null;
     } catch (e: any) {
       this.inversify.loggerService.error(`GetMuscleUsecase#execute => ${e?.message ?? e}`);

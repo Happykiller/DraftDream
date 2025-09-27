@@ -9,7 +9,7 @@ export class CreateCategoryUsecase {
 
   async execute(dto: CreateCategoryUsecaseDto): Promise<CategoryUsecaseModel | null> {
     try {
-      const created = await this.inversify.bddService.createCategory({
+      const created = await this.inversify.bddService.category.create({
         slug: dto.slug,
         locale: dto.locale,
         visibility: dto.visibility,

@@ -1,0 +1,79 @@
+// docs\equipment.http
+@locale = fr-FR
+@createdBy = seed-user-id
+@page = 1
+@limit = 10
+
+### (Optional) Auth to get a token
+POST {{host}}/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation($input: AuthInput!){ auth(input:$input){ access_token } }",
+  "variables": {
+    "input": { "email": "alex.martin@example.com", "password": "SuperSecret123!" }
+  }
+}
+
+### Create equipment
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "mutation($input: CreateEquipmentInput!){ equipment_create(input:$input){ id slug locale visibility createdBy createdAt updatedAt } }",
+  "variables": {
+    "input": { "slug": "kettlebell", "locale": "{{locale}}", "visibility": "PUBLIC" }
+  }
+}
+
+### Get equipment by id
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "query($id: ID!){ equipment_get(id:$id){ id slug locale visibility createdBy createdAt updatedAt } }",
+  "variables": { "id": "REPLACE_WITH_ID" }
+}
+
+### List equipment (q, pagination, filters)
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "query($input: ListEquipmentInput){ equipment_list(input:$input){ items{ id slug locale visibility createdBy createdAt updatedAt } total page limit } }",
+  "variables": {
+    "input": {
+      "q": "bell",
+      "locale": "{{locale}}",
+      "createdBy": "{{createdBy}}",
+      "visibility": "PUBLIC",
+      "page": {{page}},
+      "limit": {{limit}}
+    }
+  }
+}
+
+### Update equipment
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "mutation($input: UpdateEquipmentInput!){ equipment_update(input:$input){ id slug locale visibility createdBy createdAt updatedAt } }",
+  "variables": {
+    "input": { "id": "REPLACE_WITH_ID", "slug": "kettlebell-heavy", "locale": "{{locale}}" }
+  }
+}
+
+### Delete equipment
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "mutation($id: ID!){ equipment_delete(id:$id) }",
+  "variables": { "id": "REPLACE_WITH_ID" }
+}

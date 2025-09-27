@@ -36,7 +36,7 @@ export class BddServiceTagMongo {
   }
 
   // Create
-  async createTag(dto: CreateTagDto): Promise<Tag | null> {
+  async create(dto: CreateTagDto): Promise<Tag | null> {
     const now = new Date();
     const doc: Omit<TagDoc, '_id'> = {
       slug: dto.slug.toLowerCase().trim(),
@@ -57,7 +57,7 @@ export class BddServiceTagMongo {
   }
 
   // Read one
-  async getTag(dto: GetTagDto): Promise<Tag | null> {
+  async get(dto: GetTagDto): Promise<Tag | null> {
     try {
       const _id = new ObjectId(dto.id);
       const doc = await (await this.col()).findOne({ _id });
@@ -87,7 +87,7 @@ export class BddServiceTagMongo {
   }
 
   // Update (partial)
-  async updateTag(id: string, patch: UpdateTagDto): Promise<Tag | null> {
+  async update(id: string, patch: UpdateTagDto): Promise<Tag | null> {
     const _id = this.toObjectId(id);
     const $set: Partial<TagDoc> = { updatedAt: new Date() };
     if (patch.slug !== undefined) $set.slug = patch.slug.toLowerCase().trim();
@@ -106,7 +106,7 @@ export class BddServiceTagMongo {
   }
 
   // Delete
-  async deleteTag(id: string): Promise<boolean> {
+  async delete(id: string): Promise<boolean> {
     const _id = this.toObjectId(id);
     const res = await (await this.col()).deleteOne({ _id });
     return res.deletedCount === 1;

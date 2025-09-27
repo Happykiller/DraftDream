@@ -8,7 +8,7 @@ export class DeleteTagUsecase {
 
   async execute(dto: DeleteTagUsecaseDto): Promise<boolean> {
     try {
-      return await this.inversify.bddService.deleteTag(dto.id);
+      return await this.inversify.bddService.tag.delete(dto.id);
     } catch (e: any) {
       this.inversify.loggerService.error(`DeleteTagUsecase#execute => ${e?.message ?? e}`);
       throw new Error(ERRORS.DELETE_TAG_USECASE);

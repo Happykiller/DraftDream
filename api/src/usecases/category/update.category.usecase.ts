@@ -9,7 +9,7 @@ export class UpdateCategoryUsecase {
 
   async execute(dto: UpdateCategoryUsecaseDto): Promise<CategoryUsecaseModel | null> {
     try {
-      const updated = await this.inversify.bddService.updateCategory(dto.id, {
+      const updated = await this.inversify.bddService.category.update(dto.id, {
         slug: dto.slug,
         locale: dto.locale,
       });

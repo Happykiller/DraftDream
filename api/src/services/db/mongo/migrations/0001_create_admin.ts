@@ -27,7 +27,7 @@ const migration: Migration = {
     log("users indexes ensured");
 
     // 2) Admin payload (email normalized)
-    const email = "admin@fitdesk.com".toLowerCase().trim();
+    const email = "admin@fitdesk.com";
     const now = new Date();
 
     const adminDoc = {

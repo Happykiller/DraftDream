@@ -9,7 +9,7 @@ export class CreateTagUsecase {
 
   async execute(dto: CreateTagUsecaseDto): Promise<TagUsecaseModel | null> {
     try {
-      const created = await this.inversify.bddService.createTag({
+      const created = await this.inversify.bddService.tag.create({
         slug: dto.slug,
         locale: dto.locale,
         visibility: dto.visibility,

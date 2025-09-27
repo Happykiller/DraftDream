@@ -1,0 +1,79 @@
+// docs\category.http
+@locale = fr-FR
+@createdBy = seed-user-id
+@page = 1
+@limit = 10
+
+### (Optional) Auth to get a token
+POST {{host}}/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation($input: AuthInput!){ auth(input:$input){ access_token } }",
+  "variables": {
+    "input": { "email": "alex.martin@example.com", "password": "SuperSecret123!" }
+  }
+}
+
+### Create category
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "mutation($input: CreateCategoryInput!){ category_create(input:$input){ id slug locale visibility createdBy createdAt updatedAt } }",
+  "variables": {
+    "input": { "slug": "haltérophilie", "locale": "{{locale}}", "visibility": "PUBLIC" }
+  }
+}
+
+### Get category by id
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "query($id: ID!){ category_get(id:$id){ id slug locale visibility createdBy createdAt updatedAt } }",
+  "variables": { "id": "REPLACE_WITH_ID" }
+}
+
+### List categories (q, pagination, filters)
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "query($input: ListCategoriesInput){ category_list(input:$input){ items{ id slug locale visibility createdBy createdAt updatedAt } total page limit } }",
+  "variables": {
+    "input": {
+      //"q": "corps",
+      "locale": "fr",
+      "createdBy": "68d438da8603babde60d515a",
+      "visibility": "PUBLIC",
+      "page": {{page}},
+      "limit": {{limit}}
+    }
+  }
+}
+
+### Update category
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "mutation($input: UpdateCategoryInput!){ category_update(input:$input){ id slug locale visibility createdBy createdAt updatedAt } }",
+  "variables": {
+    "input": { "id": "REPLACE_WITH_ID", "slug": "halterophilie", "locale": "{{locale}}" }
+  }
+}
+
+### Delete category
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "mutation($id: ID!){ category_delete(id:$id) }",
+  "variables": { "id": "REPLACE_WITH_ID" }
+}

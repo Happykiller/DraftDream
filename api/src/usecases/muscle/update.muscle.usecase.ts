@@ -9,7 +9,7 @@ export class UpdateMuscleUsecase {
 
   async execute(dto: UpdateMuscleUsecaseDto): Promise<MuscleUsecaseModel | null> {
     try {
-      const updated = await this.inversify.bddService.updateMuscle(dto.id, {
+      const updated = await this.inversify.bddService.muscle.update(dto.id, {
         slug: dto.slug,
         locale: dto.locale,
       });

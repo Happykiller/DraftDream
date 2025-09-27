@@ -49,6 +49,22 @@ export const router = createBrowserRouter([
   },
   {
     // Protected routes branch with loader guard
+    element: <ProtectedLayout />,
+    loader: requireAuthLoader,
+    children: [
+      {
+        // Programs
+        path: '/programs',
+        lazy: async () => {
+          const mod = await import('@src/pages/Programs');
+          return { Component: mod.Programs };
+        },
+      },
+      // Add more protected children later...
+    ],
+  },
+  {
+    // Protected routes branch with loader guard
     path: '/sandbox',
     element: <ProtectedLayout />,
     loader: requireAuthLoader,

@@ -8,7 +8,7 @@ export class DeleteCategoryUsecase {
 
   async execute(dto: DeleteCategoryUsecaseDto): Promise<boolean> {
     try {
-      return await this.inversify.bddService.deleteCategory(dto.id);
+      return await this.inversify.bddService.category.delete(dto.id);
     } catch (e: any) {
       this.inversify.loggerService.error(`DeleteCategoryUsecase#execute => ${e?.message ?? e}`);
       throw new Error(ERRORS.DELETE_CATEGORY_USECASE);

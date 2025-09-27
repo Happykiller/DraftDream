@@ -8,7 +8,7 @@ export class DeleteMuscleUsecase {
 
   async execute(dto: DeleteMuscleUsecaseDto): Promise<boolean> {
     try {
-      return await this.inversify.bddService.deleteMuscle(dto.id);
+      return await this.inversify.bddService.muscle.delete(dto.id);
     } catch (e: any) {
       this.inversify.loggerService.error(`DeleteMuscleUsecase#execute => ${e?.message ?? e}`);
       throw new Error(ERRORS.DELETE_MUSCLE_USECASE);

@@ -32,7 +32,7 @@ export class BddServiceEquipmentMongo {
   }
 
   // Create
-  async createEquipment(dto: CreateEquipmentDto): Promise<Equipment | null> {
+  async create(dto: CreateEquipmentDto): Promise<Equipment | null> {
     const now = new Date();
     const doc: Omit<EquipmentDoc, '_id'> = {
       slug: dto.slug.toLowerCase().trim(),
@@ -53,7 +53,7 @@ export class BddServiceEquipmentMongo {
   }
 
   // Read one
-  async getEquipment(dto: GetEquipmentDto): Promise<Equipment | null> {
+  async get(dto: GetEquipmentDto): Promise<Equipment | null> {
     try {
       const _id = new ObjectId(dto.id);
       const doc = await (await this.col()).findOne({ _id });
@@ -85,7 +85,7 @@ export class BddServiceEquipmentMongo {
   }
 
   // Update
-  async updateEquipment(id: string, patch: UpdateEquipmentDto): Promise<Equipment | null> {
+  async update(id: string, patch: UpdateEquipmentDto): Promise<Equipment | null> {
     const _id = this.toObjectId(id);
     const $set: Partial<EquipmentDoc> = { updatedAt: new Date() };
     if (patch.slug !== undefined) $set.slug = patch.slug.toLowerCase().trim();
@@ -103,7 +103,7 @@ export class BddServiceEquipmentMongo {
   }
 
   // Delete
-  async deleteEquipment(id: string): Promise<boolean> {
+  async delete(id: string): Promise<boolean> {
     const _id = this.toObjectId(id);
     const res = await (await this.col()).deleteOne({ _id });
     return res.deletedCount === 1;

@@ -31,7 +31,7 @@ export class BddServiceMuscleMongo {
   }
 
   // --- Create ---
-  async createMuscle(dto: CreateMuscleDto): Promise<Muscle | null> {
+  async create(dto: CreateMuscleDto): Promise<Muscle | null> {
     const now = new Date();
     const doc: Omit<MuscleDoc, '_id'> = {
       slug: dto.slug.toLowerCase().trim(),
@@ -58,7 +58,7 @@ export class BddServiceMuscleMongo {
   }
 
   // --- Read one by id ---
-  async getMuscle(dto: GetMuscleDto): Promise<Muscle | null> {
+  async get(dto: GetMuscleDto): Promise<Muscle | null> {
     try {
       const _id = new ObjectId(dto.id);
       const doc = await (await this.col()).findOne({ _id });
@@ -99,7 +99,7 @@ export class BddServiceMuscleMongo {
   }
 
   // --- Update (partial) ---
-  async updateMuscle(id: string, patch: UpdateMuscleDto): Promise<Muscle | null> {
+  async update(id: string, patch: UpdateMuscleDto): Promise<Muscle | null> {
     const _id = this.toObjectId(id);
     const $set: Partial<MuscleDoc> = { updatedAt: new Date() };
 
@@ -123,7 +123,7 @@ export class BddServiceMuscleMongo {
   }
 
   // --- Delete (hard delete) ---
-  async deleteMuscle(id: string): Promise<boolean> {
+  async delete(id: string): Promise<boolean> {
     const _id = this.toObjectId(id);
     const res = await (await this.col()).deleteOne({ _id });
     return res.deletedCount === 1;

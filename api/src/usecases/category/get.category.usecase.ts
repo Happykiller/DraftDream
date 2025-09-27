@@ -5,11 +5,13 @@ import { GetCategoryUsecaseDto } from '@usecases/category/category.usecase.dto';
 import { CategoryUsecaseModel } from '@usecases/category/category.usecase.model';
 
 export class GetCategoryUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   async execute(dto: GetCategoryUsecaseDto): Promise<CategoryUsecaseModel | null> {
     try {
-      const cat = await this.inversify.bddService.getCategory(dto.id);
+      const cat = await this.inversify.bddService.category.get({
+        id: dto.id
+      });
       return cat ? { ...cat } : null;
     } catch (e: any) {
       this.inversify.loggerService.error(`GetCategoryUsecase#execute => ${e?.message ?? e}`);

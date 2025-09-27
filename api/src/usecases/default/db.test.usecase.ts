@@ -9,6 +9,6 @@ export class DbTestUsecase {
   }
 
   async execute(): Promise<boolean> {
-    return await this.inversify.bddService.test();
+    return await this.inversify.bddService.test.test();
   }
 }

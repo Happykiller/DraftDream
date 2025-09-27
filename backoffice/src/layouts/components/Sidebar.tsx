@@ -3,10 +3,10 @@ import {
   Box, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText,
   Tooltip, ButtonBase, Typography,
 } from '@mui/material';
-import { keyframes } from '@mui/system';
 import { t } from 'i18next';
-import { dividerSx, gradientActive } from '../tokens';
-import type { NavItem } from '../hooks/useNavItems';
+import { keyframes } from '@mui/system';
+import type { NavItem } from '@layouts/hooks/useNavItems';
+import { dividerSx, gradientActive } from '@layouts/tokens';
 
 const pulse = keyframes`
   0%   { transform: scale(1); opacity: .85; }

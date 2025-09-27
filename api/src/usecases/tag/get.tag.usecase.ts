@@ -5,11 +5,13 @@ import { GetTagUsecaseDto } from '@usecases/tag/tag.usecase.dto';
 import { TagUsecaseModel } from '@usecases/tag/tag.usecase.model';
 
 export class GetTagUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   async execute(dto: GetTagUsecaseDto): Promise<TagUsecaseModel | null> {
     try {
-      const found = await this.inversify.bddService.getTag(dto.id);
+      const found = await this.inversify.bddService.tag.get({
+        id: dto.id
+      });
       return found ? { ...found } : null;
     } catch (e: any) {
       this.inversify.loggerService.error(`GetTagUsecase#execute => ${e?.message ?? e}`);

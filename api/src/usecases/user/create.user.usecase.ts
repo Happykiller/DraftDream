@@ -16,7 +16,7 @@ export class CreateUserUsecase {
     try {
       const hashed = await this.inversify.cryptService.hash({ message: dto.password });
       const toCreate = { ...dto, password: hashed };
-      const user:User = await this.inversify.bddService.createUser(toCreate);
+      const user:User = await this.inversify.bddService.user.createUser(toCreate);
 
       return {
         id: user.id,

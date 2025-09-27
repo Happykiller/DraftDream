@@ -29,7 +29,7 @@ export class BddServiceCategoryMongo {
     ]);
   }
 
-  async createCategory(dto: CreateCategoryDto): Promise<Category | null> {
+  async create(dto: CreateCategoryDto): Promise<Category | null> {
     const now = new Date();
     const doc: Omit<CategoryDoc, '_id'> = {
       slug: dto.slug.toLowerCase().trim(),
@@ -49,7 +49,7 @@ export class BddServiceCategoryMongo {
     }
   }
 
-  async getCategory(dto: GetCategoryDto): Promise<Category | null> {
+  async get(dto: GetCategoryDto): Promise<Category | null> {
     try {
       const _id = new ObjectId(dto.id);
       const doc = await (await this.col()).findOne({ _id });
@@ -59,7 +59,7 @@ export class BddServiceCategoryMongo {
     }
   }
 
-  async listCategories(params: ListCategoriesDto = {}) {
+  async list(params: ListCategoriesDto = {}) {
     const {
       q, locale, createdBy, visibility, limit = 20, page = 1, sort = { updatedAt: -1 },
     } = params;
@@ -79,7 +79,7 @@ export class BddServiceCategoryMongo {
     return { items: rows.map(this.toModel), total, page, limit };
   }
 
-  async updateCategory(id: string, patch: UpdateCategoryDto): Promise<Category | null> {
+  async update(id: string, patch: UpdateCategoryDto): Promise<Category | null> {
     const _id = this.toObjectId(id);
     const $set: Partial<CategoryDoc> = { updatedAt: new Date() };
     if (patch.slug !== undefined) $set.slug = patch.slug.toLowerCase().trim();
@@ -96,7 +96,7 @@ export class BddServiceCategoryMongo {
     }
   }
 
-  async deleteCategory(id: string): Promise<boolean> {
+  async delete(id: string): Promise<boolean> {
     const _id = this.toObjectId(id);
     const res = await (await this.col()).deleteOne({ _id });
     return res.deletedCount === 1;

@@ -53,6 +53,11 @@ export function ProtectedLayout(): React.JSX.Element {
     if (isMobile) close();
   }, [navigate, isMobile, close]);
 
+  React.useEffect(() => {
+    // Comment in English: Keep browser tab title synced with current page title.
+    document.title = `${pageTitle} • FitDesk`;
+  }, [pageTitle]);
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -61,7 +66,7 @@ export function ProtectedLayout(): React.JSX.Element {
       <LayoutAppBar
         pageTitle={pageTitle}
         userName={`${snap.name_first} ${snap.name_last}`}
-        userRole={snap.role??undefined}
+        userRole={snap.role ?? undefined}
         onMenuClick={toggle}
         onLogout={handleLogout}
       />

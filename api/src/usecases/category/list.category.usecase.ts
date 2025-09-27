@@ -16,7 +16,7 @@ export class ListCategoriesUsecase {
 
   async execute(dto: ListCategoriesUsecaseDto = {}): Promise<ListCategoriesUsecaseResult> {
     try {
-      const res = await this.inversify.bddService.listCategories(dto);
+      const res = await this.inversify.bddService.category.list(dto);
       return {
         items: res.items.map(i => ({ ...i })),
         total: res.total,

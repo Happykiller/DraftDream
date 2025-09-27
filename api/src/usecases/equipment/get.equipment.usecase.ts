@@ -5,11 +5,13 @@ import { GetEquipmentUsecaseDto } from '@usecases/equipment/equipment.usecase.dt
 import { EquipmentUsecaseModel } from '@usecases/equipment/equipment.usecase.model';
 
 export class GetEquipmentUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   async execute(dto: GetEquipmentUsecaseDto): Promise<EquipmentUsecaseModel | null> {
     try {
-      const eq = await this.inversify.bddService.getEquipment(dto.id);
+      const eq = await this.inversify.bddService.equipment.get({
+        id: dto.id
+      });
       return eq ? { ...eq } : null;
     } catch (e: any) {
       this.inversify.loggerService.error(`GetEquipmentUsecase#execute => ${e?.message ?? e}`);

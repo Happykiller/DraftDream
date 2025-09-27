@@ -2,7 +2,6 @@
 import { Db } from 'mongodb';
 import { config } from '@src/config';
 import { logger } from '@src/common/logger';
-import { BddService } from '@services/db/db.service';
 import { JwtService } from '@services/jwt/jwt.service';
 import { AuthUsecase } from '@usecases/auth/auth.usecase';
 import { CryptService } from '@services/crypt/crypt.service';
@@ -37,9 +36,9 @@ export class Inversify {
   mongo: Db;
   loggerService: any;
   jwtService: JwtService;
-  bddService: BddService;
   authUsecase: AuthUsecase;
   cryptService: CryptService;
+  bddService: BddServiceMongo;
   dbTestUsecase: DbTestUsecase;
   getTagUsecase: GetTagUsecase;
   getUserUsecase: GetUserUsecase;
@@ -71,8 +70,11 @@ export class Inversify {
     this.loggerService = logger;
     this.cryptService = new CryptServiceReal();
     this.jwtService = new JwtServiceReal(config);
-    this.bddService = new BddServiceMongo(this, config) as BddService;
-    this.bddService.initConnection();
+    this.bddService = new BddServiceMongo({
+      inversify:this, 
+      config:config
+    });
+    this.bddService.init.initConnection();
 
     /**
      * Usecases

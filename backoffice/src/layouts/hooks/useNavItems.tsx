@@ -1,7 +1,7 @@
 // src/layouts/hooks/useNavItems.tsx
 import { t } from 'i18next';
 import * as React from 'react';
-import { Home, Settings } from '@mui/icons-material';
+import { Home, Settings, FitnessCenter } from '@mui/icons-material';
 
 export type NavItem = {
   label: string;
@@ -16,6 +16,14 @@ export function useNavItems(role?: string): NavItem[] {
     const base: NavItem[] = [
         { label: t('home.title'), icon: <Home />, path: '/' }
       ];
+
+      if (role === 'admin') {
+        base.push({
+          label: t('programs.title'),
+          icon: <FitnessCenter />,
+          path: '/programs',
+        });
+      }
     
       base.push({ label: t('sandbox.title'), icon: <Settings />, path: '/sandbox' });
     
