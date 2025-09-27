@@ -6,6 +6,7 @@ import { session } from '@stores/session';
 import { withTitle } from '@src/routes/withTitle';
 import { PublicLayout } from '@layouts/PublicLayout';
 import { ProtectedLayout } from '@layouts/ProtectedLayout';
+import { Box, CircularProgress } from '@mui/material';
 
 // Guard loader for protected branches
 export async function requireAuthLoader() {
@@ -16,10 +17,27 @@ export async function requireAuthLoader() {
   return null;
 }
 
+function AppFallback(): React.JSX.Element {
+  return <Box
+      sx={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 9999,
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <CircularProgress size={60} />
+    </Box>;
+}
+
 export const router = createBrowserRouter([
   {
     // Public routes branch
     element: <PublicLayout />,
+    HydrateFallback: AppFallback,
     children: [
       {
         path: '/login',
@@ -35,6 +53,7 @@ export const router = createBrowserRouter([
     // Protected routes branch with loader guard
     element: <ProtectedLayout />,
     loader: requireAuthLoader,
+    HydrateFallback: AppFallback,
     children: [
       {
         // Home
@@ -51,6 +70,7 @@ export const router = createBrowserRouter([
     // Protected routes branch with loader guard
     element: <ProtectedLayout />,
     loader: requireAuthLoader,
+    HydrateFallback: AppFallback,
     children: [
       {
         // Programs
@@ -68,6 +88,7 @@ export const router = createBrowserRouter([
     path: '/sandbox',
     element: <ProtectedLayout />,
     loader: requireAuthLoader,
+    HydrateFallback: AppFallback,
     children: [
       {
         // Home
@@ -83,6 +104,7 @@ export const router = createBrowserRouter([
   {
     // NotFound (public by default)
     path: '*',
+    HydrateFallback: AppFallback,
     lazy: async () => {
       const mod = await import('@src/pages/NotFound');
       return { Component: mod.NotFound };
