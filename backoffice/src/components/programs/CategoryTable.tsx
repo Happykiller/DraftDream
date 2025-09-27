@@ -34,7 +34,7 @@ export function CategoryTable(props: CategoryTableProps): React.JSX.Element {
       { field: 'slug', headerName: 'Slug', flex: 1 },
       { field: 'locale', headerName: 'Locale' },
       { field: 'visibility', headerName: 'Visibility'},
-      { field: 'createdBy', headerName: 'Creator'},
+      { field: 'createdBy', headerName: 'CreatedBy'},
       {
         field: 'createdAt',
         headerName: 'Created',
@@ -102,7 +102,6 @@ export function CategoryTable(props: CategoryTableProps): React.JSX.Element {
         disableRowSelectionOnClick
         autoHeight
         aria-label="categories-table"
-        pageSizeOptions={[5, 10, 25, 50]}
       />
     </Box>
   );
