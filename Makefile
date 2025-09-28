@@ -40,3 +40,18 @@ ps:
 
 clean:
 	$(DOCKER_COMPOSE) down -v
+
+save:
+	docker build -t mongo ./mongo
+	docker build -t mongo_express ./mongo_express
+	docker build -t nginx ./nginx
+	docker build -t fitdesk_api ./api
+	docker build -t fitdesk_frontoffice ./frontoffice
+	docker build -t fitdesk_backoffice ./backoffice
+	docker build -t fitdesk_showcase ./showcase
+	docker build -t fitdesk_mobile ./mobile
+	docker save fitdesk_api -o fitdesk_api.tar
+	docker save fitdesk_frontoffice -o fitdesk_frontoffice.tar
+	docker save fitdesk_backoffice -o fitdesk_backoffice.tar
+	docker save fitdesk_showcase -o fitdesk_showcase.tar
+	docker save fitdesk_mobile -o fitdesk_mobile.tar
