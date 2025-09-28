@@ -1,0 +1,144 @@
+// ⚠️ Comment in English: Unified dialog for creating/updating a user.
+// Password fields are shown only in "create" mode (schema does not allow password update).
+import * as React from 'react';
+import {
+  Dialog, DialogTitle, DialogContent, DialogActions,
+  TextField, Button, Stack, MenuItem, FormControlLabel, Switch, Divider
+} from '@mui/material';
+import type { User } from '@src/hooks/useUsers';
+
+export type UserDialogMode = 'create' | 'edit';
+
+export interface UserDialogValues {
+  type: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone?: string;
+  is_active: boolean;
+  // password (create only)
+  password?: string;
+  confirm_password?: string;
+  // minimal company/address for POC (optional fields)
+  company_name?: string;
+  address_name?: string;
+  address_city?: string;
+  address_code?: string;
+  address_country?: string;
+}
+
+export interface UserDialogProps {
+  open: boolean;
+  mode: UserDialogMode;
+  initial?: User;
+  onClose: () => void;
+  onSubmit: (values: UserDialogValues) => Promise<void> | void;
+}
+
+const DEFAULTS: UserDialogValues = {
+  type: 'coach',
+  first_name: '',
+  last_name: '',
+  email: '',
+  phone: '',
+  is_active: true,
+  password: '',
+  confirm_password: '',
+  company_name: '',
+  address_name: '',
+  address_city: '',
+  address_code: '',
+  address_country: '',
+};
+
+export function UserDialog({ open, mode, initial, onClose, onSubmit }: UserDialogProps): React.JSX.Element {
+  const isEdit = mode === 'edit';
+  const [values, setValues] = React.useState<UserDialogValues>(DEFAULTS);
+
+  React.useEffect(() => {
+    if (isEdit && initial) {
+      setValues({
+        type: initial.type ?? 'coach',
+        first_name: initial.first_name ?? '',
+        last_name: initial.last_name ?? '',
+        email: initial.email ?? '',
+        phone: initial.phone ?? '',
+        is_active: initial.is_active,
+        password: '',
+        confirm_password: '',
+        company_name: initial.company?.name ?? '',
+        address_name: initial.address?.name ?? '',
+        address_city: initial.address?.city ?? '',
+        address_code: initial.address?.code ?? '',
+        address_country: initial.address?.country ?? '',
+      });
+    } else {
+      setValues(DEFAULTS);
+    }
+  }, [isEdit, initial]);
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setValues((v) => ({ ...v, [name]: value }));
+  };
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await onSubmit(values);
+    onClose();
+  };
+
+  return (
+    <Dialog open={open} onClose={onClose} aria-labelledby="user-dialog-title" fullWidth maxWidth="sm">
+      <DialogTitle id="user-dialog-title">{isEdit ? 'Edit User' : 'New User'}</DialogTitle>
+      <DialogContent>
+        <Stack component="form" onSubmit={submit} spacing={2} sx={{ mt: 1 }}>
+          <TextField select label="Type" name="type" value={values.type} onChange={onChange} required fullWidth>
+            {['coach', 'athlete', 'admin'].map((t) => (
+              <MenuItem key={t} value={t}>{t}</MenuItem>
+            ))}
+          </TextField>
+
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+            <TextField label="First name" name="first_name" value={values.first_name} onChange={onChange} required fullWidth />
+            <TextField label="Last name"  name="last_name"  value={values.last_name}  onChange={onChange} required fullWidth />
+          </Stack>
+
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+            <TextField label="Email" name="email" type="email" value={values.email} onChange={onChange} required fullWidth />
+            <TextField label="Phone" name="phone" value={values.phone} onChange={onChange} fullWidth />
+          </Stack>
+
+          {!isEdit && (
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+              <TextField label="Password" name="password" type="password" value={values.password} onChange={onChange} required fullWidth />
+              <TextField label="Confirm"  name="confirm_password" type="password" value={values.confirm_password} onChange={onChange} fullWidth />
+            </Stack>
+          )}
+
+          <FormControlLabel
+            control={<Switch checked={values.is_active} onChange={(_, c) => setValues(v => ({ ...v, is_active: c }))} />}
+            label="Active"
+          />
+
+          <Divider />
+          <TextField label="Company" name="company_name" value={values.company_name} onChange={onChange} fullWidth />
+
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+            <TextField label="Address name" name="address_name" value={values.address_name} onChange={onChange} fullWidth />
+            <TextField label="City" name="address_city" value={values.address_city} onChange={onChange} fullWidth />
+          </Stack>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+            <TextField label="Code"   name="address_code"   value={values.address_code}   onChange={onChange} fullWidth />
+            <TextField label="Country" name="address_country" value={values.address_country} onChange={onChange} fullWidth />
+          </Stack>
+
+          <DialogActions sx={{ px: 0 }}>
+            <Button onClick={onClose} color="inherit">Cancel</Button>
+            <Button type="submit" variant="contained">{isEdit ? 'Save' : 'Create'}</Button>
+          </DialogActions>
+        </Stack>
+      </DialogContent>
+    </Dialog>
+  );
+}

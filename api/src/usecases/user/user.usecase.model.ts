@@ -24,4 +24,6 @@ export interface UserUsecaseModel {
   company?: CompanyModel;
   createdAt?: Date;
   updatedAt?: Date;
+  is_active: boolean;
+  createdBy: string;
 }

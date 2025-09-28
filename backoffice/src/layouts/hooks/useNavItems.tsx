@@ -1,7 +1,7 @@
 // src/layouts/hooks/useNavItems.tsx
 import { t } from 'i18next';
 import * as React from 'react';
-import { Home, Settings, FitnessCenter } from '@mui/icons-material';
+import { Home, Settings, FitnessCenter, ManageAccounts } from '@mui/icons-material';
 
 export type NavItem = {
   label: string;
@@ -22,6 +22,10 @@ export function useNavItems(role?: string): NavItem[] {
           label: t('programs.title'),
           icon: <FitnessCenter />,
           path: '/programs',
+        },{
+          label: t('users.title'),
+          icon: <ManageAccounts />,
+          path: '/users',
         });
       }
     

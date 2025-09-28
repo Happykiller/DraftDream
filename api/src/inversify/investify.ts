@@ -13,8 +13,10 @@ import { ListTagsUsecase } from '@usecases/tag/list.tags.usecase';
 import { CreateTagUsecase } from '@usecases/tag/create.tag.usecase';
 import { UpdateTagUsecase } from '@usecases/tag/update.tag.usecase';
 import { DeleteTagUsecase } from '@usecases/tag/delete.tag.usecase';
+import { ListUsersUsecase } from '@usecases/user/list.users.usecase';
 import { BddServiceMongo } from '@services/db/mongo/db.service.mongo';
 import { CryptServiceReal } from '@services/crypt/crypt.service.real';
+import { UpdateUserUsecase } from '@usecases/user/update.user.usecase';
 import { CreateUserUsecase } from '@usecases/user/create.user.usecase';
 import { GetMuscleUsecase } from '@usecases/muscle/get.muscle.usecase';
 import { ListMusclesUsecase } from '@usecases/muscle/list.muscles.usecase';
@@ -43,10 +45,12 @@ export class Inversify {
   getTagUsecase: GetTagUsecase;
   getUserUsecase: GetUserUsecase;
   listTagsUsecase: ListTagsUsecase;
+  listUsersUsecase: ListUsersUsecase;
   updateTagUsecase: UpdateTagUsecase;
   deleteTagUsecase: DeleteTagUsecase;
   createTagUsecase: CreateTagUsecase;
   getMuscleUsecase: GetMuscleUsecase;
+  updateUserUsecase: UpdateUserUsecase;
   createUserUsecase: CreateUserUsecase;
   getCategoryUsecase: GetCategoryUsecase;
   listMusclesUsecase: ListMusclesUsecase;
@@ -81,8 +85,12 @@ export class Inversify {
      */
     this.authUsecase = new AuthUsecase(this);
     this.dbTestUsecase = new DbTestUsecase(this);
+    // usecases user
     this.getUserUsecase = new GetUserUsecase(this);
     this.createUserUsecase = new CreateUserUsecase(this);
+    this.listUsersUsecase = new ListUsersUsecase(this);
+    this.updateUserUsecase = new UpdateUserUsecase(this);
+    // usecases category
     this.getCategoryUsecase = new GetCategoryUsecase(this);
     this.createCategoryUsecase = new CreateCategoryUsecase(this);
     this.listCategoriesUsecase = new ListCategoriesUsecase(this);

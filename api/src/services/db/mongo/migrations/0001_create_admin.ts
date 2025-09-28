@@ -36,7 +36,6 @@ const migration: Migration = {
       last_name: "admin",
       email,
       phone: "+33683786804",
-      // NOTE: hash must be produced by usecase; here we keep your existing Argon2 hash
       password:
         "$argon2id$v=19$m=19456,t=3,p=1$vRKlEa/nt1vN0GtCuSpV/g$YQ7pSluenBK3d04n/d+7Ah0+5r58dU+wc6ZMfS3ft28",
       address: {
@@ -55,6 +54,8 @@ const migration: Migration = {
         },
       },
       updatedAt: now,
+      is_active: true,
+      createdBy: "system",
     };
 
     // 3) Idempotent upsert (keeps createdAt if exists)

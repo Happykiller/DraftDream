@@ -14,21 +14,17 @@ type UserDoc = {
   last_name: string;
   email: string;
   phone?: string;
-  address?: {
-    name: string; city: string; code: string; country: string;
-  };
+  address?: { name: string; city: string; code: string; country: string };
   password: string;  // hashed
-  company?: {
-    name: string;
-    address?: { name: string; city: string; code: string; country: string };
-  };
+  company?: { name: string; address?: { name: string; city: string; code: string; country: string } };
+  is_active: boolean;
+  createdBy: string;
   createdAt: Date;
   updatedAt: Date;
   schemaVersion: number;
 };
 
 export class BddServiceUserMongo {
-  // --- Collection access ---
   private async col(): Promise<Collection<UserDoc>> {
     return inversify.mongo.collection<UserDoc>('users');
   }
@@ -43,6 +39,9 @@ export class BddServiceUserMongo {
       { key: { 'company.name': 1 }, name: 'by_company_name', sparse: true },
       { key: { createdAt: -1 }, name: 'by_createdAt' },
       { key: { updatedAt: -1 }, name: 'by_updatedAt' },
+      // NEW
+      { key: { is_active: 1 }, name: 'by_is_active' },
+      { key: { createdBy: 1 }, name: 'by_createdBy', sparse: true },
     ]);
   }
 
@@ -56,8 +55,10 @@ export class BddServiceUserMongo {
       email: dto.email.toLowerCase().trim(),
       phone: dto.phone,
       address: dto.address,
-      password: dto.password, // already hashed
+      password: dto.password,
       company: dto.company,
+      is_active: dto.is_active ?? true,
+      createdBy: dto.createdBy,
       createdAt: now,
       updatedAt: now,
       schemaVersion: 1,
@@ -98,6 +99,8 @@ export class BddServiceUserMongo {
     const {
       q, type, companyName, includePassword = false,
       limit = 20, page = 1, sort = { createdAt: -1 } as Record<string, 1 | -1>,
+      // NEW
+      is_active, createdBy,
     } = params;
 
     const filter: Filter<UserDoc> = {};
@@ -105,6 +108,9 @@ export class BddServiceUserMongo {
     if (companyName && companyName.trim()) {
       filter['company.name' as keyof UserDoc] = new RegExp(companyName.trim(), 'i') as any;
     }
+    if (typeof is_active === 'boolean') filter.is_active = is_active;
+    if (createdBy && createdBy.trim()) filter.createdBy = createdBy.trim();
+
     if (q && q.trim()) {
       const regex = new RegExp(q.trim(), 'i');
       filter.$or = [
@@ -136,7 +142,7 @@ export class BddServiceUserMongo {
     };
   }
 
-  // --- Update (partial, no password here) ---
+  // --- Update (partial) ---
   async updateUser(id: string, patch: UpdateUserDto): Promise<User | null> {
     if ((patch as any).password !== undefined) {
       throw new Error('Password update not allowed here. Use updatePassword().');
@@ -152,6 +158,8 @@ export class BddServiceUserMongo {
     if (patch.phone !== undefined) $set.phone = patch.phone;
     if (patch.address !== undefined) $set.address = patch.address as any;
     if (patch.company !== undefined) $set.company = patch.company as any;
+    if (patch.is_active !== undefined) $set.is_active = patch.is_active;
+    if (patch.createdBy !== undefined) $set.createdBy = patch.createdBy;
 
     try {
       const res: any = await (await this.col()).findOneAndUpdate(
@@ -191,7 +199,6 @@ export class BddServiceUserMongo {
   }
 
   private makeProjection(includePassword: boolean): Document {
-    // Hide password unless explicitly requested
     return includePassword ? { schemaVersion: 0 } : { password: 0, schemaVersion: 0 };
   }
 
@@ -205,6 +212,8 @@ export class BddServiceUserMongo {
       phone: doc.phone,
       address: doc.address as any,
       company: doc.company as any,
+      is_active: !!doc.is_active,
+      createdBy: doc.createdBy??'',
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
       schemaVersion: doc.schemaVersion,

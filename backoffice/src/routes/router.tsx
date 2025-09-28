@@ -19,18 +19,18 @@ export async function requireAuthLoader() {
 
 function AppFallback(): React.JSX.Element {
   return <Box
-      sx={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 9999,
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <CircularProgress size={60} />
-    </Box>;
+    sx={{
+      position: 'fixed',
+      inset: 0,
+      zIndex: 9999,
+      backgroundColor: 'rgba(0, 0, 0, 0.6)',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+  >
+    <CircularProgress size={60} />
+  </Box>;
 }
 
 export const router = createBrowserRouter([
@@ -91,14 +91,27 @@ export const router = createBrowserRouter([
     HydrateFallback: AppFallback,
     children: [
       {
-        // Home
-        index: true, // "/" as index under this branch
         lazy: async () => {
           const mod = await import('@src/pages/Sandbox');
           return { Component: mod.Sandbox };
         },
       },
       // Add more protected children later...
+    ],
+  },
+  {
+    // Protected routes branch with loader guard
+    element: <ProtectedLayout />,
+    loader: requireAuthLoader,
+    HydrateFallback: AppFallback,
+    children: [
+      {
+        path: '/users',
+        lazy: async () => {
+          const mod = await import('@src/pages/Users');
+          return { Component: mod.Users };
+        },
+      },
     ],
   },
   {

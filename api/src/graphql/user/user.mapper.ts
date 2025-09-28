@@ -1,6 +1,6 @@
 // src/nestjs/user/user.mapper.ts
 import { UserGql } from '@graphql/user/user.gql.types';
-import { UserUsecaseModel } from '@usecases/user/model/user.usecase.model';
+import { UserUsecaseModel } from '@src/usecases/user/user.usecase.model';
 
 /**
  * Map a UserUsecaseModel (domain/usecase) to UserGql (GraphQL output type).
@@ -38,5 +38,7 @@ export function mapUserUsecaseToGql(model: UserUsecaseModel): UserGql {
       : undefined,
     createdAt: model.createdAt,
     updatedAt: model.updatedAt,
+    is_active: model.is_active,
+    createdBy: model.createdBy,
   };
 }

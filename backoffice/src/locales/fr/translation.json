@@ -42,6 +42,10 @@
     "logout": "Se déconnecter"
   },
 
+  "users": {
+    "title": "Utilisateurs"
+  },
+
   "ERRORS": {
     "INVALID_CREDENTIALS": "Identifiants invalides.",
     "AUTH_FAIL_WRONG_ROLE": "Échec de l'authentification : rôle incorrect.",

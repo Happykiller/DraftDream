@@ -2,8 +2,8 @@
 import { ERRORS } from '@src/common/ERROR';
 import { Inversify } from '@src/inversify/investify';
 import { User } from '@services/db/models/user.model';
-import { UserUsecaseModel } from '@usecases/user/model/user.usecase.model';
-import { GetUserUsecaseDto } from '@usecases/user/dto/get.user.usecase.dto';
+import { GetUserUsecaseDto } from '@usecases/user/user.usecase.dto';
+import { UserUsecaseModel } from '@src/usecases/user/user.usecase.model';
 
 export class GetUserUsecase {
   inversify: Inversify;
@@ -30,7 +30,9 @@ export class GetUserUsecase {
         address: user.address,
         company: user.company,
         createdAt: user.createdAt,
-        updatedAt: user.updatedAt
+        updatedAt: user.updatedAt,
+        is_active: user.is_active,
+        createdBy: user.createdBy,
       };
     } catch (e) {
       this.inversify.loggerService.error(`GetUserUsecase#execute=>${e.message}`);

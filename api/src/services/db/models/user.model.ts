@@ -26,6 +26,7 @@ export interface User {
   createdAt?: Date;
   updatedAt?: Date;
   schemaVersion?: number;
-  /** Only present when explicitly requested (includePassword=true) */
+  is_active: boolean;
+  createdBy: string;
   password?: string;
 }
