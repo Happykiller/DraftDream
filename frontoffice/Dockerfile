@@ -8,6 +8,7 @@ COPY package*.json ./
 RUN npm ci --ignore-scripts
 
 # Build
+COPY vite.config.* tsconfig*.json ./
 COPY src ./src
 COPY public ./public
 COPY .env.docker ./.env

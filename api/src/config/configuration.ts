@@ -6,6 +6,9 @@ export class Configuration {
     mode: string;
     port: number;
   };
+  admin: {
+    password: string;
+  };
   graphQL: {
     schemaFileName: boolean | string;
     playground: boolean;

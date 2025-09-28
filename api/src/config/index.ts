@@ -16,4 +16,6 @@ try {
 
 const config: Configuration = merge({}, defaults, envOverrides);
 
+console.log(config.mongo.connection_string);
+
 export { config };

@@ -126,7 +126,7 @@ export function Sandbox(): React.JSX.Element {
               NotFound
             </Typography>
 
-            <Button variant="contained" onClick={(e) => navigate('/non-existent-page')}>
+            <Button variant="contained" onClick={() => navigate('/non-existent-page')}>
               Go unkown
             </Button>
           </CardContent>

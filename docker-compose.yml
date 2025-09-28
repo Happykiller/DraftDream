@@ -1,46 +1,70 @@
-name: draftdream
+# docker-compose.yml
+name: fitdesk
 
 networks:
-  edge:
-  internal:
+  internal: {}
 
 volumes:
-  postgres_data:
-  mongo_data:
-  redis_data:
-  minio_data:
+  mongo_data: {}
 
 services:
-  # --- NGINX ---
+  # --- Mongo (toujours dispo) ---
+  mongo:
+    image: mongo:7
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGO_DB}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_APP_USER: ${MONGO_APP_USER}
+      MONGO_APP_PASSWORD: ${MONGO_APP_PASSWORD}
+    volumes:
+      - mongo_data:/data/db
+      - ./mongo/mongo-init:/docker-entrypoint-initdb.d:ro
+    networks: [internal]
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.runCommand({ ping: 1 })"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # --- Apps + nginx (prod seulement) ---
   nginx:
+    profiles: ["prod"]
     image: nginx:1.27-alpine
-    depends_on:
-      - postgres
-      - mongo
-      - redis
-      - minio
     ports:
       - "80:80"
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./nginx/includes:/etc/nginx/includes:ro
-    networks: [edge, internal]
+    networks: [internal]
     restart: unless-stopped
 
-  # --- Apps (profil prod uniquement) ---
+  mongo_express:
+    profiles: ["prod"]
+    image: mongo-express:1
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
+      ME_CONFIG_MONGODB_AUTH_DATABASE: admin
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_USER}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_PASSWORD}
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGOEXPRESS_ADMIN_PASSWORD}
+    networks: [internal]
+    ports: ["8081:8081"]
+    restart: unless-stopped
+
   api:
     profiles: ["prod"]
     build: ./api
     env_file: .env
     environment:
       NODE_ENV: prod
+      APP_ADMIN_PASSWORD: ${APP_ADMIN_PASSWORD}
+      DB_CONN_STRING: ${DB_CONN_STRING}
     networks: [internal]
     expose: ["3000"]
-    healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/health || exit 1"]
-      interval: 10s
-      timeout: 3s
-      retries: 5
     restart: unless-stopped
 
   frontoffice:
@@ -73,85 +97,4 @@ services:
     env_file: .env
     networks: [internal]
     expose: ["80"]
-    restart: unless-stopped
-
-  # --- Infra commune ---
-  postgres:
-    image: postgres:16-alpine
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks: [internal]
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 10s
-      timeout: 3s
-      retries: 5
-    restart: unless-stopped
-
-  mongo:
-    image: mongo:7
-    environment:
-      MONGO_INITDB_DATABASE: ${MONGO_DB}
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
-      MONGO_APP_USER: ${MONGO_APP_USER}
-      MONGO_APP_PASSWORD: ${MONGO_APP_PASSWORD}
-    volumes:
-      - mongo_data:/data/db
-      - ./mongo/mongo-init:/docker-entrypoint-initdb.d:ro
-    networks: [internal]
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.runCommand({ ping: 1 })"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
-
-  redis:
-    image: redis:7-alpine
-    command: ["redis-server","--save","60","1","--appendonly","yes"]
-    volumes:
-      - redis_data:/data
-    networks: [internal]
-    restart: unless-stopped
-
-  clamav:
-    image: mkodockx/docker-clamav:alpine
-    networks: [internal]
-    expose: ["3310"]
-    healthcheck:
-      test: ["CMD", "nc", "-z", "127.0.0.1", "3310"]
-      interval: 15s
-      timeout: 5s
-      retries: 10
-    restart: unless-stopped
-
-  minio:
-    build: ./io
-    environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-      MINIO_BUCKET: ${MINIO_BUCKET}
-      MINIO_API_USER: ${MINIO_API_USER}
-      MINIO_API_PASSWORD: ${MINIO_API_PASSWORD}
-      MINIO_SERVER_URL: https://${DOMAIN}/io
-      MINIO_BROWSER_REDIRECT_URL: http://127.0.0.1:9001
-      MINIO_NOTIFY_WEBHOOK_ENABLE_miniohook: "on"
-      MINIO_NOTIFY_WEBHOOK_ENDPOINT_miniohook: http://io-worker:4000/hooks/minio
-      MINIO_NOTIFY_WEBHOOK_AUTH_TOKEN_miniohook: ${IO_WEBHOOK_TOKEN}
-      MINIO_POLICY_FILE: /policies/draftdream-readwrite.json
-      MINIO_POLICY_NAME: draftdream-readwrite
-    volumes:
-      - minio_data:/data
-    networks: [internal]
-    expose: ["9000","9001"]
-    healthcheck:
-      test: ["CMD-SHELL", "mc alias set local http://localhost:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD >/dev/null 2>&1"]
-      interval: 10s
-      timeout: 3s
-      retries: 5
     restart: unless-stopped

@@ -1,10 +1,12 @@
 // src/services/db/mongo/migration.runner.mongo.ts
 import * as mongoDB from 'mongodb';
+import { Configuration } from '@src/config/configuration';
+import { config } from '@src/config';
 
 export interface Migration {
   id: string;
   description?: string;
-  up(db: mongoDB.Db, log: (msg: string) => void): Promise<void>;
+  up(db: mongoDB.Db, log: (msg: string) => void, inversify: Inversify, config: Configuration): Promise<void>;
 }
 
 type Inversify = { mongo: mongoDB.Db, loggerService: { log: (lvl: string, msg: string) => void } };
@@ -45,7 +47,7 @@ export class MongoMigrationRunner {
         }
         log(`Apply ${m.id}…`);
         const t0 = Date.now();
-        await m.up(db, (msg) => log(`${m.id}: ${msg}`));
+        await m.up(db, (msg) => log(`${m.id}: ${msg}`), this.inversify, config);
         const elapsed = Date.now() - t0;
 
         await this.colMigrations(db).insertOne({

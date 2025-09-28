@@ -1,16 +1,16 @@
 // src\config\defaults.ts
 import { version } from '../../package.json';
-import { loadEnv } from '@src/config/loadEnv';
 import { Configuration } from '@src/config/configuration';
-
-const env = loadEnv();
 
 export const defaults: Configuration = {
   app_name: 'fitdesk_api',
   version,
   env: {
     mode: 'defaults',
-    port: parseInt(env.APP_PORT ?? '3000'),
+    port: parseInt(process.env.APP_PORT ?? '3000'),
+  },
+  admin: {
+    password: process.env.APP_ADMIN_PASSWORD ?? 'change-me',
   },
   graphQL: {
     schemaFileName: true,
@@ -20,12 +20,12 @@ export const defaults: Configuration = {
   },
   jwt: {
     refreshTokenName: 'fitdesk-refresh-token',
-    secret: env.JWT_SECRET ?? 'secretKey',
+    secret: process.env.JWT_SECRET ?? 'secretKey',
     expire: 480, //8h
   },
   mongo: {
-    connection_string: env.DB_CONN_STRING ?? 'mongodb://draftdream:password@localhost:27017/draftdream?authSource=draftdream',
-    name: env.DB_NAME ?? 'draftdream',
+    connection_string: process.env.DB_CONN_STRING ?? 'mongodb://fitdesk:password@localhost:27017/fitdesk?authSource=fitdesk',
+    name: process.env.DB_NAME ?? 'fitdesk',
   },
   throttle: [
     {

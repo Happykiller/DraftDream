@@ -1,5 +1,7 @@
 // src/migrations/0004_create_admin_user.ts
 import { Db } from "mongodb";
+import { Inversify } from "@src/inversify/investify";
+import { Configuration } from "@src/config/configuration";
 import { Migration } from "@services/db/mongo/migration.runner.mongo";
 
 /**
@@ -12,7 +14,7 @@ const migration: Migration = {
   id: "0001_create_admin",
   description: "Create or ensure initial admin user (admin@fitdesk.com)",
 
-  async up(db: Db, log) {
+  async up(db: Db, log, inversify: Inversify, config: Configuration) {
     const users = db.collection("users");
 
     // 1) Ensure indexes (aligned with new repository ensureIndexes)
@@ -29,6 +31,7 @@ const migration: Migration = {
     // 2) Admin payload (email normalized)
     const email = "admin@fitdesk.com";
     const now = new Date();
+    const password = await inversify.cryptService.hash({ message: config.admin.password });
 
     const adminDoc = {
       type: "admin" as const,
@@ -36,8 +39,7 @@ const migration: Migration = {
       last_name: "admin",
       email,
       phone: "+33683786804",
-      password:
-        "$argon2id$v=19$m=19456,t=3,p=1$vRKlEa/nt1vN0GtCuSpV/g$YQ7pSluenBK3d04n/d+7Ah0+5r58dU+wc6ZMfS3ft28",
+      password: password,
       address: {
         name: "35 chemin du chapitre",
         city: "Grenoble",
@@ -53,7 +55,6 @@ const migration: Migration = {
           country: "FR",
         },
       },
-      updatedAt: now,
       is_active: true,
       createdBy: "system",
     };
