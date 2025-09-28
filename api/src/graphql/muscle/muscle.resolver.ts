@@ -1,9 +1,9 @@
 // src/graphql/muscle/muscle.resolver.ts
-import { Args, Context, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { Auth } from '@graphql/decorators/auth.decorator';
+import { Args, Context, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+
 import { Role } from '@graphql/common/ROLE';
 import inversify from '@src/inversify/investify';
-
+import { Auth } from '@graphql/decorators/auth.decorator';
 import {
   CreateMuscleInput,
   GetMuscleInput,
@@ -12,10 +12,22 @@ import {
   MuscleListGql,
   UpdateMuscleInput,
 } from '@graphql/muscle/muscle.gql.types';
+import { UserGql } from '@graphql/user/user.gql.types';
+import { mapUserUsecaseToGql } from '@graphql/user/user.mapper';
 import { mapMuscleUsecaseToGql } from '@graphql/muscle/muscle.mapper';
 
 @Resolver(() => MuscleGql)
 export class MuscleResolver {
+  
+  @ResolveField(() => UserGql, { name: 'creator', nullable: true })
+  async creator(@Parent() muscle: MuscleGql): Promise<UserGql | null> {
+    const userId = muscle.createdBy;
+    if (!userId) return null;
+
+    const user = await inversify.getUserUsecase.execute({ id: userId });
+    return user ? mapUserUsecaseToGql(user) : null;
+  }
+
   @Mutation(() => MuscleGql, { name: 'muscle_create', nullable: true })
   @Auth(Role.ADMIN)
   async muscle_create(

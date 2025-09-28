@@ -1,33 +1,33 @@
-// src/components/programs/CategoryTable.tsx
+// src/components/programs/MuscleTable.tsx
 import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Button, Stack, TextField, IconButton, Tooltip } from '@mui/material';
 
-import type { Category } from '@hooks/useCategories';
+import type { Muscle } from '@hooks/useMuscles';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 
-export interface CategoryTableProps {
-  rows: Category[];
+export interface MuscleTableProps {
+  rows: Muscle[];
   total: number;
   page: number;   // 1-based
   limit: number;
   q: string;
   loading: boolean;
   onCreate: () => void;
-  onEdit: (row: Category) => void;
-  onDelete: (row: Category) => void;
+  onEdit: (row: Muscle) => void;
+  onDelete: (row: Muscle) => void;
   onQueryChange: (q: string) => void;
   onPageChange: (page: number) => void; // 1-based
   onLimitChange: (limit: number) => void;
 }
 
-export function CategoryTable(props: CategoryTableProps): React.JSX.Element {
+export const MuscleTable = React.memo(function MuscleTable(props: MuscleTableProps): React.JSX.Element {
   const { rows, total, page, limit, q, loading, onCreate, onEdit, onDelete, onQueryChange, onPageChange, onLimitChange } = props;
-    const fmtDate = useDateFormatter();
+  const fmtDate = useDateFormatter();
 
-  const columns = React.useMemo<GridColDef<Category>[]>(
+  const columns = React.useMemo<GridColDef<Muscle>[]>(
     () => [
       { field: 'slug', headerName: 'Slug', flex: 1 },
       { field: 'locale', headerName: 'Locale' },
@@ -35,21 +35,12 @@ export function CategoryTable(props: CategoryTableProps): React.JSX.Element {
       {
         field: 'creator', headerName: 'Created', valueGetter: (p: any) => p.email, flex: 1
       },
-      {
-        field: 'createdAt',
-        headerName: 'Created',
-        valueFormatter: (p: any) => fmtDate(p),
-        flex: 1,
-      },
-      {
-        field: 'updatedAt',
-        headerName: 'Updated',
-        valueFormatter: (p: any) => fmtDate(p),
-        flex: 1,
-      },
+      { field: 'createdAt', headerName: 'Created', valueFormatter: (p:any) => fmtDate(p), flex: 1 },
+      { field: 'updatedAt', headerName: 'Updated', valueFormatter: (p:any) => fmtDate(p), flex: 1 },
       {
         field: 'actions',
         headerName: 'Actions',
+        width: 120,
         sortable: false,
         filterable: false,
         renderCell: (p) => (
@@ -68,7 +59,7 @@ export function CategoryTable(props: CategoryTableProps): React.JSX.Element {
         ),
       },
     ],
-    [onEdit, onDelete]
+    [onEdit, onDelete, fmtDate]
   );
 
   return (
@@ -78,12 +69,12 @@ export function CategoryTable(props: CategoryTableProps): React.JSX.Element {
           placeholder="Search…"
           value={q}
           onChange={(e) => onQueryChange(e.target.value)}
-          inputProps={{ 'aria-label': 'search-categories' }}
+          inputProps={{ 'aria-label': 'search-muscles' }}
           size="small"
           sx={{ maxWidth: 360 }}
         />
         <Box sx={{ flex: 1 }} />
-        <Button variant="contained" onClick={onCreate}>New Category</Button>
+        <Button variant="contained" onClick={onCreate}>New Muscle</Button>
       </Stack>
 
       <DataGrid
@@ -99,11 +90,11 @@ export function CategoryTable(props: CategoryTableProps): React.JSX.Element {
           if (m.page !== page - 1) onPageChange(m.page + 1);
           if (m.pageSize !== limit) onLimitChange(m.pageSize);
         }}
+        pageSizeOptions={[5, 10, 25, 50]}
         disableRowSelectionOnClick
         autoHeight
-        aria-label="categories-table"
-        pageSizeOptions={[5, 10, 25, 50]}
+        aria-label="muscles-table"
       />
     </Box>
   );
-}
+});

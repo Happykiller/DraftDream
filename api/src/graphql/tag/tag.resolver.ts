@@ -1,9 +1,9 @@
 // src/graphql/tag/tag.resolver.ts
-import { Args, Context, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { Auth } from '@graphql/decorators/auth.decorator';
+import { Args, Context, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+
 import { Role } from '@graphql/common/ROLE';
 import inversify from '@src/inversify/investify';
-
+import { Auth } from '@graphql/decorators/auth.decorator';
 import {
   CreateTagInput,
   ListTagsInput,
@@ -11,10 +11,22 @@ import {
   TagListGql,
   UpdateTagInput,
 } from '@graphql/tag/tag.gql.types';
+import { UserGql } from '@graphql/user/user.gql.types';
 import { mapTagUsecaseToGql } from '@graphql/tag/tag.mapper';
+import { mapUserUsecaseToGql } from '@graphql/user/user.mapper';
 
 @Resolver(() => TagGql)
 export class TagResolver {
+
+  @ResolveField(() => UserGql, { name: 'creator', nullable: true })
+  async creator(@Parent() tag: TagGql): Promise<UserGql | null> {
+    const userId = tag.createdBy;
+    if (!userId) return null;
+
+    const user = await inversify.getUserUsecase.execute({ id: userId });
+    return user ? mapUserUsecaseToGql(user) : null;
+  }
+
   @Mutation(() => TagGql, { name: 'tag_create', nullable: true })
   @Auth(Role.ADMIN)
   async tag_create(

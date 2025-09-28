@@ -2,33 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type TagGql {
-  id: ID!
-  slug: String!
-  locale: String!
-  visibility: TagVisibility!
-  createdBy: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-enum TagVisibility {
-  PRIVATE
-  PUBLIC
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
-type TagListGql {
-  items: [TagGql!]!
-  total: Int!
-  page: Int!
-  limit: Int!
-}
-
 type AddressGql {
   name: String!
   city: String!
@@ -54,6 +27,34 @@ type UserGql {
   updatedAt: DateTime
 }
 
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type TagGql {
+  id: ID!
+  slug: String!
+  locale: String!
+  visibility: TagVisibility!
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creator: UserGql
+}
+
+enum TagVisibility {
+  PRIVATE
+  PUBLIC
+}
+
+type TagListGql {
+  items: [TagGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
 type SessionGql {
   access_token: String!
 }
@@ -70,6 +71,7 @@ type MuscleGql {
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  creator: UserGql
 }
 
 enum MuscleVisibility {
@@ -92,6 +94,7 @@ type CategoryGql {
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  creator: UserGql
 }
 
 enum CategoryVisibility {
@@ -114,6 +117,7 @@ type EquipmentGql {
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  creator: UserGql
 }
 
 enum EquipmentVisibility {

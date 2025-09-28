@@ -33,7 +33,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "query": "query($id: ID!){ category_get(id:$id){ id slug locale visibility createdBy createdAt updatedAt } }",
+  "query": "query($id: ID!){ category_get(id:$id){ id slug locale visibility createdAt updatedAt creator { id email } } }",
   "variables": { "id": "REPLACE_WITH_ID" }
 }
 
@@ -43,7 +43,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "query": "query($input: ListCategoriesInput){ category_list(input:$input){ items{ id slug locale visibility createdBy createdAt updatedAt } total page limit } }",
+  "query": "query($input: ListCategoriesInput){ category_list(input:$input){ items{ id slug locale visibility createdAt updatedAt creator { id email } } total page limit } }",
   "variables": {
     "input": {
       //"q": "corps",
@@ -62,7 +62,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "query": "mutation($input: UpdateCategoryInput!){ category_update(input:$input){ id slug locale visibility createdBy createdAt updatedAt } }",
+  "query": "mutation($input: UpdateCategoryInput!){ category_update(input:$input){ id slug locale visibility createdAt updatedAt creator { id email } } }",
   "variables": {
     "input": { "id": "REPLACE_WITH_ID", "slug": "halterophilie", "locale": "{{locale}}" }
   }

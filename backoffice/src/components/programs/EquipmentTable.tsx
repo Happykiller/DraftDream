@@ -1,55 +1,52 @@
-// src/components/programs/CategoryTable.tsx
+// src/components/programs/EquipmentTable.tsx
 import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Button, Stack, TextField, IconButton, Tooltip } from '@mui/material';
 
-import type { Category } from '@hooks/useCategories';
+import type { Equipment } from '@hooks/useEquipment';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 
-export interface CategoryTableProps {
-  rows: Category[];
+export interface EquipmentTableProps {
+  rows: Equipment[];
   total: number;
   page: number;   // 1-based
   limit: number;
   q: string;
   loading: boolean;
   onCreate: () => void;
-  onEdit: (row: Category) => void;
-  onDelete: (row: Category) => void;
+  onEdit: (row: Equipment) => void;
+  onDelete: (row: Equipment) => void;
   onQueryChange: (q: string) => void;
   onPageChange: (page: number) => void; // 1-based
   onLimitChange: (limit: number) => void;
 }
 
-export function CategoryTable(props: CategoryTableProps): React.JSX.Element {
-  const { rows, total, page, limit, q, loading, onCreate, onEdit, onDelete, onQueryChange, onPageChange, onLimitChange } = props;
-    const fmtDate = useDateFormatter();
 
-  const columns = React.useMemo<GridColDef<Category>[]>(
+export const EquipmentTable = React.memo(function EquipmentTable({
+  rows, total, page, limit, q, loading, onCreate, onEdit, onDelete, onQueryChange, onPageChange, onLimitChange,
+}: EquipmentTableProps): React.JSX.Element {
+  const fmtDate = useDateFormatter();
+
+  const columns = React.useMemo<GridColDef<Equipment>[]>(
     () => [
-      { field: 'slug', headerName: 'Slug', flex: 1 },
-      { field: 'locale', headerName: 'Locale' },
-      { field: 'visibility', headerName: 'Visibility' },
+      { field: 'slug', headerName: 'Slug', flex: 1, minWidth: 150 },
+      { field: 'locale', headerName: 'Locale', width: 120 },
+      { field: 'visibility', headerName: 'Visibility', width: 140 },
       {
-        field: 'creator', headerName: 'Created', valueGetter: (p: any) => p.email, flex: 1
-      },
-      {
-        field: 'createdAt',
-        headerName: 'Created',
-        valueFormatter: (p: any) => fmtDate(p),
+        field: 'creator',
+        headerName: 'Creator',
         flex: 1,
+        minWidth: 180,
+        valueFormatter: (p:any) => p.email,
       },
-      {
-        field: 'updatedAt',
-        headerName: 'Updated',
-        valueFormatter: (p: any) => fmtDate(p),
-        flex: 1,
-      },
+      { field: 'createdAt', headerName: 'Created', valueFormatter: (p:any) => fmtDate(p), flex: 1, minWidth: 180 },
+      { field: 'updatedAt', headerName: 'Updated', valueFormatter: (p:any) => fmtDate(p), flex: 1, minWidth: 180 },
       {
         field: 'actions',
         headerName: 'Actions',
+        width: 120,
         sortable: false,
         filterable: false,
         renderCell: (p) => (
@@ -68,7 +65,7 @@ export function CategoryTable(props: CategoryTableProps): React.JSX.Element {
         ),
       },
     ],
-    [onEdit, onDelete]
+    [onEdit, onDelete, fmtDate]
   );
 
   return (
@@ -78,12 +75,12 @@ export function CategoryTable(props: CategoryTableProps): React.JSX.Element {
           placeholder="Search…"
           value={q}
           onChange={(e) => onQueryChange(e.target.value)}
-          inputProps={{ 'aria-label': 'search-categories' }}
+          inputProps={{ 'aria-label': 'search-equipment' }}
           size="small"
           sx={{ maxWidth: 360 }}
         />
         <Box sx={{ flex: 1 }} />
-        <Button variant="contained" onClick={onCreate}>New Category</Button>
+        <Button variant="contained" onClick={onCreate}>New Equipment</Button>
       </Stack>
 
       <DataGrid
@@ -99,11 +96,11 @@ export function CategoryTable(props: CategoryTableProps): React.JSX.Element {
           if (m.page !== page - 1) onPageChange(m.page + 1);
           if (m.pageSize !== limit) onLimitChange(m.pageSize);
         }}
+        pageSizeOptions={[5, 10, 25, 50]}
         disableRowSelectionOnClick
         autoHeight
-        aria-label="categories-table"
-        pageSizeOptions={[5, 10, 25, 50]}
+        aria-label="equipment-table"
       />
     </Box>
   );
-}
+});

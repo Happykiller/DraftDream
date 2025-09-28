@@ -1,9 +1,9 @@
 // src/graphql/equipment/equipment.resolver.ts
-import { Args, Context, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { Auth } from '@graphql/decorators/auth.decorator';
+import { Args, Context, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+
 import { Role } from '@graphql/common/ROLE';
 import inversify from '@src/inversify/investify';
-
+import { Auth } from '@graphql/decorators/auth.decorator';
 import {
   CreateEquipmentInput,
   EquipmentGql,
@@ -11,10 +11,22 @@ import {
   ListEquipmentInput,
   UpdateEquipmentInput,
 } from '@graphql/equipment/equipment.gql.types';
+import { UserGql } from '@graphql/user/user.gql.types';
+import { mapUserUsecaseToGql } from '@graphql/user/user.mapper';
 import { mapEquipmentUsecaseToGql } from '@graphql/equipment/equipment.mapper';
 
 @Resolver(() => EquipmentGql)
 export class EquipmentResolver {
+
+  @ResolveField(() => UserGql, { name: 'creator', nullable: true })
+  async creator(@Parent() equipment: EquipmentGql): Promise<UserGql | null> {
+    const userId = equipment.createdBy;
+    if (!userId) return null;
+
+    const user = await inversify.getUserUsecase.execute({ id: userId });
+    return user ? mapUserUsecaseToGql(user) : null;
+  }
+
   @Mutation(() => EquipmentGql, { name: 'equipment_create', nullable: true })
   @Auth(Role.ADMIN)
   async equipment_create(

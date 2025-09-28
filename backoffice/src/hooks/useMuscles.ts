@@ -1,38 +1,37 @@
-// src/hooks/useCategories.ts
+// src/hooks/useMuscles.ts
 import * as React from 'react';
-
 import inversify from '@src/commons/inversify';
-import { useFlashStore } from '@hooks/useFlashStore'; 
+import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
-export type Visibility = 'PRIVATE' | 'PUBLIC';
+export type MuscleVisibility = 'PRIVATE' | 'PUBLIC';
 
-export interface Category {
+export interface Muscle {
   id: string;
   slug: string;
   locale: string;
-  visibility: Visibility;
+  visibility: MuscleVisibility;
   createdBy: string;
   createdAt: string;
   updatedAt: string;
 }
 
-type CategoryListPayload = {
-  category_list: {
-    items: Category[];
+type MuscleListPayload = {
+  muscle_list: {
+    items: Muscle[];
     total: number;
     page: number;
     limit: number;
   };
 };
 
-type CreateCategoryPayload = { category_create: Category };
-type UpdateCategoryPayload = { category_update: Category };
-type DeleteCategoryPayload = { category_delete: boolean };
+type CreatePayload = { muscle_create: Muscle };
+type UpdatePayload = { muscle_update: Muscle };
+type DeletePayload = { muscle_delete: boolean };
 
 const LIST_Q = `
-  query ListCategories($input: ListCategoriesInput) {
-    category_list(input: $input) {
+  query ListMuscles($input: ListMusclesInput) {
+    muscle_list(input: $input) {
       items { id slug locale visibility creator { id email } createdAt updatedAt }
       total page limit
     }
@@ -40,55 +39,53 @@ const LIST_Q = `
 `;
 
 const CREATE_M = `
-  mutation CreateCategory($input: CreateCategoryInput!) {
-    category_create(input: $input) {
+  mutation CreateMuscle($input: CreateMuscleInput!) {
+    muscle_create(input: $input) {
       id slug locale visibility creator { id email } createdAt updatedAt
     }
   }
 `;
 
 const UPDATE_M = `
-  mutation UpdateCategory($input: UpdateCategoryInput!) {
-    category_update(input: $input) {
+  mutation UpdateMuscle($input: UpdateMuscleInput!) {
+    muscle_update(input: $input) {
       id slug locale visibility creator { id email } createdAt updatedAt
     }
   }
 `;
 
 const DELETE_M = `
-  mutation DeleteCategory($id: ID!) {
-    category_delete(id: $id)
+  mutation DeleteMuscle($id: ID!) {
+    muscle_delete(id: $id)
   }
 `;
 
-export interface UseCategoriesParams {
-  page: number;  // 1-based
+export interface UseMusclesParams {
+  page: number; // 1-based
   limit: number;
   q: string;
 }
 
-export function useCategories({ page, limit, q }: UseCategoriesParams) {
-  const [items, setItems] = React.useState<Category[]>([]);
+export function useMuscles({ page, limit, q }: UseMusclesParams) {
+  const [items, setItems] = React.useState<Muscle[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
   const flash = useFlashStore();
-
-  // Create one fetch service instance (it handles 401, redirects, etc.)
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
 
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
-      const { data, errors } = await gql.send<CategoryListPayload>({
+      const { data, errors } = await gql.send<MuscleListPayload>({
         query: LIST_Q,
         variables: { input: { page, limit, q: q || undefined } },
-        operationName: 'ListCategories',
+        operationName: 'ListMuscles',
       });
       if (errors?.length) throw new Error(errors[0].message);
-      setItems(data?.category_list.items ?? []);
-      setTotal(data?.category_list.total ?? 0);
+      setItems(data?.muscle_list.items ?? []);
+      setTotal(data?.muscle_list.total ?? 0);
     } catch (e: any) {
-      flash.error(e?.message ?? 'Failed to load categories');
+      flash.error(e?.message ?? 'Failed to load muscles');
     } finally {
       setLoading(false);
     }
@@ -99,15 +96,15 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
   }, [load]);
 
   const create = React.useCallback(
-    async (input: { slug: string; locale: string; visibility: Visibility }) => {
+    async (input: { slug: string; locale: string; visibility: MuscleVisibility }) => {
       try {
-        const { errors } = await gql.send<CreateCategoryPayload>({
+        const { errors } = await gql.send<CreatePayload>({
           query: CREATE_M,
           variables: { input },
-          operationName: 'CreateCategory',
+          operationName: 'CreateMuscle',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Category created');
+        flash.success('Muscle created');
         await load();
       } catch (e: any) {
         flash.error(e?.message ?? 'Create failed');
@@ -120,13 +117,13 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
   const update = React.useCallback(
     async (input: { id: string; slug?: string; locale?: string }) => {
       try {
-        const { errors } = await gql.send<UpdateCategoryPayload>({
+        const { errors } = await gql.send<UpdatePayload>({
           query: UPDATE_M,
           variables: { input },
-          operationName: 'UpdateCategory',
+          operationName: 'UpdateMuscle',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Category updated');
+        flash.success('Muscle updated');
         await load();
       } catch (e: any) {
         flash.error(e?.message ?? 'Update failed');
@@ -139,13 +136,13 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
   const remove = React.useCallback(
     async (id: string) => {
       try {
-        const { errors } = await gql.send<DeleteCategoryPayload>({
+        const { errors } = await gql.send<DeletePayload>({
           query: DELETE_M,
           variables: { id },
-          operationName: 'DeleteCategory',
+          operationName: 'DeleteMuscle',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Category deleted');
+        flash.success('Muscle deleted');
         await load();
       } catch (e: any) {
         flash.error(e?.message ?? 'Delete failed');

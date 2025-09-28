@@ -1,5 +1,6 @@
 // src/graphql/category/category.resolver.ts
-import { Args, Context, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+
 import { Role } from '@graphql/common/ROLE';
 import inversify from '@src/inversify/investify';
 import { Auth } from '@graphql/decorators/auth.decorator';
@@ -10,10 +11,23 @@ import {
   ListCategoriesInput,
   UpdateCategoryInput,
 } from '@graphql/category/category.gql.types';
+import { UserGql } from '@graphql/user/user.gql.types';
+import { mapUserUsecaseToGql } from '@graphql/user/user.mapper';
 import { mapCategoryUsecaseToGql } from '@graphql/category/category.mapper';
 
 @Resolver(() => CategoryGql)
 export class CategoryResolver {
+
+  @ResolveField(() => UserGql, { name: 'creator', nullable: true })
+  async creator(@Parent() category: CategoryGql): Promise<UserGql | null> {
+    const userId = category.createdBy;
+    if (!userId) return null;
+
+    // Appelle ton use case/service domaine
+    const user = await inversify.getUserUsecase.execute({ id: userId });
+    return user ? mapUserUsecaseToGql(user) : null;
+  }
+
   // CREATE
   @Mutation(() => CategoryGql, { name: 'category_create', nullable: true })
   @Auth(Role.ADMIN)

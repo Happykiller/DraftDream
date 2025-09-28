@@ -1,6 +1,8 @@
 // src/graphql/muscle/muscle.gql.types.ts
 import { Field, ID, InputType, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
 
+import { UserGql } from '@graphql/user/user.gql.types';
+
 export enum MuscleVisibility {
   PRIVATE = 'private',
   PUBLIC = 'public',
@@ -16,6 +18,8 @@ export class MuscleGql {
   @Field() createdBy!: string;
   @Field() createdAt!: Date;
   @Field() updatedAt!: Date;
+  @Field(() => UserGql, { nullable: true })
+  creator?: UserGql | null;
 }
 
 @InputType()
