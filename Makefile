@@ -13,7 +13,7 @@ help:
 	@echo "make up-prod   # démarre toute la stack prod derrière nginx"
 
 up-dev: ## Démarre Mongo (ports exposés)
-	$(DOCKER_COMPOSE) --profile dev up -d mongo
+	$(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.dev.yml --profile dev up -d mongo
 
 down-dev:
 	$(DOCKER_COMPOSE) --profile dev down
