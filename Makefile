@@ -55,3 +55,12 @@ save:
 	docker save fitdesk_backoffice -o fitdesk_backoffice.tar
 	docker save fitdesk_showcase -o fitdesk_showcase.tar
 	docker save fitdesk_mobile -o fitdesk_mobile.tar
+
+install:
+	ssh user@serveur 'cd /opt/fitdesk/images && \
+	 docker load -i fitdesk_api.tar && \
+	 docker load -i fitdesk_frontoffice.tar && \
+	 docker load -i fitdesk_backoffice.tar && \
+	 docker load -i fitdesk_showcase.tar && \
+	 docker load -i fitdesk_mobile.tar && \
+	 cd /opt/fitdesk && docker compose --profile prod up -d'

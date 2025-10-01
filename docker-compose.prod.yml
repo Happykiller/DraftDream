@@ -1,7 +1,10 @@
-version: "3.9"
+# docker-compose.prod.yml
 name: fitdesk
 networks: { internal: {} }
-volumes: { mongo_data: {} }
+volumes:
+  mongo_data: {}
+  letsencrypt: {}
+  certbot_www: {} 
 
 services:
   mongo:
@@ -18,8 +21,12 @@ services:
 
   nginx:
     image: nginx:1.27-alpine
-    ports: ["80:80"]
+    ports:
+      - "80:80"
+      - "443:443"
     volumes:
+      - certbot_www:/var/www/certbot
+      - letsencrypt:/etc/letsencrypt:ro
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./nginx/includes:/etc/nginx/includes:ro
     networks: [internal]
@@ -73,3 +80,11 @@ services:
     networks: [internal]
     expose: ["80"]
     restart: unless-stopped
+
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - letsencrypt:/etc/letsencrypt
+      - certbot_www:/var/www/ccertbot
+      - certbot_www:/var/www/certbot
+    networks: [internal]
