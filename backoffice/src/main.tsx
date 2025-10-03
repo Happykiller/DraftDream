@@ -1,6 +1,7 @@
 // src/main.tsx
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { registerSW } from 'virtual:pwa-register';
 import { RouterProvider } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 
@@ -9,6 +10,8 @@ import { theme } from '@theme/index';
 import { router } from '@routes/router';
 import LoaderOverlay from '@components/layout/LoaderOverlay';
 import { FlashMessage } from '@components/layout/FlashMessage';
+
+registerSW({ immediate: true });
 
 (async () => {
   await initI18n();
