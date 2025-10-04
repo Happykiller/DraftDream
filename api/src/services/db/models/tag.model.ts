@@ -7,4 +7,5 @@ export interface Tag {
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
+  deletedAt?: Date;
 }

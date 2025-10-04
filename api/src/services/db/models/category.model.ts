@@ -7,4 +7,5 @@ export interface Category {
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
+  deletedAt?: Date;
 }

@@ -8,6 +8,7 @@ import { UserModule } from '@graphql/user/user.module';
 import { AuthModule } from '@graphql/auth/auth.module';
 import { SystemModule } from '@graphql/system/system.module';
 import { MuscleModule } from '@graphql/muscle/muscle.module';
+import { ExerciseModule } from '@graphql/exercise/exercise.module';
 import { CategoryModule } from '@graphql/category/category.module';
 import { EquipmentModule } from '@graphql/equipment/equipment.module';
 
@@ -21,6 +22,7 @@ import { EquipmentModule } from '@graphql/equipment/equipment.module';
     EquipmentModule,
     MuscleModule,
     TagModule,
+    ExerciseModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'gqlschema.gql',

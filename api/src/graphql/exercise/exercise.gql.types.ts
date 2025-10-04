@@ -1,0 +1,110 @@
+// src/graphql/exercise/exercise.gql.types.ts
+import { UserGql } from '@graphql/user/user.gql.types';
+import { Field, ID, InputType, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
+
+export enum ExerciseVisibility {
+  PRIVATE = 'private',
+  PUBLIC = 'public',
+}
+registerEnumType(ExerciseVisibility, { name: 'ExerciseVisibility' });
+
+export enum ExerciseLevelGql {
+  BEGINNER = 'beginner',
+  INTERMEDIATE = 'intermediate',
+  ADVANCED = 'advanced',
+}
+registerEnumType(ExerciseLevelGql, { name: 'ExerciseLevel' });
+
+@ObjectType()
+export class ExerciseGql {
+  @Field(() => ID) id!: string;
+  @Field() slug!: string;
+  @Field() locale!: string;
+  @Field() name!: string;
+  @Field({ nullable: true }) description?: string;
+  @Field({ nullable: true }) instructions?: string;
+  @Field(() => ExerciseLevelGql) level!: ExerciseLevelGql;
+  @Field() series!: string;
+  @Field() repetitions!: string;
+  @Field({ nullable: true }) charge?: string;
+  @Field(() => Int, { nullable: true }) rest?: number;
+  @Field({ nullable: true }) videoUrl?: string;
+  @Field(() => ExerciseVisibility) visibility!: ExerciseVisibility;
+
+  // Ownership
+  @Field() createdBy!: string;
+
+  // Audit
+  @Field() createdAt!: Date;
+  @Field() updatedAt!: Date;
+
+  // Relations (resolved lazily)
+  @Field(() => UserGql, { nullable: true })
+  creator?: UserGql | null;
+}
+
+@InputType()
+export class CreateExerciseInput {
+  @Field() slug!: string;
+  @Field() locale!: string;
+  @Field() name!: string;
+  @Field(() => ExerciseLevelGql) level!: ExerciseLevelGql;
+  @Field() series!: string;
+  @Field() repetitions!: string;
+  @Field({ nullable: true }) description?: string;
+  @Field({ nullable: true }) instructions?: string;
+  @Field({ nullable: true }) charge?: string;
+  @Field(() => Int, { nullable: true }) rest?: number;
+  @Field({ nullable: true }) videoUrl?: string;
+  @Field(() => ExerciseVisibility) visibility!: ExerciseVisibility;
+
+  // Relations (IDs)
+  @Field(() => ID) categoryId!: string;
+  @Field(() => [ID]) primaryMuscleIds!: string[];
+  @Field(() => [ID], { nullable: true }) secondaryMuscleIds?: string[];
+  @Field(() => [ID], { nullable: true }) equipmentIds?: string[];
+  @Field(() => [ID], { nullable: true }) tagIds?: string[];
+}
+
+@InputType()
+export class UpdateExerciseInput {
+  @Field(() => ID) id!: string;
+  @Field({ nullable: true }) slug?: string;
+  @Field({ nullable: true }) locale?: string;
+  @Field({ nullable: true }) name?: string;
+  @Field(() => ExerciseLevelGql, { nullable: true }) level?: ExerciseLevelGql;
+  @Field({ nullable: true }) series?: string;
+  @Field({ nullable: true }) repetitions?: string;
+  @Field({ nullable: true }) description?: string;
+  @Field({ nullable: true }) instructions?: string;
+  @Field({ nullable: true }) charge?: string;
+  @Field(() => Int, { nullable: true }) rest?: number;
+  @Field({ nullable: true }) videoUrl?: string;
+  @Field(() => ExerciseVisibility, { nullable: true }) visibility?: ExerciseVisibility;
+
+  // Relations (replace whole sets)
+  @Field(() => ID, { nullable: true }) categoryId?: string;
+  @Field(() => [ID], { nullable: true }) primaryMuscleIds?: string[];
+  @Field(() => [ID], { nullable: true }) secondaryMuscleIds?: string[];
+  @Field(() => [ID], { nullable: true }) equipmentIds?: string[];
+  @Field(() => [ID], { nullable: true }) tagIds?: string[];
+}
+
+@InputType()
+export class ListExercisesInput {
+  @Field({ nullable: true }) q?: string;
+  @Field({ nullable: true }) locale?: string;
+  @Field({ nullable: true }) createdBy?: string;
+  @Field(() => ExerciseVisibility, { nullable: true }) visibility?: ExerciseVisibility;
+  @Field(() => ExerciseLevelGql, { nullable: true }) level?: ExerciseLevelGql;
+  @Field(() => Int, { nullable: true }) limit?: number;
+  @Field(() => Int, { nullable: true }) page?: number;
+}
+
+@ObjectType()
+export class ExerciseListGql {
+  @Field(() => [ExerciseGql]) items!: ExerciseGql[];
+  @Field(() => Int) total!: number;
+  @Field(() => Int) page!: number;
+  @Field(() => Int) limit!: number;
+}

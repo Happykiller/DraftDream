@@ -6,6 +6,7 @@ import { useSearchParams } from 'react-router-dom';
 import { TagsPanel } from '@pages/programs/TagsPanel';
 import { MusclesPanel } from '@pages/programs/MusclesPanel';
 import { EquipmentPanel } from '@pages/programs/EquipmentPanel';
+import { ExercisesPanel } from '@pages/programs/ExercisesPanel';
 import { CategoriesPanel } from '@pages/programs/CategoriesPanel';
 
 export function Programs(): React.JSX.Element {
@@ -35,8 +36,9 @@ export function Programs(): React.JSX.Element {
       {tab === 'muscles' && <MusclesPanel />}
       {tab === 'equipment' && <EquipmentPanel />}
       {tab === 'tags' && <TagsPanel />}
+      {tab === 'exercices' && <ExercisesPanel />}
 
-      {(tab === 'programs' || tab === 'sessions' || tab === 'exercices') && (
+      {(tab === 'programs' || tab === 'sessions') && (
         <div style={{ padding: 16, border: '1px dashed var(--mui-palette-divider)', borderRadius: 8 }}>
           {tab} management coming next (same pattern: panel + table + dialogs).
         </div>

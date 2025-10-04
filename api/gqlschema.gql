@@ -95,6 +95,44 @@ type MuscleListGql {
   limit: Int!
 }
 
+type ExerciseGql {
+  id: ID!
+  slug: String!
+  locale: String!
+  name: String!
+  description: String
+  instructions: String
+  level: ExerciseLevel!
+  series: String!
+  repetitions: String!
+  charge: String
+  rest: Int
+  videoUrl: String
+  visibility: ExerciseVisibility!
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creator: UserGql
+}
+
+enum ExerciseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum ExerciseVisibility {
+  PRIVATE
+  PUBLIC
+}
+
+type ExerciseListGql {
+  items: [ExerciseGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
 type CategoryGql {
   id: ID!
   slug: String!
@@ -154,6 +192,8 @@ type Query {
   muscle_list(input: ListMusclesInput): MuscleListGql!
   tag_get(id: ID!): TagGql
   tag_list(input: ListTagsInput): TagListGql!
+  exercise_get(id: ID!): ExerciseGql
+  exercise_list(input: ListExercisesInput): ExerciseListGql!
 }
 
 input ListUsersInput {
@@ -206,6 +246,16 @@ input ListTagsInput {
   page: Int
 }
 
+input ListExercisesInput {
+  q: String
+  locale: String
+  createdBy: String
+  visibility: ExerciseVisibility
+  level: ExerciseLevel
+  limit: Int
+  page: Int
+}
+
 type Mutation {
   auth(input: AuthInput!): SessionGql!
   user_create(input: CreateUserInput!): UserGql!
@@ -222,6 +272,10 @@ type Mutation {
   tag_create(input: CreateTagInput!): TagGql
   tag_update(input: UpdateTagInput!): TagGql
   tag_delete(id: ID!): Boolean!
+  exercise_create(input: CreateExerciseInput!): ExerciseGql
+  exercise_update(input: UpdateExerciseInput!): ExerciseGql
+  exercise_softDelete(id: ID!): Boolean!
+  exercise_delete(id: ID!): Boolean!
 }
 
 input AuthInput {
@@ -312,4 +366,45 @@ input UpdateTagInput {
   id: ID!
   slug: String
   locale: String
+}
+
+input CreateExerciseInput {
+  slug: String!
+  locale: String!
+  name: String!
+  level: ExerciseLevel!
+  series: String!
+  repetitions: String!
+  description: String
+  instructions: String
+  charge: String
+  rest: Int
+  videoUrl: String
+  visibility: ExerciseVisibility!
+  categoryId: ID!
+  primaryMuscleIds: [ID!]!
+  secondaryMuscleIds: [ID!]
+  equipmentIds: [ID!]
+  tagIds: [ID!]
+}
+
+input UpdateExerciseInput {
+  id: ID!
+  slug: String
+  locale: String
+  name: String
+  level: ExerciseLevel
+  series: String
+  repetitions: String
+  description: String
+  instructions: String
+  charge: String
+  rest: Int
+  videoUrl: String
+  visibility: ExerciseVisibility
+  categoryId: ID
+  primaryMuscleIds: [ID!]
+  secondaryMuscleIds: [ID!]
+  equipmentIds: [ID!]
+  tagIds: [ID!]
 }

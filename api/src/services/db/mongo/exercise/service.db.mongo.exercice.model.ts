@@ -1,4 +1,4 @@
-// src\services\db\mongo\exercise\service.db.mongo.exercice.model.ts
+// src\services\db\mongo\exercise\service.db.mongo.exercise.model.ts
 export type Difficulty = 'beginner' | 'intermediate' | 'advanced';
 export type ExerciseStatus = 'draft' | 'active' | 'archived';
 export type Visibility = 'private' | 'public';

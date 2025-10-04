@@ -14,6 +14,7 @@ type TagDoc = {
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
+  deletedAt?: Date;
 };
 
 export class BddServiceTagMongo {

@@ -13,6 +13,7 @@ type MuscleDoc = {
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
+  deletedAt?: Date;
 };
 
 export class BddServiceMuscleMongo {

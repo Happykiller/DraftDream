@@ -24,12 +24,17 @@ import { GetCategoryUsecase } from '@usecases/category/get.category.usecase';
 import { CreateMuscleUsecase } from '@usecases/muscle/create.muscle.usecase';
 import { UpdateMuscleUsecase } from '@usecases/muscle/update.muscle.usecase';
 import { DeleteMuscleUsecase } from '@usecases/muscle/delete.muscle.usecase';
+import { GetExerciseUsecase } from '@usecases/exercise/get.exercise.usecase';
 import { GetEquipmentUsecase } from '@usecases/equipment/get.equipment.usecase';
+import { ListExercisesUsecase } from '@usecases/exercise/list.exercises.usecase';
 import { ListCategoriesUsecase } from '@usecases/category/list.category.usecase';
 import { ListEquipmentUsecase } from '@usecases/equipment/list.equipment.usecase';
+import { DeleteExerciseUsecase } from '@usecases/exercise/delete.exercise.usecase';
 import { UpdateCategoryUsecase } from '@usecases/category/update.category.usecase';
 import { CreateCategoryUsecase } from '@usecases/category/create.category.usecase';
 import { DeleteCategoryUsecase } from '@usecases/category/delete.category.usecase';
+import { CreateExerciseUsecase } from '@usecases/exercise/create.exercise.usecase';
+import { UpdateExerciseUsecase } from '@usecases/exercise/update.exercise.usecase';
 import { CreateEquipmentUsecase } from '@usecases/equipment/create.equipment.usecase';
 import { UpdateEquipmentUsecase } from '@usecases/equipment/update.equipment.usecase';
 import { DeleteEquipmentUsecase } from '@usecases/equipment/delete.equipment.usecase';
@@ -54,15 +59,20 @@ export class Inversify {
   createUserUsecase: CreateUserUsecase;
   getCategoryUsecase: GetCategoryUsecase;
   listMusclesUsecase: ListMusclesUsecase;
+  getExerciseUsecase: GetExerciseUsecase;
   updateMuscleUsecase: UpdateMuscleUsecase;
   deleteMuscleUsecase: DeleteMuscleUsecase;
   getEquipmentUsecase: GetEquipmentUsecase;
   createMuscleUsecase: CreateMuscleUsecase;
   listEquipmentUsecase: ListEquipmentUsecase;
+  listExercisesUsecase: ListExercisesUsecase;
   updateCategoryUsecase: UpdateCategoryUsecase;
   createCategoryUsecase: CreateCategoryUsecase;
   listCategoriesUsecase: ListCategoriesUsecase;
   deleteCategoryUsecase: DeleteCategoryUsecase;
+  createExerciseUsecase: CreateExerciseUsecase;
+  deleteExerciseUsecase: DeleteExerciseUsecase;
+  updateExerciseUsecase: UpdateExerciseUsecase;
   createEquipmentUsecase: CreateEquipmentUsecase;
   updateEquipmentUsecase: UpdateEquipmentUsecase;
   deleteEquipmentUsecase: DeleteEquipmentUsecase;
@@ -114,6 +124,12 @@ export class Inversify {
     this.listTagsUsecase = new ListTagsUsecase(this);
     this.updateTagUsecase = new UpdateTagUsecase(this);
     this.deleteTagUsecase = new DeleteTagUsecase(this);
+    // usecase exercise
+    this.createExerciseUsecase = new CreateExerciseUsecase(this);
+    this.getExerciseUsecase = new GetExerciseUsecase(this);
+    this.listExercisesUsecase = new ListExercisesUsecase(this);
+    this.deleteExerciseUsecase = new DeleteExerciseUsecase(this);
+    this.updateExerciseUsecase = new UpdateExerciseUsecase(this);
   }
 }
 
