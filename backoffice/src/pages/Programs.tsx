@@ -40,7 +40,7 @@ export function Programs(): React.JSX.Element {
       {tab === 'exercices' && <ExercisesPanel />}
       {tab === 'sessions' && <SessionsPanel />}
 
-      {(tab === 'programs' || tab === 'sessions') && (
+      {tab === 'programs' && (
         <div style={{ padding: 16, border: '1px dashed var(--mui-palette-divider)', borderRadius: 8 }}>
           {tab} management coming next (same pattern: panel + table + dialogs).
         </div>

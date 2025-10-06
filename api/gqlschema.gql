@@ -116,6 +116,27 @@ type SessionListGql {
   limit: Int!
 }
 
+type ProgramGql {
+  id: ID!
+  name: String!
+  duration: Int!
+  frequency: Int!
+  description: String
+  sessionIds: [ID!]!
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creator: UserGql
+  sessions: [SessionSportGql!]!
+}
+
+type ProgramListGql {
+  items: [ProgramGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
 type ExerciseGql {
   id: ID!
   slug: String!
@@ -211,6 +232,8 @@ type Query {
   muscle_list(input: ListMusclesInput): MuscleListGql!
   session_get(id: ID!): SessionSportGql
   session_list(input: ListSessionsInput): SessionListGql!
+  program_get(id: ID!): ProgramGql
+  program_list(input: ListProgramsInput): ProgramListGql!
   category_get(id: ID!): CategoryGql
   category_list(input: ListCategoriesInput): CategoryListGql!
   exercise_get(id: ID!): ExerciseGql
@@ -259,6 +282,13 @@ input ListSessionsInput {
   page: Int
 }
 
+input ListProgramsInput {
+  q: String
+  createdBy: String
+  limit: Int
+  page: Int
+}
+
 input ListCategoriesInput {
   q: String
   locale: String
@@ -301,6 +331,10 @@ type Mutation {
   session_update(input: UpdateSessionInput!): SessionSportGql
   session_softDelete(id: ID!): Boolean!
   session_delete(id: ID!): Boolean!
+  program_create(input: CreateProgramInput!): ProgramGql
+  program_update(input: UpdateProgramInput!): ProgramGql
+  program_softDelete(id: ID!): Boolean!
+  program_delete(id: ID!): Boolean!
   category_create(input: CreateCategoryInput!): CategoryGql
   category_update(input: UpdateCategoryInput!): CategoryGql
   category_delete(id: ID!): Boolean!
@@ -396,6 +430,23 @@ input UpdateSessionInput {
   durationMin: Int
   description: String
   exerciseIds: [ID!]
+}
+
+input CreateProgramInput {
+  name: String!
+  duration: Int!
+  frequency: Int!
+  description: String
+  sessionIds: [ID!]!
+}
+
+input UpdateProgramInput {
+  id: ID!
+  name: String
+  duration: Int
+  frequency: Int
+  description: String
+  sessionIds: [ID!]
 }
 
 input CreateCategoryInput {
