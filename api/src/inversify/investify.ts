@@ -30,6 +30,11 @@ import { ListSessionsUsecase } from '@usecases/session/list.sessions.usecase';
 import { DeleteSessionUsecase } from '@usecases/session/delete.session.usecase';
 import { UpdateSessionUsecase } from '@usecases/session/update.session.usecase';
 import { CreateSessionUsecase } from '@usecases/session/create.session.usecase';
+import { GetProgramUsecase } from '@usecases/program/get.program.usecase';
+import { ListProgramsUsecase } from '@usecases/program/list.programs.usecase';
+import { DeleteProgramUsecase } from '@usecases/program/delete.program.usecase';
+import { UpdateProgramUsecase } from '@usecases/program/update.program.usecase';
+import { CreateProgramUsecase } from '@usecases/program/create.program.usecase';
 import { GetEquipmentUsecase } from '@usecases/equipment/get.equipment.usecase';
 import { ListExercisesUsecase } from '@usecases/exercise/list.exercises.usecase';
 import { ListCategoriesUsecase } from '@usecases/category/list.category.usecase';
@@ -63,6 +68,7 @@ export class Inversify {
   updateUserUsecase: UpdateUserUsecase;
   createUserUsecase: CreateUserUsecase;
   getSessionUsecase: GetSessionUsecase;
+  getProgramUsecase: GetProgramUsecase;
   getCategoryUsecase: GetCategoryUsecase;
   listMusclesUsecase: ListMusclesUsecase;
   getExerciseUsecase: GetExerciseUsecase;
@@ -71,11 +77,15 @@ export class Inversify {
   getEquipmentUsecase: GetEquipmentUsecase;
   createMuscleUsecase: CreateMuscleUsecase;
   listSessionsUsecase: ListSessionsUsecase;
+  listProgramsUsecase: ListProgramsUsecase;
   listEquipmentUsecase: ListEquipmentUsecase;
   listExercisesUsecase: ListExercisesUsecase;
   createSessionUsecase: CreateSessionUsecase;
   deleteSessionUsecase: DeleteSessionUsecase;
   updateSessionUsecase: UpdateSessionUsecase;
+  createProgramUsecase: CreateProgramUsecase;
+  deleteProgramUsecase: DeleteProgramUsecase;
+  updateProgramUsecase: UpdateProgramUsecase;
   updateCategoryUsecase: UpdateCategoryUsecase;
   createCategoryUsecase: CreateCategoryUsecase;
   listCategoriesUsecase: ListCategoriesUsecase;
@@ -147,6 +157,12 @@ export class Inversify {
     this.listSessionsUsecase = new ListSessionsUsecase(this);
     this.deleteSessionUsecase = new DeleteSessionUsecase(this);
     this.updateSessionUsecase = new UpdateSessionUsecase(this);
+    // usecase program
+    this.createProgramUsecase = new CreateProgramUsecase(this);
+    this.getProgramUsecase = new GetProgramUsecase(this);
+    this.listProgramsUsecase = new ListProgramsUsecase(this);
+    this.deleteProgramUsecase = new DeleteProgramUsecase(this);
+    this.updateProgramUsecase = new UpdateProgramUsecase(this);
   }
 }
 

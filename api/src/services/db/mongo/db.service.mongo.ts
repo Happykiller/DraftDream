@@ -5,6 +5,7 @@ import { BddServiceTagMongo } from '@services/db/mongo/repositories/tag.reposito
 import { BddServiceUserMongo } from '@services/db/mongo/repositories/user.repository';
 import { BddServiceMuscleMongo } from '@services/db/mongo/repositories/muscle.repository';
 import { BddServiceSessionMongo } from '@services/db/mongo/repositories/session.repository';
+import { BddServiceProgramMongo } from '@services/db/mongo/repositories/program.repository';
 import { BddServiceCategoryMongo } from '@services/db/mongo/repositories/category.repository';
 import { BddServiceExerciseMongo } from '@services/db/mongo/repositories/exercise.repository';
 import { BddServiceEquipmentMongo } from '@services/db/mongo/repositories/equipment.repository';
@@ -18,6 +19,7 @@ export class BddServiceMongo {
   readonly user: BddServiceUserMongo;
   readonly muscle: BddServiceMuscleMongo;
   readonly session: BddServiceSessionMongo;
+  readonly program: BddServiceProgramMongo;
   readonly category: BddServiceCategoryMongo;
   readonly exercise: BddServiceExerciseMongo;
   readonly equipment: BddServiceEquipmentMongo;
@@ -27,6 +29,7 @@ export class BddServiceMongo {
     this.user = new BddServiceUserMongo();
     this.muscle = new BddServiceMuscleMongo();
     this.session = new BddServiceSessionMongo();
+    this.program = new BddServiceProgramMongo();
     this.category = new BddServiceCategoryMongo();
     this.exercise = new BddServiceExerciseMongo();
     this.test = new BddServiceTestMongo(inversify);
