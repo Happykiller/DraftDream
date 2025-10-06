@@ -4,6 +4,7 @@ import { BddServiceTestMongo } from '@services/db/mongo/db.service.test.mongo';
 import { BddServiceTagMongo } from '@services/db/mongo/repositories/tag.repository';
 import { BddServiceUserMongo } from '@services/db/mongo/repositories/user.repository';
 import { BddServiceMuscleMongo } from '@services/db/mongo/repositories/muscle.repository';
+import { BddServiceSessionMongo } from '@services/db/mongo/repositories/session.repository';
 import { BddServiceCategoryMongo } from '@services/db/mongo/repositories/category.repository';
 import { BddServiceExerciseMongo } from '@services/db/mongo/repositories/exercise.repository';
 import { BddServiceEquipmentMongo } from '@services/db/mongo/repositories/equipment.repository';
@@ -16,6 +17,7 @@ export class BddServiceMongo {
   readonly test: BddServiceTestMongo;
   readonly user: BddServiceUserMongo;
   readonly muscle: BddServiceMuscleMongo;
+  readonly session: BddServiceSessionMongo;
   readonly category: BddServiceCategoryMongo;
   readonly exercise: BddServiceExerciseMongo;
   readonly equipment: BddServiceEquipmentMongo;
@@ -24,10 +26,11 @@ export class BddServiceMongo {
     this.tag = new BddServiceTagMongo();
     this.user = new BddServiceUserMongo();
     this.muscle = new BddServiceMuscleMongo();
+    this.session = new BddServiceSessionMongo();
     this.category = new BddServiceCategoryMongo();
     this.exercise = new BddServiceExerciseMongo();
-    this.equipment = new BddServiceEquipmentMongo();
     this.test = new BddServiceTestMongo(inversify);
+    this.equipment = new BddServiceEquipmentMongo();
     this.init = new BddServiceInitMongo(inversify, config);
   }
 }

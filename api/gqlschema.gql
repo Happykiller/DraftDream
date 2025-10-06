@@ -95,6 +95,27 @@ type MuscleListGql {
   limit: Int!
 }
 
+type SessionSportGql {
+  id: ID!
+  slug: String!
+  locale: String!
+  title: String!
+  durationMin: Int!
+  description: String
+  exerciseIds: [ID!]!
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creator: UserGql
+}
+
+type SessionListGql {
+  items: [SessionSportGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
 type ExerciseGql {
   id: ID!
   slug: String!
@@ -180,20 +201,31 @@ type EquipmentListGql {
 }
 
 type Query {
+  tag_get(id: ID!): TagGql
+  tag_list(input: ListTagsInput): TagListGql!
   me: UserGql!
   user_list(input: ListUsersInput): UserPageGql!
   version: System!
   db_test: System!
-  category_get(id: ID!): CategoryGql
-  category_list(input: ListCategoriesInput): CategoryListGql!
-  equipment_get(id: ID!): EquipmentGql
-  equipment_list(input: ListEquipmentInput): EquipmentListGql!
   muscle_get(input: GetMuscleInput!): MuscleGql
   muscle_list(input: ListMusclesInput): MuscleListGql!
-  tag_get(id: ID!): TagGql
-  tag_list(input: ListTagsInput): TagListGql!
+  session_get(id: ID!): SessionSportGql
+  session_list(input: ListSessionsInput): SessionListGql!
+  category_get(id: ID!): CategoryGql
+  category_list(input: ListCategoriesInput): CategoryListGql!
   exercise_get(id: ID!): ExerciseGql
   exercise_list(input: ListExercisesInput): ExerciseListGql!
+  equipment_get(id: ID!): EquipmentGql
+  equipment_list(input: ListEquipmentInput): EquipmentListGql!
+}
+
+input ListTagsInput {
+  q: String
+  locale: String
+  createdBy: String
+  visibility: TagVisibility
+  limit: Int
+  page: Int
 }
 
 input ListUsersInput {
@@ -204,24 +236,6 @@ input ListUsersInput {
   createdBy: String
   page: Float
   limit: Float
-}
-
-input ListCategoriesInput {
-  q: String
-  locale: String
-  createdBy: String
-  visibility: CategoryVisibility
-  limit: Int
-  page: Int
-}
-
-input ListEquipmentInput {
-  q: String
-  locale: String
-  createdBy: String
-  visibility: EquipmentVisibility
-  limit: Int
-  page: Int
 }
 
 input GetMuscleInput {
@@ -237,11 +251,19 @@ input ListMusclesInput {
   page: Int
 }
 
-input ListTagsInput {
+input ListSessionsInput {
   q: String
   locale: String
   createdBy: String
-  visibility: TagVisibility
+  limit: Int
+  page: Int
+}
+
+input ListCategoriesInput {
+  q: String
+  locale: String
+  createdBy: String
+  visibility: CategoryVisibility
   limit: Int
   page: Int
 }
@@ -256,26 +278,51 @@ input ListExercisesInput {
   page: Int
 }
 
+input ListEquipmentInput {
+  q: String
+  locale: String
+  createdBy: String
+  visibility: EquipmentVisibility
+  limit: Int
+  page: Int
+}
+
 type Mutation {
-  auth(input: AuthInput!): SessionGql!
-  user_create(input: CreateUserInput!): UserGql!
-  user_update(input: UpdateUserInput!): UserGql!
-  category_create(input: CreateCategoryInput!): CategoryGql
-  category_update(input: UpdateCategoryInput!): CategoryGql
-  category_delete(id: ID!): Boolean!
-  equipment_create(input: CreateEquipmentInput!): EquipmentGql
-  equipment_update(input: UpdateEquipmentInput!): EquipmentGql
-  equipment_delete(id: ID!): Boolean!
-  muscle_create(input: CreateMuscleInput!): MuscleGql
-  muscle_update(input: UpdateMuscleInput!): MuscleGql
-  muscle_delete(id: ID!): Boolean!
   tag_create(input: CreateTagInput!): TagGql
   tag_update(input: UpdateTagInput!): TagGql
   tag_delete(id: ID!): Boolean!
+  auth(input: AuthInput!): SessionGql!
+  user_create(input: CreateUserInput!): UserGql!
+  user_update(input: UpdateUserInput!): UserGql!
+  muscle_create(input: CreateMuscleInput!): MuscleGql
+  muscle_update(input: UpdateMuscleInput!): MuscleGql
+  muscle_delete(id: ID!): Boolean!
+  session_create(input: CreateSessionInput!): SessionSportGql
+  session_update(input: UpdateSessionInput!): SessionSportGql
+  session_softDelete(id: ID!): Boolean!
+  session_delete(id: ID!): Boolean!
+  category_create(input: CreateCategoryInput!): CategoryGql
+  category_update(input: UpdateCategoryInput!): CategoryGql
+  category_delete(id: ID!): Boolean!
   exercise_create(input: CreateExerciseInput!): ExerciseGql
   exercise_update(input: UpdateExerciseInput!): ExerciseGql
   exercise_softDelete(id: ID!): Boolean!
   exercise_delete(id: ID!): Boolean!
+  equipment_create(input: CreateEquipmentInput!): EquipmentGql
+  equipment_update(input: UpdateEquipmentInput!): EquipmentGql
+  equipment_delete(id: ID!): Boolean!
+}
+
+input CreateTagInput {
+  slug: String!
+  locale: String!
+  visibility: TagVisibility!
+}
+
+input UpdateTagInput {
+  id: ID!
+  slug: String
+  locale: String
 }
 
 input AuthInput {
@@ -320,30 +367,6 @@ input UpdateUserInput {
   is_active: Boolean
 }
 
-input CreateCategoryInput {
-  slug: String!
-  locale: String!
-  visibility: CategoryVisibility!
-}
-
-input UpdateCategoryInput {
-  id: ID!
-  slug: String
-  locale: String
-}
-
-input CreateEquipmentInput {
-  slug: String!
-  locale: String!
-  visibility: EquipmentVisibility!
-}
-
-input UpdateEquipmentInput {
-  id: ID!
-  slug: String
-  locale: String
-}
-
 input CreateMuscleInput {
   slug: String!
   locale: String!
@@ -356,13 +379,32 @@ input UpdateMuscleInput {
   locale: String
 }
 
-input CreateTagInput {
+input CreateSessionInput {
   slug: String!
   locale: String!
-  visibility: TagVisibility!
+  title: String!
+  durationMin: Int!
+  description: String
+  exerciseIds: [ID!]!
 }
 
-input UpdateTagInput {
+input UpdateSessionInput {
+  id: ID!
+  slug: String
+  locale: String
+  title: String
+  durationMin: Int
+  description: String
+  exerciseIds: [ID!]
+}
+
+input CreateCategoryInput {
+  slug: String!
+  locale: String!
+  visibility: CategoryVisibility!
+}
+
+input UpdateCategoryInput {
   id: ID!
   slug: String
   locale: String
@@ -407,4 +449,16 @@ input UpdateExerciseInput {
   secondaryMuscleIds: [ID!]
   equipmentIds: [ID!]
   tagIds: [ID!]
+}
+
+input CreateEquipmentInput {
+  slug: String!
+  locale: String!
+  visibility: EquipmentVisibility!
+}
+
+input UpdateEquipmentInput {
+  id: ID!
+  slug: String
+  locale: String
 }

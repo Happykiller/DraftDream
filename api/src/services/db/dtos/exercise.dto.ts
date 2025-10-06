@@ -1,6 +1,4 @@
 // src/services/db/dtos/exercise.dto.ts
-// Comments in English.
-
 export type Visibility = 'private' | 'public';
 export type ExerciseLevel = 'beginner' | 'intermediate' | 'advanced';
 

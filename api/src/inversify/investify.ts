@@ -19,12 +19,17 @@ import { CryptServiceReal } from '@services/crypt/crypt.service.real';
 import { UpdateUserUsecase } from '@usecases/user/update.user.usecase';
 import { CreateUserUsecase } from '@usecases/user/create.user.usecase';
 import { GetMuscleUsecase } from '@usecases/muscle/get.muscle.usecase';
+import { GetSessionUsecase } from '@usecases/session/get.session.usecase';
 import { ListMusclesUsecase } from '@usecases/muscle/list.muscles.usecase';
 import { GetCategoryUsecase } from '@usecases/category/get.category.usecase';
 import { CreateMuscleUsecase } from '@usecases/muscle/create.muscle.usecase';
 import { UpdateMuscleUsecase } from '@usecases/muscle/update.muscle.usecase';
 import { DeleteMuscleUsecase } from '@usecases/muscle/delete.muscle.usecase';
 import { GetExerciseUsecase } from '@usecases/exercise/get.exercise.usecase';
+import { ListSessionsUsecase } from '@usecases/session/list.sessions.usecase';
+import { DeleteSessionUsecase } from '@usecases/session/delete.session.usecase';
+import { UpdateSessionUsecase } from '@usecases/session/update.session.usecase';
+import { CreateSessionUsecase } from '@usecases/session/create.session.usecase';
 import { GetEquipmentUsecase } from '@usecases/equipment/get.equipment.usecase';
 import { ListExercisesUsecase } from '@usecases/exercise/list.exercises.usecase';
 import { ListCategoriesUsecase } from '@usecases/category/list.category.usecase';
@@ -57,6 +62,7 @@ export class Inversify {
   getMuscleUsecase: GetMuscleUsecase;
   updateUserUsecase: UpdateUserUsecase;
   createUserUsecase: CreateUserUsecase;
+  getSessionUsecase: GetSessionUsecase;
   getCategoryUsecase: GetCategoryUsecase;
   listMusclesUsecase: ListMusclesUsecase;
   getExerciseUsecase: GetExerciseUsecase;
@@ -64,8 +70,12 @@ export class Inversify {
   deleteMuscleUsecase: DeleteMuscleUsecase;
   getEquipmentUsecase: GetEquipmentUsecase;
   createMuscleUsecase: CreateMuscleUsecase;
+  listSessionsUsecase: ListSessionsUsecase;
   listEquipmentUsecase: ListEquipmentUsecase;
   listExercisesUsecase: ListExercisesUsecase;
+  createSessionUsecase: CreateSessionUsecase;
+  deleteSessionUsecase: DeleteSessionUsecase;
+  updateSessionUsecase: UpdateSessionUsecase;
   updateCategoryUsecase: UpdateCategoryUsecase;
   createCategoryUsecase: CreateCategoryUsecase;
   listCategoriesUsecase: ListCategoriesUsecase;
@@ -76,6 +86,7 @@ export class Inversify {
   createEquipmentUsecase: CreateEquipmentUsecase;
   updateEquipmentUsecase: UpdateEquipmentUsecase;
   deleteEquipmentUsecase: DeleteEquipmentUsecase;
+  
 
   constructor() {
     /**
@@ -130,6 +141,12 @@ export class Inversify {
     this.listExercisesUsecase = new ListExercisesUsecase(this);
     this.deleteExerciseUsecase = new DeleteExerciseUsecase(this);
     this.updateExerciseUsecase = new UpdateExerciseUsecase(this);
+    // usecase session
+    this.createSessionUsecase = new CreateSessionUsecase(this);
+    this.getSessionUsecase = new GetSessionUsecase(this);
+    this.listSessionsUsecase = new ListSessionsUsecase(this);
+    this.deleteSessionUsecase = new DeleteSessionUsecase(this);
+    this.updateSessionUsecase = new UpdateSessionUsecase(this);
   }
 }
 
