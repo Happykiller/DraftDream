@@ -9,6 +9,7 @@ import { SessionsPanel } from '@pages/programs/SessionsPanel';
 import { EquipmentPanel } from '@pages/programs/EquipmentPanel';
 import { ExercisesPanel } from '@pages/programs/ExercisesPanel';
 import { CategoriesPanel } from '@pages/programs/CategoriesPanel';
+import { ProgramsPanel } from '@pages/programs/ProgramsPanel';
 
 export function Programs(): React.JSX.Element {
   const [params, setParams] = useSearchParams();
@@ -39,12 +40,7 @@ export function Programs(): React.JSX.Element {
       {tab === 'tags' && <TagsPanel />}
       {tab === 'exercices' && <ExercisesPanel />}
       {tab === 'sessions' && <SessionsPanel />}
-
-      {tab === 'programs' && (
-        <div style={{ padding: 16, border: '1px dashed var(--mui-palette-divider)', borderRadius: 8 }}>
-          {tab} management coming next (same pattern: panel + table + dialogs).
-        </div>
-      )}
+      {tab === 'programs' && <ProgramsPanel />}
     </Stack>
   );
 }
