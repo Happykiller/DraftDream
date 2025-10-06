@@ -1,6 +1,6 @@
 // docs\auth.http
 ### auth
-POST {{host}}/graphql
+POST {{host}}
 Content-Type: application/json
 
 {

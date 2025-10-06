@@ -64,3 +64,10 @@ install:
 	 docker load -i fitdesk_showcase.tar && \
 	 docker load -i fitdesk_mobile.tar && \
 	 cd /opt/fitdesk && docker compose --profile prod up -d'
+
+# docker build --no-cache -t fitdesk_backoffice ./backoffice
+# docker save fitdesk_backoffice -o fitdesk_backoffice.tar
+# jump to server
+# sudo docker load -i fitdesk_backoffice.tar
+# sudo docker compose -f docker-compose.prod.yml up -d --force-recreate --no-deps backoffice
+# sudo docker compose -f docker-compose.prod.yml restart nginx

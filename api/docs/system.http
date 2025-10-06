@@ -1,6 +1,6 @@
 
 ###
-POST http://localhost:3000/graphql
+POST {{host}}
 Content-Type: application/json
 X-REQUEST-TYPE: GraphQL
 
@@ -12,7 +12,7 @@ query {
 
 
 ###
-POST http://localhost:3000/graphql
+POST {{host}}
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YmRjZjU0Nzk5ZGNiN2Q3NTVkY2UwZiIsInJvbGUiOiJDT0FDSCIsImVtYWlsIjoiYWxleC5tYXJ0aW5AZXhhbXBsZS5jb20iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzU3NjExMTM2LCJleHAiOjE3NTc2Mzk5MzZ9.jHPBgQongI0LWbkFGennabtfkrm3ET7Lav6TnAQb8w0
 X-REQUEST-TYPE: GraphQL
