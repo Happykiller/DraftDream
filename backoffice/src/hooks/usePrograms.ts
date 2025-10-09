@@ -30,6 +30,7 @@ export interface Program {
   frequency: number;
   description?: string | null;
   sessionIds: string[];
+  userId?: string | null;
   createdBy: string;
   createdAt: string;
   updatedAt: string;
@@ -60,6 +61,7 @@ const LIST_Q = `
         frequency
         description
         sessionIds
+        userId
         createdBy
         createdAt
         updatedAt
@@ -86,6 +88,7 @@ const CREATE_M = `
       frequency
       description
       sessionIds
+      userId
       createdBy
       createdAt
       updatedAt
@@ -108,6 +111,7 @@ const UPDATE_M = `
       frequency
       description
       sessionIds
+      userId
       createdBy
       createdAt
       updatedAt
@@ -132,9 +136,10 @@ export interface UseProgramsParams {
   limit: number;
   q: string;
   createdBy?: string;
+  userId?: string;
 }
 
-export function usePrograms({ page, limit, q, createdBy }: UseProgramsParams) {
+export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsParams) {
   const [items, setItems] = React.useState<Program[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
@@ -153,6 +158,7 @@ export function usePrograms({ page, limit, q, createdBy }: UseProgramsParams) {
             limit,
             q: q || undefined,
             createdBy: createdBy || undefined,
+            userId: userId || undefined,
           },
         },
       });
@@ -164,7 +170,7 @@ export function usePrograms({ page, limit, q, createdBy }: UseProgramsParams) {
     } finally {
       setLoading(false);
     }
-  }, [page, limit, q, createdBy, gql, flash]);
+  }, [page, limit, q, createdBy, userId, gql, flash]);
 
   React.useEffect(() => {
     void load();
@@ -177,6 +183,7 @@ export function usePrograms({ page, limit, q, createdBy }: UseProgramsParams) {
       frequency: number;
       description?: string;
       sessionIds: string[];
+      userId?: string | null;
     }) => {
       try {
         const { errors } = await gql.send<CreateProgramPayload>({
@@ -203,6 +210,7 @@ export function usePrograms({ page, limit, q, createdBy }: UseProgramsParams) {
       frequency?: number;
       description?: string | null;
       sessionIds?: string[];
+      userId?: string | null;
     }) => {
       try {
         const { errors } = await gql.send<UpdateProgramPayload>({
@@ -242,4 +250,3 @@ export function usePrograms({ page, limit, q, createdBy }: UseProgramsParams) {
 
   return { items, total, loading, create, update, remove, reload: load };
 }
-

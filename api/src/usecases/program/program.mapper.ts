@@ -9,6 +9,7 @@ export const mapProgramToUsecase = (program: Program): ProgramUsecaseModel => ({
   frequency: program.frequency,
   description: program.description,
   sessionIds: [...program.sessionIds],
+  userId: program.userId,
   createdBy: typeof program.createdBy === 'string' ? program.createdBy : program.createdBy.id,
   deletedAt: program.deletedAt,
   createdAt: program.createdAt,

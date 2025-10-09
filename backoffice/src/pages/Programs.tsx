@@ -13,7 +13,7 @@ import { ProgramsPanel } from '@pages/programs/ProgramsPanel';
 
 export function Programs(): React.JSX.Element {
   const [params, setParams] = useSearchParams();
-  const tab = (params.get('tab') || 'categories') as string;
+  const tab = (params.get('tab') || 'programs') as string;
 
   const setTab = (val: string) =>
     setParams(prev => {

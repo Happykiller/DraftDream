@@ -28,6 +28,7 @@ export interface ProgramDialogValues {
   frequency: number;
   description: string;
   sessions: ProgramSessionOption[];
+  user: ProgramUserOption | null;
 }
 
 export interface ProgramDialogProps {
@@ -35,6 +36,7 @@ export interface ProgramDialogProps {
   mode: 'create' | 'edit';
   initial?: Program | null;
   sessionOptions: ProgramSessionOption[];
+  userOptions: ProgramUserOption[];
   onClose: () => void;
   onSubmit: (values: ProgramDialogValues) => Promise<void> | void;
 }
@@ -45,6 +47,7 @@ const DEFAULT_VALUES: ProgramDialogValues = {
   frequency: 3,
   description: '',
   sessions: [],
+  user: null,
 };
 
 function mergeSessionOptions(
@@ -78,6 +81,7 @@ export function ProgramDialog({
   mode,
   initial,
   sessionOptions,
+  userOptions,
   onClose,
   onSubmit,
 }: ProgramDialogProps): React.JSX.Element {
@@ -92,11 +96,18 @@ export function ProgramDialog({
         frequency: initial.frequency,
         description: initial.description ?? '',
         sessions: mergeSessionOptions(initial.sessionIds, sessionOptions, initial.sessions),
+        user: ((): ProgramUserOption | null => {
+          if (!initial.userId) return null;
+          const match = userOptions.find(u => u.id === initial.userId);
+          return (
+            match || { id: initial.userId, email: initial.userId }
+          );
+        })(),
       });
     } else {
       setValues(DEFAULT_VALUES);
     }
-  }, [isEdit, initial, sessionOptions, open]);
+  }, [isEdit, initial, sessionOptions, userOptions, open]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -181,6 +192,17 @@ export function ProgramDialog({
             renderInput={(params) => <TextField {...params} label="Sessions" placeholder="Select sessions" />}
           />
 
+          <Autocomplete
+            options={userOptions}
+            value={values.user}
+            onChange={(_, newValue) => setValues(prev => ({ ...prev, user: newValue }))}
+            getOptionLabel={(opt) => opt?.email || ''}
+            isOptionEqualToValue={(opt, val) => opt.id === val.id}
+            renderInput={(params) => (
+              <TextField {...params} label="User (optional)" placeholder="Select a user" />
+            )}
+          />
+
           <DialogActions sx={{ px: 0 }}>
             <Button onClick={onClose} color="inherit">
               Cancel
@@ -193,4 +215,9 @@ export function ProgramDialog({
       </DialogContent>
     </Dialog>
   );
+}
+
+export interface ProgramUserOption {
+  id: string;
+  email: string;
 }

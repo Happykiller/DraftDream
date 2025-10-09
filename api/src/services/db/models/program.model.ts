@@ -11,6 +11,8 @@ export interface Program {
   description?: string;
   /** Ordered list of session IDs. Array index represents the order. */
   sessionIds: string[];
+  /** Optional assigned user id (the owner/assignee of the program). */
+  userId?: string;
   createdBy: string | User;
   deletedAt?: Date;
   createdAt: Date;

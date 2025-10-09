@@ -52,6 +52,7 @@ export class ProgramResolver {
       frequency: input.frequency,
       description: input.description,
       sessionIds: input.sessionIds,
+      userId: input.userId,
       createdBy: req?.user?.id,
     });
     return created ? mapProgramUsecaseToGql(created) : null;
@@ -66,6 +67,7 @@ export class ProgramResolver {
       frequency: input.frequency,
       description: input.description,
       sessionIds: input.sessionIds,
+      userId: input.userId,
     });
     return updated ? mapProgramUsecaseToGql(updated) : null;
   }
@@ -95,6 +97,7 @@ export class ProgramResolver {
     const res = await inversify.listProgramsUsecase.execute({
       q: input?.q,
       createdBy: input?.createdBy,
+      userId: input?.userId,
       limit: input?.limit,
       page: input?.page,
     });

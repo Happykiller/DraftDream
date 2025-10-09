@@ -6,6 +6,7 @@ export type ProgramUsecaseModel = {
   frequency: number;
   description?: string;
   sessionIds: string[];
+  userId?: string;
   createdBy: string;
   deletedAt?: Date;
   createdAt: Date;

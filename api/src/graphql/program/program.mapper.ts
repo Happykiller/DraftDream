@@ -10,6 +10,7 @@ export function mapProgramUsecaseToGql(model: ProgramUsecaseModel): ProgramGql {
     frequency: model.frequency,
     description: model.description,
     sessionIds: [...model.sessionIds],
+    userId: model.userId,
     createdBy: model.createdBy,
     createdAt: model.createdAt,
     updatedAt: model.updatedAt,

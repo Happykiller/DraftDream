@@ -3,10 +3,11 @@ import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
-import { Box, Button, Chip, IconButton, Stack, TextField, Tooltip } from '@mui/material';
+import { Autocomplete, Box, Button, Chip, IconButton, Stack, TextField, Tooltip } from '@mui/material';
 
 import { useDateFormatter } from '@hooks/useDateFormatter';
 import type { Program } from '@hooks/usePrograms';
+import type { ProgramUserOption } from '@components/programs/ProgramDialog';
 
 export interface ProgramTableProps {
   rows: Program[];
@@ -21,6 +22,9 @@ export interface ProgramTableProps {
   onQueryChange: (query: string) => void;
   onPageChange: (page: number) => void;
   onLimitChange: (limit: number) => void;
+  userOptions?: ProgramUserOption[];
+  userFilter?: ProgramUserOption | null;
+  onUserFilterChange?: (user: ProgramUserOption | null) => void;
 }
 
 export const ProgramTable = React.memo(function ProgramTable({
@@ -36,6 +40,9 @@ export const ProgramTable = React.memo(function ProgramTable({
   onQueryChange,
   onPageChange,
   onLimitChange,
+  userOptions,
+  userFilter,
+  onUserFilterChange,
 }: ProgramTableProps): React.JSX.Element {
   const fmtDate = useDateFormatter();
 
@@ -45,13 +52,20 @@ export const ProgramTable = React.memo(function ProgramTable({
       field: 'duration',
       headerName: 'Duration (weeks)',
       width: 150,
-      valueFormatter: (params: any) => `${params.value}`,
+      valueFormatter: (value: any) => `${value}`,
     },
     {
       field: 'frequency',
       headerName: 'Frequency / week',
       width: 160,
-      valueFormatter: (params: any) => `${params.value}`,
+      valueFormatter: (value: any) => `${value}`,
+    },
+    {
+      field: 'userId',
+      headerName: 'User',
+      flex: 1,
+      minWidth: 160,
+      valueFormatter: (value: any) => value || '',
     },
     {
       field: 'sessionIds',
@@ -127,6 +141,17 @@ export const ProgramTable = React.memo(function ProgramTable({
           size="small"
           sx={{ maxWidth: 360 }}
         />
+        {userOptions && (
+          <Autocomplete
+            sx={{ minWidth: 260 }}
+            size="small"
+            options={userOptions}
+            value={userFilter ?? null}
+            onChange={(_, v) => onUserFilterChange && onUserFilterChange(v)}
+            getOptionLabel={(opt) => opt?.email || ''}
+            renderInput={(params) => <TextField {...params} placeholder="Filter by user" />}
+          />)
+        }
         <Box sx={{ flex: 1 }} />
         <Button variant="contained" onClick={onCreate}>
           New Program
@@ -154,4 +179,3 @@ export const ProgramTable = React.memo(function ProgramTable({
     </Box>
   );
 });
-

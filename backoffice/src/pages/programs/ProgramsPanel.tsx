@@ -6,21 +6,24 @@ import { useDebouncedValue } from '@hooks/useDebouncedValue';
 import { useTabParams } from '@hooks/useTabParams';
 import { usePrograms } from '@hooks/usePrograms';
 import { useSessions } from '@hooks/useSessions';
+import { useUsers } from '@hooks/useUsers';
 import { ProgramTable } from '@components/programs/ProgramTable';
-import { ProgramDialog, type ProgramSessionOption, type ProgramDialogValues } from '@components/programs/ProgramDialog';
+import { ProgramDialog, type ProgramSessionOption, type ProgramDialogValues, type ProgramUserOption } from '@components/programs/ProgramDialog';
 import { ConfirmDialog } from '@components/common/ConfirmDialog';
 
 export function ProgramsPanel(): React.JSX.Element {
   const { page, limit, q, setPage, setLimit, setQ } = useTabParams('prog');
   const [searchInput, setSearchInput] = React.useState(q);
+  const [userFilter, setUserFilter] = React.useState<ProgramUserOption | null>(null);
   const debounced = useDebouncedValue(searchInput, 300);
 
   React.useEffect(() => {
     if (debounced !== q) setQ(debounced);
   }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update, remove } = usePrograms({ page, limit, q });
+  const { items, total, loading, create, update, remove } = usePrograms({ page, limit, q, userId: userFilter?.id });
   const { items: sessionItems } = useSessions({ page: 1, limit: 200, q: '' });
+  const { items: userItems } = useUsers({ page: 1, limit: 200, q: '' });
 
   const sessionOptions = React.useMemo<ProgramSessionOption[]>(
     () =>
@@ -32,6 +35,11 @@ export function ProgramsPanel(): React.JSX.Element {
         durationMin: session.durationMin,
       })),
     [sessionItems]
+  );
+
+  const userOptions = React.useMemo<ProgramUserOption[]>(
+    () => userItems.map(u => ({ id: u.id, email: u.email })),
+    [userItems]
   );
 
   const [openCreate, setOpenCreate] = React.useState(false);
@@ -46,6 +54,7 @@ export function ProgramsPanel(): React.JSX.Element {
     frequency: values.frequency,
     description: values.description ? values.description : undefined,
     sessionIds: values.sessions.map((session) => session.id),
+    userId: values.user?.id ?? undefined,
   });
 
   const toUpdateInput = (id: string, values: ProgramDialogValues) => ({
@@ -55,6 +64,7 @@ export function ProgramsPanel(): React.JSX.Element {
     frequency: values.frequency,
     description: values.description ? values.description : undefined,
     sessionIds: values.sessions.map((session) => session.id),
+    userId: values.user?.id ?? undefined,
   });
 
   return (
@@ -72,12 +82,16 @@ export function ProgramsPanel(): React.JSX.Element {
         onQueryChange={setSearchInput}
         onPageChange={setPage}
         onLimitChange={setLimit}
+        userOptions={userOptions}
+        userFilter={userFilter}
+        onUserFilterChange={setUserFilter}
       />
 
       <ProgramDialog
         open={openCreate}
         mode="create"
         sessionOptions={sessionOptions}
+        userOptions={userOptions}
         onClose={() => setOpenCreate(false)}
         onSubmit={(values) => create(toCreateInput(values))}
       />
@@ -87,6 +101,7 @@ export function ProgramsPanel(): React.JSX.Element {
         mode="edit"
         initial={editing}
         sessionOptions={sessionOptions}
+        userOptions={userOptions}
         onClose={() => setEditId(null)}
         onSubmit={(values) => {
           if (!editId) return undefined;
@@ -109,4 +124,3 @@ export function ProgramsPanel(): React.JSX.Element {
     </Box>
   );
 }
-

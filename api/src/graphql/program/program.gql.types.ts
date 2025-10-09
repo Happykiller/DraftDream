@@ -14,6 +14,7 @@ export class ProgramGql {
   /** Ordered list of session IDs */
   @Field(() => [ID]) sessionIds!: string[];
 
+  @Field({ nullable: true }) userId?: string;
   @Field() createdBy!: string;
   @Field() createdAt!: Date;
   @Field() updatedAt!: Date;
@@ -32,6 +33,8 @@ export class CreateProgramInput {
   @Field(() => Int) frequency!: number;
   @Field({ nullable: true }) description?: string;
   @Field(() => [ID]) sessionIds!: string[];
+  /** Optional assigned user id */
+  @Field({ nullable: true }) userId?: string;
 }
 
 @InputType()
@@ -43,12 +46,15 @@ export class UpdateProgramInput {
   @Field({ nullable: true }) description?: string;
   /** Replace the whole ordered list */
   @Field(() => [ID], { nullable: true }) sessionIds?: string[];
+  /** Set/replace the assigned user id */
+  @Field({ nullable: true }) userId?: string;
 }
 
 @InputType()
 export class ListProgramsInput {
   @Field({ nullable: true }) q?: string;
   @Field({ nullable: true }) createdBy?: string;
+  @Field({ nullable: true }) userId?: string;
   @Field(() => Int, { nullable: true }) limit?: number;
   @Field(() => Int, { nullable: true }) page?: number;
 }

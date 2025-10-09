@@ -17,6 +17,7 @@ type ProgramDoc = {
   frequency: number;
   description?: string;
   sessionIds: string[];
+  userId?: ObjectId;
   createdBy: ObjectId;
   deletedAt?: Date;
   createdAt: Date;
@@ -41,6 +42,7 @@ export class BddServiceProgramMongo {
       { key: { updatedAt: -1 }, name: 'by_updatedAt' },
       { key: { deletedAt: 1 }, name: 'by_deletedAt' },
       { key: { createdBy: 1 }, name: 'by_createdBy' },
+      { key: { userId: 1 }, name: 'by_userId' },
     ]);
   }
 
@@ -53,6 +55,7 @@ export class BddServiceProgramMongo {
       frequency: Math.trunc(dto.frequency),
       description: dto.description,
       sessionIds: [...dto.sessionIds],
+      userId: dto.userId ? this.toObjectId(dto.userId) : undefined,
       createdBy: this.toObjectId(dto.createdBy),
       createdAt: now,
       updatedAt: now,
@@ -83,6 +86,7 @@ export class BddServiceProgramMongo {
     const {
       q,
       createdBy,
+      userId,
       includeArchived = false,
       limit = 20,
       page = 1,
@@ -97,6 +101,7 @@ export class BddServiceProgramMongo {
       ];
     }
     if (createdBy) filter.createdBy = this.toObjectId(createdBy);
+    if (userId) filter.userId = this.toObjectId(userId);
     if (!includeArchived) filter.deletedAt = { $exists: false };
 
     const collection = await this.col();
@@ -116,6 +121,7 @@ export class BddServiceProgramMongo {
     if (patch.frequency !== undefined) $set.frequency = Math.trunc(patch.frequency);
     if (patch.description !== undefined) $set.description = patch.description;
     if (patch.sessionIds !== undefined) $set.sessionIds = [...patch.sessionIds];
+    if (patch.userId !== undefined) $set.userId = this.toObjectId(patch.userId);
 
     try {
       const res: any = await (await this.col()).findOneAndUpdate(
@@ -156,6 +162,7 @@ export class BddServiceProgramMongo {
     frequency: doc.frequency,
     description: doc.description,
     sessionIds: [...(doc.sessionIds ?? [])],
+    userId: doc.userId ? doc.userId.toHexString() : undefined,
     createdBy: doc.createdBy.toHexString(),
     deletedAt: doc.deletedAt,
     createdAt: doc.createdAt,

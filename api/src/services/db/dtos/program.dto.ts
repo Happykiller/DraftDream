@@ -6,6 +6,8 @@ export type CreateProgramDto = {
   description?: string;
   /** Ordered list of session IDs (order by array index). */
   sessionIds: string[];
+  /** Optional assigned user id */
+  userId?: string;
   createdBy: string;
 };
 
@@ -14,6 +16,8 @@ export type GetProgramDto = { id: string };
 export type ListProgramsDto = {
   q?: string;
   createdBy?: string;
+  /** Filter by assigned user id */
+  userId?: string;
   includeArchived?: boolean; // default false (exclude deleted items)
   limit?: number;            // default 20
   page?: number;             // default 1
@@ -27,4 +31,6 @@ export type UpdateProgramDto = Partial<{
   description: string;
   /** Replace the whole ordered list */
   sessionIds: string[];
+  /** Set/replace the assigned user id */
+  userId: string;
 }>;
