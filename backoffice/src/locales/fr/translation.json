@@ -1,4 +1,4 @@
-{
+﻿{
   "common": {
     "field_incorrect": "Champ incorrect",
     "brand": {
@@ -6,9 +6,9 @@
       "short": "FitDesk",
       "tagline": "CRM",
       "logo_alt": "Logo FitDesk",
-      "tooltip": "FitDesk CRM v{{version}} - ©2025 - Tous droits réservés",
-      "copyright_short": "©2025",
-      "copyright_full": "©2025 - Tous droits réservés"
+      "tooltip": "FitDesk CRM v{{version}} - 2025 - Tous droits réservés",
+      "copyright_short": "2025",
+      "copyright_full": "2025 - Tous droits réservés"
     },
     "alerts": {
       "unexpected_error": "Erreur inattendue, veuillez réessayer."
@@ -60,7 +60,20 @@
       "muscles": "Muscles",
       "tags": "Tags",
       "equipment": "Équipement",
-      "title": "Titre"
+      "title": "Titre",
+      "level": "Niveau",
+      "series": "Séries",
+      "repetitions": "Répétitions",
+      "charge": "Charge",
+      "rest_seconds": "Repos (sec)",
+      "video_url": "URL vidéo",
+      "instructions": "Instructions",
+      "category": "Catégorie",
+      "primary_muscles": "Muscles principaux",
+      "secondary_muscles": "Muscles secondaires",
+      "secondary_muscles_optional": "Muscles secondaires (optionnel)",
+      "equipment_optional": "Équipement (optionnel)",
+      "tags_optional": "Tags (optionnel)"
     },
     "status": {
       "active": "Actif",
@@ -91,7 +104,7 @@
     "tooltips": {
       "edit": "Modifier",
       "delete": "Supprimer",
-      "version": "FitDesk CRM v{{version}} - ©2025 - Tous droits réservés"
+      "version": "FitDesk CRM v{{version}} - 2025 - Tous droits réservés"
     },
     "messages": {
       "no_value": "-",

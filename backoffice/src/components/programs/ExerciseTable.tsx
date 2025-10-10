@@ -4,13 +4,14 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Button, Stack, TextField, IconButton, Tooltip, Chip } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import type { Exercise } from '@hooks/useExercises';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 
 export interface ExerciseTableProps {
   rows: Exercise[];
   total: number;
-  page: number;   // 1-based
+  page: number; // 1-based
   limit: number;
   q: string;
   loading: boolean;
@@ -23,76 +24,115 @@ export interface ExerciseTableProps {
 }
 
 export const ExerciseTable = React.memo(function ExerciseTable({
-  rows, total, page, limit, q, loading, onCreate, onEdit, onDelete, onQueryChange, onPageChange, onLimitChange,
+  rows,
+  total,
+  page,
+  limit,
+  q,
+  loading,
+  onCreate,
+  onEdit,
+  onDelete,
+  onQueryChange,
+  onPageChange,
+  onLimitChange,
 }: ExerciseTableProps): React.JSX.Element {
   const fmtDate = useDateFormatter();
+  const { t } = useTranslation();
 
   const columns = React.useMemo<GridColDef<Exercise>[]>(() => [
-    { field: 'slug', headerName: 'Slug', flex: 1, minWidth: 140 },
-    { field: 'name', headerName: 'Name', flex: 1.4, minWidth: 160 },
-    { field: 'locale', headerName: 'Locale', width: 90 },
-    { field: 'level', headerName: 'Level', width: 130 },
-    { field: 'series', headerName: 'Series', width: 110 },
-    { field: 'repetitions', headerName: 'Reps', width: 110 },
+    { field: 'slug', headerName: t('common.labels.slug'), flex: 1, minWidth: 140 },
+    { field: 'name', headerName: t('common.labels.name'), flex: 1.4, minWidth: 160 },
+    { field: 'locale', headerName: t('common.labels.locale'), width: 90 },
+    { field: 'level', headerName: t('common.labels.level'), width: 130 },
+    { field: 'series', headerName: t('common.labels.series'), width: 110 },
+    { field: 'repetitions', headerName: t('common.labels.repetitions'), width: 110 },
     {
       field: 'videoUrl',
-      headerName: 'Video',
-      width: 100,
-      renderCell: (p) => p.row.videoUrl ? <Chip size="small" label="Link" component="a" href={p.row.videoUrl} clickable target="_blank" rel="noreferrer" /> : null,
-      sortable: false, filterable: false,
-    },
-    {
-      field: 'creator',
-      headerName: 'Creator',
-      flex: 1,
-      minWidth: 170,
-      valueFormatter: (p: any) => p?.email ?? '',
-    },
-    { field: 'visibility', headerName: 'Visibility', width: 130 },
-    { field: 'createdAt', headerName: 'Created', valueFormatter: (p: any) => fmtDate(p), flex: 1, minWidth: 170 },
-    { field: 'updatedAt', headerName: 'Updated', valueFormatter: (p: any) => fmtDate(p), flex: 1, minWidth: 170 },
-    {
-      field: 'actions',
-      headerName: 'Actions',
+      headerName: t('common.labels.video_url'),
       width: 120,
       sortable: false,
       filterable: false,
-      renderCell: (p) => (
+      renderCell: (params) =>
+        params.row.videoUrl ? (
+          <Chip
+            size="small"
+            label={t('common.buttons.open')}
+            component="a"
+            href={params.row.videoUrl}
+            clickable
+            target="_blank"
+            rel="noreferrer"
+          />
+        ) : null,
+    },
+    {
+      field: 'creator',
+      headerName: t('common.labels.creator'),
+      flex: 1,
+      minWidth: 170,
+      valueFormatter: (value: any) => value?.email ?? '',
+    },
+    { field: 'visibility', headerName: t('common.labels.visibility'), width: 130 },
+    { field: 'createdAt', headerName: t('common.labels.created'), valueFormatter: (value: any) => fmtDate(value), flex: 1, minWidth: 170 },
+    { field: 'updatedAt', headerName: t('common.labels.updated'), valueFormatter: (value: any) => fmtDate(value), flex: 1, minWidth: 170 },
+    {
+      field: 'actions',
+      headerName: t('common.labels.actions'),
+      width: 120,
+      sortable: false,
+      filterable: false,
+      renderCell: (params) => (
         <Stack direction="row" spacing={0.5}>
-          <Tooltip title="Edit"><IconButton size="small" aria-label={`edit-${p.row.id}`} onClick={() => onEdit(p.row)}><EditIcon fontSize="small" /></IconButton></Tooltip>
-          <Tooltip title="Delete"><IconButton size="small" aria-label={`delete-${p.row.id}`} onClick={() => onDelete(p.row)}><DeleteIcon fontSize="small" /></IconButton></Tooltip>
+          <Tooltip title={t('common.tooltips.edit')}>
+            <IconButton size="small" aria-label={`edit-${params.row.id}`} onClick={() => onEdit(params.row)}>
+              <EditIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title={t('common.tooltips.delete')}>
+            <IconButton size="small" aria-label={`delete-${params.row.id}`} onClick={() => onDelete(params.row)}>
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
         </Stack>
       ),
     },
-  ], [onEdit, onDelete, fmtDate]);
+  ], [fmtDate, onDelete, onEdit, t]);
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ mb: 1 }} alignItems={{ xs: 'stretch', sm: 'center' }}>
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        spacing={1}
+        sx={{ mb: 1 }}
+        alignItems={{ xs: 'stretch', sm: 'center' }}
+      >
         <TextField
-          placeholder="Search…"
+          placeholder={t('programs.exercises.search_placeholder')}
           value={q}
-          onChange={(e) => onQueryChange(e.target.value)}
+          onChange={(event) => onQueryChange(event.target.value)}
           inputProps={{ 'aria-label': 'search-exercises' }}
           size="small"
           sx={{ maxWidth: 360 }}
         />
         <Box sx={{ flex: 1 }} />
-        <Button variant="contained" onClick={onCreate}>New Exercise</Button>
+        <Button variant="contained" onClick={onCreate}>
+          {t('programs.exercises.create')}
+        </Button>
       </Stack>
 
       <DataGrid
         rows={rows}
         columns={columns}
-        getRowId={(r) => r.id}
+        getRowId={(row) => row.id}
         loading={loading}
         rowCount={total}
         paginationMode="server"
         sortingMode="client"
         paginationModel={{ page: page - 1, pageSize: limit }}
-        onPaginationModelChange={(m) => {
-          if (m.page !== page - 1) onPageChange(m.page + 1);
-          if (m.pageSize !== limit) onLimitChange(m.pageSize);
+        onPaginationModelChange={(model) => {
+          if (model.page !== page - 1) onPageChange(model.page + 1);
+          if (model.pageSize !== limit) onLimitChange(model.pageSize);
         }}
         pageSizeOptions={[5, 10, 25, 50]}
         disableRowSelectionOnClick

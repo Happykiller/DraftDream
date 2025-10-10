@@ -1,5 +1,5 @@
 // src/pages/programs/CategoriesPanel.tsx
-import * as React from 'react';
+import * as React from 'react';`nimport { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 import { useTabParams } from '@hooks/useTabParams';
 import { useCategories } from '@hooks/useCategories';
@@ -14,7 +14,7 @@ export function CategoriesPanel(): React.JSX.Element {
   const debounced = useDebouncedValue(searchInput, 300);
   React.useEffect(() => { if (debounced !== q) setQ(debounced); }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update, remove } = useCategories({ page, limit, q });
+  const { items, total, loading, create, update, remove } = useCategories({ page, limit, q });`n  const { t } = useTranslation();
 
   const [openCreate, setOpenCreate] = React.useState(false);
   const [editId, setEditId] = React.useState<string | null>(null);
@@ -53,11 +53,11 @@ export function CategoriesPanel(): React.JSX.Element {
       />
       <ConfirmDialog
         open={!!deleteId}
-        title="Delete category"
-        message="This action cannot be undone."
+        title={t('programs.categories.confirm.delete_title')}
+        message={t('common.messages.confirm_deletion_warning')}
         onClose={() => setDeleteId(null)}
         onConfirm={() => { if (deleteId) remove(deleteId).finally(() => setDeleteId(null)); }}
-        confirmLabel="Delete"
+        confirmLabel={t('common.buttons.delete')}
       />
     </Box>
   );

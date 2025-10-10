@@ -41,64 +41,64 @@ export const SessionTables = React.memo(function SessionTables({
   const { t } = useTranslation();
 
   const columns = React.useMemo<GridColDef<Session>[]>(() => [
-    { field: 'slug', headerName: 'Slug', flex: 1, minWidth: 160 },
-    { field: 'title', headerName: 'Title', flex: 1.4, minWidth: 180 },
-    { field: 'locale', headerName: 'Locale', width: 100 },
+    { field: 'slug', headerName: t('common.labels.slug'), flex: 1, minWidth: 160 },
+    { field: 'title', headerName: t('common.labels.title'), flex: 1.4, minWidth: 180 },
+    { field: 'locale', headerName: t('common.labels.locale'), width: 100 },
     {
       field: 'durationMin',
-      headerName: 'Duration (min)',
+      headerName: t('common.labels.duration_minutes'),
       width: 130,
       valueFormatter: (params:any) => `${params.value}`,
     },
     {
       field: 'exerciseIds',
-      headerName: 'Exercises',
+      headerName: t('common.labels.exercises'),
       width: 140,
       sortable: false,
       filterable: false,
       renderCell: (p) => (
         <Chip
           size="small"
-          label={`${p.row.exerciseIds.length} linked`}
+          label={t('programs.sessions.table.exercises_linked', { count: p.row.exerciseIds.length })}
           color={p.row.exerciseIds.length > 0 ? 'primary' : 'default'}
         />
       ),
     },
     {
       field: 'creator',
-      headerName: 'Creator',
+      headerName: t('common.labels.creator'),
       flex: 1,
       minWidth: 170,
       valueFormatter: (p: any) => p?.email ?? '',
     },
     {
       field: 'createdAt',
-      headerName: 'Created',
+      headerName: t('common.labels.created'),
       flex: 1,
       minWidth: 170,
       valueFormatter: (p: any) => fmtDate(p),
     },
     {
       field: 'updatedAt',
-      headerName: 'Updated',
+      headerName: t('common.labels.updated'),
       flex: 1,
       minWidth: 170,
       valueFormatter: (p: any) => fmtDate(p),
     },
     {
       field: 'actions',
-      headerName: 'Actions',
+      headerName: t('common.labels.actions'),
       width: 120,
       sortable: false,
       filterable: false,
       renderCell: (p) => (
         <Stack direction="row" spacing={0.5}>
-          <Tooltip title="Edit">
+          <Tooltip title={t('common.tooltips.edit')}>
             <IconButton size="small" aria-label={`edit-${p.row.id}`} onClick={() => onEdit(p.row)}>
               <EditIcon fontSize="small" />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Delete">
+          <Tooltip title={t('common.tooltips.delete')}>
             <IconButton size="small" aria-label={`delete-${p.row.id}`} onClick={() => onDelete(p.row)}>
               <DeleteIcon fontSize="small" />
             </IconButton>
@@ -106,7 +106,7 @@ export const SessionTables = React.memo(function SessionTables({
         </Stack>
       ),
     },
-  ], [onEdit, onDelete, fmtDate]);
+  ], [onEdit, onDelete, fmtDate, t]);
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -117,7 +117,7 @@ export const SessionTables = React.memo(function SessionTables({
         alignItems={{ xs: 'stretch', sm: 'center' }}
       >
         <TextField
-          placeholder="Search..."
+          placeholder={t('programs.sessions.search_placeholder')}
           value={q}
           onChange={(e) => onQueryChange(e.target.value)}
           inputProps={{ 'aria-label': 'search-sessions' }}
@@ -126,7 +126,7 @@ export const SessionTables = React.memo(function SessionTables({
         />
         <Box sx={{ flex: 1 }} />
         <Button variant="contained" onClick={onCreate}>
-          New Session
+          {t('programs.sessions.create')}
         </Button>
       </Stack>
 

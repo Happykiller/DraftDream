@@ -1,4 +1,4 @@
-{
+﻿{
   "common": {
     "field_incorrect": "Incorrect field",
     "brand": {
@@ -6,9 +6,9 @@
       "short": "FitDesk",
       "tagline": "CRM",
       "logo_alt": "FitDesk logo",
-      "tooltip": "FitDesk CRM v{{version}} · ©2025 - All rights reserved",
-      "copyright_short": "©2025",
-      "copyright_full": "©2025 - All rights reserved"
+      "tooltip": "FitDesk CRM v{{version}} - 2025 - All rights reserved",
+      "copyright_short": "2025",
+      "copyright_full": "2025 - All rights reserved"
     },
     "alerts": {
       "unexpected_error": "Unexpected error, please try again."
@@ -25,7 +25,7 @@
       "error": "Error",
       "warning": "Warning",
       "info": "Info",
-      "custom": "Custom",
+      "custom": "Custom",`n      "open": "Open",
       "run_task": "Run task",
       "go_unknown": "Go unknown"
     },
@@ -60,7 +60,20 @@
       "muscles": "Muscles",
       "tags": "Tags",
       "equipment": "Equipment",
-      "title": "Title"
+      "title": "Title",
+      "level": "Level",
+      "series": "Series",
+      "repetitions": "Repetitions",
+      "charge": "Load",
+      "rest_seconds": "Rest (sec)",
+      "video_url": "Video URL",
+      "instructions": "Instructions",
+      "category": "Category",
+      "primary_muscles": "Primary muscles",
+      "secondary_muscles": "Secondary muscles",
+      "secondary_muscles_optional": "Secondary muscles (optional)",
+      "equipment_optional": "Equipment (optional)",
+      "tags_optional": "Tags (optional)"
     },
     "status": {
       "active": "Active",
