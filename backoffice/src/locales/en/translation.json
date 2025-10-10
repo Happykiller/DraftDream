@@ -25,7 +25,8 @@
       "error": "Error",
       "warning": "Warning",
       "info": "Info",
-      "custom": "Custom",`n      "open": "Open",
+      "custom": "Custom",
+      "open": "Open",
       "run_task": "Run task",
       "go_unknown": "Go unknown"
     },

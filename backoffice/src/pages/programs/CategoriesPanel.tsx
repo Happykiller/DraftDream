@@ -1,6 +1,7 @@
 // src/pages/programs/CategoriesPanel.tsx
-import * as React from 'react';`nimport { useTranslation } from 'react-i18next';
+import * as React from 'react';
 import { Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { useTabParams } from '@hooks/useTabParams';
 import { useCategories } from '@hooks/useCategories';
 import { useDebouncedValue } from '@hooks/useDebouncedValue';
@@ -14,7 +15,8 @@ export function CategoriesPanel(): React.JSX.Element {
   const debounced = useDebouncedValue(searchInput, 300);
   React.useEffect(() => { if (debounced !== q) setQ(debounced); }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update, remove } = useCategories({ page, limit, q });`n  const { t } = useTranslation();
+  const { items, total, loading, create, update, remove } = useCategories({ page, limit, q });
+  const { t } = useTranslation();
 
   const [openCreate, setOpenCreate] = React.useState(false);
   const [editId, setEditId] = React.useState<string | null>(null);
