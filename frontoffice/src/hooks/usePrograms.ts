@@ -1,0 +1,252 @@
+// src/hooks/usePrograms.ts
+import * as React from 'react';
+import inversify from '@src/commons/inversify';
+import { useFlashStore } from '@hooks/useFlashStore';
+import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
+
+export interface ProgramCreator {
+  id: string;
+  email: string;
+}
+
+export interface ProgramSession {
+  id: string;
+  slug: string;
+  locale: string;
+  title: string;
+  durationMin: number;
+  description?: string | null;
+  exerciseIds: string[];
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+  creator?: ProgramCreator | null;
+}
+
+export interface Program {
+  id: string;
+  name: string;
+  duration: number;
+  frequency: number;
+  description?: string | null;
+  sessionIds: string[];
+  userId?: string | null;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+  creator?: ProgramCreator | null;
+  sessions: ProgramSession[];
+}
+
+type ProgramListPayload = {
+  program_list: {
+    items: Program[];
+    total: number;
+    page: number;
+    limit: number;
+  };
+};
+
+type CreateProgramPayload = { program_create: Program };
+type UpdateProgramPayload = { program_update: Program };
+type DeleteProgramPayload = { program_delete: boolean };
+
+const LIST_Q = `
+  query ListPrograms($input: ListProgramsInput) {
+    program_list(input: $input) {
+      items {
+        id
+        name
+        duration
+        frequency
+        description
+        sessionIds
+        userId
+        createdBy
+        createdAt
+        updatedAt
+        creator { id email }
+        sessions {
+          id slug locale title durationMin description exerciseIds
+          createdBy createdAt updatedAt
+          creator { id email }
+        }
+      }
+      total
+      page
+      limit
+    }
+  }
+`;
+
+const CREATE_M = `
+  mutation CreateProgram($input: CreateProgramInput!) {
+    program_create(input: $input) {
+      id
+      name
+      duration
+      frequency
+      description
+      sessionIds
+      userId
+      createdBy
+      createdAt
+      updatedAt
+      creator { id email }
+      sessions {
+        id slug locale title durationMin description exerciseIds
+        createdBy createdAt updatedAt
+        creator { id email }
+      }
+    }
+  }
+`;
+
+const UPDATE_M = `
+  mutation UpdateProgram($input: UpdateProgramInput!) {
+    program_update(input: $input) {
+      id
+      name
+      duration
+      frequency
+      description
+      sessionIds
+      userId
+      createdBy
+      createdAt
+      updatedAt
+      creator { id email }
+      sessions {
+        id slug locale title durationMin description exerciseIds
+        createdBy createdAt updatedAt
+        creator { id email }
+      }
+    }
+  }
+`;
+
+const DELETE_M = `
+  mutation DeleteProgram($id: ID!) {
+    program_delete(id: $id)
+  }
+`;
+
+export interface UseProgramsParams {
+  page: number; // 1-based
+  limit: number;
+  q: string;
+  createdBy?: string;
+  userId?: string;
+}
+
+export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsParams) {
+  const [items, setItems] = React.useState<Program[]>([]);
+  const [total, setTotal] = React.useState(0);
+  const [loading, setLoading] = React.useState(false);
+  const flash = useFlashStore();
+  const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
+
+  const load = React.useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data, errors } = await gql.send<ProgramListPayload>({
+        query: LIST_Q,
+        operationName: 'ListPrograms',
+        variables: {
+          input: {
+            page,
+            limit,
+            q: q || undefined,
+            createdBy: createdBy || undefined,
+            userId: userId || undefined,
+          },
+        },
+      });
+      if (errors?.length) throw new Error(errors[0].message);
+      setItems(data?.program_list.items ?? []);
+      setTotal(data?.program_list.total ?? 0);
+    } catch (e: any) {
+      flash.error(e?.message ?? 'Failed to load programs');
+    } finally {
+      setLoading(false);
+    }
+  }, [page, limit, q, createdBy, userId, gql, flash]);
+
+  React.useEffect(() => {
+    void load();
+  }, [load]);
+
+  const create = React.useCallback(
+    async (input: {
+      name: string;
+      duration: number;
+      frequency: number;
+      description?: string;
+      sessionIds: string[];
+      userId?: string | null;
+    }) => {
+      try {
+        const { errors } = await gql.send<CreateProgramPayload>({
+          query: CREATE_M,
+          operationName: 'CreateProgram',
+          variables: { input },
+        });
+        if (errors?.length) throw new Error(errors[0].message);
+        flash.success('Program created');
+        await load();
+      } catch (e: any) {
+        flash.error(e?.message ?? 'Create failed');
+        throw e;
+      }
+    },
+    [gql, flash, load]
+  );
+
+  const update = React.useCallback(
+    async (input: {
+      id: string;
+      name?: string;
+      duration?: number;
+      frequency?: number;
+      description?: string | null;
+      sessionIds?: string[];
+      userId?: string | null;
+    }) => {
+      try {
+        const { errors } = await gql.send<UpdateProgramPayload>({
+          query: UPDATE_M,
+          operationName: 'UpdateProgram',
+          variables: { input },
+        });
+        if (errors?.length) throw new Error(errors[0].message);
+        flash.success('Program updated');
+        await load();
+      } catch (e: any) {
+        flash.error(e?.message ?? 'Update failed');
+        throw e;
+      }
+    },
+    [gql, flash, load]
+  );
+
+  const remove = React.useCallback(
+    async (id: string) => {
+      try {
+        const { errors } = await gql.send<DeleteProgramPayload>({
+          query: DELETE_M,
+          operationName: 'DeleteProgram',
+          variables: { id },
+        });
+        if (errors?.length) throw new Error(errors[0].message);
+        flash.success('Program deleted');
+        await load();
+      } catch (e: any) {
+        flash.error(e?.message ?? 'Delete failed');
+        throw e;
+      }
+    },
+    [gql, flash, load]
+  );
+
+  return { items, total, loading, create, update, remove, reload: load };
+}

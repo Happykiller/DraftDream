@@ -30,7 +30,54 @@
   },
   "programs-coatch": {
     "title": "Programmes",
-    "placeholder": "Programmes d'entraînement"
+    "placeholder": "Programmes d'entrainement",
+    "actions": {
+      "open_builder": "Creer un programme",
+      "close_builder": "Fermer le createur"
+    },
+    "builder": {
+      "title": "Createur de programme simplifie",
+      "subtitle": "Glissez deposer les seances et exercices pour composer un programme sur mesure.",
+      "config": {
+        "title": "Configuration du programme",
+        "client_label": "Athlete",
+        "client_placeholder": "Ex: Programme perte de poids",
+        "program_name_label": "Nom du programme",
+        "duration_label": "Duree (sem.)",
+        "frequency_label": "Freq./sem.",
+        "description_label": "Description",
+        "description_placeholder": "Objectifs et details...",
+        "search_placeholder": "Rechercher une seance...",
+        "filter_label": "Categorie",
+        "filter_all": "Toutes categories",
+        "button_create": "Creer une seance"
+      },
+      "templates_title": "Templates de seances",
+      "templates_subtitle": "Glissez une seance ou cliquez pour l'ajouter.",
+      "structure": {
+        "title": "Structure du programme",
+        "summary": "{{count}} seances",
+        "empty": "Glissez une seance depuis la colonne de gauche pour demarrer.",
+        "session_prefix": "Seance",
+        "duration_unit": "min",
+        "tags_label": "Groupes cibles"
+      },
+      "library": {
+        "title": "Bibliotheque d'exercices",
+        "search_placeholder": "Rechercher un exercice...",
+        "primary_filter_label": "Categorie",
+        "primary_filter_all": "Toutes categories",
+        "secondary_filter_label": "Type",
+        "secondary_filter_all": "Tous les types",
+        "button_create": "Creer un exercice",
+        "subtitle": "Glissez un exercice sur une seance pour l'ajouter."
+      },
+      "footer": {
+        "cancel": "Annuler",
+        "submit": "Creer le programme"
+      },
+      "draft_label": "Brouillon"
+    }
   },
   "sandbox": {
     "title": "Bac à sable",
