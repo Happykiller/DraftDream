@@ -3,8 +3,9 @@ import * as React from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Box, CssBaseline, Drawer, Toolbar, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { session } from '@stores/session';
+import { useTranslation } from 'react-i18next';
 
+import { session } from '@stores/session';
 import { LayoutAppBar } from './components/LayoutAppBar';
 import { Sidebar } from './components/Sidebar';
 import { useNavItems } from './hooks/useNavItems';
@@ -17,6 +18,7 @@ export function ProtectedLayout(): React.JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { t } = useTranslation();
 
   // Session snapshot once per render (no live subscription => 0 regression)
   const snap = React.useMemo(() => session.getState(), []);
@@ -26,10 +28,13 @@ export function ProtectedLayout(): React.JSX.Element {
   const { open: mobileOpen, toggle, close } = useMobileDrawer();
 
   const current = React.useMemo(
-    () => items.find(i => isSelectedPath(location.pathname, i.path)),
-    [items, location.pathname]
+    () => items.find((i) => isSelectedPath(location.pathname, i.path)),
+    [items, location.pathname],
   );
-  const pageTitle = current?.label ?? 'home';
+
+  const defaultTitle = t('home.title');
+  const pageTitle = current?.label ?? defaultTitle;
+  const fullTitle = t('app.title_template', { page: pageTitle });
 
   const handleSelectPath = React.useCallback(
     (path: string, external?: boolean) => {
@@ -40,7 +45,7 @@ export function ProtectedLayout(): React.JSX.Element {
       }
       if (isMobile) close();
     },
-    [navigate, isMobile, close]
+    [navigate, isMobile, close],
   );
 
   const handleLogout = React.useCallback(() => {
@@ -54,15 +59,15 @@ export function ProtectedLayout(): React.JSX.Element {
   }, [navigate, isMobile, close]);
 
   React.useEffect(() => {
-    // Comment in English: Keep browser tab title synced with current page title.
-    document.title = `${pageTitle} • FitDesk`;
-  }, [pageTitle]);
+    // Keep browser tab title synced with current page title.
+    document.title = fullTitle;
+  }, [fullTitle]);
 
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
 
-      {/* AppBar — width compensation is applied on main container instead of AppBar for simplicity */}
+      {/* AppBar – width compensation is applied on main container instead of AppBar for simplicity */}
       <LayoutAppBar
         pageTitle={pageTitle}
         userName={`${snap.name_first} ${snap.name_last}`}
@@ -89,7 +94,12 @@ export function ProtectedLayout(): React.JSX.Element {
           }}
           sx={{ display: { xs: 'block', sm: 'none' } }}
         >
-          <Sidebar items={items} currentPath={location.pathname} onSelectPath={handleSelectPath} onGoHome={goHome} />
+          <Sidebar
+            items={items}
+            currentPath={location.pathname}
+            onSelectPath={handleSelectPath}
+            onGoHome={goHome}
+          />
         </Drawer>
 
         {/* Permanent */}
@@ -108,7 +118,12 @@ export function ProtectedLayout(): React.JSX.Element {
           }}
           sx={{ display: { xs: 'none', sm: 'block' } }}
         >
-          <Sidebar items={items} currentPath={location.pathname} onSelectPath={handleSelectPath} onGoHome={goHome} />
+          <Sidebar
+            items={items}
+            currentPath={location.pathname}
+            onSelectPath={handleSelectPath}
+            onGoHome={goHome}
+          />
         </Drawer>
       </Box>
 

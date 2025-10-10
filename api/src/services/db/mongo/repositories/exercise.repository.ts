@@ -51,10 +51,8 @@ export class BddServiceExerciseMongo {
         key: { slug: 1, locale: 1 },
         name: 'uniq_active_slug_locale',
         unique: true,
-        partialFilterExpression: { archived: false },
       },
       { key: { updatedAt: -1 }, name: 'by_updatedAt' },
-      { key: { archived: 1 }, name: 'by_archived' },
       { key: { createdBy: 1 }, name: 'by_createdBy' },
       { key: { visibility: 1 }, name: 'by_visibility' },
       { key: { level: 1 }, name: 'by_level' },
@@ -100,7 +98,7 @@ export class BddServiceExerciseMongo {
     }
   }
 
-  /** Get by id (includes archived items). */
+  /** Get by id. */
   async get(dto: GetExerciseDto): Promise<Exercise | null> {
     try {
       const _id = new ObjectId(dto.id);
@@ -111,7 +109,7 @@ export class BddServiceExerciseMongo {
     }
   }
 
-  /** Paginated list. Excludes archived by default (includeArchived=true to include). */
+  /** Paginated list. */
   async list(params: ListExercisesDto = {}) {
     const {
       q,

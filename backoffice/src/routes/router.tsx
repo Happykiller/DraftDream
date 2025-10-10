@@ -1,5 +1,4 @@
 // src/routes/router.tsx
-import { t } from 'i18next';
 import { Box, CircularProgress } from '@mui/material';
 import { createBrowserRouter, redirect } from 'react-router-dom';
 
@@ -42,7 +41,7 @@ export const router = createBrowserRouter([
         path: '/login',
         lazy: async () => {
           const mod = await import('@src/pages/Login');
-          return { Component: withTitle(mod.Login, t('login.title')) };
+          return { Component: withTitle(mod.Login, 'login.title') };
         },
       },
     ],

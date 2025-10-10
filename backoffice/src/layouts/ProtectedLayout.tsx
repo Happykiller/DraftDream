@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Box, CssBaseline, Drawer, Toolbar, useMediaQuery } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { session } from '@stores/session';
 import { isSelectedPath } from '@layouts/navMatch';
@@ -17,6 +18,7 @@ export function ProtectedLayout(): React.JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { t } = useTranslation();
 
   // Session snapshot once per render (no live subscription => 0 regression)
   const snap = React.useMemo(() => session.getState(), []);
@@ -26,10 +28,10 @@ export function ProtectedLayout(): React.JSX.Element {
   const { open: mobileOpen, toggle, close } = useMobileDrawer();
 
   const current = React.useMemo(
-    () => items.find(i => isSelectedPath(location.pathname, i.path)),
+    () => items.find((item) => isSelectedPath(location.pathname, item.path)),
     [items, location.pathname]
   );
-  const pageTitle = current?.label ?? 'home';
+  const pageTitle = current?.label ?? t('home.title');
 
   const handleSelectPath = React.useCallback(
     (path: string, external?: boolean) => {
@@ -54,15 +56,14 @@ export function ProtectedLayout(): React.JSX.Element {
   }, [navigate, isMobile, close]);
 
   React.useEffect(() => {
-    // Comment in English: Keep browser tab title synced with current page title.
-    document.title = `${pageTitle} • FitDesk BO`;
-  }, [pageTitle]);
+    document.title = `${pageTitle} - ${t('common.brand.full')}`;
+  }, [pageTitle, t]);
 
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
 
-      {/* AppBar — width compensation is applied on main container instead of AppBar for simplicity */}
+      {/* AppBar width compensation is applied on main container instead of AppBar for simplicity */}
       <LayoutAppBar
         pageTitle={pageTitle}
         userName={`${snap.name_first} ${snap.name_last}`}
@@ -89,7 +90,12 @@ export function ProtectedLayout(): React.JSX.Element {
           }}
           sx={{ display: { xs: 'block', sm: 'none' } }}
         >
-          <Sidebar items={items} currentPath={location.pathname} onSelectPath={handleSelectPath} onGoHome={goHome} />
+          <Sidebar
+            items={items}
+            currentPath={location.pathname}
+            onSelectPath={handleSelectPath}
+            onGoHome={goHome}
+          />
         </Drawer>
 
         {/* Permanent */}
@@ -108,7 +114,12 @@ export function ProtectedLayout(): React.JSX.Element {
           }}
           sx={{ display: { xs: 'none', sm: 'block' } }}
         >
-          <Sidebar items={items} currentPath={location.pathname} onSelectPath={handleSelectPath} onGoHome={goHome} />
+          <Sidebar
+            items={items}
+            currentPath={location.pathname}
+            onSelectPath={handleSelectPath}
+            onGoHome={goHome}
+          />
         </Drawer>
       </Box>
 

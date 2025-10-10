@@ -1,8 +1,17 @@
 {
-  "common": {
-    "field_incorrect": "Champs incorrect"
+  "app": {
+    "name": "FitDesk",
+    "product": "FitDesk CRM",
+    "logo_alt": "Logo FitDesk",
+    "title_template": "{{page}} – FitDesk",
+    "version_tooltip": "{{product}} v{{version}} – ©{{year}} - Tous droits réservés",
+    "version_year_short": "©{{year}}",
+    "version_year_full": "©{{year}} - Tous droits réservés"
   },
-
+  "common": {
+    "field_incorrect": "Champ incorrect",
+    "unexpected_error": "Erreur inattendue, veuillez réessayer."
+  },
   "login": {
     "title": "Connexion",
     "email": "Adresse e-mail",
@@ -11,44 +20,83 @@
     "success": "Connexion réussie : {{name}} !",
     "button": "Se connecter"
   },
-
   "home": {
-    "title": "Tableau de bord"
+    "title": "Tableau de bord",
+    "placeholder": "Bonjour"
   },
-
   "clients": {
-    "title": "Clients"
+    "title": "Clients",
+    "placeholder": "Clients"
   },
-
   "programs-coatch": {
-    "title": "Programmes"
+    "title": "Programmes",
+    "placeholder": "Programmes d'entraînement"
   },
-
   "sandbox": {
-    "title": "Bac à sable"
+    "title": "Bac à sable",
+    "input_card": {
+      "title": "Champ de saisie",
+      "label": "E-mail",
+      "tooltip": "Saisissez une adresse e-mail valide"
+    },
+    "flash_card": {
+      "title": "Messages flash",
+      "buttons": {
+        "success": "Succès",
+        "error": "Erreur",
+        "warning": "Avertissement",
+        "info": "Info",
+        "custom": "Personnalisé"
+      },
+      "aria": {
+        "success": "Afficher un message de succès",
+        "error": "Afficher un message d'erreur",
+        "warning": "Afficher un message d'avertissement",
+        "info": "Afficher un message d'information",
+        "custom": "Afficher un message personnalisé"
+      },
+      "messages": {
+        "success": "Opération réalisée avec succès.",
+        "error": "Une erreur est survenue.",
+        "warning": "Veuillez revérifier vos saisies.",
+        "info": "Attention ! Voici une information.",
+        "custom": "Message personnalisé (bouton contour)."
+      }
+    },
+    "loader_card": {
+      "title": "Test du loader",
+      "description": "Cliquez ci-dessous pour simuler une tâche asynchrone de 2 s avec le loader.",
+      "button": "Lancer la tâche"
+    },
+    "not_found_card": {
+      "title": "Page introuvable",
+      "button": "Aller vers l'inconnu"
+    }
   },
-
   "not_found": {
     "page": {
       "title": "Non trouvé"
     }
   },
-
   "sidebar": {
-    "go_home": "Aller à l'accueil"
+    "go_home": "Aller à l'accueil",
+    "tagline": "CRM",
+    "open_navigation": "Ouvrir la navigation"
   },
-
+  "footer": {
+    "version_label": "v{{version}}",
+    "year_short": "©{{year}}",
+    "year_full": "©{{year}} - Tous droits réservés"
+  },
   "header": {
     "logout": "Se déconnecter"
   },
-
   "ERRORS": {
     "INVALID_CREDENTIALS": "Identifiants invalides."
   },
-
   "REGEX": {
     "LOGIN": {
-      "EMAIL": "Format email : identifiant@domaine.ext",
+      "EMAIL": "Format e-mail : identifiant@domaine.ext",
       "PASSWORD": "Doit contenir au moins 6 caractères."
     }
   }

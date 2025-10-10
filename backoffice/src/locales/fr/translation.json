@@ -1,8 +1,104 @@
 {
   "common": {
-    "field_incorrect": "Champs incorrect"
+    "field_incorrect": "Champ incorrect",
+    "brand": {
+      "full": "FitDesk - BO",
+      "short": "FitDesk",
+      "tagline": "CRM",
+      "logo_alt": "Logo FitDesk",
+      "tooltip": "FitDesk CRM v{{version}} - ©2025 - Tous droits réservés",
+      "copyright_short": "©2025",
+      "copyright_full": "©2025 - Tous droits réservés"
+    },
+    "alerts": {
+      "unexpected_error": "Erreur inattendue, veuillez réessayer."
+    },
+    "buttons": {
+      "confirm": "Confirmer",
+      "cancel": "Annuler",
+      "delete": "Supprimer",
+      "save": "Enregistrer",
+      "create": "Créer",
+      "edit": "Modifier",
+      "new": "Nouveau",
+      "success": "Succès",
+      "error": "Erreur",
+      "warning": "Avertissement",
+      "info": "Info",
+      "custom": "Personnalisé",
+      "run_task": "Lancer la tâche",
+      "go_unknown": "Aller vers l'inconnu"
+    },
+    "labels": {
+      "name": "Nom",
+      "slug": "Slug",
+      "locale": "Langue",
+      "visibility": "Visibilité",
+      "creator": "Créateur",
+      "created": "Créé le",
+      "updated": "Mis à jour le",
+      "actions": "Actions",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "confirm_password": "Confirmer le mot de passe",
+      "type": "Type",
+      "status": "Statut",
+      "company": "Entreprise",
+      "phone": "Téléphone",
+      "address_name": "Nom de l'adresse",
+      "address_city": "Ville",
+      "address_code": "Code postal",
+      "address_country": "Pays",
+      "user": "Utilisateur",
+      "user_optional": "Utilisateur (optionnel)",
+      "description": "Description",
+      "duration_weeks": "Durée (semaines)",
+      "duration_minutes": "Durée (min)",
+      "frequency_per_week": "Fréquence / semaine",
+      "sessions": "Séances",
+      "exercises": "Exercices",
+      "muscles": "Muscles",
+      "tags": "Tags",
+      "equipment": "Équipement",
+      "title": "Titre"
+    },
+    "status": {
+      "active": "Actif",
+      "inactive": "Inactif"
+    },
+    "visibility": {
+      "private": "Privé",
+      "public": "Public"
+    },
+    "placeholders": {
+      "search": "Rechercher...",
+      "search_programs": "Rechercher des programmes...",
+      "search_categories": "Rechercher des catégories...",
+      "search_tags": "Rechercher des tags...",
+      "search_equipment": "Rechercher de l'équipement...",
+      "search_muscles": "Rechercher des muscles...",
+      "search_sessions": "Rechercher des séances...",
+      "search_exercises": "Rechercher des exercices...",
+      "search_users": "Rechercher des utilisateurs...",
+      "select": "Sélectionner...",
+      "select_sessions": "Sélectionner des séances",
+      "select_user": "Sélectionner un utilisateur",
+      "select_exercises": "Sélectionner des exercices",
+      "enter_email": "Saisissez une adresse e-mail valide",
+      "custom_flash": "Message personnalisé (bouton contour).",
+      "loader_hint": "Cliquez ci-dessous pour simuler une tâche asynchrone de 2 s avec le loader."
+    },
+    "tooltips": {
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "version": "FitDesk CRM v{{version}} - ©2025 - Tous droits réservés"
+    },
+    "messages": {
+      "no_value": "-",
+      "confirm_deletion_warning": "Cette action est irréversible.",
+      "are_you_sure": "Êtes-vous sûr ?"
+    }
   },
-
   "login": {
     "title": "Connexion",
     "email": "Adresse e-mail",
@@ -11,47 +107,155 @@
     "success": "Connexion réussie : {{name}} !",
     "button": "Se connecter"
   },
-
   "home": {
     "title": "Tableau de bord"
   },
-
   "clients": {
     "title": "Clients"
   },
-
   "programs": {
-    "title": "Programmes"
+    "title": "Programmes",
+    "tabs": {
+      "programs": "Programmes",
+      "sessions": "Séances",
+      "exercises": "Exercices",
+      "categories": "Catégories",
+      "muscles": "Muscles",
+      "tags": "Tags",
+      "equipment": "Équipement",
+      "aria_label": "Sections des programmes"
+    },
+    "table": {
+      "sessions_linked": "{{count}} lié(s)",
+      "filter_by_user": "Filtrer par utilisateur",
+      "search_placeholder": "Rechercher des programmes..."
+    },
+    "dialog": {
+      "create_title": "Nouveau programme",
+      "edit_title": "Modifier le programme"
+    },
+    "confirm": {
+      "delete_title": "Supprimer le programme"
+    },
+    "categories": {
+      "title": "Catégories",
+      "search_placeholder": "Rechercher des catégories...",
+      "create": "Nouvelle catégorie",
+      "dialog": {
+        "create_title": "Nouvelle catégorie",
+        "edit_title": "Modifier la catégorie"
+      }
+    },
+    "tags": {
+      "title": "Tags",
+      "search_placeholder": "Rechercher des tags...",
+      "create": "Nouveau tag",
+      "dialog": {
+        "create_title": "Nouveau tag",
+        "edit_title": "Modifier le tag"
+      }
+    },
+    "equipment": {
+      "title": "Équipement",
+      "search_placeholder": "Rechercher de l'équipement...",
+      "create": "Nouvel équipement",
+      "dialog": {
+        "create_title": "Nouvel équipement",
+        "edit_title": "Modifier l'équipement"
+      }
+    },
+    "muscles": {
+      "title": "Muscles",
+      "search_placeholder": "Rechercher des muscles...",
+      "create": "Nouveau muscle",
+      "dialog": {
+        "create_title": "Nouveau muscle",
+        "edit_title": "Modifier le muscle"
+      }
+    },
+    "sessions": {
+      "title": "Séances",
+      "search_placeholder": "Rechercher des séances...",
+      "create": "Nouvelle séance",
+      "dialog": {
+        "create_title": "Nouvelle séance",
+        "edit_title": "Modifier la séance"
+      },
+      "table": {
+        "exercises_linked": "{{count}} lié(s)"
+      }
+    },
+    "exercises": {
+      "title": "Exercices",
+      "search_placeholder": "Rechercher des exercices...",
+      "create": "Nouvel exercice",
+      "dialog": {
+        "create_title": "Nouvel exercice",
+        "edit_title": "Modifier l'exercice"
+      }
+    }
   },
-
   "sandbox": {
-    "title": "Bac à sable"
+    "cards": {
+      "input": {
+        "title": "Champ",
+        "label": "E-mail"
+      },
+      "flash": {
+        "title": "Notifications",
+        "success_message": "Opération réalisée avec succès.",
+        "error_message": "Une erreur est survenue.",
+        "warning_message": "Veuillez vérifier vos saisies.",
+        "info_message": "Attention ! Voici une information.",
+        "aria": {
+          "success": "Afficher une notification de succès",
+          "error": "Afficher une notification d'erreur",
+          "warning": "Afficher une notification d'avertissement",
+          "info": "Afficher une notification d'information",
+          "custom": "Afficher une notification personnalisée"
+        }
+      },
+      "loader": {
+        "title": "Test du loader"
+      },
+      "notfound": {
+        "title": "Page introuvable"
+      }
+    }
   },
-
   "not_found": {
     "page": {
       "title": "Non trouvé"
     }
   },
-
   "sidebar": {
-    "go_home": "Aller à l'accueil"
+    "go_home": "Aller à l'accueil",
+    "open_navigation": "Ouvrir la navigation"
   },
-
   "header": {
     "logout": "Se déconnecter"
   },
-
   "users": {
-    "title": "Utilisateurs"
+    "title": "Utilisateurs",
+    "table": {
+      "search_placeholder": "Rechercher des utilisateurs...",
+      "new_button": "Nouvel utilisateur"
+    },
+    "dialog": {
+      "create_title": "Nouvel utilisateur",
+      "edit_title": "Modifier l'utilisateur"
+    },
+    "types": {
+      "coach": "Coach",
+      "athlete": "Athlète",
+      "admin": "Admin"
+    }
   },
-
   "ERRORS": {
     "INVALID_CREDENTIALS": "Identifiants invalides.",
     "AUTH_FAIL_WRONG_ROLE": "Échec de l'authentification : rôle incorrect.",
     "NETWORK_ERROR": "Erreur réseau. Veuillez réessayer plus tard."
   },
-
   "REGEX": {
     "LOGIN": {
       "EMAIL": "Format email : identifiant@domaine.ext",

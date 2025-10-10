@@ -1,16 +1,17 @@
-//  src/components/programs/TagTable.tsx
+// src/components/programs/TagTable.tsx
 import * as React from 'react';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Box, Button, Stack, TextField, IconButton, Tooltip } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import type { Tag } from '@src/hooks/useTags';
 import { useDateFormatter } from '@src/hooks/useDateFormatter';
 
 export interface TagTableProps {
   rows: Tag[];
   total: number;
-  page: number;   // 1-based
+  page: number; // 1-based
   limit: number;
   q: string;
   loading: boolean;
@@ -23,73 +24,91 @@ export interface TagTableProps {
 }
 
 export const TagTable = React.memo(function TagTable({
-  rows, total, page, limit, q, loading,
-  onCreate, onEdit, onDelete, onQueryChange, onPageChange, onLimitChange,
+  rows,
+  total,
+  page,
+  limit,
+  q,
+  loading,
+  onCreate,
+  onEdit,
+  onDelete,
+  onQueryChange,
+  onPageChange,
+  onLimitChange,
 }: TagTableProps): React.JSX.Element {
   const fmtDate = useDateFormatter();
+  const { t } = useTranslation();
 
-  const columns = React.useMemo<GridColDef<Tag>[]>(
-    () => [
-      { field: 'slug', headerName: 'Slug', flex: 1 },
-      { field: 'locale', headerName: 'Locale' },
-      { field: 'visibility', headerName: 'Visibility' },
-      {
-        field: 'creator', headerName: 'Created', valueGetter: (p: any) => p.email, flex: 1
-      },
-      { field: 'createdAt', headerName: 'Created', valueFormatter: (p) => fmtDate(p), flex: 1 },
-      { field: 'updatedAt', headerName: 'Updated', valueFormatter: (p) => fmtDate(p), flex: 1 },
-      {
-        field: 'actions',
-        headerName: 'Actions',
-        width: 120,
-        sortable: false,
-        filterable: false,
-        renderCell: (p) => (
-          <Stack direction="row" spacing={0.5}>
-            <Tooltip title="Edit">
-              <IconButton size="small" aria-label={`edit-${p.row.id}`} onClick={() => onEdit(p.row)}>
-                <EditIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Delete">
-              <IconButton size="small" aria-label={`delete-${p.row.id}`} onClick={() => onDelete(p.row)}>
-                <DeleteIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </Stack>
-        ),
-      },
-    ],
-    [onEdit, onDelete, fmtDate]
-  );
+  const columns = React.useMemo<GridColDef<Tag>[]>(() => [
+    { field: 'slug', headerName: t('common.labels.slug'), flex: 1 },
+    { field: 'locale', headerName: t('common.labels.locale'), width: 120 },
+    { field: 'visibility', headerName: t('common.labels.visibility'), width: 140 },
+    {
+      field: 'creator',
+      headerName: t('common.labels.creator'),
+      valueGetter: (params: any) => params?.email,
+      flex: 1,
+    },
+    { field: 'createdAt', headerName: t('common.labels.created'), valueFormatter: (value) => fmtDate(value), flex: 1 },
+    { field: 'updatedAt', headerName: t('common.labels.updated'), valueFormatter: (value) => fmtDate(value), flex: 1 },
+    {
+      field: 'actions',
+      headerName: t('common.labels.actions'),
+      width: 120,
+      sortable: false,
+      filterable: false,
+      renderCell: (params) => (
+        <Stack direction="row" spacing={0.5}>
+          <Tooltip title={t('common.tooltips.edit')}>
+            <IconButton size="small" aria-label={`edit-${params.row.id}`} onClick={() => onEdit(params.row)}>
+              <EditIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title={t('common.tooltips.delete')}>
+            <IconButton size="small" aria-label={`delete-${params.row.id}`} onClick={() => onDelete(params.row)}>
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        </Stack>
+      ),
+    },
+  ], [fmtDate, onDelete, onEdit, t]);
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ mb: 1 }} alignItems={{ xs: 'stretch', sm: 'center' }}>
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        spacing={1}
+        sx={{ mb: 1 }}
+        alignItems={{ xs: 'stretch', sm: 'center' }}
+      >
         <TextField
-          placeholder="Search…"
+          placeholder={t('programs.tags.search_placeholder')}
           value={q}
-          onChange={(e) => onQueryChange(e.target.value)}
+          onChange={(event) => onQueryChange(event.target.value)}
           inputProps={{ 'aria-label': 'search-tags' }}
           size="small"
           sx={{ maxWidth: 360 }}
         />
         <Box sx={{ flex: 1 }} />
-        <Button variant="contained" onClick={onCreate}>New Tag</Button>
+        <Button variant="contained" onClick={onCreate}>
+          {t('programs.tags.create')}
+        </Button>
       </Stack>
 
       <DataGrid
         rows={rows}
         columns={columns}
-        getRowId={(r) => r.id}
+        getRowId={(row) => row.id}
         loading={loading}
         rowCount={total}
         paginationMode="server"
         sortingMode="client"
         paginationModel={{ page: page - 1, pageSize: limit }}
-        onPaginationModelChange={(m) => {
-          if (m.page !== page - 1) onPageChange(m.page + 1);
-          if (m.pageSize !== limit) onLimitChange(m.pageSize);
+        onPaginationModelChange={(model) => {
+          if (model.page !== page - 1) onPageChange(model.page + 1);
+          if (model.pageSize !== limit) onLimitChange(model.pageSize);
         }}
         pageSizeOptions={[5, 10, 25, 50]}
         disableRowSelectionOnClick

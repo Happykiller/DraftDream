@@ -2,7 +2,7 @@
 import { AppBar, Toolbar, Typography, IconButton, Stack, Box, useMediaQuery, Tooltip } from '@mui/material';
 import { Menu as MenuIcon, Logout } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
-import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { RAIL_WIDTH, DRAWER_WIDTH } from '../tokens';
 
 /** Props strictly typed for clarity */
@@ -17,6 +17,7 @@ export type LayoutAppBarProps = {
 export function LayoutAppBar({ pageTitle, userName, userRole, onMenuClick, onLogout }: LayoutAppBarProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { t } = useTranslation();
 
   return (
     <AppBar
@@ -28,7 +29,7 @@ export function LayoutAppBar({ pageTitle, userName, userRole, onMenuClick, onLog
         color: 'text.primary',
         borderBottom: '1px solid',
         borderColor: 'divider',
-                width: {
+        width: {
           sm: `calc(100% - ${RAIL_WIDTH}px)`,
           md: `calc(100% - ${DRAWER_WIDTH}px)`,
         },
@@ -45,7 +46,7 @@ export function LayoutAppBar({ pageTitle, userName, userRole, onMenuClick, onLog
             edge="start"
             onClick={onMenuClick}
             sx={{ mr: 2 }}
-            aria-label={t('sidebar.openNavigation') ?? 'Open navigation'}
+            aria-label={t('sidebar.open_navigation')}
           >
             <MenuIcon />
           </IconButton>

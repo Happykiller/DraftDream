@@ -12,6 +12,7 @@ import {
   Chip,
   Stack,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import type { Session } from '@hooks/useSessions';
 
 export interface ExerciseOption {
@@ -57,6 +58,7 @@ export function SessionDialog({
 }: SessionDialogProps): React.JSX.Element {
   const [values, setValues] = React.useState<SessionDialogValues>(DEFAULTS);
   const isEdit = mode === 'edit';
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     if (isEdit && initial) {
@@ -91,12 +93,14 @@ export function SessionDialog({
 
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="session-dialog-title" fullWidth maxWidth="sm">
-      <DialogTitle id="session-dialog-title">{isEdit ? 'Edit Session' : 'New Session'}</DialogTitle>
+      <DialogTitle id="session-dialog-title">
+        {isEdit ? t('programs.sessions.dialog.edit_title') : t('programs.sessions.dialog.create_title')}
+      </DialogTitle>
       <DialogContent>
         <Stack component="form" spacing={2} sx={{ mt: 1 }} onSubmit={submit}>
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <TextField
-              label="Slug"
+              label={t('common.labels.slug')}
               name="slug"
               value={values.slug}
               onChange={onChange}
@@ -105,7 +109,7 @@ export function SessionDialog({
               inputProps={{ 'aria-label': 'session-slug' }}
             />
             <TextField
-              label="Title"
+              label={t('common.labels.title')}
               name="title"
               value={values.title}
               onChange={onChange}
@@ -117,7 +121,7 @@ export function SessionDialog({
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <TextField
               select
-              label="Locale"
+              label={t('common.labels.locale')}
               name="locale"
               value={values.locale}
               onChange={onChange}
@@ -132,7 +136,7 @@ export function SessionDialog({
             </TextField>
             <TextField
               type="number"
-              label="Duration (min)"
+              label={t('common.labels.duration_minutes')}
               name="durationMin"
               value={values.durationMin}
               onChange={onChange}
@@ -143,7 +147,7 @@ export function SessionDialog({
           </Stack>
 
           <TextField
-            label="Description"
+            label={t('common.labels.description')}
             name="description"
             value={values.description ?? ''}
             onChange={onChange}
@@ -164,15 +168,21 @@ export function SessionDialog({
                 <Chip {...getTagProps({ index })} key={option.id} label={option.slug || option.name} />
               ))
             }
-            renderInput={(params) => <TextField {...params} label="Exercises" placeholder="Select exercises" />}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={t('common.labels.exercises')}
+                placeholder={t('common.placeholders.select_exercises')}
+              />
+            )}
           />
 
           <DialogActions sx={{ px: 0 }}>
             <Button onClick={onClose} color="inherit">
-              Cancel
+              {t('common.buttons.cancel')}
             </Button>
             <Button type="submit" variant="contained">
-              {isEdit ? 'Save' : 'Create'}
+              {isEdit ? t('common.buttons.save') : t('common.buttons.create')}
             </Button>
           </DialogActions>
         </Stack>

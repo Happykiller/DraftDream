@@ -3,6 +3,7 @@ import * as React from 'react';
 import Grid from '@mui/material/Grid';
 import { useNavigate } from 'react-router-dom';
 import { Typography, Card, CardContent, Button, Stack } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { Input } from '@src/components/Input';
 import { useAsyncTask } from '@hooks/useAsyncTask';
@@ -10,6 +11,7 @@ import { useFlashStore } from '@hooks/useFlashStore';
 
 export function Sandbox(): React.JSX.Element {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [email, setEmail] = React.useState({ value: '', valid: false });
   const { success, error, warning, info, open } = useFlashStore();
   const { execute } = useAsyncTask();
@@ -32,12 +34,12 @@ export function Sandbox(): React.JSX.Element {
         <Card variant="outlined" sx={{ height: '100%' }}>
           <CardContent>
             <Typography variant="h5" gutterBottom>
-              Input
+              {t('sandbox.cards.input.title')}
             </Typography>
 
             <Input
-              label="Email"
-              tooltip="Enter a valid email address"
+              label={t('sandbox.cards.input.label')}
+              tooltip={t('common.placeholders.enter_email')}
               regex="^[^@]+@[^@]+\.[^@]+$"
               entity={email}
               onChange={setEmail}
@@ -53,48 +55,48 @@ export function Sandbox(): React.JSX.Element {
         <Card variant="outlined" sx={{ height: '100%' }}>
           <CardContent>
             <Typography variant="h5" gutterBottom>
-              Flash Messages
+              {t('sandbox.cards.flash.title')}
             </Typography>
 
             <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
               <Button
                 variant="contained"
                 color="success"
-                aria-label="Show success flash"
-                onClick={() => success('Operation completed successfully.')}
+                aria-label={t('sandbox.cards.flash.aria.success')}
+                onClick={() => success(t('sandbox.cards.flash.success_message'))}
               >
-                Success
+                {t('common.buttons.success')}
               </Button>
               <Button
                 variant="contained"
                 color="error"
-                aria-label="Show error flash"
-                onClick={() => error('Something went wrong.')}
+                aria-label={t('sandbox.cards.flash.aria.error')}
+                onClick={() => error(t('sandbox.cards.flash.error_message'))}
               >
-                Error
+                {t('common.buttons.error')}
               </Button>
               <Button
                 variant="contained"
                 color="warning"
-                aria-label="Show warning flash"
-                onClick={() => warning('Please double-check your inputs.')}
+                aria-label={t('sandbox.cards.flash.aria.warning')}
+                onClick={() => warning(t('sandbox.cards.flash.warning_message'))}
               >
-                Warning
+                {t('common.buttons.warning')}
               </Button>
               <Button
                 variant="contained"
                 color="info"
-                aria-label="Show info flash"
-                onClick={() => info('Heads up! Here is some information.')}
+                aria-label={t('sandbox.cards.flash.aria.info')}
+                onClick={() => info(t('sandbox.cards.flash.info_message'))}
               >
-                Info
+                {t('common.buttons.info')}
               </Button>
               <Button
                 variant="outlined"
-                aria-label="Show custom flash"
-                onClick={() => open('Custom message (outlined button).', 'info')}
+                aria-label={t('sandbox.cards.flash.aria.custom')}
+                onClick={() => open(t('common.placeholders.custom_flash'), 'info')}
               >
-                Custom
+                {t('common.buttons.custom')}
               </Button>
             </Stack>
           </CardContent>
@@ -106,13 +108,13 @@ export function Sandbox(): React.JSX.Element {
         <Card variant="outlined" sx={{ height: '100%' }}>
           <CardContent>
             <Typography variant="h5" gutterBottom>
-              Loader Test
+              {t('sandbox.cards.loader.title')}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              Click below to simulate a 2s async task with loader overlay.
+              {t('common.placeholders.loader_hint')}
             </Typography>
             <Button variant="contained" onClick={simulateTask}>
-              Run Task
+              {t('common.buttons.run_task')}
             </Button>
           </CardContent>
         </Card>
@@ -123,11 +125,11 @@ export function Sandbox(): React.JSX.Element {
         <Card variant="outlined" sx={{ height: '100%' }}>
           <CardContent>
             <Typography variant="h5" gutterBottom>
-              NotFound
+              {t('sandbox.cards.notfound.title')}
             </Typography>
 
             <Button variant="contained" onClick={() => navigate('/non-existent-page')}>
-              Go unkown
+              {t('common.buttons.go_unknown')}
             </Button>
           </CardContent>
         </Card>

@@ -2,6 +2,7 @@
 import * as React from 'react';
 import { Stack, Tabs, Tab } from '@mui/material';
 import { useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import { TagsPanel } from '@pages/programs/TagsPanel';
 import { MusclesPanel } from '@pages/programs/MusclesPanel';
@@ -12,6 +13,7 @@ import { CategoriesPanel } from '@pages/programs/CategoriesPanel';
 import { ProgramsPanel } from '@pages/programs/ProgramsPanel';
 
 export function Programs(): React.JSX.Element {
+  const { t } = useTranslation();
   const [params, setParams] = useSearchParams();
   const tab = (params.get('tab') || 'programs') as string;
 
@@ -24,14 +26,20 @@ export function Programs(): React.JSX.Element {
 
   return (
     <Stack spacing={3} sx={{ mt: 3, width: '100%' }}>
-      <Tabs value={tab} onChange={(_, v) => setTab(v)} aria-label="Programs domain tabs" variant="scrollable" scrollButtons="auto">
-        <Tab value="programs" label="Programs" />
-        <Tab value="sessions" label="Sessions" />
-        <Tab value="exercices" label="Exercices" />
-        <Tab value="categories" label="Categories" />
-        <Tab value="muscles" label="Muscles" />
-        <Tab value="tags" label="Tags" />
-        <Tab value="equipment" label="Equipment" />
+      <Tabs
+        value={tab}
+        onChange={(_, v) => setTab(v)}
+        aria-label={t('programs.tabs.aria_label')}
+        variant="scrollable"
+        scrollButtons="auto"
+      >
+        <Tab value="programs" label={t('programs.tabs.programs')} />
+        <Tab value="sessions" label={t('programs.tabs.sessions')} />
+        <Tab value="exercices" label={t('programs.tabs.exercises')} />
+        <Tab value="categories" label={t('programs.tabs.categories')} />
+        <Tab value="muscles" label={t('programs.tabs.muscles')} />
+        <Tab value="tags" label={t('programs.tabs.tags')} />
+        <Tab value="equipment" label={t('programs.tabs.equipment')} />
       </Tabs>
 
       {tab === 'categories' && <CategoriesPanel />}

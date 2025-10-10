@@ -11,6 +11,7 @@ import {
   Stack,
   TextField,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import type { Program } from '@hooks/usePrograms';
 
@@ -87,6 +88,7 @@ export function ProgramDialog({
 }: ProgramDialogProps): React.JSX.Element {
   const [values, setValues] = React.useState<ProgramDialogValues>(DEFAULT_VALUES);
   const isEdit = mode === 'edit';
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     if (isEdit && initial) {
@@ -132,11 +134,13 @@ export function ProgramDialog({
 
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="program-dialog-title" fullWidth maxWidth="sm">
-      <DialogTitle id="program-dialog-title">{isEdit ? 'Edit Program' : 'New Program'}</DialogTitle>
+      <DialogTitle id="program-dialog-title">
+        {isEdit ? t('programs.dialog.edit_title') : t('programs.dialog.create_title')}
+      </DialogTitle>
       <DialogContent>
         <Stack component="form" spacing={2} sx={{ mt: 1 }} onSubmit={submit}>
           <TextField
-            label="Name"
+            label={t('common.labels.name')}
             name="name"
             value={values.name}
             onChange={handleChange}
@@ -146,7 +150,7 @@ export function ProgramDialog({
 
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <TextField
-              label="Duration (weeks)"
+              label={t('common.labels.duration_weeks')}
               name="duration"
               type="number"
               value={values.duration}
@@ -156,7 +160,7 @@ export function ProgramDialog({
               inputProps={{ min: 1 }}
             />
             <TextField
-              label="Frequency / week"
+              label={t('common.labels.frequency_per_week')}
               name="frequency"
               type="number"
               value={values.frequency}
@@ -168,7 +172,7 @@ export function ProgramDialog({
           </Stack>
 
           <TextField
-            label="Description"
+            label={t('common.labels.description')}
             name="description"
             value={values.description}
             onChange={handleChange}
@@ -189,7 +193,13 @@ export function ProgramDialog({
                 <Chip {...getTagProps({ index })} key={option.id} label={option.title || option.slug} />
               ))
             }
-            renderInput={(params) => <TextField {...params} label="Sessions" placeholder="Select sessions" />}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={t('common.labels.sessions')}
+                placeholder={t('common.placeholders.select_sessions')}
+              />
+            )}
           />
 
           <Autocomplete
@@ -199,16 +209,20 @@ export function ProgramDialog({
             getOptionLabel={(opt) => opt?.email || ''}
             isOptionEqualToValue={(opt, val) => opt.id === val.id}
             renderInput={(params) => (
-              <TextField {...params} label="User (optional)" placeholder="Select a user" />
+              <TextField
+                {...params}
+                label={t('common.labels.user_optional')}
+                placeholder={t('common.placeholders.select_user')}
+              />
             )}
           />
 
           <DialogActions sx={{ px: 0 }}>
             <Button onClick={onClose} color="inherit">
-              Cancel
+              {t('common.buttons.cancel')}
             </Button>
             <Button type="submit" variant="contained">
-              {isEdit ? 'Save' : 'Create'}
+              {isEdit ? t('common.buttons.save') : t('common.buttons.create')}
             </Button>
           </DialogActions>
         </Stack>

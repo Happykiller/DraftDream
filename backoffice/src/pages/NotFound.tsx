@@ -65,8 +65,7 @@ export function NotFound(): React.JSX.Element {
             borderRadius: 2.5,
             px: { sm: 4 },
             py: { sm: 4 },
-            boxShadow:
-              '0 10px 30px rgba(0,0,0,0.24), 0 6px 10px rgba(0,0,0,0.18)',
+            boxShadow: '0 10px 30px rgba(0,0,0,0.24), 0 6px 10px rgba(0,0,0,0.18)',
           }}
           role="dialog"
           aria-labelledby="notfound-title"
@@ -113,7 +112,7 @@ function Content({ onGoHome, isMobile = false }: ContentProps): React.JSX.Elemen
           aria-level={1}
           sx={{ fontWeight: 800, letterSpacing: 0.4, lineHeight: 1.1 }}
         >
-          404 — <Trans>not_found.page.title</Trans>
+          404 - <Trans>not_found.page.title</Trans>
         </Typography>
         <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.75 }}>
           <Trans>sidebar.go_home</Trans>

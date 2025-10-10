@@ -1,7 +1,6 @@
 // src/pages/Login.tsx
-import { t } from 'i18next';
 import * as React from 'react';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import {
@@ -39,6 +38,7 @@ export function Login(): React.JSX.Element {
   const navigate = useNavigate();
   const { execute: auth } = useAuthReq();
   const { execute: runTask } = useAsyncTask();
+  const { t } = useTranslation();
 
   // Local state
   const [formEntities, setFormEntities] = React.useState<{
@@ -60,7 +60,7 @@ export function Login(): React.JSX.Element {
       }),
     );
     if (!result) {
-      flash.error('Unexpected error, please try again.');
+      flash.error(t('common.alerts.unexpected_error'));
       return;
     }
     if (result.message === CODES.SUCCESS && result.data) {
@@ -159,7 +159,7 @@ export function Login(): React.JSX.Element {
             <Box
               component="img"
               src="/logo.png"
-              alt="FitDesk Logo"
+              alt={t('common.brand.logo_alt')}
               sx={{ width: 64, height: 64, mb: 1.25, objectFit: 'contain' }}
             />
             <Typography
@@ -167,7 +167,7 @@ export function Login(): React.JSX.Element {
               variant="h5"
               sx={{ fontWeight: 800, letterSpacing: 0.5, lineHeight: 1.1 }}
             >
-              FitDesk - BO
+              {t('common.brand.full')}
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
               <Trans>login.connect_space</Trans>
@@ -199,7 +199,7 @@ export function Login(): React.JSX.Element {
             <Box
               component="img"
               src="/logo.png"
-              alt="FitDesk Logo"
+              alt={t('common.brand.logo_alt')}
               sx={{ width: 80, height: 80, mb: 1.5, objectFit: 'contain' }}
             />
             <Typography
@@ -207,7 +207,7 @@ export function Login(): React.JSX.Element {
               variant="h4"
               sx={{ fontWeight: 800, letterSpacing: 0.5, lineHeight: 1.1 }}
             >
-              FitDesk -BO
+              {t('common.brand.full')}
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
               <Trans>login.connect_space</Trans>

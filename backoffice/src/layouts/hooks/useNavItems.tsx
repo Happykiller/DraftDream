@@ -1,7 +1,7 @@
 // src/layouts/hooks/useNavItems.tsx
-import { t } from 'i18next';
 import * as React from 'react';
 import { Home, Settings, FitnessCenter, ManageAccounts } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 
 export type NavItem = {
   label: string;
@@ -12,25 +12,30 @@ export type NavItem = {
 
 /** Return role-based navigation items. Pure list, memoized by role. */
 export function useNavItems(role?: string): NavItem[] {
+  const { t, i18n } = useTranslation();
+
   return React.useMemo(() => {
     const base: NavItem[] = [
-        { label: t('home.title'), icon: <Home />, path: '/' }
-      ];
+      { label: t('home.title'), icon: <Home />, path: '/' },
+    ];
 
-      if (role === 'admin') {
-        base.push({
+    if (role === 'admin') {
+      base.push(
+        {
           label: t('programs.title'),
           icon: <FitnessCenter />,
           path: '/programs',
-        },{
+        },
+        {
           label: t('users.title'),
           icon: <ManageAccounts />,
           path: '/users',
-        });
-      }
-    
-      base.push({ label: t('sandbox.title'), icon: <Settings />, path: '/sandbox' });
-    
-      return base;
-  }, [role]);
+        },
+      );
+    }
+
+    base.push({ label: t('sandbox.title'), icon: <Settings />, path: '/sandbox' });
+
+    return base;
+  }, [role, i18n.language, t]);
 }

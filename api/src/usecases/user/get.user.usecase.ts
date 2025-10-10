@@ -36,7 +36,7 @@ export class GetUserUsecase {
       };
     } catch (e) {
       this.inversify.loggerService.error(`GetUserUsecase#execute=>${e.message}`);
-      throw new Error(ERRORS.CREATE_USER_USECASE);
+      throw new Error(ERRORS.GET_USER_USECASE);
     }
   }
 }

@@ -1,8 +1,17 @@
 {
-  "common": {
-    "field_incorrect": "Incorrect field"
+  "app": {
+    "name": "FitDesk",
+    "product": "FitDesk CRM",
+    "logo_alt": "FitDesk logo",
+    "title_template": "{{page}} – FitDesk",
+    "version_tooltip": "{{product}} v{{version}} – ©{{year}} All rights reserved",
+    "version_year_short": "©{{year}}",
+    "version_year_full": "©{{year}} – All rights reserved"
   },
-
+  "common": {
+    "field_incorrect": "Incorrect field",
+    "unexpected_error": "Unexpected error, please try again."
+  },
   "login": {
     "title": "Login",
     "email": "Email address",
@@ -11,37 +20,80 @@
     "success": "Successfully logged in: {{name}}!",
     "button": "Sign in"
   },
-
   "home": {
-    "title": "Dashboard"
+    "title": "Dashboard",
+    "placeholder": "Hello"
   },
-
+  "clients": {
+    "title": "Clients",
+    "placeholder": "Clients"
+  },
   "programs-coatch": {
-    "title": "Programs"
+    "title": "Programs",
+    "placeholder": "Training programs"
   },
-
   "sandbox": {
-    "title": "Sandbox"
+    "title": "Sandbox",
+    "input_card": {
+      "title": "Input",
+      "label": "Email",
+      "tooltip": "Enter a valid email address"
+    },
+    "flash_card": {
+      "title": "Flash Messages",
+      "buttons": {
+        "success": "Success",
+        "error": "Error",
+        "warning": "Warning",
+        "info": "Info",
+        "custom": "Custom"
+      },
+      "aria": {
+        "success": "Show success flash",
+        "error": "Show error flash",
+        "warning": "Show warning flash",
+        "info": "Show info flash",
+        "custom": "Show custom flash"
+      },
+      "messages": {
+        "success": "Operation completed successfully.",
+        "error": "Something went wrong.",
+        "warning": "Please double-check your inputs.",
+        "info": "Heads up! Here is some information.",
+        "custom": "Custom message (outlined button)."
+      }
+    },
+    "loader_card": {
+      "title": "Loader Test",
+      "description": "Click below to simulate a 2s async task with loader overlay.",
+      "button": "Run Task"
+    },
+    "not_found_card": {
+      "title": "Not Found",
+      "button": "Go unknown"
+    }
   },
-
   "not_found": {
     "page": {
       "title": "Not found"
     }
   },
-
   "sidebar": {
-    "go_home": "Go to home"
+    "go_home": "Go to home",
+    "tagline": "CRM",
+    "open_navigation": "Open navigation"
   },
-
+  "footer": {
+    "version_label": "v{{version}}",
+    "year_short": "©{{year}}",
+    "year_full": "©{{year}} – All rights reserved"
+  },
   "header": {
     "logout": "Log out"
   },
-
   "ERRORS": {
     "INVALID_CREDENTIALS": "Invalid credentials."
   },
-
   "REGEX": {
     "LOGIN": {
       "EMAIL": "Email format: username@domain.ext",

@@ -4,6 +4,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Autocomplete, Box, Button, Chip, IconButton, Stack, TextField, Tooltip } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { useDateFormatter } from '@hooks/useDateFormatter';
 import type { Program } from '@hooks/usePrograms';
@@ -45,85 +46,86 @@ export const ProgramTable = React.memo(function ProgramTable({
   onUserFilterChange,
 }: ProgramTableProps): React.JSX.Element {
   const fmtDate = useDateFormatter();
+  const { t } = useTranslation();
 
   const columns = React.useMemo<GridColDef<Program>[]>(() => [
-    { field: 'name', headerName: 'Name', flex: 1.4, minWidth: 180 },
+    { field: 'name', headerName: t('common.labels.name'), flex: 1.4, minWidth: 180 },
     {
       field: 'duration',
-      headerName: 'Duration (weeks)',
+      headerName: t('common.labels.duration_weeks'),
       width: 150,
       valueFormatter: (value: any) => `${value}`,
     },
     {
       field: 'frequency',
-      headerName: 'Frequency / week',
+      headerName: t('common.labels.frequency_per_week'),
       width: 160,
       valueFormatter: (value: any) => `${value}`,
     },
     {
       field: 'userId',
-      headerName: 'User',
+      headerName: t('common.labels.user'),
       flex: 1,
       minWidth: 160,
       valueFormatter: (value: any) => value || '',
     },
     {
       field: 'sessionIds',
-      headerName: 'Sessions',
+      headerName: t('common.labels.sessions'),
       width: 160,
       sortable: false,
       filterable: false,
-      renderCell: (p) => (
+      renderCell: (params) => (
         <Chip
           size="small"
-          label={`${p.row.sessionIds.length} linked`}
-          color={p.row.sessionIds.length > 0 ? 'primary' : 'default'}
+          label={t('programs.table.sessions_linked', { count: params.row.sessionIds.length })}
+          color={params.row.sessionIds.length > 0 ? 'primary' : 'default'}
         />
       ),
     },
     {
       field: 'creator',
-      headerName: 'Creator',
+      headerName: t('common.labels.creator'),
       flex: 1,
       minWidth: 170,
       valueFormatter: (params: any) => params?.email ?? '',
     },
     {
       field: 'createdAt',
-      headerName: 'Created',
+      headerName: t('common.labels.created'),
       flex: 1,
       minWidth: 170,
       valueFormatter: (params: any) => fmtDate(params),
     },
     {
       field: 'updatedAt',
-      headerName: 'Updated',
+      headerName: t('common.labels.updated'),
       flex: 1,
       minWidth: 170,
       valueFormatter: (params: any) => fmtDate(params),
     },
     {
       field: 'actions',
-      headerName: 'Actions',
+      headerName: t('common.labels.actions'),
       width: 120,
       sortable: false,
       filterable: false,
-      renderCell: (p) => (
+      renderCell: (params) => (
         <Stack direction="row" spacing={0.5}>
-          <Tooltip title="Edit">
-            <IconButton size="small" aria-label={`edit-${p.row.id}`} onClick={() => onEdit(p.row)}>
+          <Tooltip title={t('common.tooltips.edit')}>
+            <IconButton size="small" aria-label={`edit-${params.row.id}`} onClick={() => onEdit(params.row)}>
               <EditIcon fontSize="small" />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Delete">
-            <IconButton size="small" aria-label={`delete-${p.row.id}`} onClick={() => onDelete(p.row)}>
+          <Tooltip title={t('common.tooltips.delete')}>
+            <IconButton size="small" aria-label={`delete-${params.row.id}`} onClick={() => onDelete(params.row)}>
               <DeleteIcon fontSize="small" />
             </IconButton>
           </Tooltip>
         </Stack>
       ),
     },
-  ], [onEdit, onDelete, fmtDate]);
+  ], [fmtDate, onDelete, onEdit, t]);
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -134,7 +136,7 @@ export const ProgramTable = React.memo(function ProgramTable({
         alignItems={{ xs: 'stretch', sm: 'center' }}
       >
         <TextField
-          placeholder="Search..."
+          placeholder={t('programs.table.search_placeholder')}
           value={q}
           onChange={(event) => onQueryChange(event.target.value)}
           inputProps={{ 'aria-label': 'search-programs' }}
@@ -147,14 +149,20 @@ export const ProgramTable = React.memo(function ProgramTable({
             size="small"
             options={userOptions}
             value={userFilter ?? null}
-            onChange={(_, v) => onUserFilterChange && onUserFilterChange(v)}
-            getOptionLabel={(opt) => opt?.email || ''}
-            renderInput={(params) => <TextField {...params} placeholder="Filter by user" />}
-          />)
-        }
+            onChange={(_, value) => onUserFilterChange && onUserFilterChange(value)}
+            getOptionLabel={(option) => option?.email || ''}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                placeholder={t('programs.table.filter_by_user')}
+                label={t('common.labels.user')}
+              />
+            )}
+          />
+        )}
         <Box sx={{ flex: 1 }} />
         <Button variant="contained" onClick={onCreate}>
-          New Program
+          {t('programs.dialog.create_title')}
         </Button>
       </Stack>
 

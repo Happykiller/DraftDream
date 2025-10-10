@@ -4,6 +4,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Button, Chip, IconButton, Stack, TextField, Tooltip } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 import type { Session } from '@hooks/useSessions';
 
@@ -37,6 +38,7 @@ export const SessionTables = React.memo(function SessionTables({
   onLimitChange,
 }: SessionTablesProps): React.JSX.Element {
   const fmtDate = useDateFormatter();
+  const { t } = useTranslation();
 
   const columns = React.useMemo<GridColDef<Session>[]>(() => [
     { field: 'slug', headerName: 'Slug', flex: 1, minWidth: 160 },

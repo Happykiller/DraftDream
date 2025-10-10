@@ -1,6 +1,7 @@
 // src/pages/programs/ProgramsPanel.tsx
 import * as React from 'react';
 import { Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { useDebouncedValue } from '@hooks/useDebouncedValue';
 import { useTabParams } from '@hooks/useTabParams';
@@ -12,6 +13,7 @@ import { ProgramDialog, type ProgramSessionOption, type ProgramDialogValues, typ
 import { ConfirmDialog } from '@components/common/ConfirmDialog';
 
 export function ProgramsPanel(): React.JSX.Element {
+  const { t } = useTranslation();
   const { page, limit, q, setPage, setLimit, setQ } = useTabParams('prog');
   const [searchInput, setSearchInput] = React.useState(q);
   const [userFilter, setUserFilter] = React.useState<ProgramUserOption | null>(null);
@@ -111,15 +113,15 @@ export function ProgramsPanel(): React.JSX.Element {
 
       <ConfirmDialog
         open={!!deleteId}
-        title="Delete program"
-        message="This action cannot be undone."
+        title={t('programs.confirm.delete_title')}
+        message={t('common.messages.confirm_deletion_warning')}
         onClose={() => setDeleteId(null)}
         onConfirm={() => {
           if (deleteId) {
             remove(deleteId).finally(() => setDeleteId(null));
           }
         }}
-        confirmLabel="Delete"
+        confirmLabel={t('common.buttons.delete')}
       />
     </Box>
   );

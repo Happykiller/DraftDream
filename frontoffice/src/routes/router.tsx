@@ -1,5 +1,4 @@
 // src/routes/router.tsx
-import { t } from 'i18next';
 import { createBrowserRouter, redirect } from 'react-router-dom';
 
 import { session } from '@stores/session';
@@ -23,7 +22,7 @@ export const router = createBrowserRouter([
         path: '/login',
         lazy: async () => {
           const mod = await import('@src/pages/Login');
-          return { Component: withTitle(mod.Login, t('login.title')) };
+          return { Component: withTitle(mod.Login, 'login.title') };
         },
       },
     ],
@@ -37,7 +36,7 @@ export const router = createBrowserRouter([
         index: true,
         lazy: async () => {
           const mod = await import('@src/pages/Home');
-          return { Component: withTitle(mod.Home, t('home.title'))  };
+          return { Component: withTitle(mod.Home, 'home.title') };
         },
       },
     ],
@@ -52,7 +51,7 @@ export const router = createBrowserRouter([
         index: true,
         lazy: async () => {
           const mod = await import('@src/pages/Sandbox');
-          return { Component: withTitle(mod.Sandbox, t('sandbox.title'))  };
+          return { Component: withTitle(mod.Sandbox, 'sandbox.title') };
         },
       },
     ],
@@ -67,7 +66,7 @@ export const router = createBrowserRouter([
         index: true,
         lazy: async () => {
           const mod = await import('@src/pages/ProgramsCoach');
-          return { Component: withTitle(mod.ProgramsCoach, t('programs-coatch.title'))  };
+          return { Component: withTitle(mod.ProgramsCoach, 'programs-coatch.title') };
         },
       },
     ],
@@ -82,7 +81,7 @@ export const router = createBrowserRouter([
         index: true,
         lazy: async () => {
           const mod = await import('@src/pages/Clients');
-          return { Component: withTitle(mod.Clients, t('client.title'))  };
+          return { Component: withTitle(mod.Clients, 'clients.title') };
         },
       },
     ],
@@ -92,7 +91,7 @@ export const router = createBrowserRouter([
     path: '*',
     lazy: async () => {
       const mod = await import('@src/pages/NotFound');
-      return { Component: withTitle(mod.NotFound, t('notfound.title'))  };
+      return { Component: withTitle(mod.NotFound, 'not_found.page.title') };
     },
   },
 ]);
