@@ -1,4 +1,4 @@
-// src/graphql/muscle/muscle.gql.types.ts
+﻿// src/graphql/muscle/muscle.gql.types.ts
 import { Field, ID, InputType, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
 
 import { UserGql } from '@graphql/user/user.gql.types';
@@ -14,6 +14,7 @@ export class MuscleGql {
   @Field(() => ID) id!: string;
   @Field() slug!: string;
   @Field() locale!: string;
+  @Field() name!: string;
   @Field(() => MuscleVisibility) visibility!: MuscleVisibility;
   @Field() createdBy!: string;
   @Field() createdAt!: Date;
@@ -26,6 +27,7 @@ export class MuscleGql {
 export class CreateMuscleInput {
   @Field() slug!: string;
   @Field() locale!: string;
+  @Field() name!: string;
   @Field(() => MuscleVisibility) visibility!: MuscleVisibility;
 }
 
@@ -34,6 +36,7 @@ export class UpdateMuscleInput {
   @Field(() => ID) id!: string;
   @Field({ nullable: true }) slug?: string;
   @Field({ nullable: true }) locale?: string;
+  @Field({ nullable: true }) name?: string;
 }
 
 @InputType()
@@ -58,3 +61,4 @@ export class MuscleListGql {
   @Field(() => Int) page!: number;
   @Field(() => Int) limit!: number;
 }
+

@@ -9,6 +9,7 @@ type MuscleDoc = {
   _id: ObjectId;
   slug: string;
   locale: string;
+  name: string;
   visibility: 'private' | 'public';
   createdBy: string;
   createdAt: Date;
@@ -37,6 +38,7 @@ export class BddServiceMuscleMongo {
     const doc: Omit<MuscleDoc, '_id'> = {
       slug: dto.slug.toLowerCase().trim(),
       locale: dto.locale.toLowerCase().trim(),
+      name: dto.name.trim(),
       visibility: dto.visibility,
       createdBy: dto.createdBy,
       createdAt: now,
@@ -82,7 +84,8 @@ export class BddServiceMuscleMongo {
 
     const filter: any = {};
     if (q && q.trim()) {
-      filter.slug = { $regex: new RegExp(q.trim(), 'i') };
+      const regex = new RegExp(q.trim(), 'i');
+      filter.$or = [{ slug: { $regex: regex } }, { name: { $regex: regex } }];
     }
     if (locale) filter.locale = locale.toLowerCase().trim();
     if (createdBy) filter.createdBy = createdBy;
@@ -106,6 +109,7 @@ export class BddServiceMuscleMongo {
 
     if (patch.slug !== undefined) $set.slug = patch.slug.toLowerCase().trim();
     if (patch.locale !== undefined) $set.locale = patch.locale.toLowerCase().trim();
+    if (patch.name !== undefined) $set.name = patch.name.trim();
 
     try {
       const res:any = await (await this.col()).findOneAndUpdate(
@@ -144,6 +148,7 @@ export class BddServiceMuscleMongo {
     id: doc._id.toHexString(),
     slug: doc.slug,
     locale: doc.locale,
+    name: doc.name,
     visibility: doc.visibility,
     createdBy: doc.createdBy,
     createdAt: doc.createdAt,

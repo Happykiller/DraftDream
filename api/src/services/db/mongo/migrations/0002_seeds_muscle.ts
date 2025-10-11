@@ -1,13 +1,13 @@
-// src/migrations/0002_seeds_muscle.ts
+﻿// src/migrations/0002_seeds_muscle.ts
 import { Db, ObjectId } from "mongodb";
 import { Migration } from "@services/db/mongo/migration.runner.mongo";
 
 /**
  * NOTE: on reste volontairement en "raw" MongoDB ici.
- * Avantages: pas de dépendance à la couche service, migration stable dans le temps.
+ * Avantages: pas de dÃ©pendance Ã  la couche service, migration stable dans le temps.
  */
 
-const FR_SLUGS = [
+const FR_LABELS = [
   "pectoraux",
   "dos",
   "epaules",
@@ -24,7 +24,7 @@ const FR_SLUGS = [
   "obliques",
 ];
 
-/** Petit utilitaire pour uniformiser les slugs à partir d’un libellé FR */
+/** Petit utilitaire pour uniformiser les slugs Ã  partir dâ€™un libellÃ© FR */
 function toSlug(label: string): string {
   return label
     .normalize("NFD")
@@ -32,6 +32,14 @@ function toSlug(label: string): string {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
+}
+
+function toName(label: string): string {
+  return label
+    .split(/[-_\s]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
 }
 
 const migration: Migration = {
@@ -61,8 +69,9 @@ const migration: Migration = {
 
     // 3) Build docs (idempotent upsert)
     const now = new Date();
-    const docs = FR_SLUGS.map((label) => {
-      const slug = toSlug(label); // déjà fournis en version sans accents au-dessus, mais robuste
+    const docs = FR_LABELS.map((label) => {
+      const name = toName(label);
+      const slug = toSlug(label);
       return {
         updateOne: {
           filter: { slug, locale: "fr" },
@@ -70,11 +79,12 @@ const migration: Migration = {
             $setOnInsert: {
               slug,
               locale: "fr",
+              name,
               visibility: "public",
               createdBy: createdBy.toHexString ? createdBy.toHexString() : String(createdBy),
               createdAt: now,
             },
-            $set: { updatedAt: now },
+            $set: { updatedAt: now, name },
           },
           upsert: true,
         },
@@ -89,3 +99,8 @@ const migration: Migration = {
 };
 
 export default migration;
+
+
+
+
+

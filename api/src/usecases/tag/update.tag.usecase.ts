@@ -12,7 +12,8 @@ export class UpdateTagUsecase {
       const updated = await this.inversify.bddService.tag.update(dto.id, {
         slug: dto.slug,
         locale: dto.locale,
-        visibility: dto.visibility
+        name: dto.name,
+        visibility: dto.visibility,
       });
       return updated ? { ...updated } : null;
     } catch (e: any) {

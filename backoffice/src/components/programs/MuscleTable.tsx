@@ -44,6 +44,7 @@ export const MuscleTable = React.memo(function MuscleTable(props: MuscleTablePro
 
   const columns = React.useMemo<GridColDef<Muscle>[]>(() => [
     { field: 'slug', headerName: t('common.labels.slug'), flex: 1 },
+    { field: 'name', headerName: t('common.labels.name'), flex: 1 },
     { field: 'locale', headerName: t('common.labels.locale'), width: 120 },
     { field: 'visibility', headerName: t('common.labels.visibility'), width: 140 },
     {

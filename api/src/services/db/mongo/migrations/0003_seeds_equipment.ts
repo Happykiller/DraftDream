@@ -14,17 +14,17 @@ function toSlug(label: string): string {
 
 const FR_LABELS = [
   'Aucun',
-  'Haltères',
+  'Halteres',
   'Barre',
   'Banc',
   'Disques',
-  'Élastiques',
+  'Elastiques',
   'Kettlebell',
   'TRX',
   'Ballon',
   'Tapis',
   'Barre de traction',
-  'Câbles',
+  'Cables',
 ];
 
 const migration: Migration = {
@@ -53,6 +53,7 @@ const migration: Migration = {
     // upserts
     const now = new Date();
     const ops = FR_LABELS.map((label) => {
+      const name = label.trim();
       const slug = toSlug(label);
       return {
         updateOne: {
@@ -61,11 +62,12 @@ const migration: Migration = {
             $setOnInsert: {
               slug,
               locale: 'fr',
+              name,
               visibility: 'public',
               createdBy: createdBy.toHexString ? createdBy.toHexString() : String(createdBy),
               createdAt: now,
             },
-            $set: { updatedAt: now },
+            $set: { updatedAt: now, name },
           },
           upsert: true,
         },

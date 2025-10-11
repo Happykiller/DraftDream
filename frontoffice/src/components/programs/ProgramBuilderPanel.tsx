@@ -501,7 +501,7 @@ export function ProgramBuilderPanel({
     >
       <Stack spacing={3}>
         <Stack direction="row" spacing={1} alignItems="center">
-          <Typography variant="h5" sx={{ fontWeight: 700 }}>
+          <Typography variant="h6" sx={{ fontWeight: 700 }}>
             {builderCopy.title}
           </Typography>
           <Chip
@@ -596,7 +596,7 @@ export function ProgramBuilderPanel({
                   spacing={1}
                 >
                   <Stack spacing={0.5}>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                    <Typography variant="h5" sx={{ fontWeight: 600 }}>
                       {builderCopy.templates_title}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
@@ -967,7 +967,6 @@ export function ProgramBuilderPanel({
                 variant="outlined"
                 size="small"
                 startIcon={<Add fontSize="small" />}
-                sx={{ alignSelf: 'flex-start' }}
                 onClick={() => console.log('Create new exercise')}
               >
                 {builderCopy.library.button_create}

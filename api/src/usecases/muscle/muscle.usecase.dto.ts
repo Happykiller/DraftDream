@@ -2,12 +2,13 @@
 export interface CreateMuscleUsecaseDto {
   slug: string;
   locale: string;
+  name: string;
   visibility: 'private' | 'public';
   createdBy: string;
 }
 
 // src/usecases/muscle/dto/get.muscle.usecase.dto.ts
-// We mirror BddService GetMuscleDto shape (id OR slug+locale). 
+// We mirror BddService GetMuscleDto shape (id OR slug+locale).
 export interface GetMuscleUsecaseDto {
   id: string;
 }
@@ -28,6 +29,7 @@ export interface UpdateMuscleUsecaseDto {
   id: string;
   slug?: string;
   locale?: string;
+  name?: string;
 }
 
 // src/usecases/muscle/dto/delete.muscle.usecase.dto.ts

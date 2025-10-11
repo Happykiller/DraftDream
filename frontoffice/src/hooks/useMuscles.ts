@@ -10,6 +10,7 @@ export interface Muscle {
   id: string;
   slug: string;
   locale: string;
+  name: string;
   visibility: MuscleVisibility;
   createdBy: string;
   createdAt: string;
@@ -32,7 +33,7 @@ type DeletePayload = { muscle_delete: boolean };
 const LIST_Q = `
   query ListMuscles($input: ListMusclesInput) {
     muscle_list(input: $input) {
-      items { id slug locale visibility creator { id email } createdAt updatedAt }
+      items { id slug locale name visibility creator { id email } createdAt updatedAt }
       total page limit
     }
   }
@@ -41,7 +42,7 @@ const LIST_Q = `
 const CREATE_M = `
   mutation CreateMuscle($input: CreateMuscleInput!) {
     muscle_create(input: $input) {
-      id slug locale visibility creator { id email } createdAt updatedAt
+      id slug locale name visibility creator { id email } createdAt updatedAt
     }
   }
 `;
@@ -49,7 +50,7 @@ const CREATE_M = `
 const UPDATE_M = `
   mutation UpdateMuscle($input: UpdateMuscleInput!) {
     muscle_update(input: $input) {
-      id slug locale visibility creator { id email } createdAt updatedAt
+      id slug locale name visibility creator { id email } createdAt updatedAt
     }
   }
 `;
@@ -96,7 +97,12 @@ export function useMuscles({ page, limit, q }: UseMusclesParams) {
   }, [load]);
 
   const create = React.useCallback(
-    async (input: { slug: string; locale: string; visibility: MuscleVisibility }) => {
+    async (input: {
+      slug: string;
+      locale: string;
+      name: string;
+      visibility: MuscleVisibility;
+    }) => {
       try {
         const { errors } = await gql.send<CreatePayload>({
           query: CREATE_M,
@@ -115,7 +121,13 @@ export function useMuscles({ page, limit, q }: UseMusclesParams) {
   );
 
   const update = React.useCallback(
-    async (input: { id: string; slug?: string; locale?: string }) => {
+    async (input: {
+      id: string;
+      slug?: string;
+      locale?: string;
+      name?: string;
+      visibility?: MuscleVisibility;
+    }) => {
       try {
         const { errors } = await gql.send<UpdatePayload>({
           query: UPDATE_M,

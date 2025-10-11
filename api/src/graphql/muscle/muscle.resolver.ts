@@ -18,7 +18,7 @@ import { mapMuscleUsecaseToGql } from '@graphql/muscle/muscle.mapper';
 
 @Resolver(() => MuscleGql)
 export class MuscleResolver {
-  
+
   @ResolveField(() => UserGql, { name: 'creator', nullable: true })
   async creator(@Parent() muscle: MuscleGql): Promise<UserGql | null> {
     const userId = muscle.createdBy;
@@ -37,6 +37,7 @@ export class MuscleResolver {
     const created = await inversify.createMuscleUsecase.execute({
       slug: input.slug,
       locale: input.locale,
+      name: input.name,
       visibility: input.visibility,
       createdBy: req?.user?.id,
     });
@@ -80,6 +81,7 @@ export class MuscleResolver {
       id: input.id,
       slug: input.slug,
       locale: input.locale,
+      name: input.name,
     });
     return updated ? mapMuscleUsecaseToGql(updated) : null;
   }

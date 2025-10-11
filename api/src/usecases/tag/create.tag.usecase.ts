@@ -12,6 +12,7 @@ export class CreateTagUsecase {
       const created = await this.inversify.bddService.tag.create({
         slug: dto.slug,
         locale: dto.locale,
+        name: dto.name,
         visibility: dto.visibility,
         createdBy: dto.createdBy,
       });

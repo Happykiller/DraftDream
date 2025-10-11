@@ -9,11 +9,13 @@ export type TagVisibility = 'PRIVATE' | 'PUBLIC';
 export interface Tag {
   id: string;
   slug: string;
+  name: string;
   locale: string;
   visibility: TagVisibility;
-  createdBy: string;     // per schema (string)
+  createdBy: string;
   createdAt: string;
   updatedAt: string;
+  creator?: { id: string; email: string } | null;
 }
 
 type TagListPayload = {
@@ -32,7 +34,17 @@ type DeletePayload = { tag_delete: boolean };
 const LIST_Q = `
   query ListTags($input: ListTagsInput) {
     tag_list(input: $input) {
-      items { id slug locale visibility createdBy createdAt updatedAt }
+      items {
+        id
+        slug
+        name
+        locale
+        visibility
+        createdBy
+        creator { id email }
+        createdAt
+        updatedAt
+      }
       total page limit
     }
   }
@@ -41,7 +53,15 @@ const LIST_Q = `
 const CREATE_M = `
   mutation CreateTag($input: CreateTagInput!) {
     tag_create(input: $input) {
-      id slug locale visibility createdBy createdAt updatedAt
+      id
+      slug
+      name
+      locale
+      visibility
+      createdBy
+      creator { id email }
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -49,7 +69,15 @@ const CREATE_M = `
 const UPDATE_M = `
   mutation UpdateTag($input: UpdateTagInput!) {
     tag_update(input: $input) {
-      id slug locale visibility createdBy createdAt updatedAt
+      id
+      slug
+      name
+      locale
+      visibility
+      createdBy
+      creator { id email }
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -94,7 +122,7 @@ export function useTags({ page, limit, q }: UseTagsParams) {
   React.useEffect(() => { void load(); }, [load]);
 
   const create = React.useCallback(
-    async (input: { slug: string; locale: string; visibility: TagVisibility }) => {
+    async (input: { slug: string; name: string; locale: string; visibility: TagVisibility }) => {
       try {
         const { errors } = await gql.send<CreatePayload>({
           query: CREATE_M,
@@ -113,7 +141,7 @@ export function useTags({ page, limit, q }: UseTagsParams) {
   );
 
   const update = React.useCallback(
-    async (input: { id: string; slug?: string; locale?: string }) => {
+    async (input: { id: string; slug?: string; name?: string; locale?: string }) => {
       try {
         const { errors } = await gql.send<UpdatePayload>({
           query: UPDATE_M,

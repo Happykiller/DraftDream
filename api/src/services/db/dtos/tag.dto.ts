@@ -2,11 +2,12 @@
 export type CreateTagDto = {
   slug: string;
   locale: string;
+  name: string;
   visibility: 'private' | 'public';
   createdBy: string;
 };
 
-export type UpdateTagDto = Partial<Pick<CreateTagDto, 'slug' | 'locale' | 'visibility'>>;
+export type UpdateTagDto = Partial<Pick<CreateTagDto, 'slug' | 'locale' | 'name' | 'visibility'>>;
 
 export type GetTagDto = { id: string };
 

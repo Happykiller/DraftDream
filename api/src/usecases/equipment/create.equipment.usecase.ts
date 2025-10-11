@@ -12,6 +12,7 @@ export class CreateEquipmentUsecase {
       const created = await this.inversify.bddService.equipment.create({
         slug: dto.slug,
         locale: dto.locale,
+        name: dto.name,
         visibility: dto.visibility,
         createdBy: dto.createdBy,
       });

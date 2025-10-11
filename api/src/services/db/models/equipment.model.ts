@@ -3,6 +3,7 @@ export interface Equipment {
   id: string;
   slug: string;
   locale: string;
+  name: string;
   visibility: 'private' | 'public';
   createdBy: string;
   createdAt: Date;

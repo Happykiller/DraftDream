@@ -44,14 +44,14 @@ export function MusclesPanel(): React.JSX.Element {
         open={openCreate}
         mode="create"
         onClose={() => setOpenCreate(false)}
-        onSubmit={(v) => create({ slug: v.slug, locale: v.locale, visibility: v.visibility })}
+        onSubmit={(v) => create({ slug: v.slug, name: v.name, locale: v.locale, visibility: v.visibility })}
       />
       <MuscleDialog
         open={!!editId}
         mode="edit"
         initial={editing}
         onClose={() => setEditId(null)}
-        onSubmit={(v) => editId ? update({ id: editId, slug: v.slug, locale: v.locale }) : undefined}
+        onSubmit={(v) => editId ? update({ id: editId, slug: v.slug, name: v.name, locale: v.locale }) : undefined}
       />
       <ConfirmDialog
         open={!!deleteId}

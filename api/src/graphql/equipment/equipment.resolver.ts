@@ -36,6 +36,7 @@ export class EquipmentResolver {
     const created = await inversify.createEquipmentUsecase.execute({
       slug: input.slug,
       locale: input.locale,
+      name: input.name,
       visibility: input.visibility,
       createdBy: req?.user?.id,
     });
@@ -79,6 +80,7 @@ export class EquipmentResolver {
       id: input.id,
       slug: input.slug,
       locale: input.locale,
+      name: input.name,
     });
     return updated ? mapEquipmentUsecaseToGql(updated) : null;
   }

@@ -11,6 +11,7 @@ export interface Equipment {
   id: string;
   slug: string;
   locale: string;
+  name: string;
   visibility: EquipmentVisibility;
   creator: Creator;          // 👈 include creator
   createdAt: string;
@@ -33,7 +34,7 @@ type DeletePayload = { equipment_delete: boolean };
 const LIST_Q = `
   query ListEquipment($input: ListEquipmentInput) {
     equipment_list(input: $input) {
-      items { id slug locale visibility creator { id email } createdAt updatedAt }
+      items { id slug locale name visibility creator { id email } createdAt updatedAt }
       total page limit
     }
   }
@@ -42,7 +43,7 @@ const LIST_Q = `
 const CREATE_M = `
   mutation CreateEquipment($input: CreateEquipmentInput!) {
     equipment_create(input: $input) {
-      id slug locale visibility creator { id email } createdAt updatedAt
+      id slug locale name visibility creator { id email } createdAt updatedAt
     }
   }
 `;
@@ -50,7 +51,7 @@ const CREATE_M = `
 const UPDATE_M = `
   mutation UpdateEquipment($input: UpdateEquipmentInput!) {
     equipment_update(input: $input) {
-      id slug locale visibility creator { id email } createdAt updatedAt
+      id slug locale name visibility creator { id email } createdAt updatedAt
     }
   }
 `;
@@ -95,7 +96,12 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
   React.useEffect(() => { void load(); }, [load]);
 
   const create = React.useCallback(
-    async (input: { slug: string; locale: string; visibility: EquipmentVisibility }) => {
+    async (input: {
+      slug: string;
+      locale: string;
+      name: string;
+      visibility: EquipmentVisibility;
+    }) => {
       try {
         const { errors } = await gql.send<CreatePayload>({
           query: CREATE_M,
@@ -114,7 +120,13 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
   );
 
   const update = React.useCallback(
-    async (input: { id: string; slug?: string; locale?: string }) => {
+    async (input: {
+      id: string;
+      slug?: string;
+      locale?: string;
+      name?: string;
+      visibility?: EquipmentVisibility;
+    }) => {
       try {
         const { errors } = await gql.send<UpdatePayload>({
           query: UPDATE_M,

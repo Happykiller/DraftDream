@@ -7,6 +7,7 @@ export function mapEquipmentUsecaseToGql(m: EquipmentUsecaseModel): EquipmentGql
     id: m.id,
     slug: m.slug,
     locale: m.locale,
+    name: m.name,
     visibility: m.visibility as EquipmentVisibility,
     createdBy: m.createdBy,
     createdAt: m.createdAt,

@@ -14,6 +14,7 @@ export class EquipmentGql {
   @Field(() => ID) id!: string;
   @Field() slug!: string;
   @Field() locale!: string;
+  @Field() name!: string;
   @Field(() => EquipmentVisibility) visibility!: EquipmentVisibility;
   @Field() createdBy!: string;
   @Field() createdAt!: Date;
@@ -26,6 +27,7 @@ export class EquipmentGql {
 export class CreateEquipmentInput {
   @Field() slug!: string;
   @Field() locale!: string;
+  @Field() name!: string;
   @Field(() => EquipmentVisibility) visibility!: EquipmentVisibility;
 }
 
@@ -34,6 +36,7 @@ export class UpdateEquipmentInput {
   @Field(() => ID) id!: string;
   @Field({ nullable: true }) slug?: string;
   @Field({ nullable: true }) locale?: string;
+  @Field({ nullable: true }) name?: string;
 }
 
 @InputType()

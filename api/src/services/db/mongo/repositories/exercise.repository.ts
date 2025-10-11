@@ -224,22 +224,22 @@ export class BddServiceExerciseMongo {
     },
     primaryMuscles: (doc.primaryMuscles ?? []).map((oid) => ({
       id: oid.toHexString(),
-      slug: '', locale: doc.locale, visibility: 'private',
+      slug: '', locale: doc.locale, name: '', visibility: 'private',
       createdBy: '', createdAt: doc.createdAt, updatedAt: doc.updatedAt,
     })),
     secondaryMuscles: (doc.secondaryMuscles ?? []).map((oid) => ({
       id: oid.toHexString(),
-      slug: '', locale: doc.locale, visibility: 'private',
+      slug: '', locale: doc.locale, name: '', visibility: 'private',
       createdBy: '', createdAt: doc.createdAt, updatedAt: doc.updatedAt,
     })),
     equipment: (doc.equipment ?? []).map((oid) => ({
       id: oid.toHexString(),
-      slug: '', locale: doc.locale, visibility: 'private',
+      slug: '', locale: doc.locale, name: '', visibility: 'private',
       createdBy: '', createdAt: doc.createdAt, updatedAt: doc.updatedAt,
     })),
     tags: (doc.tags ?? []).map((oid) => ({
       id: oid.toHexString(),
-      slug: '', locale: doc.locale, visibility: 'private',
+      slug: '', locale: doc.locale, name: '', visibility: 'private',
       createdBy: '', createdAt: doc.createdAt, updatedAt: doc.updatedAt,
     })),
 

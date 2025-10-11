@@ -10,6 +10,7 @@ type EquipmentDoc = {
   _id: ObjectId;
   slug: string;
   locale: string;
+  name: string;
   visibility: 'private' | 'public';
   createdBy: string;
   createdAt: Date;
@@ -38,6 +39,7 @@ export class BddServiceEquipmentMongo {
     const doc: Omit<EquipmentDoc, '_id'> = {
       slug: dto.slug.toLowerCase().trim(),
       locale: dto.locale.toLowerCase().trim(),
+      name: dto.name.trim(),
       visibility: dto.visibility,
       createdBy: dto.createdBy,
       createdAt: now,
@@ -71,7 +73,10 @@ export class BddServiceEquipmentMongo {
     } = params;
 
     const filter: Record<string, any> = {};
-    if (q && q.trim()) filter.slug = { $regex: new RegExp(q.trim(), 'i') };
+    if (q && q.trim()) {
+      const regex = new RegExp(q.trim(), 'i');
+      filter.$or = [{ slug: { $regex: regex } }, { name: { $regex: regex } }];
+    }
     if (locale) filter.locale = locale.toLowerCase().trim();
     if (createdBy) filter.createdBy = createdBy;
     if (visibility === 'public' || visibility === 'private') {
@@ -91,6 +96,7 @@ export class BddServiceEquipmentMongo {
     const $set: Partial<EquipmentDoc> = { updatedAt: new Date() };
     if (patch.slug !== undefined) $set.slug = patch.slug.toLowerCase().trim();
     if (patch.locale !== undefined) $set.locale = patch.locale.toLowerCase().trim();
+    if (patch.name !== undefined) $set.name = patch.name.trim();
 
     try {
       const res: any = await (await this.col()).findOneAndUpdate(
@@ -120,6 +126,7 @@ export class BddServiceEquipmentMongo {
     id: doc._id.toHexString(),
     slug: doc.slug,
     locale: doc.locale,
+    name: doc.name,
     visibility: doc.visibility,
     createdBy: doc.createdBy,
     createdAt: doc.createdAt,
