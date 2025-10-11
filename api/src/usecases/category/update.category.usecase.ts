@@ -12,6 +12,7 @@ export class UpdateCategoryUsecase {
       const updated = await this.inversify.bddService.category.update(dto.id, {
         slug: dto.slug,
         locale: dto.locale,
+        name: dto.name,
       });
       return updated ? { ...updated } : null;
     } catch (e: any) {

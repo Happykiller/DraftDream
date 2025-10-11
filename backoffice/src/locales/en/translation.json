@@ -158,6 +158,9 @@
       "dialog": {
         "create_title": "New Category",
         "edit_title": "Edit Category"
+      },
+      "confirm": {
+        "delete_title": "Delete category"
       }
     },
     "tags": {
@@ -167,6 +170,9 @@
       "dialog": {
         "create_title": "New Tag",
         "edit_title": "Edit Tag"
+      },
+      "confirm": {
+        "delete_title": "Delete tag"
       }
     },
     "equipment": {
@@ -176,6 +182,9 @@
       "dialog": {
         "create_title": "New Equipment",
         "edit_title": "Edit Equipment"
+      },
+      "confirm": {
+        "delete_title": "Delete equipment"
       }
     },
     "muscles": {
@@ -185,6 +194,9 @@
       "dialog": {
         "create_title": "New Muscle",
         "edit_title": "Edit Muscle"
+      },
+      "confirm": {
+        "delete_title": "Delete muscle"
       }
     },
     "sessions": {
@@ -197,6 +209,9 @@
       },
       "table": {
         "exercises_linked": "{{count}} linked"
+      },
+      "confirm": {
+        "delete_title": "Delete session"
       }
     },
     "exercises": {
@@ -206,6 +221,9 @@
       "dialog": {
         "create_title": "New Exercise",
         "edit_title": "Edit Exercise"
+      },
+      "confirm": {
+        "delete_title": "Delete exercise"
       }
     }
   },

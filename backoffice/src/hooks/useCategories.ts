@@ -10,11 +10,13 @@ export type Visibility = 'PRIVATE' | 'PUBLIC';
 export interface Category {
   id: string;
   slug: string;
+  name: string;
   locale: string;
   visibility: Visibility;
   createdBy: string;
   createdAt: string;
   updatedAt: string;
+  creator?: { id: string; email: string } | null;
 }
 
 type CategoryListPayload = {
@@ -33,7 +35,17 @@ type DeleteCategoryPayload = { category_delete: boolean };
 const LIST_Q = `
   query ListCategories($input: ListCategoriesInput) {
     category_list(input: $input) {
-      items { id slug locale visibility creator { id email } createdAt updatedAt }
+      items {
+        id
+        slug
+        name
+        locale
+        visibility
+        createdBy
+        creator { id email }
+        createdAt
+        updatedAt
+      }
       total page limit
     }
   }
@@ -42,7 +54,15 @@ const LIST_Q = `
 const CREATE_M = `
   mutation CreateCategory($input: CreateCategoryInput!) {
     category_create(input: $input) {
-      id slug locale visibility creator { id email } createdAt updatedAt
+      id
+      slug
+      name
+      locale
+      visibility
+      createdBy
+      creator { id email }
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -50,7 +70,15 @@ const CREATE_M = `
 const UPDATE_M = `
   mutation UpdateCategory($input: UpdateCategoryInput!) {
     category_update(input: $input) {
-      id slug locale visibility creator { id email } createdAt updatedAt
+      id
+      slug
+      name
+      locale
+      visibility
+      createdBy
+      creator { id email }
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -99,7 +127,7 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
   }, [load]);
 
   const create = React.useCallback(
-    async (input: { slug: string; locale: string; visibility: Visibility }) => {
+    async (input: { slug: string; name: string; locale: string; visibility: Visibility }) => {
       try {
         const { errors } = await gql.send<CreateCategoryPayload>({
           query: CREATE_M,
@@ -118,7 +146,7 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
   );
 
   const update = React.useCallback(
-    async (input: { id: string; slug?: string; locale?: string }) => {
+    async (input: { id: string; slug?: string; name?: string; locale?: string }) => {
       try {
         const { errors } = await gql.send<UpdateCategoryPayload>({
           query: UPDATE_M,

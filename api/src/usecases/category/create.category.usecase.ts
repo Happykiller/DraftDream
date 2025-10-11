@@ -12,6 +12,7 @@ export class CreateCategoryUsecase {
       const created = await this.inversify.bddService.category.create({
         slug: dto.slug,
         locale: dto.locale,
+        name: dto.name,
         visibility: dto.visibility,
         createdBy: dto.createdBy,
       });

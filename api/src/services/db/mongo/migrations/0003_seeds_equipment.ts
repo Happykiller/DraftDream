@@ -28,7 +28,7 @@ const FR_LABELS = [
 ];
 
 const migration: Migration = {
-  id: '000X_seeds_equipment',
+  id: '0003_seeds_equipment',
   description: 'Seed equipments (locale=fr) and link to admin user as createdBy',
 
   async up(db: Db, log) {

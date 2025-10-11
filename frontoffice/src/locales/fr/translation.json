@@ -36,7 +36,7 @@
       "close_builder": "Fermer le createur"
     },
     "builder": {
-      "title": "Createur de programme simplifie",
+      "title": "Créer un nouveau programme sportif",
       "subtitle": "Glissez deposer les seances et exercices pour composer un programme sur mesure.",
       "config": {
         "title": "Configuration du programme",
@@ -52,7 +52,7 @@
         "filter_all": "Toutes categories",
         "button_create": "Creer une seance"
       },
-      "templates_title": "Templates de seances",
+      "templates_title": "Bibliotheque de seances",
       "templates_subtitle": "Glissez une seance ou cliquez pour l'ajouter.",
       "structure": {
         "title": "Structure du programme",

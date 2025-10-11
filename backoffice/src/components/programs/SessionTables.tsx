@@ -48,7 +48,7 @@ export const SessionTables = React.memo(function SessionTables({
       field: 'durationMin',
       headerName: t('common.labels.duration_minutes'),
       width: 130,
-      valueFormatter: (params:any) => `${params.value}`,
+      valueFormatter: (value:any) => `${value}`,
     },
     {
       field: 'exerciseIds',

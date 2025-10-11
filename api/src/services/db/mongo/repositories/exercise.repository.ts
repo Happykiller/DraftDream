@@ -218,7 +218,8 @@ export class BddServiceExerciseMongo {
     // Relations are represented minimally; hydrate at service/usecase layer if needed.
     category: {
       id: doc.category.toHexString(),
-      slug: '', locale: doc.locale, visibility: 'private',
+      slug: '', locale: doc.locale, name: '',
+      visibility: 'private',
       createdBy: '', createdAt: doc.createdAt, updatedAt: doc.updatedAt,
     },
     primaryMuscles: (doc.primaryMuscles ?? []).map((oid) => ({

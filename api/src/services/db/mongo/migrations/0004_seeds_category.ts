@@ -1,4 +1,4 @@
-// src/migrations/000X_seeds_category.ts
+﻿// src/migrations/000X_seeds_category.ts
 import { Db, ObjectId } from 'mongodb';
 import { Migration } from '@services/db/mongo/migration.runner.mongo';
 
@@ -17,9 +17,9 @@ const FR_LABELS = [
   'Full body',
   'Cardio',
   'Core',
-  'Étirements',
+  'Etirements',
   'Fonctionnel',
-  'Pliométrie',
+  'Pliometrie',
 ];
 
 const migration: Migration = {
@@ -44,6 +44,7 @@ const migration: Migration = {
     const now = new Date();
 
     const ops = FR_LABELS.map((label) => {
+      const name = label.trim();
       const slug = toSlug(label);
       return {
         updateOne: {
@@ -52,11 +53,12 @@ const migration: Migration = {
             $setOnInsert: {
               slug,
               locale: 'fr',
+              name,
               visibility: 'public',
               createdBy: createdBy.toHexString ? createdBy.toHexString() : String(createdBy),
               createdAt: now,
             },
-            $set: { updatedAt: now },
+            $set: { updatedAt: now, name },
           },
           upsert: true,
         },
@@ -70,3 +72,4 @@ const migration: Migration = {
 
 export default migration;
 export { toSlug };
+

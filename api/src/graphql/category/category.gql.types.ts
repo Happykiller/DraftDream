@@ -14,6 +14,7 @@ export class CategoryGql {
   @Field(() => ID) id!: string;
   @Field() slug!: string;
   @Field() locale!: string;
+  @Field() name!: string;
   @Field(() => CategoryVisibility) visibility!: CategoryVisibility;
   @Field() createdBy!: string;
   @Field() createdAt!: Date;
@@ -26,6 +27,7 @@ export class CategoryGql {
 export class CreateCategoryInput {
   @Field() slug!: string;
   @Field() locale!: string;
+  @Field() name!: string;
   @Field(() => CategoryVisibility) visibility!: CategoryVisibility;
 }
 
@@ -34,6 +36,7 @@ export class UpdateCategoryInput {
   @Field(() => ID) id!: string;
   @Field({ nullable: true }) slug?: string;
   @Field({ nullable: true }) locale?: string;
+  @Field({ nullable: true }) name?: string;
 }
 
 @InputType()

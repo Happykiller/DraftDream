@@ -180,6 +180,7 @@ type CategoryGql {
   id: ID!
   slug: String!
   locale: String!
+  name: String!
   visibility: CategoryVisibility!
   createdBy: String!
   createdAt: DateTime!
@@ -456,6 +457,7 @@ input UpdateProgramInput {
 input CreateCategoryInput {
   slug: String!
   locale: String!
+  name: String!
   visibility: CategoryVisibility!
 }
 
@@ -463,6 +465,7 @@ input UpdateCategoryInput {
   id: ID!
   slug: String
   locale: String
+  name: String
 }
 
 input CreateExerciseInput {

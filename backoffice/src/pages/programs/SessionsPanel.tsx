@@ -1,6 +1,7 @@
 // src/pages/programs/SessionsPanel.tsx
 import * as React from 'react';
 import { Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { useDebouncedValue } from '@hooks/useDebouncedValue';
 import { useTabParams } from '@hooks/useTabParams';
 import { useSessions } from '@hooks/useSessions';
@@ -19,6 +20,7 @@ export function SessionsPanel(): React.JSX.Element {
 
   const { items, total, loading, create, update, remove } = useSessions({ page, limit, q });
   const { items: exerciseItems } = useExercises({ page: 1, limit: 200, q: '' });
+  const { t } = useTranslation();
 
   const exerciseOptions = React.useMemo<ExerciseOption[]>(
     () => exerciseItems.map(ex => ({ id: ex.id, slug: ex.slug, name: ex.name })),
@@ -89,15 +91,15 @@ export function SessionsPanel(): React.JSX.Element {
 
       <ConfirmDialog
         open={!!deleteId}
-        title="Delete session"
-        message="This action cannot be undone."
+        title={t('programs.sessions.confirm.delete_title')}
+        message={t('common.messages.confirm_deletion_warning')}
         onClose={() => setDeleteId(null)}
         onConfirm={() => {
           if (deleteId) {
             remove(deleteId).finally(() => setDeleteId(null));
           }
         }}
-        confirmLabel="Delete"
+        confirmLabel={t('common.buttons.delete')}
       />
     </Box>
   );

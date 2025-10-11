@@ -22,7 +22,10 @@ export class MongoMigrationRunner {
     const muscles: Migration = require('./migrations/0002_seeds_muscle').default;
     const equipments: Migration = require('./migrations/0003_seeds_equipment').default;
     const categories: Migration = require('./migrations/0004_seeds_category').default;
-    return [admin, muscles, equipments, categories];
+    const exercises: Migration = require('./migrations/0005_seeds_exercise').default;
+    const sessions: Migration = require('./migrations/0006_seeds_session').default;
+    const backfillCategoryName: Migration = require('./migrations/0007_backfill_category_name').default;
+    return [admin, muscles, equipments, categories, exercises, sessions, backfillCategoryName];
   }
 
   private colMigrations(db: mongoDB.Db) {

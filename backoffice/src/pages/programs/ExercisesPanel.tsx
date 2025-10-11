@@ -1,6 +1,7 @@
 // src/pages/programs/ExercisesPanel.tsx
 import * as React from 'react';
 import { Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { useDebouncedValue } from '@hooks/useDebouncedValue';
 import { useTabParams } from '@hooks/useTabParams';
 import { useExercises } from '@hooks/useExercises';
@@ -19,6 +20,7 @@ export function ExercisesPanel(): React.JSX.Element {
   React.useEffect(() => { if (debounced !== q) setQ(debounced); }, [debounced, q, setQ]);
 
   const { items, total, loading, create, update, remove } = useExercises({ page, limit, q });
+  const { t } = useTranslation();
 
   // Options (petites pages, à passer en async si volume ↑)
   const cats = useCategories({ page: 1, limit: 100, q: '' });
@@ -117,11 +119,11 @@ export function ExercisesPanel(): React.JSX.Element {
 
       <ConfirmDialog
         open={!!deleteId}
-        title="Delete exercise"
-        message="This action cannot be undone."
+        title={t('programs.exercises.confirm.delete_title')}
+        message={t('common.messages.confirm_deletion_warning')}
         onClose={() => setDeleteId(null)}
         onConfirm={() => { if (deleteId) remove(deleteId).finally(() => setDeleteId(null)); }}
-        confirmLabel="Delete"
+        confirmLabel={t('common.buttons.delete')}
       />
     </Box>
   );

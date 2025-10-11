@@ -44,6 +44,7 @@ export function CategoryTable(props: CategoryTableProps): React.JSX.Element {
 
   const columns = React.useMemo<GridColDef<Category>[]>(
     () => [
+      { field: 'name', headerName: t('common.labels.name'), flex: 1 },
       { field: 'slug', headerName: t('common.labels.slug'), flex: 1 },
       { field: 'locale', headerName: t('common.labels.locale'), width: 120 },
       { field: 'visibility', headerName: t('common.labels.visibility'), width: 140 },
