@@ -1,6 +1,6 @@
 // src\main.ts
 import { NestFactory } from '@nestjs/core';
-import type { NestExpressApplication } from '@nestjs/platform-express';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 
 import { config } from '@src/config';
 import { AppModule } from '@src/app.module';
@@ -13,7 +13,8 @@ async function bootstrap() {
     `Environnement selected: ${config.env.mode} on port ${config.env.port ?? 3000}`,
   );
 
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+  const app = await NestFactory.create<NestFastifyApplication>(AppModule,
+    new FastifyAdapter(), {
     logger: new NestLogger(),
     // logger: ['error', 'warn', 'log', 'debug', 'verbose'],
   });

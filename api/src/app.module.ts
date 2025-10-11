@@ -1,7 +1,8 @@
 // src\app.module.ts
+
+import { MercuriusDriver, MercuriusDriverConfig } from '@nestjs/mercurius';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 
 import { TagModule } from '@graphql/tag/tag.module';
 import { UserModule } from '@graphql/user/user.module';
@@ -27,11 +28,9 @@ import { EquipmentModule } from '@graphql/equipment/equipment.module';
     CategoryModule,
     ExerciseModule,
     EquipmentModule,
-    GraphQLModule.forRoot<ApolloDriverConfig>({
-      driver: ApolloDriver,
+    GraphQLModule.forRoot<MercuriusDriverConfig>({
+      driver: MercuriusDriver,
       autoSchemaFile: 'gqlschema.gql',
-      playground: true,
-      context: ({ req, res }) => ({ req, res }),
     })
   ],
 })
