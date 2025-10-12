@@ -10,7 +10,8 @@
   },
   "common": {
     "field_incorrect": "Incorrect field",
-    "unexpected_error": "Unexpected error, please try again."
+    "unexpected_error": "Unexpected error, please try again.",
+    "loading": "Loading..."
   },
   "login": {
     "title": "Login",

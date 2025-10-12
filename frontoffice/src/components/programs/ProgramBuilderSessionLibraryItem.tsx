@@ -12,7 +12,7 @@ type ProgramBuilderSessionTemplateItemProps = {
   onDragEnd?: () => void;
 };
 
-export function ProgramBuilderSessionTemplateItem({
+export function ProgramBuilderSessionLibraryItem({
   template,
   builderCopy,
   onDragStart,
@@ -30,8 +30,9 @@ export function ProgramBuilderSessionTemplateItem({
         p: 1.5,
         borderRadius: 2,
         cursor: 'grab',
+        transition: 'border-color 150ms ease, background-color 150ms ease',
         '&:hover': {
-          borderColor: theme.palette.primary.main,
+          borderColor: theme.palette.secondary.main,
           boxShadow: theme.shadows[2],
         },
       }}

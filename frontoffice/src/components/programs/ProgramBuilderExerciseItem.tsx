@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { DeleteOutline } from '@mui/icons-material';
-import { Chip, IconButton, Paper, Stack, Typography } from '@mui/material';
+import { DeleteOutline, DragIndicator } from '@mui/icons-material';
+import { Chip, IconButton, Paper, Stack, Typography, useTheme } from '@mui/material';
 
 import type { ExerciseLibraryItem, ProgramExercise } from './ProgramBuilderPanel';
 
@@ -21,6 +21,8 @@ export function ProgramBuilderExerciseItem({
   onDragStart,
   onDragEnd,
 }: ProgramBuilderExerciseItemProps): React.JSX.Element {
+  const theme = useTheme();
+  
   const handleRemoveClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     onRemove(exerciseItem.id);
@@ -42,7 +44,15 @@ export function ProgramBuilderExerciseItem({
       draggable
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
-      sx={{ p: 1.5, borderRadius: 1.75, cursor: 'grab' }}
+      sx={{
+        p: 1.5,
+        borderRadius: 2,
+        cursor: 'grab',
+        '&:hover': {
+          borderColor: theme.palette.primary.main,
+          boxShadow: theme.shadows[1],
+        },
+      }}
     >
       <Stack
         direction="row"
@@ -51,6 +61,7 @@ export function ProgramBuilderExerciseItem({
         justifyContent="space-between"
       >
         <Stack direction="row" spacing={1} alignItems="flex-start">
+          <DragIndicator fontSize="small" color="disabled" />
           <Typography variant="subtitle2" sx={{ fontWeight: 700, minWidth: 24 }}>
             {index + 1}.
           </Typography>

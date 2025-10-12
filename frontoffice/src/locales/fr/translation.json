@@ -10,7 +10,8 @@
   },
   "common": {
     "field_incorrect": "Champ incorrect",
-    "unexpected_error": "Erreur inattendue, veuillez réessayer."
+    "unexpected_error": "Erreur inattendue, veuillez réessayer.",
+    "loading": "Chargement..."
   },
   "login": {
     "title": "Connexion",

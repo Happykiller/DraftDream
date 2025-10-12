@@ -14,9 +14,7 @@ import { ProgramBuilderExerciseDropZone } from './ProgramBuilderExerciseDropZone
 type ProgramBuilderSessionItemProps = {
   session: ProgramSession;
   index: number;
-  isSelected: boolean;
   builderCopy: BuilderCopy;
-  onSelect: () => void;
   onRemoveSession: () => void;
   onRemoveExercise: (exerciseId: string) => void;
   onDragStart: (event: React.DragEvent<HTMLDivElement>) => void;
@@ -40,9 +38,7 @@ type ProgramBuilderSessionItemProps = {
 export function ProgramBuilderSessionItem({
   session,
   index,
-  isSelected,
   builderCopy,
-  onSelect,
   onRemoveSession,
   onRemoveExercise,
   onDragStart,
@@ -69,20 +65,19 @@ export function ProgramBuilderSessionItem({
 
   return (
     <Paper
+      variant="outlined"
       draggable
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
-      onClick={onSelect}
       sx={{
-        p: 2,
+        p: 1.5,
         borderRadius: 2,
         cursor: 'grab',
-        border: isSelected ? '2px solid' : '1px solid',
-        bgcolor:
-          isSelected || isDraggingExercise
-            ? alpha(theme.palette.primary.main, 0.06)
-            : theme.palette.background.paper,
         transition: 'border-color 150ms ease, background-color 150ms ease',
+        '&:hover': {
+          borderColor: theme.palette.secondary.main,
+          boxShadow: theme.shadows[2],
+        },
       }}
     >
       <Stack spacing={1.5}>

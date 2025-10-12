@@ -3,9 +3,11 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { alpha, useTheme } from '@mui/material/styles';
 import {
+  Autocomplete,
   Box,
   Button,
   Chip,
+  CircularProgress,
   Divider,
   Grid,
   InputAdornment,
@@ -20,9 +22,14 @@ import { useSessions } from '@hooks/useSessions';
 import { useExercises } from '@hooks/useExercises';
 import { useCategories } from '@hooks/useCategories';
 import { ProgramBuilderSessionItem } from './ProgramBuilderSessionItem';
-import { ProgramBuilderSessionTemplateItem } from './ProgramBuilderSessionTemplateItem';
+import { ProgramBuilderSessionLibraryItem } from './ProgramBuilderSessionLibraryItem';
 import { ProgramBuilderSessionDropZone } from './ProgramBuilderSessionDropZone';
 import { ProgramBuilderExerciseLibraryItem } from './ProgramBuilderExerciseLibraryItem';
+import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
+import { useUsers, type User } from '@src/hooks/useUsers';
+import { usePrograms } from '@src/hooks/usePrograms';
+import { useFlashStore } from '@src/hooks/useFlashStore';
+import { slugify } from '@src/utils/slugify';
 
 export type ExerciseLibraryItem = {
   id: string;
@@ -48,7 +55,6 @@ export type SessionTemplate = {
   id: string;
   label: string;
   duration: number;
-  focus: string;
   tags: string[];
   exercises: TemplateExerciseRef[];
 };
@@ -63,9 +69,9 @@ export type ProgramExercise = {
 
 export type ProgramSession = {
   id: string;
+  sessionId: string;
   label: string;
   duration: number;
-  focus: string;
   tags: string[];
   exercises: ProgramExercise[];
 };
@@ -171,24 +177,87 @@ export function ProgramBuilderPanel({
   builderCopy,
   onCancel,
 }: ProgramBuilderPanelProps): React.JSX.Element {
-  const { t } = useTranslation();
+  /**
+   * Basics
+   */
+  const { t, i18n } = useTranslation();
+  const flash = useFlashStore();
   const theme = useTheme();
+
+  /**
+   * Variables
+   */
+  const [usersQ, setUsersQ] = React.useState<string>('');
+  const [selectedAthlete, setSelectedAthlete] = React.useState<User | null>(null);
+  const [sessionSearch, setSessionSearch] = React.useState<string>('');
+  const [exerciseSearch, setExerciseSearch] = React.useState<string>('');
+  const [exerciseCategory, setExerciseCategory] = React.useState<string>('all');
+  const [exerciseType, setExerciseType] = React.useState<string>('all');
+  const [isDraggingSession, setIsDraggingSession] = React.useState(false);
+  const [isDraggingExercise, setIsDraggingExercise] = React.useState(false);
+  const [sessions, setSessions] = React.useState<ProgramSession[]>([]);
+  const [form, setForm] = React.useState<ProgramForm>({
+    athlete: '',
+    programName: '',
+    duration: '',
+    frequency: '',
+    description: '',
+  });
+
+  const summaryText = t('programs-coatch.builder.structure.summary', {
+    count: sessions.length,
+  });
+  const sessionDropZoneLabel = t(
+    'programs-coatch.builder.structure.drop_zone',
+    { defaultValue: 'Drop session here' },
+  );
+  const exerciseDropZoneLabel =
+    builderCopy.structure.exercise_drop_zone ??
+    t('programs-coatch.builder.structure.exercise_drop_zone', {
+      defaultValue: 'Drop exercise here',
+    });
+
+  /**
+   * Hooks
+   */
+  const debouncedQ = useDebouncedValue(usersQ, 300);
 
   const { items: sessionItems, loading: sessionsLoading } = useSessions({
     page: 1,
     limit: 50,
     q: '',
   });
+
   const { items: exerciseItems, loading: exercisesLoading } = useExercises({
     page: 1,
     limit: 100,
     q: '',
   });
+
   const { items: categoryItems, loading: categoriesLoading } = useCategories({
     page: 1,
     limit: 100,
     q: '',
   });
+
+  const { items: users, loading: usersLoading } = useUsers({
+    page: 1,
+    limit: 100,
+    q: debouncedQ,
+  });
+
+  const { create: createProgram } = usePrograms({ page: 1, limit: 50, q: '' });
+
+  const userLabel = React.useCallback((u: User | null) => {
+    if (!u) return '';
+    return u.email;
+  }, []);
+
+  // Keep form.athlete in sync with selected object
+  const handleSelectAthlete = React.useCallback((_e: unknown, value: User | null) => {
+    setSelectedAthlete(value);
+    setForm((prev) => ({ ...prev, athlete: value?.id ?? '' }));
+  }, []);
 
   const sessionTemplates = React.useMemo<SessionTemplate[]>(
     () =>
@@ -196,7 +265,6 @@ export function ProgramBuilderPanel({
         id: item.id,
         label: item.label,
         duration: item.durationMin,
-        focus: item.locale || 'General',
         tags: [],
         exercises: item.exerciseIds.map((exerciseId) => ({ exerciseId })),
       })),
@@ -225,74 +293,17 @@ export function ProgramBuilderPanel({
     [exerciseLibrary],
   );
 
-  const [form, setForm] = React.useState<ProgramForm>({
-    athlete: '',
-    programName: '',
-    duration: '',
-    frequency: '',
-    description: '',
-  });
-  const [sessionSearch, setSessionSearch] = React.useState<string>('');
-  const [exerciseSearch, setExerciseSearch] = React.useState<string>('');
-  const [exerciseCategory, setExerciseCategory] = React.useState<string>('all');
-  const [exerciseType, setExerciseType] = React.useState<string>('all');
-  const [selectedSessionId, setSelectedSessionId] = React.useState<string | null>(
-    null,
-  );
-  const [isDraggingSession, setIsDraggingSession] = React.useState(false);
-  const [isDraggingExercise, setIsDraggingExercise] = React.useState(false);
+  React.useEffect(() => {
+    if (!selectedAthlete && form.athlete) {
+      const found = users.find(u => u.id === form.athlete);
+      if (found) setSelectedAthlete(found);
+    }
+  }, [users, selectedAthlete, form.athlete]);
 
   const idCountersRef = React.useRef<{ session: number; exercise: number }>({
     session: 0,
     exercise: 0,
   });
-
-  const nextId = React.useCallback((type: 'session' | 'exercise') => {
-    idCountersRef.current[type] += 1;
-    return `${type}-${idCountersRef.current[type]}`;
-  }, []);
-
-  const createSessionFromTemplate = React.useCallback(
-    (template: SessionTemplate): ProgramSession => {
-      const exercises = template.exercises
-        .map((exerciseRef) => {
-          const base = exerciseMap.get(exerciseRef.exerciseId);
-          if (!base) {
-            return null;
-          }
-          return {
-            id: nextId('exercise'),
-            exerciseId: base.id,
-            sets: exerciseRef.sets ?? base.sets,
-            reps: exerciseRef.reps ?? base.reps,
-            rest: exerciseRef.rest ?? base.rest,
-          };
-        })
-        .filter((exercise): exercise is ProgramExercise => exercise !== null);
-
-      return {
-        id: nextId('session'),
-        label: template.label,
-        duration: template.duration,
-        focus: template.focus,
-        tags: template.tags,
-        exercises,
-      };
-    },
-    [exerciseMap, nextId],
-  );
-
-  const [sessions, setSessions] = React.useState<ProgramSession[]>([]);
-
-  React.useEffect(() => {
-    if (sessions.length === 0) {
-      setSelectedSessionId(null);
-      return;
-    }
-    if (!selectedSessionId) {
-      setSelectedSessionId(sessions[0].id);
-    }
-  }, [sessions, selectedSessionId]);
 
   const exerciseCategories = React.useMemo(
     () =>
@@ -343,6 +354,44 @@ export function ProgramBuilderPanel({
     });
   }, [exerciseCategory, exerciseLibrary, exerciseSearch, exerciseType]);
 
+  /**
+   * Methods
+   */
+  const nextId = React.useCallback((type: 'session' | 'exercise') => {
+    idCountersRef.current[type] += 1;
+    return `${type}-${idCountersRef.current[type]}`;
+  }, []);
+
+  const createSessionFromTemplate = React.useCallback(
+    (template: SessionTemplate): ProgramSession => {
+      const exercises = template.exercises
+        .map((exerciseRef) => {
+          const base = exerciseMap.get(exerciseRef.exerciseId);
+          if (!base) {
+            return null;
+          }
+          return {
+            id: nextId('exercise'),
+            exerciseId: base.id,
+            sets: exerciseRef.sets ?? base.sets,
+            reps: exerciseRef.reps ?? base.reps,
+            rest: exerciseRef.rest ?? base.rest,
+          };
+        })
+        .filter((exercise): exercise is ProgramExercise => exercise !== null);
+
+      return {
+        id: nextId('session'),
+        sessionId: template.id,
+        label: template.label,
+        duration: template.duration,
+        tags: template.tags,
+        exercises,
+      };
+    },
+    [exerciseMap, nextId],
+  );
+
   const handleFormChange = React.useCallback(
     (field: keyof ProgramForm) =>
       (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -368,7 +417,6 @@ export function ProgramBuilderPanel({
         next.splice(insertAt, 0, session);
         return next;
       });
-      setSelectedSessionId(session.id);
     },
     [createSessionFromTemplate, sessionTemplates],
   );
@@ -424,26 +472,6 @@ export function ProgramBuilderPanel({
             : session,
         ),
       );
-    },
-    [],
-  );
-
-  const handleSessionReorder = React.useCallback(
-    (sourceId: string, targetId: string) => {
-      if (sourceId === targetId) {
-        return;
-      }
-      setSessions((prev) => {
-        const sourceIndex = prev.findIndex((session) => session.id === sourceId);
-        const targetIndex = prev.findIndex((session) => session.id === targetId);
-        if (sourceIndex === -1 || targetIndex === -1) {
-          return prev;
-        }
-        const next = [...prev];
-        const [moved] = next.splice(sourceIndex, 1);
-        next.splice(targetIndex, 0, moved);
-        return next;
-      });
     },
     [],
   );
@@ -572,26 +600,52 @@ export function ProgramBuilderPanel({
     [handleAddExerciseToSession, handleExerciseDragEnd],
   );
 
-  const summaryText = t('programs-coatch.builder.structure.summary', {
-    count: sessions.length,
-  });
-  const sessionDropZoneLabel = t(
-    'programs-coatch.builder.structure.drop_zone',
-    { defaultValue: 'Drop session here' },
-  );
-  const exerciseDropZoneLabel =
-    builderCopy.structure.exercise_drop_zone ??
-    t('programs-coatch.builder.structure.exercise_drop_zone', {
-      defaultValue: 'Drop exercise here',
+  const resetBuilder = React.useCallback(() => {
+    setSelectedAthlete(null);
+    setUsersQ('');
+    setSessionSearch('');
+    setExerciseSearch('');
+    setExerciseCategory('all');
+    setExerciseType('all');
+    setSessions([]);
+    setForm({
+      athlete: '',
+      programName: '',
+      duration: '',
+      frequency: '',
+      description: '',
     });
+    // reset local id counters
+    idCountersRef.current = { session: 0, exercise: 0 };
+  }, []);
 
-  const handleSubmit = React.useCallback(() => {
-    const draft = {
-      form,
-      sessions,
-    };
-    console.info('Program draft ready to submit', draft);
-  }, [form, sessions]);
+  const handleSubmit = React.useCallback(async () => {
+    // basic validation
+    const name = form.programName?.trim();
+    const duration = parseInt(form.duration);
+    const frequency = parseInt(form.frequency);
+    if (!name || !duration || !frequency) {
+      flash.error('Please fill required fields');
+      return;
+    }
+
+    try {
+      await createProgram({
+        slug: slugify(name, String(Date.now()).slice(-5)),
+        locale: i18n.language,
+        label: name,
+        duration,
+        frequency,
+        description: form.description || '',
+        sessionIds: sessions.map(session => session.sessionId),
+        userId: form.athlete || null,
+      });
+      resetBuilder();
+      onCancel();
+    } catch (error) {
+      flash.error(t('common.unexpected_error'));
+    }
+  }, [form, i18n.language, createProgram, flash]);
 
   return (
     <Paper
@@ -639,14 +693,44 @@ export function ProgramBuilderPanel({
                   {builderCopy.config.title}
                 </Typography>
 
-                <TextField
-                  label={builderCopy.config.client_label}
-                  placeholder={builderCopy.config.client_placeholder}
-                  size="small"
-                  fullWidth
-                  value={form.athlete}
-                  onChange={handleFormChange('athlete')}
+                <Autocomplete<User>
+                  // Accessibility: proper ARIA combobox behavior is handled by MUI Autocomplete
+                  options={users}
+                  value={selectedAthlete}
+                  loading={usersLoading}
+                  onChange={handleSelectAthlete}
+                  isOptionEqualToValue={(opt, val) => opt.id === val.id}
+                  getOptionLabel={(opt) => userLabel(opt)}
+                  noOptionsText={t('common.field_incorrect')}
+                  onInputChange={(_e, value) => setUsersQ(value)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label={builderCopy.config.client_label}
+                      placeholder={builderCopy.config.client_placeholder}
+                      size="small"
+                      InputProps={{
+                        ...params.InputProps,
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Search fontSize="small" color="disabled" />
+                          </InputAdornment>
+                        ),
+                        endAdornment: (
+                          <>
+                            {usersLoading ? <CircularProgress size={18} /> : null}
+                            {params.InputProps.endAdornment}
+                          </>
+                        ),
+                      }}
+                      inputProps={{
+                        ...params.inputProps,
+                        'aria-label': 'Select athlete',
+                      }}
+                    />
+                  )}
                 />
+
                 <TextField
                   label={builderCopy.config.program_name_label}
                   placeholder={builderCopy.config.client_placeholder}
@@ -694,7 +778,7 @@ export function ProgramBuilderPanel({
                   gap: 2,
                 }}
               >
-                {/* Session templates */}
+                {/* Session Library */}
                 <Stack
                   direction="row"
                   alignItems={{ xs: 'flex-start', sm: 'center' }}
@@ -746,7 +830,7 @@ export function ProgramBuilderPanel({
                   )}
                   {!sessionsLoading &&
                     filteredTemplates.map((template) => (
-                      <ProgramBuilderSessionTemplateItem
+                      <ProgramBuilderSessionLibraryItem
                         key={template.id}
                         template={template}
                         builderCopy={builderCopy}
@@ -792,13 +876,6 @@ export function ProgramBuilderPanel({
               <Box
                 sx={{
                   flexGrow: 1,
-                  border: sessions.length
-                    ? '1px solid'
-                    : '2px dashed',
-                  borderRadius: 2,
-                  bgcolor: sessions.length
-                    ? alpha(theme.palette.background.default, 0.5)
-                    : alpha(theme.palette.primary.light, 0.1),
                   p: 2,
                   display: 'flex',
                   flexDirection: 'column',
@@ -844,9 +921,7 @@ export function ProgramBuilderPanel({
                         <ProgramBuilderSessionItem
                           session={session}
                           index={index}
-                          isSelected={session.id === selectedSessionId}
                           builderCopy={builderCopy}
-                          onSelect={() => setSelectedSessionId(session.id)}
                           onRemoveSession={() => handleRemoveSession(session.id)}
                           onRemoveExercise={(exerciseId) =>
                             handleRemoveExercise(session.id, exerciseId)

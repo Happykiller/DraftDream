@@ -49,7 +49,7 @@ export class UserResolver {
   }
 
   @Query(() => UserPageGql, { name: 'user_list' })
-  @Auth(Role.ADMIN)
+  @Auth(Role.ADMIN, Role.COACH)
   async user_list(
     @Args('input', { nullable: true }) input?: ListUsersInput
   ): Promise<UserPageGql> {
