@@ -84,6 +84,7 @@ export const TagTable = React.memo(function TagTable({
         sx={{ mb: 1 }}
         alignItems={{ xs: 'stretch', sm: 'center' }}
       >
+        {/* Search delegates to the hook so we reuse backend filtering logic. */}
         <TextField
           placeholder={t('programs.tags.search_placeholder')}
           value={q}
@@ -98,6 +99,7 @@ export const TagTable = React.memo(function TagTable({
         </Button>
       </Stack>
 
+      {/* Rely on server pagination because tag volumes can spike with marketing campaigns. */}
       <DataGrid
         rows={rows}
         columns={columns}

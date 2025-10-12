@@ -9,6 +9,7 @@ import type {
   ProgramSession,
 } from './ProgramBuilderPanel';
 import { ProgramBuilderExerciseItem } from './ProgramBuilderExerciseItem';
+import { ProgramBuilderExerciseDropZone } from './ProgramBuilderExerciseDropZone';
 
 type ProgramBuilderSessionItemProps = {
   session: ProgramSession;
@@ -19,9 +20,21 @@ type ProgramBuilderSessionItemProps = {
   onRemoveSession: () => void;
   onRemoveExercise: (exerciseId: string) => void;
   onDragStart: (event: React.DragEvent<HTMLDivElement>) => void;
-  onDragOver: (event: React.DragEvent<HTMLDivElement>) => void;
-  onDrop: (event: React.DragEvent<HTMLDivElement>) => void;
+  onDragEnd?: () => void;
   getExerciseById: (exerciseId: string) => ExerciseLibraryItem | undefined;
+  isDraggingExercise: boolean;
+  exerciseDropLabel: string;
+  onExerciseDrop: (
+    sessionId: string,
+    position: number,
+    event: React.DragEvent<HTMLDivElement>,
+  ) => void;
+  onExerciseDragStart: (
+    sessionId: string,
+    exerciseId: string,
+    event: React.DragEvent<HTMLDivElement>,
+  ) => void;
+  onExerciseDragEnd: () => void;
 };
 
 export function ProgramBuilderSessionItem({
@@ -33,9 +46,13 @@ export function ProgramBuilderSessionItem({
   onRemoveSession,
   onRemoveExercise,
   onDragStart,
-  onDragOver,
-  onDrop,
+  onDragEnd,
   getExerciseById,
+  isDraggingExercise,
+  exerciseDropLabel,
+  onExerciseDrop,
+  onExerciseDragStart,
+  onExerciseDragEnd,
 }: ProgramBuilderSessionItemProps): React.JSX.Element {
   const theme = useTheme();
 
@@ -54,17 +71,17 @@ export function ProgramBuilderSessionItem({
     <Paper
       draggable
       onDragStart={onDragStart}
-      onDragOver={onDragOver}
-      onDrop={onDrop}
+      onDragEnd={onDragEnd}
       onClick={onSelect}
       sx={{
         p: 2,
         borderRadius: 2,
         cursor: 'grab',
         border: isSelected ? '2px solid' : '1px solid',
-        bgcolor: isSelected
-          ? alpha(theme.palette.primary.main, 0.06)
-          : theme.palette.background.paper,
+        bgcolor:
+          isSelected || isDraggingExercise
+            ? alpha(theme.palette.primary.main, 0.06)
+            : theme.palette.background.paper,
         transition: 'border-color 150ms ease, background-color 150ms ease',
       }}
     >
@@ -98,10 +115,18 @@ export function ProgramBuilderSessionItem({
         </Stack>
 
         <Stack spacing={1}>
+          {isDraggingExercise && (
+            <ProgramBuilderExerciseDropZone
+              label={exerciseDropLabel}
+              onDrop={(event) => onExerciseDrop(session.id, 0, event)}
+            />
+          )}
           {session.exercises.length === 0 ? (
-            <Typography variant="body2" color="text.secondary">
-              {builderCopy.library.subtitle}
-            </Typography>
+            !isDraggingExercise && (
+              <Typography variant="body2" color="text.secondary">
+                {builderCopy.library.subtitle}
+              </Typography>
+            )
           ) : (
             session.exercises.map((exerciseItem, exerciseIndex) => {
               const exercise = getExerciseById(exerciseItem.exerciseId);
@@ -110,13 +135,26 @@ export function ProgramBuilderSessionItem({
               }
 
               return (
-                <ProgramBuilderExerciseItem
-                  key={exerciseItem.id}
-                  exerciseItem={exerciseItem}
-                  exercise={exercise}
-                  index={exerciseIndex}
-                  onRemove={handleRemoveExercise}
-                />
+                <React.Fragment key={exerciseItem.id}>
+                  <ProgramBuilderExerciseItem
+                    exerciseItem={exerciseItem}
+                    exercise={exercise}
+                    index={exerciseIndex}
+                    onRemove={handleRemoveExercise}
+                    onDragStart={(event) =>
+                      onExerciseDragStart(session.id, exerciseItem.id, event)
+                    }
+                    onDragEnd={onExerciseDragEnd}
+                  />
+                  {isDraggingExercise && (
+                    <ProgramBuilderExerciseDropZone
+                      label={exerciseDropLabel}
+                      onDrop={(event) =>
+                        onExerciseDrop(session.id, exerciseIndex + 1, event)
+                      }
+                    />
+                  )}
+                </React.Fragment>
               );
             })
           )}

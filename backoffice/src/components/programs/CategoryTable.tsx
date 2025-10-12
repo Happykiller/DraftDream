@@ -98,6 +98,7 @@ export function CategoryTable(props: CategoryTableProps): React.JSX.Element {
         sx={{ mb: 1 }}
         alignItems={{ xs: 'stretch', sm: 'center' }}
       >
+        {/* Search input pushes the filter upstream instead of client-side to keep pagination accurate. */}
         <TextField
           placeholder={t('programs.categories.search_placeholder')}
           value={q}
@@ -112,6 +113,7 @@ export function CategoryTable(props: CategoryTableProps): React.JSX.Element {
         </Button>
       </Stack>
 
+      {/* Server-driven pagination avoids downloading the full catalogue in backoffice sessions. */}
       <DataGrid
         rows={rows}
         columns={columns}

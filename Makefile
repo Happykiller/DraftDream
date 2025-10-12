@@ -1,47 +1,70 @@
 # ./Makefile
 # ========================
-# Makefile utils - fitdesk
+# Makefile utilities - DraftDream
 # ========================
 
-PROJECT_NAME = fitdesk
-DOCKER_COMPOSE = docker compose -p $(PROJECT_NAME) -f docker-compose.yml
+PROJECT_NAME ?= fitdesk
+PROD_HOST ?= user@server
+REMOTE_ROOT ?= /opt/fitdesk
+REMOTE_IMAGE_DIR ?= $(REMOTE_ROOT)/images
 
-.PHONY: help up-dev down-dev logs-dev up-prod down-prod logs-prod build clean ps
+COMPOSE ?= docker compose -p $(PROJECT_NAME)
+BASE_FILE ?= -f docker-compose.yml
+DEV_FILES ?= $(BASE_FILE) -f docker-compose.dev.yml
+
+DEV_STACK := $(COMPOSE) $(DEV_FILES) --profile dev
+PROD_STACK := $(COMPOSE) $(BASE_FILE) --profile prod
+
+.PHONY: help up-dev down-dev logs-dev up-prod down-prod logs-prod reset clean ps save install deploy-prod
 
 help:
-	@echo "make up-dev    # démarre Mongo (+ UI sur http://localhost:8081 si profil dev)"
-	@echo "make up-prod   # démarre toute la stack prod derrière nginx"
+	@echo ""
+	@echo "Core workflow:"
+	@echo "  make up-dev        # start MongoDB for local development"
+	@echo "  make down-dev      # stop MongoDB (dev profile)"
+	@echo "  make logs-dev      # follow MongoDB logs (dev profile)"
+	@echo "  make up-prod       # start the full production stack"
+	@echo "  make down-prod     # stop the production stack"
+	@echo "  make logs-prod     # follow production logs"
+	@echo "  make save          # build and export images for deployment"
+	@echo "  make install       # load images on the server and restart prod (requires ssh)"
+	@echo "  make deploy-prod   # run save followed by install"
+	@echo ""
+	@echo "Useful variables:"
+	@echo "  PROD_HOST=$(PROD_HOST)"
+	@echo "  REMOTE_ROOT=$(REMOTE_ROOT)"
+	@echo "  REMOTE_IMAGE_DIR=$(REMOTE_IMAGE_DIR)"
 
-up-dev: ## Démarre Mongo (ports exposés)
-	$(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.dev.yml --profile dev up -d mongo
+up-dev: ## Start MongoDB (exposed ports)
+	$(DEV_STACK) up -d mongo
 
 down-dev:
-	$(DOCKER_COMPOSE) --profile dev down
+	$(DEV_STACK) down
 
 logs-dev:
-	$(DOCKER_COMPOSE) --profile dev logs -f --tail=200
+	$(DEV_STACK) logs -f --tail=200
 
-up-prod: ## Démarre toute la stack (apps + nginx)
-	$(DOCKER_COMPOSE) --profile prod up -d
+up-prod: ## Start the full stack (apps + nginx)
+	$(PROD_STACK) up -d
 
 down-prod:
-	$(DOCKER_COMPOSE) --profile prod down
+	$(PROD_STACK) down
 
 logs-prod:
-	$(DOCKER_COMPOSE) --profile prod logs -f --tail=200
+	$(PROD_STACK) logs -f --tail=200
 
-reset: ## Rebuild complet (reset images)
-	$(DOCKER_COMPOSE) down --remove-orphans
+reset: ## Full rebuild (refresh images)
+	$(PROD_STACK) down --remove-orphans
 	docker image prune -af
-	$(DOCKER_COMPOSE) build --no-cache --pull
+	$(PROD_STACK) build --no-cache --pull
 
 ps:
-	$(DOCKER_COMPOSE) ps
+	$(COMPOSE) $(BASE_FILE) ps
 
 clean:
-	$(DOCKER_COMPOSE) down -v
+	$(COMPOSE) $(BASE_FILE) down -v
 
-save:
+save: ## Build and export images for deployment
 	docker build -t mongo ./mongo
 	docker build -t mongo_express ./mongo_express
 	docker build -t nginx ./nginx
@@ -56,18 +79,18 @@ save:
 	docker save fitdesk_showcase -o fitdesk_showcase.tar
 	docker save fitdesk_mobile -o fitdesk_mobile.tar
 
-install:
-	ssh user@serveur 'cd /opt/fitdesk/images && \
+install: ## Load images on the server and restart the prod stack
+	ssh $(PROD_HOST) 'cd $(REMOTE_IMAGE_DIR) && \
 	 docker load -i fitdesk_api.tar && \
 	 docker load -i fitdesk_frontoffice.tar && \
 	 docker load -i fitdesk_backoffice.tar && \
 	 docker load -i fitdesk_showcase.tar && \
 	 docker load -i fitdesk_mobile.tar && \
-	 cd /opt/fitdesk && docker compose --profile prod up -d'
+	 cd $(REMOTE_ROOT) && docker compose --profile prod up -d'
 
-# docker build --no-cache -t fitdesk_backoffice ./backoffice
-# docker save fitdesk_backoffice -o fitdesk_backoffice.tar
-# jump to server
-# sudo docker load -i fitdesk_backoffice.tar
-# sudo docker compose -f docker-compose.prod.yml up -d --force-recreate --no-deps backoffice
-# sudo docker compose -f docker-compose.prod.yml restart nginx
+deploy-prod: save install ## Full deployment sequence
+
+# Deployment notes:
+# 1. Update PROD_HOST and the remote paths before running commands.
+# 2. Copy the *.tar files to $(REMOTE_IMAGE_DIR) (example: scp fitdesk_*.tar $(PROD_HOST):$(REMOTE_IMAGE_DIR)).
+# 3. Run make install or make deploy-prod depending on the need.

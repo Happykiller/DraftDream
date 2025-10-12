@@ -138,6 +138,7 @@ export function ExerciseDialog({
       <DialogContent>
         <Stack component="form" onSubmit={submit} spacing={2} sx={{ mt: 1 }}>
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+            {/* Slug locks the video mapping, so editors must control it explicitly. */}
             <TextField
               label={t('common.labels.slug')}
               name="slug"
@@ -147,6 +148,7 @@ export function ExerciseDialog({
               fullWidth
               inputProps={{ 'aria-label': 'exercise-slug' }}
             />
+            {/* Label is what trainees see, hence the dedicated field rather than inferring from slug. */}
             <TextField
               label={t('common.labels.label')}
               name="label"
@@ -253,6 +255,7 @@ export function ExerciseDialog({
             fullWidth
           />
 
+          {/* Visibility becomes immutable post creation so historical sharing rules stay auditable. */}
           {!isEdit && (
             <TextField
               select
@@ -268,6 +271,7 @@ export function ExerciseDialog({
             </TextField>
           )}
 
+          {/* Category anchors taxonomy, so we fail submission when it is missing. */}
           <Autocomplete
             options={categoryOptions}
             getOptionLabel={(option) => option.label || option.slug}
@@ -276,6 +280,7 @@ export function ExerciseDialog({
             renderInput={(params) => <TextField {...params} label={t('common.labels.category')} />}
           />
 
+          {/* Primary muscles define progression logic, therefore we surface the selection prominently. */}
           <Autocomplete
             multiple
             options={muscleOptions}
@@ -290,6 +295,7 @@ export function ExerciseDialog({
             renderInput={(params) => <TextField {...params} label={t('common.labels.primary_muscles')} />}
           />
 
+          {/* Secondary muscles remain optional because trainees might isolate fewer groups. */}
           <Autocomplete
             multiple
             options={muscleOptions}
@@ -304,6 +310,7 @@ export function ExerciseDialog({
             renderInput={(params) => <TextField {...params} label={t('common.labels.secondary_muscles_optional')} />}
           />
 
+          {/* Equipment mapping ensures coaches only pick gear available in the gym inventory. */}
           <Autocomplete
             multiple
             options={equipmentOptions}
@@ -318,6 +325,7 @@ export function ExerciseDialog({
             renderInput={(params) => <TextField {...params} label={t('common.labels.equipment_optional')} />}
           />
 
+          {/* Tags feed search filters, so we expose them despite being optional. */}
           <Autocomplete
             multiple
             options={tagOptions}

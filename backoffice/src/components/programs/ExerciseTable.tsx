@@ -107,6 +107,7 @@ export const ExerciseTable = React.memo(function ExerciseTable({
         sx={{ mb: 1 }}
         alignItems={{ xs: 'stretch', sm: 'center' }}
       >
+        {/* Search queries the API so the grid reflects permission filtering from the backend. */}
         <TextField
           placeholder={t('programs.exercises.search_placeholder')}
           value={q}
@@ -121,6 +122,7 @@ export const ExerciseTable = React.memo(function ExerciseTable({
         </Button>
       </Stack>
 
+      {/* Server pagination avoids pulling every exercise video reference to the browser. */}
       <DataGrid
         rows={rows}
         columns={columns}

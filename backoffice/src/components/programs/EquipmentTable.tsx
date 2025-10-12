@@ -98,6 +98,7 @@ export const EquipmentTable = React.memo(function EquipmentTable({
         sx={{ mb: 1 }}
         alignItems={{ xs: 'stretch', sm: 'center' }}
       >
+        {/* Search propagates to the data hook to avoid caching stale inventory client-side. */}
         <TextField
           placeholder={t('programs.equipment.search_placeholder')}
           value={q}
@@ -112,6 +113,7 @@ export const EquipmentTable = React.memo(function EquipmentTable({
         </Button>
       </Stack>
 
+      {/* Server pagination keeps the grid light even when gyms onboard large inventories. */}
       <DataGrid
         rows={rows}
         columns={columns}

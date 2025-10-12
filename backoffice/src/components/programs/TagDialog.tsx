@@ -57,6 +57,7 @@ export function TagDialog({ open, mode, initial, onClose, onSubmit }: TagDialogP
       </DialogTitle>
       <DialogContent>
         <Stack component="form" onSubmit={submit} spacing={2} sx={{ mt: 1 }}>
+          {/* Slug stays free-form so marketing can align public URLs without deployment cycles. */}
           <TextField
             label={t('common.labels.slug')}
             name="slug"
@@ -66,6 +67,7 @@ export function TagDialog({ open, mode, initial, onClose, onSubmit }: TagDialogP
             required
             fullWidth
           />
+          {/* Label reflects end-user wording, therefore we avoid auto-generating it from the slug. */}
           <TextField
             label={t('common.labels.label')}
             name="label"

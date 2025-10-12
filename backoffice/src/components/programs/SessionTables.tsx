@@ -116,6 +116,7 @@ export const SessionTables = React.memo(function SessionTables({
         sx={{ mb: 1 }}
         alignItems={{ xs: 'stretch', sm: 'center' }}
       >
+        {/* Search funnels into the hook so locale filtering stays consistent with other tabs. */}
         <TextField
           placeholder={t('programs.sessions.search_placeholder')}
           value={q}
@@ -130,6 +131,7 @@ export const SessionTables = React.memo(function SessionTables({
         </Button>
       </Stack>
 
+      {/* Server pagination lets us reuse backend access rules for session visibility. */}
       <DataGrid
         rows={rows}
         columns={columns}

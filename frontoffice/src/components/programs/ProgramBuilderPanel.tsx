@@ -20,6 +20,9 @@ import { useSessions } from '@hooks/useSessions';
 import { useExercises } from '@hooks/useExercises';
 import { useCategories } from '@hooks/useCategories';
 import { ProgramBuilderSessionItem } from './ProgramBuilderSessionItem';
+import { ProgramBuilderSessionTemplateItem } from './ProgramBuilderSessionTemplateItem';
+import { ProgramBuilderSessionDropZone } from './ProgramBuilderSessionDropZone';
+import { ProgramBuilderExerciseLibraryItem } from './ProgramBuilderExerciseLibraryItem';
 
 export type ExerciseLibraryItem = {
   id: string;
@@ -41,7 +44,7 @@ type TemplateExerciseRef = {
   rest?: string;
 };
 
-type SessionTemplate = {
+export type SessionTemplate = {
   id: string;
   label: string;
   duration: number;
@@ -78,7 +81,8 @@ type ProgramForm = {
 type DragPayload =
   | { type: 'session'; id: string }
   | { type: 'exercise'; id: string }
-  | { type: 'session-move'; id: string };
+  | { type: 'session-move'; id: string }
+  | { type: 'exercise-move'; sessionId: string; id: string };
 
 export type BuilderCopy = {
   title: string;
@@ -106,6 +110,7 @@ export type BuilderCopy = {
     session_prefix: string;
     duration_unit: string;
     tags_label: string;
+    exercise_drop_zone: string;
   };
   library: {
     title: string;
@@ -234,13 +239,13 @@ export function ProgramBuilderPanel({
   const [selectedSessionId, setSelectedSessionId] = React.useState<string | null>(
     null,
   );
+  const [isDraggingSession, setIsDraggingSession] = React.useState(false);
+  const [isDraggingExercise, setIsDraggingExercise] = React.useState(false);
 
   const idCountersRef = React.useRef<{ session: number; exercise: number }>({
     session: 0,
     exercise: 0,
   });
-
-  const initializedRef = React.useRef(false);
 
   const nextId = React.useCallback((type: 'session' | 'exercise') => {
     idCountersRef.current[type] += 1;
@@ -278,16 +283,6 @@ export function ProgramBuilderPanel({
   );
 
   const [sessions, setSessions] = React.useState<ProgramSession[]>([]);
-
-  React.useEffect(() => {
-    if (initializedRef.current || !sessionTemplates.length) {
-      return;
-    }
-    const [firstTemplate] = sessionTemplates;
-    const firstSession = createSessionFromTemplate(firstTemplate);
-    setSessions([firstSession]);
-    initializedRef.current = true;
-  }, [createSessionFromTemplate, sessionTemplates]);
 
   React.useEffect(() => {
     if (sessions.length === 0) {
@@ -358,42 +353,54 @@ export function ProgramBuilderPanel({
   );
 
   const handleAddSessionFromTemplate = React.useCallback(
-    (templateId: string) => {
+    (templateId: string, position?: number) => {
       const template = sessionTemplates.find((item) => item.id === templateId);
       if (!template) {
         return;
       }
       const session = createSessionFromTemplate(template);
-      setSessions((prev) => [...prev, session]);
+      setSessions((prev) => {
+        const insertAt =
+          position != null
+            ? Math.min(Math.max(position, 0), prev.length)
+            : prev.length;
+        const next = [...prev];
+        next.splice(insertAt, 0, session);
+        return next;
+      });
       setSelectedSessionId(session.id);
     },
     [createSessionFromTemplate, sessionTemplates],
   );
 
   const handleAddExerciseToSession = React.useCallback(
-    (sessionId: string, exerciseId: string) => {
+    (sessionId: string, exerciseId: string, position?: number) => {
       const exercise = exerciseMap.get(exerciseId);
       if (!exercise) {
         return;
       }
       setSessions((prev) =>
-        prev.map((session) =>
-          session.id === sessionId
-            ? {
-              ...session,
-              exercises: [
-                ...session.exercises,
-                {
-                  id: nextId('exercise'),
-                  exerciseId: exercise.id,
-                  sets: exercise.sets,
-                  reps: exercise.reps,
-                  rest: exercise.rest,
-                },
-              ],
-            }
-            : session,
-        ),
+        prev.map((session) => {
+          if (session.id !== sessionId) {
+            return session;
+          }
+          const exercises = [...session.exercises];
+          const insertAt =
+            position != null
+              ? Math.min(Math.max(position, 0), exercises.length)
+              : exercises.length;
+          exercises.splice(insertAt, 0, {
+            id: nextId('exercise'),
+            exerciseId: exercise.id,
+            sets: exercise.sets,
+            reps: exercise.reps,
+            rest: exercise.rest,
+          });
+          return {
+            ...session,
+            exercises,
+          };
+        }),
       );
     },
     [exerciseMap, nextId],
@@ -441,46 +448,142 @@ export function ProgramBuilderPanel({
     [],
   );
 
-  const handleStructureDrop = React.useCallback(
-    (event: React.DragEvent<HTMLDivElement>) => {
+  const handleSessionDragStart = React.useCallback(() => {
+    setIsDraggingSession(true);
+  }, []);
+
+  const handleSessionDragEnd = React.useCallback(() => {
+    setIsDraggingSession(false);
+  }, []);
+
+  const handleExerciseDragStartFromLibrary = React.useCallback(() => {
+    setIsDraggingExercise(true);
+  }, []);
+
+  const handleExerciseDragStartFromSession = React.useCallback(() => {
+    setIsDraggingExercise(true);
+  }, []);
+
+  const handleExerciseDragEnd = React.useCallback(() => {
+    setIsDraggingExercise(false);
+  }, []);
+
+  const handleSessionDropAtPosition = React.useCallback(
+    (position: number, event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
+      event.stopPropagation();
       const payload = parseDragData(event);
-      if (payload?.type === 'session') {
-        handleAddSessionFromTemplate(payload.id);
+      setIsDraggingSession(false);
+      if (!payload) {
+        return;
+      }
+      if (payload.type === 'session') {
+        handleAddSessionFromTemplate(payload.id, position);
+        return;
+      }
+      if (payload.type === 'session-move') {
+        setSessions((prev) => {
+          const currentIndex = prev.findIndex(
+            (session) => session.id === payload.id,
+          );
+          if (currentIndex === -1) {
+            return prev;
+          }
+          if (position === currentIndex || position === currentIndex + 1) {
+            return prev;
+          }
+          const next = [...prev];
+          const [moved] = next.splice(currentIndex, 1);
+          let targetIndex = position;
+          if (position > currentIndex) {
+            targetIndex -= 1;
+          }
+          targetIndex = Math.max(0, Math.min(targetIndex, next.length));
+          next.splice(targetIndex, 0, moved);
+          return next;
+        });
       }
     },
     [handleAddSessionFromTemplate],
   );
 
-  const handleSessionDrop = React.useCallback(
-    (sessionId: string, event: React.DragEvent<HTMLDivElement>) => {
-      event.preventDefault();
-      event.stopPropagation();
+  const handleExerciseDropAtPosition = React.useCallback(
+    (sessionId: string, position: number, event: React.DragEvent<HTMLDivElement>) => {
       const payload = parseDragData(event);
       if (!payload) {
         return;
       }
-      if (payload.type === 'session-move') {
-        handleSessionReorder(payload.id, sessionId);
+      event.preventDefault();
+      event.stopPropagation();
+      handleExerciseDragEnd();
+      if (payload.type === 'exercise') {
+        handleAddExerciseToSession(sessionId, payload.id, position);
         return;
       }
-      if (payload.type === 'exercise') {
-        handleAddExerciseToSession(sessionId, payload.id);
+      if (payload.type === 'exercise-move') {
+        setSessions((prev) => {
+          const sourceSessionIndex = prev.findIndex(
+            (session) => session.id === payload.sessionId,
+          );
+          if (sourceSessionIndex === -1) {
+            return prev;
+          }
+          const sourceSession = prev[sourceSessionIndex];
+          const sourceExerciseIndex = sourceSession.exercises.findIndex(
+            (exercise) => exercise.id === payload.id,
+          );
+          if (sourceExerciseIndex === -1) {
+            return prev;
+          }
+          const draggedExercise = sourceSession.exercises[sourceExerciseIndex];
+          const withoutSource = prev.map((session) => {
+            if (session.id !== payload.sessionId) {
+              return session;
+            }
+            const exercises = [...session.exercises];
+            exercises.splice(sourceExerciseIndex, 1);
+            return {
+              ...session,
+              exercises,
+            };
+          });
+          return withoutSource.map((session) => {
+            if (session.id !== sessionId) {
+              return session;
+            }
+            const exercises = [...session.exercises];
+            let insertAt = position;
+            if (
+              payload.sessionId === sessionId &&
+              sourceExerciseIndex < position
+            ) {
+              insertAt -= 1;
+            }
+            insertAt = Math.max(0, Math.min(insertAt, exercises.length));
+            exercises.splice(insertAt, 0, draggedExercise);
+            return {
+              ...session,
+              exercises,
+            };
+          });
+        });
       }
     },
-    [handleAddExerciseToSession, handleSessionReorder],
+    [handleAddExerciseToSession, handleExerciseDragEnd],
   );
-
-  const handleSessionDragOver = React.useCallback((event: React.DragEvent) => {
-    event.preventDefault();
-    const payload = parseDragData(event);
-    event.dataTransfer.dropEffect =
-      payload?.type === 'session-move' ? 'move' : 'copy';
-  }, []);
 
   const summaryText = t('programs-coatch.builder.structure.summary', {
     count: sessions.length,
   });
+  const sessionDropZoneLabel = t(
+    'programs-coatch.builder.structure.drop_zone',
+    { defaultValue: 'Drop session here' },
+  );
+  const exerciseDropZoneLabel =
+    builderCopy.structure.exercise_drop_zone ??
+    t('programs-coatch.builder.structure.exercise_drop_zone', {
+      defaultValue: 'Drop exercise here',
+    });
 
   const handleSubmit = React.useCallback(() => {
     const draft = {
@@ -500,6 +603,7 @@ export function ProgramBuilderPanel({
       }}
     >
       <Stack spacing={3}>
+        {/* Header */}
         <Stack direction="row" spacing={1} alignItems="center">
           <Typography variant="h6" sx={{ fontWeight: 700 }}>
             {builderCopy.title}
@@ -520,6 +624,7 @@ export function ProgramBuilderPanel({
 
         <Grid container spacing={3}>
           <Grid size={{ xs: 12, md: 3, lg: 3 }}>
+            {/* Program configuration and template list */}
             <Stack spacing={3}>
               <Paper
                 sx={{
@@ -589,6 +694,7 @@ export function ProgramBuilderPanel({
                   gap: 2,
                 }}
               >
+                {/* Session templates */}
                 <Stack
                   direction="row"
                   alignItems={{ xs: 'flex-start', sm: 'center' }}
@@ -640,55 +746,16 @@ export function ProgramBuilderPanel({
                   )}
                   {!sessionsLoading &&
                     filteredTemplates.map((template) => (
-                      <Paper
+                      <ProgramBuilderSessionTemplateItem
                         key={template.id}
-                        variant="outlined"
-                        draggable
-                        onDragStart={(event) =>
-                          beginDrag(event, { type: 'session', id: template.id })
-                        }
-                        sx={{
-                          p: 1.5,
-                          borderRadius: 2,
-                          cursor: 'grab',
-                          '&:hover': {
-                            borderColor: theme.palette.primary.main,
-                            boxShadow: theme.shadows[2],
-                          },
+                        template={template}
+                        builderCopy={builderCopy}
+                        onDragStart={(event) => {
+                          handleSessionDragStart();
+                          beginDrag(event, { type: 'session', id: template.id });
                         }}
-                      >
-                        <Stack spacing={1.25}>
-                          <Stack
-                            direction="row"
-                            justifyContent="space-between"
-                            alignItems="center"
-                          >
-                            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                              {template.label}
-                            </Typography>
-                            <Chip
-                              label={`${template.duration} ${builderCopy.structure.duration_unit}`}
-                              size="small"
-                              color="secondary"
-                              variant="outlined"
-                            />
-                          </Stack>
-                          <Stack direction="row" spacing={0.5} flexWrap="wrap">
-                            {template.tags.map((tag) => (
-                              <Chip key={tag} label={tag} size="small" variant="outlined" />
-                            ))}
-                          </Stack>
-                          <Stack
-                            direction="row"
-                            justifyContent="space-between"
-                            alignItems="center"
-                          >
-                            <Typography variant="caption" color="text.secondary">
-                              {template.exercises.length} exercices
-                            </Typography>
-                          </Stack>
-                        </Stack>
-                      </Paper>
+                        onDragEnd={handleSessionDragEnd}
+                      />
                     ))}
                   {!sessionsLoading && !filteredTemplates.length && (
                     <Typography variant="body2" color="text.secondary">
@@ -712,6 +779,7 @@ export function ProgramBuilderPanel({
                 gap: 2,
               }}
             >
+              {/* Program structure builder */}
               <Stack spacing={0.5}>
                 <Typography variant="h6" sx={{ fontWeight: 700 }}>
                   {builderCopy.structure.title}
@@ -722,11 +790,6 @@ export function ProgramBuilderPanel({
               </Stack>
 
               <Box
-                onDragOver={(event) => {
-                  event.preventDefault();
-                  event.dataTransfer.dropEffect = 'copy';
-                }}
-                onDrop={handleStructureDrop}
                 sx={{
                   flexGrow: 1,
                   border: sessions.length
@@ -744,37 +807,84 @@ export function ProgramBuilderPanel({
                 }}
               >
                 {sessions.length === 0 ? (
-                  <Stack
-                    alignItems="center"
-                    justifyContent="center"
-                    spacing={1}
-                    sx={{ flexGrow: 1, minHeight: 180 }}
-                  >
-                    <Typography variant="body2" color="text.secondary" align="center">
-                      {builderCopy.structure.empty}
-                    </Typography>
-                  </Stack>
+                  isDraggingSession ? (
+                    <Stack spacing={1.5} sx={{ flexGrow: 1, minHeight: 180 }}>
+                      <ProgramBuilderSessionDropZone
+                        key="session-drop-empty"
+                        label={sessionDropZoneLabel}
+                        onDrop={(event) => handleSessionDropAtPosition(0, event)}
+                      />
+                      <Typography variant="body2" color="text.secondary" align="center">
+                        {builderCopy.structure.empty}
+                      </Typography>
+                    </Stack>
+                  ) : (
+                    <Stack
+                      alignItems="center"
+                      justifyContent="center"
+                      spacing={1}
+                      sx={{ flexGrow: 1, minHeight: 180 }}
+                    >
+                      <Typography variant="body2" color="text.secondary" align="center">
+                        {builderCopy.structure.empty}
+                      </Typography>
+                    </Stack>
+                  )
                 ) : (
-                  sessions.map((session, index) => (
-                    <ProgramBuilderSessionItem
-                      key={session.id}
-                      session={session}
-                      index={index}
-                      isSelected={session.id === selectedSessionId}
-                      builderCopy={builderCopy}
-                      onSelect={() => setSelectedSessionId(session.id)}
-                      onRemoveSession={() => handleRemoveSession(session.id)}
-                      onRemoveExercise={(exerciseId) =>
-                        handleRemoveExercise(session.id, exerciseId)
-                      }
-                      onDragStart={(event) =>
-                        beginDrag(event, { type: 'session-move', id: session.id })
-                      }
-                      onDragOver={handleSessionDragOver}
-                      onDrop={(event) => handleSessionDrop(session.id, event)}
-                      getExerciseById={(exerciseId) => exerciseMap.get(exerciseId)}
-                    />
-                  ))
+                  <>
+                    {isDraggingSession && (
+                      <ProgramBuilderSessionDropZone
+                        key="session-drop-0"
+                        label={sessionDropZoneLabel}
+                        onDrop={(event) => handleSessionDropAtPosition(0, event)}
+                      />
+                    )}
+                    {sessions.map((session, index) => (
+                      <React.Fragment key={session.id}>
+                        <ProgramBuilderSessionItem
+                          session={session}
+                          index={index}
+                          isSelected={session.id === selectedSessionId}
+                          builderCopy={builderCopy}
+                          onSelect={() => setSelectedSessionId(session.id)}
+                          onRemoveSession={() => handleRemoveSession(session.id)}
+                          onRemoveExercise={(exerciseId) =>
+                            handleRemoveExercise(session.id, exerciseId)
+                          }
+                          onDragStart={(event) => {
+                            handleSessionDragStart();
+                            beginDrag(event, {
+                              type: 'session-move',
+                              id: session.id,
+                            });
+                          }}
+                          onDragEnd={handleSessionDragEnd}
+                          getExerciseById={(exerciseId) => exerciseMap.get(exerciseId)}
+                          isDraggingExercise={isDraggingExercise}
+                          exerciseDropLabel={exerciseDropZoneLabel}
+                          onExerciseDrop={handleExerciseDropAtPosition}
+                          onExerciseDragStart={(sessionId, exerciseId, dragEvent) => {
+                            handleExerciseDragStartFromSession();
+                            beginDrag(dragEvent, {
+                              type: 'exercise-move',
+                              sessionId,
+                              id: exerciseId,
+                            });
+                          }}
+                          onExerciseDragEnd={handleExerciseDragEnd}
+                        />
+                        {isDraggingSession && (
+                          <ProgramBuilderSessionDropZone
+                            key={`session-drop-${index + 1}`}
+                            label={sessionDropZoneLabel}
+                            onDrop={(event) =>
+                              handleSessionDropAtPosition(index + 1, event)
+                            }
+                          />
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </>
                 )}
               </Box>
             </Paper>
@@ -791,6 +901,7 @@ export function ProgramBuilderPanel({
                 gap: 2,
               }}
             >
+              {/* Exercise library */}
               <Stack spacing={0.5}>
                 <Typography variant="h6" sx={{ fontWeight: 700 }}>
                   {builderCopy.library.title}
@@ -864,7 +975,7 @@ export function ProgramBuilderPanel({
 
               {categoriesLoading && (
                 <Typography variant="caption" color="text.secondary">
-                  {t('common.loading', { defaultValue: 'Loading categories…' })}
+                  {t('common.loading', { defaultValue: 'Loading categories...' })}
                 </Typography>
               )}
 
@@ -876,54 +987,15 @@ export function ProgramBuilderPanel({
                 )}
                 {!exercisesLoading &&
                   filteredExercises.map((exercise) => (
-                    <Paper
+                    <ProgramBuilderExerciseLibraryItem
                       key={exercise.id}
-                      variant="outlined"
-                      draggable
-                      onDragStart={(event) =>
-                        beginDrag(event, { type: 'exercise', id: exercise.id })
-                      }
-                      sx={{
-                        p: 1.5,
-                        borderRadius: 2,
-                        cursor: 'grab',
-                        '&:hover': {
-                          borderColor: theme.palette.primary.main,
-                          boxShadow: theme.shadows[1],
-                        },
+                      exercise={exercise}
+                      onDragStart={(event) => {
+                        handleExerciseDragStartFromLibrary();
+                        beginDrag(event, { type: 'exercise', id: exercise.id });
                       }}
-                    >
-                      <Stack spacing={1}>
-                        <Stack
-                          direction="row"
-                          justifyContent="space-between"
-                          alignItems="center"
-                        >
-                          <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                            {exercise.label}
-                          </Typography>
-                          <Chip
-                            label={`${exercise.sets} x ${exercise.reps}`}
-                            size="small"
-                            color="primary"
-                            variant="outlined"
-                          />
-                        </Stack>
-                        <Typography variant="caption" color="text.secondary">
-                          {exercise.level} · {exercise.rest}
-                        </Typography>
-                        <Stack direction="row" spacing={0.5} flexWrap="wrap">
-                          {exercise.tags.map((tag) => (
-                            <Chip
-                              key={`${exercise.id}-${tag}`}
-                              label={tag}
-                              size="small"
-                              variant="outlined"
-                            />
-                          ))}
-                        </Stack>
-                      </Stack>
-                    </Paper>
+                      onDragEnd={handleExerciseDragEnd}
+                    />
                   ))}
                 {!exercisesLoading && !filteredExercises.length && (
                   <Typography variant="body2" color="text.secondary">
@@ -939,6 +1011,7 @@ export function ProgramBuilderPanel({
 
         <Divider />
 
+        {/* Footer actions */}
         <Stack
           direction={{ xs: 'column', sm: 'row' }}
           alignItems={{ xs: 'stretch', sm: 'center' }}

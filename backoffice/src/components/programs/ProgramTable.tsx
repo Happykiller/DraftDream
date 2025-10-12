@@ -137,6 +137,7 @@ export const ProgramTable = React.memo(function ProgramTable({
         sx={{ mb: 1 }}
         alignItems={{ xs: 'stretch', sm: 'center' }}
       >
+        {/* Search defers to the hook so server-side owner filters keep working. */}
         <TextField
           placeholder={t('programs.table.search_placeholder')}
           value={q}
@@ -168,6 +169,7 @@ export const ProgramTable = React.memo(function ProgramTable({
         </Button>
       </Stack>
 
+      {/* Server pagination is required because program queries join heavy session payloads. */}
       <DataGrid
         rows={rows}
         columns={columns}

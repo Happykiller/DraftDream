@@ -96,6 +96,7 @@ export const MuscleTable = React.memo(function MuscleTable(props: MuscleTablePro
         sx={{ mb: 1 }}
         alignItems={{ xs: 'stretch', sm: 'center' }}
       >
+        {/* Search goes through the hook so trainers always see fresh muscle translations. */}
         <TextField
           placeholder={t('programs.muscles.search_placeholder')}
           value={q}
@@ -110,6 +111,7 @@ export const MuscleTable = React.memo(function MuscleTable(props: MuscleTablePro
         </Button>
       </Stack>
 
+      {/* Server pagination prevents heavy payloads when new muscle groups are imported. */}
       <DataGrid
         rows={rows}
         columns={columns}

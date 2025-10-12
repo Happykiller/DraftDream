@@ -9,6 +9,8 @@ type ProgramBuilderExerciseItemProps = {
   exercise: ExerciseLibraryItem;
   index: number;
   onRemove: (exerciseId: string) => void;
+  onDragStart?: (event: React.DragEvent<HTMLDivElement>) => void;
+  onDragEnd?: () => void;
 };
 
 export function ProgramBuilderExerciseItem({
@@ -16,14 +18,32 @@ export function ProgramBuilderExerciseItem({
   exercise,
   index,
   onRemove,
+  onDragStart,
+  onDragEnd,
 }: ProgramBuilderExerciseItemProps): React.JSX.Element {
   const handleRemoveClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     onRemove(exerciseItem.id);
   };
 
+  const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    onDragStart?.(event);
+  };
+
+  const handleDragEnd = (event: React.DragEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    onDragEnd?.();
+  };
+
   return (
-    <Paper variant="outlined" sx={{ p: 1.5, borderRadius: 1.75 }}>
+    <Paper
+      variant="outlined"
+      draggable
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      sx={{ p: 1.5, borderRadius: 1.75, cursor: 'grab' }}
+    >
       <Stack
         direction="row"
         alignItems="flex-start"

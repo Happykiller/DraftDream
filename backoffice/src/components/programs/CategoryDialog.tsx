@@ -58,6 +58,7 @@ export function CategoryDialog({ open, mode, initial, onClose, onSubmit }: Categ
       </DialogTitle>
       <DialogContent>
         <Stack component="form" onSubmit={submit} spacing={2} sx={{ mt: 1 }}>
+          {/* Slug stays editable so admins can realign with upstream catalogue identifiers when needed. */}
           <TextField
             label={t('common.labels.slug')}
             name="slug"
@@ -67,6 +68,7 @@ export function CategoryDialog({ open, mode, initial, onClose, onSubmit }: Categ
             required
             fullWidth
           />
+          {/* Label drives every public name, hence the dedicated control instead of reusing legacy title fields. */}
           <TextField
             label={t('common.labels.label')}
             name="label"

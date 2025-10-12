@@ -58,6 +58,7 @@ export function MuscleDialog({ open, mode, initial, onClose, onSubmit }: MuscleD
       </DialogTitle>
       <DialogContent>
         <Stack component="form" onSubmit={submit} spacing={2} sx={{ mt: 1 }}>
+          {/* Keep slug editable to let coaches match existing workout plans without migrations. */}
           <TextField
             label={t('common.labels.slug')}
             name="slug"
@@ -67,6 +68,7 @@ export function MuscleDialog({ open, mode, initial, onClose, onSubmit }: MuscleD
             required
             fullWidth
           />
+          {/* Label drives translations in the training app, so we gather it upfront. */}
           <TextField
             label={t('common.labels.label')}
             name="label"

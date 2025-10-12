@@ -57,6 +57,7 @@ export function EquipmentDialog({ open, mode, initial, onClose, onSubmit }: Equi
       </DialogTitle>
       <DialogContent>
         <Stack component="form" onSubmit={submit} spacing={2} sx={{ mt: 1 }}>
+          {/* Slug persists across locales because warehouses rely on it for equipment syncing. */}
           <TextField
             label={t('common.labels.slug')}
             name="slug"
@@ -66,6 +67,7 @@ export function EquipmentDialog({ open, mode, initial, onClose, onSubmit }: Equi
             required
             fullWidth
           />
+          {/* Label is stored per locale to surface human-readable names in client apps. */}
           <TextField
             label={t('common.labels.label')}
             name="label"

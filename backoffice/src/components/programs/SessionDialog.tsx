@@ -105,6 +105,7 @@ export function SessionDialog({
       <DialogContent>
         <Stack component="form" spacing={2} sx={{ mt: 1 }} onSubmit={submit}>
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+            {/* Slug stays editable so coaches can keep short gym codes stable. */}
             <TextField
               label={t('common.labels.slug')}
               name="slug"
@@ -114,6 +115,7 @@ export function SessionDialog({
               fullWidth
               inputProps={{ 'aria-label': 'session-slug' }}
             />
+            {/* Label is the session headline in the app, so editors adjust tone per locale. */}
             <TextField
               label={t('common.labels.label')}
               name="label"
@@ -162,6 +164,7 @@ export function SessionDialog({
             fullWidth
           />
 
+          {/* Exercises are mandatory on creation to prevent empty sessions from surfacing. */}
           <Autocomplete
             multiple
             options={exerciseOptions}

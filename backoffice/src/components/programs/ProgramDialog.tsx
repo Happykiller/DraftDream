@@ -150,6 +150,7 @@ export function ProgramDialog({
       <DialogContent>
         <Stack component="form" spacing={2} sx={{ mt: 1 }} onSubmit={submit}>
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+            {/* Slug is used inside shareable URLs, so editors keep manual control over it. */}
             <TextField
               label={t('common.labels.slug')}
               name="slug"
@@ -158,6 +159,7 @@ export function ProgramDialog({
               required
               fullWidth
             />
+            {/* Locale is stored per program because content differs between regions. */}
             <TextField
               select
               label={t('common.labels.locale')}
@@ -217,6 +219,7 @@ export function ProgramDialog({
             fullWidth
           />
 
+          {/* Sessions selection is mandatory to guarantee programs deliver real workouts. */}
           <Autocomplete
             multiple
             options={sessionOptions}
@@ -238,6 +241,7 @@ export function ProgramDialog({
             )}
           />
 
+          {/* User assignment remains optional since some programs are templates. */}
           <Autocomplete
             options={userOptions}
             value={values.user}

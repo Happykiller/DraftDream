@@ -60,7 +60,9 @@
         "empty": "Drag a session from the left column to get started.",
         "session_prefix": "Session",
         "duration_unit": "min",
-        "tags_label": "Target groups"
+        "tags_label": "Target groups",
+        "drop_zone": "Drop session here",
+        "exercise_drop_zone": "Drop exercise here"
       },
       "library": {
         "title": "Exercise library",
