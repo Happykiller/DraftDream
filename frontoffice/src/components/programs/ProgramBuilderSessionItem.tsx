@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { DeleteOutline, DragIndicator } from '@mui/icons-material';
-import { alpha, useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import { Chip, IconButton, Paper, Stack, Typography } from '@mui/material';
 
 import type {
