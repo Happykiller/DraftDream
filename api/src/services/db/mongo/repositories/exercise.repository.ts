@@ -14,7 +14,7 @@ type ExerciseDoc = {
   _id: ObjectId;
   slug: string;
   locale: string;
-  name: string;
+  label: string;
   description?: string;
   instructions?: string;
   level: 'beginner' | 'intermediate' | 'advanced';
@@ -66,7 +66,7 @@ export class BddServiceExerciseMongo {
     const doc: Omit<ExerciseDoc, '_id'> = {
       slug: dto.slug.toLowerCase().trim(),
       locale: dto.locale.toLowerCase().trim(),
-      name: dto.name.trim(),
+      label: dto.label.trim(),
       description: dto.description,
       instructions: dto.instructions,
       level: dto.level,
@@ -126,7 +126,7 @@ export class BddServiceExerciseMongo {
     if (q && q.trim()) {
       filter.$or = [
         { slug: { $regex: new RegExp(q.trim(), 'i') } },
-        { name: { $regex: new RegExp(q.trim(), 'i') } },
+        { label: { $regex: new RegExp(q.trim(), 'i') } },
       ];
     }
     if (locale) filter.locale = locale.toLowerCase().trim();
@@ -149,7 +149,7 @@ export class BddServiceExerciseMongo {
 
     if (patch.slug !== undefined) $set.slug = patch.slug.toLowerCase().trim();
     if (patch.locale !== undefined) $set.locale = patch.locale.toLowerCase().trim();
-    if (patch.name !== undefined) $set.name = patch.name.trim();
+    if (patch.label !== undefined) $set.label = patch.label.trim();
     if (patch.description !== undefined) $set.description = patch.description;
     if (patch.instructions !== undefined) $set.instructions = patch.instructions;
     if (patch.level !== undefined) $set.level = patch.level;
@@ -204,7 +204,7 @@ export class BddServiceExerciseMongo {
     id: doc._id.toHexString(),
     slug: doc.slug,
     locale: doc.locale,
-    name: doc.name,
+    label: doc.label,
     description: doc.description,
     instructions: doc.instructions,
     level: doc.level,
@@ -218,28 +218,28 @@ export class BddServiceExerciseMongo {
     // Relations are represented minimally; hydrate at service/usecase layer if needed.
     category: {
       id: doc.category.toHexString(),
-      slug: '', locale: doc.locale, name: '',
+      slug: '', locale: doc.locale, label: '',
       visibility: 'private',
       createdBy: '', createdAt: doc.createdAt, updatedAt: doc.updatedAt,
     },
     primaryMuscles: (doc.primaryMuscles ?? []).map((oid) => ({
       id: oid.toHexString(),
-      slug: '', locale: doc.locale, name: '', visibility: 'private',
+      slug: '', locale: doc.locale, label: '', visibility: 'private',
       createdBy: '', createdAt: doc.createdAt, updatedAt: doc.updatedAt,
     })),
     secondaryMuscles: (doc.secondaryMuscles ?? []).map((oid) => ({
       id: oid.toHexString(),
-      slug: '', locale: doc.locale, name: '', visibility: 'private',
+      slug: '', locale: doc.locale, label: '', visibility: 'private',
       createdBy: '', createdAt: doc.createdAt, updatedAt: doc.updatedAt,
     })),
     equipment: (doc.equipment ?? []).map((oid) => ({
       id: oid.toHexString(),
-      slug: '', locale: doc.locale, name: '', visibility: 'private',
+      slug: '', locale: doc.locale, label: '', visibility: 'private',
       createdBy: '', createdAt: doc.createdAt, updatedAt: doc.updatedAt,
     })),
     tags: (doc.tags ?? []).map((oid) => ({
       id: oid.toHexString(),
-      slug: '', locale: doc.locale, name: '', visibility: 'private',
+      slug: '', locale: doc.locale, label: '', visibility: 'private',
       createdBy: '', createdAt: doc.createdAt, updatedAt: doc.updatedAt,
     })),
 

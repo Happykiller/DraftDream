@@ -14,7 +14,7 @@ export class MuscleGql {
   @Field(() => ID) id!: string;
   @Field() slug!: string;
   @Field() locale!: string;
-  @Field() name!: string;
+  @Field() label!: string;
   @Field(() => MuscleVisibility) visibility!: MuscleVisibility;
   @Field() createdBy!: string;
   @Field() createdAt!: Date;
@@ -27,7 +27,7 @@ export class MuscleGql {
 export class CreateMuscleInput {
   @Field() slug!: string;
   @Field() locale!: string;
-  @Field() name!: string;
+  @Field() label!: string;
   @Field(() => MuscleVisibility) visibility!: MuscleVisibility;
 }
 
@@ -36,7 +36,7 @@ export class UpdateMuscleInput {
   @Field(() => ID) id!: string;
   @Field({ nullable: true }) slug?: string;
   @Field({ nullable: true }) locale?: string;
-  @Field({ nullable: true }) name?: string;
+  @Field({ nullable: true }) label?: string;
 }
 
 @InputType()

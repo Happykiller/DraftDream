@@ -38,7 +38,7 @@ export function ExercisesPanel(): React.JSX.Element {
   const toCreateInput = (v: ExerciseDialogValues) => ({
     slug: v.slug,
     locale: v.locale,
-    name: v.name,
+    label: v.label,
     level: v.level,
     series: v.series,
     repetitions: v.repetitions,
@@ -59,7 +59,7 @@ export function ExercisesPanel(): React.JSX.Element {
     id,
     slug: v.slug,
     locale: v.locale,
-    name: v.name,
+    label: v.label,
     level: v.level,
     series: v.series,
     repetitions: v.repetitions,
@@ -99,7 +99,7 @@ export function ExercisesPanel(): React.JSX.Element {
         mode="create"
         categoryOptions={cats.items as any}
         muscleOptions={musc.items as any}
-        tagOptions={tags.items.map(t => ({ id: t.id, slug: t.slug })) as any}
+        tagOptions={tags.items.map(t => ({ id: t.id, slug: t.slug, label: t.label })) as any}
         equipmentOptions={eqp.items as any}
         onClose={() => setOpenCreate(false)}
         onSubmit={(v) => create(toCreateInput(v))}
@@ -111,7 +111,7 @@ export function ExercisesPanel(): React.JSX.Element {
         initial={editing as any}
         categoryOptions={cats.items as any}
         muscleOptions={musc.items as any}
-        tagOptions={tags.items.map(t => ({ id: t.id, slug: t.slug })) as any}
+        tagOptions={tags.items.map(t => ({ id: t.id, slug: t.slug, label: t.label })) as any}
         equipmentOptions={eqp.items as any}
         onClose={() => setEditId(null)}
         onSubmit={(v) => editId ? update(toUpdateInput(editId, v)) : undefined}

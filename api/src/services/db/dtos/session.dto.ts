@@ -5,7 +5,7 @@ export type CreateSessionDto = {
   slug: string;
   locale: string;
 
-  title: string;
+  label: string;
   durationMin: number;
   description?: string;
 
@@ -31,7 +31,7 @@ export type UpdateSessionDto = Partial<{
   slug: string;
   locale: string;
 
-  title: string;
+  label: string;
   durationMin: number;
   description: string;
 

@@ -13,7 +13,7 @@ export interface ProgramSession {
   id: string;
   slug: string;
   locale: string;
-  title: string;
+  label: string;
   durationMin: number;
   description?: string | null;
   exerciseIds: string[];
@@ -25,7 +25,9 @@ export interface ProgramSession {
 
 export interface Program {
   id: string;
-  name: string;
+  slug: string;
+  locale: string;
+  label: string;
   duration: number;
   frequency: number;
   description?: string | null;
@@ -56,7 +58,9 @@ const LIST_Q = `
     program_list(input: $input) {
       items {
         id
-        name
+        slug
+        locale
+        label
         duration
         frequency
         description
@@ -67,7 +71,7 @@ const LIST_Q = `
         updatedAt
         creator { id email }
         sessions {
-          id slug locale title durationMin description exerciseIds
+          id slug locale label durationMin description exerciseIds
           createdBy createdAt updatedAt
           creator { id email }
         }
@@ -83,7 +87,9 @@ const CREATE_M = `
   mutation CreateProgram($input: CreateProgramInput!) {
     program_create(input: $input) {
       id
-      name
+      slug
+      locale
+      label
       duration
       frequency
       description
@@ -94,7 +100,7 @@ const CREATE_M = `
       updatedAt
       creator { id email }
       sessions {
-        id slug locale title durationMin description exerciseIds
+        id slug locale label durationMin description exerciseIds
         createdBy createdAt updatedAt
         creator { id email }
       }
@@ -106,7 +112,9 @@ const UPDATE_M = `
   mutation UpdateProgram($input: UpdateProgramInput!) {
     program_update(input: $input) {
       id
-      name
+      slug
+      locale
+      label
       duration
       frequency
       description
@@ -117,7 +125,7 @@ const UPDATE_M = `
       updatedAt
       creator { id email }
       sessions {
-        id slug locale title durationMin description exerciseIds
+        id slug locale label durationMin description exerciseIds
         createdBy createdAt updatedAt
         creator { id email }
       }
@@ -143,7 +151,8 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
   const [items, setItems] = React.useState<Program[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
-  const flash = useFlashStore();
+  const flashError = useFlashStore((state) => state.error);
+  const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
 
   const load = React.useCallback(async () => {
@@ -166,11 +175,11 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
       setItems(data?.program_list.items ?? []);
       setTotal(data?.program_list.total ?? 0);
     } catch (e: any) {
-      flash.error(e?.message ?? 'Failed to load programs');
+      flashError(e?.message ?? 'Failed to load programs');
     } finally {
       setLoading(false);
     }
-  }, [page, limit, q, createdBy, userId, gql, flash]);
+  }, [page, limit, q, createdBy, userId, gql, flashError]);
 
   React.useEffect(() => {
     void load();
@@ -178,7 +187,9 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
 
   const create = React.useCallback(
     async (input: {
-      name: string;
+      slug: string;
+      locale: string;
+      label: string;
       duration: number;
       frequency: number;
       description?: string;
@@ -192,20 +203,22 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
           variables: { input },
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Program created');
+        flashSuccess('Program created');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Create failed');
+        flashError(e?.message ?? 'Create failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [gql, flashError, flashSuccess, load]
   );
 
   const update = React.useCallback(
     async (input: {
       id: string;
-      name?: string;
+      slug?: string;
+      locale?: string;
+      label?: string;
       duration?: number;
       frequency?: number;
       description?: string | null;
@@ -219,14 +232,14 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
           variables: { input },
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Program updated');
+        flashSuccess('Program updated');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Update failed');
+        flashError(e?.message ?? 'Update failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [gql, flashError, flashSuccess, load]
   );
 
   const remove = React.useCallback(
@@ -238,14 +251,14 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
           variables: { id },
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Program deleted');
+        flashSuccess('Program deleted');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Delete failed');
+        flashError(e?.message ?? 'Delete failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [gql, flashError, flashSuccess, load]
   );
 
   return { items, total, loading, create, update, remove, reload: load };

@@ -8,7 +8,6 @@ import {
   Chip,
   Divider,
   Grid,
-  IconButton,
   InputAdornment,
   MenuItem,
   Paper,
@@ -16,14 +15,15 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { Add, DeleteOutline, DragIndicator, Search } from '@mui/icons-material';
+import { Add, Search } from '@mui/icons-material';
 import { useSessions } from '@hooks/useSessions';
 import { useExercises } from '@hooks/useExercises';
 import { useCategories } from '@hooks/useCategories';
+import { ProgramBuilderSessionItem } from './ProgramBuilderSessionItem';
 
-type ExerciseLibraryItem = {
+export type ExerciseLibraryItem = {
   id: string;
-  name: string;
+  label: string;
   level: string;
   category: string;
   type: string;
@@ -43,14 +43,14 @@ type TemplateExerciseRef = {
 
 type SessionTemplate = {
   id: string;
-  name: string;
+  label: string;
   duration: number;
   focus: string;
   tags: string[];
   exercises: TemplateExerciseRef[];
 };
 
-type ProgramExercise = {
+export type ProgramExercise = {
   id: string;
   exerciseId: string;
   sets: number;
@@ -58,9 +58,9 @@ type ProgramExercise = {
   rest: string;
 };
 
-type ProgramSession = {
+export type ProgramSession = {
   id: string;
-  name: string;
+  label: string;
   duration: number;
   focus: string;
   tags: string[];
@@ -189,7 +189,7 @@ export function ProgramBuilderPanel({
     () =>
       sessionItems.map((item) => ({
         id: item.id,
-        name: item.title,
+        label: item.label,
         duration: item.durationMin,
         focus: item.locale || 'General',
         tags: [],
@@ -202,7 +202,7 @@ export function ProgramBuilderPanel({
     () =>
       exerciseItems.map((item) => ({
         id: item.id,
-        name: item.name,
+        label: item.label,
         level: item.level,
         category: item.level,
         type: item.visibility,
@@ -267,7 +267,7 @@ export function ProgramBuilderPanel({
 
       return {
         id: nextId('session'),
-        name: template.name,
+        label: template.label,
         duration: template.duration,
         focus: template.focus,
         tags: template.tags,
@@ -304,7 +304,7 @@ export function ProgramBuilderPanel({
       Array.from(
         new Set(
           categoryItems
-            .map((item) => item.name || item.slug || item.locale)
+            .map((item) => item.label || item.slug || item.locale)
             .filter((value): value is string => Boolean(value)),
         ),
       ).sort(),
@@ -328,7 +328,7 @@ export function ProgramBuilderPanel({
     return sessionTemplates.filter((template) => {
       const matchesSearch =
         !search ||
-        template.name.toLowerCase().includes(search) ||
+        template.label.toLowerCase().includes(search) ||
         template.tags.some((tag) => tag.toLowerCase().includes(search));
       return matchesSearch;
     });
@@ -339,7 +339,7 @@ export function ProgramBuilderPanel({
     return exerciseLibrary.filter((exercise) => {
       const matchesSearch =
         !search ||
-        exercise.name.toLowerCase().includes(search) ||
+        exercise.label.toLowerCase().includes(search) ||
         exercise.tags.some((tag) => tag.toLowerCase().includes(search));
       const matchesCategory =
         exerciseCategory === 'all' || exercise.category === exerciseCategory;
@@ -664,7 +664,7 @@ export function ProgramBuilderPanel({
                             alignItems="center"
                           >
                             <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                              {template.name}
+                              {template.label}
                             </Typography>
                             <Chip
                               label={`${template.duration} ${builderCopy.structure.duration_unit}`}
@@ -756,134 +756,24 @@ export function ProgramBuilderPanel({
                   </Stack>
                 ) : (
                   sessions.map((session, index) => (
-                    <Paper
+                    <ProgramBuilderSessionItem
                       key={session.id}
-                      draggable
+                      session={session}
+                      index={index}
+                      isSelected={session.id === selectedSessionId}
+                      builderCopy={builderCopy}
+                      onSelect={() => setSelectedSessionId(session.id)}
+                      onRemoveSession={() => handleRemoveSession(session.id)}
+                      onRemoveExercise={(exerciseId) =>
+                        handleRemoveExercise(session.id, exerciseId)
+                      }
                       onDragStart={(event) =>
                         beginDrag(event, { type: 'session-move', id: session.id })
                       }
                       onDragOver={handleSessionDragOver}
                       onDrop={(event) => handleSessionDrop(session.id, event)}
-                      onClick={() => setSelectedSessionId(session.id)}
-                      sx={{
-                        p: 2,
-                        borderRadius: 2,
-                        cursor: 'grab',
-                        border:
-                          session.id === selectedSessionId
-                            ? '2px solid'
-                            : '1px solid',
-                        bgcolor:
-                          session.id === selectedSessionId
-                            ? alpha(theme.palette.primary.main, 0.06)
-                            : theme.palette.background.paper,
-                        transition:
-                          'border-color 150ms ease, background-color 150ms ease',
-                      }}
-                    >
-                      <Stack spacing={1.5}>
-                        <Stack
-                          direction="row"
-                          justifyContent="space-between"
-                          alignItems="center"
-                        >
-                          <Stack direction="row" spacing={1} alignItems="center">
-                            <DragIndicator fontSize="small" color="disabled" />
-                            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                              {builderCopy.structure.session_prefix} {index + 1} - {session.name}
-                            </Typography>
-                          </Stack>
-                          <Stack direction="row" spacing={1} alignItems="center">
-                            <Chip
-                              label={`${session.duration} ${builderCopy.structure.duration_unit}`}
-                              size="small"
-                            />
-                            <IconButton
-                              size="small"
-                              onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-                                event.stopPropagation();
-                                handleRemoveSession(session.id);
-                              }}
-                              aria-label="delete-session"
-                            >
-                              <DeleteOutline fontSize="small" />
-                            </IconButton>
-                          </Stack>
-                        </Stack>
-
-                        <Stack direction="row" spacing={0.5} flexWrap="wrap">
-                          {session.tags.map((tag) => (
-                            <Chip key={tag} label={tag} size="small" variant="outlined" />
-                          ))}
-                        </Stack>
-
-                        <Stack spacing={1}>
-                          {session.exercises.length === 0 ? (
-                            <Typography variant="body2" color="text.secondary">
-                              {builderCopy.library.subtitle}
-                            </Typography>
-                          ) : (
-                            session.exercises.map((exerciseItem, exerciseIndex) => {
-                              const exercise = exerciseMap.get(exerciseItem.exerciseId);
-                              if (!exercise) {
-                                return null;
-                              }
-                              return (
-                                <Paper
-                                  key={exerciseItem.id}
-                                  variant="outlined"
-                                  sx={{ p: 1.5, borderRadius: 1.75 }}
-                                >
-                                  <Stack
-                                    direction="row"
-                                    alignItems="flex-start"
-                                    spacing={1}
-                                    justifyContent="space-between"
-                                  >
-                                    <Stack direction="row" spacing={1} alignItems="flex-start">
-                                      <Typography
-                                        variant="subtitle2"
-                                        sx={{ fontWeight: 700, minWidth: 24 }}
-                                      >
-                                        {exerciseIndex + 1}.
-                                      </Typography>
-                                      <Stack spacing={0.5}>
-                                        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                                          {exercise.name}
-                                        </Typography>
-                                        <Typography variant="caption" color="text.secondary">
-                                          {exerciseItem.sets} x {exerciseItem.reps} - {exerciseItem.rest}
-                                        </Typography>
-                                        <Stack direction="row" spacing={0.5} flexWrap="wrap">
-                                          {exercise.tags.map((tag) => (
-                                            <Chip
-                                              key={`${exercise.id}-${tag}`}
-                                              label={tag}
-                                              size="small"
-                                              variant="outlined"
-                                            />
-                                          ))}
-                                        </Stack>
-                                      </Stack>
-                                    </Stack>
-                                    <IconButton
-                                      size="small"
-                                      onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-                                        event.stopPropagation();
-                                        handleRemoveExercise(session.id, exerciseItem.id);
-                                      }}
-                                      aria-label="delete-exercise"
-                                    >
-                                      <DeleteOutline fontSize="small" />
-                                    </IconButton>
-                                  </Stack>
-                                </Paper>
-                              );
-                            })
-                          )}
-                        </Stack>
-                      </Stack>
-                    </Paper>
+                      getExerciseById={(exerciseId) => exerciseMap.get(exerciseId)}
+                    />
                   ))
                 )}
               </Box>
@@ -1010,7 +900,7 @@ export function ProgramBuilderPanel({
                           alignItems="center"
                         >
                           <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                            {exercise.name}
+                            {exercise.label}
                           </Typography>
                           <Chip
                             label={`${exercise.sets} x ${exercise.reps}`}

@@ -49,7 +49,9 @@ export const ProgramTable = React.memo(function ProgramTable({
   const { t } = useTranslation();
 
   const columns = React.useMemo<GridColDef<Program>[]>(() => [
-    { field: 'name', headerName: t('common.labels.name'), flex: 1.4, minWidth: 180 },
+    { field: 'slug', headerName: t('common.labels.slug'), flex: 1.1, minWidth: 160 },
+    { field: 'label', headerName: t('common.labels.label'), flex: 1.4, minWidth: 180 },
+    { field: 'locale', headerName: t('common.labels.locale'), width: 110 },
     {
       field: 'duration',
       headerName: t('common.labels.duration_weeks'),

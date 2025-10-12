@@ -18,13 +18,13 @@ import type { Session } from '@hooks/useSessions';
 export interface ExerciseOption {
   id: string;
   slug: string;
-  name: string;
+  label: string;
 }
 
 export interface SessionDialogValues {
   slug: string;
   locale: string;
-  title: string;
+  label: string;
   durationMin: number;
   description?: string;
   exercises: ExerciseOption[];
@@ -42,7 +42,7 @@ export interface SessionDialogProps {
 const DEFAULTS: SessionDialogValues = {
   slug: '',
   locale: 'en',
-  title: '',
+  label: '',
   durationMin: 30,
   description: '',
   exercises: [],
@@ -65,7 +65,7 @@ export function SessionDialog({
       setValues({
         slug: initial.slug,
         locale: initial.locale,
-        title: initial.title,
+        label: initial.label,
         durationMin: initial.durationMin,
         description: initial.description ?? '',
         exercises: exerciseOptions.filter(opt => initial.exerciseIds.includes(opt.id)),
@@ -85,9 +85,15 @@ export function SessionDialog({
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!values.slug || !values.title) return;
+    const trimmedSlug = values.slug.trim();
+    const trimmedLabel = values.label.trim();
+    if (!trimmedSlug || !trimmedLabel) return;
     if (!isEdit && values.exercises.length === 0) return;
-    await onSubmit(values);
+    await onSubmit({
+      ...values,
+      slug: trimmedSlug,
+      label: trimmedLabel,
+    });
     onClose();
   };
 
@@ -109,9 +115,9 @@ export function SessionDialog({
               inputProps={{ 'aria-label': 'session-slug' }}
             />
             <TextField
-              label={t('common.labels.title')}
-              name="title"
-              value={values.title}
+              label={t('common.labels.label')}
+              name="label"
+              value={values.label}
               onChange={onChange}
               required
               fullWidth
@@ -159,13 +165,13 @@ export function SessionDialog({
           <Autocomplete
             multiple
             options={exerciseOptions}
-            getOptionLabel={(option) => option.slug || option.name}
+            getOptionLabel={(option) => option.label || option.slug}
             isOptionEqualToValue={(opt, val) => opt.id === val.id}
             value={values.exercises}
             onChange={(_, newValue) => setValues((prev) => ({ ...prev, exercises: newValue }))}
             renderTags={(tagValue, getTagProps) =>
               tagValue.map((option, index) => (
-                <Chip {...getTagProps({ index })} key={option.id} label={option.slug || option.name} />
+                <Chip {...getTagProps({ index })} key={option.id} label={option.label || option.slug} />
               ))
             }
             renderInput={(params) => (

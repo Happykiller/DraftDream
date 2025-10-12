@@ -6,7 +6,7 @@ export const mapSessionToUsecase = (s: Session): SessionUsecaseModel => ({
   id: s.id,
   slug: s.slug,
   locale: s.locale,
-  title: s.title,
+  label: s.label,
   durationMin: s.durationMin,
   description: s.description,
   exerciseIds: [...s.exerciseIds],

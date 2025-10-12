@@ -34,7 +34,8 @@ type Entity = { value: string; valid: boolean };
 export function Login(): React.JSX.Element {
   // Stores / services
   const theme = useTheme();
-  const flash = useFlashStore();
+  const flashError = useFlashStore((state) => state.error);
+  const flashSuccess = useFlashStore((state) => state.success);
   const navigate = useNavigate();
   const { execute: auth } = useAuthReq();
   const { execute: runTask } = useAsyncTask();
@@ -60,14 +61,14 @@ export function Login(): React.JSX.Element {
       }),
     );
     if (!result) {
-      flash.error(t('common.alerts.unexpected_error'));
+      flashError(t('common.alerts.unexpected_error'));
       return;
     }
     if (result.message === CODES.SUCCESS && result.data) {
-      flash.success(t('login.success', { name: result.data.name_first }));
+      flashSuccess(t('login.success', { name: result.data.name_first }));
       navigate('/', { replace: true });
     } else {
-      flash.error(t(`ERRORS.${result.error}`));
+      flashError(t(`ERRORS.${result.error}`));
     }
   };
 

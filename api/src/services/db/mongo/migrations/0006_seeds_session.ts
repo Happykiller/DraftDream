@@ -4,7 +4,7 @@ import { Migration } from '@services/db/mongo/migration.runner.mongo';
 type SessionSeed = {
   slug: string;
   locale: 'fr';
-  title: string;
+  label: string;
   durationMin: number;
   description?: string;
   exerciseSlugs: string[];
@@ -14,7 +14,7 @@ const SESSION_SEEDS: SessionSeed[] = [
   {
     slug: 'full-body-debutant',
     locale: 'fr',
-    title: 'Full body decouverte',
+    label: 'Full body decouverte',
     durationMin: 40,
     description:
       'Circuit complet pour debuter avec des mouvements polyarticulaires et du gainage.',
@@ -23,7 +23,7 @@ const SESSION_SEEDS: SessionSeed[] = [
   {
     slug: 'force-bas-du-corps',
     locale: 'fr',
-    title: 'Force bas du corps',
+    label: 'Force bas du corps',
     durationMin: 45,
     description:
       'Seance ciblee sur les membres inferieurs avec accent sur la force et l explosivite.',
@@ -32,7 +32,7 @@ const SESSION_SEEDS: SessionSeed[] = [
   {
     slug: 'dos-et-cardio-intense',
     locale: 'fr',
-    title: 'Dos et cardio intense',
+    label: 'Dos et cardio intense',
     durationMin: 35,
     description:
       'Enchainement tirage et cardio ideal pour travailler le dos tout en gardant un rythme eleve.',
@@ -110,7 +110,7 @@ const migration: Migration = {
       const exerciseIds = resolveExerciseIds(seed.exerciseSlugs, exercisesBySlug);
 
       const setData: Record<string, unknown> = {
-        title: seed.title,
+        label: seed.label,
         durationMin: seed.durationMin,
         description: seed.description,
         exerciseIds,

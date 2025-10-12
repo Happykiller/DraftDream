@@ -5,7 +5,7 @@ export type ExerciseUsecaseModel = {
   id: string;
   slug: string;
   locale: string;
-  name: string;
+  label: string;
   description?: string;
   instructions?: string;
   level: ExerciseLevel;

@@ -5,7 +5,9 @@ import { ProgramUsecaseModel } from '@usecases/program/program.usecase.model';
 export function mapProgramUsecaseToGql(model: ProgramUsecaseModel): ProgramGql {
   return {
     id: model.id,
-    name: model.name,
+    slug: model.slug,
+    locale: model.locale,
+    label: model.label,
     duration: model.duration,
     frequency: model.frequency,
     description: model.description,

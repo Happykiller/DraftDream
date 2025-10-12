@@ -3,7 +3,9 @@ import { User } from '@services/db/models/user.model';
 
 export interface Program {
   id: string;
-  name: string;
+  slug: string;
+  locale: string;
+  label: string;
   /** Duration in weeks; must be a positive integer. */
   duration: number;
   /** Number of training sessions per week. */

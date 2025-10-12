@@ -10,7 +10,7 @@ type CategoryDoc = {
   _id: ObjectId;
   slug: string;
   locale: string;
-  name: string;
+  label: string;
   visibility: 'private' | 'public';
   createdBy: string;
   createdAt: Date;
@@ -36,7 +36,7 @@ export class BddServiceCategoryMongo {
     const doc: Omit<CategoryDoc, '_id'> = {
       slug: dto.slug.toLowerCase().trim(),
       locale: dto.locale.toLowerCase().trim(),
-      name: dto.name.trim(),
+      label: dto.label.trim(),
       visibility: dto.visibility,
       createdBy: dto.createdBy,
       createdAt: now,
@@ -70,7 +70,7 @@ export class BddServiceCategoryMongo {
     const filter: Record<string, any> = {};
     if (q && q.trim()) {
       const regex = new RegExp(q.trim(), 'i');
-      filter.$or = [{ slug: { $regex: regex } }, { name: { $regex: regex } }];
+      filter.$or = [{ slug: { $regex: regex } }, { label: { $regex: regex } }];
     }
     if (locale) filter.locale = locale.toLowerCase().trim();
     if (createdBy) filter.createdBy = createdBy;
@@ -90,7 +90,7 @@ export class BddServiceCategoryMongo {
     const $set: Partial<CategoryDoc> = { updatedAt: new Date() };
     if (patch.slug !== undefined) $set.slug = patch.slug.toLowerCase().trim();
     if (patch.locale !== undefined) $set.locale = patch.locale.toLowerCase().trim();
-    if (patch.name !== undefined) $set.name = patch.name.trim();
+    if (patch.label !== undefined) $set.label = patch.label.trim();
 
     try {
       const res: any = await (await this.col()).findOneAndUpdate(
@@ -118,7 +118,7 @@ export class BddServiceCategoryMongo {
     id: doc._id.toHexString(),
     slug: doc.slug,
     locale: doc.locale,
-    name: doc.name,
+    label: doc.label,
     visibility: doc.visibility,
     createdBy: doc.createdBy,
     createdAt: doc.createdAt,

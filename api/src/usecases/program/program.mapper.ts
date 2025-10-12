@@ -4,7 +4,9 @@ import type { ProgramUsecaseModel } from '@usecases/program/program.usecase.mode
 
 export const mapProgramToUsecase = (program: Program): ProgramUsecaseModel => ({
   id: program.id,
-  name: program.name,
+  slug: program.slug,
+  locale: program.locale,
+  label: program.label,
   duration: program.duration,
   frequency: program.frequency,
   description: program.description,

@@ -16,12 +16,12 @@ import { useTranslation } from 'react-i18next';
 import type { Exercise, ExerciseLevel, ExerciseVisibility } from '@hooks/useExercises';
 
 // Minimal ref entity for selects
-export interface RefEntity { id: string; slug: string; }
+export interface RefEntity { id: string; slug: string; label?: string; }
 
 export interface ExerciseDialogValues {
   slug: string;
   locale: string;
-  name: string;
+  label: string;
   level: ExerciseLevel;
   series: string;
   repetitions: string;
@@ -53,7 +53,7 @@ export interface ExerciseDialogProps {
 const DEFAULTS: ExerciseDialogValues = {
   slug: '',
   locale: 'en',
-  name: '',
+  label: '',
   level: 'BEGINNER',
   series: '3',
   repetitions: '10',
@@ -91,7 +91,7 @@ export function ExerciseDialog({
         ...prev,
         slug: initial.slug,
         locale: initial.locale,
-        name: initial.name,
+        label: initial.label,
         level: initial.level,
         series: initial.series,
         repetitions: initial.repetitions,
@@ -148,9 +148,9 @@ export function ExerciseDialog({
               inputProps={{ 'aria-label': 'exercise-slug' }}
             />
             <TextField
-              label={t('common.labels.name')}
-              name="name"
-              value={values.name}
+              label={t('common.labels.label')}
+              name="label"
+              value={values.label}
               onChange={onChange}
               required
               fullWidth
@@ -270,7 +270,7 @@ export function ExerciseDialog({
 
           <Autocomplete
             options={categoryOptions}
-            getOptionLabel={(option) => option.slug}
+            getOptionLabel={(option) => option.label || option.slug}
             value={values.category}
             onChange={(_, value) => setValues((prev) => ({ ...prev, category: value }))}
             renderInput={(params) => <TextField {...params} label={t('common.labels.category')} />}
@@ -279,12 +279,12 @@ export function ExerciseDialog({
           <Autocomplete
             multiple
             options={muscleOptions}
-            getOptionLabel={(option) => option.slug}
+            getOptionLabel={(option) => option.label || option.slug}
             value={values.primaryMuscles}
             onChange={(_, value) => setValues((prev) => ({ ...prev, primaryMuscles: value }))}
             renderTags={(tagValue, getTagProps) =>
               tagValue.map((option, index) => (
-                <Chip {...getTagProps({ index })} key={option.id} label={option.slug} />
+                <Chip {...getTagProps({ index })} key={option.id} label={option.label || option.slug} />
               ))
             }
             renderInput={(params) => <TextField {...params} label={t('common.labels.primary_muscles')} />}
@@ -293,12 +293,12 @@ export function ExerciseDialog({
           <Autocomplete
             multiple
             options={muscleOptions}
-            getOptionLabel={(option) => option.slug}
+            getOptionLabel={(option) => option.label || option.slug}
             value={values.secondaryMuscles}
             onChange={(_, value) => setValues((prev) => ({ ...prev, secondaryMuscles: value }))}
             renderTags={(tagValue, getTagProps) =>
               tagValue.map((option, index) => (
-                <Chip {...getTagProps({ index })} key={option.id} label={option.slug} />
+                <Chip {...getTagProps({ index })} key={option.id} label={option.label || option.slug} />
               ))
             }
             renderInput={(params) => <TextField {...params} label={t('common.labels.secondary_muscles_optional')} />}
@@ -307,12 +307,12 @@ export function ExerciseDialog({
           <Autocomplete
             multiple
             options={equipmentOptions}
-            getOptionLabel={(option) => option.slug}
+            getOptionLabel={(option) => option.label || option.slug}
             value={values.equipment}
             onChange={(_, value) => setValues((prev) => ({ ...prev, equipment: value }))}
             renderTags={(tagValue, getTagProps) =>
               tagValue.map((option, index) => (
-                <Chip {...getTagProps({ index })} key={option.id} label={option.slug} />
+                <Chip {...getTagProps({ index })} key={option.id} label={option.label || option.slug} />
               ))
             }
             renderInput={(params) => <TextField {...params} label={t('common.labels.equipment_optional')} />}
@@ -321,12 +321,12 @@ export function ExerciseDialog({
           <Autocomplete
             multiple
             options={tagOptions}
-            getOptionLabel={(option) => option.slug}
+            getOptionLabel={(option) => option.label || option.slug}
             value={values.tags}
             onChange={(_, value) => setValues((prev) => ({ ...prev, tags: value }))}
             renderTags={(tagValue, getTagProps) =>
               tagValue.map((option, index) => (
-                <Chip {...getTagProps({ index })} key={option.id} label={option.slug} />
+                <Chip {...getTagProps({ index })} key={option.id} label={option.label || option.slug} />
               ))
             }
             renderInput={(params) => <TextField {...params} label={t('common.labels.tags_optional')} />}

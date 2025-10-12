@@ -37,12 +37,34 @@ export class GraphqlServiceFetch {
     window.location.replace('/login');
   }
 
+  /** Normalize strings for comparison */
+  private norm(v?: string): string {
+    return (v ?? '').trim().toUpperCase();
+  }
+
+  /**
+   * Detect "unauthorized" from GraphQL errors array.
+   * We check both error.message and error.extensions.code.
+   */
   private hasUnauthorizedError(errors?: GraphQLErrorItem[]): boolean {
     if (!errors || errors.length === 0) return false;
+
+    // Whitelist of tokens-related or auth-related error markers
+    const AUTH_MARKERS = new Set([
+      'UNAUTHORIZED',
+      'UNAUTHENTICATED',
+      'INVALID_TOKEN',
+      'EXPIRED_TOKEN',
+      'FORBIDDEN',
+      'TOKEN_EXPIRED',
+      'INVALID_JWT',
+    ]);
+
     return errors.some((e) => {
-      const msg = (e?.message || '').toUpperCase();
-      const code = (e?.extensions?.code || '').toUpperCase();
-      return msg === 'UNAUTHORIZED' || code === 'UNAUTHORIZED';
+      const msg = this.norm(e?.message);
+      const code = this.norm(e?.extensions?.code);
+      // Consider unauthorized if either matches a known marker
+      return AUTH_MARKERS.has(msg) || AUTH_MARKERS.has(code);
     });
   }
 

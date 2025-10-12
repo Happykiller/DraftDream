@@ -30,6 +30,7 @@
       "go_unknown": "Aller vers l'inconnu"
     },
     "labels": {
+      "label": "Libellé",
       "name": "Nom",
       "slug": "Slug",
       "locale": "Langue",

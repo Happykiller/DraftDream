@@ -7,7 +7,9 @@ import { UserGql } from '@graphql/user/user.gql.types';
 @ObjectType()
 export class ProgramGql {
   @Field(() => ID) id!: string;
-  @Field() name!: string;
+  @Field() slug!: string;
+  @Field() locale!: string;
+  @Field() label!: string;
   @Field(() => Int) duration!: number;
   @Field(() => Int) frequency!: number;
   @Field({ nullable: true }) description?: string;
@@ -28,7 +30,9 @@ export class ProgramGql {
 
 @InputType()
 export class CreateProgramInput {
-  @Field() name!: string;
+  @Field() slug!: string;
+  @Field() locale!: string;
+  @Field() label!: string;
   @Field(() => Int) duration!: number;
   @Field(() => Int) frequency!: number;
   @Field({ nullable: true }) description?: string;
@@ -40,7 +44,9 @@ export class CreateProgramInput {
 @InputType()
 export class UpdateProgramInput {
   @Field(() => ID) id!: string;
-  @Field({ nullable: true }) name?: string;
+  @Field({ nullable: true }) slug?: string;
+  @Field({ nullable: true }) locale?: string;
+  @Field({ nullable: true }) label?: string;
   @Field(() => Int, { nullable: true }) duration?: number;
   @Field(() => Int, { nullable: true }) frequency?: number;
   @Field({ nullable: true }) description?: string;
@@ -53,6 +59,7 @@ export class UpdateProgramInput {
 @InputType()
 export class ListProgramsInput {
   @Field({ nullable: true }) q?: string;
+  @Field({ nullable: true }) locale?: string;
   @Field({ nullable: true }) createdBy?: string;
   @Field({ nullable: true }) userId?: string;
   @Field(() => Int, { nullable: true }) limit?: number;

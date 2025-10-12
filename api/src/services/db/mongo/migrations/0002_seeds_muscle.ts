@@ -34,7 +34,7 @@ function toSlug(label: string): string {
     .replace(/(^-|-$)/g, "");
 }
 
-function toName(label: string): string {
+function toTitleCaseLabel(label: string): string {
   return label
     .split(/[-_\s]+/)
     .filter(Boolean)
@@ -70,7 +70,7 @@ const migration: Migration = {
     // 3) Build docs (idempotent upsert)
     const now = new Date();
     const docs = FR_LABELS.map((label) => {
-      const name = toName(label);
+      const formattedLabel = toTitleCaseLabel(label);
       const slug = toSlug(label);
       return {
         updateOne: {
@@ -79,12 +79,11 @@ const migration: Migration = {
             $setOnInsert: {
               slug,
               locale: "fr",
-              name,
               visibility: "public",
               createdBy: createdBy.toHexString ? createdBy.toHexString() : String(createdBy),
               createdAt: now,
             },
-            $set: { updatedAt: now, name },
+            $set: { updatedAt: now, label: formattedLabel },
           },
           upsert: true,
         },

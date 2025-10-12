@@ -13,7 +13,7 @@ export interface Exercise {
   id: string;
   slug: string;
   locale: string;
-  name: string;
+  label: string;
   description?: string | null;
   instructions?: string | null;
   level: ExerciseLevel;
@@ -46,7 +46,7 @@ const LIST_Q = `
   query ListExercises($input: ListExercisesInput) {
     exercise_list(input: $input) {
       items {
-        id slug locale name description instructions level series repetitions
+        id slug locale label description instructions level series repetitions
         charge rest videoUrl visibility createdBy createdAt updatedAt
         creator { id email }
       }
@@ -58,7 +58,7 @@ const LIST_Q = `
 const CREATE_M = `
   mutation CreateExercise($input: CreateExerciseInput!) {
     exercise_create(input: $input) {
-      id slug locale name description instructions level series repetitions
+      id slug locale label description instructions level series repetitions
       charge rest videoUrl visibility createdBy createdAt updatedAt
       creator { id email }
     }
@@ -68,7 +68,7 @@ const CREATE_M = `
 const UPDATE_M = `
   mutation UpdateExercise($input: UpdateExerciseInput!) {
     exercise_update(input: $input) {
-      id slug locale name description instructions level series repetitions
+      id slug locale label description instructions level series repetitions
       charge rest videoUrl visibility createdBy createdAt updatedAt
       creator { id email }
     }
@@ -114,7 +114,7 @@ export function useExercises({ page, limit, q }: UseExercisesParams) {
 
   const create = React.useCallback(
     async (input: {
-      slug: string; locale: string; name: string; level: ExerciseLevel;
+      slug: string; locale: string; label: string; level: ExerciseLevel;
       series: string; repetitions: string; description?: string; instructions?: string;
       charge?: string; rest?: number; videoUrl?: string; visibility: ExerciseVisibility;
       categoryId: string;                           // required
@@ -141,7 +141,7 @@ export function useExercises({ page, limit, q }: UseExercisesParams) {
   const update = React.useCallback(
     async (input: {
       id: string;
-      slug?: string; locale?: string; name?: string; level?: ExerciseLevel;
+      slug?: string; locale?: string; label?: string; level?: ExerciseLevel;
       series?: string; repetitions?: string; description?: string; instructions?: string;
       charge?: string; rest?: number; videoUrl?: string; visibility?: ExerciseVisibility;
       categoryId?: string | null;

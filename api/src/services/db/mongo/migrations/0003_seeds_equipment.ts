@@ -53,7 +53,7 @@ const migration: Migration = {
     // upserts
     const now = new Date();
     const ops = FR_LABELS.map((label) => {
-      const name = label.trim();
+      const trimmedLabel = label.trim();
       const slug = toSlug(label);
       return {
         updateOne: {
@@ -62,12 +62,11 @@ const migration: Migration = {
             $setOnInsert: {
               slug,
               locale: 'fr',
-              name,
               visibility: 'public',
               createdBy: createdBy.toHexString ? createdBy.toHexString() : String(createdBy),
               createdAt: now,
             },
-            $set: { updatedAt: now, name },
+            $set: { updatedAt: now, label: trimmedLabel },
           },
           upsert: true,
         },

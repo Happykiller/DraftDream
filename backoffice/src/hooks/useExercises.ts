@@ -13,7 +13,7 @@ export interface Exercise {
   id: string;
   slug: string;
   locale: string;
-  name: string;
+  label: string;
   description?: string | null;
   instructions?: string | null;
   level: ExerciseLevel;
@@ -46,7 +46,7 @@ const LIST_Q = `
   query ListExercises($input: ListExercisesInput) {
     exercise_list(input: $input) {
       items {
-        id slug locale name description instructions level series repetitions
+        id slug locale label description instructions level series repetitions
         charge rest videoUrl visibility createdBy createdAt updatedAt
         creator { id email }
       }
@@ -58,7 +58,7 @@ const LIST_Q = `
 const CREATE_M = `
   mutation CreateExercise($input: CreateExerciseInput!) {
     exercise_create(input: $input) {
-      id slug locale name description instructions level series repetitions
+      id slug locale label description instructions level series repetitions
       charge rest videoUrl visibility createdBy createdAt updatedAt
       creator { id email }
     }
@@ -68,7 +68,7 @@ const CREATE_M = `
 const UPDATE_M = `
   mutation UpdateExercise($input: UpdateExerciseInput!) {
     exercise_update(input: $input) {
-      id slug locale name description instructions level series repetitions
+      id slug locale label description instructions level series repetitions
       charge rest videoUrl visibility createdBy createdAt updatedAt
       creator { id email }
     }
@@ -89,7 +89,8 @@ export function useExercises({ page, limit, q }: UseExercisesParams) {
   const [items, setItems] = React.useState<Exercise[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
-  const flash = useFlashStore();
+  const flashError = useFlashStore((state) => state.error);
+  const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
 
   const load = React.useCallback(async () => {
@@ -104,17 +105,17 @@ export function useExercises({ page, limit, q }: UseExercisesParams) {
       setItems(data?.exercise_list.items ?? []);
       setTotal(data?.exercise_list.total ?? 0);
     } catch (e: any) {
-      flash.error(e?.message ?? 'Failed to load exercises');
+      flashError(e?.message ?? 'Failed to load exercises');
     } finally {
       setLoading(false);
     }
-  }, [page, limit, q, gql, flash]);
+  }, [page, limit, q, gql, flashError]);
 
   React.useEffect(() => { void load(); }, [load]);
 
   const create = React.useCallback(
     async (input: {
-      slug: string; locale: string; name: string; level: ExerciseLevel;
+      slug: string; locale: string; label: string; level: ExerciseLevel;
       series: string; repetitions: string; description?: string; instructions?: string;
       charge?: string; rest?: number; videoUrl?: string; visibility: ExerciseVisibility;
       categoryId: string;                           // required
@@ -128,20 +129,20 @@ export function useExercises({ page, limit, q }: UseExercisesParams) {
           query: CREATE_M, variables: { input }, operationName: 'CreateExercise',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Exercise created');
+        flashSuccess('Exercise created');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Create failed');
+        flashError(e?.message ?? 'Create failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [gql, flashError, flashSuccess, load]
   );
 
   const update = React.useCallback(
     async (input: {
       id: string;
-      slug?: string; locale?: string; name?: string; level?: ExerciseLevel;
+      slug?: string; locale?: string; label?: string; level?: ExerciseLevel;
       series?: string; repetitions?: string; description?: string; instructions?: string;
       charge?: string; rest?: number; videoUrl?: string; visibility?: ExerciseVisibility;
       categoryId?: string | null;
@@ -155,14 +156,14 @@ export function useExercises({ page, limit, q }: UseExercisesParams) {
           query: UPDATE_M, variables: { input }, operationName: 'UpdateExercise',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Exercise updated');
+        flashSuccess('Exercise updated');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Update failed');
+        flashError(e?.message ?? 'Update failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [gql, flashError, flashSuccess, load]
   );
 
   const remove = React.useCallback(
@@ -172,14 +173,14 @@ export function useExercises({ page, limit, q }: UseExercisesParams) {
           query: DELETE_M, variables: { id }, operationName: 'DeleteExercise',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Exercise deleted');
+        flashSuccess('Exercise deleted');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Delete failed');
+        flashError(e?.message ?? 'Delete failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [gql, flashError, flashSuccess, load]
   );
 
   return { items, total, loading, create, update, remove, reload: load };

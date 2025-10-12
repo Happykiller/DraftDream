@@ -2,12 +2,12 @@
 export type CreateEquipmentDto = {
   slug: string;
   locale: string;
-  name: string;
+  label: string;
   visibility: 'private' | 'public';
   createdBy: string;
 };
 
-export type UpdateEquipmentDto = Partial<Pick<CreateEquipmentDto, 'slug' | 'locale' | 'name'>>;
+export type UpdateEquipmentDto = Partial<Pick<CreateEquipmentDto, 'slug' | 'locale' | 'label'>>;
 
 export type GetEquipmentDto = { id: string };
 

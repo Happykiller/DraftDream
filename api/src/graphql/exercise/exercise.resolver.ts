@@ -36,7 +36,7 @@ export class ExerciseResolver {
     const created = await inversify.createExerciseUsecase.execute({
       slug: input.slug,
       locale: input.locale,
-      name: input.name,
+      label: input.label,
       description: input.description,
       instructions: input.instructions,
       level: input.level,
@@ -62,7 +62,7 @@ export class ExerciseResolver {
     const updated = await inversify.updateExerciseUsecase.execute(input.id, {
       slug: input.slug,
       locale: input.locale,
-      name: input.name,
+      label: input.label,
       description: input.description,
       instructions: input.instructions,
       level: input.level,

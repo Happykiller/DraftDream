@@ -13,7 +13,7 @@ export interface ProgramSession {
   id: string;
   slug: string;
   locale: string;
-  title: string;
+  label: string;
   durationMin: number;
   description?: string | null;
   exerciseIds: string[];
@@ -25,7 +25,9 @@ export interface ProgramSession {
 
 export interface Program {
   id: string;
-  name: string;
+  slug: string;
+  locale: string;
+  label: string;
   duration: number;
   frequency: number;
   description?: string | null;
@@ -56,7 +58,9 @@ const LIST_Q = `
     program_list(input: $input) {
       items {
         id
-        name
+        slug
+        locale
+        label
         duration
         frequency
         description
@@ -67,7 +71,7 @@ const LIST_Q = `
         updatedAt
         creator { id email }
         sessions {
-          id slug locale title durationMin description exerciseIds
+          id slug locale label durationMin description exerciseIds
           createdBy createdAt updatedAt
           creator { id email }
         }
@@ -83,7 +87,9 @@ const CREATE_M = `
   mutation CreateProgram($input: CreateProgramInput!) {
     program_create(input: $input) {
       id
-      name
+      slug
+      locale
+      label
       duration
       frequency
       description
@@ -94,7 +100,7 @@ const CREATE_M = `
       updatedAt
       creator { id email }
       sessions {
-        id slug locale title durationMin description exerciseIds
+        id slug locale label durationMin description exerciseIds
         createdBy createdAt updatedAt
         creator { id email }
       }
@@ -106,7 +112,9 @@ const UPDATE_M = `
   mutation UpdateProgram($input: UpdateProgramInput!) {
     program_update(input: $input) {
       id
-      name
+      slug
+      locale
+      label
       duration
       frequency
       description
@@ -117,7 +125,7 @@ const UPDATE_M = `
       updatedAt
       creator { id email }
       sessions {
-        id slug locale title durationMin description exerciseIds
+        id slug locale label durationMin description exerciseIds
         createdBy createdAt updatedAt
         creator { id email }
       }
@@ -178,7 +186,9 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
 
   const create = React.useCallback(
     async (input: {
-      name: string;
+      slug: string;
+      locale: string;
+      label: string;
       duration: number;
       frequency: number;
       description?: string;
@@ -205,7 +215,9 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
   const update = React.useCallback(
     async (input: {
       id: string;
-      name?: string;
+      slug?: string;
+      locale?: string;
+      label?: string;
       duration?: number;
       frequency?: number;
       description?: string | null;

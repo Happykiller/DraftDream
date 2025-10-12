@@ -5,8 +5,7 @@ export interface Session {
   id: string;
   slug: string;
   locale: string;
-
-  title: string;
+  label: string;
   /** Duration in minutes; must be a positive integer */
   durationMin: number;
 

@@ -36,7 +36,7 @@ export class TagResolver {
     const created = await inversify.createTagUsecase.execute({
       slug: input.slug,
       locale: input.locale,
-      name: input.name,
+      label: input.label,
       visibility: input.visibility,
       createdBy: req?.user?.id,
     });
@@ -76,7 +76,7 @@ export class TagResolver {
       id: input.id,
       slug: input.slug,
       locale: input.locale,
-      name: input.name,
+      label: input.label,
       visibility: input.visibility,
     });
     return updated ? mapTagUsecaseToGql(updated) : null;

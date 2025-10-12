@@ -4,7 +4,7 @@ import { Migration } from '@services/db/mongo/migration.runner.mongo';
 type ExerciseSeed = {
   slug: string;
   locale: 'fr';
-  name: string;
+  label: string;
   description?: string;
   instructions?: string;
   level: 'beginner' | 'intermediate' | 'advanced';
@@ -24,7 +24,7 @@ const EXERCISE_SEEDS: ExerciseSeed[] = [
   {
     slug: 'pompes-classiques',
     locale: 'fr',
-    name: 'Pompes classiques',
+    label: 'Pompes classiques',
     description: 'Poussee au poids du corps pour renforcer poitrine et triceps.',
     instructions:
       'Positionnez vos mains sous vos epaules, gainez tout le corps et descendez la poitrine vers le sol avant de repousser.',
@@ -40,7 +40,7 @@ const EXERCISE_SEEDS: ExerciseSeed[] = [
   {
     slug: 'squat-barre',
     locale: 'fr',
-    name: 'Squat a la barre',
+    label: 'Squat a la barre',
     description: 'Mouvement fondamental de force pour le bas du corps.',
     instructions:
       'Placez la barre sur vos trapezes, descendez en gardant le buste droit et poussez dans le sol pour remonter.',
@@ -58,7 +58,7 @@ const EXERCISE_SEEDS: ExerciseSeed[] = [
   {
     slug: 'souleve-de-terre-kettlebell',
     locale: 'fr',
-    name: 'Souleve de terre kettlebell',
+    label: 'Souleve de terre kettlebell',
     description: 'Variante hinge pour renforcer chaine posterieure et gainage.',
     instructions:
       'Charniere de hanches, dos neutre, poussez les hanches vers l arriere puis contractez les fessiers pour revenir debout.',
@@ -75,7 +75,7 @@ const EXERCISE_SEEDS: ExerciseSeed[] = [
   {
     slug: 'gainage-planche',
     locale: 'fr',
-    name: 'Gainage planche',
+    label: 'Gainage planche',
     description: 'Exercice de gainage statique pour le centre du corps.',
     instructions:
       'Sur les avant-bras et la pointe des pieds, maintenez une ligne droite des epaules aux chevilles.',
@@ -91,7 +91,7 @@ const EXERCISE_SEEDS: ExerciseSeed[] = [
   {
     slug: 'burpees',
     locale: 'fr',
-    name: 'Burpees',
+    label: 'Burpees',
     description: 'Mouvement explosif complet pour l endurance cardio et musculaire.',
     instructions:
       'Depuis la position debout, descendez en squat, jetez les pieds en arriere pour une planche, effectuez une pompe puis revenez avec un saut vertical.',
@@ -107,7 +107,7 @@ const EXERCISE_SEEDS: ExerciseSeed[] = [
   {
     slug: 'rowing-halteres',
     locale: 'fr',
-    name: 'Rowing halteres',
+    label: 'Rowing halteres',
     description: 'Tirage incline pour renforcer le dos et l arriere des epaules.',
     instructions:
       'Buste penche, dos plat, tirez les halteres vers vos hanches en serrant les omoplates.',
@@ -203,7 +203,7 @@ const migration: Migration = {
       );
 
       const setData: Record<string, unknown> = {
-        name: seed.name,
+        label: seed.label,
         description: seed.description,
         instructions: seed.instructions,
         level: seed.level,

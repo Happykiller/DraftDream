@@ -11,7 +11,7 @@ export interface Equipment {
   id: string;
   slug: string;
   locale: string;
-  name: string;
+  label: string;
   visibility: EquipmentVisibility;
   creator: Creator;          // 👈 include creator
   createdAt: string;
@@ -34,7 +34,7 @@ type DeletePayload = { equipment_delete: boolean };
 const LIST_Q = `
   query ListEquipment($input: ListEquipmentInput) {
     equipment_list(input: $input) {
-      items { id slug locale name visibility creator { id email } createdAt updatedAt }
+      items { id slug locale label visibility creator { id email } createdAt updatedAt }
       total page limit
     }
   }
@@ -43,7 +43,7 @@ const LIST_Q = `
 const CREATE_M = `
   mutation CreateEquipment($input: CreateEquipmentInput!) {
     equipment_create(input: $input) {
-      id slug locale name visibility creator { id email } createdAt updatedAt
+      id slug locale label visibility creator { id email } createdAt updatedAt
     }
   }
 `;
@@ -51,7 +51,7 @@ const CREATE_M = `
 const UPDATE_M = `
   mutation UpdateEquipment($input: UpdateEquipmentInput!) {
     equipment_update(input: $input) {
-      id slug locale name visibility creator { id email } createdAt updatedAt
+      id slug locale label visibility creator { id email } createdAt updatedAt
     }
   }
 `;
@@ -99,7 +99,7 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
     async (input: {
       slug: string;
       locale: string;
-      name: string;
+      label: string;
       visibility: EquipmentVisibility;
     }) => {
       try {
@@ -124,7 +124,7 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
       id: string;
       slug?: string;
       locale?: string;
-      name?: string;
+      label?: string;
       visibility?: EquipmentVisibility;
     }) => {
       try {

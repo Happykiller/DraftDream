@@ -9,7 +9,7 @@ export type MuscleVisibility = 'PRIVATE' | 'PUBLIC';
 export interface Muscle {
   id: string;
   slug: string;
-  name: string;
+  label: string;
   locale: string;
   visibility: MuscleVisibility;
   createdBy: string;
@@ -37,7 +37,7 @@ const LIST_Q = `
       items {
         id
         slug
-        name
+        label
         locale
         visibility
         createdBy
@@ -55,7 +55,7 @@ const CREATE_M = `
     muscle_create(input: $input) {
       id
       slug
-      name
+      label
       locale
       visibility
       createdBy
@@ -71,7 +71,7 @@ const UPDATE_M = `
     muscle_update(input: $input) {
       id
       slug
-      name
+      label
       locale
       visibility
       createdBy
@@ -98,7 +98,8 @@ export function useMuscles({ page, limit, q }: UseMusclesParams) {
   const [items, setItems] = React.useState<Muscle[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
-  const flash = useFlashStore();
+  const flashError = useFlashStore((state) => state.error);
+  const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
 
   const load = React.useCallback(async () => {
@@ -113,18 +114,18 @@ export function useMuscles({ page, limit, q }: UseMusclesParams) {
       setItems(data?.muscle_list.items ?? []);
       setTotal(data?.muscle_list.total ?? 0);
     } catch (e: any) {
-      flash.error(e?.message ?? 'Failed to load muscles');
+      flashError(e?.message ?? 'Failed to load muscles');
     } finally {
       setLoading(false);
     }
-  }, [page, limit, q, gql, flash]);
+  }, [page, limit, q, gql, flashError]);
 
   React.useEffect(() => {
     void load();
   }, [load]);
 
   const create = React.useCallback(
-    async (input: { slug: string; name: string; locale: string; visibility: MuscleVisibility }) => {
+    async (input: { slug: string; label: string; locale: string; visibility: MuscleVisibility }) => {
       try {
         const { errors } = await gql.send<CreatePayload>({
           query: CREATE_M,
@@ -132,18 +133,18 @@ export function useMuscles({ page, limit, q }: UseMusclesParams) {
           operationName: 'CreateMuscle',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Muscle created');
+        flashSuccess('Muscle created');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Create failed');
+        flashError(e?.message ?? 'Create failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [gql, flashError, flashSuccess, load]
   );
 
   const update = React.useCallback(
-    async (input: { id: string; slug?: string; name?: string; locale?: string }) => {
+    async (input: { id: string; slug?: string; label?: string; locale?: string }) => {
       try {
         const { errors } = await gql.send<UpdatePayload>({
           query: UPDATE_M,
@@ -151,14 +152,14 @@ export function useMuscles({ page, limit, q }: UseMusclesParams) {
           operationName: 'UpdateMuscle',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Muscle updated');
+        flashSuccess('Muscle updated');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Update failed');
+        flashError(e?.message ?? 'Update failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [gql, flashError, flashSuccess, load]
   );
 
   const remove = React.useCallback(
@@ -170,14 +171,14 @@ export function useMuscles({ page, limit, q }: UseMusclesParams) {
           operationName: 'DeleteMuscle',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Muscle deleted');
+        flashSuccess('Muscle deleted');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Delete failed');
+        flashError(e?.message ?? 'Delete failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [gql, flashError, flashSuccess, load]
   );
 
   return { items, total, loading, create, update, remove, reload: load };

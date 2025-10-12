@@ -8,7 +8,7 @@ import type { ProgramUsecaseModel } from '@usecases/program/program.usecase.mode
 export class CreateProgramUsecase {
   constructor(private readonly inversify: Inversify) {}
 
-  /** Creates a new program; returns null on duplicate name for the same user. */
+  /** Creates a new program; returns null on duplicate slug/locale (active docs). */
   async execute(dto: CreateProgramUsecaseDto): Promise<ProgramUsecaseModel | null> {
     try {
       const created = await this.inversify.bddService.program.create(dto);

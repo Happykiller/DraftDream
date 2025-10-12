@@ -7,7 +7,7 @@ import type { Visibility, Category } from '@src/hooks/useCategories';
 
 export interface CategoryDialogValues {
   slug: string;
-  name: string;
+  label: string;
   locale: string;
   visibility: Visibility;
 }
@@ -20,7 +20,7 @@ export interface CategoryDialogProps {
   onSubmit: (values: CategoryDialogValues) => Promise<void> | void;
 }
 
-const DEFAULTS: CategoryDialogValues = { slug: '', name: '', locale: 'en', visibility: 'PRIVATE' };
+const DEFAULTS: CategoryDialogValues = { slug: '', label: '', locale: 'en', visibility: 'PRIVATE' };
 
 export function CategoryDialog({ open, mode, initial, onClose, onSubmit }: CategoryDialogProps): React.JSX.Element {
   const [values, setValues] = React.useState<CategoryDialogValues>(DEFAULTS);
@@ -31,7 +31,7 @@ export function CategoryDialog({ open, mode, initial, onClose, onSubmit }: Categ
     if (isEdit && initial) {
       setValues({
         slug: initial.slug,
-        name: initial.name,
+        label: initial.label,
         locale: initial.locale,
         visibility: initial.visibility,
       });
@@ -68,11 +68,11 @@ export function CategoryDialog({ open, mode, initial, onClose, onSubmit }: Categ
             fullWidth
           />
           <TextField
-            label={t('common.labels.name')}
-            name="name"
-            value={values.name}
+            label={t('common.labels.label')}
+            name="label"
+            value={values.label}
             onChange={onChange}
-            inputProps={{ 'aria-label': 'category-name' }}
+            inputProps={{ 'aria-label': 'category-label' }}
             required
             fullWidth
           />

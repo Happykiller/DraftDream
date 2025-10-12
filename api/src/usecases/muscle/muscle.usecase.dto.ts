@@ -2,7 +2,7 @@
 export interface CreateMuscleUsecaseDto {
   slug: string;
   locale: string;
-  name: string;
+  label: string;
   visibility: 'private' | 'public';
   createdBy: string;
 }
@@ -29,7 +29,7 @@ export interface UpdateMuscleUsecaseDto {
   id: string;
   slug?: string;
   locale?: string;
-  name?: string;
+  label?: string;
 }
 
 // src/usecases/muscle/dto/delete.muscle.usecase.dto.ts

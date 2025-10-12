@@ -23,7 +23,7 @@ export function SessionsPanel(): React.JSX.Element {
   const { t } = useTranslation();
 
   const exerciseOptions = React.useMemo<ExerciseOption[]>(
-    () => exerciseItems.map(ex => ({ id: ex.id, slug: ex.slug, name: ex.name })),
+    () => exerciseItems.map(ex => ({ id: ex.id, slug: ex.slug, label: ex.label })),
     [exerciseItems]
   );
 
@@ -36,7 +36,7 @@ export function SessionsPanel(): React.JSX.Element {
   const toCreateInput = (values: SessionDialogValues) => ({
     slug: values.slug,
     locale: values.locale,
-    title: values.title,
+    label: values.label,
     durationMin: values.durationMin,
     description: values.description ? values.description : undefined,
     exerciseIds: values.exercises.map(ex => ex.id),
@@ -46,7 +46,7 @@ export function SessionsPanel(): React.JSX.Element {
     id,
     slug: values.slug,
     locale: values.locale,
-    title: values.title,
+    label: values.label,
     durationMin: values.durationMin,
     description: values.description ? values.description : undefined,
     exerciseIds: values.exercises.map(ex => ex.id),

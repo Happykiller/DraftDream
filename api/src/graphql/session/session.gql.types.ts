@@ -8,7 +8,7 @@ export class SessionSportGql {
   @Field() slug!: string;
   @Field() locale!: string;
 
-  @Field() title!: string;
+  @Field() label!: string;
   @Field(() => Int) durationMin!: number;
   @Field({ nullable: true }) description?: string;
 
@@ -31,7 +31,7 @@ export class SessionSportGql {
 export class CreateSessionInput {
   @Field() slug!: string;
   @Field() locale!: string;
-  @Field() title!: string;
+  @Field() label!: string;
   @Field(() => Int) durationMin!: number;
   @Field({ nullable: true }) description?: string;
   @Field(() => [ID]) exerciseIds!: string[];
@@ -42,7 +42,7 @@ export class UpdateSessionInput {
   @Field(() => ID) id!: string;
   @Field({ nullable: true }) slug?: string;
   @Field({ nullable: true }) locale?: string;
-  @Field({ nullable: true }) title?: string;
+  @Field({ nullable: true }) label?: string;
   @Field(() => Int, { nullable: true }) durationMin?: number;
   @Field({ nullable: true }) description?: string;
   /** Replace the whole ordered list */

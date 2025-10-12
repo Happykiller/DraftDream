@@ -10,7 +10,7 @@ export type Visibility = 'PRIVATE' | 'PUBLIC';
 export interface Category {
   id: string;
   slug: string;
-  name: string;
+  label: string;
   locale: string;
   visibility: Visibility;
   createdBy: string;
@@ -38,7 +38,7 @@ const LIST_Q = `
       items {
         id
         slug
-        name
+        label
         locale
         visibility
         createdBy
@@ -56,7 +56,7 @@ const CREATE_M = `
     category_create(input: $input) {
       id
       slug
-      name
+      label
       locale
       visibility
       createdBy
@@ -72,7 +72,7 @@ const UPDATE_M = `
     category_update(input: $input) {
       id
       slug
-      name
+      label
       locale
       visibility
       createdBy
@@ -99,7 +99,8 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
   const [items, setItems] = React.useState<Category[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
-  const flash = useFlashStore();
+  const flashError = useFlashStore((state) => state.error);
+  const flashSuccess = useFlashStore((state) => state.success);
 
   // Create one fetch service instance (it handles 401, redirects, etc.)
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
@@ -116,18 +117,18 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
       setItems(data?.category_list.items ?? []);
       setTotal(data?.category_list.total ?? 0);
     } catch (e: any) {
-      flash.error(e?.message ?? 'Failed to load categories');
+      flashError(e?.message ?? 'Failed to load categories');
     } finally {
       setLoading(false);
     }
-  }, [page, limit, q, gql, flash]);
+  }, [page, limit, q, gql, flashError]);
 
   React.useEffect(() => {
     void load();
   }, [load]);
 
   const create = React.useCallback(
-    async (input: { slug: string; name: string; locale: string; visibility: Visibility }) => {
+    async (input: { slug: string; label: string; locale: string; visibility: Visibility }) => {
       try {
         const { errors } = await gql.send<CreateCategoryPayload>({
           query: CREATE_M,
@@ -135,18 +136,18 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
           operationName: 'CreateCategory',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Category created');
+        flashSuccess('Category created');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Create failed');
+        flashError(e?.message ?? 'Create failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [gql, flashError, flashSuccess, load]
   );
 
   const update = React.useCallback(
-    async (input: { id: string; slug?: string; name?: string; locale?: string }) => {
+    async (input: { id: string; slug?: string; label?: string; locale?: string }) => {
       try {
         const { errors } = await gql.send<UpdateCategoryPayload>({
           query: UPDATE_M,
@@ -154,14 +155,14 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
           operationName: 'UpdateCategory',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Category updated');
+        flashSuccess('Category updated');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Update failed');
+        flashError(e?.message ?? 'Update failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [gql, flashError, flashSuccess, load]
   );
 
   const remove = React.useCallback(
@@ -173,14 +174,14 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
           operationName: 'DeleteCategory',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Category deleted');
+        flashSuccess('Category deleted');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Delete failed');
+        flashError(e?.message ?? 'Delete failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [gql, flashError, flashSuccess, load]
   );
 
   return { items, total, loading, create, update, remove, reload: load };

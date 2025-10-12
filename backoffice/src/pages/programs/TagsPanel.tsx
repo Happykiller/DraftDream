@@ -44,14 +44,14 @@ export function TagsPanel(): React.JSX.Element {
         open={openCreate}
         mode="create"
         onClose={() => setOpenCreate(false)}
-        onSubmit={(v) => create({ slug: v.slug, name: v.name, locale: v.locale, visibility: v.visibility })}
+        onSubmit={(v) => create({ slug: v.slug, label: v.label, locale: v.locale, visibility: v.visibility })}
       />
       <TagDialog
         open={!!editId}
         mode="edit"
         initial={editing}
         onClose={() => setEditId(null)}
-        onSubmit={(v) => editId ? update({ id: editId, slug: v.slug, name: v.name, locale: v.locale }) : undefined}
+        onSubmit={(v) => editId ? update({ id: editId, slug: v.slug, label: v.label, locale: v.locale }) : undefined}
       />
       <ConfirmDialog
         open={!!deleteId}

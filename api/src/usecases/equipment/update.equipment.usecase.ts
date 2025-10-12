@@ -12,7 +12,7 @@ export class UpdateEquipmentUsecase {
       const updated = await this.inversify.bddService.equipment.update(dto.id, {
         slug: dto.slug,
         locale: dto.locale,
-        name: dto.name,
+        label: dto.label,
       });
       return updated ? { ...updated } : null;
     } catch (e: any) {

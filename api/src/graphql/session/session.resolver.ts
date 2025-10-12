@@ -35,7 +35,7 @@ export class SessionResolver {
     const created = await inversify.createSessionUsecase.execute({
       slug: input.slug,
       locale: input.locale,
-      title: input.title,
+      label: input.label,
       durationMin: input.durationMin,
       description: input.description,
       exerciseIds: input.exerciseIds,
@@ -50,7 +50,7 @@ export class SessionResolver {
     const updated = await inversify.updateSessionUsecase.execute(input.id, {
       slug: input.slug,
       locale: input.locale,
-      title: input.title,
+      label: input.label,
       durationMin: input.durationMin,
       description: input.description,
       exerciseIds: input.exerciseIds,

@@ -9,7 +9,7 @@ export type TagVisibility = 'PRIVATE' | 'PUBLIC';
 export interface Tag {
   id: string;
   slug: string;
-  name: string;
+  label: string;
   locale: string;
   visibility: TagVisibility;
   createdBy: string;
@@ -37,7 +37,7 @@ const LIST_Q = `
       items {
         id
         slug
-        name
+        label
         locale
         visibility
         createdBy
@@ -55,7 +55,7 @@ const CREATE_M = `
     tag_create(input: $input) {
       id
       slug
-      name
+      label
       locale
       visibility
       createdBy
@@ -71,7 +71,7 @@ const UPDATE_M = `
     tag_update(input: $input) {
       id
       slug
-      name
+      label
       locale
       visibility
       createdBy
@@ -98,7 +98,8 @@ export function useTags({ page, limit, q }: UseTagsParams) {
   const [items, setItems] = React.useState<Tag[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
-  const flash = useFlashStore();
+  const flashError = useFlashStore((state) => state.error);
+  const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
 
   const load = React.useCallback(async () => {
@@ -113,16 +114,16 @@ export function useTags({ page, limit, q }: UseTagsParams) {
       setItems(data?.tag_list.items ?? []);
       setTotal(data?.tag_list.total ?? 0);
     } catch (e: any) {
-      flash.error(e?.message ?? 'Failed to load tags');
+      flashError(e?.message ?? 'Failed to load tags');
     } finally {
       setLoading(false);
     }
-  }, [page, limit, q, gql, flash]);
+  }, [page, limit, q, gql, flashError]);
 
   React.useEffect(() => { void load(); }, [load]);
 
   const create = React.useCallback(
-    async (input: { slug: string; name: string; locale: string; visibility: TagVisibility }) => {
+    async (input: { slug: string; label: string; locale: string; visibility: TagVisibility }) => {
       try {
         const { errors } = await gql.send<CreatePayload>({
           query: CREATE_M,
@@ -130,18 +131,18 @@ export function useTags({ page, limit, q }: UseTagsParams) {
           operationName: 'CreateTag',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Tag created');
+        flashSuccess('Tag created');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Create failed');
+        flashError(e?.message ?? 'Create failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [gql, flashError, flashSuccess, load]
   );
 
   const update = React.useCallback(
-    async (input: { id: string; slug?: string; name?: string; locale?: string }) => {
+    async (input: { id: string; slug?: string; label?: string; locale?: string }) => {
       try {
         const { errors } = await gql.send<UpdatePayload>({
           query: UPDATE_M,
@@ -149,14 +150,14 @@ export function useTags({ page, limit, q }: UseTagsParams) {
           operationName: 'UpdateTag',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Tag updated');
+        flashSuccess('Tag updated');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Update failed');
+        flashError(e?.message ?? 'Update failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [gql, flashError, flashSuccess, load]
   );
 
   const remove = React.useCallback(
@@ -168,14 +169,14 @@ export function useTags({ page, limit, q }: UseTagsParams) {
           operationName: 'DeleteTag',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Tag deleted');
+        flashSuccess('Tag deleted');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Delete failed');
+        flashError(e?.message ?? 'Delete failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [gql, flashError, flashSuccess, load]
   );
 
   return { items, total, loading, create, update, remove, reload: load };

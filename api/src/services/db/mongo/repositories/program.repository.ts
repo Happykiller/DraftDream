@@ -12,7 +12,9 @@ import {
 
 type ProgramDoc = {
   _id: ObjectId;
-  name: string;
+  slug: string;
+  locale: string;
+  label: string;
   duration: number;
   frequency: number;
   description?: string;
@@ -34,23 +36,27 @@ export class BddServiceProgramMongo {
     const collection = db ? db.collection<ProgramDoc>('programs') : await this.col();
     await collection.createIndexes([
       {
-        key: { name: 1, createdBy: 1 },
-        name: 'uniq_active_name_by_user',
+        key: { slug: 1, locale: 1 },
+        name: 'uniq_active_slug_locale',
         unique: true,
         partialFilterExpression: { deletedAt: { $exists: false } },
       },
+      { key: { label: 1, createdBy: 1 }, name: 'by_label_createdBy' },
       { key: { updatedAt: -1 }, name: 'by_updatedAt' },
       { key: { deletedAt: 1 }, name: 'by_deletedAt' },
       { key: { createdBy: 1 }, name: 'by_createdBy' },
       { key: { userId: 1 }, name: 'by_userId' },
+      { key: { locale: 1 }, name: 'by_locale' },
     ]);
   }
 
-  /** Insert a new program. Returns null on duplicate name per user (active docs). */
+  /** Insert a new program. Returns null on duplicate slug/locale (active docs). */
   async create(dto: CreateProgramDto): Promise<Program | null> {
     const now = new Date();
     const doc: Omit<ProgramDoc, '_id'> = {
-      name: dto.name.trim(),
+      slug: dto.slug.toLowerCase().trim(),
+      locale: dto.locale.toLowerCase().trim(),
+      label: dto.label.trim(),
       duration: Math.trunc(dto.duration),
       frequency: Math.trunc(dto.frequency),
       description: dto.description,
@@ -96,7 +102,8 @@ export class BddServiceProgramMongo {
     const filter: Record<string, any> = {};
     if (q && q.trim()) {
       filter.$or = [
-        { name: { $regex: new RegExp(q.trim(), 'i') } },
+        { slug: { $regex: new RegExp(q.trim(), 'i') } },
+        { label: { $regex: new RegExp(q.trim(), 'i') } },
         { description: { $regex: new RegExp(q.trim(), 'i') } },
       ];
     }
@@ -116,7 +123,9 @@ export class BddServiceProgramMongo {
     const _id = this.toObjectId(id);
     const $set: Partial<ProgramDoc> = { updatedAt: new Date() };
 
-    if (patch.name !== undefined) $set.name = patch.name.trim();
+    if (patch.slug !== undefined) $set.slug = patch.slug.toLowerCase().trim();
+    if (patch.locale !== undefined) $set.locale = patch.locale.toLowerCase().trim();
+    if (patch.label !== undefined) $set.label = patch.label.trim();
     if (patch.duration !== undefined) $set.duration = Math.trunc(patch.duration);
     if (patch.frequency !== undefined) $set.frequency = Math.trunc(patch.frequency);
     if (patch.description !== undefined) $set.description = patch.description;
@@ -157,7 +166,9 @@ export class BddServiceProgramMongo {
 
   private toModel = (doc: ProgramDoc): Program => ({
     id: doc._id.toHexString(),
-    name: doc.name,
+    slug: doc.slug,
+    locale: doc.locale,
+    label: doc.label,
     duration: doc.duration,
     frequency: doc.frequency,
     description: doc.description,

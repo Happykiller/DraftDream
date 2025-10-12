@@ -47,7 +47,9 @@ export class ProgramResolver {
     @Context('req') req: any,
   ): Promise<ProgramGql | null> {
     const created = await inversify.createProgramUsecase.execute({
-      name: input.name,
+      slug: input.slug,
+      locale: input.locale,
+      label: input.label,
       duration: input.duration,
       frequency: input.frequency,
       description: input.description,
@@ -62,7 +64,9 @@ export class ProgramResolver {
   @Auth(Role.ADMIN, Role.COACH)
   async program_update(@Args('input') input: UpdateProgramInput): Promise<ProgramGql | null> {
     const updated = await inversify.updateProgramUsecase.execute(input.id, {
-      name: input.name,
+      slug: input.slug,
+      locale: input.locale,
+      label: input.label,
       duration: input.duration,
       frequency: input.frequency,
       description: input.description,
@@ -96,6 +100,7 @@ export class ProgramResolver {
   async program_list(@Args('input', { nullable: true }) input?: ListProgramsInput): Promise<ProgramListGql> {
     const res = await inversify.listProgramsUsecase.execute({
       q: input?.q,
+      locale: input?.locale,
       createdBy: input?.createdBy,
       userId: input?.userId,
       limit: input?.limit,

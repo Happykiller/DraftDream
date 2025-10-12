@@ -3,7 +3,7 @@ export interface Category {
   id: string;
   slug: string;
   locale: string;
-  name: string;
+  label: string;
   visibility: 'private' | 'public';
   createdBy: string;
   createdAt: Date;

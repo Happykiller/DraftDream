@@ -94,7 +94,8 @@ export function useUsers({ page, limit, q }: UseUsersParams) {
   const [items, setItems] = React.useState<User[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
-  const flash = useFlashStore();
+  const flashError = useFlashStore((state) => state.error);
+  const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
 
   const load = React.useCallback(
@@ -110,12 +111,12 @@ export function useUsers({ page, limit, q }: UseUsersParams) {
         setItems(data?.user_list.items ?? []);
         setTotal(data?.user_list.total ?? 0);
       } catch (e: any) {
-        flash.error(e?.message ?? 'Failed to load users');
+        flashError(e?.message ?? 'Failed to load users');
       } finally {
         setLoading(false);
       }
     },
-    [gql, flash]
+    [gql, flashError]
   );
 
   const sig = `${page}|${limit}|${q || ''}`;
@@ -145,13 +146,13 @@ export function useUsers({ page, limit, q }: UseUsersParams) {
       });
       if (errors?.length) {
         const msg = errors[0].message;
-        flash.error(msg || 'Create failed');
+        flashError(msg || 'Create failed');
         throw new Error(msg);
       }
-      flash.success('User created');
+      flashSuccess('User created');
       await load({ page, limit, q });
     },
-    [gql, flash, load, page, limit, q]
+    [gql, flashError, flashSuccess, load, page, limit, q]
   );
 
   const update = React.useCallback(
@@ -173,13 +174,13 @@ export function useUsers({ page, limit, q }: UseUsersParams) {
       });
       if (errors?.length) {
         const msg = errors[0].message;
-        flash.error(msg || 'Update failed');
+        flashError(msg || 'Update failed');
         throw new Error(msg);
       }
-      flash.success('User updated');
+      flashSuccess('User updated');
       await load({ page, limit, q });
     },
-    [gql, flash, load, page, limit, q]
+    [gql, flashError, flashSuccess, load, page, limit, q]
   );
 
   return { items, total, loading, create, update, reload: () => load({ page, limit, q }) };

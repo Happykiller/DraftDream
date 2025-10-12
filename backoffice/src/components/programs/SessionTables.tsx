@@ -42,7 +42,7 @@ export const SessionTables = React.memo(function SessionTables({
 
   const columns = React.useMemo<GridColDef<Session>[]>(() => [
     { field: 'slug', headerName: t('common.labels.slug'), flex: 1, minWidth: 160 },
-    { field: 'title', headerName: t('common.labels.title'), flex: 1.4, minWidth: 180 },
+    { field: 'label', headerName: t('common.labels.label'), flex: 1.4, minWidth: 180 },
     { field: 'locale', headerName: t('common.labels.locale'), width: 100 },
     {
       field: 'durationMin',

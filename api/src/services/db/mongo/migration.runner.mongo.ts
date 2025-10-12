@@ -24,10 +24,6 @@ export class MongoMigrationRunner {
     const categories: Migration = require('./migrations/0004_seeds_category').default;
     const exercises: Migration = require('./migrations/0005_seeds_exercise').default;
     const sessions: Migration = require('./migrations/0006_seeds_session').default;
-    const backfillCategoryName: Migration = require('./migrations/0007_backfill_category_name').default;
-    const backfillMuscleName: Migration = require('./migrations/0008_backfill_muscle_name').default;
-    const backfillEquipmentName: Migration = require('./migrations/0009_backfill_equipment_name').default;
-    const backfillTagName: Migration = require('./migrations/0010_backfill_tag_name').default;
     return [
       admin,
       muscles,
@@ -35,10 +31,6 @@ export class MongoMigrationRunner {
       categories,
       exercises,
       sessions,
-      backfillCategoryName,
-      backfillMuscleName,
-      backfillEquipmentName,
-      backfillTagName,
     ];
   }
 

@@ -6,7 +6,7 @@ import type { Equipment, EquipmentVisibility } from '@src/hooks/useEquipment';
 
 export interface EquipmentDialogValues {
   slug: string;
-  name: string;
+  label: string;
   locale: string;
   visibility: EquipmentVisibility;
 }
@@ -19,7 +19,7 @@ export interface EquipmentDialogProps {
   onSubmit: (values: EquipmentDialogValues) => Promise<void> | void;
 }
 
-const DEFAULTS: EquipmentDialogValues = { slug: '', name: '', locale: 'en', visibility: 'PRIVATE' };
+const DEFAULTS: EquipmentDialogValues = { slug: '', label: '', locale: 'en', visibility: 'PRIVATE' };
 
 export function EquipmentDialog({ open, mode, initial, onClose, onSubmit }: EquipmentDialogProps): React.JSX.Element {
   const [values, setValues] = React.useState<EquipmentDialogValues>(DEFAULTS);
@@ -30,7 +30,7 @@ export function EquipmentDialog({ open, mode, initial, onClose, onSubmit }: Equi
     if (isEdit && initial) {
       setValues({
         slug: initial.slug,
-        name: initial.name,
+        label: initial.label,
         locale: initial.locale,
         visibility: initial.visibility,
       });
@@ -67,11 +67,11 @@ export function EquipmentDialog({ open, mode, initial, onClose, onSubmit }: Equi
             fullWidth
           />
           <TextField
-            label={t('common.labels.name')}
-            name="name"
-            value={values.name}
+            label={t('common.labels.label')}
+            name="label"
+            value={values.label}
             onChange={onChange}
-            inputProps={{ 'aria-label': 'equipment-name' }}
+            inputProps={{ 'aria-label': 'equipment-label' }}
             required
             fullWidth
           />

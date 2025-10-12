@@ -5,7 +5,7 @@ export type ExerciseLevel = 'beginner' | 'intermediate' | 'advanced';
 export type CreateExerciseDto = {
   slug: string;
   locale: string;
-  name: string;
+  label: string;
   description?: string;
   instructions?: string;
   level: ExerciseLevel;
@@ -43,7 +43,7 @@ export type ListExercisesDto = {
 export type UpdateExerciseDto = Partial<{
   slug: string;
   locale: string;
-  name: string;
+  label: string;
   description: string;
   instructions: string;
   level: ExerciseLevel;

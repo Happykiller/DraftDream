@@ -7,7 +7,7 @@ import type { Muscle, MuscleVisibility } from '@src/hooks/useMuscles';
 
 export interface MuscleDialogValues {
   slug: string;
-  name: string;
+  label: string;
   locale: string;
   visibility: MuscleVisibility;
 }
@@ -20,7 +20,7 @@ export interface MuscleDialogProps {
   onSubmit: (values: MuscleDialogValues) => Promise<void> | void;
 }
 
-const DEFAULTS: MuscleDialogValues = { slug: '', name: '', locale: 'en', visibility: 'PRIVATE' };
+const DEFAULTS: MuscleDialogValues = { slug: '', label: '', locale: 'en', visibility: 'PRIVATE' };
 
 export function MuscleDialog({ open, mode, initial, onClose, onSubmit }: MuscleDialogProps): React.JSX.Element {
   const [values, setValues] = React.useState<MuscleDialogValues>(DEFAULTS);
@@ -31,7 +31,7 @@ export function MuscleDialog({ open, mode, initial, onClose, onSubmit }: MuscleD
     if (isEdit && initial) {
       setValues({
         slug: initial.slug,
-        name: initial.name,
+        label: initial.label,
         locale: initial.locale,
         visibility: initial.visibility,
       });
@@ -68,11 +68,11 @@ export function MuscleDialog({ open, mode, initial, onClose, onSubmit }: MuscleD
             fullWidth
           />
           <TextField
-            label={t('common.labels.name')}
-            name="name"
-            value={values.name}
+            label={t('common.labels.label')}
+            name="label"
+            value={values.label}
             onChange={onChange}
-            inputProps={{ 'aria-label': 'muscle-name' }}
+            inputProps={{ 'aria-label': 'muscle-label' }}
             required
             fullWidth
           />

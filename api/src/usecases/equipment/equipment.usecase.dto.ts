@@ -2,7 +2,7 @@
 export interface CreateEquipmentUsecaseDto {
   slug: string;
   locale: string;
-  name: string;
+  label: string;
   visibility: 'private' | 'public';
   createdBy: string;
 }
@@ -28,7 +28,7 @@ export interface UpdateEquipmentUsecaseDto {
   id: string;
   slug?: string;
   locale?: string;
-  name?: string;
+  label?: string;
 }
 
 // src/usecases/equipment/dto/delete.equipment.usecase.dto.ts

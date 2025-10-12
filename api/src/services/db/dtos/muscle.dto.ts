@@ -2,12 +2,12 @@
 export type CreateMuscleDto = {
   slug: string;
   locale: string;
-  name: string;
+  label: string;
   visibility: 'private' | 'public';
   createdBy: string;
 };
 
-export type UpdateMuscleDto = Partial<Pick<CreateMuscleDto, 'slug' | 'locale' | 'name'>>;
+export type UpdateMuscleDto = Partial<Pick<CreateMuscleDto, 'slug' | 'locale' | 'label'>>;
 
 export type GetMuscleDto = { id: string };
 

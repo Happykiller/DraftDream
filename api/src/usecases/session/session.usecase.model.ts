@@ -4,7 +4,7 @@ export type SessionUsecaseModel = {
   slug: string;
   locale: string;
 
-  title: string;
+  label: string;
   durationMin: number;
   description?: string;
 

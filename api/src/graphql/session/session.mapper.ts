@@ -7,7 +7,7 @@ export function mapSessionUsecaseToGql(m: SessionUsecaseModel): SessionSportGql 
     id: m.id,
     slug: m.slug,
     locale: m.locale,
-    title: m.title,
+    label: m.label,
     durationMin: m.durationMin,
     description: m.description,
     exerciseIds: [...m.exerciseIds],

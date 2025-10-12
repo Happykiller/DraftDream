@@ -10,7 +10,7 @@ export interface Creator { id: string; email: string; }
 export interface Equipment {
   id: string;
   slug: string;
-  name: string;
+  label: string;
   locale: string;
   visibility: EquipmentVisibility;
   createdBy: string;
@@ -38,7 +38,7 @@ const LIST_Q = `
       items {
         id
         slug
-        name
+        label
         locale
         visibility
         createdBy
@@ -56,7 +56,7 @@ const CREATE_M = `
     equipment_create(input: $input) {
       id
       slug
-      name
+      label
       locale
       visibility
       createdBy
@@ -72,7 +72,7 @@ const UPDATE_M = `
     equipment_update(input: $input) {
       id
       slug
-      name
+      label
       locale
       visibility
       createdBy
@@ -99,7 +99,8 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
   const [items, setItems] = React.useState<Equipment[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
-  const flash = useFlashStore();
+  const flashError = useFlashStore((state) => state.error);
+  const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
 
   const load = React.useCallback(async () => {
@@ -114,16 +115,16 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
       setItems(data?.equipment_list.items ?? []);
       setTotal(data?.equipment_list.total ?? 0);
     } catch (e: any) {
-      flash.error(e?.message ?? 'Failed to load equipment');
+      flashError(e?.message ?? 'Failed to load equipment');
     } finally {
       setLoading(false);
     }
-  }, [page, limit, q, gql, flash]);
+  }, [page, limit, q, gql, flashError]);
 
   React.useEffect(() => { void load(); }, [load]);
 
   const create = React.useCallback(
-    async (input: { slug: string; name: string; locale: string; visibility: EquipmentVisibility }) => {
+    async (input: { slug: string; label: string; locale: string; visibility: EquipmentVisibility }) => {
       try {
         const { errors } = await gql.send<CreatePayload>({
           query: CREATE_M,
@@ -131,18 +132,18 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
           operationName: 'CreateEquipment',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Equipment created');
+        flashSuccess('Equipment created');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Create failed');
+        flashError(e?.message ?? 'Create failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [gql, flashError, flashSuccess, load]
   );
 
   const update = React.useCallback(
-    async (input: { id: string; slug?: string; name?: string; locale?: string }) => {
+    async (input: { id: string; slug?: string; label?: string; locale?: string }) => {
       try {
         const { errors } = await gql.send<UpdatePayload>({
           query: UPDATE_M,
@@ -150,14 +151,14 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
           operationName: 'UpdateEquipment',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Equipment updated');
+        flashSuccess('Equipment updated');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Update failed');
+        flashError(e?.message ?? 'Update failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [gql, flashError, flashSuccess, load]
   );
 
   const remove = React.useCallback(
@@ -169,14 +170,14 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
           operationName: 'DeleteEquipment',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Equipment deleted');
+        flashSuccess('Equipment deleted');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Delete failed');
+        flashError(e?.message ?? 'Delete failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [gql, flashError, flashSuccess, load]
   );
 
   return { items, total, loading, create, update, remove, reload: load };

@@ -32,7 +32,7 @@ export function ProgramsPanel(): React.JSX.Element {
       sessionItems.map((session) => ({
         id: session.id,
         slug: session.slug,
-        title: session.title,
+        label: session.label,
         locale: session.locale,
         durationMin: session.durationMin,
       })),
@@ -51,7 +51,9 @@ export function ProgramsPanel(): React.JSX.Element {
   const editing = React.useMemo(() => items.find((program) => program.id === editId) ?? null, [items, editId]);
 
   const toCreateInput = (values: ProgramDialogValues) => ({
-    name: values.name,
+    slug: values.slug,
+    locale: values.locale,
+    label: values.label,
     duration: values.duration,
     frequency: values.frequency,
     description: values.description ? values.description : undefined,
@@ -61,7 +63,9 @@ export function ProgramsPanel(): React.JSX.Element {
 
   const toUpdateInput = (id: string, values: ProgramDialogValues) => ({
     id,
-    name: values.name,
+    slug: values.slug,
+    locale: values.locale,
+    label: values.label,
     duration: values.duration,
     frequency: values.frequency,
     description: values.description ? values.description : undefined,

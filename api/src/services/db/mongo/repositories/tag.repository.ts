@@ -10,7 +10,7 @@ type TagDoc = {
   _id: ObjectId;
   slug: string;
   locale: string;
-  name: string;
+  label: string;
   visibility: 'private' | 'public';
   createdBy: string;
   createdAt: Date;
@@ -43,7 +43,7 @@ export class BddServiceTagMongo {
     const doc: Omit<TagDoc, '_id'> = {
       slug: dto.slug.toLowerCase().trim(),
       locale: dto.locale.toLowerCase().trim(),
-      name: dto.name.trim(),
+      label: dto.label.trim(),
       visibility: dto.visibility,
       createdBy: dto.createdBy,
       createdAt: now,
@@ -79,7 +79,7 @@ export class BddServiceTagMongo {
     const filter: Record<string, unknown> = {};
     if (q && q.trim()) {
       const regex = new RegExp(q.trim(), 'i');
-      filter.$or = [{ slug: { $regex: regex } }, { name: { $regex: regex } }];
+      filter.$or = [{ slug: { $regex: regex } }, { label: { $regex: regex } }];
     }
     if (locale) filter.locale = locale.toLowerCase().trim();
     if (createdBy) filter.createdBy = createdBy;
@@ -98,7 +98,7 @@ export class BddServiceTagMongo {
     const $set: Partial<TagDoc> = { updatedAt: new Date() };
     if (patch.slug !== undefined) $set.slug = patch.slug.toLowerCase().trim();
     if (patch.locale !== undefined) $set.locale = patch.locale.toLowerCase().trim();
-    if (patch.name !== undefined) $set.name = patch.name.trim();
+    if (patch.label !== undefined) $set.label = patch.label.trim();
     if (patch.visibility !== undefined) $set.visibility = patch.visibility;
 
     try {
@@ -129,7 +129,7 @@ export class BddServiceTagMongo {
     id: doc._id.toHexString(),
     slug: doc.slug,
     locale: doc.locale,
-    name: doc.name,
+    label: doc.label,
     visibility: doc.visibility,
     createdBy: doc.createdBy,
     createdAt: doc.createdAt,

@@ -7,7 +7,7 @@ export function mapTagUsecaseToGql(m: TagUsecaseModel): TagGql {
     id: m.id,
     slug: m.slug,
     locale: m.locale,
-    name: m.name,
+    label: m.label,
     visibility: m.visibility as TagVisibility,
     createdBy: m.createdBy,
     createdAt: m.createdAt,

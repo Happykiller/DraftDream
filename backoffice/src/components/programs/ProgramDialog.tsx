@@ -8,6 +8,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  MenuItem,
   Stack,
   TextField,
 } from '@mui/material';
@@ -18,13 +19,15 @@ import type { Program } from '@hooks/usePrograms';
 export interface ProgramSessionOption {
   id: string;
   slug: string;
-  title: string;
+  label: string;
   locale?: string;
   durationMin?: number;
 }
 
 export interface ProgramDialogValues {
-  name: string;
+  slug: string;
+  locale: string;
+  label: string;
   duration: number;
   frequency: number;
   description: string;
@@ -43,7 +46,9 @@ export interface ProgramDialogProps {
 }
 
 const DEFAULT_VALUES: ProgramDialogValues = {
-  name: '',
+  slug: '',
+  locale: 'en',
+  label: '',
   duration: 4,
   frequency: 3,
   description: '',
@@ -64,7 +69,7 @@ function mergeSessionOptions(
         byId.set(session.id, {
           id: session.id,
           slug: session.slug,
-          title: session.title,
+          label: session.label,
           locale: session.locale,
           durationMin: session.durationMin,
         });
@@ -93,7 +98,9 @@ export function ProgramDialog({
   React.useEffect(() => {
     if (isEdit && initial) {
       setValues({
-        name: initial.name,
+        slug: initial.slug,
+        locale: initial.locale,
+        label: initial.label,
         duration: initial.duration,
         frequency: initial.frequency,
         description: initial.description ?? '',
@@ -121,12 +128,15 @@ export function ProgramDialog({
 
   const submit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!values.name.trim()) return;
+    const trimmedSlug = values.slug.trim();
+    const trimmedLabel = values.label.trim();
+    if (!trimmedSlug || !trimmedLabel) return;
     if (values.duration <= 0 || values.frequency <= 0) return;
     if (values.sessions.length === 0) return;
     await onSubmit({
       ...values,
-      name: values.name.trim(),
+      slug: trimmedSlug,
+      label: trimmedLabel,
       description: values.description.trim(),
     });
     onClose();
@@ -139,10 +149,36 @@ export function ProgramDialog({
       </DialogTitle>
       <DialogContent>
         <Stack component="form" spacing={2} sx={{ mt: 1 }} onSubmit={submit}>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+            <TextField
+              label={t('common.labels.slug')}
+              name="slug"
+              value={values.slug}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+            <TextField
+              select
+              label={t('common.labels.locale')}
+              name="locale"
+              value={values.locale}
+              onChange={handleChange}
+              required
+              fullWidth
+            >
+              {['en', 'fr', 'es', 'de', 'it'].map((loc) => (
+                <MenuItem key={loc} value={loc}>
+                  {loc.toUpperCase()}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Stack>
+
           <TextField
-            label={t('common.labels.name')}
-            name="name"
-            value={values.name}
+            label={t('common.labels.label')}
+            name="label"
+            value={values.label}
             onChange={handleChange}
             required
             fullWidth
@@ -184,13 +220,13 @@ export function ProgramDialog({
           <Autocomplete
             multiple
             options={sessionOptions}
-            getOptionLabel={(option) => option.title || option.slug}
+            getOptionLabel={(option) => option.label || option.slug}
             isOptionEqualToValue={(option, value) => option.id === value.id}
             value={values.sessions}
             onChange={(_, newValue) => setValues((prev) => ({ ...prev, sessions: newValue }))}
             renderTags={(tagValue, getTagProps) =>
               tagValue.map((option, index) => (
-                <Chip {...getTagProps({ index })} key={option.id} label={option.title || option.slug} />
+                <Chip {...getTagProps({ index })} key={option.id} label={option.label || option.slug} />
               ))
             }
             renderInput={(params) => (

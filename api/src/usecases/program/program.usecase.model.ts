@@ -1,7 +1,9 @@
 // src\\usecases\\program\\program.usecase.model.ts
 export type ProgramUsecaseModel = {
   id: string;
-  name: string;
+  slug: string;
+  locale: string;
+  label: string;
   duration: number;
   frequency: number;
   description?: string;

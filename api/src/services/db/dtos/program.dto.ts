@@ -1,6 +1,8 @@
 // src\\services\\db\\dtos\\program.dto.ts
 export type CreateProgramDto = {
-  name: string;
+  slug: string;
+  locale: string;
+  label: string;
   duration: number;
   frequency: number;
   description?: string;
@@ -15,6 +17,7 @@ export type GetProgramDto = { id: string };
 
 export type ListProgramsDto = {
   q?: string;
+  locale?: string;
   createdBy?: string;
   /** Filter by assigned user id */
   userId?: string;
@@ -25,7 +28,9 @@ export type ListProgramsDto = {
 };
 
 export type UpdateProgramDto = Partial<{
-  name: string;
+  slug: string;
+  locale: string;
+  label: string;
   duration: number;
   frequency: number;
   description: string;

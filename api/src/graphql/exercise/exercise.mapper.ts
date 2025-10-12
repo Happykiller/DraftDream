@@ -7,7 +7,7 @@ export function mapExerciseUsecaseToGql(m: ExerciseUsecaseModel): ExerciseGql {
     id: m.id,
     slug: m.slug,
     locale: m.locale,
-    name: m.name,
+    label: m.label,
     description: m.description,
     instructions: m.instructions,
     level: m.level as ExerciseLevelGql,

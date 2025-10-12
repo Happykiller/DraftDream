@@ -2,7 +2,7 @@
 export interface CreateTagUsecaseDto {
   slug: string;
   locale: string;
-  name: string;
+  label: string;
   visibility: 'private' | 'public';
   createdBy: string;
 }
@@ -28,7 +28,7 @@ export interface UpdateTagUsecaseDto {
   id: string;
   slug?: string;
   locale?: string;
-  name?: string;
+  label?: string;
   visibility?: 'private' | 'public';
 }
 

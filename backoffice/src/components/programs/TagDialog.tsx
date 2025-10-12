@@ -6,7 +6,7 @@ import type { Tag, TagVisibility } from '@src/hooks/useTags';
 
 export interface TagDialogValues {
   slug: string;
-  name: string;
+  label: string;
   locale: string;
   visibility: TagVisibility;
 }
@@ -19,7 +19,7 @@ export interface TagDialogProps {
   onSubmit: (values: TagDialogValues) => Promise<void> | void;
 }
 
-const DEFAULTS: TagDialogValues = { slug: '', name: '', locale: 'en', visibility: 'PRIVATE' };
+const DEFAULTS: TagDialogValues = { slug: '', label: '', locale: 'en', visibility: 'PRIVATE' };
 
 export function TagDialog({ open, mode, initial, onClose, onSubmit }: TagDialogProps): React.JSX.Element {
   const [values, setValues] = React.useState<TagDialogValues>(DEFAULTS);
@@ -30,7 +30,7 @@ export function TagDialog({ open, mode, initial, onClose, onSubmit }: TagDialogP
     if (isEdit && initial) {
       setValues({
         slug: initial.slug,
-        name: initial.name,
+        label: initial.label,
         locale: initial.locale,
         visibility: initial.visibility,
       });
@@ -67,11 +67,11 @@ export function TagDialog({ open, mode, initial, onClose, onSubmit }: TagDialogP
             fullWidth
           />
           <TextField
-            label={t('common.labels.name')}
-            name="name"
-            value={values.name}
+            label={t('common.labels.label')}
+            name="label"
+            value={values.label}
             onChange={onChange}
-            inputProps={{ 'aria-label': 'tag-name' }}
+            inputProps={{ 'aria-label': 'tag-label' }}
             required
             fullWidth
           />

@@ -2,12 +2,12 @@
 export type CreateCategoryDto = {
   slug: string;
   locale: string;
-  name: string;
+  label: string;
   visibility: 'private' | 'public';
   createdBy: string;
 };
 
-export type UpdateCategoryDto = Partial<Pick<CreateCategoryDto, 'slug' | 'locale' | 'name'>>;
+export type UpdateCategoryDto = Partial<Pick<CreateCategoryDto, 'slug' | 'locale' | 'label'>>;
 
 export type GetCategoryDto = { id: string };
 

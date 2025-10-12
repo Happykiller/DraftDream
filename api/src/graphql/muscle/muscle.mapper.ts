@@ -7,7 +7,7 @@ export function mapMuscleUsecaseToGql(m: MuscleUsecaseModel): MuscleGql {
     id: m.id,
     slug: m.slug,
     locale: m.locale,
-    name: m.name,
+    label: m.label,
     visibility: m.visibility as MuscleVisibility,
     createdBy: m.createdBy,
     createdAt: m.createdAt,

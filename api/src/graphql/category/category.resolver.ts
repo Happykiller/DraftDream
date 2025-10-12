@@ -38,7 +38,7 @@ export class CategoryResolver {
     const created = await inversify.createCategoryUsecase.execute({
       slug: input.slug,
       locale: input.locale,
-      name: input.name,
+      label: input.label,
       visibility: input.visibility,
       createdBy: req?.user?.id, // assumes auth guard fills req.user
     });
@@ -85,7 +85,7 @@ export class CategoryResolver {
       id: input.id,
       slug: input.slug,
       locale: input.locale,
-      name: input.name,
+      label: input.label,
     });
     return updated ? mapCategoryUsecaseToGql(updated) : null;
   }

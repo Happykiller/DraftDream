@@ -7,7 +7,7 @@ export function mapCategoryUsecaseToGql(m: CategoryUsecaseModel): CategoryGql {
     id: m.id,
     slug: m.slug,
     locale: m.locale,
-    name: m.name,
+    label: m.label,
     visibility: m.visibility as CategoryVisibility,
     createdBy: m.createdBy,
     createdAt: m.createdAt,

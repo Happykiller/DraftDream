@@ -8,7 +8,7 @@ export interface Session {
   id: string;
   slug: string;
   locale: string;
-  title: string;
+  label: string;
   durationMin: number;
   description?: string | null;
   exerciseIds: string[];
@@ -35,7 +35,7 @@ const LIST_Q = `
   query ListSessions($input: ListSessionsInput) {
     session_list(input: $input) {
       items {
-        id slug locale title durationMin description exerciseIds
+        id slug locale label durationMin description exerciseIds
         createdBy createdAt updatedAt
         creator { id email }
       }
@@ -47,7 +47,7 @@ const LIST_Q = `
 const CREATE_M = `
   mutation CreateSession($input: CreateSessionInput!) {
     session_create(input: $input) {
-      id slug locale title durationMin description exerciseIds
+      id slug locale label durationMin description exerciseIds
       createdBy createdAt updatedAt
       creator { id email }
     }
@@ -57,7 +57,7 @@ const CREATE_M = `
 const UPDATE_M = `
   mutation UpdateSession($input: UpdateSessionInput!) {
     session_update(input: $input) {
-      id slug locale title durationMin description exerciseIds
+      id slug locale label durationMin description exerciseIds
       createdBy createdAt updatedAt
       creator { id email }
     }
@@ -117,7 +117,7 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
     async (input: {
       slug: string;
       locale: string;
-      title: string;
+      label: string;
       durationMin: number;
       description?: string;
       exerciseIds: string[];
@@ -144,7 +144,7 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
       id: string;
       slug?: string;
       locale?: string;
-      title?: string;
+      label?: string;
       durationMin?: number;
       description?: string | null;
       exerciseIds?: string[];
@@ -187,4 +187,3 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
 
   return { items, total, loading, create, update, remove, reload: load };
 }
-

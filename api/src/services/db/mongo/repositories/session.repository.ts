@@ -15,7 +15,7 @@ type SessionDoc = {
   slug: string;
   locale: string;
 
-  title: string;
+  label: string;
   durationMin: number;
   description?: string;
 
@@ -59,7 +59,7 @@ export class BddServiceSessionMongo {
       slug: dto.slug.toLowerCase().trim(),
       locale: dto.locale.toLowerCase().trim(),
 
-      title: dto.title.trim(),
+      label: dto.label.trim(),
       durationMin: Math.trunc(dto.durationMin),
       description: dto.description,
 
@@ -108,7 +108,7 @@ export class BddServiceSessionMongo {
     if (q && q.trim()) {
       filter.$or = [
         { slug: { $regex: new RegExp(q.trim(), 'i') } },
-        { title: { $regex: new RegExp(q.trim(), 'i') } },
+        { label: { $regex: new RegExp(q.trim(), 'i') } },
         { description: { $regex: new RegExp(q.trim(), 'i') } },
       ];
     }
@@ -130,7 +130,7 @@ export class BddServiceSessionMongo {
 
     if (patch.slug !== undefined) $set.slug = patch.slug.toLowerCase().trim();
     if (patch.locale !== undefined) $set.locale = patch.locale.toLowerCase().trim();
-    if (patch.title !== undefined) $set.title = patch.title.trim();
+    if (patch.label !== undefined) $set.label = patch.label.trim();
     if (patch.durationMin !== undefined) $set.durationMin = Math.trunc(patch.durationMin);
     if (patch.description !== undefined) $set.description = patch.description;
     if (patch.exerciseIds !== undefined) $set.exerciseIds = [...patch.exerciseIds];
@@ -174,7 +174,7 @@ export class BddServiceSessionMongo {
     slug: doc.slug,
     locale: doc.locale,
 
-    title: doc.title,
+    label: doc.label,
     durationMin: doc.durationMin,
     description: doc.description,
 

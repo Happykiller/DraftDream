@@ -8,7 +8,7 @@ export interface Session {
   id: string;
   slug: string;
   locale: string;
-  title: string;
+  label: string;
   durationMin: number;
   description?: string | null;
   exerciseIds: string[];
@@ -35,7 +35,7 @@ const LIST_Q = `
   query ListSessions($input: ListSessionsInput) {
     session_list(input: $input) {
       items {
-        id slug locale title durationMin description exerciseIds
+        id slug locale label durationMin description exerciseIds
         createdBy createdAt updatedAt
         creator { id email }
       }
@@ -47,7 +47,7 @@ const LIST_Q = `
 const CREATE_M = `
   mutation CreateSession($input: CreateSessionInput!) {
     session_create(input: $input) {
-      id slug locale title durationMin description exerciseIds
+      id slug locale label durationMin description exerciseIds
       createdBy createdAt updatedAt
       creator { id email }
     }
@@ -57,7 +57,7 @@ const CREATE_M = `
 const UPDATE_M = `
   mutation UpdateSession($input: UpdateSessionInput!) {
     session_update(input: $input) {
-      id slug locale title durationMin description exerciseIds
+      id slug locale label durationMin description exerciseIds
       createdBy createdAt updatedAt
       creator { id email }
     }
@@ -81,7 +81,8 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
   const [items, setItems] = React.useState<Session[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
-  const flash = useFlashStore();
+  const flashError = useFlashStore((state) => state.error);
+  const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
 
   const load = React.useCallback(async () => {
@@ -103,11 +104,11 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
       setItems(data?.session_list.items ?? []);
       setTotal(data?.session_list.total ?? 0);
     } catch (e: any) {
-      flash.error(e?.message ?? 'Failed to load sessions');
+      flashError(e?.message ?? 'Failed to load sessions');
     } finally {
       setLoading(false);
     }
-  }, [page, limit, q, locale, gql, flash]);
+  }, [page, limit, q, locale, gql, flashError]);
 
   React.useEffect(() => {
     void load();
@@ -117,7 +118,7 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
     async (input: {
       slug: string;
       locale: string;
-      title: string;
+      label: string;
       durationMin: number;
       description?: string;
       exerciseIds: string[];
@@ -129,14 +130,14 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
           variables: { input },
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Session created');
+        flashSuccess('Session created');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Create failed');
+        flashError(e?.message ?? 'Create failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [gql, flashError, flashSuccess, load]
   );
 
   const update = React.useCallback(
@@ -144,7 +145,7 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
       id: string;
       slug?: string;
       locale?: string;
-      title?: string;
+      label?: string;
       durationMin?: number;
       description?: string | null;
       exerciseIds?: string[];
@@ -156,14 +157,14 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
           variables: { input },
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Session updated');
+        flashSuccess('Session updated');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Update failed');
+        flashError(e?.message ?? 'Update failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [gql, flashError, flashSuccess, load]
   );
 
   const remove = React.useCallback(
@@ -175,16 +176,15 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
           variables: { id },
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Session deleted');
+        flashSuccess('Session deleted');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Delete failed');
+        flashError(e?.message ?? 'Delete failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [gql, flashError, flashSuccess, load]
   );
 
   return { items, total, loading, create, update, remove, reload: load };
 }
-

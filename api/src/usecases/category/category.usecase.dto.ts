@@ -2,7 +2,7 @@
 export interface CreateCategoryUsecaseDto {
   slug: string;
   locale: string;
-  name: string;
+  label: string;
   visibility: 'private' | 'public';
   createdBy: string; // comes from auth context
 }
@@ -28,7 +28,7 @@ export interface UpdateCategoryUsecaseDto {
   id: string;
   slug?: string;
   locale?: string;
-  name?: string;
+  label?: string;
 }
 
 // src/usecases/category/dto/delete.category.usecase.dto.ts

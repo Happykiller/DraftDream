@@ -20,7 +20,7 @@ export class ExerciseGql {
   @Field(() => ID) id!: string;
   @Field() slug!: string;
   @Field() locale!: string;
-  @Field() name!: string;
+  @Field() label!: string;
   @Field({ nullable: true }) description?: string;
   @Field({ nullable: true }) instructions?: string;
   @Field(() => ExerciseLevelGql) level!: ExerciseLevelGql;
@@ -47,7 +47,7 @@ export class ExerciseGql {
 export class CreateExerciseInput {
   @Field() slug!: string;
   @Field() locale!: string;
-  @Field() name!: string;
+  @Field() label!: string;
   @Field(() => ExerciseLevelGql) level!: ExerciseLevelGql;
   @Field() series!: string;
   @Field() repetitions!: string;
@@ -71,7 +71,7 @@ export class UpdateExerciseInput {
   @Field(() => ID) id!: string;
   @Field({ nullable: true }) slug?: string;
   @Field({ nullable: true }) locale?: string;
-  @Field({ nullable: true }) name?: string;
+  @Field({ nullable: true }) label?: string;
   @Field(() => ExerciseLevelGql, { nullable: true }) level?: ExerciseLevelGql;
   @Field({ nullable: true }) series?: string;
   @Field({ nullable: true }) repetitions?: string;

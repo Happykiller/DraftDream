@@ -37,7 +37,7 @@ export class MuscleResolver {
     const created = await inversify.createMuscleUsecase.execute({
       slug: input.slug,
       locale: input.locale,
-      name: input.name,
+      label: input.label,
       visibility: input.visibility,
       createdBy: req?.user?.id,
     });
@@ -81,7 +81,7 @@ export class MuscleResolver {
       id: input.id,
       slug: input.slug,
       locale: input.locale,
-      name: input.name,
+      label: input.label,
     });
     return updated ? mapMuscleUsecaseToGql(updated) : null;
   }
