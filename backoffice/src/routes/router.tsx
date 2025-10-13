@@ -79,6 +79,13 @@ export const router = createBrowserRouter([
         ],
       },
       {
+        path: '/theme-studio',
+        lazy: async () => {
+          const mod = await import('@src/pages/ThemeStudio');
+          return { Component: mod.ThemeStudio };
+        },
+      },
+      {
         path: '/users',
         lazy: async () => {
           const mod = await import('@src/pages/Users');

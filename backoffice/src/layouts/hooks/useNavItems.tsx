@@ -1,6 +1,6 @@
 // src/layouts/hooks/useNavItems.tsx
 import * as React from 'react';
-import { Home, Settings, FitnessCenter, ManageAccounts } from '@mui/icons-material';
+import { FitnessCenter, Home, ManageAccounts, Palette, Settings } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
 export type NavItem = {
@@ -34,7 +34,10 @@ export function useNavItems(role?: string): NavItem[] {
       );
     }
 
-    base.push({ label: t('sandbox.title'), icon: <Settings />, path: '/sandbox' });
+    base.push(
+      { label: t('sandbox.title'), icon: <Settings />, path: '/sandbox' },
+      { label: t('themeStudio.title'), icon: <Palette />, path: '/theme-studio' }
+    );
 
     return base;
   }, [role, i18n.language, t]);

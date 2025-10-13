@@ -227,6 +227,9 @@
       }
     }
   },
+  "themeStudio": {
+    "title": "Theme Studio"
+  },
   "sandbox": {
     "title": "Bac à sable",
     "cards": {
