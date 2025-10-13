@@ -228,6 +228,9 @@
       }
     }
   },
+  "themeStudio": {
+    "title": "Theme Studio"
+  },
   "sandbox": {
     "cards": {
       "input": {

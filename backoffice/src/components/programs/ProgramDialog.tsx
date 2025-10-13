@@ -69,7 +69,7 @@ function mergeSessionOptions(
       if (!byId.has(templateId)) {
         byId.set(templateId, {
           id: templateId,
-          slug: session.slug ?? undefined,
+          slug: session.slug ?? '',
           label: session.label,
           locale: session.locale ?? undefined,
           durationMin: session.durationMin,
