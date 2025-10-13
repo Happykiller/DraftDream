@@ -1030,6 +1030,7 @@ function SnackbarShowcase(): React.ReactElement {
 }
 
 function DialogShowcase(): React.ReactElement {
+  return(<></>);
   return (
     <Stack spacing={2}>
       <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
