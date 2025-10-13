@@ -1,22 +1,22 @@
 // src\\graphql\\program\\program.resolver.ts
 import { Args, Context, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { ObjectId } from 'mongodb';
 
 import { Role } from '@graphql/common/ROLE';
 import { Auth } from '@graphql/decorators/auth.decorator';
-import { mapSessionUsecaseToGql } from '@graphql/session/session.mapper';
-import { SessionSportGql } from '@graphql/session/session.gql.types';
 import {
   ProgramGql,
   CreateProgramInput,
   UpdateProgramInput,
   ListProgramsInput,
   ProgramListGql,
+  ProgramSessionInput,
 } from '@graphql/program/program.gql.types';
 import { mapProgramUsecaseToGql } from '@graphql/program/program.mapper';
 import { UserGql } from '@graphql/user/user.gql.types';
 import { mapUserUsecaseToGql } from '@graphql/user/user.mapper';
 import inversify from '@src/inversify/investify';
-import type { SessionUsecaseModel } from '@usecases/session/session.usecase.model';
+import type { ProgramSessionSnapshotUsecaseDto } from '@usecases/program/program.usecase.dto';
 
 @Resolver(() => ProgramGql)
 export class ProgramResolver {
@@ -28,51 +28,54 @@ export class ProgramResolver {
     return user ? mapUserUsecaseToGql(user) : null;
   }
 
-  @ResolveField(() => [SessionSportGql], { name: 'sessions' })
-  async sessions(@Parent() program: ProgramGql): Promise<SessionSportGql[]> {
-    const ids = program.sessionIds ?? [];
-    if (!ids.length) return [];
-    const sessions = await Promise.all(
-      ids.map(id => inversify.getSessionUsecase.execute({ id }))
-    );
-    return sessions
-      .filter((s): s is SessionUsecaseModel => Boolean(s))
-      .map(mapSessionUsecaseToGql);
-  }
-
   @Mutation(() => ProgramGql, { name: 'program_create', nullable: true })
   @Auth(Role.ADMIN, Role.COACH)
   async program_create(
     @Args('input') input: CreateProgramInput,
     @Context('req') req: any,
   ): Promise<ProgramGql | null> {
-    const created = await inversify.createProgramUsecase.execute({
+    const sessions = await this.resolveSessions(input.sessions, input.sessionIds);
+    const payload = {
       slug: input.slug,
       locale: input.locale,
       label: input.label,
       duration: input.duration,
       frequency: input.frequency,
       description: input.description,
-      sessionIds: input.sessionIds,
-      userId: input.userId,
+      sessionIds: sessions.map((session) => session.templateSessionId ?? session.id),
+      sessions,
+      userId: input.userId ?? undefined,
       createdBy: req?.user?.id,
-    });
+    };
+
+    const created = await inversify.createProgramUsecase.execute(payload);
     return created ? mapProgramUsecaseToGql(created) : null;
   }
 
   @Mutation(() => ProgramGql, { name: 'program_update', nullable: true })
   @Auth(Role.ADMIN, Role.COACH)
   async program_update(@Args('input') input: UpdateProgramInput): Promise<ProgramGql | null> {
-    const updated = await inversify.updateProgramUsecase.execute(input.id, {
+    const updateDto: any = {
       slug: input.slug,
       locale: input.locale,
       label: input.label,
       duration: input.duration,
       frequency: input.frequency,
-      description: input.description,
-      sessionIds: input.sessionIds,
-      userId: input.userId,
-    });
+      description: input.description ?? undefined,
+      userId: input.userId ?? undefined,
+    };
+
+    if (input.sessions !== undefined) {
+      const sessions = await this.resolveSessions(input.sessions, undefined);
+      updateDto.sessions = sessions;
+      updateDto.sessionIds = sessions.map((session) => session.templateSessionId ?? session.id);
+    } else if (input.sessionIds !== undefined) {
+      const sessions = await this.resolveSessions(undefined, input.sessionIds);
+      updateDto.sessions = sessions;
+      updateDto.sessionIds = sessions.map((session) => session.templateSessionId ?? session.id);
+    }
+
+    const updated = await inversify.updateProgramUsecase.execute(input.id, updateDto);
     return updated ? mapProgramUsecaseToGql(updated) : null;
   }
 
@@ -112,5 +115,84 @@ export class ProgramResolver {
       page: res.page,
       limit: res.limit,
     };
+  }
+
+  private generateId(): string {
+    return new ObjectId().toHexString();
+  }
+
+  private async resolveSessions(
+    sessionsInput?: ProgramSessionInput[] | null,
+    sessionIds?: string[] | null,
+  ): Promise<ProgramSessionSnapshotUsecaseDto[]> {
+    if (sessionsInput && sessionsInput.length) {
+      return sessionsInput.map((session) => ({
+        id: session.id ?? this.generateId(),
+        templateSessionId: session.templateSessionId,
+        slug: session.slug,
+        locale: session.locale,
+        label: session.label.trim(),
+        durationMin: session.durationMin,
+        description: session.description ?? undefined,
+        exercises: (session.exercises ?? []).map((exercise) => ({
+          id: exercise.id ?? this.generateId(),
+          templateExerciseId: exercise.templateExerciseId,
+          label: exercise.label.trim(),
+          description: exercise.description ?? undefined,
+          instructions: exercise.instructions ?? undefined,
+          series: exercise.series ?? undefined,
+          repetitions: exercise.repetitions ?? undefined,
+          charge: exercise.charge ?? undefined,
+          restSeconds: exercise.restSeconds ?? undefined,
+          videoUrl: exercise.videoUrl ?? undefined,
+          level: exercise.level ?? undefined,
+        })),
+      }));
+    }
+
+    if (!sessionIds || !sessionIds.length) return [];
+
+    const sessions = await Promise.all(
+      sessionIds.map((id) => inversify.getSessionUsecase.execute({ id })),
+    );
+
+    const resolved: ProgramSessionSnapshotUsecaseDto[] = [];
+
+    for (const session of sessions) {
+      if (!session) continue;
+
+      const exercises = await Promise.all(
+        (session.exerciseIds ?? []).map((exerciseId) =>
+          inversify.getExerciseUsecase.execute({ id: exerciseId }),
+        ),
+      );
+
+      resolved.push({
+        id: this.generateId(),
+        templateSessionId: session.id,
+        slug: session.slug,
+        locale: session.locale,
+        label: session.label,
+        durationMin: session.durationMin,
+        description: session.description ?? undefined,
+        exercises: exercises
+          .filter((exercise): exercise is NonNullable<typeof exercise> => Boolean(exercise))
+          .map((exercise) => ({
+            id: this.generateId(),
+            templateExerciseId: exercise.id,
+            label: exercise.label,
+            description: exercise.description ?? undefined,
+            instructions: exercise.instructions ?? undefined,
+            series: exercise.series ?? undefined,
+            repetitions: exercise.repetitions ?? undefined,
+            charge: exercise.charge ?? undefined,
+            restSeconds: exercise.rest ?? undefined,
+            videoUrl: exercise.videoUrl ?? undefined,
+            level: exercise.level ?? undefined,
+          })),
+      });
+    }
+
+    return resolved;
   }
 }

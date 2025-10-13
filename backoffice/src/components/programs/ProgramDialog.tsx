@@ -65,12 +65,13 @@ function mergeSessionOptions(
 
   if (fallback) {
     fallback.forEach((session) => {
-      if (!byId.has(session.id)) {
-        byId.set(session.id, {
-          id: session.id,
-          slug: session.slug,
+      const templateId = session.templateSessionId ?? session.id;
+      if (!byId.has(templateId)) {
+        byId.set(templateId, {
+          id: templateId,
+          slug: session.slug ?? undefined,
           label: session.label,
-          locale: session.locale,
+          locale: session.locale ?? undefined,
           durationMin: session.durationMin,
         });
       }

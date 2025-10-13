@@ -168,6 +168,14 @@ const parseSeriesCount = (series: string | null | undefined): number => {
   return match ? Number(match[0]) : 3;
 };
 
+const parseRestSecondsValue = (rest: string | null | undefined): number | undefined => {
+  if (!rest) return undefined;
+  const trimmed = rest.trim();
+  if (!trimmed || trimmed === '-') return undefined;
+  const match = trimmed.match(/\d+(\.\d+)?/);
+  return match ? Number(match[0]) : undefined;
+};
+
 type ProgramBuilderPanelProps = {
   builderCopy: BuilderCopy;
   onCancel: () => void;
@@ -630,6 +638,33 @@ export function ProgramBuilderPanel({
     }
 
     try {
+      const sessionSnapshots = sessions.map((session) => ({
+        id: session.id,
+        templateSessionId: session.sessionId,
+        label: session.label,
+        durationMin: session.duration,
+        description: undefined,
+        exercises: session.exercises
+          .map((exercise) => {
+            const base = exerciseMap.get(exercise.exerciseId);
+            if (!base) return null;
+            return {
+              id: exercise.id,
+              templateExerciseId: exercise.exerciseId,
+              label: base.label,
+              series: String(exercise.sets),
+              repetitions: exercise.reps,
+              restSeconds: parseRestSecondsValue(exercise.rest),
+              description: undefined,
+              instructions: undefined,
+              charge: undefined,
+              videoUrl: undefined,
+              level: base.level,
+            };
+          })
+          .filter((exercise): exercise is NonNullable<typeof exercise> => Boolean(exercise)),
+      }));
+
       await createProgram({
         slug: slugify(name, String(Date.now()).slice(-5)),
         locale: i18n.language,
@@ -637,7 +672,8 @@ export function ProgramBuilderPanel({
         duration,
         frequency,
         description: form.description || '',
-        sessionIds: sessions.map(session => session.sessionId),
+        sessionIds: sessions.map((session) => session.sessionId),
+        sessions: sessionSnapshots,
         userId: form.athlete || null,
       });
       resetBuilder();
@@ -645,7 +681,17 @@ export function ProgramBuilderPanel({
     } catch (error) {
       flash.error(t('common.unexpected_error'));
     }
-  }, [form, i18n.language, createProgram, flash]);
+  }, [
+    form,
+    i18n.language,
+    createProgram,
+    flash,
+    sessions,
+    exerciseMap,
+    resetBuilder,
+    onCancel,
+    t,
+  ]);
 
   return (
     <Paper

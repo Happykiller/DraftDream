@@ -1,4 +1,29 @@
 // src\\services\\db\\dtos\\program.dto.ts
+export type ProgramExerciseSnapshotDto = {
+  id: string;
+  templateExerciseId?: string;
+  label: string;
+  description?: string;
+  instructions?: string;
+  series?: string;
+  repetitions?: string;
+  charge?: string;
+  restSeconds?: number;
+  videoUrl?: string;
+  level?: string;
+};
+
+export type ProgramSessionSnapshotDto = {
+  id: string;
+  templateSessionId?: string;
+  slug?: string;
+  locale?: string;
+  label: string;
+  durationMin: number;
+  description?: string;
+  exercises: ProgramExerciseSnapshotDto[];
+};
+
 export type CreateProgramDto = {
   slug: string;
   locale: string;
@@ -6,8 +31,10 @@ export type CreateProgramDto = {
   duration: number;
   frequency: number;
   description?: string;
-  /** Ordered list of session IDs (order by array index). */
+  /** Ordered list of session template IDs (order by array index). */
   sessionIds: string[];
+  /** Snapshot of sessions attached to the program. */
+  sessions: ProgramSessionSnapshotDto[];
   /** Optional assigned user id */
   userId?: string;
   createdBy: string;
@@ -34,8 +61,10 @@ export type UpdateProgramDto = Partial<{
   duration: number;
   frequency: number;
   description: string;
-  /** Replace the whole ordered list */
+  /** Replace the whole ordered list of session template IDs. */
   sessionIds: string[];
+  /** Replace the whole snapshot definition. */
+  sessions: ProgramSessionSnapshotDto[];
   /** Set/replace the assigned user id */
   userId: string;
 }>;
