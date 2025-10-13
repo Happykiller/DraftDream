@@ -118,6 +118,31 @@ type SessionListGql {
   limit: Int!
 }
 
+type ProgramSessionExerciseGql {
+  id: ID!
+  templateExerciseId: String
+  label: String!
+  description: String
+  instructions: String
+  series: String
+  repetitions: String
+  charge: String
+  restSeconds: Float
+  videoUrl: String
+  level: String
+}
+
+type ProgramSessionGql {
+  id: ID!
+  templateSessionId: String
+  slug: String
+  locale: String
+  label: String!
+  durationMin: Int!
+  description: String
+  exercises: [ProgramSessionExerciseGql!]!
+}
+
 type ProgramGql {
   id: ID!
   slug: String!
@@ -127,12 +152,12 @@ type ProgramGql {
   frequency: Int!
   description: String
   sessionIds: [ID!]!
+  sessions: [ProgramSessionGql!]!
   userId: String
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   creator: UserGql
-  sessions: [SessionSportGql!]!
 }
 
 type ProgramListGql {
@@ -446,6 +471,31 @@ input UpdateSessionInput {
   exerciseIds: [ID!]
 }
 
+input ProgramSessionExerciseInput {
+  id: String
+  templateExerciseId: String
+  label: String!
+  description: String
+  instructions: String
+  series: String
+  repetitions: String
+  charge: String
+  restSeconds: Float
+  videoUrl: String
+  level: String
+}
+
+input ProgramSessionInput {
+  id: String
+  templateSessionId: String
+  slug: String
+  locale: String
+  label: String!
+  durationMin: Int!
+  description: String
+  exercises: [ProgramSessionExerciseInput!]!
+}
+
 input CreateProgramInput {
   slug: String!
   locale: String!
@@ -453,7 +503,8 @@ input CreateProgramInput {
   duration: Int!
   frequency: Int!
   description: String
-  sessionIds: [ID!]!
+  sessionIds: [ID!]
+  sessions: [ProgramSessionInput!]
   userId: String
 }
 
@@ -466,6 +517,7 @@ input UpdateProgramInput {
   frequency: Int
   description: String
   sessionIds: [ID!]
+  sessions: [ProgramSessionInput!]
   userId: String
 }
 

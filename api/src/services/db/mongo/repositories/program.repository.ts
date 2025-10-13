@@ -2,13 +2,44 @@
 import { Collection, Db, ObjectId } from 'mongodb';
 
 import inversify from '@src/inversify/investify';
-import { Program } from '@services/db/models/program.model';
+import {
+  Program,
+  ProgramExerciseSnapshot,
+  ProgramSessionSnapshot,
+} from '@services/db/models/program.model';
 import {
   CreateProgramDto,
   GetProgramDto,
   ListProgramsDto,
+  ProgramExerciseSnapshotDto,
+  ProgramSessionSnapshotDto,
   UpdateProgramDto,
 } from '@services/db/dtos/program.dto';
+
+type ProgramExerciseDoc = {
+  id: string;
+  templateExerciseId?: string;
+  label: string;
+  description?: string;
+  instructions?: string;
+  series?: string;
+  repetitions?: string;
+  charge?: string;
+  restSeconds?: number;
+  videoUrl?: string;
+  level?: string;
+};
+
+type ProgramSessionDoc = {
+  id: string;
+  templateSessionId?: string;
+  slug?: string;
+  locale?: string;
+  label: string;
+  durationMin: number;
+  description?: string;
+  exercises: ProgramExerciseDoc[];
+};
 
 type ProgramDoc = {
   _id: ObjectId;
@@ -19,6 +50,7 @@ type ProgramDoc = {
   frequency: number;
   description?: string;
   sessionIds: string[];
+  sessions?: ProgramSessionDoc[];
   userId?: ObjectId;
   createdBy: ObjectId;
   deletedAt?: Date;
@@ -61,6 +93,7 @@ export class BddServiceProgramMongo {
       frequency: Math.trunc(dto.frequency),
       description: dto.description,
       sessionIds: [...dto.sessionIds],
+      sessions: dto.sessions?.map(this.toSessionDoc) ?? [],
       userId: dto.userId ? this.toObjectId(dto.userId) : undefined,
       createdBy: this.toObjectId(dto.createdBy),
       createdAt: now,
@@ -130,6 +163,7 @@ export class BddServiceProgramMongo {
     if (patch.frequency !== undefined) $set.frequency = Math.trunc(patch.frequency);
     if (patch.description !== undefined) $set.description = patch.description;
     if (patch.sessionIds !== undefined) $set.sessionIds = [...patch.sessionIds];
+    if (patch.sessions !== undefined) $set.sessions = patch.sessions.map(this.toSessionDoc);
     if (patch.userId !== undefined) $set.userId = this.toObjectId(patch.userId);
 
     try {
@@ -164,19 +198,77 @@ export class BddServiceProgramMongo {
     }
   };
 
-  private toModel = (doc: ProgramDoc): Program => ({
-    id: doc._id.toHexString(),
-    slug: doc.slug,
-    locale: doc.locale,
-    label: doc.label,
-    duration: doc.duration,
-    frequency: doc.frequency,
-    description: doc.description,
-    sessionIds: [...(doc.sessionIds ?? [])],
-    userId: doc.userId ? doc.userId.toHexString() : undefined,
-    createdBy: doc.createdBy.toHexString(),
-    deletedAt: doc.deletedAt,
-    createdAt: doc.createdAt,
-    updatedAt: doc.updatedAt,
+  private toSessionDoc = (session: ProgramSessionSnapshotDto): ProgramSessionDoc => ({
+    id: session.id,
+    templateSessionId: session.templateSessionId,
+    slug: session.slug,
+    locale: session.locale,
+    label: session.label,
+    durationMin: Math.trunc(session.durationMin),
+    description: session.description,
+    exercises: (session.exercises ?? []).map(this.toExerciseDoc),
+  });
+
+  private toExerciseDoc = (exercise: ProgramExerciseSnapshotDto): ProgramExerciseDoc => ({
+    id: exercise.id,
+    templateExerciseId: exercise.templateExerciseId,
+    label: exercise.label,
+    description: exercise.description,
+    instructions: exercise.instructions,
+    series: exercise.series,
+    repetitions: exercise.repetitions,
+    charge: exercise.charge,
+    restSeconds: exercise.restSeconds,
+    videoUrl: exercise.videoUrl,
+    level: exercise.level,
+  });
+
+  private toModel = (doc: ProgramDoc): Program => {
+    const sessions: ProgramSessionSnapshot[] = (doc.sessions ?? []).map(this.toSessionModel);
+    const sessionIds = doc.sessionIds?.length
+      ? [...doc.sessionIds]
+      : sessions.map((session) => session.templateSessionId ?? session.id);
+
+    return {
+      id: doc._id.toHexString(),
+      slug: doc.slug,
+      locale: doc.locale,
+      label: doc.label,
+      duration: doc.duration,
+      frequency: doc.frequency,
+      description: doc.description,
+      sessionIds,
+      sessions,
+      userId: doc.userId ? doc.userId.toHexString() : undefined,
+      createdBy: doc.createdBy.toHexString(),
+      deletedAt: doc.deletedAt,
+      createdAt: doc.createdAt,
+      updatedAt: doc.updatedAt,
+    };
+  };
+
+  private toSessionModel = (session: ProgramSessionDoc): ProgramSessionSnapshot => ({
+    id: session.id,
+    templateSessionId: session.templateSessionId,
+    slug: session.slug,
+    locale: session.locale,
+    label: session.label,
+    durationMin: session.durationMin,
+    description: session.description,
+    exercises: (session.exercises ?? []).map(this.toExerciseModel),
+  });
+
+  private toExerciseModel = (exercise: ProgramExerciseDoc): ProgramExerciseSnapshot => ({
+    id: exercise.id,
+    templateExerciseId: exercise.templateExerciseId,
+    label: exercise.label,
+    description: exercise.description,
+    instructions: exercise.instructions,
+    series: exercise.series,
+    repetitions: exercise.repetitions,
+    charge: exercise.charge,
+    restSeconds: exercise.restSeconds,
+    videoUrl: exercise.videoUrl,
+    level: exercise.level,
   });
 }

@@ -1,8 +1,34 @@
 // src\\graphql\\program\\program.gql.types.ts
-import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
+import { Field, Float, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 
-import { SessionSportGql } from '@graphql/session/session.gql.types';
 import { UserGql } from '@graphql/user/user.gql.types';
+
+@ObjectType()
+export class ProgramSessionExerciseGql {
+  @Field(() => ID) id!: string;
+  @Field({ nullable: true }) templateExerciseId?: string;
+  @Field() label!: string;
+  @Field({ nullable: true }) description?: string;
+  @Field({ nullable: true }) instructions?: string;
+  @Field({ nullable: true }) series?: string;
+  @Field({ nullable: true }) repetitions?: string;
+  @Field({ nullable: true }) charge?: string;
+  @Field(() => Float, { nullable: true }) restSeconds?: number;
+  @Field({ nullable: true }) videoUrl?: string;
+  @Field({ nullable: true }) level?: string;
+}
+
+@ObjectType()
+export class ProgramSessionGql {
+  @Field(() => ID) id!: string;
+  @Field({ nullable: true }) templateSessionId?: string;
+  @Field({ nullable: true }) slug?: string;
+  @Field({ nullable: true }) locale?: string;
+  @Field() label!: string;
+  @Field(() => Int) durationMin!: number;
+  @Field({ nullable: true }) description?: string;
+  @Field(() => [ProgramSessionExerciseGql]) exercises!: ProgramSessionExerciseGql[];
+}
 
 @ObjectType()
 export class ProgramGql {
@@ -13,8 +39,10 @@ export class ProgramGql {
   @Field(() => Int) duration!: number;
   @Field(() => Int) frequency!: number;
   @Field({ nullable: true }) description?: string;
-  /** Ordered list of session IDs */
+  /** Ordered list of session template IDs */
   @Field(() => [ID]) sessionIds!: string[];
+  /** Snapshot definition available directly from the program document. */
+  @Field(() => [ProgramSessionGql]) sessions!: ProgramSessionGql[];
 
   @Field({ nullable: true }) userId?: string;
   @Field() createdBy!: string;
@@ -23,9 +51,33 @@ export class ProgramGql {
 
   @Field(() => UserGql, { nullable: true })
   creator?: UserGql | null;
+}
 
-  @Field(() => [SessionSportGql])
-  sessions?: SessionSportGql[];
+@InputType()
+export class ProgramSessionExerciseInput {
+  @Field({ nullable: true }) id?: string;
+  @Field({ nullable: true }) templateExerciseId?: string;
+  @Field() label!: string;
+  @Field({ nullable: true }) description?: string;
+  @Field({ nullable: true }) instructions?: string;
+  @Field({ nullable: true }) series?: string;
+  @Field({ nullable: true }) repetitions?: string;
+  @Field({ nullable: true }) charge?: string;
+  @Field(() => Float, { nullable: true }) restSeconds?: number;
+  @Field({ nullable: true }) videoUrl?: string;
+  @Field({ nullable: true }) level?: string;
+}
+
+@InputType()
+export class ProgramSessionInput {
+  @Field({ nullable: true }) id?: string;
+  @Field({ nullable: true }) templateSessionId?: string;
+  @Field({ nullable: true }) slug?: string;
+  @Field({ nullable: true }) locale?: string;
+  @Field() label!: string;
+  @Field(() => Int) durationMin!: number;
+  @Field({ nullable: true }) description?: string;
+  @Field(() => [ProgramSessionExerciseInput]) exercises!: ProgramSessionExerciseInput[];
 }
 
 @InputType()
@@ -36,7 +88,9 @@ export class CreateProgramInput {
   @Field(() => Int) duration!: number;
   @Field(() => Int) frequency!: number;
   @Field({ nullable: true }) description?: string;
-  @Field(() => [ID]) sessionIds!: string[];
+  @Field(() => [ID], { nullable: true, description: 'Deprecated: use sessions instead.' })
+  sessionIds?: string[];
+  @Field(() => [ProgramSessionInput], { nullable: true }) sessions?: ProgramSessionInput[];
   /** Optional assigned user id */
   @Field({ nullable: true }) userId?: string;
 }
@@ -51,7 +105,10 @@ export class UpdateProgramInput {
   @Field(() => Int, { nullable: true }) frequency?: number;
   @Field({ nullable: true }) description?: string;
   /** Replace the whole ordered list */
-  @Field(() => [ID], { nullable: true }) sessionIds?: string[];
+  @Field(() => [ID], { nullable: true, description: 'Deprecated: use sessions instead.' })
+  sessionIds?: string[];
+  /** Replace the complete snapshot definition. */
+  @Field(() => [ProgramSessionInput], { nullable: true }) sessions?: ProgramSessionInput[];
   /** Set/replace the assigned user id */
   @Field({ nullable: true }) userId?: string;
 }

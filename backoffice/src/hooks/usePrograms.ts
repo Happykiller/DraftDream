@@ -9,18 +9,29 @@ export interface ProgramCreator {
   email: string;
 }
 
+export interface ProgramSessionExercise {
+  id: string;
+  templateExerciseId?: string | null;
+  label: string;
+  description?: string | null;
+  instructions?: string | null;
+  series?: string | null;
+  repetitions?: string | null;
+  charge?: string | null;
+  restSeconds?: number | null;
+  videoUrl?: string | null;
+  level?: string | null;
+}
+
 export interface ProgramSession {
   id: string;
-  slug: string;
-  locale: string;
+  templateSessionId?: string | null;
+  slug?: string | null;
+  locale?: string | null;
   label: string;
   durationMin: number;
   description?: string | null;
-  exerciseIds: string[];
-  createdBy: string;
-  createdAt: string;
-  updatedAt: string;
-  creator?: ProgramCreator | null;
+  exercises: ProgramSessionExercise[];
 }
 
 export interface Program {
@@ -65,16 +76,17 @@ const LIST_Q = `
         frequency
         description
         sessionIds
+        sessions {
+          id templateSessionId slug locale label durationMin description
+          exercises {
+            id templateExerciseId label description instructions series repetitions charge restSeconds videoUrl level
+          }
+        }
         userId
         createdBy
         createdAt
         updatedAt
         creator { id email }
-        sessions {
-          id slug locale label durationMin description exerciseIds
-          createdBy createdAt updatedAt
-          creator { id email }
-        }
       }
       total
       page
@@ -94,16 +106,17 @@ const CREATE_M = `
       frequency
       description
       sessionIds
+      sessions {
+        id templateSessionId slug locale label durationMin description
+        exercises {
+          id templateExerciseId label description instructions series repetitions charge restSeconds videoUrl level
+        }
+      }
       userId
       createdBy
       createdAt
       updatedAt
       creator { id email }
-      sessions {
-        id slug locale label durationMin description exerciseIds
-        createdBy createdAt updatedAt
-        creator { id email }
-      }
     }
   }
 `;
@@ -119,16 +132,17 @@ const UPDATE_M = `
       frequency
       description
       sessionIds
+      sessions {
+        id templateSessionId slug locale label durationMin description
+        exercises {
+          id templateExerciseId label description instructions series repetitions charge restSeconds videoUrl level
+        }
+      }
       userId
       createdBy
       createdAt
       updatedAt
       creator { id email }
-      sessions {
-        id slug locale label durationMin description exerciseIds
-        createdBy createdAt updatedAt
-        creator { id email }
-      }
     }
   }
 `;
@@ -193,14 +207,39 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
       duration: number;
       frequency: number;
       description?: string;
-      sessionIds: string[];
+      sessionIds?: string[];
+      sessions?: ProgramSession[];
       userId?: string | null;
     }) => {
       try {
         const { errors } = await gql.send<CreateProgramPayload>({
           query: CREATE_M,
           operationName: 'CreateProgram',
-          variables: { input },
+          variables: {
+            input: {
+              ...input,
+              sessionIds: input.sessionIds?.filter(Boolean),
+              sessions: input.sessions?.map((session) => ({
+                ...session,
+                templateSessionId: session.templateSessionId || undefined,
+                slug: session.slug || undefined,
+                locale: session.locale || undefined,
+                description: session.description ?? undefined,
+                exercises: session.exercises.map((exercise) => ({
+                  ...exercise,
+                  templateExerciseId: exercise.templateExerciseId || undefined,
+                  description: exercise.description ?? undefined,
+                  instructions: exercise.instructions ?? undefined,
+                  series: exercise.series ?? undefined,
+                  repetitions: exercise.repetitions ?? undefined,
+                  charge: exercise.charge ?? undefined,
+                  restSeconds: exercise.restSeconds ?? undefined,
+                  videoUrl: exercise.videoUrl ?? undefined,
+                  level: exercise.level ?? undefined,
+                })),
+              })),
+            },
+          },
         });
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Program created');
@@ -223,13 +262,39 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
       frequency?: number;
       description?: string | null;
       sessionIds?: string[];
+      sessions?: ProgramSession[];
       userId?: string | null;
     }) => {
       try {
         const { errors } = await gql.send<UpdateProgramPayload>({
           query: UPDATE_M,
           operationName: 'UpdateProgram',
-          variables: { input },
+          variables: {
+            input: {
+              ...input,
+              description: input.description ?? undefined,
+              sessionIds: input.sessionIds?.filter(Boolean),
+              sessions: input.sessions?.map((session) => ({
+                ...session,
+                templateSessionId: session.templateSessionId || undefined,
+                slug: session.slug || undefined,
+                locale: session.locale || undefined,
+                description: session.description ?? undefined,
+                exercises: session.exercises.map((exercise) => ({
+                  ...exercise,
+                  templateExerciseId: exercise.templateExerciseId || undefined,
+                  description: exercise.description ?? undefined,
+                  instructions: exercise.instructions ?? undefined,
+                  series: exercise.series ?? undefined,
+                  repetitions: exercise.repetitions ?? undefined,
+                  charge: exercise.charge ?? undefined,
+                  restSeconds: exercise.restSeconds ?? undefined,
+                  videoUrl: exercise.videoUrl ?? undefined,
+                  level: exercise.level ?? undefined,
+                })),
+              })),
+            },
+          },
         });
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Program updated');

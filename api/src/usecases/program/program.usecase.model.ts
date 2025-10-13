@@ -1,4 +1,29 @@
 // src\\usecases\\program\\program.usecase.model.ts
+export type ProgramExerciseUsecaseModel = {
+  id: string;
+  templateExerciseId?: string;
+  label: string;
+  description?: string;
+  instructions?: string;
+  series?: string;
+  repetitions?: string;
+  charge?: string;
+  restSeconds?: number;
+  videoUrl?: string;
+  level?: string;
+};
+
+export type ProgramSessionUsecaseModel = {
+  id: string;
+  templateSessionId?: string;
+  slug?: string;
+  locale?: string;
+  label: string;
+  durationMin: number;
+  description?: string;
+  exercises: ProgramExerciseUsecaseModel[];
+};
+
 export type ProgramUsecaseModel = {
   id: string;
   slug: string;
@@ -8,6 +33,7 @@ export type ProgramUsecaseModel = {
   frequency: number;
   description?: string;
   sessionIds: string[];
+  sessions: ProgramSessionUsecaseModel[];
   userId?: string;
   createdBy: string;
   deletedAt?: Date;
