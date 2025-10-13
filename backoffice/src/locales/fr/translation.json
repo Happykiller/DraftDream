@@ -228,6 +228,7 @@
     }
   },
   "sandbox": {
+    "title": "Bac à sable",
     "cards": {
       "input": {
         "title": "Champ",
