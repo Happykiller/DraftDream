@@ -471,6 +471,31 @@ input UpdateSessionInput {
   exerciseIds: [ID!]
 }
 
+input CreateProgramInput {
+  slug: String!
+  locale: String!
+  label: String!
+  duration: Int!
+  frequency: Int!
+  description: String
+
+  """Deprecated: use sessions instead."""
+  sessionIds: [ID!]
+  sessions: [ProgramSessionInput!]
+  userId: String
+}
+
+input ProgramSessionInput {
+  id: String
+  templateSessionId: String
+  slug: String
+  locale: String
+  label: String!
+  durationMin: Int!
+  description: String
+  exercises: [ProgramSessionExerciseInput!]!
+}
+
 input ProgramSessionExerciseInput {
   id: String
   templateExerciseId: String
@@ -485,29 +510,6 @@ input ProgramSessionExerciseInput {
   level: String
 }
 
-input ProgramSessionInput {
-  id: String
-  templateSessionId: String
-  slug: String
-  locale: String
-  label: String!
-  durationMin: Int!
-  description: String
-  exercises: [ProgramSessionExerciseInput!]!
-}
-
-input CreateProgramInput {
-  slug: String!
-  locale: String!
-  label: String!
-  duration: Int!
-  frequency: Int!
-  description: String
-  sessionIds: [ID!]
-  sessions: [ProgramSessionInput!]
-  userId: String
-}
-
 input UpdateProgramInput {
   id: ID!
   slug: String
@@ -516,6 +518,8 @@ input UpdateProgramInput {
   duration: Int
   frequency: Int
   description: String
+
+  """Deprecated: use sessions instead."""
   sessionIds: [ID!]
   sessions: [ProgramSessionInput!]
   userId: String
