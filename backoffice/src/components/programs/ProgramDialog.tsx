@@ -57,14 +57,15 @@ const DEFAULT_VALUES: ProgramDialogValues = {
 };
 
 function mergeSessionOptions(
-  ids: string[],
+  snapshots: Program['sessions'] | undefined,
   options: ProgramSessionOption[],
-  fallback?: Program['sessions']
 ): ProgramSessionOption[] {
+  if (!snapshots || snapshots.length === 0) return [];
+
   const byId = new Map(options.map((option) => [option.id, option]));
 
-  if (fallback) {
-    fallback.forEach((session) => {
+  return snapshots
+    .map((session) => {
       const templateId = session.templateSessionId ?? session.id;
       if (!byId.has(templateId)) {
         byId.set(templateId, {
@@ -75,11 +76,9 @@ function mergeSessionOptions(
           durationMin: session.durationMin,
         });
       }
-    });
-  }
 
-  return ids
-    .map((id) => byId.get(id))
+      return byId.get(templateId) ?? null;
+    })
     .filter((option): option is ProgramSessionOption => Boolean(option));
 }
 
@@ -105,7 +104,7 @@ export function ProgramDialog({
         duration: initial.duration,
         frequency: initial.frequency,
         description: initial.description ?? '',
-        sessions: mergeSessionOptions(initial.sessionIds, sessionOptions, initial.sessions),
+        sessions: mergeSessionOptions(initial.sessions, sessionOptions),
         user: ((): ProgramUserOption | null => {
           if (!initial.userId) return null;
           const match = userOptions.find(u => u.id === initial.userId);

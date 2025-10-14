@@ -72,18 +72,21 @@ export const ProgramTable = React.memo(function ProgramTable({
       valueFormatter: (value: any) => value || '',
     },
     {
-      field: 'sessionIds',
+      field: 'sessions',
       headerName: t('common.labels.sessions'),
       width: 160,
       sortable: false,
       filterable: false,
-      renderCell: (params) => (
-        <Chip
-          size="small"
-          label={t('programs.table.sessions_linked', { count: params.row.sessionIds.length })}
-          color={params.row.sessionIds.length > 0 ? 'primary' : 'default'}
-        />
-      ),
+      renderCell: (params) => {
+        const count = params.row.sessions.length;
+        return (
+          <Chip
+            size="small"
+            label={t('programs.table.sessions_linked', { count })}
+            color={count > 0 ? 'primary' : 'default'}
+          />
+        );
+      },
     },
     {
       field: 'creator',

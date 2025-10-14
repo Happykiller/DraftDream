@@ -151,7 +151,6 @@ type ProgramGql {
   duration: Int!
   frequency: Int!
   description: String
-  sessionIds: [ID!]!
   sessions: [ProgramSessionGql!]!
   userId: String
   createdBy: String!
