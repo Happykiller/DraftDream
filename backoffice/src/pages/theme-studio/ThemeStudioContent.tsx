@@ -51,6 +51,9 @@ import Checkbox from '@mui/material/Checkbox';
 import { Palette, PaletteOutlined, Refresh, Upload } from '@mui/icons-material';
 import { DataGrid } from '@mui/x-data-grid';
 import { ThemeProvider, useTheme, type Theme } from '@mui/material/styles';
+import type { PaletteMode } from '@mui/material';
+
+import { createBackofficeTheme } from '@theme/index';
 
 import { LoadingButton } from '@pages/theme-studio/components/LoadingButton';
 import { SectionCard } from '@pages/theme-studio/components/SectionCard';
@@ -265,18 +268,12 @@ const SECTION_LIST = [
 
 export function ThemeStudioContent(): React.ReactElement {
   const rootTheme = useTheme();
-  const [mode, setMode] = React.useState<'light' | 'dark'>(rootTheme.palette.mode ?? 'light');
+  const [mode, setMode] = React.useState<PaletteMode>(rootTheme.palette.mode ?? 'light');
   const derivedTheme = React.useMemo<Theme>(() => {
     if (rootTheme.palette.mode === mode) {
       return rootTheme;
     }
-    return {
-      ...rootTheme,
-      palette: {
-        ...rootTheme.palette,
-        mode,
-      },
-    };
+    return createBackofficeTheme(mode);
   }, [rootTheme, mode]);
 
   const sectionIds = React.useMemo(() => SECTION_LIST.map((section) => section.id), []);
