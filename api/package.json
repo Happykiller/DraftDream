@@ -14,6 +14,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@fastify/cors": "^11.1.0",
     "@nestjs/graphql": "^13.2.0",
     "@nestjs/mercurius": "^13.2.0",
     "@nestjs/platform-fastify": "^11.1.6",

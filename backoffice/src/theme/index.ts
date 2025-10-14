@@ -1,5 +1,5 @@
 // src/theme/index.ts
-import { PaletteMode, Theme, ThemeOptions, createTheme } from '@mui/material/styles';
+import { type PaletteMode, type Theme, type ThemeOptions, createTheme } from '@mui/material/styles';
 
 const baseThemeOptions: ThemeOptions = {
   palette: {

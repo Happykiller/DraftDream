@@ -1,4 +1,4 @@
-# docker-compose.prod.yml
+# srv/docker-compose.prod.yml
 name: fitdesk
 networks: { internal: {} }
 volumes:

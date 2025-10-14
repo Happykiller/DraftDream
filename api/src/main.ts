@@ -13,12 +13,26 @@ async function bootstrap() {
     `Environnement selected: ${config.env.mode} on port ${config.env.port ?? 3000}`,
   );
 
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule,
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
     new FastifyAdapter(), {
     logger: new NestLogger(),
     // logger: ['error', 'warn', 'log', 'debug', 'verbose'],
   });
-  app.enableCors();
-  await app.listen(process.env.PORT || 3000);
+
+  app.enableCors({
+    origin: ['https://bo.fitdesk.happykiller.net', 'https://fo.fitdesk.happykiller.net', 'https://mobile.fitdesk.happykiller.net'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-Requested-With',
+      'Apollo-Require-Preflight',
+    ],
+    credentials: true,
+    maxAge: 600,
+  });
+
+  const port = Number(process.env.PORT) || 3000;
+  await app.listen({ port, host: '0.0.0.0' });
 }
 bootstrap();
