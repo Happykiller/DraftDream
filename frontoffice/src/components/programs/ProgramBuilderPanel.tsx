@@ -117,6 +117,7 @@ export type BuilderCopy = {
     duration_unit: string;
     tags_label: string;
     exercise_drop_zone: string;
+    custom_session_label: string;
   };
   library: {
     title: string;
@@ -400,6 +401,21 @@ export function ProgramBuilderPanel({
     [exerciseMap, nextId],
   );
 
+  const createEmptySession = React.useCallback(
+    (): ProgramSession => {
+      const id = nextId('session');
+      return {
+        id,
+        sessionId: id,
+        label: builderCopy.structure.custom_session_label,
+        duration: 0,
+        tags: [],
+        exercises: [],
+      };
+    },
+    [builderCopy.structure.custom_session_label, nextId],
+  );
+
   const handleFormChange = React.useCallback(
     (field: keyof ProgramForm) =>
       (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -428,6 +444,10 @@ export function ProgramBuilderPanel({
     },
     [createSessionFromTemplate, sessionTemplates],
   );
+
+  const handleCreateEmptySession = React.useCallback(() => {
+    setSessions((prev) => [...prev, createEmptySession()]);
+  }, [createEmptySession]);
 
   const handleAddExerciseToSession = React.useCallback(
     (sessionId: string, exerciseId: string, position?: number) => {
@@ -856,18 +876,6 @@ export function ProgramBuilderPanel({
                   }}
                 />
 
-                <Button
-                  variant="outlined"
-                  size="small"
-                  startIcon={<Add fontSize="small" />}
-                  onClick={() =>
-                    console.log('Create new session')
-                  }
-                  disabled={!sessionTemplates.length}
-                >
-                  {builderCopy.config.button_create}
-                </Button>
-
                 <Stack spacing={1.5}>
                   {sessionsLoading && (
                     <Typography variant="body2" color="text.secondary">
@@ -1008,6 +1016,15 @@ export function ProgramBuilderPanel({
                   </>
                 )}
               </Box>
+
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<Add fontSize="small" />}
+                onClick={handleCreateEmptySession}
+              >
+                {builderCopy.config.button_create}
+              </Button>
             </Paper>
           </Grid>
 
