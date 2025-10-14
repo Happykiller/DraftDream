@@ -63,7 +63,8 @@
         "duration_unit": "min",
         "tags_label": "Groupes cibles",
         "drop_zone": "Deposer la seance ici",
-        "exercise_drop_zone": "Deposer l'exercice ici"
+        "exercise_drop_zone": "Deposer l'exercice ici",
+        "custom_session_label": "Seance personnalisee"
       },
       "library": {
         "title": "Bibliotheque d'exercices",

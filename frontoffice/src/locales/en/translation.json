@@ -63,7 +63,8 @@
         "duration_unit": "min",
         "tags_label": "Target groups",
         "drop_zone": "Drop session here",
-        "exercise_drop_zone": "Drop exercise here"
+        "exercise_drop_zone": "Drop exercise here",
+        "custom_session_label": "Custom session"
       },
       "library": {
         "title": "Exercise library",
