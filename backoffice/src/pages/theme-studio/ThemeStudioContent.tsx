@@ -1030,11 +1030,25 @@ function SnackbarShowcase(): React.ReactElement {
 }
 
 function DialogShowcase(): React.ReactElement {
-  return(<></>);
+  const [isDialogOpen, setDialogOpen] = React.useState(false);
+
+  const handleOpen = React.useCallback(() => {
+    setDialogOpen(true);
+  }, []);
+
+  const handleClose = React.useCallback(() => {
+    setDialogOpen(false);
+  }, []);
+
   return (
     <Stack spacing={2}>
       <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
-        <Dialog open maxWidth="sm" fullWidth>
+        <Stack direction="row" justifyContent="flex-end">
+          <Button variant="contained" onClick={handleOpen}>
+            Open dialog
+          </Button>
+        </Stack>
+        <Dialog open={isDialogOpen} onClose={handleClose} maxWidth="sm" fullWidth>
           <DialogTitle>Dialog title</DialogTitle>
           <DialogContent dividers>
             <Typography gutterBottom>
@@ -1045,7 +1059,9 @@ function DialogShowcase(): React.ReactElement {
             </Typography>
           </DialogContent>
           <DialogActions>
-            <Button color="secondary">Secondary</Button>
+            <Button color="secondary" onClick={handleClose}>
+              Cancel
+            </Button>
             <Button variant="contained">Primary action</Button>
           </DialogActions>
         </Dialog>
