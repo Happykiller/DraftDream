@@ -39,8 +39,6 @@ export class ProgramGql {
   @Field(() => Int) duration!: number;
   @Field(() => Int) frequency!: number;
   @Field({ nullable: true }) description?: string;
-  /** Ordered list of session template IDs */
-  @Field(() => [ID]) sessionIds!: string[];
   /** Snapshot definition available directly from the program document. */
   @Field(() => [ProgramSessionGql]) sessions!: ProgramSessionGql[];
 

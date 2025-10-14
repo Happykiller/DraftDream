@@ -42,7 +42,6 @@ export interface Program {
   duration: number;
   frequency: number;
   description?: string | null;
-  sessionIds: string[];
   userId?: string | null;
   createdBy: string;
   createdAt: string;
@@ -75,7 +74,6 @@ const LIST_Q = `
         duration
         frequency
         description
-        sessionIds
         sessions {
           id templateSessionId slug locale label durationMin description
           exercises {
@@ -105,7 +103,6 @@ const CREATE_M = `
       duration
       frequency
       description
-      sessionIds
       sessions {
         id templateSessionId slug locale label durationMin description
         exercises {
@@ -131,7 +128,6 @@ const UPDATE_M = `
       duration
       frequency
       description
-      sessionIds
       sessions {
         id templateSessionId slug locale label durationMin description
         exercises {
