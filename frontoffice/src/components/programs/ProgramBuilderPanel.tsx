@@ -230,11 +230,12 @@ export function ProgramBuilderPanel({
    * Hooks
    */
   const debouncedQ = useDebouncedValue(usersQ, 300);
+  const debouncedSessionSearch = useDebouncedValue(sessionSearch, 300);
 
   const { items: sessionItems, loading: sessionsLoading } = useSessions({
     page: 1,
-    limit: 50,
-    q: '',
+    limit: 10,
+    q: debouncedSessionSearch,
   });
 
   const { items: exerciseItems, loading: exercisesLoading } = useExercises({
@@ -268,17 +269,17 @@ export function ProgramBuilderPanel({
     setForm((prev) => ({ ...prev, athlete: value?.id ?? '' }));
   }, []);
 
-  const sessionTemplates = React.useMemo<SessionTemplate[]>(
-    () =>
-      sessionItems.map((item) => ({
-        id: item.id,
-        label: item.label,
-        duration: item.durationMin,
-        tags: [],
-        exercises: item.exerciseIds.map((exerciseId) => ({ exerciseId })),
-      })),
-    [sessionItems],
-  );
+  const sessionTemplates = React.useMemo<SessionTemplate[]>(() => {
+    // Keep results alphabetical to match the back-office listing behaviour.
+    const sorted = [...sessionItems].sort((a, b) => a.label.localeCompare(b.label));
+    return sorted.map((item) => ({
+      id: item.id,
+      label: item.label,
+      duration: item.durationMin,
+      tags: [],
+      exercises: item.exerciseIds.map((exerciseId) => ({ exerciseId })),
+    }));
+  }, [sessionItems]);
 
   const exerciseLibrary = React.useMemo<ExerciseLibraryItem[]>(
     () =>
@@ -337,17 +338,6 @@ export function ProgramBuilderPanel({
       ).sort(),
     [exerciseLibrary],
   );
-
-  const filteredTemplates = React.useMemo(() => {
-    const search = sessionSearch.trim().toLowerCase();
-    return sessionTemplates.filter((template) => {
-      const matchesSearch =
-        !search ||
-        template.label.toLowerCase().includes(search) ||
-        template.tags.some((tag) => tag.toLowerCase().includes(search));
-      return matchesSearch;
-    });
-  }, [sessionSearch, sessionTemplates]);
 
   const filteredExercises = React.useMemo(() => {
     const search = exerciseSearch.trim().toLowerCase();
@@ -883,7 +873,7 @@ export function ProgramBuilderPanel({
                     </Typography>
                   )}
                   {!sessionsLoading &&
-                    filteredTemplates.map((template) => (
+                    sessionTemplates.map((template) => (
                       <ProgramBuilderSessionLibraryItem
                         key={template.id}
                         template={template}
@@ -895,7 +885,7 @@ export function ProgramBuilderPanel({
                         onDragEnd={handleSessionDragEnd}
                       />
                     ))}
-                  {!sessionsLoading && !filteredTemplates.length && (
+                  {!sessionsLoading && !sessionTemplates.length && (
                     <Typography variant="body2" color="text.secondary">
                       {sessionSearch
                         ? t('common.field_incorrect')
