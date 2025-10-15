@@ -83,9 +83,21 @@ export interface UseExercisesParams {
   page: number;  // 1-based
   limit: number;
   q: string;
+  visibility?: ExerciseVisibility;
+  level?: ExerciseLevel;
+  locale?: string;
+  createdBy?: string;
 }
 
-export function useExercises({ page, limit, q }: UseExercisesParams) {
+export function useExercises({
+  page,
+  limit,
+  q,
+  visibility,
+  level,
+  locale,
+  createdBy,
+}: UseExercisesParams) {
   const [items, setItems] = React.useState<Exercise[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
@@ -95,9 +107,20 @@ export function useExercises({ page, limit, q }: UseExercisesParams) {
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
+      const trimmedQuery = q.trim();
       const { data, errors } = await gql.send<ExerciseListPayload>({
         query: LIST_Q,
-        variables: { input: { page, limit, q: q || undefined } },
+        variables: {
+          input: {
+            page,
+            limit,
+            ...(trimmedQuery ? { q: trimmedQuery } : {}),
+            ...(visibility ? { visibility } : {}),
+            ...(level ? { level } : {}),
+            ...(locale ? { locale } : {}),
+            ...(createdBy ? { createdBy } : {}),
+          },
+        },
         operationName: 'ListExercises',
       });
       if (errors?.length) throw new Error(errors[0].message);
@@ -108,7 +131,7 @@ export function useExercises({ page, limit, q }: UseExercisesParams) {
     } finally {
       setLoading(false);
     }
-  }, [page, limit, q, gql, flash]);
+  }, [page, limit, q, visibility, level, locale, createdBy, gql, flash]);
 
   React.useEffect(() => { void load(); }, [load]);
 
