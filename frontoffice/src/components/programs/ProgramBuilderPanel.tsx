@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import { Add, Search } from '@mui/icons-material';
 import { useSessions } from '@hooks/useSessions';
-import { useExercises } from '@hooks/useExercises';
+import { useExercises, type ExerciseVisibility } from '@hooks/useExercises';
 import { useCategories } from '@hooks/useCategories';
 import { ProgramBuilderSessionItem } from './ProgramBuilderSessionItem';
 import { ProgramBuilderSessionLibraryItem } from './ProgramBuilderSessionLibraryItem';
@@ -128,6 +128,10 @@ export type BuilderCopy = {
     secondary_filter_label: string;
     secondary_filter_all: string;
     button_create: string;
+    limit_hint?: string;
+    type_private?: string;
+    type_public?: string;
+    empty_state?: string;
   };
   footer: {
     cancel: string;
@@ -201,7 +205,7 @@ export function ProgramBuilderPanel({
   const [sessionSearch, setSessionSearch] = React.useState<string>('');
   const [exerciseSearch, setExerciseSearch] = React.useState<string>('');
   const [exerciseCategory, setExerciseCategory] = React.useState<string>('all');
-  const [exerciseType, setExerciseType] = React.useState<string>('all');
+  const [exerciseType, setExerciseType] = React.useState<'all' | ExerciseVisibility>('all');
   const [isDraggingSession, setIsDraggingSession] = React.useState(false);
   const [isDraggingExercise, setIsDraggingExercise] = React.useState(false);
   const [sessions, setSessions] = React.useState<ProgramSession[]>([]);
@@ -231,6 +235,15 @@ export function ProgramBuilderPanel({
    */
   const debouncedQ = useDebouncedValue(usersQ, 300);
   const debouncedSessionSearch = useDebouncedValue(sessionSearch, 300);
+  const debouncedExerciseSearch = useDebouncedValue(exerciseSearch, 300);
+  const exerciseVisibilityFilter = React.useMemo<ExerciseVisibility | undefined>(
+    () => (exerciseType === 'all' ? undefined : exerciseType),
+    [exerciseType],
+  );
+  const collator = React.useMemo(
+    () => new Intl.Collator(i18n.language || undefined, { sensitivity: 'base' }),
+    [i18n.language],
+  );
 
   const { items: sessionItems, loading: sessionsLoading } = useSessions({
     page: 1,
@@ -240,8 +253,9 @@ export function ProgramBuilderPanel({
 
   const { items: exerciseItems, loading: exercisesLoading } = useExercises({
     page: 1,
-    limit: 100,
-    q: '',
+    limit: 10,
+    q: debouncedExerciseSearch,
+    visibility: exerciseVisibilityFilter,
   });
 
   const { items: categoryItems, loading: categoriesLoading } = useCategories({
@@ -282,8 +296,9 @@ export function ProgramBuilderPanel({
   }, [sessionItems]);
 
   const exerciseLibrary = React.useMemo<ExerciseLibraryItem[]>(
-    () =>
-      exerciseItems.map((item) => ({
+    () => {
+      const sorted = [...exerciseItems].sort((a, b) => collator.compare(a.label, b.label));
+      return sorted.map((item) => ({
         id: item.id,
         label: item.label,
         level: item.level,
@@ -294,8 +309,9 @@ export function ProgramBuilderPanel({
         reps: item.repetitions,
         rest: item.rest != null ? `${item.rest}s` : '-',
         tags: [],
-      })),
-    [exerciseItems],
+      }));
+    },
+    [collator, exerciseItems],
   );
 
   const exerciseMap = React.useMemo(
@@ -327,31 +343,54 @@ export function ProgramBuilderPanel({
     [categoryItems],
   );
 
-  const exerciseTypes = React.useMemo(
+  const exerciseTypeOptions = React.useMemo(
+    () => [
+      { value: 'all' as const, label: builderCopy.library.secondary_filter_all },
+      {
+        value: 'PRIVATE' as const,
+        label:
+          builderCopy.library.type_private ??
+          t('programs-coatch.builder.library.type_private', { defaultValue: 'Private' }),
+      },
+      {
+        value: 'PUBLIC' as const,
+        label:
+          builderCopy.library.type_public ??
+          t('programs-coatch.builder.library.type_public', { defaultValue: 'Public' }),
+      },
+    ],
+    [
+      builderCopy.library.secondary_filter_all,
+      builderCopy.library.type_private,
+      builderCopy.library.type_public,
+      t,
+    ],
+  );
+
+  const limitHint = React.useMemo(
     () =>
-      Array.from(
-        new Set(
-          exerciseLibrary
-            .map((exercise) => exercise.type)
-            .filter((value): value is string => Boolean(value)),
-        ),
-      ).sort(),
-    [exerciseLibrary],
+      builderCopy.library.limit_hint ??
+      t('programs-coatch.builder.library.limit_hint', {
+        defaultValue: 'Showing up to 10 exercises sorted alphabetically.',
+      }),
+    [builderCopy.library.limit_hint, t],
+  );
+
+  const emptyExercisesMessage = React.useMemo(
+    () =>
+      builderCopy.library.empty_state ??
+      t('programs-coatch.builder.library.empty_state', {
+        defaultValue: 'No exercises match your filters.',
+      }),
+    [builderCopy.library.empty_state, t],
   );
 
   const filteredExercises = React.useMemo(() => {
-    const search = exerciseSearch.trim().toLowerCase();
-    return exerciseLibrary.filter((exercise) => {
-      const matchesSearch =
-        !search ||
-        exercise.label.toLowerCase().includes(search) ||
-        exercise.tags.some((tag) => tag.toLowerCase().includes(search));
-      const matchesCategory =
-        exerciseCategory === 'all' || exercise.category === exerciseCategory;
-      const matchesType = exerciseType === 'all' || exercise.type === exerciseType;
-      return matchesSearch && matchesCategory && matchesType;
-    });
-  }, [exerciseCategory, exerciseLibrary, exerciseSearch, exerciseType]);
+    if (exerciseCategory === 'all') {
+      return exerciseLibrary;
+    }
+    return exerciseLibrary.filter((exercise) => exercise.category === exerciseCategory);
+  }, [exerciseCategory, exerciseLibrary]);
 
   /**
    * Methods
@@ -1079,18 +1118,21 @@ export function ProgramBuilderPanel({
                   size="small"
                   label={builderCopy.library.secondary_filter_label}
                   value={exerciseType}
-                  onChange={(event) => setExerciseType(event.target.value)}
+                  onChange={(event) =>
+                    setExerciseType(event.target.value as 'all' | ExerciseVisibility)
+                  }
                 >
-                  <MenuItem value="all">
-                    {builderCopy.library.secondary_filter_all}
-                  </MenuItem>
-                  {exerciseTypes.map((type) => (
-                    <MenuItem key={type} value={type}>
-                      {type}
+                  {exerciseTypeOptions.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
                     </MenuItem>
                   ))}
                 </TextField>
               </Stack>
+
+              <Typography variant="caption" color="text.secondary">
+                {limitHint}
+              </Typography>
 
               <Button
                 variant="outlined"
@@ -1109,9 +1151,12 @@ export function ProgramBuilderPanel({
 
               <Stack spacing={1.5} sx={{ mt: 1, flexGrow: 1 }}>
                 {exercisesLoading && (
-                  <Typography variant="body2" color="text.secondary">
-                    {t('common.loading', { defaultValue: 'Loading...' })}
-                  </Typography>
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <CircularProgress size={16} thickness={5} />
+                    <Typography variant="caption" color="text.secondary">
+                      {t('common.loading', { defaultValue: 'Loading...' })}
+                    </Typography>
+                  </Stack>
                 )}
                 {!exercisesLoading &&
                   filteredExercises.map((exercise) => (
@@ -1127,9 +1172,7 @@ export function ProgramBuilderPanel({
                   ))}
                 {!exercisesLoading && !filteredExercises.length && (
                   <Typography variant="body2" color="text.secondary">
-                    {exerciseSearch
-                      ? t('common.field_incorrect')
-                      : t('programs-coatch.placeholder')}
+                    {emptyExercisesMessage}
                   </Typography>
                 )}
               </Stack>

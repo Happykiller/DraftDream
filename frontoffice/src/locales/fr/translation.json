@@ -73,6 +73,10 @@
         "primary_filter_all": "Toutes categories",
         "secondary_filter_label": "Type",
         "secondary_filter_all": "Tous les types",
+        "type_private": "Privé",
+        "type_public": "Public",
+        "limit_hint": "Affichage des 10 exercices maximum triés par ordre alphabétique.",
+        "empty_state": "Aucun exercice ne correspond à vos filtres.",
         "button_create": "Creer un exercice",
         "subtitle": "Glissez un exercice sur une seance pour l'ajouter."
       },
