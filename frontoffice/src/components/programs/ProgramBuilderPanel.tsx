@@ -418,7 +418,7 @@ export function ProgramBuilderPanel({
             customLabel: undefined,
           };
         })
-        .filter((exercise): exercise is ProgramExercise => exercise !== null);
+        .filter((exercise): any => exercise !== null) as any[];
 
       return {
         id: nextId('session'),
