@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { DeleteOutline, DragIndicator } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
-import { Chip, IconButton, Paper, Stack, Typography } from '@mui/material';
+import { Chip, IconButton, Paper, Stack, TextField, Typography } from '@mui/material';
 
 import type {
   BuilderCopy,
@@ -15,6 +15,7 @@ type ProgramBuilderSessionItemProps = {
   session: ProgramSession;
   index: number;
   builderCopy: BuilderCopy;
+  onLabelChange: (sessionId: string, label: string) => void;
   onRemoveSession: () => void;
   onRemoveExercise: (exerciseId: string) => void;
   onDragStart: (event: React.DragEvent<HTMLDivElement>) => void;
@@ -26,6 +27,11 @@ type ProgramBuilderSessionItemProps = {
     sessionId: string,
     position: number,
     event: React.DragEvent<HTMLDivElement>,
+  ) => void;
+  onExerciseLabelChange: (
+    sessionId: string,
+    exerciseId: string,
+    label: string,
   ) => void;
   onExerciseDragStart: (
     sessionId: string,
@@ -39,6 +45,7 @@ export function ProgramBuilderSessionItem({
   session,
   index,
   builderCopy,
+  onLabelChange,
   onRemoveSession,
   onRemoveExercise,
   onDragStart,
@@ -47,10 +54,76 @@ export function ProgramBuilderSessionItem({
   isDraggingExercise,
   exerciseDropLabel,
   onExerciseDrop,
+  onExerciseLabelChange,
   onExerciseDragStart,
   onExerciseDragEnd,
 }: ProgramBuilderSessionItemProps): React.JSX.Element {
   const theme = useTheme();
+
+  const [isEditingLabel, setIsEditingLabel] = React.useState(false);
+  const [labelDraft, setLabelDraft] = React.useState(session.label);
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+
+  React.useEffect(() => {
+    if (!isEditingLabel) {
+      setLabelDraft(session.label);
+    }
+  }, [session.label, isEditingLabel]);
+
+  React.useEffect(() => {
+    if (isEditingLabel && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [isEditingLabel]);
+
+  const commitLabelChange = React.useCallback(() => {
+    const trimmed = labelDraft.trim();
+    const nextLabel = trimmed || builderCopy.structure.custom_session_label;
+    setIsEditingLabel(false);
+    if (nextLabel !== session.label) {
+      onLabelChange(session.id, nextLabel);
+    }
+  }, [
+    builderCopy.structure.custom_session_label,
+    labelDraft,
+    onLabelChange,
+    session.id,
+    session.label,
+  ]);
+
+  const cancelLabelEdition = React.useCallback(() => {
+    setIsEditingLabel(false);
+    setLabelDraft(session.label);
+  }, [session.label]);
+
+  const handleLabelDoubleClick = React.useCallback(
+    (event: React.MouseEvent<HTMLSpanElement | HTMLParagraphElement>) => {
+      event.stopPropagation();
+      setLabelDraft(session.label);
+      setIsEditingLabel(true);
+    },
+    [session.label],
+  );
+
+  const handleLabelKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        commitLabelChange();
+      } else if (event.key === 'Escape') {
+        event.preventDefault();
+        cancelLabelEdition();
+      }
+    },
+    [cancelLabelEdition, commitLabelChange],
+  );
+
+  const handleLabelBlur = React.useCallback(() => {
+    if (isEditingLabel) {
+      commitLabelChange();
+    }
+  }, [commitLabelChange, isEditingLabel]);
 
   const handleRemoveSession = (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -63,11 +136,23 @@ export function ProgramBuilderSessionItem({
     onRemoveExercise(exerciseId);
   };
 
+  const handleDragStartInternal = React.useCallback(
+    (event: React.DragEvent<HTMLDivElement>) => {
+      if (isEditingLabel) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+      onDragStart(event);
+    },
+    [isEditingLabel, onDragStart],
+  );
+
   return (
     <Paper
       variant="outlined"
-      draggable
-      onDragStart={onDragStart}
+      draggable={!isEditingLabel}
+      onDragStart={handleDragStartInternal}
       onDragEnd={onDragEnd}
       sx={{
         p: 1.5,
@@ -84,9 +169,35 @@ export function ProgramBuilderSessionItem({
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Stack direction="row" spacing={1} alignItems="center">
             <DragIndicator fontSize="small" color="disabled" />
-            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-              {builderCopy.structure.session_prefix} {index + 1} - {session.label}
-            </Typography>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                {builderCopy.structure.session_prefix} {index + 1} -
+              </Typography>
+              {isEditingLabel ? (
+                <TextField
+                  inputRef={inputRef}
+                  value={labelDraft}
+                  onChange={(event) => setLabelDraft(event.target.value)}
+                  onBlur={handleLabelBlur}
+                  onKeyDown={handleLabelKeyDown}
+                  size="small"
+                  variant="standard"
+                  inputProps={{
+                    'aria-label': 'session-label',
+                    sx: { fontWeight: 600 },
+                  }}
+                  sx={{ minWidth: 120 }}
+                />
+              ) : (
+                <Typography
+                  variant="subtitle1"
+                  sx={{ fontWeight: 600, cursor: 'text' }}
+                  onDoubleClick={handleLabelDoubleClick}
+                >
+                  {session.label}
+                </Typography>
+              )}
+            </Stack>
           </Stack>
           <Stack direction="row" spacing={1} alignItems="center">
             <Chip
@@ -136,6 +247,9 @@ export function ProgramBuilderSessionItem({
                     exercise={exercise}
                     index={exerciseIndex}
                     onRemove={handleRemoveExercise}
+                    onLabelChange={(nextLabel) =>
+                      onExerciseLabelChange(session.id, exerciseItem.id, nextLabel)
+                    }
                     onDragStart={(event) =>
                       onExerciseDragStart(session.id, exerciseItem.id, event)
                     }

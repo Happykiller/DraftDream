@@ -1,6 +1,14 @@
 import * as React from 'react';
 import { DeleteOutline, DragIndicator } from '@mui/icons-material';
-import { Chip, IconButton, Paper, Stack, Typography, useTheme } from '@mui/material';
+import {
+  Chip,
+  IconButton,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+  useTheme,
+} from '@mui/material';
 
 import type { ExerciseLibraryItem, ProgramExercise } from './ProgramBuilderPanel';
 
@@ -9,6 +17,7 @@ type ProgramBuilderExerciseItemProps = {
   exercise: ExerciseLibraryItem;
   index: number;
   onRemove: (exerciseId: string) => void;
+  onLabelChange: (label: string) => void;
   onDragStart?: (event: React.DragEvent<HTMLDivElement>) => void;
   onDragEnd?: () => void;
 };
@@ -18,17 +27,83 @@ export function ProgramBuilderExerciseItem({
   exercise,
   index,
   onRemove,
+  onLabelChange,
   onDragStart,
   onDragEnd,
 }: ProgramBuilderExerciseItemProps): React.JSX.Element {
   const theme = useTheme();
-  
+
+  const [isEditingLabel, setIsEditingLabel] = React.useState(false);
+  const displayLabel = exerciseItem.customLabel ?? exercise.label;
+  const [labelDraft, setLabelDraft] = React.useState(displayLabel);
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+
+  React.useEffect(() => {
+    if (!isEditingLabel) {
+      setLabelDraft(displayLabel);
+    }
+  }, [displayLabel, isEditingLabel]);
+
+  React.useEffect(() => {
+    if (isEditingLabel && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [isEditingLabel]);
+
+  const commitLabelChange = React.useCallback(() => {
+    const trimmed = labelDraft.trim();
+    const nextLabel = trimmed || exercise.label;
+    setIsEditingLabel(false);
+    if (nextLabel !== displayLabel) {
+      onLabelChange(nextLabel);
+    }
+  }, [displayLabel, exercise.label, labelDraft, onLabelChange]);
+
+  const cancelLabelEdition = React.useCallback(() => {
+    setIsEditingLabel(false);
+    setLabelDraft(displayLabel);
+  }, [displayLabel]);
+
+  const handleLabelDoubleClick = React.useCallback(
+    (event: React.MouseEvent<HTMLSpanElement | HTMLParagraphElement>) => {
+      event.stopPropagation();
+      setLabelDraft(displayLabel);
+      setIsEditingLabel(true);
+    },
+    [displayLabel],
+  );
+
+  const handleLabelKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        commitLabelChange();
+      } else if (event.key === 'Escape') {
+        event.preventDefault();
+        cancelLabelEdition();
+      }
+    },
+    [cancelLabelEdition, commitLabelChange],
+  );
+
+  const handleLabelBlur = React.useCallback(() => {
+    if (isEditingLabel) {
+      commitLabelChange();
+    }
+  }, [commitLabelChange, isEditingLabel]);
+
   const handleRemoveClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     onRemove(exerciseItem.id);
   };
 
   const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
+    if (isEditingLabel) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
     event.stopPropagation();
     onDragStart?.(event);
   };
@@ -41,7 +116,7 @@ export function ProgramBuilderExerciseItem({
   return (
     <Paper
       variant="outlined"
-      draggable
+      draggable={!isEditingLabel}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       sx={{
@@ -67,9 +142,30 @@ export function ProgramBuilderExerciseItem({
           </Typography>
 
           <Stack spacing={0.5}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-              {exercise.label}
-            </Typography>
+            {isEditingLabel ? (
+              <TextField
+                inputRef={inputRef}
+                value={labelDraft}
+                onChange={(event) => setLabelDraft(event.target.value)}
+                onBlur={handleLabelBlur}
+                onKeyDown={handleLabelKeyDown}
+                size="small"
+                variant="standard"
+                inputProps={{
+                  'aria-label': 'exercise-label',
+                  sx: { fontWeight: 600 },
+                }}
+                sx={{ minWidth: 160 }}
+              />
+            ) : (
+              <Typography
+                variant="subtitle2"
+                sx={{ fontWeight: 600, cursor: 'text' }}
+                onDoubleClick={handleLabelDoubleClick}
+              >
+                {displayLabel}
+              </Typography>
+            )}
             <Typography variant="caption" color="text.secondary">
               {exerciseItem.sets} x {exerciseItem.reps} - {exerciseItem.rest}
             </Typography>

@@ -65,6 +65,7 @@ export type ProgramExercise = {
   sets: number;
   reps: string;
   rest: string;
+  customLabel?: string;
 };
 
 export type ProgramSession = {
@@ -414,6 +415,7 @@ export function ProgramBuilderPanel({
             sets: exerciseRef.sets ?? base.sets,
             reps: exerciseRef.reps ?? base.reps,
             rest: exerciseRef.rest ?? base.rest,
+            customLabel: undefined,
           };
         })
         .filter((exercise): exercise is ProgramExercise => exercise !== null);
@@ -500,6 +502,7 @@ export function ProgramBuilderPanel({
             sets: exercise.sets,
             reps: exercise.reps,
             rest: exercise.rest,
+            customLabel: undefined,
           });
           return {
             ...session,
@@ -531,6 +534,54 @@ export function ProgramBuilderPanel({
       );
     },
     [],
+  );
+
+  const handleSessionLabelChange = React.useCallback(
+    (sessionId: string, label: string) => {
+      setSessions((prev) =>
+        prev.map((session) =>
+          session.id === sessionId
+            ? {
+              ...session,
+              label,
+            }
+            : session,
+        ),
+      );
+    },
+    [],
+  );
+
+  const handleExerciseLabelChange = React.useCallback(
+    (sessionId: string, exerciseId: string, label: string) => {
+      setSessions((prev) =>
+        prev.map((session) => {
+          if (session.id !== sessionId) {
+            return session;
+          }
+          const exercises = session.exercises.map((exercise) => {
+            if (exercise.id !== exerciseId) {
+              return exercise;
+            }
+            const base = exerciseMap.get(exercise.exerciseId);
+            const baseLabel = base?.label ?? label;
+            const nextCustomLabel = label === baseLabel ? undefined : label;
+            if (nextCustomLabel === exercise.customLabel) {
+              return exercise;
+            }
+            return {
+              ...exercise,
+              customLabel: nextCustomLabel,
+            };
+          });
+          return {
+            ...session,
+            exercises,
+          };
+        }),
+      );
+    },
+    [exerciseMap],
   );
 
   const handleSessionDragStart = React.useCallback(() => {
@@ -700,7 +751,7 @@ export function ProgramBuilderPanel({
             return {
               id: exercise.id,
               templateExerciseId: exercise.exerciseId,
-              label: base.label,
+              label: exercise.customLabel ?? base.label,
               series: String(exercise.sets),
               repetitions: exercise.reps,
               restSeconds: parseRestSecondsValue(exercise.rest),
@@ -1005,6 +1056,7 @@ export function ProgramBuilderPanel({
                           session={session}
                           index={index}
                           builderCopy={builderCopy}
+                          onLabelChange={handleSessionLabelChange}
                           onRemoveSession={() => handleRemoveSession(session.id)}
                           onRemoveExercise={(exerciseId) =>
                             handleRemoveExercise(session.id, exerciseId)
@@ -1021,6 +1073,7 @@ export function ProgramBuilderPanel({
                           isDraggingExercise={isDraggingExercise}
                           exerciseDropLabel={exerciseDropZoneLabel}
                           onExerciseDrop={handleExerciseDropAtPosition}
+                          onExerciseLabelChange={handleExerciseLabelChange}
                           onExerciseDragStart={(sessionId, exerciseId, dragEvent) => {
                             handleExerciseDragStartFromSession();
                             beginDrag(dragEvent, {
