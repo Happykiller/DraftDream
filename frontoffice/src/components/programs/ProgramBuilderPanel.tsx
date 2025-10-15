@@ -208,7 +208,13 @@ export function ProgramBuilderPanel({
   const [exerciseCategory, setExerciseCategory] = React.useState<string>('all');
   const [exerciseType, setExerciseType] = React.useState<'all' | ExerciseVisibility>('all');
   const [isDraggingSession, setIsDraggingSession] = React.useState(false);
+  const [sessionDragOrigin, setSessionDragOrigin] = React.useState<
+    'library' | 'draft' | null
+  >(null);
   const [isDraggingExercise, setIsDraggingExercise] = React.useState(false);
+  const [exerciseDragOrigin, setExerciseDragOrigin] = React.useState<
+    'library' | 'draft' | null
+  >(null);
   const [sessions, setSessions] = React.useState<ProgramSession[]>([]);
   const [form, setForm] = React.useState<ProgramForm>({
     athlete: '',
@@ -584,24 +590,34 @@ export function ProgramBuilderPanel({
     [exerciseMap],
   );
 
-  const handleSessionDragStart = React.useCallback(() => {
+  const handleSessionDragStartFromLibrary = React.useCallback(() => {
     setIsDraggingSession(true);
+    setSessionDragOrigin('library');
+  }, []);
+
+  const handleSessionDragStartFromDraft = React.useCallback(() => {
+    setIsDraggingSession(true);
+    setSessionDragOrigin('draft');
   }, []);
 
   const handleSessionDragEnd = React.useCallback(() => {
     setIsDraggingSession(false);
+    setSessionDragOrigin(null);
   }, []);
 
   const handleExerciseDragStartFromLibrary = React.useCallback(() => {
     setIsDraggingExercise(true);
+    setExerciseDragOrigin('library');
   }, []);
 
   const handleExerciseDragStartFromSession = React.useCallback(() => {
     setIsDraggingExercise(true);
+    setExerciseDragOrigin('draft');
   }, []);
 
   const handleExerciseDragEnd = React.useCallback(() => {
     setIsDraggingExercise(false);
+    setExerciseDragOrigin(null);
   }, []);
 
   const handleSessionDropAtPosition = React.useCallback(
@@ -610,6 +626,7 @@ export function ProgramBuilderPanel({
       event.stopPropagation();
       const payload = parseDragData(event);
       setIsDraggingSession(false);
+      setSessionDragOrigin(null);
       if (!payload) {
         return;
       }
@@ -793,6 +810,11 @@ export function ProgramBuilderPanel({
     t,
   ]);
 
+  const sessionDropEffect: 'copy' | 'move' =
+    sessionDragOrigin === 'draft' ? 'move' : 'copy';
+  const exerciseDropEffect: 'copy' | 'move' =
+    exerciseDragOrigin === 'draft' ? 'move' : 'copy';
+
   return (
     <Paper
       elevation={4}
@@ -969,7 +991,7 @@ export function ProgramBuilderPanel({
                         template={template}
                         builderCopy={builderCopy}
                         onDragStart={(event) => {
-                          handleSessionDragStart();
+                          handleSessionDragStartFromLibrary();
                           beginDrag(event, { type: 'session', id: template.id });
                         }}
                         onDragEnd={handleSessionDragEnd}
@@ -1023,6 +1045,7 @@ export function ProgramBuilderPanel({
                       <ProgramBuilderSessionDropZone
                         key="session-drop-empty"
                         label={sessionDropZoneLabel}
+                        dropEffect={sessionDropEffect}
                         onDrop={(event) => handleSessionDropAtPosition(0, event)}
                       />
                       <Typography variant="body2" color="text.secondary" align="center">
@@ -1047,6 +1070,7 @@ export function ProgramBuilderPanel({
                       <ProgramBuilderSessionDropZone
                         key="session-drop-0"
                         label={sessionDropZoneLabel}
+                        dropEffect={sessionDropEffect}
                         onDrop={(event) => handleSessionDropAtPosition(0, event)}
                       />
                     )}
@@ -1062,7 +1086,7 @@ export function ProgramBuilderPanel({
                             handleRemoveExercise(session.id, exerciseId)
                           }
                           onDragStart={(event) => {
-                            handleSessionDragStart();
+                            handleSessionDragStartFromDraft();
                             beginDrag(event, {
                               type: 'session-move',
                               id: session.id,
@@ -1073,6 +1097,7 @@ export function ProgramBuilderPanel({
                           isDraggingExercise={isDraggingExercise}
                           exerciseDropLabel={exerciseDropZoneLabel}
                           onExerciseDrop={handleExerciseDropAtPosition}
+                          exerciseDropEffect={exerciseDropEffect}
                           onExerciseLabelChange={handleExerciseLabelChange}
                           onExerciseDragStart={(sessionId, exerciseId, dragEvent) => {
                             handleExerciseDragStartFromSession();
@@ -1088,6 +1113,7 @@ export function ProgramBuilderPanel({
                           <ProgramBuilderSessionDropZone
                             key={`session-drop-${index + 1}`}
                             label={sessionDropZoneLabel}
+                            dropEffect={sessionDropEffect}
                             onDrop={(event) =>
                               handleSessionDropAtPosition(index + 1, event)
                             }

@@ -23,6 +23,7 @@ type ProgramBuilderSessionItemProps = {
   getExerciseById: (exerciseId: string) => ExerciseLibraryItem | undefined;
   isDraggingExercise: boolean;
   exerciseDropLabel: string;
+  exerciseDropEffect: 'copy' | 'move';
   onExerciseDrop: (
     sessionId: string,
     position: number,
@@ -53,6 +54,7 @@ export function ProgramBuilderSessionItem({
   getExerciseById,
   isDraggingExercise,
   exerciseDropLabel,
+  exerciseDropEffect,
   onExerciseDrop,
   onExerciseLabelChange,
   onExerciseDragStart,
@@ -224,6 +226,7 @@ export function ProgramBuilderSessionItem({
           {isDraggingExercise && (
             <ProgramBuilderExerciseDropZone
               label={exerciseDropLabel}
+              dropEffect={exerciseDropEffect}
               onDrop={(event) => onExerciseDrop(session.id, 0, event)}
             />
           )}
@@ -258,6 +261,7 @@ export function ProgramBuilderSessionItem({
                   {isDraggingExercise && (
                     <ProgramBuilderExerciseDropZone
                       label={exerciseDropLabel}
+                      dropEffect={exerciseDropEffect}
                       onDrop={(event) =>
                         onExerciseDrop(session.id, exerciseIndex + 1, event)
                       }
