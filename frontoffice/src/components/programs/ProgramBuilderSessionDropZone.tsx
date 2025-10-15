@@ -4,11 +4,13 @@ import { Box, Typography } from '@mui/material';
 
 type ProgramBuilderSessionDropZoneProps = {
   label: string;
+  dropEffect?: 'copy' | 'move';
   onDrop: (event: React.DragEvent<HTMLDivElement>) => void;
 };
 
 export function ProgramBuilderSessionDropZone({
   label,
+  dropEffect = 'copy',
   onDrop,
 }: ProgramBuilderSessionDropZoneProps): React.JSX.Element {
   const theme = useTheme();
@@ -16,7 +18,7 @@ export function ProgramBuilderSessionDropZone({
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
-    event.dataTransfer.dropEffect = 'copy';
+    event.dataTransfer.dropEffect = dropEffect;
     setIsActive(true);
   };
 
@@ -26,6 +28,7 @@ export function ProgramBuilderSessionDropZone({
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
+    event.stopPropagation();
     setIsActive(false);
     onDrop(event);
   };
