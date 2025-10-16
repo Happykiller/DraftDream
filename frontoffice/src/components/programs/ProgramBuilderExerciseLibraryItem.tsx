@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
-import { Chip, Paper, Stack, Typography } from '@mui/material';
+import { Box, Chip, Paper, Stack, Typography } from '@mui/material';
 
-import type { ExerciseLibraryItem } from './ProgramBuilderPanel';
+import type { ExerciseLibraryItem } from './programBuilderTypes';
 import { DragIndicator } from '@mui/icons-material';
 
 type ProgramBuilderExerciseLibraryItemProps = {
@@ -11,7 +11,7 @@ type ProgramBuilderExerciseLibraryItemProps = {
   onDragEnd?: () => void;
 };
 
-export function ProgramBuilderExerciseLibraryItem({
+export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuilderExerciseLibraryItem({
   exercise,
   onDragStart,
   onDragEnd,
@@ -21,13 +21,10 @@ export function ProgramBuilderExerciseLibraryItem({
   return (
     <Paper
       variant="outlined"
-      draggable
-      onDragStart={onDragStart}
-      onDragEnd={onDragEnd}
       sx={{
         p: 1.5,
         borderRadius: 2,
-        cursor: 'grab',
+        cursor: 'default',
         '&:hover': {
           borderColor: theme.palette.primary.main,
           boxShadow: theme.shadows[1],
@@ -36,7 +33,19 @@ export function ProgramBuilderExerciseLibraryItem({
     >
       <Stack spacing={1}>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <DragIndicator fontSize="small" color="disabled" />
+          <Box
+            component="span"
+            draggable
+            onDragStart={onDragStart}
+            onDragEnd={onDragEnd}
+            sx={{
+              cursor: 'grab',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <DragIndicator fontSize="small" color="disabled" />
+          </Box>
           <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
             {exercise.label}
           </Typography>
@@ -58,4 +67,4 @@ export function ProgramBuilderExerciseLibraryItem({
       </Stack>
     </Paper>
   );
-}
+});

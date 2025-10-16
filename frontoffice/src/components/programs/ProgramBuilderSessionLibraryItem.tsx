@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
-import { Chip, Paper, Stack, Typography } from '@mui/material';
+import { Box, Chip, Paper, Stack, Typography } from '@mui/material';
 
-import type { BuilderCopy, SessionTemplate } from './ProgramBuilderPanel';
+import type { BuilderCopy, SessionTemplate } from './programBuilderTypes';
 import { DragIndicator } from '@mui/icons-material';
 
 type ProgramBuilderSessionTemplateItemProps = {
@@ -12,7 +12,7 @@ type ProgramBuilderSessionTemplateItemProps = {
   onDragEnd?: () => void;
 };
 
-export function ProgramBuilderSessionLibraryItem({
+export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuilderSessionLibraryItem({
   template,
   builderCopy,
   onDragStart,
@@ -23,13 +23,10 @@ export function ProgramBuilderSessionLibraryItem({
   return (
     <Paper
       variant="outlined"
-      draggable
-      onDragStart={onDragStart}
-      onDragEnd={onDragEnd}
       sx={{
         p: 1.5,
         borderRadius: 2,
-        cursor: 'grab',
+        cursor: 'default',
         transition: 'border-color 150ms ease, background-color 150ms ease',
         '&:hover': {
           borderColor: theme.palette.secondary.main,
@@ -39,7 +36,19 @@ export function ProgramBuilderSessionLibraryItem({
     >
       <Stack spacing={1.25}>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <DragIndicator fontSize="small" color="disabled" />
+          <Box
+            component="span"
+            draggable
+            onDragStart={onDragStart}
+            onDragEnd={onDragEnd}
+            sx={{
+              cursor: 'grab',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <DragIndicator fontSize="small" color="disabled" />
+          </Box>
           <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
             {template.label}
           </Typography>
@@ -65,4 +74,4 @@ export function ProgramBuilderSessionLibraryItem({
       </Stack>
     </Paper>
   );
-}
+});

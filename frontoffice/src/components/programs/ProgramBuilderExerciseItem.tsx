@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { DeleteOutline, DragIndicator } from '@mui/icons-material';
 import {
+  Box,
   Chip,
   IconButton,
   Paper,
@@ -10,7 +11,10 @@ import {
   useTheme,
 } from '@mui/material';
 
-import type { ExerciseLibraryItem, ProgramExercise } from './ProgramBuilderPanel';
+import type {
+  ExerciseLibraryItem,
+  ProgramExercise,
+} from './programBuilderTypes';
 
 type ProgramBuilderExerciseItemProps = {
   exerciseItem: ProgramExercise;
@@ -22,7 +26,7 @@ type ProgramBuilderExerciseItemProps = {
   onDragEnd?: () => void;
 };
 
-export function ProgramBuilderExerciseItem({
+export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExerciseItem({
   exerciseItem,
   exercise,
   index,
@@ -116,13 +120,10 @@ export function ProgramBuilderExerciseItem({
   return (
     <Paper
       variant="outlined"
-      draggable={!isEditingLabel}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
       sx={{
         p: 1.5,
         borderRadius: 2,
-        cursor: 'grab',
+        cursor: 'default',
         '&:hover': {
           borderColor: theme.palette.primary.main,
           boxShadow: theme.shadows[1],
@@ -136,7 +137,20 @@ export function ProgramBuilderExerciseItem({
         justifyContent="space-between"
       >
         <Stack direction="row" spacing={1} alignItems="flex-start">
-          <DragIndicator fontSize="small" color="disabled" />
+          <Box
+            component="span"
+            draggable={!isEditingLabel}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+            sx={{
+              cursor: isEditingLabel ? 'not-allowed' : 'grab',
+              display: 'flex',
+              alignItems: 'center',
+              paddingTop: '2px',
+            }}
+          >
+            <DragIndicator fontSize="small" color="disabled" />
+          </Box>
           <Typography variant="subtitle2" sx={{ fontWeight: 700, minWidth: 24 }}>
             {index + 1}.
           </Typography>
@@ -192,4 +206,4 @@ export function ProgramBuilderExerciseItem({
       </Stack>
     </Paper>
   );
-}
+});

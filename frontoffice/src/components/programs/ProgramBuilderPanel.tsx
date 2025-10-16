@@ -1,4 +1,3 @@
-// src/components/programs/ProgramBuilderPanel.tsx
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { alpha, useTheme } from '@mui/material/styles';
@@ -18,797 +17,80 @@ import {
   Typography,
 } from '@mui/material';
 import { Add, Search } from '@mui/icons-material';
-import { useSessions } from '@hooks/useSessions';
-import { useExercises, type ExerciseVisibility } from '@hooks/useExercises';
-import { useCategories } from '@hooks/useCategories';
+
 import { ProgramBuilderSessionItem } from './ProgramBuilderSessionItem';
 import { ProgramBuilderSessionLibraryItem } from './ProgramBuilderSessionLibraryItem';
 import { ProgramBuilderSessionDropZone } from './ProgramBuilderSessionDropZone';
 import { ProgramBuilderExerciseLibraryItem } from './ProgramBuilderExerciseLibraryItem';
-import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
-import { useUsers, type User } from '@src/hooks/useUsers';
-import { usePrograms } from '@src/hooks/usePrograms';
-import { useFlashStore } from '@src/hooks/useFlashStore';
-import { slugify } from '@src/utils/slugify';
+import type { BuilderCopy } from './programBuilderTypes';
+import { beginDrag } from './programBuilderUtils';
 
-export type ExerciseLibraryItem = {
-  id: string;
-  label: string;
-  level: string;
-  category: string;
-  type: string;
-  duration: number;
-  sets: number;
-  reps: string;
-  rest: string;
-  tags: string[];
-};
+import type { User } from '@src/hooks/useUsers';
+import { useProgramBuilder } from '@src/hooks/useProgramBuilder';
 
-type TemplateExerciseRef = {
-  exerciseId: string;
-  sets?: number;
-  reps?: string;
-  rest?: string;
-};
-
-export type SessionTemplate = {
-  id: string;
-  label: string;
-  duration: number;
-  tags: string[];
-  exercises: TemplateExerciseRef[];
-};
-
-export type ProgramExercise = {
-  id: string;
-  exerciseId: string;
-  sets: number;
-  reps: string;
-  rest: string;
-  customLabel?: string;
-};
-
-export type ProgramSession = {
-  id: string;
-  sessionId: string;
-  label: string;
-  duration: number;
-  tags: string[];
-  exercises: ProgramExercise[];
-};
-
-type ProgramForm = {
-  athlete: string;
-  programName: string;
-  duration: string;
-  frequency: string;
-  description: string;
-};
-
-type DragPayload =
-  | { type: 'session'; id: string }
-  | { type: 'exercise'; id: string }
-  | { type: 'session-move'; id: string }
-  | { type: 'exercise-move'; sessionId: string; id: string };
-
-export type BuilderCopy = {
-  title: string;
-  subtitle: string;
-  config: {
-    title: string;
-    client_label: string;
-    client_placeholder: string;
-    program_name_label: string;
-    duration_label: string;
-    frequency_label: string;
-    description_label: string;
-    description_placeholder: string;
-    search_placeholder: string;
-    filter_label: string;
-    filter_all: string;
-    button_create: string;
-  };
-  templates_title: string;
-  templates_subtitle: string;
-  structure: {
-    title: string;
-    summary: string;
-    empty: string;
-    session_prefix: string;
-    duration_unit: string;
-    tags_label: string;
-    exercise_drop_zone: string;
-    custom_session_label: string;
-  };
-  library: {
-    title: string;
-    subtitle: string;
-    search_placeholder: string;
-    primary_filter_label: string;
-    primary_filter_all: string;
-    secondary_filter_label: string;
-    secondary_filter_all: string;
-    button_create: string;
-    limit_hint?: string;
-    type_private?: string;
-    type_public?: string;
-    empty_state?: string;
-  };
-  footer: {
-    cancel: string;
-    submit: string;
-  };
-  draft_label: string;
-};
-
-const beginDrag = <T extends HTMLElement>(
-  event: React.DragEvent<T>,
-  payload: DragPayload,
-) => {
-  event.dataTransfer.setData('application/json', JSON.stringify(payload));
-  event.dataTransfer.effectAllowed = 'copyMove';
-};
-
-const parseDragData = (event: React.DragEvent): DragPayload | null => {
-  const raw = event.dataTransfer.getData('application/json');
-  if (!raw) {
-    return null;
-  }
-  try {
-    return JSON.parse(raw) as DragPayload;
-  } catch (error) {
-    console.warn('Unable to parse drag payload', error);
-    return null;
-  }
-};
-
-const parseSeriesCount = (series: string | null | undefined): number => {
-  if (!series) {
-    return 3;
-  }
-  const direct = Number(series);
-  if (!Number.isNaN(direct) && direct > 0) {
-    return direct;
-  }
-  const match = series.match(/\d+/);
-  return match ? Number(match[0]) : 3;
-};
-
-const parseRestSecondsValue = (rest: string | null | undefined): number | undefined => {
-  if (!rest) return undefined;
-  const trimmed = rest.trim();
-  if (!trimmed || trimmed === '-') return undefined;
-  const match = trimmed.match(/\d+(\.\d+)?/);
-  return match ? Number(match[0]) : undefined;
-};
-
-type ProgramBuilderPanelProps = {
+interface ProgramBuilderPanelProps {
   builderCopy: BuilderCopy;
   onCancel: () => void;
-};
+}
 
 export function ProgramBuilderPanel({
   builderCopy,
   onCancel,
 }: ProgramBuilderPanelProps): React.JSX.Element {
-  /**
-   * Basics
-   */
-  const { t, i18n } = useTranslation();
-  const flash = useFlashStore();
+  const { t } = useTranslation();
   const theme = useTheme();
 
-  /**
-   * Variables
-   */
-  const [usersQ, setUsersQ] = React.useState<string>('');
-  const [selectedAthlete, setSelectedAthlete] = React.useState<User | null>(null);
-  const [sessionSearch, setSessionSearch] = React.useState<string>('');
-  const [exerciseSearch, setExerciseSearch] = React.useState<string>('');
-  const [exerciseCategory, setExerciseCategory] = React.useState<string>('all');
-  const [exerciseType, setExerciseType] = React.useState<'all' | ExerciseVisibility>('all');
-  const [isDraggingSession, setIsDraggingSession] = React.useState(false);
-  const [sessionDragOrigin, setSessionDragOrigin] = React.useState<
-    'library' | 'draft' | null
-  >(null);
-  const [isDraggingExercise, setIsDraggingExercise] = React.useState(false);
-  const [exerciseDragOrigin, setExerciseDragOrigin] = React.useState<
-    'library' | 'draft' | null
-  >(null);
-  const [sessions, setSessions] = React.useState<ProgramSession[]>([]);
-  const [form, setForm] = React.useState<ProgramForm>({
-    athlete: '',
-    programName: '',
-    duration: '',
-    frequency: '',
-    description: '',
-  });
-
-  const summaryText = t('programs-coatch.builder.structure.summary', {
-    count: sessions.length,
-  });
-  const sessionDropZoneLabel = t(
-    'programs-coatch.builder.structure.drop_zone',
-    { defaultValue: 'Drop session here' },
-  );
-  const exerciseDropZoneLabel =
-    builderCopy.structure.exercise_drop_zone ??
-    t('programs-coatch.builder.structure.exercise_drop_zone', {
-      defaultValue: 'Drop exercise here',
-    });
-
-  /**
-   * Hooks
-   */
-  const debouncedQ = useDebouncedValue(usersQ, 300);
-  const debouncedSessionSearch = useDebouncedValue(sessionSearch, 300);
-  const debouncedExerciseSearch = useDebouncedValue(exerciseSearch, 300);
-  const exerciseVisibilityFilter = React.useMemo<ExerciseVisibility | undefined>(
-    () => (exerciseType === 'all' ? undefined : exerciseType),
-    [exerciseType],
-  );
-  const collator = React.useMemo(
-    () => new Intl.Collator(i18n.language || undefined, { sensitivity: 'base' }),
-    [i18n.language],
-  );
-
-  const { items: sessionItems, loading: sessionsLoading } = useSessions({
-    page: 1,
-    limit: 10,
-    q: debouncedSessionSearch,
-  });
-
-  const { items: exerciseItems, loading: exercisesLoading } = useExercises({
-    page: 1,
-    limit: 10,
-    q: debouncedExerciseSearch,
-    visibility: exerciseVisibilityFilter,
-  });
-
-  const { items: categoryItems, loading: categoriesLoading } = useCategories({
-    page: 1,
-    limit: 100,
-    q: '',
-  });
-
-  const { items: users, loading: usersLoading } = useUsers({
-    page: 1,
-    limit: 100,
-    q: debouncedQ,
-  });
-
-  const { create: createProgram } = usePrograms({ page: 1, limit: 50, q: '' });
-
-  const userLabel = React.useCallback((u: User | null) => {
-    if (!u) return '';
-    return u.email;
-  }, []);
-
-  // Keep form.athlete in sync with selected object
-  const handleSelectAthlete = React.useCallback((_e: unknown, value: User | null) => {
-    setSelectedAthlete(value);
-    setForm((prev) => ({ ...prev, athlete: value?.id ?? '' }));
-  }, []);
-
-  const sessionTemplates = React.useMemo<SessionTemplate[]>(() => {
-    // Keep results alphabetical to match the back-office listing behaviour.
-    const sorted = [...sessionItems].sort((a, b) => a.label.localeCompare(b.label));
-    return sorted.map((item) => ({
-      id: item.id,
-      label: item.label,
-      duration: item.durationMin,
-      tags: [],
-      exercises: item.exerciseIds.map((exerciseId) => ({ exerciseId })),
-    }));
-  }, [sessionItems]);
-
-  const exerciseLibrary = React.useMemo<ExerciseLibraryItem[]>(
-    () => {
-      const sorted = [...exerciseItems].sort((a, b) => collator.compare(a.label, b.label));
-      return sorted.map((item) => ({
-        id: item.id,
-        label: item.label,
-        level: item.level,
-        category: item.level,
-        type: item.visibility,
-        duration: item.rest ?? 0,
-        sets: parseSeriesCount(item.series),
-        reps: item.repetitions,
-        rest: item.rest != null ? `${item.rest}s` : '-',
-        tags: [],
-      }));
-    },
-    [collator, exerciseItems],
-  );
-
-  const exerciseMap = React.useMemo(
-    () => new Map(exerciseLibrary.map((exercise) => [exercise.id, exercise])),
-    [exerciseLibrary],
-  );
-
-  React.useEffect(() => {
-    if (!selectedAthlete && form.athlete) {
-      const found = users.find(u => u.id === form.athlete);
-      if (found) setSelectedAthlete(found);
-    }
-  }, [users, selectedAthlete, form.athlete]);
-
-  const idCountersRef = React.useRef<{ session: number; exercise: number }>({
-    session: 0,
-    exercise: 0,
-  });
-
-  const exerciseCategories = React.useMemo(
-    () =>
-      Array.from(
-        new Set(
-          categoryItems
-            .map((item) => item.label || item.slug || item.locale)
-            .filter((value): value is string => Boolean(value)),
-        ),
-      ).sort(),
-    [categoryItems],
-  );
-
-  const exerciseTypeOptions = React.useMemo(
-    () => [
-      { value: 'all' as const, label: builderCopy.library.secondary_filter_all },
-      {
-        value: 'PRIVATE' as const,
-        label:
-          builderCopy.library.type_private ??
-          t('programs-coatch.builder.library.type_private', { defaultValue: 'Private' }),
-      },
-      {
-        value: 'PUBLIC' as const,
-        label:
-          builderCopy.library.type_public ??
-          t('programs-coatch.builder.library.type_public', { defaultValue: 'Public' }),
-      },
-    ],
-    [
-      builderCopy.library.secondary_filter_all,
-      builderCopy.library.type_private,
-      builderCopy.library.type_public,
-      t,
-    ],
-  );
-
-  const limitHint = React.useMemo(
-    () =>
-      builderCopy.library.limit_hint ??
-      t('programs-coatch.builder.library.limit_hint', {
-        defaultValue: 'Showing up to 10 exercises sorted alphabetically.',
-      }),
-    [builderCopy.library.limit_hint, t],
-  );
-
-  const emptyExercisesMessage = React.useMemo(
-    () =>
-      builderCopy.library.empty_state ??
-      t('programs-coatch.builder.library.empty_state', {
-        defaultValue: 'No exercises match your filters.',
-      }),
-    [builderCopy.library.empty_state, t],
-  );
-
-  const filteredExercises = React.useMemo(() => {
-    if (exerciseCategory === 'all') {
-      return exerciseLibrary;
-    }
-    return exerciseLibrary.filter((exercise) => exercise.category === exerciseCategory);
-  }, [exerciseCategory, exerciseLibrary]);
-
-  /**
-   * Methods
-   */
-  const nextId = React.useCallback((type: 'session' | 'exercise') => {
-    idCountersRef.current[type] += 1;
-    return `${type}-${idCountersRef.current[type]}`;
-  }, []);
-
-  const createSessionFromTemplate = React.useCallback(
-    (template: SessionTemplate): ProgramSession => {
-      const exercises = template.exercises
-        .map((exerciseRef) => {
-          const base = exerciseMap.get(exerciseRef.exerciseId);
-          if (!base) {
-            return null;
-          }
-          return {
-            id: nextId('exercise'),
-            exerciseId: base.id,
-            sets: exerciseRef.sets ?? base.sets,
-            reps: exerciseRef.reps ?? base.reps,
-            rest: exerciseRef.rest ?? base.rest,
-            customLabel: undefined,
-          };
-        })
-        .filter((exercise): any => exercise !== null) as any[];
-
-      return {
-        id: nextId('session'),
-        sessionId: template.id,
-        label: template.label,
-        duration: template.duration,
-        tags: template.tags,
-        exercises,
-      };
-    },
-    [exerciseMap, nextId],
-  );
-
-  const createEmptySession = React.useCallback(
-    (): ProgramSession => {
-      const id = nextId('session');
-      return {
-        id,
-        sessionId: id,
-        label: builderCopy.structure.custom_session_label,
-        duration: 0,
-        tags: [],
-        exercises: [],
-      };
-    },
-    [builderCopy.structure.custom_session_label, nextId],
-  );
-
-  const handleFormChange = React.useCallback(
-    (field: keyof ProgramForm) =>
-      (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { value } = event.target;
-        setForm((prev) => ({ ...prev, [field]: value }));
-      },
-    [],
-  );
-
-  const handleAddSessionFromTemplate = React.useCallback(
-    (templateId: string, position?: number) => {
-      const template = sessionTemplates.find((item) => item.id === templateId);
-      if (!template) {
-        return;
-      }
-      const session = createSessionFromTemplate(template);
-      setSessions((prev) => {
-        const insertAt =
-          position != null
-            ? Math.min(Math.max(position, 0), prev.length)
-            : prev.length;
-        const next = [...prev];
-        next.splice(insertAt, 0, session);
-        return next;
-      });
-    },
-    [createSessionFromTemplate, sessionTemplates],
-  );
-
-  const handleCreateEmptySession = React.useCallback(() => {
-    setSessions((prev) => [...prev, createEmptySession()]);
-  }, [createEmptySession]);
-
-  const handleAddExerciseToSession = React.useCallback(
-    (sessionId: string, exerciseId: string, position?: number) => {
-      const exercise = exerciseMap.get(exerciseId);
-      if (!exercise) {
-        return;
-      }
-      setSessions((prev) =>
-        prev.map((session) => {
-          if (session.id !== sessionId) {
-            return session;
-          }
-          const exercises = [...session.exercises];
-          const insertAt =
-            position != null
-              ? Math.min(Math.max(position, 0), exercises.length)
-              : exercises.length;
-          exercises.splice(insertAt, 0, {
-            id: nextId('exercise'),
-            exerciseId: exercise.id,
-            sets: exercise.sets,
-            reps: exercise.reps,
-            rest: exercise.rest,
-            customLabel: undefined,
-          });
-          return {
-            ...session,
-            exercises,
-          };
-        }),
-      );
-    },
-    [exerciseMap, nextId],
-  );
-
-  const handleRemoveSession = React.useCallback((sessionId: string) => {
-    setSessions((prev) => prev.filter((session) => session.id !== sessionId));
-  }, []);
-
-  const handleRemoveExercise = React.useCallback(
-    (sessionId: string, exerciseId: string) => {
-      setSessions((prev) =>
-        prev.map((session) =>
-          session.id === sessionId
-            ? {
-              ...session,
-              exercises: session.exercises.filter(
-                (exercise) => exercise.id !== exerciseId,
-              ),
-            }
-            : session,
-        ),
-      );
-    },
-    [],
-  );
-
-  const handleSessionLabelChange = React.useCallback(
-    (sessionId: string, label: string) => {
-      setSessions((prev) =>
-        prev.map((session) =>
-          session.id === sessionId
-            ? {
-              ...session,
-              label,
-            }
-            : session,
-        ),
-      );
-    },
-    [],
-  );
-
-  const handleExerciseLabelChange = React.useCallback(
-    (sessionId: string, exerciseId: string, label: string) => {
-      setSessions((prev) =>
-        prev.map((session) => {
-          if (session.id !== sessionId) {
-            return session;
-          }
-          const exercises = session.exercises.map((exercise) => {
-            if (exercise.id !== exerciseId) {
-              return exercise;
-            }
-            const base = exerciseMap.get(exercise.exerciseId);
-            const baseLabel = base?.label ?? label;
-            const nextCustomLabel = label === baseLabel ? undefined : label;
-            if (nextCustomLabel === exercise.customLabel) {
-              return exercise;
-            }
-            return {
-              ...exercise,
-              customLabel: nextCustomLabel,
-            };
-          });
-          return {
-            ...session,
-            exercises,
-          };
-        }),
-      );
-    },
-    [exerciseMap],
-  );
-
-  const handleSessionDragStartFromLibrary = React.useCallback(() => {
-    setIsDraggingSession(true);
-    setSessionDragOrigin('library');
-  }, []);
-
-  const handleSessionDragStartFromDraft = React.useCallback(() => {
-    setIsDraggingSession(true);
-    setSessionDragOrigin('draft');
-  }, []);
-
-  const handleSessionDragEnd = React.useCallback(() => {
-    setIsDraggingSession(false);
-    setSessionDragOrigin(null);
-  }, []);
-
-  const handleExerciseDragStartFromLibrary = React.useCallback(() => {
-    setIsDraggingExercise(true);
-    setExerciseDragOrigin('library');
-  }, []);
-
-  const handleExerciseDragStartFromSession = React.useCallback(() => {
-    setIsDraggingExercise(true);
-    setExerciseDragOrigin('draft');
-  }, []);
-
-  const handleExerciseDragEnd = React.useCallback(() => {
-    setIsDraggingExercise(false);
-    setExerciseDragOrigin(null);
-  }, []);
-
-  const handleSessionDropAtPosition = React.useCallback(
-    (position: number, event: React.DragEvent<HTMLDivElement>) => {
-      event.preventDefault();
-      event.stopPropagation();
-      const payload = parseDragData(event);
-      setIsDraggingSession(false);
-      setSessionDragOrigin(null);
-      if (!payload) {
-        return;
-      }
-      if (payload.type === 'session') {
-        handleAddSessionFromTemplate(payload.id, position);
-        return;
-      }
-      if (payload.type === 'session-move') {
-        setSessions((prev) => {
-          const currentIndex = prev.findIndex(
-            (session) => session.id === payload.id,
-          );
-          if (currentIndex === -1) {
-            return prev;
-          }
-          if (position === currentIndex || position === currentIndex + 1) {
-            return prev;
-          }
-          const next = [...prev];
-          const [moved] = next.splice(currentIndex, 1);
-          let targetIndex = position;
-          if (position > currentIndex) {
-            targetIndex -= 1;
-          }
-          targetIndex = Math.max(0, Math.min(targetIndex, next.length));
-          next.splice(targetIndex, 0, moved);
-          return next;
-        });
-      }
-    },
-    [handleAddSessionFromTemplate],
-  );
-
-  const handleExerciseDropAtPosition = React.useCallback(
-    (sessionId: string, position: number, event: React.DragEvent<HTMLDivElement>) => {
-      const payload = parseDragData(event);
-      if (!payload) {
-        return;
-      }
-      event.preventDefault();
-      event.stopPropagation();
-      handleExerciseDragEnd();
-      if (payload.type === 'exercise') {
-        handleAddExerciseToSession(sessionId, payload.id, position);
-        return;
-      }
-      if (payload.type === 'exercise-move') {
-        setSessions((prev) => {
-          const sourceSessionIndex = prev.findIndex(
-            (session) => session.id === payload.sessionId,
-          );
-          if (sourceSessionIndex === -1) {
-            return prev;
-          }
-          const sourceSession = prev[sourceSessionIndex];
-          const sourceExerciseIndex = sourceSession.exercises.findIndex(
-            (exercise) => exercise.id === payload.id,
-          );
-          if (sourceExerciseIndex === -1) {
-            return prev;
-          }
-          const draggedExercise = sourceSession.exercises[sourceExerciseIndex];
-          const withoutSource = prev.map((session) => {
-            if (session.id !== payload.sessionId) {
-              return session;
-            }
-            const exercises = [...session.exercises];
-            exercises.splice(sourceExerciseIndex, 1);
-            return {
-              ...session,
-              exercises,
-            };
-          });
-          return withoutSource.map((session) => {
-            if (session.id !== sessionId) {
-              return session;
-            }
-            const exercises = [...session.exercises];
-            let insertAt = position;
-            if (
-              payload.sessionId === sessionId &&
-              sourceExerciseIndex < position
-            ) {
-              insertAt -= 1;
-            }
-            insertAt = Math.max(0, Math.min(insertAt, exercises.length));
-            exercises.splice(insertAt, 0, draggedExercise);
-            return {
-              ...session,
-              exercises,
-            };
-          });
-        });
-      }
-    },
-    [handleAddExerciseToSession, handleExerciseDragEnd],
-  );
-
-  const resetBuilder = React.useCallback(() => {
-    setSelectedAthlete(null);
-    setUsersQ('');
-    setSessionSearch('');
-    setExerciseSearch('');
-    setExerciseCategory('all');
-    setExerciseType('all');
-    setSessions([]);
-    setForm({
-      athlete: '',
-      programName: '',
-      duration: '',
-      frequency: '',
-      description: '',
-    });
-    // reset local id counters
-    idCountersRef.current = { session: 0, exercise: 0 };
-  }, []);
-
-  const handleSubmit = React.useCallback(async () => {
-    // basic validation
-    const name = form.programName?.trim();
-    const duration = parseInt(form.duration);
-    const frequency = parseInt(form.frequency);
-    if (!name || !duration || !frequency) {
-      flash.error('Please fill required fields');
-      return;
-    }
-
-    try {
-      const sessionSnapshots = sessions.map((session) => ({
-        id: session.id,
-        templateSessionId: session.sessionId,
-        label: session.label,
-        durationMin: session.duration,
-        description: undefined,
-        exercises: session.exercises
-          .map((exercise) => {
-            const base = exerciseMap.get(exercise.exerciseId);
-            if (!base) return null;
-            return {
-              id: exercise.id,
-              templateExerciseId: exercise.exerciseId,
-              label: exercise.customLabel ?? base.label,
-              series: String(exercise.sets),
-              repetitions: exercise.reps,
-              restSeconds: parseRestSecondsValue(exercise.rest),
-              description: undefined,
-              instructions: undefined,
-              charge: undefined,
-              videoUrl: undefined,
-              level: base.level,
-            };
-          })
-          .filter((exercise): exercise is NonNullable<typeof exercise> => Boolean(exercise)),
-      }));
-
-      await createProgram({
-        slug: slugify(name, String(Date.now()).slice(-5)),
-        locale: i18n.language,
-        label: name,
-        duration,
-        frequency,
-        description: form.description || '',
-        sessionIds: sessions.map((session) => session.sessionId),
-        sessions: sessionSnapshots,
-        userId: form.athlete || null,
-      });
-      resetBuilder();
-      onCancel();
-    } catch (error) {
-      flash.error(t('common.unexpected_error'));
-    }
-  }, [
+  const {
     form,
-    i18n.language,
-    createProgram,
-    flash,
     sessions,
+    selectedAthlete,
+    users,
+    sessionSearch,
+    exerciseSearch,
+    exerciseCategory,
+    exerciseType,
+    sessionTemplates,
+    filteredExercises,
+    exerciseCategories,
+    exerciseTypeOptions,
     exerciseMap,
-    resetBuilder,
-    onCancel,
-    t,
-  ]);
+    limitHint,
+    emptyExercisesMessage,
+    summaryText,
+    sessionDropZoneLabel,
+    exerciseDropZoneLabel,
+    sessionsLoading,
+    exercisesLoading,
+    categoriesLoading,
+    usersLoading,
+    isDraggingSession,
+    isDraggingExercise,
+    sessionDragOrigin,
+    exerciseDragOrigin,
+    setSessionSearch,
+    setExerciseSearch,
+    setExerciseCategory,
+    setExerciseType,
+    setUsersQ,
+    handleSelectAthlete,
+    handleFormChange,
+    handleAddSessionFromTemplate,
+    handleCreateEmptySession,
+    handleRemoveSession,
+    handleRemoveExercise,
+    handleSessionLabelChange,
+    handleExerciseLabelChange,
+    handleExerciseDropAtPosition,
+    handleSessionDropAtPosition,
+    handleSessionDragStartFromLibrary,
+    handleSessionDragStartFromDraft,
+    handleSessionDragEnd,
+    handleExerciseDragStartFromLibrary,
+    handleExerciseDragStartFromSession,
+    handleExerciseDragEnd,
+    handleSubmit,
+    userLabel,
+  } = useProgramBuilder(builderCopy, onCancel);
 
   const sessionDropEffect: 'copy' | 'move' =
     sessionDragOrigin === 'draft' ? 'move' : 'copy';
@@ -825,7 +107,6 @@ export function ProgramBuilderPanel({
       }}
     >
       <Stack spacing={3}>
-        {/* Header */}
         <Stack direction="row" spacing={1} alignItems="center">
           <Typography variant="h6" sx={{ fontWeight: 700 }}>
             {builderCopy.title}
@@ -846,7 +127,6 @@ export function ProgramBuilderPanel({
 
         <Grid container spacing={3}>
           <Grid size={{ xs: 12, md: 3, lg: 3 }}>
-            {/* Program configuration and template list */}
             <Stack spacing={3}>
               <Paper
                 sx={{
@@ -862,15 +142,14 @@ export function ProgramBuilderPanel({
                 </Typography>
 
                 <Autocomplete<User>
-                  // Accessibility: proper ARIA combobox behavior is handled by MUI Autocomplete
                   options={users}
                   value={selectedAthlete}
                   loading={usersLoading}
                   onChange={handleSelectAthlete}
-                  isOptionEqualToValue={(opt, val) => opt.id === val.id}
-                  getOptionLabel={(opt) => userLabel(opt)}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  getOptionLabel={userLabel}
                   noOptionsText={t('common.field_incorrect')}
-                  onInputChange={(_e, value) => setUsersQ(value)}
+                  onInputChange={(_event, value) => setUsersQ(value)}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -928,147 +207,119 @@ export function ProgramBuilderPanel({
                 <TextField
                   label={builderCopy.config.description_label}
                   placeholder={builderCopy.config.description_placeholder}
-                  size="small"
                   multiline
-                  minRows={4}
-                  fullWidth
+                  minRows={3}
                   value={form.description}
                   onChange={handleFormChange('description')}
                 />
-              </Paper>
 
-              <Paper
-                sx={{
-                  p: 2.5,
-                  borderRadius: 2,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 2,
-                }}
-              >
-                {/* Session Library */}
-                <Stack
-                  direction="row"
-                  alignItems={{ xs: 'flex-start', sm: 'center' }}
-                  justifyContent="space-between"
-                  spacing={1}
-                >
-                  <Stack spacing={0.5}>
-                    <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                      {builderCopy.templates_title}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {builderCopy.templates_subtitle}
-                    </Typography>
+                <Divider />
+
+                <Stack spacing={1}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                    {builderCopy.templates_title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {builderCopy.templates_subtitle}
+                  </Typography>
+
+                  <TextField
+                    fullWidth
+                    size="small"
+                    placeholder={builderCopy.config.search_placeholder}
+                    value={sessionSearch}
+                    onChange={(event) => setSessionSearch(event.target.value)}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Search fontSize="small" color="disabled" />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+
+                  <Stack spacing={1.5}>
+                    {sessionsLoading ? (
+                      <Box display="flex" justifyContent="center" py={2}>
+                        <CircularProgress size={24} />
+                      </Box>
+                    ) : sessionTemplates.length === 0 ? (
+                      <Typography variant="body2" color="text.secondary">
+                        {builderCopy.structure.empty}
+                      </Typography>
+                    ) : (
+                      sessionTemplates.map((template) => (
+                        <ProgramBuilderSessionLibraryItem
+                          key={template.id}
+                          template={template}
+                          builderCopy={builderCopy}
+                          onDragStart={(event) => {
+                            handleSessionDragStartFromLibrary();
+                            beginDrag(event, { type: 'session', id: template.id });
+                          }}
+                          onDragEnd={handleSessionDragEnd}
+                        />
+                      ))
+                    )}
                   </Stack>
-                </Stack>
-
-                <TextField
-                  fullWidth
-                  size="small"
-                  placeholder={builderCopy.config.search_placeholder}
-                  value={sessionSearch}
-                  onChange={(event) => setSessionSearch(event.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Search fontSize="small" color="disabled" />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-
-                <Stack spacing={1.5}>
-                  {sessionsLoading && (
-                    <Typography variant="body2" color="text.secondary">
-                      {t('common.loading', { defaultValue: 'Loading...' })}
-                    </Typography>
-                  )}
-                  {!sessionsLoading &&
-                    sessionTemplates.map((template) => (
-                      <ProgramBuilderSessionLibraryItem
-                        key={template.id}
-                        template={template}
-                        builderCopy={builderCopy}
-                        onDragStart={(event) => {
-                          handleSessionDragStartFromLibrary();
-                          beginDrag(event, { type: 'session', id: template.id });
-                        }}
-                        onDragEnd={handleSessionDragEnd}
-                      />
-                    ))}
-                  {!sessionsLoading && !sessionTemplates.length && (
-                    <Typography variant="body2" color="text.secondary">
-                      {sessionSearch
-                        ? t('common.field_incorrect')
-                        : t('programs-coatch.placeholder')}
-                    </Typography>
-                  )}
                 </Stack>
               </Paper>
             </Stack>
           </Grid>
+
           <Grid size={{ xs: 12, md: 5, lg: 5 }}>
             <Paper
               sx={{
                 p: 2.5,
                 borderRadius: 2,
-                minHeight: 420,
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 2,
               }}
             >
-              {/* Program structure builder */}
               <Stack spacing={0.5}>
-                <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                  {builderCopy.structure.title}
-                </Typography>
+                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                  <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                    {builderCopy.structure.title}
+                  </Typography>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    {summaryText}
+                  </Typography>
+                </Stack>
                 <Typography variant="body2" color="text.secondary">
-                  {summaryText}
+                  {builderCopy.structure.summary}
                 </Typography>
               </Stack>
 
               <Box
                 sx={{
-                  flexGrow: 1,
+                  border: `1px dashed ${alpha(theme.palette.text.primary, 0.2)}`,
+                  borderRadius: 2,
                   p: 2,
+                  minHeight: 280,
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: 2,
-                  transition: 'background-color 150ms ease',
+                  gap: 1.5,
+                  bgcolor: alpha(theme.palette.background.default, 0.4),
                 }}
               >
                 {sessions.length === 0 ? (
-                  isDraggingSession ? (
-                    <Stack spacing={1.5} sx={{ flexGrow: 1, minHeight: 180 }}>
+                  <Stack spacing={1} alignItems="center" justifyContent="center" flexGrow={1}>
+                    <Typography variant="body2" color="text.secondary" textAlign="center">
+                      {builderCopy.structure.empty}
+                    </Typography>
+                    {isDraggingSession && (
                       <ProgramBuilderSessionDropZone
-                        key="session-drop-empty"
                         label={sessionDropZoneLabel}
                         dropEffect={sessionDropEffect}
                         onDrop={(event) => handleSessionDropAtPosition(0, event)}
                       />
-                      <Typography variant="body2" color="text.secondary" align="center">
-                        {builderCopy.structure.empty}
-                      </Typography>
-                    </Stack>
-                  ) : (
-                    <Stack
-                      alignItems="center"
-                      justifyContent="center"
-                      spacing={1}
-                      sx={{ flexGrow: 1, minHeight: 180 }}
-                    >
-                      <Typography variant="body2" color="text.secondary" align="center">
-                        {builderCopy.structure.empty}
-                      </Typography>
-                    </Stack>
-                  )
+                    )}
+                  </Stack>
                 ) : (
                   <>
                     {isDraggingSession && (
                       <ProgramBuilderSessionDropZone
-                        key="session-drop-0"
                         label={sessionDropZoneLabel}
                         dropEffect={sessionDropEffect}
                         onDrop={(event) => handleSessionDropAtPosition(0, event)}
@@ -1087,17 +338,14 @@ export function ProgramBuilderPanel({
                           }
                           onDragStart={(event) => {
                             handleSessionDragStartFromDraft();
-                            beginDrag(event, {
-                              type: 'session-move',
-                              id: session.id,
-                            });
+                            beginDrag(event, { type: 'session-move', id: session.id });
                           }}
                           onDragEnd={handleSessionDragEnd}
                           getExerciseById={(exerciseId) => exerciseMap.get(exerciseId)}
                           isDraggingExercise={isDraggingExercise}
                           exerciseDropLabel={exerciseDropZoneLabel}
-                          onExerciseDrop={handleExerciseDropAtPosition}
                           exerciseDropEffect={exerciseDropEffect}
+                          onExerciseDrop={handleExerciseDropAtPosition}
                           onExerciseLabelChange={handleExerciseLabelChange}
                           onExerciseDragStart={(sessionId, exerciseId, dragEvent) => {
                             handleExerciseDragStartFromSession();
@@ -1114,9 +362,7 @@ export function ProgramBuilderPanel({
                             key={`session-drop-${index + 1}`}
                             label={sessionDropZoneLabel}
                             dropEffect={sessionDropEffect}
-                            onDrop={(event) =>
-                              handleSessionDropAtPosition(index + 1, event)
-                            }
+                            onDrop={(event) => handleSessionDropAtPosition(index + 1, event)}
                           />
                         )}
                       </React.Fragment>
@@ -1147,7 +393,6 @@ export function ProgramBuilderPanel({
                 gap: 2,
               }}
             >
-              {/* Exercise library */}
               <Stack spacing={0.5}>
                 <Typography variant="h6" sx={{ fontWeight: 700 }}>
                   {builderCopy.library.title}
@@ -1182,9 +427,7 @@ export function ProgramBuilderPanel({
                   disabled={categoriesLoading && !exerciseCategories.length}
                   onChange={(event) => setExerciseCategory(event.target.value)}
                 >
-                  <MenuItem value="all">
-                    {builderCopy.library.primary_filter_all}
-                  </MenuItem>
+                  <MenuItem value="all">{builderCopy.library.primary_filter_all}</MenuItem>
                   {exerciseCategories.map((category) => (
                     <MenuItem key={category} value={category}>
                       {category}
@@ -1197,9 +440,7 @@ export function ProgramBuilderPanel({
                   size="small"
                   label={builderCopy.library.secondary_filter_label}
                   value={exerciseType}
-                  onChange={(event) =>
-                    setExerciseType(event.target.value as 'all' | ExerciseVisibility)
-                  }
+                  onChange={(event) => setExerciseType(event.target.value as typeof exerciseType)}
                 >
                   {exerciseTypeOptions.map((option) => (
                     <MenuItem key={option.value} value={option.value}>
@@ -1213,31 +454,16 @@ export function ProgramBuilderPanel({
                 {limitHint}
               </Typography>
 
-              <Button
-                variant="outlined"
-                size="small"
-                startIcon={<Add fontSize="small" />}
-                onClick={() => console.log('Create new exercise')}
-              >
-                {builderCopy.library.button_create}
-              </Button>
-
-              {categoriesLoading && (
-                <Typography variant="caption" color="text.secondary">
-                  {t('common.loading', { defaultValue: 'Loading categories...' })}
-                </Typography>
-              )}
-
-              <Stack spacing={1.5} sx={{ mt: 1, flexGrow: 1 }}>
-                {exercisesLoading && (
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <CircularProgress size={16} thickness={5} />
-                    <Typography variant="caption" color="text.secondary">
-                      {t('common.loading', { defaultValue: 'Loading...' })}
-                    </Typography>
-                  </Stack>
-                )}
-                {!exercisesLoading &&
+              <Stack spacing={1.5}>
+                {exercisesLoading ? (
+                  <Box display="flex" justifyContent="center" py={2}>
+                    <CircularProgress size={24} />
+                  </Box>
+                ) : filteredExercises.length === 0 ? (
+                  <Typography variant="body2" color="text.secondary">
+                    {emptyExercisesMessage}
+                  </Typography>
+                ) : (
                   filteredExercises.map((exercise) => (
                     <ProgramBuilderExerciseLibraryItem
                       key={exercise.id}
@@ -1248,30 +474,18 @@ export function ProgramBuilderPanel({
                       }}
                       onDragEnd={handleExerciseDragEnd}
                     />
-                  ))}
-                {!exercisesLoading && !filteredExercises.length && (
-                  <Typography variant="body2" color="text.secondary">
-                    {emptyExercisesMessage}
-                  </Typography>
+                  ))
                 )}
               </Stack>
             </Paper>
           </Grid>
         </Grid>
 
-        <Divider />
-
-        {/* Footer actions */}
-        <Stack
-          direction={{ xs: 'column', sm: 'row' }}
-          alignItems={{ xs: 'stretch', sm: 'center' }}
-          justifyContent="space-between"
-          spacing={1.5}
-        >
-          <Button variant="text" onClick={onCancel}>
+        <Stack direction="row" justifyContent="flex-end" spacing={1.5}>
+          <Button variant="text" color="inherit" onClick={onCancel}>
             {builderCopy.footer.cancel}
           </Button>
-          <Button variant="contained" size="large" onClick={handleSubmit}>
+          <Button variant="contained" onClick={handleSubmit}>
             {builderCopy.footer.submit}
           </Button>
         </Stack>
@@ -1279,4 +493,3 @@ export function ProgramBuilderPanel({
     </Paper>
   );
 }
-

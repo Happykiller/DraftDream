@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { DeleteOutline, DragIndicator } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
-import { Chip, IconButton, Paper, Stack, TextField, Typography } from '@mui/material';
+import { Box, Chip, IconButton, Paper, Stack, TextField, Typography } from '@mui/material';
 
 import type {
   BuilderCopy,
   ExerciseLibraryItem,
   ProgramSession,
-} from './ProgramBuilderPanel';
+} from './programBuilderTypes';
 import { ProgramBuilderExerciseItem } from './ProgramBuilderExerciseItem';
 import { ProgramBuilderExerciseDropZone } from './ProgramBuilderExerciseDropZone';
 
@@ -42,7 +42,7 @@ type ProgramBuilderSessionItemProps = {
   onExerciseDragEnd: () => void;
 };
 
-export function ProgramBuilderSessionItem({
+export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessionItem({
   session,
   index,
   builderCopy,
@@ -153,13 +153,10 @@ export function ProgramBuilderSessionItem({
   return (
     <Paper
       variant="outlined"
-      draggable={!isEditingLabel}
-      onDragStart={handleDragStartInternal}
-      onDragEnd={onDragEnd}
       sx={{
         p: 1.5,
         borderRadius: 2,
-        cursor: 'grab',
+        cursor: 'default',
         transition: 'border-color 150ms ease, background-color 150ms ease',
         '&:hover': {
           borderColor: theme.palette.secondary.main,
@@ -170,7 +167,19 @@ export function ProgramBuilderSessionItem({
       <Stack spacing={1.5}>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Stack direction="row" spacing={1} alignItems="center">
-            <DragIndicator fontSize="small" color="disabled" />
+            <Box
+              component="span"
+              draggable={!isEditingLabel}
+              onDragStart={handleDragStartInternal}
+              onDragEnd={onDragEnd}
+              sx={{
+                cursor: isEditingLabel ? 'not-allowed' : 'grab',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <DragIndicator fontSize="small" color="disabled" />
+            </Box>
             <Stack direction="row" spacing={1} alignItems="center">
               <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                 {builderCopy.structure.session_prefix} {index + 1} -
@@ -275,4 +284,4 @@ export function ProgramBuilderSessionItem({
       </Stack>
     </Paper>
   );
-}
+});
