@@ -10,6 +10,7 @@ import type {
 } from './programBuilderTypes';
 import { ProgramBuilderExerciseItem } from './ProgramBuilderExerciseItem';
 import { ProgramBuilderExerciseDropZone } from './ProgramBuilderExerciseDropZone';
+import { logWithTimestamp } from './programBuilderUtils';
 
 type ProgramBuilderSessionItemProps = {
   session: ProgramSession;
@@ -131,23 +132,58 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
     event: React.MouseEvent<HTMLButtonElement>,
   ): void => {
     event.stopPropagation();
+    logWithTimestamp('log', '[ProgramBuilder][SessionItem] remove session clicked', {
+      sessionId: session.id,
+      label: session.label,
+    });
     onRemoveSession();
   };
 
   const handleRemoveExercise = (exerciseId: string): void => {
+    logWithTimestamp('log', '[ProgramBuilder][SessionItem] remove exercise clicked', {
+      sessionId: session.id,
+      exerciseId,
+    });
     onRemoveExercise(exerciseId);
   };
 
   const handleDragStartInternal = React.useCallback(
     (event: React.DragEvent<HTMLDivElement>) => {
       if (isEditingLabel) {
+        logWithTimestamp('log', '[ProgramBuilder][SessionItem] drag prevented while editing label', {
+          sessionId: session.id,
+        });
         event.preventDefault();
         event.stopPropagation();
         return;
       }
+      logWithTimestamp('log', '[ProgramBuilder][SessionItem] drag start', {
+        sessionId: session.id,
+        sessionLabel: session.label,
+      });
       onDragStart(event);
     },
-    [isEditingLabel, onDragStart],
+    [isEditingLabel, onDragStart, session.id, session.label],
+  );
+
+  const handleMouseDown = React.useCallback(
+    (event: React.MouseEvent<HTMLSpanElement>) => {
+      logWithTimestamp('log', '[ProgramBuilder][SessionItem] mouse down on drag handle', {
+        sessionId: session.id,
+        button: event.button,
+      });
+    },
+    [session.id],
+  );
+
+  const handleMouseUp = React.useCallback(
+    (event: React.MouseEvent<HTMLSpanElement>) => {
+      logWithTimestamp('log', '[ProgramBuilder][SessionItem] mouse up on drag handle', {
+        sessionId: session.id,
+        button: event.button,
+      });
+    },
+    [session.id],
   );
 
   return (
@@ -172,6 +208,8 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
               draggable={!isEditingLabel}
               onDragStart={handleDragStartInternal}
               onDragEnd={onDragEnd}
+              onMouseDown={handleMouseDown}
+              onMouseUp={handleMouseUp}
               sx={{
                 cursor: isEditingLabel ? 'not-allowed' : 'grab',
                 display: 'flex',
@@ -232,13 +270,12 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
         </Stack>
 
         <Stack spacing={1}>
-          {isDraggingExercise && (
-            <ProgramBuilderExerciseDropZone
-              label={exerciseDropLabel}
-              dropEffect={exerciseDropEffect}
-              onDrop={(event) => onExerciseDrop(session.id, 0, event)}
-            />
-          )}
+          <ProgramBuilderExerciseDropZone
+            label={exerciseDropLabel}
+            dropEffect={exerciseDropEffect}
+            onDrop={(event) => onExerciseDrop(session.id, 0, event)}
+            isVisible={isDraggingExercise}
+          />
           {session.exercises.length === 0 ? (
             !isDraggingExercise && (
               <Typography variant="body2" color="text.secondary">
@@ -267,15 +304,14 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
                     }
                     onDragEnd={onExerciseDragEnd}
                   />
-                  {isDraggingExercise && (
-                    <ProgramBuilderExerciseDropZone
-                      label={exerciseDropLabel}
-                      dropEffect={exerciseDropEffect}
-                      onDrop={(event) =>
-                        onExerciseDrop(session.id, exerciseIndex + 1, event)
-                      }
-                    />
-                  )}
+                  <ProgramBuilderExerciseDropZone
+                    label={exerciseDropLabel}
+                    dropEffect={exerciseDropEffect}
+                    onDrop={(event) =>
+                      onExerciseDrop(session.id, exerciseIndex + 1, event)
+                    }
+                    isVisible={isDraggingExercise}
+                  />
                 </React.Fragment>
               );
             })

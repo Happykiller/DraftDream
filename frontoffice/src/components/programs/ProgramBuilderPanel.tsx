@@ -308,23 +308,21 @@ export function ProgramBuilderPanel({
                     <Typography variant="body2" color="text.secondary" textAlign="center">
                       {builderCopy.structure.empty}
                     </Typography>
-                    {isDraggingSession && (
-                      <ProgramBuilderSessionDropZone
-                        label={sessionDropZoneLabel}
-                        dropEffect={sessionDropEffect}
-                        onDrop={(event) => handleSessionDropAtPosition(0, event)}
-                      />
-                    )}
+                    <ProgramBuilderSessionDropZone
+                      label={sessionDropZoneLabel}
+                      dropEffect={sessionDropEffect}
+                      onDrop={(event) => handleSessionDropAtPosition(0, event)}
+                      isVisible={isDraggingSession}
+                    />
                   </Stack>
                 ) : (
                   <>
-                    {isDraggingSession && (
-                      <ProgramBuilderSessionDropZone
-                        label={sessionDropZoneLabel}
-                        dropEffect={sessionDropEffect}
-                        onDrop={(event) => handleSessionDropAtPosition(0, event)}
-                      />
-                    )}
+                    <ProgramBuilderSessionDropZone
+                      label={sessionDropZoneLabel}
+                      dropEffect={sessionDropEffect}
+                      onDrop={(event) => handleSessionDropAtPosition(0, event)}
+                      isVisible={isDraggingSession}
+                    />
                     {sessions.map((session, index) => (
                       <React.Fragment key={session.id}>
                         <ProgramBuilderSessionItem
@@ -357,14 +355,13 @@ export function ProgramBuilderPanel({
                           }}
                           onExerciseDragEnd={handleExerciseDragEnd}
                         />
-                        {isDraggingSession && (
-                          <ProgramBuilderSessionDropZone
-                            key={`session-drop-${index + 1}`}
-                            label={sessionDropZoneLabel}
-                            dropEffect={sessionDropEffect}
-                            onDrop={(event) => handleSessionDropAtPosition(index + 1, event)}
-                          />
-                        )}
+                        <ProgramBuilderSessionDropZone
+                          key={`session-drop-${index + 1}`}
+                          label={sessionDropZoneLabel}
+                          dropEffect={sessionDropEffect}
+                          onDrop={(event) => handleSessionDropAtPosition(index + 1, event)}
+                          isVisible={isDraggingSession}
+                        />
                       </React.Fragment>
                     ))}
                   </>

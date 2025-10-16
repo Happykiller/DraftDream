@@ -15,6 +15,7 @@ import type {
   ExerciseLibraryItem,
   ProgramExercise,
 } from './programBuilderTypes';
+import { logWithTimestamp } from './programBuilderUtils';
 
 type ProgramBuilderExerciseItemProps = {
   exerciseItem: ProgramExercise;
@@ -99,22 +100,54 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
 
   const handleRemoveClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
+    logWithTimestamp('log', '[ProgramBuilder][ExerciseItem] remove exercise clicked', {
+      parentSessionExerciseId: exerciseItem.id,
+      exerciseId: exercise.id,
+    });
     onRemove(exerciseItem.id);
   };
 
   const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
     if (isEditingLabel) {
+      logWithTimestamp('log', '[ProgramBuilder][ExerciseItem] drag prevented while editing label', {
+        parentSessionExerciseId: exerciseItem.id,
+        exerciseId: exercise.id,
+      });
       event.preventDefault();
       event.stopPropagation();
       return;
     }
     event.stopPropagation();
+    logWithTimestamp('log', '[ProgramBuilder][ExerciseItem] drag start', {
+      parentSessionExerciseId: exerciseItem.id,
+      exerciseId: exercise.id,
+    });
     onDragStart?.(event);
   };
 
   const handleDragEnd = (event: React.DragEvent<HTMLDivElement>) => {
     event.stopPropagation();
+    logWithTimestamp('log', '[ProgramBuilder][ExerciseItem] drag end', {
+      parentSessionExerciseId: exerciseItem.id,
+      exerciseId: exercise.id,
+    });
     onDragEnd?.();
+  };
+
+  const handleMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
+    logWithTimestamp('log', '[ProgramBuilder][ExerciseItem] mouse down on drag handle', {
+      parentSessionExerciseId: exerciseItem.id,
+      exerciseId: exercise.id,
+      button: event.button,
+    });
+  };
+
+  const handleMouseUp = (event: React.MouseEvent<HTMLSpanElement>) => {
+    logWithTimestamp('log', '[ProgramBuilder][ExerciseItem] mouse up on drag handle', {
+      parentSessionExerciseId: exerciseItem.id,
+      exerciseId: exercise.id,
+      button: event.button,
+    });
   };
 
   return (
@@ -142,6 +175,8 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
             draggable={!isEditingLabel}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
+            onMouseDown={handleMouseDown}
+            onMouseUp={handleMouseUp}
             sx={{
               cursor: isEditingLabel ? 'not-allowed' : 'grab',
               display: 'flex',

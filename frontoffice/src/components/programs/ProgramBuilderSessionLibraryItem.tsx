@@ -4,6 +4,7 @@ import { Box, Chip, Paper, Stack, Typography } from '@mui/material';
 
 import type { BuilderCopy, SessionTemplate } from './programBuilderTypes';
 import { DragIndicator } from '@mui/icons-material';
+import { logWithTimestamp } from './programBuilderUtils';
 
 type ProgramBuilderSessionTemplateItemProps = {
   template: SessionTemplate;
@@ -19,6 +20,45 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
   onDragEnd,
 }: ProgramBuilderSessionTemplateItemProps): React.JSX.Element {
   const theme = useTheme();
+
+  const handleDragStart = React.useCallback(
+    (event: React.DragEvent<HTMLDivElement>) => {
+      logWithTimestamp('log', '[ProgramBuilder][SessionLibraryItem] drag start', {
+        templateId: template.id,
+        label: template.label,
+      });
+      onDragStart(event);
+    },
+    [onDragStart, template.id, template.label],
+  );
+
+  const handleDragEnd = React.useCallback(() => {
+    logWithTimestamp('log', '[ProgramBuilder][SessionLibraryItem] drag end', {
+      templateId: template.id,
+      label: template.label,
+    });
+    onDragEnd?.();
+  }, [onDragEnd, template.id, template.label]);
+
+  const handleMouseDown = React.useCallback(
+    (event: React.MouseEvent<HTMLSpanElement>) => {
+      logWithTimestamp('log', '[ProgramBuilder][SessionLibraryItem] mouse down on drag handle', {
+        templateId: template.id,
+        button: event.button,
+      });
+    },
+    [template.id],
+  );
+
+  const handleMouseUp = React.useCallback(
+    (event: React.MouseEvent<HTMLSpanElement>) => {
+      logWithTimestamp('log', '[ProgramBuilder][SessionLibraryItem] mouse up on drag handle', {
+        templateId: template.id,
+        button: event.button,
+      });
+    },
+    [template.id],
+  );
 
   return (
     <Paper
@@ -39,8 +79,10 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
           <Box
             component="span"
             draggable
-            onDragStart={onDragStart}
-            onDragEnd={onDragEnd}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+            onMouseDown={handleMouseDown}
+            onMouseUp={handleMouseUp}
             sx={{
               cursor: 'grab',
               display: 'flex',

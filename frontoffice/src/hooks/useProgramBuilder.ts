@@ -22,6 +22,7 @@ import {
   parseDragData,
   parseRestSecondsValue,
   parseSeriesCount,
+  logWithTimestamp,
 } from '@src/components/programs/programBuilderUtils';
 
 import type { ProgramExercise } from '@src/components/programs/programBuilderTypes';
@@ -343,6 +344,7 @@ export function useProgramBuilder(
 
   const createEmptySession = React.useCallback((): ProgramSession => {
     const id = nextId('session');
+    logWithTimestamp('log', '[ProgramBuilder][createEmptySession] generating new draft session', { id });
     return {
       id,
       sessionId: id,
@@ -369,15 +371,33 @@ export function useProgramBuilder(
 
   const handleAddSessionFromTemplate = React.useCallback(
     (templateId: string, position?: number) => {
+      logWithTimestamp('log', '[ProgramBuilder][handleAddSessionFromTemplate] request', {
+        templateId,
+        position,
+      });
       const template = sessionTemplates.find((item) => item.id === templateId);
       if (!template) {
+        logWithTimestamp('warn', '[ProgramBuilder][handleAddSessionFromTemplate] template not found', {
+          templateId,
+          available: sessionTemplates.map((item) => item.id),
+        });
         return;
       }
 
+      logWithTimestamp('log', '[ProgramBuilder][handleAddSessionFromTemplate] template resolved', {
+        templateId,
+        templateLabel: template.label,
+        position,
+      });
       const session = createSessionFromTemplate(template);
       setSessions((prev) => {
         const insertAt =
           position != null ? Math.min(Math.max(position, 0), prev.length) : prev.length;
+        logWithTimestamp('log', '[ProgramBuilder][handleAddSessionFromTemplate] inserting session', {
+          insertAt,
+          previousLength: prev.length,
+          sessionId: session.id,
+        });
         const next = [...prev];
         next.splice(insertAt, 0, session);
         return next;
@@ -387,13 +407,28 @@ export function useProgramBuilder(
   );
 
   const handleCreateEmptySession = React.useCallback(() => {
-    setSessions((prev) => [...prev, createEmptySession()]);
+    const emptySession = createEmptySession();
+    logWithTimestamp('log', '[ProgramBuilder][handleCreateEmptySession] appending empty session', {
+      sessionId: emptySession.id,
+    });
+    setSessions((prev) => {
+      logWithTimestamp('log', '[ProgramBuilder][handleCreateEmptySession] previous length', prev.length);
+      return [...prev, emptySession];
+    });
   }, [createEmptySession]);
 
   const handleAddExerciseToSession = React.useCallback(
     (sessionId: string, exerciseId: string, position?: number) => {
+      logWithTimestamp('log', '[ProgramBuilder][handleAddExerciseToSession] request', {
+        sessionId,
+        exerciseId,
+        position,
+      });
       const exercise = exerciseMap.get(exerciseId);
       if (!exercise) {
+        logWithTimestamp('warn', '[ProgramBuilder][handleAddExerciseToSession] exercise not found', {
+          exerciseId,
+        });
         return;
       }
 
@@ -406,6 +441,12 @@ export function useProgramBuilder(
           const exercises = [...session.exercises];
           const insertAt =
             position != null ? Math.min(Math.max(position, 0), exercises.length) : exercises.length;
+          logWithTimestamp('log', '[ProgramBuilder][handleAddExerciseToSession] inserting exercise', {
+            sessionId,
+            exerciseId: exercise.id,
+            insertAt,
+            previousLength: exercises.length,
+          });
           exercises.splice(insertAt, 0, {
             id: nextId('exercise'),
             exerciseId: exercise.id,
@@ -426,10 +467,15 @@ export function useProgramBuilder(
   );
 
   const handleRemoveSession = React.useCallback((sessionId: string) => {
+    logWithTimestamp('log', '[ProgramBuilder][handleRemoveSession] removing session', { sessionId });
     setSessions((prev) => prev.filter((session) => session.id !== sessionId));
   }, []);
 
   const handleRemoveExercise = React.useCallback((sessionId: string, exerciseId: string) => {
+    logWithTimestamp('log', '[ProgramBuilder][handleRemoveExercise] removing exercise', {
+      sessionId,
+      exerciseId,
+    });
     setSessions((prev) =>
       prev.map((session) => {
         if (session.id !== sessionId) {
@@ -444,6 +490,10 @@ export function useProgramBuilder(
   }, []);
 
   const handleSessionLabelChange = React.useCallback((sessionId: string, label: string) => {
+    logWithTimestamp('log', '[ProgramBuilder][handleSessionLabelChange] update label', {
+      sessionId,
+      label,
+    });
     setSessions((prev) =>
       prev.map((session) => (session.id === sessionId ? { ...session, label } : session)),
     );
@@ -451,6 +501,11 @@ export function useProgramBuilder(
 
   const handleExerciseLabelChange = React.useCallback(
     (sessionId: string, exerciseId: string, label: string) => {
+      logWithTimestamp('log', '[ProgramBuilder][handleExerciseLabelChange] update label', {
+        sessionId,
+        exerciseId,
+        label,
+      });
       setSessions((prev) =>
         prev.map((session) => {
           if (session.id !== sessionId) {
@@ -470,48 +525,61 @@ export function useProgramBuilder(
   );
 
   const handleSessionDragStartFromLibrary = React.useCallback(() => {
+    logWithTimestamp('log', '[ProgramBuilder][SessionDrag] start from library');
     setIsDraggingSession(true);
     setSessionDragOrigin('library');
   }, []);
 
   const handleSessionDragStartFromDraft = React.useCallback(() => {
+    logWithTimestamp('log', '[ProgramBuilder][SessionDrag] start from draft');
     setIsDraggingSession(true);
     setSessionDragOrigin('draft');
   }, []);
 
   const handleSessionDragEnd = React.useCallback(() => {
+    logWithTimestamp('log', '[ProgramBuilder][SessionDrag] end');
     setIsDraggingSession(false);
     setSessionDragOrigin(null);
   }, []);
 
   const handleExerciseDragStartFromLibrary = React.useCallback(() => {
+    logWithTimestamp('log', '[ProgramBuilder][ExerciseDrag] start from library');
     setIsDraggingExercise(true);
     setExerciseDragOrigin('library');
   }, []);
 
   const handleExerciseDragStartFromSession = React.useCallback(() => {
+    logWithTimestamp('log', '[ProgramBuilder][ExerciseDrag] start from session');
     setIsDraggingExercise(true);
     setExerciseDragOrigin('draft');
   }, []);
 
   const handleExerciseDragEnd = React.useCallback(() => {
+    logWithTimestamp('log', '[ProgramBuilder][ExerciseDrag] end');
     setIsDraggingExercise(false);
     setExerciseDragOrigin(null);
   }, []);
 
   const handleSessionDrop = React.useCallback(
     (position: number, event: React.DragEvent<HTMLDivElement>) => {
+      logWithTimestamp('log', '[ProgramBuilder][handleSessionDrop] received drop', {
+        position,
+        dataTypes: Array.from(event.dataTransfer.types ?? []),
+      });
       const payload = parseDragData(event);
       if (!payload) {
+        logWithTimestamp('warn', '[ProgramBuilder][handleSessionDrop] missing payload');
         return;
       }
 
+      logWithTimestamp('log', '[ProgramBuilder][handleSessionDrop] payload', payload);
       if (payload.type === 'session') {
         handleAddSessionFromTemplate(payload.id, position);
       } else if (payload.type === 'session-move') {
         setSessions((prev) => {
           const currentIndex = prev.findIndex((session) => session.id === payload.id);
           if (currentIndex === -1) {
+            logWithTimestamp('warn', '[ProgramBuilder][handleSessionDrop] session to move not found', payload);
             return prev;
           }
 
@@ -522,6 +590,11 @@ export function useProgramBuilder(
             insertAt -= 1;
           }
           insertAt = Math.max(0, Math.min(insertAt, next.length));
+          logWithTimestamp('log', '[ProgramBuilder][handleSessionDrop] reordering session', {
+            fromIndex: currentIndex,
+            toIndex: insertAt,
+            sessionId: dragged.id,
+          });
           next.splice(insertAt, 0, dragged);
           return next;
         });
@@ -534,17 +607,25 @@ export function useProgramBuilder(
 
   const handleExerciseDrop = React.useCallback(
     (sessionId: string, position: number, event: React.DragEvent<HTMLDivElement>) => {
+      logWithTimestamp('log', '[ProgramBuilder][handleExerciseDrop] received drop', {
+        sessionId,
+        position,
+        dataTypes: Array.from(event.dataTransfer.types ?? []),
+      });
       const payload = parseDragData(event);
       if (!payload) {
+        logWithTimestamp('warn', '[ProgramBuilder][handleExerciseDrop] missing payload');
         return;
       }
 
+      logWithTimestamp('log', '[ProgramBuilder][handleExerciseDrop] payload', payload);
       if (payload.type === 'exercise') {
         handleAddExerciseToSession(sessionId, payload.id, position);
       } else if (payload.type === 'exercise-move') {
         setSessions((prev) => {
           const sourceSessionIndex = prev.findIndex((session) => session.id === payload.sessionId);
           if (sourceSessionIndex === -1) {
+            logWithTimestamp('warn', '[ProgramBuilder][handleExerciseDrop] source session not found', payload);
             return prev;
           }
 
@@ -553,6 +634,7 @@ export function useProgramBuilder(
             (exercise) => exercise.id === payload.id,
           );
           if (sourceExerciseIndex === -1) {
+            logWithTimestamp('warn', '[ProgramBuilder][handleExerciseDrop] exercise not found in source', payload);
             return prev;
           }
 
@@ -563,6 +645,11 @@ export function useProgramBuilder(
             }
             const exercises = [...session.exercises];
             exercises.splice(sourceExerciseIndex, 1);
+            logWithTimestamp('log', '[ProgramBuilder][handleExerciseDrop] removed from source session', {
+              sessionId: session.id,
+              exerciseId: draggedExercise.id,
+              remaining: exercises.length,
+            });
             return {
               ...session,
               exercises,
@@ -580,6 +667,12 @@ export function useProgramBuilder(
               insertAt -= 1;
             }
             insertAt = Math.max(0, Math.min(insertAt, exercises.length));
+            logWithTimestamp('log', '[ProgramBuilder][handleExerciseDrop] inserting exercise', {
+              sessionId: session.id,
+              exerciseId: draggedExercise.id,
+              insertAt,
+              lengthBefore: exercises.length,
+            });
             exercises.splice(insertAt, 0, draggedExercise);
             return {
               ...session,
@@ -596,6 +689,10 @@ export function useProgramBuilder(
 
   const handleExerciseDropAtPosition = React.useCallback(
     (sessionId: string, position: number, event: React.DragEvent<HTMLDivElement>) => {
+      logWithTimestamp('log', '[ProgramBuilder][handleExerciseDropAtPosition] triggered', {
+        sessionId,
+        position,
+      });
       handleExerciseDrop(sessionId, position, event);
     },
     [handleExerciseDrop],
@@ -603,6 +700,7 @@ export function useProgramBuilder(
 
   const handleSessionDropAtPosition = React.useCallback(
     (position: number, event: React.DragEvent<HTMLDivElement>) => {
+      logWithTimestamp('log', '[ProgramBuilder][handleSessionDropAtPosition] triggered', { position });
       handleSessionDrop(position, event);
     },
     [handleSessionDrop],
@@ -692,6 +790,24 @@ export function useProgramBuilder(
     sessions,
     t,
   ]);
+
+  React.useEffect(() => {
+    logWithTimestamp('log', '[ProgramBuilder][state] sessions updated', sessions);
+  }, [sessions]);
+
+  React.useEffect(() => {
+    logWithTimestamp('log', '[ProgramBuilder][state] session drag status', {
+      isDraggingSession,
+      sessionDragOrigin,
+    });
+  }, [isDraggingSession, sessionDragOrigin]);
+
+  React.useEffect(() => {
+    logWithTimestamp('log', '[ProgramBuilder][state] exercise drag status', {
+      isDraggingExercise,
+      exerciseDragOrigin,
+    });
+  }, [isDraggingExercise, exerciseDragOrigin]);
 
   return {
     form,
