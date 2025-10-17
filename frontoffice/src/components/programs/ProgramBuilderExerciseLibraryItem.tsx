@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Box, Chip, Paper, Stack, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import type { ExerciseLibraryItem } from './programBuilderTypes';
 import { DragIndicator } from '@mui/icons-material';
@@ -18,6 +19,10 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
   onDragEnd,
 }: ProgramBuilderExerciseLibraryItemProps): React.JSX.Element {
   const theme = useTheme();
+  const { t } = useTranslation();
+  const setsLabel = t('programs-coatch.builder.library.sets_label', { defaultValue: 'sets' });
+  const repsLabel = t('programs-coatch.builder.library.reps_label', { defaultValue: 'reps' });
+  const restLabel = t('programs-coatch.builder.library.rest_label', { defaultValue: 'rest' });
 
   const handleDragStart = React.useCallback(
     (event: React.DragEvent<HTMLDivElement>) => {
@@ -71,40 +76,83 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
         },
       }}
     >
-      <Stack spacing={1}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Box
-            component="span"
-            draggable
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            sx={{
-              cursor: 'grab',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <DragIndicator fontSize="small" color="disabled" />
-          </Box>
-          <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-            {exercise.label}
-          </Typography>
-          <Chip
-            label={`${exercise.sets} x ${exercise.reps}`}
-            size="small"
-            color="primary"
-            variant="outlined"
-          />
-        </Stack>
-        <Typography variant="caption" color="text.secondary">
-          {exercise.level} - {exercise.rest}
-        </Typography>
-        <Stack direction="row" spacing={0.5} flexWrap="wrap">
-          {exercise.tags.map((tag) => (
-            <Chip key={`${exercise.id}-${tag}`} label={tag} size="small" variant="outlined" />
-          ))}
+      <Stack direction="row" spacing={1.5} alignItems="flex-start">
+        <Box
+          component="span"
+          draggable
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          sx={{
+            cursor: 'grab',
+            display: 'flex',
+            alignItems: 'center',
+            pt: 0.25,
+          }}
+        >
+          <DragIndicator fontSize="small" color="disabled" />
+        </Box>
+        <Stack spacing={1} flex={1}>
+          <Stack spacing={0.25}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+              {exercise.label}
+            </Typography>
+            {exercise.categoryLabel ? (
+              <Typography variant="body2" color="text.secondary">
+                {exercise.categoryLabel}
+              </Typography>
+            ) : null}
+          </Stack>
+          <Stack direction="row" spacing={2} flexWrap="wrap">
+            <Typography variant="body2" color="text.secondary">
+              {exercise.sets} {setsLabel}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {exercise.reps} {repsLabel}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {restLabel}: {exercise.rest}
+            </Typography>
+          </Stack>
+          {exercise.muscles.length > 0 ? (
+            <Stack direction="row" spacing={0.5} flexWrap="wrap">
+              {exercise.muscles.map((muscle) => (
+                <Chip
+                  key={`${exercise.id}-muscle-${muscle.id}`}
+                  label={muscle.label}
+                  size="small"
+                  color={muscle.role === 'primary' ? 'primary' : 'default'}
+                  variant={muscle.role === 'primary' ? 'filled' : 'outlined'}
+                />
+              ))}
+            </Stack>
+          ) : null}
+          {exercise.tags.length > 0 ? (
+            <Stack direction="row" spacing={0.5} flexWrap="wrap">
+              {exercise.tags.map((tag) => (
+                <Chip
+                  key={`${exercise.id}-tag-${tag.id}`}
+                  label={tag.label}
+                  size="small"
+                  color="secondary"
+                  variant="outlined"
+                />
+              ))}
+            </Stack>
+          ) : null}
+          {exercise.equipment.length > 0 ? (
+            <Stack direction="row" spacing={0.5} flexWrap="wrap">
+              {exercise.equipment.map((eq) => (
+                <Chip
+                  key={`${exercise.id}-equipment-${eq.id}`}
+                  label={eq.label}
+                  size="small"
+                  variant="outlined"
+                />
+              ))}
+            </Stack>
+          ) : null}
         </Stack>
       </Stack>
     </Paper>

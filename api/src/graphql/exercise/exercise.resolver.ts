@@ -2,8 +2,11 @@
 // Comments in English.
 import { Args, Context, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { Role } from '@graphql/common/ROLE';
-import inversify from '@src/inversify/investify';
 import { Auth } from '@graphql/decorators/auth.decorator';
+import { CategoryGql } from '@graphql/category/category.gql.types';
+import { mapCategoryUsecaseToGql } from '@graphql/category/category.mapper';
+import { EquipmentGql } from '@graphql/equipment/equipment.gql.types';
+import { mapEquipmentUsecaseToGql } from '@graphql/equipment/equipment.mapper';
 import {
   CreateExerciseInput,
   ExerciseGql,
@@ -13,6 +16,11 @@ import {
 } from '@graphql/exercise/exercise.gql.types';
 import { UserGql } from '@graphql/user/user.gql.types';
 import { mapUserUsecaseToGql } from '@graphql/user/user.mapper';
+import { MuscleGql } from '@graphql/muscle/muscle.gql.types';
+import { mapMuscleUsecaseToGql } from '@graphql/muscle/muscle.mapper';
+import { TagGql } from '@graphql/tag/tag.gql.types';
+import { mapTagUsecaseToGql } from '@graphql/tag/tag.mapper';
+import inversify from '@src/inversify/investify';
 import { mapExerciseUsecaseToGql } from '@graphql/exercise/exercise.mapper';
 
 @Resolver(() => ExerciseGql)
@@ -24,6 +32,57 @@ export class ExerciseResolver {
     if (!userId) return null;
     const user = await inversify.getUserUsecase.execute({ id: userId });
     return user ? mapUserUsecaseToGql(user) : null;
+  }
+
+  @ResolveField(() => CategoryGql, { name: 'category', nullable: true })
+  async category(@Parent() exercise: ExerciseGql): Promise<CategoryGql | null> {
+    const categoryId = exercise.categoryId;
+    if (!categoryId) return null;
+    const category = await inversify.getCategoryUsecase.execute({ id: categoryId });
+    return category ? mapCategoryUsecaseToGql(category) : null;
+  }
+
+  @ResolveField(() => [MuscleGql], { name: 'primaryMuscles' })
+  async primaryMuscles(@Parent() exercise: ExerciseGql): Promise<MuscleGql[]> {
+    const ids = exercise.primaryMuscleIds ?? [];
+    if (!ids.length) return [];
+    const muscles = await Promise.all(ids.map((id) => inversify.getMuscleUsecase.execute({ id })));
+    return muscles
+      .filter((muscle): muscle is NonNullable<typeof muscle> => Boolean(muscle))
+      .map(mapMuscleUsecaseToGql);
+  }
+
+  @ResolveField(() => [MuscleGql], { name: 'secondaryMuscles', nullable: true })
+  async secondaryMuscles(@Parent() exercise: ExerciseGql): Promise<MuscleGql[] | null> {
+    const ids = exercise.secondaryMuscleIds;
+    if (!ids) return null;
+    if (!ids.length) return [];
+    const muscles = await Promise.all(ids.map((id) => inversify.getMuscleUsecase.execute({ id })));
+    return muscles
+      .filter((muscle): muscle is NonNullable<typeof muscle> => Boolean(muscle))
+      .map(mapMuscleUsecaseToGql);
+  }
+
+  @ResolveField(() => [EquipmentGql], { name: 'equipment', nullable: true })
+  async equipment(@Parent() exercise: ExerciseGql): Promise<EquipmentGql[] | null> {
+    const ids = exercise.equipmentIds;
+    if (!ids) return null;
+    if (!ids.length) return [];
+    const equipment = await Promise.all(ids.map((id) => inversify.getEquipmentUsecase.execute({ id })));
+    return equipment
+      .filter((item): item is NonNullable<typeof item> => Boolean(item))
+      .map(mapEquipmentUsecaseToGql);
+  }
+
+  @ResolveField(() => [TagGql], { name: 'tags', nullable: true })
+  async tags(@Parent() exercise: ExerciseGql): Promise<TagGql[] | null> {
+    const ids = exercise.tagIds;
+    if (!ids) return null;
+    if (!ids.length) return [];
+    const tags = await Promise.all(ids.map((id) => inversify.getTagUsecase.execute({ id })));
+    return tags
+      .filter((tag): tag is NonNullable<typeof tag> => Boolean(tag))
+      .map(mapTagUsecaseToGql);
   }
 
   // ------- Mutations -------

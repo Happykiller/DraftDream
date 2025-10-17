@@ -78,7 +78,10 @@
         "limit_hint": "Affichage des 10 exercices maximum triés par ordre alphabétique.",
         "empty_state": "Aucun exercice ne correspond à vos filtres.",
         "button_create": "Creer un exercice",
-        "subtitle": "Glissez un exercice sur une seance pour l'ajouter."
+        "subtitle": "Glissez un exercice sur une seance pour l'ajouter.",
+        "sets_label": "series",
+        "reps_label": "reps",
+        "rest_label": "repos"
       },
       "footer": {
         "cancel": "Annuler",

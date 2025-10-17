@@ -11,7 +11,9 @@ export type ExerciseLibraryItem = {
   sets: number;
   reps: string;
   rest: string;
-  tags: string[];
+  muscles: { id: string; label: string; role: 'primary' | 'secondary' }[];
+  tags: { id: string; label: string }[];
+  equipment: { id: string; label: string }[];
 };
 
 export type TemplateExerciseRef = {

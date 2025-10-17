@@ -28,6 +28,11 @@ export interface Exercise {
   createdAt: string;
   updatedAt: string;
   creator?: Creator | null;
+  category?: { id: string; label: string } | null;
+  primaryMuscles?: { id: string; label: string }[];
+  secondaryMuscles?: { id: string; label: string }[];
+  equipment?: { id: string; label: string }[];
+  tags?: { id: string; label: string }[];
 }
 
 type ExerciseListPayload = {
@@ -50,6 +55,11 @@ const LIST_Q = `
         id slug locale label description instructions level series repetitions
         charge rest videoUrl visibility categoryId createdBy createdAt updatedAt
         creator { id email }
+        category { id label }
+        primaryMuscles { id label }
+        secondaryMuscles { id label }
+        equipment { id label }
+        tags { id label }
       }
       total page limit
     }
@@ -62,6 +72,11 @@ const CREATE_M = `
       id slug locale label description instructions level series repetitions
       charge rest videoUrl visibility categoryId createdBy createdAt updatedAt
       creator { id email }
+      category { id label }
+      primaryMuscles { id label }
+      secondaryMuscles { id label }
+      equipment { id label }
+      tags { id label }
     }
   }
 `;
@@ -72,6 +87,11 @@ const UPDATE_M = `
       id slug locale label description instructions level series repetitions
       charge rest videoUrl visibility categoryId createdBy createdAt updatedAt
       creator { id email }
+      category { id label }
+      primaryMuscles { id label }
+      secondaryMuscles { id label }
+      equipment { id label }
+      tags { id label }
     }
   }
 `;

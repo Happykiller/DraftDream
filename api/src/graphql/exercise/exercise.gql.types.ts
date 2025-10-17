@@ -1,4 +1,8 @@
 // src/graphql/exercise/exercise.gql.types.ts
+import { CategoryGql } from '@graphql/category/category.gql.types';
+import { EquipmentGql } from '@graphql/equipment/equipment.gql.types';
+import { MuscleGql } from '@graphql/muscle/muscle.gql.types';
+import { TagGql } from '@graphql/tag/tag.gql.types';
 import { UserGql } from '@graphql/user/user.gql.types';
 import { Field, ID, InputType, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
 
@@ -31,6 +35,10 @@ export class ExerciseGql {
   @Field({ nullable: true }) videoUrl?: string;
   @Field(() => ExerciseVisibility) visibility!: ExerciseVisibility;
   @Field(() => ID) categoryId!: string;
+  @Field(() => [ID]) primaryMuscleIds!: string[];
+  @Field(() => [ID], { nullable: true }) secondaryMuscleIds?: string[];
+  @Field(() => [ID], { nullable: true }) equipmentIds?: string[];
+  @Field(() => [ID], { nullable: true }) tagIds?: string[];
 
   // Ownership
   @Field() createdBy!: string;
@@ -40,6 +48,16 @@ export class ExerciseGql {
   @Field() updatedAt!: Date;
 
   // Relations (resolved lazily)
+  @Field(() => CategoryGql, { nullable: true })
+  category?: CategoryGql | null;
+  @Field(() => [MuscleGql])
+  primaryMuscles?: MuscleGql[];
+  @Field(() => [MuscleGql], { nullable: true })
+  secondaryMuscles?: MuscleGql[] | null;
+  @Field(() => [EquipmentGql], { nullable: true })
+  equipment?: EquipmentGql[] | null;
+  @Field(() => [TagGql], { nullable: true })
+  tags?: TagGql[] | null;
   @Field(() => UserGql, { nullable: true })
   creator?: UserGql | null;
 }

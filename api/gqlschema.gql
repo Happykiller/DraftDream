@@ -166,45 +166,6 @@ type ProgramListGql {
   limit: Int!
 }
 
-type ExerciseGql {
-  id: ID!
-  slug: String!
-  locale: String!
-  label: String!
-  description: String
-  instructions: String
-  level: ExerciseLevel!
-  series: String!
-  repetitions: String!
-  charge: String
-  rest: Int
-  videoUrl: String
-  visibility: ExerciseVisibility!
-  categoryId: ID!
-  createdBy: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  creator: UserGql
-}
-
-enum ExerciseLevel {
-  BEGINNER
-  INTERMEDIATE
-  ADVANCED
-}
-
-enum ExerciseVisibility {
-  PRIVATE
-  PUBLIC
-}
-
-type ExerciseListGql {
-  items: [ExerciseGql!]!
-  total: Int!
-  page: Int!
-  limit: Int!
-}
-
 type CategoryGql {
   id: ID!
   slug: String!
@@ -248,6 +209,54 @@ enum EquipmentVisibility {
 
 type EquipmentListGql {
   items: [EquipmentGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
+type ExerciseGql {
+  id: ID!
+  slug: String!
+  locale: String!
+  label: String!
+  description: String
+  instructions: String
+  level: ExerciseLevel!
+  series: String!
+  repetitions: String!
+  charge: String
+  rest: Int
+  videoUrl: String
+  visibility: ExerciseVisibility!
+  categoryId: ID!
+  primaryMuscleIds: [ID!]!
+  secondaryMuscleIds: [ID!]
+  equipmentIds: [ID!]
+  tagIds: [ID!]
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  category: CategoryGql
+  primaryMuscles: [MuscleGql!]!
+  secondaryMuscles: [MuscleGql!]
+  equipment: [EquipmentGql!]
+  tags: [TagGql!]
+  creator: UserGql
+}
+
+enum ExerciseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum ExerciseVisibility {
+  PRIVATE
+  PUBLIC
+}
+
+type ExerciseListGql {
+  items: [ExerciseGql!]!
   total: Int!
   page: Int!
   limit: Int!

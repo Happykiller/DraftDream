@@ -218,16 +218,44 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
             <Typography variant="caption" color="text.secondary">
               {exerciseItem.sets} x {exerciseItem.reps} - {exerciseItem.rest}
             </Typography>
-            <Stack direction="row" spacing={0.5} flexWrap="wrap">
-              {exercise.tags.map((tag) => (
-                <Chip
-                  key={`${exercise.id}-${tag}`}
-                  label={tag}
-                  size="small"
-                  variant="outlined"
-                />
-              ))}
-            </Stack>
+            {exercise.muscles.length > 0 ? (
+              <Stack direction="row" spacing={0.5} flexWrap="wrap">
+                {exercise.muscles.map((muscle) => (
+                  <Chip
+                    key={`${exercise.id}-muscle-${muscle.id}`}
+                    label={muscle.label}
+                    size="small"
+                    color={muscle.role === 'primary' ? 'primary' : 'default'}
+                    variant={muscle.role === 'primary' ? 'filled' : 'outlined'}
+                  />
+                ))}
+              </Stack>
+            ) : null}
+            {exercise.tags.length > 0 ? (
+              <Stack direction="row" spacing={0.5} flexWrap="wrap">
+                {exercise.tags.map((tag) => (
+                  <Chip
+                    key={`${exercise.id}-tag-${tag.id}`}
+                    label={tag.label}
+                    size="small"
+                    color="secondary"
+                    variant="outlined"
+                  />
+                ))}
+              </Stack>
+            ) : null}
+            {exercise.equipment.length > 0 ? (
+              <Stack direction="row" spacing={0.5} flexWrap="wrap">
+                {exercise.equipment.map((eq) => (
+                  <Chip
+                    key={`${exercise.id}-equipment-${eq.id}`}
+                    label={eq.label}
+                    size="small"
+                    variant="outlined"
+                  />
+                ))}
+              </Stack>
+            ) : null}
           </Stack>
         </Stack>
 

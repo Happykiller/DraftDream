@@ -207,19 +207,61 @@ export function useProgramBuilder(
 
   const exerciseLibrary = React.useMemo<ExerciseLibraryItem[]>(() => {
     const sorted = [...exerciseItems].sort((a, b) => collator.compare(a.label, b.label));
-    return sorted.map((item) => ({
-      id: item.id,
-      label: item.label,
-      level: item.level,
-      categoryId: item.categoryId,
-      categoryLabel: categoryLabelById.get(item.categoryId) ?? '',
-      type: item.visibility,
-      duration: item.rest ?? 0,
-      sets: parseSeriesCount(item.series),
-      reps: item.repetitions,
-      rest: item.rest != null ? `${item.rest}s` : '-',
-      tags: [],
-    }));
+    return sorted.map((item) => {
+      const seenMuscles = new Set<string>();
+      const muscles: ExerciseLibraryItem['muscles'] = [];
+      for (const muscle of item.primaryMuscles ?? []) {
+        if (!muscle?.id || seenMuscles.has(muscle.id)) continue;
+        muscles.push({
+          id: muscle.id,
+          label: muscle.label ?? muscle.id,
+          role: 'primary',
+        });
+        seenMuscles.add(muscle.id);
+      }
+      for (const muscle of item.secondaryMuscles ?? []) {
+        if (!muscle?.id || seenMuscles.has(muscle.id)) continue;
+        muscles.push({
+          id: muscle.id,
+          label: muscle.label ?? muscle.id,
+          role: 'secondary',
+        });
+        seenMuscles.add(muscle.id);
+      }
+
+      const tags = (item.tags ?? [])
+        .filter((tag): tag is NonNullable<typeof tag> => Boolean(tag?.id))
+        .map((tag) => ({
+          id: tag!.id,
+          label: tag!.label ?? tag!.id,
+        }));
+
+      const equipment = (item.equipment ?? [])
+        .filter((eq): eq is NonNullable<typeof eq> => Boolean(eq?.id))
+        .map((eq) => ({
+          id: eq!.id,
+          label: eq!.label ?? eq!.id,
+        }));
+
+      const categoryLabel =
+        item.category?.label ?? categoryLabelById.get(item.categoryId) ?? '';
+
+      return {
+        id: item.id,
+        label: item.label,
+        level: item.level,
+        categoryId: item.categoryId,
+        categoryLabel,
+        type: item.visibility,
+        duration: item.rest ?? 0,
+        sets: parseSeriesCount(item.series),
+        reps: item.repetitions,
+        rest: item.rest != null ? `${item.rest}s` : '-',
+        muscles,
+        tags,
+        equipment,
+      };
+    });
   }, [categoryLabelById, collator, exerciseItems]);
 
   const exerciseMap = React.useMemo(
