@@ -167,7 +167,7 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
   );
 
   const handleMouseDown = React.useCallback(
-    (event: React.MouseEvent<HTMLSpanElement>) => {
+    (event: React.MouseEvent<HTMLElement>) => {
       logWithTimestamp('log', '[ProgramBuilder][SessionItem] mouse down on drag handle', {
         sessionId: session.id,
         button: event.button,
@@ -177,7 +177,7 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
   );
 
   const handleMouseUp = React.useCallback(
-    (event: React.MouseEvent<HTMLSpanElement>) => {
+    (event: React.MouseEvent<HTMLElement>) => {
       logWithTimestamp('log', '[ProgramBuilder][SessionItem] mouse up on drag handle', {
         sessionId: session.id,
         button: event.button,
@@ -193,6 +193,9 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
         p: 1.5,
         borderRadius: 2,
         cursor: 'default',
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
         transition: 'border-color 150ms ease, background-color 150ms ease',
         '&:hover': {
           borderColor: theme.palette.secondary.main,
@@ -205,13 +208,7 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
           <Stack direction="row" spacing={1} alignItems="center">
             <Box
               component="span"
-              draggable={!isEditingLabel}
-              onDragStart={handleDragStartInternal}
-              onDragEnd={onDragEnd}
-              onMouseDown={handleMouseDown}
-              onMouseUp={handleMouseUp}
               sx={{
-                cursor: isEditingLabel ? 'not-allowed' : 'grab',
                 display: 'flex',
                 alignItems: 'center',
               }}
@@ -318,6 +315,39 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
           )}
         </Stack>
       </Stack>
+      <Box
+        role="button"
+        aria-label="drag-session-handle"
+        draggable={!isEditingLabel}
+        onDragStart={handleDragStartInternal}
+        onDragEnd={onDragEnd}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        sx={{
+          mt: 1.5,
+          mx: -1.5,
+          px: 1.5,
+          py: 1,
+          borderTop: `1px solid ${theme.palette.divider}`,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1,
+          cursor: isEditingLabel ? 'not-allowed' : 'grab',
+          bgcolor: theme.palette.action.hover,
+          color: theme.palette.text.secondary,
+          userSelect: 'none',
+          transition: 'background-color 150ms ease, color 150ms ease',
+          '&:hover': {
+            bgcolor: theme.palette.action.selected,
+            color: theme.palette.text.primary,
+          },
+        }}
+      >
+        <DragIndicator fontSize="small" color="inherit" />
+        <Typography variant="caption" fontWeight={600}>
+          Glisser pour déplacer la séance
+        </Typography>
+      </Box>
     </Paper>
   );
 });

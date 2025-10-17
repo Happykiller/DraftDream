@@ -134,7 +134,7 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
     onDragEnd?.();
   };
 
-  const handleMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
+  const handleMouseDown = (event: React.MouseEvent<HTMLElement>) => {
     logWithTimestamp('log', '[ProgramBuilder][ExerciseItem] mouse down on drag handle', {
       parentSessionExerciseId: exerciseItem.id,
       exerciseId: exercise.id,
@@ -142,7 +142,7 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
     });
   };
 
-  const handleMouseUp = (event: React.MouseEvent<HTMLSpanElement>) => {
+  const handleMouseUp = (event: React.MouseEvent<HTMLElement>) => {
     logWithTimestamp('log', '[ProgramBuilder][ExerciseItem] mouse up on drag handle', {
       parentSessionExerciseId: exerciseItem.id,
       exerciseId: exercise.id,
@@ -157,6 +157,9 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
         p: 1.5,
         borderRadius: 2,
         cursor: 'default',
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
         '&:hover': {
           borderColor: theme.palette.primary.main,
           boxShadow: theme.shadows[1],
@@ -172,13 +175,7 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
         <Stack direction="row" spacing={1} alignItems="flex-start">
           <Box
             component="span"
-            draggable={!isEditingLabel}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
             sx={{
-              cursor: isEditingLabel ? 'not-allowed' : 'grab',
               display: 'flex',
               alignItems: 'center',
               paddingTop: '2px',
@@ -239,6 +236,39 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
           <DeleteOutline fontSize="small" />
         </IconButton>
       </Stack>
+      <Box
+        role="button"
+        aria-label="drag-exercise-handle"
+        draggable={!isEditingLabel}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        sx={{
+          mt: 1.5,
+          mx: -1.5,
+          px: 1.5,
+          py: 1,
+          borderTop: `1px solid ${theme.palette.divider}`,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1,
+          cursor: isEditingLabel ? 'not-allowed' : 'grab',
+          bgcolor: theme.palette.action.hover,
+          color: theme.palette.text.secondary,
+          userSelect: 'none',
+          transition: 'background-color 150ms ease, color 150ms ease',
+          '&:hover': {
+            bgcolor: theme.palette.action.selected,
+            color: theme.palette.text.primary,
+          },
+        }}
+      >
+        <DragIndicator fontSize="small" color="inherit" />
+        <Typography variant="caption" fontWeight={600}>
+          Glisser pour déplacer l'exercice
+        </Typography>
+      </Box>
     </Paper>
   );
 });
