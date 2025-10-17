@@ -34,10 +34,16 @@ export const beginDrag = <T extends HTMLElement>(
   event.dataTransfer.setData('application/json', JSON.stringify(payload));
   // Add a plain text channel to improve browser support while keeping the same payload.
   event.dataTransfer.setData('text/plain', payload.type);
-  event.dataTransfer.effectAllowed = 'copyMove';
+  const effectAllowed =
+    payload.type === 'session-move' || payload.type === 'exercise-move'
+      ? 'move'
+      : 'copy';
+  event.dataTransfer.effectAllowed = effectAllowed;
+  event.dataTransfer.dropEffect = effectAllowed;
 
   logWithTimestamp('log', '[ProgramBuilder][beginDrag] prepared payload', {
     effectAllowed: event.dataTransfer.effectAllowed,
+    dropEffect: event.dataTransfer.dropEffect,
     dataTypesAfter: Array.from(event.dataTransfer.types ?? []),
   });
 };
