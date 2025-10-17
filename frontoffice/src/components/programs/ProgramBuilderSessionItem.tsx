@@ -149,6 +149,7 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
 
   const handleDragStartInternal = React.useCallback(
     (event: React.DragEvent<HTMLDivElement>) => {
+      event.stopPropagation();
       if (isEditingLabel) {
         logWithTimestamp('log', '[ProgramBuilder][SessionItem] drag prevented while editing label', {
           sessionId: session.id,
@@ -164,6 +165,19 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
       onDragStart(event);
     },
     [isEditingLabel, onDragStart, session.id, session.label],
+  );
+
+  const handleDragEndInternal = React.useCallback(
+    (event: React.DragEvent<HTMLDivElement>) => {
+      event.stopPropagation();
+      logWithTimestamp('log', '[ProgramBuilder][SessionItem] drag end', {
+        sessionId: session.id,
+        sessionLabel: session.label,
+        dropEffect: event.dataTransfer.dropEffect,
+      });
+      onDragEnd?.();
+    },
+    [onDragEnd, session.id, session.label],
   );
 
   const handleMouseDown = React.useCallback(
@@ -207,7 +221,7 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
               component="span"
               draggable={!isEditingLabel}
               onDragStart={handleDragStartInternal}
-              onDragEnd={onDragEnd}
+              onDragEnd={handleDragEndInternal}
               onMouseDown={handleMouseDown}
               onMouseUp={handleMouseUp}
               sx={{
