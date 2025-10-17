@@ -1,15 +1,16 @@
 import * as React from 'react';
 import { DeleteOutline, DragIndicator } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
-import { Chip, IconButton, Paper, Stack, TextField, Typography } from '@mui/material';
+import { Box, Chip, IconButton, Paper, Stack, TextField, Typography } from '@mui/material';
 
 import type {
   BuilderCopy,
   ExerciseLibraryItem,
   ProgramSession,
-} from './ProgramBuilderPanel';
+} from './programBuilderTypes';
 import { ProgramBuilderExerciseItem } from './ProgramBuilderExerciseItem';
 import { ProgramBuilderExerciseDropZone } from './ProgramBuilderExerciseDropZone';
+import { logWithTimestamp } from './programBuilderUtils';
 
 type ProgramBuilderSessionItemProps = {
   session: ProgramSession;
@@ -42,7 +43,7 @@ type ProgramBuilderSessionItemProps = {
   onExerciseDragEnd: () => void;
 };
 
-export function ProgramBuilderSessionItem({
+export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessionItem({
   session,
   index,
   builderCopy,
@@ -131,35 +132,81 @@ export function ProgramBuilderSessionItem({
     event: React.MouseEvent<HTMLButtonElement>,
   ): void => {
     event.stopPropagation();
+    logWithTimestamp('log', '[ProgramBuilder][SessionItem] remove session clicked', {
+      sessionId: session.id,
+      label: session.label,
+    });
     onRemoveSession();
   };
 
   const handleRemoveExercise = (exerciseId: string): void => {
+    logWithTimestamp('log', '[ProgramBuilder][SessionItem] remove exercise clicked', {
+      sessionId: session.id,
+      exerciseId,
+    });
     onRemoveExercise(exerciseId);
   };
 
   const handleDragStartInternal = React.useCallback(
     (event: React.DragEvent<HTMLDivElement>) => {
+      event.stopPropagation();
       if (isEditingLabel) {
+        logWithTimestamp('log', '[ProgramBuilder][SessionItem] drag prevented while editing label', {
+          sessionId: session.id,
+        });
         event.preventDefault();
         event.stopPropagation();
         return;
       }
+      logWithTimestamp('log', '[ProgramBuilder][SessionItem] drag start', {
+        sessionId: session.id,
+        sessionLabel: session.label,
+      });
       onDragStart(event);
     },
-    [isEditingLabel, onDragStart],
+    [isEditingLabel, onDragStart, session.id, session.label],
+  );
+
+  const handleDragEndInternal = React.useCallback(
+    (event: React.DragEvent<HTMLDivElement>) => {
+      event.stopPropagation();
+      logWithTimestamp('log', '[ProgramBuilder][SessionItem] drag end', {
+        sessionId: session.id,
+        sessionLabel: session.label,
+        dropEffect: event.dataTransfer.dropEffect,
+      });
+      onDragEnd?.();
+    },
+    [onDragEnd, session.id, session.label],
+  );
+
+  const handleMouseDown = React.useCallback(
+    (event: React.MouseEvent<HTMLSpanElement>) => {
+      logWithTimestamp('log', '[ProgramBuilder][SessionItem] mouse down on drag handle', {
+        sessionId: session.id,
+        button: event.button,
+      });
+    },
+    [session.id],
+  );
+
+  const handleMouseUp = React.useCallback(
+    (event: React.MouseEvent<HTMLSpanElement>) => {
+      logWithTimestamp('log', '[ProgramBuilder][SessionItem] mouse up on drag handle', {
+        sessionId: session.id,
+        button: event.button,
+      });
+    },
+    [session.id],
   );
 
   return (
     <Paper
       variant="outlined"
-      draggable={!isEditingLabel}
-      onDragStart={handleDragStartInternal}
-      onDragEnd={onDragEnd}
       sx={{
         p: 1.5,
         borderRadius: 2,
-        cursor: 'grab',
+        cursor: 'default',
         transition: 'border-color 150ms ease, background-color 150ms ease',
         '&:hover': {
           borderColor: theme.palette.secondary.main,
@@ -170,7 +217,21 @@ export function ProgramBuilderSessionItem({
       <Stack spacing={1.5}>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Stack direction="row" spacing={1} alignItems="center">
-            <DragIndicator fontSize="small" color="disabled" />
+            <Box
+              component="span"
+              draggable={!isEditingLabel}
+              onDragStart={handleDragStartInternal}
+              onDragEnd={handleDragEndInternal}
+              onMouseDown={handleMouseDown}
+              onMouseUp={handleMouseUp}
+              sx={{
+                cursor: isEditingLabel ? 'not-allowed' : 'grab',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <DragIndicator fontSize="small" color="disabled" />
+            </Box>
             <Stack direction="row" spacing={1} alignItems="center">
               <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                 {builderCopy.structure.session_prefix} {index + 1} -
@@ -223,13 +284,12 @@ export function ProgramBuilderSessionItem({
         </Stack>
 
         <Stack spacing={1}>
-          {isDraggingExercise && (
-            <ProgramBuilderExerciseDropZone
-              label={exerciseDropLabel}
-              dropEffect={exerciseDropEffect}
-              onDrop={(event) => onExerciseDrop(session.id, 0, event)}
-            />
-          )}
+          <ProgramBuilderExerciseDropZone
+            label={exerciseDropLabel}
+            dropEffect={exerciseDropEffect}
+            onDrop={(event) => onExerciseDrop(session.id, 0, event)}
+            isVisible={isDraggingExercise}
+          />
           {session.exercises.length === 0 ? (
             !isDraggingExercise && (
               <Typography variant="body2" color="text.secondary">
@@ -258,15 +318,14 @@ export function ProgramBuilderSessionItem({
                     }
                     onDragEnd={onExerciseDragEnd}
                   />
-                  {isDraggingExercise && (
-                    <ProgramBuilderExerciseDropZone
-                      label={exerciseDropLabel}
-                      dropEffect={exerciseDropEffect}
-                      onDrop={(event) =>
-                        onExerciseDrop(session.id, exerciseIndex + 1, event)
-                      }
-                    />
-                  )}
+                  <ProgramBuilderExerciseDropZone
+                    label={exerciseDropLabel}
+                    dropEffect={exerciseDropEffect}
+                    onDrop={(event) =>
+                      onExerciseDrop(session.id, exerciseIndex + 1, event)
+                    }
+                    isVisible={isDraggingExercise}
+                  />
                 </React.Fragment>
               );
             })
@@ -275,4 +334,4 @@ export function ProgramBuilderSessionItem({
       </Stack>
     </Paper>
   );
-}
+});
