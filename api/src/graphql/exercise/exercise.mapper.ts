@@ -17,6 +17,7 @@ export function mapExerciseUsecaseToGql(m: ExerciseUsecaseModel): ExerciseGql {
     rest: m.rest,
     videoUrl: m.videoUrl,
     visibility: m.visibility as ExerciseVisibility,
+    categoryId: m.categoryId,
     createdBy: m.createdBy,
     createdAt: m.createdAt,
     updatedAt: m.updatedAt,

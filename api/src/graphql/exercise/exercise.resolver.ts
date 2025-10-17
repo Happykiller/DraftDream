@@ -110,6 +110,7 @@ export class ExerciseResolver {
       createdBy: input?.createdBy,
       visibility: input?.visibility,
       level: input?.level,
+      categoryId: input?.categoryId,
       limit: input?.limit,
       page: input?.page,
     });

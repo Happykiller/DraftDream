@@ -180,6 +180,7 @@ type ExerciseGql {
   rest: Int
   videoUrl: String
   visibility: ExerciseVisibility!
+  categoryId: ID!
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -337,6 +338,7 @@ input ListExercisesInput {
   createdBy: String
   visibility: ExerciseVisibility
   level: ExerciseLevel
+  categoryId: ID
   limit: Int
   page: Int
 }

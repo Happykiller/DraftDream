@@ -4,7 +4,8 @@ export type ExerciseLibraryItem = {
   id: string;
   label: string;
   level: string;
-  category: string;
+  categoryId: string;
+  categoryLabel: string;
   type: string;
   duration: number;
   sets: number;
@@ -112,5 +113,10 @@ export type BuilderCopy = {
 
 export type ExerciseTypeOption = {
   value: 'all' | ExerciseVisibility;
+  label: string;
+};
+
+export type ExerciseCategoryOption = {
+  id: string;
   label: string;
 };

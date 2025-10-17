@@ -15,8 +15,6 @@ export type CreateExerciseDto = {
   rest?: number;          // seconds
   videoUrl?: string;
   visibility: Visibility;
-
-  // Relations (IDs only)
   categoryId: string;
   primaryMuscleIds: string[];
   secondaryMuscleIds?: string[];
@@ -34,6 +32,7 @@ export type ListExercisesDto = {
   createdBy?: string;
   visibility?: Visibility;
   level?: ExerciseLevel;
+  categoryId?: string;
   includeArchived?: boolean; // default false
   limit?: number;            // default 20
   page?: number;             // default 1

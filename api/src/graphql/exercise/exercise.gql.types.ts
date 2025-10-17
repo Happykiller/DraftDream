@@ -30,6 +30,7 @@ export class ExerciseGql {
   @Field(() => Int, { nullable: true }) rest?: number;
   @Field({ nullable: true }) videoUrl?: string;
   @Field(() => ExerciseVisibility) visibility!: ExerciseVisibility;
+  @Field(() => ID) categoryId!: string;
 
   // Ownership
   @Field() createdBy!: string;
@@ -57,8 +58,6 @@ export class CreateExerciseInput {
   @Field(() => Int, { nullable: true }) rest?: number;
   @Field({ nullable: true }) videoUrl?: string;
   @Field(() => ExerciseVisibility) visibility!: ExerciseVisibility;
-
-  // Relations (IDs)
   @Field(() => ID) categoryId!: string;
   @Field(() => [ID]) primaryMuscleIds!: string[];
   @Field(() => [ID], { nullable: true }) secondaryMuscleIds?: string[];
@@ -97,6 +96,7 @@ export class ListExercisesInput {
   @Field({ nullable: true }) createdBy?: string;
   @Field(() => ExerciseVisibility, { nullable: true }) visibility?: ExerciseVisibility;
   @Field(() => ExerciseLevelGql, { nullable: true }) level?: ExerciseLevelGql;
+  @Field(() => ID, { nullable: true }) categoryId?: string;
   @Field(() => Int, { nullable: true }) limit?: number;
   @Field(() => Int, { nullable: true }) page?: number;
 }

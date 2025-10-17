@@ -51,7 +51,7 @@ export function ProgramBuilderPanel({
     exerciseType,
     sessionTemplates,
     filteredExercises,
-    exerciseCategories,
+    exerciseCategoryOptions,
     exerciseTypeOptions,
     exerciseMap,
     limitHint,
@@ -286,9 +286,6 @@ export function ProgramBuilderPanel({
                     {summaryText}
                   </Typography>
                 </Stack>
-                <Typography variant="body2" color="text.secondary">
-                  {builderCopy.structure.summary}
-                </Typography>
               </Stack>
 
               <Box
@@ -421,13 +418,13 @@ export function ProgramBuilderPanel({
                   size="small"
                   label={builderCopy.library.primary_filter_label}
                   value={exerciseCategory}
-                  disabled={categoriesLoading && !exerciseCategories.length}
+                  disabled={categoriesLoading && !exerciseCategoryOptions.length}
                   onChange={(event) => setExerciseCategory(event.target.value)}
                 >
                   <MenuItem value="all">{builderCopy.library.primary_filter_all}</MenuItem>
-                  {exerciseCategories.map((category) => (
-                    <MenuItem key={category} value={category}>
-                      {category}
+                  {exerciseCategoryOptions.map((category) => (
+                    <MenuItem key={category.id} value={category.id}>
+                      {category.label}
                     </MenuItem>
                   ))}
                 </TextField>

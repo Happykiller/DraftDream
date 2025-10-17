@@ -13,6 +13,7 @@ import { slugify } from '@src/utils/slugify';
 import type {
   BuilderCopy,
   ExerciseLibraryItem,
+  ExerciseCategoryOption,
   ExerciseTypeOption,
   ProgramForm,
   ProgramSession,
@@ -46,7 +47,7 @@ type UseProgramBuilderResult = {
   exerciseType: 'all' | ExerciseVisibility;
   sessionTemplates: SessionTemplate[];
   filteredExercises: ExerciseLibraryItem[];
-  exerciseCategories: string[];
+  exerciseCategoryOptions: ExerciseCategoryOption[];
   exerciseTypeOptions: ExerciseTypeOption[];
   exerciseMap: Map<string, ExerciseLibraryItem>;
   limitHint: string;
@@ -133,6 +134,11 @@ export function useProgramBuilder(
     [exerciseType],
   );
 
+  const exerciseCategoryFilter = React.useMemo<string | undefined>(
+    () => (exerciseCategory === 'all' ? undefined : exerciseCategory),
+    [exerciseCategory],
+  );
+
   const collator = React.useMemo(
     () => new Intl.Collator(i18n.language || undefined, { sensitivity: 'base' }),
     [i18n.language],
@@ -149,6 +155,7 @@ export function useProgramBuilder(
     limit: 10,
     q: debouncedExerciseSearch,
     visibility: exerciseVisibilityFilter,
+    categoryId: exerciseCategoryFilter,
   });
 
   const { items: categoryItems, loading: categoriesLoading } = useCategories({
@@ -183,13 +190,29 @@ export function useProgramBuilder(
     }));
   }, [sessionItems]);
 
+  const exerciseCategoryOptions = React.useMemo<ExerciseCategoryOption[]>(() => {
+    const dedup = new Map<string, ExerciseCategoryOption>();
+    for (const item of categoryItems) {
+      const label = item.label || item.slug || item.locale;
+      if (!label) continue;
+      dedup.set(item.id, { id: item.id, label });
+    }
+    return Array.from(dedup.values()).sort((a, b) => collator.compare(a.label, b.label));
+  }, [categoryItems, collator]);
+
+  const categoryLabelById = React.useMemo(
+    () => new Map(exerciseCategoryOptions.map((option) => [option.id, option.label])),
+    [exerciseCategoryOptions],
+  );
+
   const exerciseLibrary = React.useMemo<ExerciseLibraryItem[]>(() => {
     const sorted = [...exerciseItems].sort((a, b) => collator.compare(a.label, b.label));
     return sorted.map((item) => ({
       id: item.id,
       label: item.label,
       level: item.level,
-      category: item.level,
+      categoryId: item.categoryId,
+      categoryLabel: categoryLabelById.get(item.categoryId) ?? '',
       type: item.visibility,
       duration: item.rest ?? 0,
       sets: parseSeriesCount(item.series),
@@ -197,23 +220,11 @@ export function useProgramBuilder(
       rest: item.rest != null ? `${item.rest}s` : '-',
       tags: [],
     }));
-  }, [collator, exerciseItems]);
+  }, [categoryLabelById, collator, exerciseItems]);
 
   const exerciseMap = React.useMemo(
     () => new Map(exerciseLibrary.map((exercise) => [exercise.id, exercise])),
     [exerciseLibrary],
-  );
-
-  const exerciseCategories = React.useMemo(
-    () =>
-      Array.from(
-        new Set(
-          categoryItems
-            .map((item) => item.label || item.slug || item.locale)
-            .filter((value): value is string => Boolean(value)),
-        ),
-      ).sort(),
-    [categoryItems],
   );
 
   const exerciseTypeOptions = React.useMemo<ExerciseTypeOption[]>(
@@ -266,7 +277,7 @@ export function useProgramBuilder(
     if (exerciseCategory === 'all') {
       return exerciseLibrary;
     }
-    return exerciseLibrary.filter((exercise) => exercise.category === exerciseCategory);
+    return exerciseLibrary.filter((exercise) => exercise.categoryId === exerciseCategory);
   }, [exerciseCategory, exerciseLibrary]);
 
   const summaryText = React.useMemo(
@@ -820,7 +831,7 @@ export function useProgramBuilder(
     exerciseType,
     sessionTemplates,
     filteredExercises,
-    exerciseCategories,
+    exerciseCategoryOptions,
     exerciseTypeOptions,
     exerciseMap,
     limitHint,

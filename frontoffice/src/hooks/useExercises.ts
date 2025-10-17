@@ -23,6 +23,7 @@ export interface Exercise {
   rest?: number | null;
   videoUrl?: string | null;
   visibility: ExerciseVisibility;
+  categoryId: string;
   createdBy: string;
   createdAt: string;
   updatedAt: string;
@@ -47,7 +48,7 @@ const LIST_Q = `
     exercise_list(input: $input) {
       items {
         id slug locale label description instructions level series repetitions
-        charge rest videoUrl visibility createdBy createdAt updatedAt
+        charge rest videoUrl visibility categoryId createdBy createdAt updatedAt
         creator { id email }
       }
       total page limit
@@ -59,7 +60,7 @@ const CREATE_M = `
   mutation CreateExercise($input: CreateExerciseInput!) {
     exercise_create(input: $input) {
       id slug locale label description instructions level series repetitions
-      charge rest videoUrl visibility createdBy createdAt updatedAt
+      charge rest videoUrl visibility categoryId createdBy createdAt updatedAt
       creator { id email }
     }
   }
@@ -69,7 +70,7 @@ const UPDATE_M = `
   mutation UpdateExercise($input: UpdateExerciseInput!) {
     exercise_update(input: $input) {
       id slug locale label description instructions level series repetitions
-      charge rest videoUrl visibility createdBy createdAt updatedAt
+      charge rest videoUrl visibility categoryId createdBy createdAt updatedAt
       creator { id email }
     }
   }
@@ -85,6 +86,7 @@ export interface UseExercisesParams {
   q: string;
   visibility?: ExerciseVisibility;
   level?: ExerciseLevel;
+  categoryId?: string;
   locale?: string;
   createdBy?: string;
 }
@@ -95,6 +97,7 @@ export function useExercises({
   q,
   visibility,
   level,
+  categoryId,
   locale,
   createdBy,
 }: UseExercisesParams) {
@@ -117,6 +120,7 @@ export function useExercises({
             ...(trimmedQuery ? { q: trimmedQuery } : {}),
             ...(visibility ? { visibility } : {}),
             ...(level ? { level } : {}),
+            ...(categoryId ? { categoryId } : {}),
             ...(locale ? { locale } : {}),
             ...(createdBy ? { createdBy } : {}),
           },
@@ -131,7 +135,7 @@ export function useExercises({
     } finally {
       setLoading(false);
     }
-  }, [page, limit, q, visibility, level, locale, createdBy, gql, flash]);
+  }, [page, limit, q, visibility, level, categoryId, locale, createdBy, gql, flash]);
 
   React.useEffect(() => { void load(); }, [load]);
 

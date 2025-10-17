@@ -117,6 +117,7 @@ export class BddServiceExerciseMongo {
       createdBy,
       visibility,
       level,
+      categoryId,
       limit = 20,
       page = 1,
       sort = { updatedAt: -1 },
@@ -133,6 +134,7 @@ export class BddServiceExerciseMongo {
     if (createdBy) filter.createdBy = this.toObjectId(createdBy);
     if (visibility === 'public' || visibility === 'private') filter.visibility = visibility;
     if (level) filter.level = level;
+    if (categoryId) filter.category = this.toObjectId(categoryId);
     filter.deletedAt = undefined;
 
     const collection = await this.col();
