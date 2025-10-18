@@ -48,18 +48,18 @@
         "frequency_label": "Freq./sem.",
         "description_label": "Description",
         "description_placeholder": "Objectifs et details...",
-        "search_placeholder": "Rechercher une seance...",
+        "search_placeholder": "Rechercher une séance...",
         "filter_label": "Categorie",
         "filter_all": "Toutes categories",
-        "button_create": "Creer une seance"
+        "button_create": "Creer une séance"
       },
-      "templates_title": "Bibliotheque de seances",
+      "templates_title": "Bibliotheque de séances",
       "templates_subtitle": "Choisissez une séance dans la liste ou cliquez pour l'ajouter.",
       "templates_limit_hint": "Affichage des 10 sessions maximum triés par ordre alphabétique.",
       "structure": {
         "title": "Nom du programme",
         "header_description": "Ajouter une description à votre programme.",
-        "summary": "{{count}} seances",
+        "summary": "{{count}} séances",
         "session_counter_one": "{{count}} séance",
         "session_counter_other": "{{count}} séances",
         "exercise_counter_one": "{{count}} exercice",
