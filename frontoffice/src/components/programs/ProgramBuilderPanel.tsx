@@ -793,7 +793,7 @@ export function ProgramBuilderPanel({
           </Tooltip>
           <Tooltip title={builderCopy.footer.submit} arrow>
             <span style={{ display: 'inline-flex' }}>
-              <Button variant="contained" onClick={handleSubmit}>
+              <Button variant="contained" type="button" onClick={handleSubmit}>
                 {builderCopy.footer.submit}
               </Button>
             </span>

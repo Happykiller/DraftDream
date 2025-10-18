@@ -111,6 +111,9 @@
         "cancel": "Annuler",
         "submit": "Creer le programme"
       },
+      "errors": {
+        "missing_required_fields": "Veuillez remplir les champs obligatoires."
+      },
       "draft_label": "Brouillon"
     }
   },

@@ -89,7 +89,7 @@ type UseProgramBuilderResult = {
   handleMoveSessionDown: (sessionId: string) => void;
   handleMoveExerciseUp: (sessionId: string, exerciseId: string) => void;
   handleMoveExerciseDown: (sessionId: string, exerciseId: string) => void;
-  handleSubmit: () => Promise<void>;
+  handleSubmit: (event?: React.SyntheticEvent) => Promise<void>;
   userLabel: (user: User | null) => string;
 };
 
@@ -742,13 +742,20 @@ export function useProgramBuilder(
     idCountersRef.current = { session: 0, exercise: 0 };
   }, [builderCopy.structure.title]);
 
-  const handleSubmit = React.useCallback(async () => {
+  const handleSubmit = React.useCallback(async (event?: React.SyntheticEvent) => {
+    event?.preventDefault();
+    event?.stopPropagation();
+
     const name = form.programName?.trim();
     const duration = Number.parseInt(form.duration, 10);
     const frequency = Number.parseInt(form.frequency, 10);
 
     if (!name || !duration || !frequency) {
-      flash.error('Please fill required fields');
+      flash.error(
+        t('programs-coatch.builder.errors.missing_required_fields', {
+          defaultValue: 'Please fill required fields.',
+        }),
+      );
       return;
     }
 

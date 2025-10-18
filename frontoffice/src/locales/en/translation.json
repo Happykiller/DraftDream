@@ -111,6 +111,9 @@
         "cancel": "Cancel",
         "submit": "Create the program"
       },
+      "errors": {
+        "missing_required_fields": "Please fill required fields."
+      },
       "draft_label": "Draft"
     }
   },
