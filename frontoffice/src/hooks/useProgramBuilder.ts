@@ -138,6 +138,20 @@ export function useProgramBuilder(
     [parsedDuration, parsedFrequency, trimmedProgramName],
   );
 
+  const trimmedProgramName = React.useMemo(() => form.programName.trim(), [form.programName]);
+  const parsedDuration = React.useMemo<number | null>(() => {
+    const value = Number.parseInt(form.duration, 10);
+    return Number.isNaN(value) || value <= 0 ? null : value;
+  }, [form.duration]);
+  const parsedFrequency = React.useMemo<number | null>(() => {
+    const value = Number.parseInt(form.frequency, 10);
+    return Number.isNaN(value) || value <= 0 ? null : value;
+  }, [form.frequency]);
+  const isSubmitDisabled = React.useMemo(
+    () => !trimmedProgramName || parsedDuration === null || parsedFrequency === null,
+    [parsedDuration, parsedFrequency, trimmedProgramName],
+  );
+
   const debouncedQ = useDebouncedValue(usersQ, 300);
   const debouncedSessionSearch = useDebouncedValue(sessionSearch, 300);
   const debouncedExerciseSearch = useDebouncedValue(exerciseSearch, 300);
@@ -845,10 +859,11 @@ export function useProgramBuilder(
     createProgram,
     exerciseMap,
     flashError,
-    form.athlete,
     parsedDuration,
     parsedFrequency,
     programDescription,
+    form.description,
+    form.athlete,
     trimmedProgramName,
     i18n.language,
     onCancel,
