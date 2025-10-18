@@ -147,7 +147,9 @@
     "year_full": "©{{year}} - Tous droits réservés"
   },
   "header": {
-    "logout": "Se déconnecter"
+    "logout": "Se déconnecter",
+    "loading_user": "Chargement du profil…",
+    "unknown_user": "Utilisateur inconnu"
   },
   "ERRORS": {
     "INVALID_CREDENTIALS": "Identifiants invalides."

@@ -23,6 +23,7 @@ export function ProtectedLayout(): React.JSX.Element {
   // Session snapshot once per render (no live subscription => 0 regression)
   const snap = React.useMemo(() => session.getState(), []);
   const role = snap.role ?? 'guest';
+  const fallbackName = [snap.name_first, snap.name_last].filter(Boolean).join(' ').trim();
 
   const items = useNavItems(role);
   const { open: mobileOpen, toggle, close } = useMobileDrawer();
@@ -70,7 +71,7 @@ export function ProtectedLayout(): React.JSX.Element {
       {/* AppBar – width compensation is applied on main container instead of AppBar for simplicity */}
       <LayoutAppBar
         pageTitle={pageTitle}
-        userName={`${snap.name_first} ${snap.name_last}`}
+        userName={fallbackName}
         userRole={snap.role ?? undefined}
         onMenuClick={toggle}
         onLogout={handleLogout}
