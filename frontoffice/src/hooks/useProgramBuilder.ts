@@ -20,7 +20,6 @@ import type {
   SessionTemplate,
 } from '@src/components/programs/programBuilderTypes';
 import {
-  parseDragData,
   parseRestSecondsValue,
   parseSeriesCount,
   logWithTimestamp,
@@ -53,16 +52,10 @@ type UseProgramBuilderResult = {
   limitHint: string;
   emptyExercisesMessage: string;
   summaryText: string;
-  sessionDropZoneLabel: string;
-  exerciseDropZoneLabel: string;
   sessionsLoading: boolean;
   exercisesLoading: boolean;
   categoriesLoading: boolean;
   usersLoading: boolean;
-  isDraggingSession: boolean;
-  isDraggingExercise: boolean;
-  sessionDragOrigin: 'library' | 'draft' | null;
-  exerciseDragOrigin: 'library' | 'draft' | null;
   setSessionSearch: React.Dispatch<React.SetStateAction<string>>;
   setExerciseSearch: React.Dispatch<React.SetStateAction<string>>;
   setExerciseCategory: React.Dispatch<React.SetStateAction<string>>;
@@ -82,21 +75,11 @@ type UseProgramBuilderResult = {
     exerciseId: string,
     label: string,
   ) => void;
-  handleExerciseDropAtPosition: (
-    sessionId: string,
-    position: number,
-    event: React.DragEvent<HTMLDivElement>,
-  ) => void;
-  handleSessionDropAtPosition: (
-    position: number,
-    event: React.DragEvent<HTMLDivElement>,
-  ) => void;
-  handleSessionDragStartFromLibrary: () => void;
-  handleSessionDragStartFromDraft: () => void;
-  handleSessionDragEnd: () => void;
-  handleExerciseDragStartFromLibrary: () => void;
-  handleExerciseDragStartFromSession: () => void;
-  handleExerciseDragEnd: () => void;
+  handleAddExerciseToSession: (sessionId: string, exerciseId: string, position?: number) => void;
+  handleMoveSessionUp: (sessionId: string) => void;
+  handleMoveSessionDown: (sessionId: string) => void;
+  handleMoveExerciseUp: (sessionId: string, exerciseId: string) => void;
+  handleMoveExerciseDown: (sessionId: string, exerciseId: string) => void;
   handleSubmit: () => Promise<void>;
   userLabel: (user: User | null) => string;
 };
@@ -118,10 +101,6 @@ export function useProgramBuilder(
   const [exerciseSearch, setExerciseSearch] = React.useState('');
   const [exerciseCategory, setExerciseCategory] = React.useState('all');
   const [exerciseType, setExerciseType] = React.useState<'all' | ExerciseVisibility>('all');
-  const [isDraggingSession, setIsDraggingSession] = React.useState(false);
-  const [sessionDragOrigin, setSessionDragOrigin] = React.useState<'library' | 'draft' | null>(null);
-  const [isDraggingExercise, setIsDraggingExercise] = React.useState(false);
-  const [exerciseDragOrigin, setExerciseDragOrigin] = React.useState<'library' | 'draft' | null>(null);
   const [sessions, setSessions] = React.useState<ProgramSession[]>([]);
   const [form, setForm] = React.useState<ProgramForm>(INITIAL_FORM_STATE);
 
@@ -325,23 +304,6 @@ export function useProgramBuilder(
   const summaryText = React.useMemo(
     () => t('programs-coatch.builder.structure.summary', { count: sessions.length }),
     [sessions.length, t],
-  );
-
-  const sessionDropZoneLabel = React.useMemo(
-    () =>
-      t('programs-coatch.builder.structure.drop_zone', {
-        defaultValue: 'Drop session here',
-      }),
-    [t],
-  );
-
-  const exerciseDropZoneLabel = React.useMemo(
-    () =>
-      builderCopy.structure.exercise_drop_zone ??
-      t('programs-coatch.builder.structure.exercise_drop_zone', {
-        defaultValue: 'Drop exercise here',
-      }),
-    [builderCopy.structure.exercise_drop_zone, t],
   );
 
   const idCountersRef = React.useRef<{ session: number; exercise: number }>({
@@ -577,187 +539,99 @@ export function useProgramBuilder(
     [],
   );
 
-  const handleSessionDragStartFromLibrary = React.useCallback(() => {
-    logWithTimestamp('log', '[ProgramBuilder][SessionDrag] start from library');
-    setIsDraggingSession(true);
-    setSessionDragOrigin('library');
-  }, []);
-
-  const handleSessionDragStartFromDraft = React.useCallback(() => {
-    logWithTimestamp('log', '[ProgramBuilder][SessionDrag] start from draft');
-    setIsDraggingSession(true);
-    setSessionDragOrigin('draft');
-  }, []);
-
-  const handleSessionDragEnd = React.useCallback(() => {
-    logWithTimestamp('log', '[ProgramBuilder][SessionDrag] end');
-    setIsDraggingSession(false);
-    setSessionDragOrigin(null);
-  }, []);
-
-  const handleExerciseDragStartFromLibrary = React.useCallback(() => {
-    logWithTimestamp('log', '[ProgramBuilder][ExerciseDrag] start from library');
-    setIsDraggingExercise(true);
-    setExerciseDragOrigin('library');
-  }, []);
-
-  const handleExerciseDragStartFromSession = React.useCallback(() => {
-    logWithTimestamp('log', '[ProgramBuilder][ExerciseDrag] start from session');
-    setIsDraggingExercise(true);
-    setExerciseDragOrigin('draft');
-  }, []);
-
-  const handleExerciseDragEnd = React.useCallback(() => {
-    logWithTimestamp('log', '[ProgramBuilder][ExerciseDrag] end');
-    setIsDraggingExercise(false);
-    setExerciseDragOrigin(null);
-  }, []);
-
-  const handleSessionDrop = React.useCallback(
-    (position: number, event: React.DragEvent<HTMLDivElement>) => {
-      logWithTimestamp('log', '[ProgramBuilder][handleSessionDrop] received drop', {
-        position,
-        dataTypes: Array.from(event.dataTransfer.types ?? []),
-      });
-      const payload = parseDragData(event);
-      if (!payload) {
-        logWithTimestamp('warn', '[ProgramBuilder][handleSessionDrop] missing payload');
-        return;
+  const handleMoveSessionUp = React.useCallback((sessionId: string) => {
+    setSessions((prev) => {
+      const index = prev.findIndex((session) => session.id === sessionId);
+      if (index <= 0) {
+        return prev;
       }
-
-      logWithTimestamp('log', '[ProgramBuilder][handleSessionDrop] payload', payload);
-      if (payload.type === 'session') {
-        handleAddSessionFromTemplate(payload.id, position);
-      } else if (payload.type === 'session-move') {
-        setSessions((prev) => {
-          const currentIndex = prev.findIndex((session) => session.id === payload.id);
-          if (currentIndex === -1) {
-            logWithTimestamp('warn', '[ProgramBuilder][handleSessionDrop] session to move not found', payload);
-            return prev;
-          }
-
-          const next = [...prev];
-          const [dragged] = next.splice(currentIndex, 1);
-          let insertAt = position;
-          if (currentIndex < position) {
-            insertAt -= 1;
-          }
-          insertAt = Math.max(0, Math.min(insertAt, next.length));
-          logWithTimestamp('log', '[ProgramBuilder][handleSessionDrop] reordering session', {
-            fromIndex: currentIndex,
-            toIndex: insertAt,
-            sessionId: dragged.id,
-          });
-          next.splice(insertAt, 0, dragged);
-          return next;
-        });
-      }
-
-      handleSessionDragEnd();
-    },
-    [handleAddSessionFromTemplate, handleSessionDragEnd],
-  );
-
-  const handleExerciseDrop = React.useCallback(
-    (sessionId: string, position: number, event: React.DragEvent<HTMLDivElement>) => {
-      logWithTimestamp('log', '[ProgramBuilder][handleExerciseDrop] received drop', {
+      const next = [...prev];
+      const [current] = next.splice(index, 1);
+      next.splice(index - 1, 0, current);
+      logWithTimestamp('log', '[ProgramBuilder][handleMoveSessionUp] reordered session', {
         sessionId,
-        position,
-        dataTypes: Array.from(event.dataTransfer.types ?? []),
+        fromIndex: index,
+        toIndex: index - 1,
       });
-      const payload = parseDragData(event);
-      if (!payload) {
-        logWithTimestamp('warn', '[ProgramBuilder][handleExerciseDrop] missing payload');
-        return;
+      return next;
+    });
+  }, []);
+
+  const handleMoveSessionDown = React.useCallback((sessionId: string) => {
+    setSessions((prev) => {
+      const index = prev.findIndex((session) => session.id === sessionId);
+      if (index === -1 || index >= prev.length - 1) {
+        return prev;
       }
-
-      logWithTimestamp('log', '[ProgramBuilder][handleExerciseDrop] payload', payload);
-      if (payload.type === 'exercise') {
-        handleAddExerciseToSession(sessionId, payload.id, position);
-      } else if (payload.type === 'exercise-move') {
-        setSessions((prev) => {
-          const sourceSessionIndex = prev.findIndex((session) => session.id === payload.sessionId);
-          if (sourceSessionIndex === -1) {
-            logWithTimestamp('warn', '[ProgramBuilder][handleExerciseDrop] source session not found', payload);
-            return prev;
-          }
-
-          const sourceSession = prev[sourceSessionIndex];
-          const sourceExerciseIndex = sourceSession.exercises.findIndex(
-            (exercise) => exercise.id === payload.id,
-          );
-          if (sourceExerciseIndex === -1) {
-            logWithTimestamp('warn', '[ProgramBuilder][handleExerciseDrop] exercise not found in source', payload);
-            return prev;
-          }
-
-          const draggedExercise = sourceSession.exercises[sourceExerciseIndex];
-          const withoutSource = prev.map((session) => {
-            if (session.id !== payload.sessionId) {
-              return session;
-            }
-            const exercises = [...session.exercises];
-            exercises.splice(sourceExerciseIndex, 1);
-            logWithTimestamp('log', '[ProgramBuilder][handleExerciseDrop] removed from source session', {
-              sessionId: session.id,
-              exerciseId: draggedExercise.id,
-              remaining: exercises.length,
-            });
-            return {
-              ...session,
-              exercises,
-            };
-          });
-
-          return withoutSource.map((session) => {
-            if (session.id !== sessionId) {
-              return session;
-            }
-
-            const exercises = [...session.exercises];
-            let insertAt = position;
-            if (payload.sessionId === sessionId && sourceExerciseIndex < position) {
-              insertAt -= 1;
-            }
-            insertAt = Math.max(0, Math.min(insertAt, exercises.length));
-            logWithTimestamp('log', '[ProgramBuilder][handleExerciseDrop] inserting exercise', {
-              sessionId: session.id,
-              exerciseId: draggedExercise.id,
-              insertAt,
-              lengthBefore: exercises.length,
-            });
-            exercises.splice(insertAt, 0, draggedExercise);
-            return {
-              ...session,
-              exercises,
-            };
-          });
-        });
-      }
-
-      handleExerciseDragEnd();
-    },
-    [handleAddExerciseToSession, handleExerciseDragEnd],
-  );
-
-  const handleExerciseDropAtPosition = React.useCallback(
-    (sessionId: string, position: number, event: React.DragEvent<HTMLDivElement>) => {
-      logWithTimestamp('log', '[ProgramBuilder][handleExerciseDropAtPosition] triggered', {
+      const next = [...prev];
+      const [current] = next.splice(index, 1);
+      next.splice(index + 1, 0, current);
+      logWithTimestamp('log', '[ProgramBuilder][handleMoveSessionDown] reordered session', {
         sessionId,
-        position,
+        fromIndex: index,
+        toIndex: index + 1,
       });
-      handleExerciseDrop(sessionId, position, event);
-    },
-    [handleExerciseDrop],
-  );
+      return next;
+    });
+  }, []);
 
-  const handleSessionDropAtPosition = React.useCallback(
-    (position: number, event: React.DragEvent<HTMLDivElement>) => {
-      logWithTimestamp('log', '[ProgramBuilder][handleSessionDropAtPosition] triggered', { position });
-      handleSessionDrop(position, event);
-    },
-    [handleSessionDrop],
-  );
+  const handleMoveExerciseUp = React.useCallback((sessionId: string, exerciseId: string) => {
+    setSessions((prev) =>
+      prev.map((session) => {
+        if (session.id !== sessionId) {
+          return session;
+        }
+
+        const index = session.exercises.findIndex((exercise) => exercise.id === exerciseId);
+        if (index <= 0) {
+          return session;
+        }
+
+        const exercises = [...session.exercises];
+        const [current] = exercises.splice(index, 1);
+        exercises.splice(index - 1, 0, current);
+        logWithTimestamp('log', '[ProgramBuilder][handleMoveExerciseUp] reordered exercise', {
+          sessionId,
+          exerciseId,
+          fromIndex: index,
+          toIndex: index - 1,
+        });
+        return {
+          ...session,
+          exercises,
+        };
+      }),
+    );
+  }, []);
+
+  const handleMoveExerciseDown = React.useCallback((sessionId: string, exerciseId: string) => {
+    setSessions((prev) =>
+      prev.map((session) => {
+        if (session.id !== sessionId) {
+          return session;
+        }
+
+        const index = session.exercises.findIndex((exercise) => exercise.id === exerciseId);
+        if (index === -1 || index >= session.exercises.length - 1) {
+          return session;
+        }
+
+        const exercises = [...session.exercises];
+        const [current] = exercises.splice(index, 1);
+        exercises.splice(index + 1, 0, current);
+        logWithTimestamp('log', '[ProgramBuilder][handleMoveExerciseDown] reordered exercise', {
+          sessionId,
+          exerciseId,
+          fromIndex: index,
+          toIndex: index + 1,
+        });
+        return {
+          ...session,
+          exercises,
+        };
+      }),
+    );
+  }, []);
 
   const resetBuilder = React.useCallback(() => {
     setSelectedAthlete(null);
@@ -848,20 +722,6 @@ export function useProgramBuilder(
     logWithTimestamp('log', '[ProgramBuilder][state] sessions updated', sessions);
   }, [sessions]);
 
-  React.useEffect(() => {
-    logWithTimestamp('log', '[ProgramBuilder][state] session drag status', {
-      isDraggingSession,
-      sessionDragOrigin,
-    });
-  }, [isDraggingSession, sessionDragOrigin]);
-
-  React.useEffect(() => {
-    logWithTimestamp('log', '[ProgramBuilder][state] exercise drag status', {
-      isDraggingExercise,
-      exerciseDragOrigin,
-    });
-  }, [isDraggingExercise, exerciseDragOrigin]);
-
   return {
     form,
     sessions,
@@ -879,16 +739,10 @@ export function useProgramBuilder(
     limitHint,
     emptyExercisesMessage,
     summaryText,
-    sessionDropZoneLabel,
-    exerciseDropZoneLabel,
     sessionsLoading,
     exercisesLoading,
     categoriesLoading,
     usersLoading,
-    isDraggingSession,
-    isDraggingExercise,
-    sessionDragOrigin,
-    exerciseDragOrigin,
     setSessionSearch,
     setExerciseSearch,
     setExerciseCategory,
@@ -902,14 +756,11 @@ export function useProgramBuilder(
     handleRemoveExercise,
     handleSessionLabelChange,
     handleExerciseLabelChange,
-    handleExerciseDropAtPosition,
-    handleSessionDropAtPosition,
-    handleSessionDragStartFromLibrary,
-    handleSessionDragStartFromDraft,
-    handleSessionDragEnd,
-    handleExerciseDragStartFromLibrary,
-    handleExerciseDragStartFromSession,
-    handleExerciseDragEnd,
+    handleAddExerciseToSession,
+    handleMoveSessionUp,
+    handleMoveSessionDown,
+    handleMoveExerciseUp,
+    handleMoveExerciseDown,
     handleSubmit,
     userLabel,
   };

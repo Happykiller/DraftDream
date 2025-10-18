@@ -1,64 +1,31 @@
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
-import { Box, Chip, Paper, Stack, Typography } from '@mui/material';
+import { Chip, IconButton, Paper, Stack, Typography } from '@mui/material';
+import { Add } from '@mui/icons-material';
 
 import type { BuilderCopy, SessionTemplate } from './programBuilderTypes';
-import { DragIndicator } from '@mui/icons-material';
 import { logWithTimestamp } from './programBuilderUtils';
 
 type ProgramBuilderSessionTemplateItemProps = {
   template: SessionTemplate;
   builderCopy: BuilderCopy;
-  onDragStart: (event: React.DragEvent<HTMLDivElement>) => void;
-  onDragEnd?: () => void;
+  onAdd: () => void;
 };
 
 export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuilderSessionLibraryItem({
   template,
   builderCopy,
-  onDragStart,
-  onDragEnd,
+  onAdd,
 }: ProgramBuilderSessionTemplateItemProps): React.JSX.Element {
   const theme = useTheme();
 
-  const handleDragStart = React.useCallback(
-    (event: React.DragEvent<HTMLDivElement>) => {
-      logWithTimestamp('log', '[ProgramBuilder][SessionLibraryItem] drag start', {
-        templateId: template.id,
-        label: template.label,
-      });
-      onDragStart(event);
-    },
-    [onDragStart, template.id, template.label],
-  );
-
-  const handleDragEnd = React.useCallback(() => {
-    logWithTimestamp('log', '[ProgramBuilder][SessionLibraryItem] drag end', {
+  const handleAddClick = React.useCallback(() => {
+    logWithTimestamp('log', '[ProgramBuilder][SessionLibraryItem] add session clicked', {
       templateId: template.id,
       label: template.label,
     });
-    onDragEnd?.();
-  }, [onDragEnd, template.id, template.label]);
-
-  const handleMouseDown = React.useCallback(
-    (event: React.MouseEvent<HTMLSpanElement>) => {
-      logWithTimestamp('log', '[ProgramBuilder][SessionLibraryItem] mouse down on drag handle', {
-        templateId: template.id,
-        button: event.button,
-      });
-    },
-    [template.id],
-  );
-
-  const handleMouseUp = React.useCallback(
-    (event: React.MouseEvent<HTMLSpanElement>) => {
-      logWithTimestamp('log', '[ProgramBuilder][SessionLibraryItem] mouse up on drag handle', {
-        templateId: template.id,
-        button: event.button,
-      });
-    },
-    [template.id],
-  );
+    onAdd();
+  }, [onAdd, template.id, template.label]);
 
   return (
     <Paper
@@ -76,30 +43,20 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
     >
       <Stack spacing={1.25}>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Box
-            component="span"
-            draggable
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            sx={{
-              cursor: 'grab',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <DragIndicator fontSize="small" color="disabled" />
-          </Box>
           <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
             {template.label}
           </Typography>
-          <Chip
-            label={`${template.duration} ${builderCopy.structure.duration_unit}`}
-            size="small"
-            color="secondary"
-            variant="outlined"
-          />
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Chip
+              label={`${template.duration} ${builderCopy.structure.duration_unit}`}
+              size="small"
+              color="secondary"
+              variant="outlined"
+            />
+            <IconButton size="small" onClick={handleAddClick} aria-label="add-session-template">
+              <Add fontSize="small" />
+            </IconButton>
+          </Stack>
         </Stack>
 
         <Stack direction="row" spacing={0.5} flexWrap="wrap">

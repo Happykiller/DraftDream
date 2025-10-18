@@ -1,15 +1,10 @@
 import * as React from 'react';
-import { DeleteOutline, DragIndicator } from '@mui/icons-material';
 import {
-  Box,
-  Chip,
-  IconButton,
-  Paper,
-  Stack,
-  TextField,
-  Typography,
-  useTheme,
-} from '@mui/material';
+  DeleteOutline,
+  KeyboardArrowDown,
+  KeyboardArrowUp,
+} from '@mui/icons-material';
+import { Chip, IconButton, Paper, Stack, TextField, Typography, useTheme } from '@mui/material';
 
 import type {
   ExerciseLibraryItem,
@@ -21,20 +16,22 @@ type ProgramBuilderExerciseItemProps = {
   exerciseItem: ProgramExercise;
   exercise: ExerciseLibraryItem;
   index: number;
+  totalExercises: number;
   onRemove: (exerciseId: string) => void;
   onLabelChange: (label: string) => void;
-  onDragStart?: (event: React.DragEvent<HTMLDivElement>) => void;
-  onDragEnd?: () => void;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
 };
 
 export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExerciseItem({
   exerciseItem,
   exercise,
   index,
+  totalExercises,
   onRemove,
   onLabelChange,
-  onDragStart,
-  onDragEnd,
+  onMoveUp,
+  onMoveDown,
 }: ProgramBuilderExerciseItemProps): React.JSX.Element {
   const theme = useTheme();
 
@@ -107,47 +104,31 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
     onRemove(exerciseItem.id);
   };
 
-  const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-    if (isEditingLabel) {
-      logWithTimestamp('log', '[ProgramBuilder][ExerciseItem] drag prevented while editing label', {
-        parentSessionExerciseId: exerciseItem.id,
-        exerciseId: exercise.id,
-      });
-      event.preventDefault();
-      event.stopPropagation();
+  const canMoveUp = index > 0;
+  const canMoveDown = index < totalExercises - 1;
+
+  const handleMoveUpClick = () => {
+    if (!canMoveUp) {
       return;
     }
-    event.stopPropagation();
-    logWithTimestamp('log', '[ProgramBuilder][ExerciseItem] drag start', {
+    logWithTimestamp('log', '[ProgramBuilder][ExerciseItem] move exercise up', {
       parentSessionExerciseId: exerciseItem.id,
       exerciseId: exercise.id,
+      fromIndex: index,
     });
-    onDragStart?.(event);
+    onMoveUp();
   };
 
-  const handleDragEnd = (event: React.DragEvent<HTMLDivElement>) => {
-    event.stopPropagation();
-    logWithTimestamp('log', '[ProgramBuilder][ExerciseItem] drag end', {
+  const handleMoveDownClick = () => {
+    if (!canMoveDown) {
+      return;
+    }
+    logWithTimestamp('log', '[ProgramBuilder][ExerciseItem] move exercise down', {
       parentSessionExerciseId: exerciseItem.id,
       exerciseId: exercise.id,
+      fromIndex: index,
     });
-    onDragEnd?.();
-  };
-
-  const handleMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
-    logWithTimestamp('log', '[ProgramBuilder][ExerciseItem] mouse down on drag handle', {
-      parentSessionExerciseId: exerciseItem.id,
-      exerciseId: exercise.id,
-      button: event.button,
-    });
-  };
-
-  const handleMouseUp = (event: React.MouseEvent<HTMLSpanElement>) => {
-    logWithTimestamp('log', '[ProgramBuilder][ExerciseItem] mouse up on drag handle', {
-      parentSessionExerciseId: exerciseItem.id,
-      exerciseId: exercise.id,
-      button: event.button,
-    });
+    onMoveDown();
   };
 
   return (
@@ -169,23 +150,25 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
         spacing={1}
         justifyContent="space-between"
       >
-        <Stack direction="row" spacing={1} alignItems="flex-start">
-          <Box
-            component="span"
-            draggable={!isEditingLabel}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            sx={{
-              cursor: isEditingLabel ? 'not-allowed' : 'grab',
-              display: 'flex',
-              alignItems: 'center',
-              paddingTop: '2px',
-            }}
-          >
-            <DragIndicator fontSize="small" color="disabled" />
-          </Box>
+        <Stack direction="row" spacing={1.5} alignItems="flex-start">
+          <Stack spacing={0.5} alignItems="center" pt={0.25}>
+            <IconButton
+              size="small"
+              onClick={handleMoveUpClick}
+              disabled={!canMoveUp}
+              aria-label="move-exercise-up"
+            >
+              <KeyboardArrowUp fontSize="small" />
+            </IconButton>
+            <IconButton
+              size="small"
+              onClick={handleMoveDownClick}
+              disabled={!canMoveDown}
+              aria-label="move-exercise-down"
+            >
+              <KeyboardArrowDown fontSize="small" />
+            </IconButton>
+          </Stack>
           <Typography variant="subtitle2" sx={{ fontWeight: 700, minWidth: 24 }}>
             {index + 1}.
           </Typography>
