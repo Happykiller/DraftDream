@@ -1,14 +1,27 @@
 // src/layouts/components/LayoutAppBar.tsx
-import { AppBar, Toolbar, Typography, IconButton, Stack, Box, useMediaQuery, Tooltip } from '@mui/material';
+import * as React from 'react';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Stack,
+  Box,
+  useMediaQuery,
+  Tooltip,
+} from '@mui/material';
 import { Menu as MenuIcon, Logout } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
+
+import { useUser } from '@hooks/useUser';
+
 import { RAIL_WIDTH, DRAWER_WIDTH } from '../tokens';
 
 /** Props strictly typed for clarity */
 export type LayoutAppBarProps = {
   pageTitle: string;
-  userName: string;
+  userName?: string;
   userRole?: string;
   onMenuClick: () => void;
   onLogout: () => void;
@@ -18,6 +31,16 @@ export function LayoutAppBar({ pageTitle, userName, userRole, onMenuClick, onLog
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation();
+  const { user, loading } = useUser();
+
+  const displayName = React.useMemo(() => {
+    if (loading) return t('header.loading_user');
+    if (user) return `${user.first_name} ${user.last_name}`.trim();
+    const fallback = userName?.trim();
+    return fallback && fallback.length > 0 ? fallback : t('header.unknown_user');
+  }, [loading, t, user, userName]);
+
+  const displayRole = React.useMemo(() => user?.type ?? userRole ?? null, [user?.type, userRole]);
 
   return (
     <AppBar
@@ -59,11 +82,11 @@ export function LayoutAppBar({ pageTitle, userName, userRole, onMenuClick, onLog
         <Stack direction="row" spacing={1.5} alignItems="center">
           <Box sx={{ textAlign: 'right' }}>
             <Typography variant="body2" sx={{ lineHeight: 1 }}>
-              {userName}
+              {displayName}
             </Typography>
-            {userRole && (
+            {displayRole && (
               <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1 }}>
-                {userRole}
+                {displayRole}
               </Typography>
             )}
           </Box>

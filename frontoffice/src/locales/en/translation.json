@@ -147,7 +147,9 @@
     "year_full": "©{{year}} – All rights reserved"
   },
   "header": {
-    "logout": "Log out"
+    "logout": "Log out",
+    "loading_user": "Loading profile…",
+    "unknown_user": "Unknown user"
   },
   "ERRORS": {
     "INVALID_CREDENTIALS": "Invalid credentials."

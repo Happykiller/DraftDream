@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
-import { Chip, IconButton, Paper, Stack, Typography } from '@mui/material';
+import { Box, Chip, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { Add } from '@mui/icons-material';
+import { Add, Public } from '@mui/icons-material';
 
 import type { ExerciseLibraryItem } from './programBuilderTypes';
 import { logWithTimestamp } from './programBuilderUtils';
@@ -23,6 +23,7 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
   const setsLabel = t('programs-coatch.builder.library.sets_label', { defaultValue: 'sets' });
   const repsLabel = t('programs-coatch.builder.library.reps_label', { defaultValue: 'reps' });
   const restLabel = t('programs-coatch.builder.library.rest_label', { defaultValue: 'rest' });
+  const isPublic = exercise.visibility === 'PUBLIC';
 
   const handleAddClick = React.useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -108,6 +109,18 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
                 />
               ))}
             </Stack>
+          ) : null}
+          {isPublic ? (
+            <Box
+              sx={{
+                mt: 'auto',
+                display: 'flex',
+                alignItems: 'center',
+                color: theme.palette.text.disabled,
+              }}
+            >
+              <Public fontSize="small" aria-hidden />
+            </Box>
           ) : null}
         </Stack>
         <IconButton
