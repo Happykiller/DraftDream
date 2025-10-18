@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {
   DeleteOutline,
+  Edit,
   KeyboardArrowDown,
   KeyboardArrowUp,
 } from '@mui/icons-material';
@@ -260,6 +261,7 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
                   fontWeight: 600,
                   display: 'inline-flex',
                   alignItems: 'center',
+                  gap: 0.5,
                   ...interactiveSurfaceSx,
                 }}
                 onClick={handleLabelClick}
@@ -267,13 +269,25 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
                 tabIndex={0}
                 role="button"
               >
+                <Edit fontSize="inherit" color="disabled" />
                 {displayLabel}
               </Typography>
             )}
+            {exercise.description ? (
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ whiteSpace: 'pre-wrap' }}
+              >
+                {exercise.description}
+              </Typography>
+            ) : null}
             <Typography variant="caption" color="text.secondary">
               {exerciseItem.sets} x {exerciseItem.reps} - {exerciseItem.rest}
             </Typography>
-            {exercise.muscles.length > 0 ? (
+            {(exercise.muscles.length > 0 ||
+              exercise.tags.length > 0 ||
+              exercise.equipment.length > 0) && (
               <Stack direction="row" spacing={0.5} flexWrap="wrap">
                 {exercise.muscles.map((muscle) => (
                   <Chip
@@ -284,10 +298,6 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
                     variant={muscle.role === 'primary' ? 'filled' : 'outlined'}
                   />
                 ))}
-              </Stack>
-            ) : null}
-            {exercise.tags.length > 0 ? (
-              <Stack direction="row" spacing={0.5} flexWrap="wrap">
                 {exercise.tags.map((tag) => (
                   <Chip
                     key={`${exercise.id}-tag-${tag.id}`}
@@ -297,10 +307,6 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
                     variant="outlined"
                   />
                 ))}
-              </Stack>
-            ) : null}
-            {exercise.equipment.length > 0 ? (
-              <Stack direction="row" spacing={0.5} flexWrap="wrap">
                 {exercise.equipment.map((eq) => (
                   <Chip
                     key={`${exercise.id}-equipment-${eq.id}`}
@@ -310,7 +316,7 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
                   />
                 ))}
               </Stack>
-            ) : null}
+            )}
           </Stack>
         </Stack>
 

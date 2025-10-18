@@ -55,10 +55,21 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
       }}
     >
       <Stack spacing={1.25}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-            {template.label}
-          </Typography>
+        <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+          <Stack spacing={0.5} flexGrow={1} minWidth={0}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600 }} noWrap>
+              {template.label}
+            </Typography>
+            {template.description ? (
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ whiteSpace: 'pre-wrap' }}
+              >
+                {template.description}
+              </Typography>
+            ) : null}
+          </Stack>
           <Stack direction="row" spacing={1} alignItems="center">
             <Chip
               label={`${template.duration} ${builderCopy.structure.duration_unit}`}
