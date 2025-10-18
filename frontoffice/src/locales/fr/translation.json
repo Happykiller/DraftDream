@@ -38,7 +38,7 @@
     },
     "builder": {
       "title": "Créer un nouveau programme sportif",
-      "subtitle": "Glissez deposer les seances et exercices pour composer un programme sur mesure.",
+      "subtitle": "Sélectionnez des séances et des exercices pour composer un programme sur mesure.",
       "config": {
         "title": "Configuration du programme",
         "client_label": "Athlete",
@@ -54,16 +54,16 @@
         "button_create": "Creer une seance"
       },
       "templates_title": "Bibliotheque de seances",
-      "templates_subtitle": "Glissez une seance ou cliquez pour l'ajouter.",
+      "templates_subtitle": "Choisissez une séance dans la liste ou cliquez pour l'ajouter.",
       "structure": {
         "title": "Structure du programme",
         "summary": "{{count}} seances",
-        "empty": "Glissez une seance depuis la colonne de gauche pour demarrer.",
+        "empty": "Ajoutez une séance depuis la colonne de gauche pour démarrer.",
         "session_prefix": "Seance",
         "duration_unit": "min",
         "tags_label": "Groupes cibles",
-        "drop_zone": "Deposer la seance ici",
-        "exercise_drop_zone": "Deposer l'exercice ici",
+        "drop_zone": "Ajouter la séance ici",
+        "exercise_drop_zone": "Ajouter l'exercice ici",
         "custom_session_label": "Seance personnalisee"
       },
       "library": {
@@ -78,7 +78,7 @@
         "limit_hint": "Affichage des 10 exercices maximum triés par ordre alphabétique.",
         "empty_state": "Aucun exercice ne correspond à vos filtres.",
         "button_create": "Creer un exercice",
-        "subtitle": "Glissez un exercice sur une seance pour l'ajouter.",
+        "subtitle": "Ajoutez un exercice à une séance pour l'intégrer.",
         "sets_label": "series",
         "reps_label": "reps",
         "rest_label": "repos"
