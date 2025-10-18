@@ -4,9 +4,20 @@ import {
   KeyboardArrowDown,
   KeyboardArrowUp,
 } from '@mui/icons-material';
-import { Chip, IconButton, Paper, Stack, TextField, Typography, useTheme } from '@mui/material';
+import {
+  Chip,
+  IconButton,
+  Paper,
+  Stack,
+  TextField,
+  Tooltip,
+  Typography,
+  useTheme,
+} from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import type {
+  BuilderCopy,
   ExerciseLibraryItem,
   ProgramExercise,
 } from './programBuilderTypes';
@@ -34,6 +45,14 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
   onMoveDown,
 }: ProgramBuilderExerciseItemProps): React.JSX.Element {
   const theme = useTheme();
+  const { t } = useTranslation();
+  const tooltips = React.useMemo(
+    () =>
+      t('programs-coatch.builder.library.tooltips', {
+        returnObjects: true,
+      }) as BuilderCopy['library']['tooltips'],
+    [t],
+  );
 
   const [isEditingLabel, setIsEditingLabel] = React.useState(false);
   const displayLabel = exerciseItem.customLabel ?? exercise.label;
@@ -152,22 +171,30 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
       >
         <Stack direction="row" spacing={1.5} alignItems="flex-start">
           <Stack spacing={0.5} alignItems="center" pt={0.25}>
-            <IconButton
-              size="small"
-              onClick={handleMoveUpClick}
-              disabled={!canMoveUp}
-              aria-label="move-exercise-up"
-            >
-              <KeyboardArrowUp fontSize="small" />
-            </IconButton>
-            <IconButton
-              size="small"
-              onClick={handleMoveDownClick}
-              disabled={!canMoveDown}
-              aria-label="move-exercise-down"
-            >
-              <KeyboardArrowDown fontSize="small" />
-            </IconButton>
+            <Tooltip title={tooltips.move_exercise_up} arrow>
+              <span style={{ display: 'inline-flex' }}>
+                <IconButton
+                  size="small"
+                  onClick={handleMoveUpClick}
+                  disabled={!canMoveUp}
+                  aria-label="move-exercise-up"
+                >
+                  <KeyboardArrowUp fontSize="small" />
+                </IconButton>
+              </span>
+            </Tooltip>
+            <Tooltip title={tooltips.move_exercise_down} arrow>
+              <span style={{ display: 'inline-flex' }}>
+                <IconButton
+                  size="small"
+                  onClick={handleMoveDownClick}
+                  disabled={!canMoveDown}
+                  aria-label="move-exercise-down"
+                >
+                  <KeyboardArrowDown fontSize="small" />
+                </IconButton>
+              </span>
+            </Tooltip>
           </Stack>
           <Typography variant="subtitle2" sx={{ fontWeight: 700, minWidth: 24 }}>
             {index + 1}.
@@ -242,13 +269,17 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
           </Stack>
         </Stack>
 
-        <IconButton
-          size="small"
-          onClick={handleRemoveClick}
-          aria-label="delete-exercise"
-        >
-          <DeleteOutline fontSize="small" />
-        </IconButton>
+        <Tooltip title={tooltips.delete_exercise} arrow>
+          <span style={{ display: 'inline-flex' }}>
+            <IconButton
+              size="small"
+              onClick={handleRemoveClick}
+              aria-label="delete-exercise"
+            >
+              <DeleteOutline fontSize="small" />
+            </IconButton>
+          </span>
+        </Tooltip>
       </Stack>
     </Paper>
   );

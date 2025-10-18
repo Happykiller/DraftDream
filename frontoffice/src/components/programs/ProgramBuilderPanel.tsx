@@ -15,6 +15,7 @@ import {
   Paper,
   Stack,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { Add, Search } from '@mui/icons-material';
@@ -72,6 +73,8 @@ export function ProgramBuilderPanel({
     handleRemoveSession,
     handleRemoveExercise,
     handleSessionLabelChange,
+    handleSessionDescriptionChange,
+    handleSessionDurationChange,
     handleExerciseLabelChange,
     handleAddExerciseToSession,
     handleMoveSessionUp,
@@ -327,6 +330,8 @@ export function ProgramBuilderPanel({
                       totalSessions={sessions.length}
                       builderCopy={builderCopy}
                       onLabelChange={handleSessionLabelChange}
+                      onDescriptionChange={handleSessionDescriptionChange}
+                      onDurationChange={handleSessionDurationChange}
                       onRemoveSession={() => handleRemoveSession(session.id)}
                       onRemoveExercise={(exerciseId) =>
                         handleRemoveExercise(session.id, exerciseId)
@@ -346,14 +351,18 @@ export function ProgramBuilderPanel({
                 )}
               </Stack>
 
-              <Button
-                variant="outlined"
-                size="small"
-                startIcon={<Add fontSize="small" />}
-                onClick={handleCreateEmptySession}
-              >
-                {builderCopy.config.button_create}
-              </Button>
+              <Tooltip title={builderCopy.library.tooltips.add_empty_session} arrow>
+                <span style={{ display: 'inline-flex' }}>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    startIcon={<Add fontSize="small" />}
+                    onClick={handleCreateEmptySession}
+                  >
+                    {builderCopy.config.button_create}
+                  </Button>
+                </span>
+              </Tooltip>
             </Paper>
           </Grid>
 
@@ -456,12 +465,20 @@ export function ProgramBuilderPanel({
         </Grid>
 
         <Stack direction="row" justifyContent="flex-end" spacing={1.5}>
-          <Button variant="text" color="inherit" onClick={onCancel}>
-            {builderCopy.footer.cancel}
-          </Button>
-          <Button variant="contained" onClick={handleSubmit}>
-            {builderCopy.footer.submit}
-          </Button>
+          <Tooltip title={builderCopy.footer.cancel} arrow>
+            <span style={{ display: 'inline-flex' }}>
+              <Button variant="text" color="inherit" onClick={onCancel}>
+                {builderCopy.footer.cancel}
+              </Button>
+            </span>
+          </Tooltip>
+          <Tooltip title={builderCopy.footer.submit} arrow>
+            <span style={{ display: 'inline-flex' }}>
+              <Button variant="contained" onClick={handleSubmit}>
+                {builderCopy.footer.submit}
+              </Button>
+            </span>
+          </Tooltip>
         </Stack>
       </Stack>
       </Paper>

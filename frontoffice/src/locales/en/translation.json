@@ -61,6 +61,7 @@
         "empty": "Add a session from the left column to get started.",
         "session_prefix": "Session",
         "duration_unit": "min",
+        "description_placeholder": "Session description (optional)...",
         "tags_label": "Target groups",
         "drop_zone": "Add session here",
         "exercise_drop_zone": "Add exercise here",
@@ -82,6 +83,22 @@
         "sets_label": " sets",
         "reps_label": " reps",
         "rest_label": ""
+      },
+      "tooltips": {
+        "add_exercise": "Add this exercise to the selected session",
+        "public_exercise": "Public exercise available online",
+        "primary_muscle_chip": "Primary muscle: {{label}}",
+        "secondary_muscle_chip": "Secondary muscle: {{label}}",
+        "equipment_chip": "Equipment: {{label}}",
+        "tag_chip": "Tag: {{label}}",
+        "move_session_up": "Move session up",
+        "move_session_down": "Move session down",
+        "delete_session": "Remove session",
+        "move_exercise_up": "Move exercise up",
+        "move_exercise_down": "Move exercise down",
+        "delete_exercise": "Remove exercise",
+        "add_empty_session": "Add a new empty session",
+        "session_duration": "Edit session duration"
       },
       "footer": {
         "cancel": "Cancel",

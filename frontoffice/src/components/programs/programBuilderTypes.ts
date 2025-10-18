@@ -28,6 +28,7 @@ export type SessionTemplate = {
   id: string;
   label: string;
   duration: number;
+  description: string;
   tags: string[];
   exercises: TemplateExerciseRef[];
 };
@@ -46,6 +47,7 @@ export type ProgramSession = {
   sessionId: string;
   label: string;
   duration: number;
+  description: string;
   tags: string[];
   exercises: ProgramExercise[];
 };
@@ -83,6 +85,7 @@ export type BuilderCopy = {
     empty: string;
     session_prefix: string;
     duration_unit: string;
+    description_placeholder: string;
     tags_label: string;
     exercise_drop_zone: string;
     custom_session_label: string;
@@ -100,6 +103,22 @@ export type BuilderCopy = {
     type_private?: string;
     type_public?: string;
     empty_state?: string;
+    tooltips: {
+      add_exercise: string;
+      public_exercise: string;
+      primary_muscle_chip: string;
+      secondary_muscle_chip: string;
+      equipment_chip: string;
+      tag_chip: string;
+      move_session_up: string;
+      move_session_down: string;
+      delete_session: string;
+      move_exercise_up: string;
+      move_exercise_down: string;
+      delete_exercise: string;
+      add_empty_session: string;
+      session_duration: string;
+    };
   };
   footer: {
     cancel: string;
