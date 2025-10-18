@@ -97,6 +97,11 @@ type MuscleListGql {
   limit: Int!
 }
 
+type SessionExerciseSummaryGql {
+  id: ID!
+  label: String!
+}
+
 type SessionSportGql {
   id: ID!
   slug: String!
@@ -105,6 +110,7 @@ type SessionSportGql {
   durationMin: Int!
   description: String
   exerciseIds: [ID!]!
+  exercises: [SessionExerciseSummaryGql!]!
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!

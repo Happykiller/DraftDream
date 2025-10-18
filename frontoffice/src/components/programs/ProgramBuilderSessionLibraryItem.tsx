@@ -19,6 +19,19 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
 }: ProgramBuilderSessionTemplateItemProps): React.JSX.Element {
   const theme = useTheme();
 
+  const exercisesLabel = React.useMemo(() => {
+    const count = template.exercises.length;
+    const raw =
+      count === 1
+        ? builderCopy.structure.exercise_counter_one
+        : builderCopy.structure.exercise_counter_other;
+    return raw.replace('{{count}}', String(count));
+  }, [
+    builderCopy.structure.exercise_counter_one,
+    builderCopy.structure.exercise_counter_other,
+    template.exercises.length,
+  ]);
+
   const handleAddClick = React.useCallback(() => {
     logWithTimestamp('log', '[ProgramBuilder][SessionLibraryItem] add session clicked', {
       templateId: template.id,
@@ -65,11 +78,22 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
           ))}
         </Stack>
 
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
+        {template.exercises.length === 0 ? (
           <Typography variant="caption" color="text.secondary">
-            {template.exercises.length} exercices
+            {exercisesLabel}
           </Typography>
-        </Stack>
+        ) : (
+          <Stack direction="row" spacing={0.5} flexWrap="wrap">
+            {template.exercises.map((exercise) => (
+              <Chip
+                key={`${template.id}-${exercise.exerciseId}`}
+                label={exercise.label}
+                size="small"
+                variant="outlined"
+              />
+            ))}
+          </Stack>
+        )}
       </Stack>
     </Paper>
   );

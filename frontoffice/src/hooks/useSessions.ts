@@ -12,6 +12,7 @@ export interface Session {
   durationMin: number;
   description?: string | null;
   exerciseIds: string[];
+  exercises: { id: string; label: string }[];
   createdBy: string;
   createdAt: string;
   updatedAt: string;
@@ -36,6 +37,7 @@ const LIST_Q = `
     session_list(input: $input) {
       items {
         id slug locale label durationMin description exerciseIds
+        exercises { id label }
         createdBy createdAt updatedAt
         creator { id email }
       }
@@ -48,6 +50,7 @@ const CREATE_M = `
   mutation CreateSession($input: CreateSessionInput!) {
     session_create(input: $input) {
       id slug locale label durationMin description exerciseIds
+      exercises { id label }
       createdBy createdAt updatedAt
       creator { id email }
     }
@@ -58,6 +61,7 @@ const UPDATE_M = `
   mutation UpdateSession($input: UpdateSessionInput!) {
     session_update(input: $input) {
       id slug locale label durationMin description exerciseIds
+      exercises { id label }
       createdBy createdAt updatedAt
       creator { id email }
     }

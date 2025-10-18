@@ -57,7 +57,12 @@
       "templates_subtitle": "Choose a template from the list or click to add it.",
       "structure": {
         "title": "Program structure",
+        "header_description": "Adjust the outline of your draft program.",
         "summary": "{{count}} sessions",
+        "session_counter_one": "{{count}} session",
+        "session_counter_other": "{{count}} sessions",
+        "exercise_counter_one": "{{count}} exercise",
+        "exercise_counter_other": "{{count}} exercises",
         "empty": "Add a session from the left column to get started.",
         "session_prefix": "Session",
         "duration_unit": "min",

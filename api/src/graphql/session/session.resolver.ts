@@ -9,6 +9,7 @@ import {
   SessionSportGql,
   SessionListGql,
   UpdateSessionInput,
+  SessionExerciseSummaryGql,
 } from '@graphql/session/session.gql.types';
 import { UserGql } from '@graphql/user/user.gql.types';
 import { mapUserUsecaseToGql } from '@graphql/user/user.mapper';
@@ -23,6 +24,35 @@ export class SessionResolver {
     if (!userId) return null;
     const user = await inversify.getUserUsecase.execute({ id: userId });
     return user ? mapUserUsecaseToGql(user) : null;
+  }
+
+  @ResolveField(() => [SessionExerciseSummaryGql], { name: 'exercises' })
+  async exercises(
+    @Parent() session: SessionSportGql,
+  ): Promise<SessionExerciseSummaryGql[]> {
+    const exerciseIds = session.exerciseIds ?? [];
+    if (exerciseIds.length === 0) {
+      return [];
+    }
+
+    const uniqueIds = Array.from(new Set(exerciseIds));
+    const fetched = await Promise.all(
+      uniqueIds.map(async (exerciseId) => {
+        const exercise = await inversify.getExerciseUsecase.execute({ id: exerciseId });
+        return exercise ? { id: exercise.id, label: exercise.label } : null;
+      }),
+    );
+
+    const summaries = new Map<string, SessionExerciseSummaryGql>();
+    for (const item of fetched) {
+      if (item) {
+        summaries.set(item.id, item);
+      }
+    }
+
+    return exerciseIds
+      .map((id) => summaries.get(id))
+      .filter((value): value is SessionExerciseSummaryGql => Boolean(value));
   }
 
   // ------- Mutations -------

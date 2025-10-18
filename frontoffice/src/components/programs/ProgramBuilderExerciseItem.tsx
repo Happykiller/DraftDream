@@ -14,6 +14,7 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
 import type {
@@ -45,6 +46,24 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
   onMoveDown,
 }: ProgramBuilderExerciseItemProps): React.JSX.Element {
   const theme = useTheme();
+  const primaryMain = theme.palette.primary.main;
+  const interactiveSurfaceSx = React.useMemo(
+    () => ({
+      cursor: 'pointer',
+      borderRadius: 1,
+      px: 0.75,
+      py: 0.25,
+      transition: 'background-color 120ms ease',
+      '&:hover': {
+        backgroundColor: alpha(primaryMain, 0.08),
+      },
+      '&:focus-visible': {
+        outline: `2px solid ${alpha(primaryMain, 0.32)}`,
+        outlineOffset: 2,
+      },
+    }),
+    [primaryMain],
+  );
   const { t } = useTranslation();
   const tooltips = React.useMemo(
     () =>
@@ -86,13 +105,30 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
     setLabelDraft(displayLabel);
   }, [displayLabel]);
 
-  const handleLabelDoubleClick = React.useCallback(
+  const handleLabelClick = React.useCallback(
     (event: React.MouseEvent<HTMLSpanElement | HTMLParagraphElement>) => {
       event.stopPropagation();
+      if (isEditingLabel) {
+        return;
+      }
       setLabelDraft(displayLabel);
       setIsEditingLabel(true);
     },
-    [displayLabel],
+    [displayLabel, isEditingLabel],
+  );
+
+  const handleLabelDisplayKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLSpanElement | HTMLParagraphElement>) => {
+      if (isEditingLabel) {
+        return;
+      }
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        setLabelDraft(displayLabel);
+        setIsEditingLabel(true);
+      }
+    },
+    [displayLabel, isEditingLabel],
   );
 
   const handleLabelKeyDown = React.useCallback(
@@ -219,8 +255,17 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
             ) : (
               <Typography
                 variant="subtitle2"
-                sx={{ fontWeight: 600, cursor: 'text' }}
-                onDoubleClick={handleLabelDoubleClick}
+                component="span"
+                sx={{
+                  fontWeight: 600,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  ...interactiveSurfaceSx,
+                }}
+                onClick={handleLabelClick}
+                onKeyDown={handleLabelDisplayKeyDown}
+                tabIndex={0}
+                role="button"
               >
                 {displayLabel}
               </Typography>

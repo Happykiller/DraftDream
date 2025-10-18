@@ -39,6 +39,7 @@ export function ProgramBuilderPanel({
 }: ProgramBuilderPanelProps): React.JSX.Element {
   const { t } = useTranslation();
   const theme = useTheme();
+  const primaryMain = theme.palette.primary.main;
 
   const {
     form,
@@ -56,7 +57,7 @@ export function ProgramBuilderPanel({
     exerciseMap,
     limitHint,
     emptyExercisesMessage,
-    summaryText,
+    summaryText: _summaryText,
     sessionsLoading,
     exercisesLoading,
     categoriesLoading,
@@ -85,6 +86,26 @@ export function ProgramBuilderPanel({
     userLabel,
   } = useProgramBuilder(builderCopy, onCancel);
 
+  const interactiveSurfaceSx = React.useMemo(
+    () => ({
+      cursor: 'pointer',
+      borderRadius: 1,
+      px: 0.75,
+      py: 0.25,
+      transition: 'background-color 120ms ease',
+      '&:hover': {
+        backgroundColor: alpha(primaryMain, 0.08),
+      },
+      '&:focus-visible': {
+        outline: `2px solid ${alpha(primaryMain, 0.32)}`,
+        outlineOffset: 2,
+      },
+    }),
+    [primaryMain],
+  );
+
+  void _summaryText;
+
   const addExerciseFallbackLabel = t(
     'programs-coatch.builder.library.no_sessions_warning',
     { defaultValue: 'Create a session before adding exercises.' },
@@ -94,6 +115,195 @@ export function ProgramBuilderPanel({
     anchor: HTMLElement;
     exerciseId: string;
   } | null>(null);
+
+  React.useEffect(() => {
+    if (!isEditingStructureTitle) {
+      setStructureTitle(builderCopy.structure.title);
+      setStructureTitleDraft(builderCopy.structure.title);
+    }
+  }, [builderCopy.structure.title, isEditingStructureTitle]);
+
+  React.useEffect(() => {
+    if (!isEditingStructureDescription) {
+      setStructureDescription(builderCopy.structure.header_description);
+      setStructureDescriptionDraft(builderCopy.structure.header_description);
+    }
+  }, [builderCopy.structure.header_description, isEditingStructureDescription]);
+
+  React.useEffect(() => {
+    if (isEditingStructureTitle && structureTitleRef.current) {
+      structureTitleRef.current.focus();
+      structureTitleRef.current.select();
+    }
+  }, [isEditingStructureTitle]);
+
+  React.useEffect(() => {
+    if (isEditingStructureDescription && structureDescriptionRef.current) {
+      structureDescriptionRef.current.focus();
+      structureDescriptionRef.current.select();
+    }
+  }, [isEditingStructureDescription]);
+
+  const sessionCount = sessions.length;
+  const exerciseCount = React.useMemo(
+    () => sessions.reduce((total, sessionItem) => total + sessionItem.exercises.length, 0),
+    [sessions],
+  );
+
+  const sessionCountLabel = React.useMemo(() => {
+    const raw =
+      sessionCount === 1
+        ? builderCopy.structure.session_counter_one
+        : builderCopy.structure.session_counter_other;
+    return raw.replace('{{count}}', String(sessionCount));
+  }, [
+    builderCopy.structure.session_counter_one,
+    builderCopy.structure.session_counter_other,
+    sessionCount,
+  ]);
+
+  const exerciseCountLabel = React.useMemo(() => {
+    const raw =
+      exerciseCount === 1
+        ? builderCopy.structure.exercise_counter_one
+        : builderCopy.structure.exercise_counter_other;
+    return raw.replace('{{count}}', String(exerciseCount));
+  }, [
+    builderCopy.structure.exercise_counter_one,
+    builderCopy.structure.exercise_counter_other,
+    exerciseCount,
+  ]);
+
+  const commitStructureTitle = React.useCallback(() => {
+    const trimmed = structureTitleDraft.trim();
+    const fallback = builderCopy.structure.title;
+    const next = trimmed || fallback;
+    setStructureTitle(next);
+    setStructureTitleDraft(next);
+    setIsEditingStructureTitle(false);
+  }, [builderCopy.structure.title, structureTitleDraft]);
+
+  const cancelStructureTitle = React.useCallback(() => {
+    setStructureTitleDraft(structureTitle);
+    setIsEditingStructureTitle(false);
+  }, [structureTitle]);
+
+  const handleStructureTitleInputKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        commitStructureTitle();
+      } else if (event.key === 'Escape') {
+        event.preventDefault();
+        cancelStructureTitle();
+      }
+    },
+    [cancelStructureTitle, commitStructureTitle],
+  );
+
+  const handleStructureTitleBlur = React.useCallback(() => {
+    if (isEditingStructureTitle) {
+      commitStructureTitle();
+    }
+  }, [commitStructureTitle, isEditingStructureTitle]);
+
+  const handleStructureTitleClick = React.useCallback(
+    (event: React.MouseEvent<HTMLSpanElement | HTMLHeadingElement>) => {
+      event.stopPropagation();
+      if (isEditingStructureTitle) {
+        return;
+      }
+      setStructureTitleDraft(structureTitle);
+      setIsEditingStructureTitle(true);
+    },
+    [isEditingStructureTitle, structureTitle],
+  );
+
+  const handleStructureTitleDisplayKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLSpanElement | HTMLHeadingElement>) => {
+      if (isEditingStructureTitle) {
+        return;
+      }
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        setStructureTitleDraft(structureTitle);
+        setIsEditingStructureTitle(true);
+      }
+    },
+    [isEditingStructureTitle, structureTitle],
+  );
+
+  const commitStructureDescription = React.useCallback(() => {
+    const trimmed = structureDescriptionDraft.trim();
+    const fallback = builderCopy.structure.header_description;
+    const next = trimmed || fallback;
+    setStructureDescription(next);
+    setStructureDescriptionDraft(next);
+    setIsEditingStructureDescription(false);
+  }, [builderCopy.structure.header_description, structureDescriptionDraft]);
+
+  const cancelStructureDescription = React.useCallback(() => {
+    setStructureDescriptionDraft(structureDescription);
+    setIsEditingStructureDescription(false);
+  }, [structureDescription]);
+
+  const handleStructureDescriptionInputKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        commitStructureDescription();
+      } else if (event.key === 'Escape') {
+        event.preventDefault();
+        cancelStructureDescription();
+      }
+    },
+    [cancelStructureDescription, commitStructureDescription],
+  );
+
+  const handleStructureDescriptionBlur = React.useCallback(() => {
+    if (isEditingStructureDescription) {
+      commitStructureDescription();
+    }
+  }, [commitStructureDescription, isEditingStructureDescription]);
+
+  const handleStructureDescriptionClick = React.useCallback(
+    (event: React.MouseEvent<HTMLParagraphElement | HTMLSpanElement>) => {
+      event.stopPropagation();
+      if (isEditingStructureDescription) {
+        return;
+      }
+      setStructureDescriptionDraft(structureDescription);
+      setIsEditingStructureDescription(true);
+    },
+    [isEditingStructureDescription, structureDescription],
+  );
+
+  const handleStructureDescriptionDisplayKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLParagraphElement | HTMLSpanElement>) => {
+      if (isEditingStructureDescription) {
+        return;
+      }
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        setStructureDescriptionDraft(structureDescription);
+        setIsEditingStructureDescription(true);
+      }
+    },
+    [isEditingStructureDescription, structureDescription],
+  );
+
+  const [structureTitle, setStructureTitle] = React.useState(builderCopy.structure.title);
+  const [structureTitleDraft, setStructureTitleDraft] = React.useState(builderCopy.structure.title);
+  const [structureDescription, setStructureDescription] = React.useState(
+    builderCopy.structure.header_description,
+  );
+  const [structureDescriptionDraft, setStructureDescriptionDraft] = React.useState(
+    builderCopy.structure.header_description,
+  );
+  const [isEditingStructureTitle, setIsEditingStructureTitle] = React.useState(false);
+  const [isEditingStructureDescription, setIsEditingStructureDescription] = React.useState(false);
+  const structureTitleRef = React.useRef<HTMLInputElement | null>(null);
+  const structureDescriptionRef = React.useRef<HTMLTextAreaElement | null>(null);
 
   const handleOpenExerciseMenu = React.useCallback(
     (exerciseId: string, anchor: HTMLElement) => {
@@ -294,15 +504,73 @@ export function ProgramBuilderPanel({
                 gap: 2,
               }}
             >
-              <Stack spacing={0.5}>
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
-                  <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                    {builderCopy.structure.title}
+              <Stack spacing={1}>
+                <Typography variant="subtitle2" color="text.secondary">
+                  {sessionCountLabel} · {exerciseCountLabel}
+                </Typography>
+                {isEditingStructureTitle ? (
+                  <TextField
+                    inputRef={structureTitleRef}
+                    value={structureTitleDraft}
+                    onChange={(event) => setStructureTitleDraft(event.target.value)}
+                    onBlur={handleStructureTitleBlur}
+                    onKeyDown={handleStructureTitleInputKeyDown}
+                    size="small"
+                    variant="standard"
+                    inputProps={{ 'aria-label': 'structure-title' }}
+                    fullWidth
+                  />
+                ) : (
+                  <Typography
+                    variant="h6"
+                    component="h2"
+                    sx={{
+                      fontWeight: 700,
+                      ...interactiveSurfaceSx,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      width: 'fit-content',
+                    }}
+                    onClick={handleStructureTitleClick}
+                    onKeyDown={handleStructureTitleDisplayKeyDown}
+                    tabIndex={0}
+                    role="button"
+                  >
+                    {structureTitle}
                   </Typography>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    {summaryText}
+                )}
+                {isEditingStructureDescription ? (
+                  <TextField
+                    inputRef={structureDescriptionRef}
+                    value={structureDescriptionDraft}
+                    onChange={(event) => setStructureDescriptionDraft(event.target.value)}
+                    onBlur={handleStructureDescriptionBlur}
+                    onKeyDown={handleStructureDescriptionInputKeyDown}
+                    size="small"
+                    variant="standard"
+                    multiline
+                    minRows={1}
+                    inputProps={{ 'aria-label': 'structure-description' }}
+                    fullWidth
+                  />
+                ) : (
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{
+                      ...interactiveSurfaceSx,
+                      display: 'inline-block',
+                      maxWidth: '100%',
+                      fontStyle: structureDescription ? 'normal' : 'italic',
+                    }}
+                    onClick={handleStructureDescriptionClick}
+                    onKeyDown={handleStructureDescriptionDisplayKeyDown}
+                    tabIndex={0}
+                    role="button"
+                  >
+                    {structureDescription}
                   </Typography>
-                </Stack>
+                )}
               </Stack>
 
               <Stack

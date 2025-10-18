@@ -168,7 +168,13 @@ export function useProgramBuilder(
       duration: item.durationMin,
       description: item.description ?? '',
       tags: [],
-      exercises: item.exerciseIds.map((exerciseId) => ({ exerciseId })),
+      exercises: item.exerciseIds.map((exerciseId, index) => {
+        const summary = item.exercises?.[index] ?? item.exercises?.find((exercise) => exercise.id === exerciseId);
+        return {
+          exerciseId,
+          label: summary?.label ?? exerciseId,
+        };
+      }),
     }));
   }, [sessionItems]);
 
