@@ -161,7 +161,8 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
   const [items, setItems] = React.useState<Program[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
-  const flash = useFlashStore();
+  const flashError = useFlashStore((state) => state.error);
+  const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
 
   const load = React.useCallback(async () => {
@@ -184,11 +185,11 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
       setItems(data?.program_list.items ?? []);
       setTotal(data?.program_list.total ?? 0);
     } catch (e: any) {
-      flash.error(e?.message ?? 'Failed to load programs');
+      flashError(e?.message ?? 'Failed to load programs');
     } finally {
       setLoading(false);
     }
-  }, [page, limit, q, createdBy, userId, gql, flash]);
+  }, [createdBy, flashError, gql, limit, page, q, userId]);
 
   React.useEffect(() => {
     void load();
@@ -237,14 +238,14 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
           },
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Program created');
+        flashSuccess('Program created');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Create failed');
+        flashError(e?.message ?? 'Create failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [flashError, flashSuccess, gql, load]
   );
 
   const update = React.useCallback(
@@ -292,14 +293,14 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
           },
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Program updated');
+        flashSuccess('Program updated');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Update failed');
+        flashError(e?.message ?? 'Update failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [flashError, flashSuccess, gql, load]
   );
 
   const remove = React.useCallback(
@@ -311,14 +312,14 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
           variables: { id },
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Program deleted');
+        flashSuccess('Program deleted');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Delete failed');
+        flashError(e?.message ?? 'Delete failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [flashError, flashSuccess, gql, load]
   );
 
   return { items, total, loading, create, update, remove, reload: load };

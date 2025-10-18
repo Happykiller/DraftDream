@@ -91,6 +91,7 @@ type UseProgramBuilderResult = {
   handleMoveExerciseDown: (sessionId: string, exerciseId: string) => void;
   handleSubmit: (event?: React.SyntheticEvent) => Promise<void>;
   userLabel: (user: User | null) => string;
+  isSubmitDisabled: boolean;
 };
 
 /**
@@ -102,7 +103,7 @@ export function useProgramBuilder(
   onCancel: () => void,
 ): UseProgramBuilderResult {
   const { t, i18n } = useTranslation();
-  const flash = useFlashStore();
+  const flashError = useFlashStore((state) => state.error);
 
   const [usersQ, setUsersQ] = React.useState('');
   const [selectedAthlete, setSelectedAthlete] = React.useState<User | null>(null);
@@ -115,6 +116,20 @@ export function useProgramBuilder(
     ...INITIAL_FORM_STATE,
     programName: builderCopy.structure.title,
   }));
+
+  const trimmedProgramName = React.useMemo(() => form.programName.trim(), [form.programName]);
+  const parsedDuration = React.useMemo<number | null>(() => {
+    const value = Number.parseInt(form.duration, 10);
+    return Number.isNaN(value) || value <= 0 ? null : value;
+  }, [form.duration]);
+  const parsedFrequency = React.useMemo<number | null>(() => {
+    const value = Number.parseInt(form.frequency, 10);
+    return Number.isNaN(value) || value <= 0 ? null : value;
+  }, [form.frequency]);
+  const isSubmitDisabled = React.useMemo(
+    () => !trimmedProgramName || parsedDuration === null || parsedFrequency === null,
+    [parsedDuration, parsedFrequency, trimmedProgramName],
+  );
 
   const debouncedQ = useDebouncedValue(usersQ, 300);
   const debouncedSessionSearch = useDebouncedValue(sessionSearch, 300);
@@ -746,12 +761,12 @@ export function useProgramBuilder(
     event?.preventDefault();
     event?.stopPropagation();
 
-    const name = form.programName?.trim();
-    const duration = Number.parseInt(form.duration, 10);
-    const frequency = Number.parseInt(form.frequency, 10);
+    const name = trimmedProgramName;
+    const duration = parsedDuration;
+    const frequency = parsedFrequency;
 
     if (!name || !duration || !frequency) {
-      flash.error(
+      flashError(
         t('programs-coatch.builder.errors.missing_required_fields', {
           defaultValue: 'Please fill required fields.',
         }),
@@ -805,17 +820,17 @@ export function useProgramBuilder(
       resetBuilder();
       onCancel();
     } catch (error) {
-      flash.error(t('common.unexpected_error'));
+      flashError(t('common.unexpected_error'));
     }
   }, [
     createProgram,
     exerciseMap,
-    flash,
+    flashError,
     form.description,
-    form.frequency,
-    form.programName,
-    form.duration,
     form.athlete,
+    parsedDuration,
+    parsedFrequency,
+    trimmedProgramName,
     i18n.language,
     onCancel,
     resetBuilder,
@@ -873,5 +888,6 @@ export function useProgramBuilder(
     handleMoveExerciseDown,
     handleSubmit,
     userLabel,
+    isSubmitDisabled,
   };
 }

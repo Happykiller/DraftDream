@@ -88,6 +88,7 @@ export function ProgramBuilderPanel({
     handleMoveExerciseDown,
     handleSubmit,
     userLabel,
+    isSubmitDisabled,
   } = useProgramBuilder(builderCopy, onCancel);
 
   const interactiveSurfaceSx = React.useMemo(
@@ -793,7 +794,12 @@ export function ProgramBuilderPanel({
           </Tooltip>
           <Tooltip title={builderCopy.footer.submit} arrow>
             <span style={{ display: 'inline-flex' }}>
-              <Button variant="contained" type="button" onClick={handleSubmit}>
+              <Button
+                variant="contained"
+                type="button"
+                onClick={handleSubmit}
+                disabled={isSubmitDisabled}
+              >
                 {builderCopy.footer.submit}
               </Button>
             </span>
