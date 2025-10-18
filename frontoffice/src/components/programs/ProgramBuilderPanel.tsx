@@ -72,6 +72,7 @@ export function ProgramBuilderPanel({
     handleSelectAthlete,
     handleFormChange,
     updateProgramName,
+    updateProgramDescription,
     handleAddSessionFromTemplate,
     handleCreateEmptySession,
     handleRemoveSession,
@@ -133,7 +134,9 @@ export function ProgramBuilderPanel({
   const [isEditingStructureDescription, setIsEditingStructureDescription] = React.useState(false);
   const structureTitleRef = React.useRef<HTMLInputElement | null>(null);
   const structureDescriptionRef = React.useRef<HTMLTextAreaElement | null>(null);
+  const prevStructureDescriptionRef = React.useRef(builderCopy.structure.header_description);
   const debouncedStructureTitleDraft = useDebouncedValue(structureTitleDraft, 300);
+  const debouncedStructureDescriptionDraft = useDebouncedValue(structureDescriptionDraft, 300);
 
   React.useEffect(() => {
     setIsEditingStructureTitle(false);
@@ -162,10 +165,35 @@ export function ProgramBuilderPanel({
 
   React.useEffect(() => {
     if (!isEditingStructureDescription) {
-      setStructureDescription(builderCopy.structure.header_description);
-      setStructureDescriptionDraft(builderCopy.structure.header_description);
+      return;
     }
-  }, [builderCopy.structure.header_description, isEditingStructureDescription]);
+    const trimmed = debouncedStructureDescriptionDraft.trim();
+    const fallback = structureDescription || builderCopy.structure.header_description;
+    updateProgramDescription(trimmed || fallback);
+  }, [
+    builderCopy.structure.header_description,
+    debouncedStructureDescriptionDraft,
+    isEditingStructureDescription,
+    structureDescription,
+    updateProgramDescription,
+  ]);
+
+  React.useEffect(() => {
+    const previous = prevStructureDescriptionRef.current;
+    const next = builderCopy.structure.header_description;
+    if (previous !== next) {
+      prevStructureDescriptionRef.current = next;
+      if (!isEditingStructureDescription) {
+        setStructureDescription(next);
+        setStructureDescriptionDraft(next);
+        updateProgramDescription(next);
+      }
+    }
+  }, [
+    builderCopy.structure.header_description,
+    isEditingStructureDescription,
+    updateProgramDescription,
+  ]);
 
   React.useEffect(() => {
     if (isEditingStructureTitle && structureTitleRef.current) {
@@ -279,12 +307,18 @@ export function ProgramBuilderPanel({
     setStructureDescription(next);
     setStructureDescriptionDraft(next);
     setIsEditingStructureDescription(false);
-  }, [builderCopy.structure.header_description, structureDescriptionDraft]);
+    updateProgramDescription(next);
+  }, [
+    builderCopy.structure.header_description,
+    structureDescriptionDraft,
+    updateProgramDescription,
+  ]);
 
   const cancelStructureDescription = React.useCallback(() => {
     setStructureDescriptionDraft(structureDescription);
     setIsEditingStructureDescription(false);
-  }, [structureDescription]);
+    updateProgramDescription(structureDescription);
+  }, [structureDescription, updateProgramDescription]);
 
   const handleStructureDescriptionInputKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -455,15 +489,6 @@ export function ProgramBuilderPanel({
                     inputProps={{ 'aria-required': true }}
                   />
                 </Stack>
-
-                <TextField
-                  label={builderCopy.config.description_label}
-                  placeholder={builderCopy.config.description_placeholder}
-                  multiline
-                  minRows={3}
-                  value={form.description}
-                  onChange={handleFormChange('description')}
-                />
 
                 <Divider />
 
@@ -671,11 +696,12 @@ export function ProgramBuilderPanel({
               </Stack>
 
               <Tooltip title={builderCopy.library.tooltips.add_empty_session} arrow>
-                <span style={{ display: 'inline-flex' }}>
+                <span style={{ display: 'flex', width: '100%' }}>
                   <Button
                     variant="outlined"
                     size="small"
                     startIcon={<Add fontSize="small" />}
+                    fullWidth
                     onClick={handleCreateEmptySession}
                   >
                     {builderCopy.config.button_create}

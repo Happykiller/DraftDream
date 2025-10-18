@@ -32,7 +32,6 @@ const INITIAL_FORM_STATE: ProgramForm = {
   programName: '',
   duration: '',
   frequency: '',
-  description: '',
 };
 
 type UseProgramBuilderResult = {
@@ -67,6 +66,7 @@ type UseProgramBuilderResult = {
     field: keyof ProgramForm,
   ) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   updateProgramName: (value: string) => void;
+  updateProgramDescription: (value: string) => void;
   handleAddSessionFromTemplate: (templateId: string, position?: number) => void;
   handleCreateEmptySession: () => void;
   handleRemoveSession: (sessionId: string) => void;
@@ -116,6 +116,13 @@ export function useProgramBuilder(
     ...INITIAL_FORM_STATE,
     programName: builderCopy.structure.title,
   }));
+  const [programDescription, setProgramDescription] = React.useState(
+    builderCopy.structure.header_description,
+  );
+
+  React.useEffect(() => {
+    setProgramDescription(builderCopy.structure.header_description);
+  }, [builderCopy.structure.header_description]);
 
   const trimmedProgramName = React.useMemo(() => form.programName.trim(), [form.programName]);
   const parsedDuration = React.useMemo<number | null>(() => {
@@ -443,6 +450,10 @@ export function useProgramBuilder(
     setForm((prev) => ({ ...prev, programName: value }));
   }, []);
 
+  const updateProgramDescription = React.useCallback((value: string) => {
+    setProgramDescription(value);
+  }, []);
+
   const handleAddSessionFromTemplate = React.useCallback(
     (templateId: string, position?: number) => {
       logWithTimestamp('log', '[ProgramBuilder][handleAddSessionFromTemplate] request', {
@@ -760,9 +771,10 @@ export function useProgramBuilder(
     setExerciseType('all');
     setSessions([]);
     setForm({ ...INITIAL_FORM_STATE, programName: builderCopy.structure.title });
+    setProgramDescription(builderCopy.structure.header_description);
     idCountersRef.current = { session: 0, exercise: 0 };
     exerciseMapRef.current = new Map();
-  }, [builderCopy.structure.title]);
+  }, [builderCopy.structure.header_description, builderCopy.structure.title]);
 
   const handleSubmit = React.useCallback(async (event?: React.SyntheticEvent) => {
     event?.preventDefault();
@@ -818,7 +830,7 @@ export function useProgramBuilder(
         label: name,
         duration,
         frequency,
-        description: form.description || '',
+        description: programDescription.trim() || '',
         sessionIds: sessions.map((session) => session.sessionId),
         sessions: sessionSnapshots,
         userId: form.athlete || null,
@@ -833,10 +845,10 @@ export function useProgramBuilder(
     createProgram,
     exerciseMap,
     flashError,
-    form.description,
-    form.athlete,
     parsedDuration,
     parsedFrequency,
+    programDescription,
+    form.athlete,
     trimmedProgramName,
     i18n.language,
     onCancel,
@@ -879,6 +891,7 @@ export function useProgramBuilder(
     handleSelectAthlete,
     handleFormChange,
     updateProgramName,
+    updateProgramDescription,
     handleAddSessionFromTemplate,
     handleCreateEmptySession,
     handleRemoveSession,

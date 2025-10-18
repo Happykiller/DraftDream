@@ -60,7 +60,6 @@ export type ProgramForm = {
   programName: string;
   duration: string;
   frequency: string;
-  description: string;
 };
 
 export type BuilderCopy = {
@@ -73,8 +72,6 @@ export type BuilderCopy = {
     program_name_label: string;
     duration_label: string;
     frequency_label: string;
-    description_label: string;
-    description_placeholder: string;
     search_placeholder: string;
     filter_label: string;
     filter_all: string;
