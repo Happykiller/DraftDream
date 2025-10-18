@@ -42,24 +42,24 @@
       "config": {
         "title": "Configuration du programme",
         "client_label": "Athlete",
-        "client_placeholder": "Ex: Programme perte de poids",
+        "client_placeholder": "Jean Dupont",
         "program_name_label": "Nom du programme",
         "duration_label": "Duree (sem.)",
         "frequency_label": "Freq./sem.",
         "description_label": "Description",
         "description_placeholder": "Objectifs et details...",
-        "search_placeholder": "Rechercher une seance...",
+        "search_placeholder": "Rechercher une séance...",
         "filter_label": "Categorie",
         "filter_all": "Toutes categories",
-        "button_create": "Creer une seance"
+        "button_create": "Creer une séance"
       },
-      "templates_title": "Bibliotheque de seances",
+      "templates_title": "Bibliotheque de séances",
       "templates_subtitle": "Choisissez une séance dans la liste ou cliquez pour l'ajouter.",
       "templates_limit_hint": "Affichage des 10 sessions maximum triés par ordre alphabétique.",
       "structure": {
         "title": "Nom du programme",
-        "header_description": "Ajustez l'organisation de votre programme brouillon.",
-        "summary": "{{count}} seances",
+        "header_description": "Ajouter une description à votre programme.",
+        "summary": "{{count}} séances",
         "session_counter_one": "{{count}} séance",
         "session_counter_other": "{{count}} séances",
         "exercise_counter_one": "{{count}} exercice",
@@ -104,12 +104,16 @@
           "move_exercise_down": "Descendre l'exercice",
           "delete_exercise": "Supprimer l'exercice",
           "add_empty_session": "Ajouter une nouvelle séance vide",
-          "session_duration": "Modifier la durée de la séance"
+          "session_duration": "Modifier la durée de la séance",
+          "add_session_template": "Ajouter cette séance au programme"
         }
       },
       "footer": {
         "cancel": "Annuler",
         "submit": "Creer le programme"
+      },
+      "errors": {
+        "missing_required_fields": "Veuillez remplir les champs obligatoires."
       },
       "draft_label": "Brouillon"
     }

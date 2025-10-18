@@ -71,7 +71,8 @@ export function useTags({ page, limit, q }: UseTagsParams) {
   const [items, setItems] = React.useState<Tag[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
-  const flash = useFlashStore();
+  const flashError = useFlashStore((state) => state.error);
+  const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
 
   const load = React.useCallback(async () => {
@@ -86,11 +87,11 @@ export function useTags({ page, limit, q }: UseTagsParams) {
       setItems(data?.tag_list.items ?? []);
       setTotal(data?.tag_list.total ?? 0);
     } catch (e: any) {
-      flash.error(e?.message ?? 'Failed to load tags');
+      flashError(e?.message ?? 'Failed to load tags');
     } finally {
       setLoading(false);
     }
-  }, [page, limit, q, gql, flash]);
+  }, [flashError, gql, limit, page, q]);
 
   React.useEffect(() => { void load(); }, [load]);
 
@@ -108,14 +109,14 @@ export function useTags({ page, limit, q }: UseTagsParams) {
           operationName: 'CreateTag',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Tag created');
+        flashSuccess('Tag created');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Create failed');
+        flashError(e?.message ?? 'Create failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [flashError, flashSuccess, gql, load]
   );
 
   const update = React.useCallback(
@@ -133,14 +134,14 @@ export function useTags({ page, limit, q }: UseTagsParams) {
           operationName: 'UpdateTag',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Tag updated');
+        flashSuccess('Tag updated');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Update failed');
+        flashError(e?.message ?? 'Update failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [flashError, flashSuccess, gql, load]
   );
 
   const remove = React.useCallback(
@@ -152,14 +153,14 @@ export function useTags({ page, limit, q }: UseTagsParams) {
           operationName: 'DeleteTag',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Tag deleted');
+        flashSuccess('Tag deleted');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Delete failed');
+        flashError(e?.message ?? 'Delete failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [flashError, flashSuccess, gql, load]
   );
 
   return { items, total, loading, create, update, remove, reload: load };

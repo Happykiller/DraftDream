@@ -89,8 +89,9 @@ type UseProgramBuilderResult = {
   handleMoveSessionDown: (sessionId: string) => void;
   handleMoveExerciseUp: (sessionId: string, exerciseId: string) => void;
   handleMoveExerciseDown: (sessionId: string, exerciseId: string) => void;
-  handleSubmit: () => Promise<void>;
+  handleSubmit: (event?: React.SyntheticEvent) => Promise<void>;
   userLabel: (user: User | null) => string;
+  isSubmitDisabled: boolean;
 };
 
 /**
@@ -102,7 +103,7 @@ export function useProgramBuilder(
   onCancel: () => void,
 ): UseProgramBuilderResult {
   const { t, i18n } = useTranslation();
-  const flash = useFlashStore();
+  const flashError = useFlashStore((state) => state.error);
 
   const [usersQ, setUsersQ] = React.useState('');
   const [selectedAthlete, setSelectedAthlete] = React.useState<User | null>(null);
@@ -115,6 +116,20 @@ export function useProgramBuilder(
     ...INITIAL_FORM_STATE,
     programName: builderCopy.structure.title,
   }));
+
+  const trimmedProgramName = React.useMemo(() => form.programName.trim(), [form.programName]);
+  const parsedDuration = React.useMemo<number | null>(() => {
+    const value = Number.parseInt(form.duration, 10);
+    return Number.isNaN(value) || value <= 0 ? null : value;
+  }, [form.duration]);
+  const parsedFrequency = React.useMemo<number | null>(() => {
+    const value = Number.parseInt(form.frequency, 10);
+    return Number.isNaN(value) || value <= 0 ? null : value;
+  }, [form.frequency]);
+  const isSubmitDisabled = React.useMemo(
+    () => !trimmedProgramName || parsedDuration === null || parsedFrequency === null,
+    [parsedDuration, parsedFrequency, trimmedProgramName],
+  );
 
   const debouncedQ = useDebouncedValue(usersQ, 300);
   const debouncedSessionSearch = useDebouncedValue(sessionSearch, 300);
@@ -264,10 +279,16 @@ export function useProgramBuilder(
     });
   }, [categoryLabelById, collator, exerciseItems]);
 
-  const exerciseMap = React.useMemo(
-    () => new Map(exerciseLibrary.map((exercise) => [exercise.id, exercise])),
-    [exerciseLibrary],
-  );
+  const exerciseMapRef = React.useRef(new Map<string, ExerciseLibraryItem>());
+
+  const exerciseMap = React.useMemo(() => {
+    const merged = new Map(exerciseMapRef.current);
+    exerciseLibrary.forEach((exercise) => {
+      merged.set(exercise.id, exercise);
+    });
+    exerciseMapRef.current = merged;
+    return merged;
+  }, [exerciseLibrary]);
 
   const exerciseTypeOptions = React.useMemo<ExerciseTypeOption[]>(
     () => [
@@ -740,15 +761,23 @@ export function useProgramBuilder(
     setSessions([]);
     setForm({ ...INITIAL_FORM_STATE, programName: builderCopy.structure.title });
     idCountersRef.current = { session: 0, exercise: 0 };
+    exerciseMapRef.current = new Map();
   }, [builderCopy.structure.title]);
 
-  const handleSubmit = React.useCallback(async () => {
-    const name = form.programName?.trim();
-    const duration = Number.parseInt(form.duration, 10);
-    const frequency = Number.parseInt(form.frequency, 10);
+  const handleSubmit = React.useCallback(async (event?: React.SyntheticEvent) => {
+    event?.preventDefault();
+    event?.stopPropagation();
+
+    const name = trimmedProgramName;
+    const duration = parsedDuration;
+    const frequency = parsedFrequency;
 
     if (!name || !duration || !frequency) {
-      flash.error('Please fill required fields');
+      flashError(
+        t('programs-coatch.builder.errors.missing_required_fields', {
+          defaultValue: 'Please fill required fields.',
+        }),
+      );
       return;
     }
 
@@ -798,17 +827,17 @@ export function useProgramBuilder(
       resetBuilder();
       onCancel();
     } catch (error) {
-      flash.error(t('common.unexpected_error'));
+      flashError(t('common.unexpected_error'));
     }
   }, [
     createProgram,
     exerciseMap,
-    flash,
+    flashError,
     form.description,
-    form.frequency,
-    form.programName,
-    form.duration,
     form.athlete,
+    parsedDuration,
+    parsedFrequency,
+    trimmedProgramName,
     i18n.language,
     onCancel,
     resetBuilder,
@@ -866,5 +895,6 @@ export function useProgramBuilder(
     handleMoveExerciseDown,
     handleSubmit,
     userLabel,
+    isSubmitDisabled,
   };
 }

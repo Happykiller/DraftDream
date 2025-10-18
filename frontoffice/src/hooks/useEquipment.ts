@@ -72,7 +72,8 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
   const [items, setItems] = React.useState<Equipment[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
-  const flash = useFlashStore();
+  const flashError = useFlashStore((state) => state.error);
+  const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
 
   const load = React.useCallback(async () => {
@@ -87,11 +88,11 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
       setItems(data?.equipment_list.items ?? []);
       setTotal(data?.equipment_list.total ?? 0);
     } catch (e: any) {
-      flash.error(e?.message ?? 'Failed to load equipment');
+      flashError(e?.message ?? 'Failed to load equipment');
     } finally {
       setLoading(false);
     }
-  }, [page, limit, q, gql, flash]);
+  }, [flashError, gql, limit, page, q]);
 
   React.useEffect(() => { void load(); }, [load]);
 
@@ -109,14 +110,14 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
           operationName: 'CreateEquipment',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Equipment created');
+        flashSuccess('Equipment created');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Create failed');
+        flashError(e?.message ?? 'Create failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [flashError, flashSuccess, gql, load]
   );
 
   const update = React.useCallback(
@@ -134,14 +135,14 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
           operationName: 'UpdateEquipment',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Equipment updated');
+        flashSuccess('Equipment updated');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Update failed');
+        flashError(e?.message ?? 'Update failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [flashError, flashSuccess, gql, load]
   );
 
   const remove = React.useCallback(
@@ -153,14 +154,14 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
           operationName: 'DeleteEquipment',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Equipment deleted');
+        flashSuccess('Equipment deleted');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Delete failed');
+        flashError(e?.message ?? 'Delete failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [flashError, flashSuccess, gql, load]
   );
 
   return { items, total, loading, create, update, remove, reload: load };

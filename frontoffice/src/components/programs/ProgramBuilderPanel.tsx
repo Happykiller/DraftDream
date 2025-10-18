@@ -88,6 +88,7 @@ export function ProgramBuilderPanel({
     handleMoveExerciseDown,
     handleSubmit,
     userLabel,
+    isSubmitDisabled,
   } = useProgramBuilder(builderCopy, onCancel);
 
   const interactiveSurfaceSx = React.useMemo(
@@ -135,11 +136,10 @@ export function ProgramBuilderPanel({
   const debouncedStructureTitleDraft = useDebouncedValue(structureTitleDraft, 300);
 
   React.useEffect(() => {
-    if (!isEditingStructureTitle) {
-      setStructureTitle(builderCopy.structure.title);
-      setStructureTitleDraft(builderCopy.structure.title);
-    }
-  }, [builderCopy.structure.title, isEditingStructureTitle]);
+    setIsEditingStructureTitle(false);
+    setStructureTitle(builderCopy.structure.title);
+    setStructureTitleDraft(builderCopy.structure.title);
+  }, [builderCopy.structure.title]);
 
   React.useEffect(() => {
     updateProgramName(builderCopy.structure.title);
@@ -793,7 +793,12 @@ export function ProgramBuilderPanel({
           </Tooltip>
           <Tooltip title={builderCopy.footer.submit} arrow>
             <span style={{ display: 'inline-flex' }}>
-              <Button variant="contained" onClick={handleSubmit}>
+              <Button
+                variant="contained"
+                type="button"
+                onClick={handleSubmit}
+                disabled={isSubmitDisabled}
+              >
                 {builderCopy.footer.submit}
               </Button>
             </span>

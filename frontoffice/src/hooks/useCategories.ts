@@ -2,7 +2,7 @@
 import * as React from 'react';
 
 import inversify from '@src/commons/inversify';
-import { useFlashStore } from '@hooks/useFlashStore'; 
+import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
 export type Visibility = 'PRIVATE' | 'PUBLIC';
@@ -72,7 +72,8 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
   const [items, setItems] = React.useState<Category[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
-  const flash = useFlashStore();
+  const flashError = useFlashStore((state) => state.error);
+  const flashSuccess = useFlashStore((state) => state.success);
 
   // Create one fetch service instance (it handles 401, redirects, etc.)
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
@@ -89,11 +90,11 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
       setItems(data?.category_list.items ?? []);
       setTotal(data?.category_list.total ?? 0);
     } catch (e: any) {
-      flash.error(e?.message ?? 'Failed to load categories');
+      flashError(e?.message ?? 'Failed to load categories');
     } finally {
       setLoading(false);
     }
-  }, [page, limit, q, gql, flash]);
+  }, [flashError, gql, limit, page, q]);
 
   React.useEffect(() => {
     void load();
@@ -113,14 +114,14 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
           operationName: 'CreateCategory',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Category created');
+        flashSuccess('Category created');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Create failed');
+        flashError(e?.message ?? 'Create failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [flashError, flashSuccess, gql, load]
   );
 
   const update = React.useCallback(
@@ -132,14 +133,14 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
           operationName: 'UpdateCategory',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Category updated');
+        flashSuccess('Category updated');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Update failed');
+        flashError(e?.message ?? 'Update failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [flashError, flashSuccess, gql, load]
   );
 
   const remove = React.useCallback(
@@ -151,14 +152,14 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
           operationName: 'DeleteCategory',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Category deleted');
+        flashSuccess('Category deleted');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Delete failed');
+        flashError(e?.message ?? 'Delete failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [flashError, flashSuccess, gql, load]
   );
 
   return { items, total, loading, create, update, remove, reload: load };

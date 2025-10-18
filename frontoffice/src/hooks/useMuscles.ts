@@ -71,7 +71,8 @@ export function useMuscles({ page, limit, q }: UseMusclesParams) {
   const [items, setItems] = React.useState<Muscle[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
-  const flash = useFlashStore();
+  const flashError = useFlashStore((state) => state.error);
+  const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
 
   const load = React.useCallback(async () => {
@@ -86,11 +87,11 @@ export function useMuscles({ page, limit, q }: UseMusclesParams) {
       setItems(data?.muscle_list.items ?? []);
       setTotal(data?.muscle_list.total ?? 0);
     } catch (e: any) {
-      flash.error(e?.message ?? 'Failed to load muscles');
+      flashError(e?.message ?? 'Failed to load muscles');
     } finally {
       setLoading(false);
     }
-  }, [page, limit, q, gql, flash]);
+  }, [flashError, gql, limit, page, q]);
 
   React.useEffect(() => {
     void load();
@@ -110,14 +111,14 @@ export function useMuscles({ page, limit, q }: UseMusclesParams) {
           operationName: 'CreateMuscle',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Muscle created');
+        flashSuccess('Muscle created');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Create failed');
+        flashError(e?.message ?? 'Create failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [flashError, flashSuccess, gql, load]
   );
 
   const update = React.useCallback(
@@ -135,14 +136,14 @@ export function useMuscles({ page, limit, q }: UseMusclesParams) {
           operationName: 'UpdateMuscle',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Muscle updated');
+        flashSuccess('Muscle updated');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Update failed');
+        flashError(e?.message ?? 'Update failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [flashError, flashSuccess, gql, load]
   );
 
   const remove = React.useCallback(
@@ -154,14 +155,14 @@ export function useMuscles({ page, limit, q }: UseMusclesParams) {
           operationName: 'DeleteMuscle',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Muscle deleted');
+        flashSuccess('Muscle deleted');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Delete failed');
+        flashError(e?.message ?? 'Delete failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [flashError, flashSuccess, gql, load]
   );
 
   return { items, total, loading, create, update, remove, reload: load };

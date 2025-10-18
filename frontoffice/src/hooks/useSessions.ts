@@ -85,7 +85,8 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
   const [items, setItems] = React.useState<Session[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
-  const flash = useFlashStore();
+  const flashError = useFlashStore((state) => state.error);
+  const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
 
   const load = React.useCallback(async () => {
@@ -107,11 +108,11 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
       setItems(data?.session_list.items ?? []);
       setTotal(data?.session_list.total ?? 0);
     } catch (e: any) {
-      flash.error(e?.message ?? 'Failed to load sessions');
+      flashError(e?.message ?? 'Failed to load sessions');
     } finally {
       setLoading(false);
     }
-  }, [page, limit, q, locale, gql, flash]);
+  }, [flashError, gql, limit, locale, page, q]);
 
   React.useEffect(() => {
     void load();
@@ -133,14 +134,14 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
           variables: { input },
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Session created');
+        flashSuccess('Session created');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Create failed');
+        flashError(e?.message ?? 'Create failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [flashError, flashSuccess, gql, load]
   );
 
   const update = React.useCallback(
@@ -160,14 +161,14 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
           variables: { input },
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Session updated');
+        flashSuccess('Session updated');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Update failed');
+        flashError(e?.message ?? 'Update failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [flashError, flashSuccess, gql, load]
   );
 
   const remove = React.useCallback(
@@ -179,14 +180,14 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
           variables: { id },
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Session deleted');
+        flashSuccess('Session deleted');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Delete failed');
+        flashError(e?.message ?? 'Delete failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [flashError, flashSuccess, gql, load]
   );
 
   return { items, total, loading, create, update, remove, reload: load };

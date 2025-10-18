@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
-import { Chip, IconButton, Paper, Stack, Typography } from '@mui/material';
+import { Chip, IconButton, Paper, Stack, Tooltip, Typography } from '@mui/material';
 import { Add } from '@mui/icons-material';
 
 import type { BuilderCopy, SessionTemplate } from './programBuilderTypes';
@@ -77,9 +77,17 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
               color="secondary"
               variant="outlined"
             />
-            <IconButton size="small" onClick={handleAddClick} aria-label="add-session-template">
-              <Add fontSize="small" />
-            </IconButton>
+            <Tooltip title={builderCopy.library.tooltips.add_session_template} arrow>
+              <span style={{ display: 'inline-flex' }}>
+                <IconButton
+                  size="small"
+                  onClick={handleAddClick}
+                  aria-label="add-session-template"
+                >
+                  <Add fontSize="small" />
+                </IconButton>
+              </span>
+            </Tooltip>
           </Stack>
         </Stack>
 
