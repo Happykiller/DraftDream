@@ -65,6 +65,7 @@ type UseProgramBuilderResult = {
   handleFormChange: (
     field: keyof ProgramForm,
   ) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  updateProgramName: (value: string) => void;
   handleAddSessionFromTemplate: (templateId: string, position?: number) => void;
   handleCreateEmptySession: () => void;
   handleRemoveSession: (sessionId: string) => void;
@@ -104,7 +105,10 @@ export function useProgramBuilder(
   const [exerciseCategory, setExerciseCategory] = React.useState('all');
   const [exerciseType, setExerciseType] = React.useState<'all' | ExerciseVisibility>('all');
   const [sessions, setSessions] = React.useState<ProgramSession[]>([]);
-  const [form, setForm] = React.useState<ProgramForm>(INITIAL_FORM_STATE);
+  const [form, setForm] = React.useState<ProgramForm>(() => ({
+    ...INITIAL_FORM_STATE,
+    programName: builderCopy.structure.title,
+  }));
 
   const debouncedQ = useDebouncedValue(usersQ, 300);
   const debouncedSessionSearch = useDebouncedValue(sessionSearch, 300);
@@ -246,6 +250,7 @@ export function useProgramBuilder(
         sets: parseSeriesCount(item.series),
         reps: item.repetitions,
         rest: item.rest != null ? `${item.rest}s` : '-',
+        description: item.description ?? undefined,
         muscles,
         tags,
         equipment,
@@ -395,6 +400,10 @@ export function useProgramBuilder(
       },
     [],
   );
+
+  const updateProgramName = React.useCallback((value: string) => {
+    setForm((prev) => ({ ...prev, programName: value }));
+  }, []);
 
   const handleAddSessionFromTemplate = React.useCallback(
     (templateId: string, position?: number) => {
@@ -677,9 +686,9 @@ export function useProgramBuilder(
     setExerciseCategory('all');
     setExerciseType('all');
     setSessions([]);
-    setForm(INITIAL_FORM_STATE);
+    setForm({ ...INITIAL_FORM_STATE, programName: builderCopy.structure.title });
     idCountersRef.current = { session: 0, exercise: 0 };
-  }, []);
+  }, [builderCopy.structure.title]);
 
   const handleSubmit = React.useCallback(async () => {
     const name = form.programName?.trim();
@@ -786,6 +795,7 @@ export function useProgramBuilder(
     setUsersQ,
     handleSelectAthlete,
     handleFormChange,
+    updateProgramName,
     handleAddSessionFromTemplate,
     handleCreateEmptySession,
     handleRemoveSession,

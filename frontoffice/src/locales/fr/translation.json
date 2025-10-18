@@ -56,7 +56,7 @@
       "templates_title": "Bibliotheque de seances",
       "templates_subtitle": "Choisissez une séance dans la liste ou cliquez pour l'ajouter.",
       "structure": {
-        "title": "Structure du programme",
+        "title": "Nom du programme",
         "header_description": "Ajustez l'organisation de votre programme brouillon.",
         "summary": "{{count}} seances",
         "session_counter_one": "{{count}} séance",
