@@ -6,7 +6,8 @@ export type ExerciseLibraryItem = {
   level: string;
   categoryId: string;
   categoryLabel: string;
-  type: string;
+  type: ExerciseVisibility;
+  visibility: ExerciseVisibility;
   duration: number;
   sets: number;
   reps: string;
