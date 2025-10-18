@@ -1,0 +1,27 @@
+# Hérite implicitement de ~/.codex/config.toml
+model = "gpt-5-codex"
+model_reasoning_effort = "medium"
+temperature = 0.1
+
+[workspace]
+root = "."
+
+[env]
+files = [".env"]   # ne pas committer .env
+
+[agent]
+path = ".codex/codex.agent.yml"
+
+[prompts]
+paths = [".codex/prompts/system.md", ".codex/prompts/devops.md"]
+
+[tasks]
+path = ".codex/codex.tasks.yml"
+
+[execution]
+confirm_on = ["deploy", "destroy", "kubectl apply", "docker push"]
+dry_run_default = true
+
+[logging]
+level = "info"
+redact = ["*SECRET*", "*TOKEN*", "*PASSWORD*"]

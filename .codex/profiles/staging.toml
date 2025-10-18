@@ -1,0 +1,4 @@
+model_reasoning_effort = "medium"
+[env.vars]
+ENV = "staging"
+API_BASE = "https://api.staging.fitdesk.example"

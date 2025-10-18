@@ -1,0 +1,28 @@
+tasks:
+  build:
+    desc: "Build all images"
+    cmd: "docker compose build --parallel"
+  up-dev:
+    desc: "Run local stack"
+    cmd: "docker compose up -d"
+  logs:
+    desc: "Aggregate logs"
+    cmd: "docker compose logs -f --tail=200"
+  test:
+    desc: "Lint + unit tests"
+    cmd: "./scripts/test_all.sh"
+  deploy:
+    desc: "Deploy to target env"
+    vars: { env: "{{ENV}}" }
+    cmd: "./scripts/deploy.sh {{env}}"
+    confirm: true
+  fix-502:
+    desc: "Diagnose and fix 502 on /graphql via nginx→upstream"
+    cmd: >
+      bash -lc '
+      set -euo pipefail;
+      docker compose ps;
+      docker compose exec nginx nginx -t;
+      docker compose exec nginx getent hosts api || true;
+      docker compose exec nginx curl -sS -I http://api:3000/graphql || true;
+      '

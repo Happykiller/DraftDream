@@ -1,0 +1,5 @@
+model_reasoning_effort = "low"
+temperature = 0.0
+[env.vars]
+ENV = "dev"
+API_BASE = "http://localhost:3000"
