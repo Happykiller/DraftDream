@@ -79,9 +79,9 @@
         "empty_state": "No exercises match your filters.",
         "button_create": "Create an exercise",
         "subtitle": "Add an exercise to a session to include it.",
-        "sets_label": "sets",
-        "reps_label": "reps",
-        "rest_label": "rest"
+        "sets_label": " sets",
+        "reps_label": " reps",
+        "rest_label": ""
       },
       "footer": {
         "cancel": "Cancel",

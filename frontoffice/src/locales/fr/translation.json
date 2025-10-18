@@ -79,9 +79,9 @@
         "empty_state": "Aucun exercice ne correspond à vos filtres.",
         "button_create": "Creer un exercice",
         "subtitle": "Ajoutez un exercice à une séance pour l'intégrer.",
-        "sets_label": "series",
-        "reps_label": "reps",
-        "rest_label": "repos"
+        "sets_label": " series",
+        "reps_label": " reps",
+        "rest_label": ""
       },
       "footer": {
         "cancel": "Annuler",

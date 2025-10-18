@@ -60,15 +60,15 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
               </Typography>
             ) : null}
           </Stack>
-          <Stack direction="row" spacing={2} flexWrap="wrap">
+          <Stack direction="row" spacing={1} flexWrap="wrap">
             <Typography variant="body2" color="text.secondary">
-              {exercise.sets} {setsLabel}
+              {exercise.sets}{setsLabel}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {exercise.reps} {repsLabel}
+              {exercise.reps}{repsLabel}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {restLabel}: {exercise.rest}
+              {restLabel}{exercise.rest}
             </Typography>
           </Stack>
           {exercise.muscles.length > 0 ? (
