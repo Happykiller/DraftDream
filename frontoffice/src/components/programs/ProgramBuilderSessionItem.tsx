@@ -1,11 +1,13 @@
 import * as React from 'react';
 import {
   DeleteOutline,
+  Edit,
   KeyboardArrowDown,
   KeyboardArrowUp,
 } from '@mui/icons-material';
 import { alpha, useTheme } from '@mui/material/styles';
 import {
+  Box,
   Chip,
   IconButton,
   InputAdornment,
@@ -462,6 +464,7 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
                       fontWeight: 600,
                       display: 'inline-flex',
                       alignItems: 'center',
+                      gap: 0.5,
                       ...interactiveSurfaceSx,
                     }}
                     onClick={handleLabelClick}
@@ -469,6 +472,7 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
                     tabIndex={0}
                     role="button"
                   >
+                    <Edit fontSize="inherit" color="disabled" />
                     {session.label}
                   </Typography>
                 )}
@@ -556,16 +560,26 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
             color="text.secondary"
             sx={{
               ...interactiveSurfaceSx,
-              display: 'inline-block',
+              display: 'inline-flex',
+              alignItems: 'flex-start',
+              gap: 0.5,
               maxWidth: '100%',
-              fontStyle: session.description ? 'normal' : 'italic',
             }}
             onClick={handleDescriptionClick}
             onKeyDown={handleDescriptionDisplayKeyDown}
             tabIndex={0}
             role="button"
           >
-            {session.description || descriptionPlaceholder}
+            <Edit fontSize="inherit" color="disabled" />
+            <Box
+              component="span"
+              sx={{
+                whiteSpace: 'pre-wrap',
+                fontStyle: session.description ? 'normal' : 'italic',
+              }}
+            >
+              {session.description || descriptionPlaceholder}
+            </Box>
           </Typography>
         )}
       </Stack>

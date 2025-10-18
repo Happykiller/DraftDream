@@ -56,7 +56,7 @@
       "templates_title": "Session templates",
       "templates_subtitle": "Choose a template from the list or click to add it.",
       "structure": {
-        "title": "Program structure",
+        "title": "Program name",
         "header_description": "Adjust the outline of your draft program.",
         "summary": "{{count}} sessions",
         "session_counter_one": "{{count}} session",

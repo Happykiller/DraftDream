@@ -18,7 +18,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { Add, Search } from '@mui/icons-material';
+import { Add, Edit, Search } from '@mui/icons-material';
 
 import { ProgramBuilderSessionItem } from './ProgramBuilderSessionItem';
 import { ProgramBuilderSessionLibraryItem } from './ProgramBuilderSessionLibraryItem';
@@ -69,6 +69,7 @@ export function ProgramBuilderPanel({
     setUsersQ,
     handleSelectAthlete,
     handleFormChange,
+    updateProgramName,
     handleAddSessionFromTemplate,
     handleCreateEmptySession,
     handleRemoveSession,
@@ -137,6 +138,10 @@ export function ProgramBuilderPanel({
   }, [builderCopy.structure.title, isEditingStructureTitle]);
 
   React.useEffect(() => {
+    updateProgramName(builderCopy.structure.title);
+  }, [builderCopy.structure.title, updateProgramName]);
+
+  React.useEffect(() => {
     if (!isEditingStructureDescription) {
       setStructureDescription(builderCopy.structure.header_description);
       setStructureDescriptionDraft(builderCopy.structure.header_description);
@@ -194,7 +199,8 @@ export function ProgramBuilderPanel({
     setStructureTitle(next);
     setStructureTitleDraft(next);
     setIsEditingStructureTitle(false);
-  }, [builderCopy.structure.title, structureTitleDraft]);
+    updateProgramName(next);
+  }, [builderCopy.structure.title, structureTitleDraft, updateProgramName]);
 
   const cancelStructureTitle = React.useCallback(() => {
     setStructureTitleDraft(structureTitle);
@@ -409,15 +415,6 @@ export function ProgramBuilderPanel({
                   )}
                 />
 
-                <TextField
-                  label={builderCopy.config.program_name_label}
-                  placeholder={builderCopy.config.client_placeholder}
-                  size="small"
-                  fullWidth
-                  value={form.programName}
-                  onChange={handleFormChange('programName')}
-                />
-
                 <Stack direction="row" spacing={1.5}>
                   <TextField
                     label={builderCopy.config.duration_label}
@@ -504,73 +501,98 @@ export function ProgramBuilderPanel({
                 gap: 2,
               }}
             >
-              <Stack spacing={1}>
-                <Typography variant="subtitle2" color="text.secondary">
-                  {sessionCountLabel} · {exerciseCountLabel}
-                </Typography>
-                {isEditingStructureTitle ? (
-                  <TextField
-                    inputRef={structureTitleRef}
-                    value={structureTitleDraft}
-                    onChange={(event) => setStructureTitleDraft(event.target.value)}
-                    onBlur={handleStructureTitleBlur}
-                    onKeyDown={handleStructureTitleInputKeyDown}
-                    size="small"
-                    variant="standard"
-                    inputProps={{ 'aria-label': 'structure-title' }}
-                    fullWidth
-                  />
-                ) : (
+              <Stack spacing={1.5}>
+                <Stack
+                  direction="row"
+                  alignItems="flex-start"
+                  justifyContent="space-between"
+                  spacing={2}
+                >
+                  <Stack spacing={0.75} flexGrow={1} minWidth={0}>
+                    {isEditingStructureTitle ? (
+                      <TextField
+                        inputRef={structureTitleRef}
+                        value={structureTitleDraft}
+                        onChange={(event) => setStructureTitleDraft(event.target.value)}
+                        onBlur={handleStructureTitleBlur}
+                        onKeyDown={handleStructureTitleInputKeyDown}
+                        size="small"
+                        variant="standard"
+                        inputProps={{ 'aria-label': 'structure-title' }}
+                        fullWidth
+                      />
+                    ) : (
+                      <Typography
+                        variant="h6"
+                        component="h2"
+                        sx={{
+                          fontWeight: 700,
+                          ...interactiveSurfaceSx,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 0.5,
+                          width: 'fit-content',
+                        }}
+                        onClick={handleStructureTitleClick}
+                        onKeyDown={handleStructureTitleDisplayKeyDown}
+                        tabIndex={0}
+                        role="button"
+                      >
+                        <Edit fontSize="inherit" color="disabled" />
+                        {structureTitle}
+                      </Typography>
+                    )}
+                    {isEditingStructureDescription ? (
+                      <TextField
+                        inputRef={structureDescriptionRef}
+                        value={structureDescriptionDraft}
+                        onChange={(event) => setStructureDescriptionDraft(event.target.value)}
+                        onBlur={handleStructureDescriptionBlur}
+                        onKeyDown={handleStructureDescriptionInputKeyDown}
+                        size="small"
+                        variant="standard"
+                        multiline
+                        minRows={1}
+                        inputProps={{ 'aria-label': 'structure-description' }}
+                        fullWidth
+                      />
+                    ) : (
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{
+                          ...interactiveSurfaceSx,
+                          display: 'inline-flex',
+                          alignItems: 'flex-start',
+                          gap: 0.5,
+                          maxWidth: '100%',
+                        }}
+                        onClick={handleStructureDescriptionClick}
+                        onKeyDown={handleStructureDescriptionDisplayKeyDown}
+                        tabIndex={0}
+                        role="button"
+                      >
+                        <Edit fontSize="inherit" color="disabled" />
+                        <Box
+                          component="span"
+                          sx={{
+                            whiteSpace: 'pre-wrap',
+                            fontStyle: structureDescription ? 'normal' : 'italic',
+                          }}
+                        >
+                          {structureDescription}
+                        </Box>
+                      </Typography>
+                    )}
+                  </Stack>
                   <Typography
-                    variant="h6"
-                    component="h2"
-                    sx={{
-                      fontWeight: 700,
-                      ...interactiveSurfaceSx,
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      width: 'fit-content',
-                    }}
-                    onClick={handleStructureTitleClick}
-                    onKeyDown={handleStructureTitleDisplayKeyDown}
-                    tabIndex={0}
-                    role="button"
-                  >
-                    {structureTitle}
-                  </Typography>
-                )}
-                {isEditingStructureDescription ? (
-                  <TextField
-                    inputRef={structureDescriptionRef}
-                    value={structureDescriptionDraft}
-                    onChange={(event) => setStructureDescriptionDraft(event.target.value)}
-                    onBlur={handleStructureDescriptionBlur}
-                    onKeyDown={handleStructureDescriptionInputKeyDown}
-                    size="small"
-                    variant="standard"
-                    multiline
-                    minRows={1}
-                    inputProps={{ 'aria-label': 'structure-description' }}
-                    fullWidth
-                  />
-                ) : (
-                  <Typography
-                    variant="body2"
+                    variant="subtitle2"
                     color="text.secondary"
-                    sx={{
-                      ...interactiveSurfaceSx,
-                      display: 'inline-block',
-                      maxWidth: '100%',
-                      fontStyle: structureDescription ? 'normal' : 'italic',
-                    }}
-                    onClick={handleStructureDescriptionClick}
-                    onKeyDown={handleStructureDescriptionDisplayKeyDown}
-                    tabIndex={0}
-                    role="button"
+                    sx={{ whiteSpace: 'nowrap', ml: 2 }}
                   >
-                    {structureDescription}
+                    {sessionCountLabel} · {exerciseCountLabel}
                   </Typography>
-                )}
+                </Stack>
               </Stack>
 
               <Stack
