@@ -72,6 +72,7 @@ export function ProgramBuilderPanel({
     handleSelectAthlete,
     handleFormChange,
     updateProgramName,
+    updateProgramDescription,
     handleAddSessionFromTemplate,
     handleCreateEmptySession,
     handleRemoveSession,
@@ -88,6 +89,7 @@ export function ProgramBuilderPanel({
     handleMoveExerciseDown,
     handleSubmit,
     userLabel,
+    isSubmitDisabled,
   } = useProgramBuilder(builderCopy, onCancel);
 
   const interactiveSurfaceSx = React.useMemo(
@@ -133,13 +135,13 @@ export function ProgramBuilderPanel({
   const structureTitleRef = React.useRef<HTMLInputElement | null>(null);
   const structureDescriptionRef = React.useRef<HTMLTextAreaElement | null>(null);
   const debouncedStructureTitleDraft = useDebouncedValue(structureTitleDraft, 300);
+  const debouncedStructureDescriptionDraft = useDebouncedValue(structureDescriptionDraft, 300);
 
   React.useEffect(() => {
-    if (!isEditingStructureTitle) {
-      setStructureTitle(builderCopy.structure.title);
-      setStructureTitleDraft(builderCopy.structure.title);
-    }
-  }, [builderCopy.structure.title, isEditingStructureTitle]);
+    setIsEditingStructureTitle(false);
+    setStructureTitle(builderCopy.structure.title);
+    setStructureTitleDraft(builderCopy.structure.title);
+  }, [builderCopy.structure.title]);
 
   React.useEffect(() => {
     updateProgramName(builderCopy.structure.title);
@@ -162,10 +164,30 @@ export function ProgramBuilderPanel({
 
   React.useEffect(() => {
     if (!isEditingStructureDescription) {
+      return;
+    }
+    const trimmed = debouncedStructureDescriptionDraft.trim();
+    const fallback = structureDescription || builderCopy.structure.header_description;
+    updateProgramDescription(trimmed || fallback);
+  }, [
+    builderCopy.structure.header_description,
+    debouncedStructureDescriptionDraft,
+    isEditingStructureDescription,
+    structureDescription,
+    updateProgramDescription,
+  ]);
+
+  React.useEffect(() => {
+    if (!isEditingStructureDescription) {
       setStructureDescription(builderCopy.structure.header_description);
       setStructureDescriptionDraft(builderCopy.structure.header_description);
+      updateProgramDescription(builderCopy.structure.header_description);
     }
-  }, [builderCopy.structure.header_description, isEditingStructureDescription]);
+  }, [
+    builderCopy.structure.header_description,
+    isEditingStructureDescription,
+    updateProgramDescription,
+  ]);
 
   React.useEffect(() => {
     if (isEditingStructureTitle && structureTitleRef.current) {
@@ -279,12 +301,18 @@ export function ProgramBuilderPanel({
     setStructureDescription(next);
     setStructureDescriptionDraft(next);
     setIsEditingStructureDescription(false);
-  }, [builderCopy.structure.header_description, structureDescriptionDraft]);
+    updateProgramDescription(next);
+  }, [
+    builderCopy.structure.header_description,
+    structureDescriptionDraft,
+    updateProgramDescription,
+  ]);
 
   const cancelStructureDescription = React.useCallback(() => {
     setStructureDescriptionDraft(structureDescription);
     setIsEditingStructureDescription(false);
-  }, [structureDescription]);
+    updateProgramDescription(structureDescription);
+  }, [structureDescription, updateProgramDescription]);
 
   const handleStructureDescriptionInputKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -455,15 +483,6 @@ export function ProgramBuilderPanel({
                     inputProps={{ 'aria-required': true }}
                   />
                 </Stack>
-
-                <TextField
-                  label={builderCopy.config.description_label}
-                  placeholder={builderCopy.config.description_placeholder}
-                  multiline
-                  minRows={3}
-                  value={form.description}
-                  onChange={handleFormChange('description')}
-                />
 
                 <Divider />
 
@@ -793,7 +812,12 @@ export function ProgramBuilderPanel({
           </Tooltip>
           <Tooltip title={builderCopy.footer.submit} arrow>
             <span style={{ display: 'inline-flex' }}>
-              <Button variant="contained" onClick={handleSubmit}>
+              <Button
+                variant="contained"
+                type="button"
+                onClick={handleSubmit}
+                disabled={isSubmitDisabled}
+              >
                 {builderCopy.footer.submit}
               </Button>
             </span>

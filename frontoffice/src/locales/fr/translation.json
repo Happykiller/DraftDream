@@ -46,8 +46,6 @@
         "program_name_label": "Nom du programme",
         "duration_label": "Duree (sem.)",
         "frequency_label": "Freq./sem.",
-        "description_label": "Description",
-        "description_placeholder": "Objectifs et details...",
         "search_placeholder": "Rechercher une seance...",
         "filter_label": "Categorie",
         "filter_all": "Toutes categories",
@@ -104,12 +102,16 @@
           "move_exercise_down": "Descendre l'exercice",
           "delete_exercise": "Supprimer l'exercice",
           "add_empty_session": "Ajouter une nouvelle séance vide",
-          "session_duration": "Modifier la durée de la séance"
+          "session_duration": "Modifier la durée de la séance",
+          "add_session_template": "Ajouter cette séance au programme"
         }
       },
       "footer": {
         "cancel": "Annuler",
         "submit": "Creer le programme"
+      },
+      "errors": {
+        "missing_required_fields": "Veuillez remplir les champs obligatoires."
       },
       "draft_label": "Brouillon"
     }

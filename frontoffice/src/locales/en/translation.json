@@ -46,8 +46,6 @@
         "program_name_label": "Program name",
         "duration_label": "Duration (weeks)",
         "frequency_label": "Freq./week",
-        "description_label": "Description",
-        "description_placeholder": "Objectives and details...",
         "search_placeholder": "Search a session...",
         "filter_label": "Category",
         "filter_all": "All categories",
@@ -104,12 +102,16 @@
           "move_exercise_down": "Move exercise down",
           "delete_exercise": "Remove exercise",
           "add_empty_session": "Add a new empty session",
-          "session_duration": "Edit session duration"
+          "session_duration": "Edit session duration",
+          "add_session_template": "Add this session to the program"
         }
       },
       "footer": {
         "cancel": "Cancel",
         "submit": "Create the program"
+      },
+      "errors": {
+        "missing_required_fields": "Please fill required fields."
       },
       "draft_label": "Draft"
     }

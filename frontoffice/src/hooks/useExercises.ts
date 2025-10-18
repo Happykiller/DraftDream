@@ -124,7 +124,8 @@ export function useExercises({
   const [items, setItems] = React.useState<Exercise[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
-  const flash = useFlashStore();
+  const flashError = useFlashStore((state) => state.error);
+  const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
 
   const load = React.useCallback(async () => {
@@ -151,11 +152,11 @@ export function useExercises({
       setItems(data?.exercise_list.items ?? []);
       setTotal(data?.exercise_list.total ?? 0);
     } catch (e: any) {
-      flash.error(e?.message ?? 'Failed to load exercises');
+      flashError(e?.message ?? 'Failed to load exercises');
     } finally {
       setLoading(false);
     }
-  }, [page, limit, q, visibility, level, categoryId, locale, createdBy, gql, flash]);
+  }, [categoryId, createdBy, flashError, gql, level, limit, locale, page, q, visibility]);
 
   React.useEffect(() => { void load(); }, [load]);
 
@@ -175,14 +176,14 @@ export function useExercises({
           query: CREATE_M, variables: { input }, operationName: 'CreateExercise',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Exercise created');
+        flashSuccess('Exercise created');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Create failed');
+        flashError(e?.message ?? 'Create failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [flashError, flashSuccess, gql, load]
   );
 
   const update = React.useCallback(
@@ -202,14 +203,14 @@ export function useExercises({
           query: UPDATE_M, variables: { input }, operationName: 'UpdateExercise',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Exercise updated');
+        flashSuccess('Exercise updated');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Update failed');
+        flashError(e?.message ?? 'Update failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [flashError, flashSuccess, gql, load]
   );
 
   const remove = React.useCallback(
@@ -219,14 +220,14 @@ export function useExercises({
           query: DELETE_M, variables: { id }, operationName: 'DeleteExercise',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flash.success('Exercise deleted');
+        flashSuccess('Exercise deleted');
         await load();
       } catch (e: any) {
-        flash.error(e?.message ?? 'Delete failed');
+        flashError(e?.message ?? 'Delete failed');
         throw e;
       }
     },
-    [gql, flash, load]
+    [flashError, flashSuccess, gql, load]
   );
 
   return { items, total, loading, create, update, remove, reload: load };

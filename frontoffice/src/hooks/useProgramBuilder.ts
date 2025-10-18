@@ -32,7 +32,6 @@ const INITIAL_FORM_STATE: ProgramForm = {
   programName: '',
   duration: '',
   frequency: '',
-  description: '',
 };
 
 type UseProgramBuilderResult = {
@@ -67,6 +66,7 @@ type UseProgramBuilderResult = {
     field: keyof ProgramForm,
   ) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   updateProgramName: (value: string) => void;
+  updateProgramDescription: (value: string) => void;
   handleAddSessionFromTemplate: (templateId: string, position?: number) => void;
   handleCreateEmptySession: () => void;
   handleRemoveSession: (sessionId: string) => void;
@@ -89,8 +89,9 @@ type UseProgramBuilderResult = {
   handleMoveSessionDown: (sessionId: string) => void;
   handleMoveExerciseUp: (sessionId: string, exerciseId: string) => void;
   handleMoveExerciseDown: (sessionId: string, exerciseId: string) => void;
-  handleSubmit: () => Promise<void>;
+  handleSubmit: (event?: React.SyntheticEvent) => Promise<void>;
   userLabel: (user: User | null) => string;
+  isSubmitDisabled: boolean;
 };
 
 /**
@@ -102,7 +103,7 @@ export function useProgramBuilder(
   onCancel: () => void,
 ): UseProgramBuilderResult {
   const { t, i18n } = useTranslation();
-  const flash = useFlashStore();
+  const flashError = useFlashStore((state) => state.error);
 
   const [usersQ, setUsersQ] = React.useState('');
   const [selectedAthlete, setSelectedAthlete] = React.useState<User | null>(null);
@@ -115,6 +116,27 @@ export function useProgramBuilder(
     ...INITIAL_FORM_STATE,
     programName: builderCopy.structure.title,
   }));
+  const [programDescription, setProgramDescription] = React.useState(
+    builderCopy.structure.header_description,
+  );
+
+  React.useEffect(() => {
+    setProgramDescription(builderCopy.structure.header_description);
+  }, [builderCopy.structure.header_description]);
+
+  const trimmedProgramName = React.useMemo(() => form.programName.trim(), [form.programName]);
+  const parsedDuration = React.useMemo<number | null>(() => {
+    const value = Number.parseInt(form.duration, 10);
+    return Number.isNaN(value) || value <= 0 ? null : value;
+  }, [form.duration]);
+  const parsedFrequency = React.useMemo<number | null>(() => {
+    const value = Number.parseInt(form.frequency, 10);
+    return Number.isNaN(value) || value <= 0 ? null : value;
+  }, [form.frequency]);
+  const isSubmitDisabled = React.useMemo(
+    () => !trimmedProgramName || parsedDuration === null || parsedFrequency === null,
+    [parsedDuration, parsedFrequency, trimmedProgramName],
+  );
 
   const debouncedQ = useDebouncedValue(usersQ, 300);
   const debouncedSessionSearch = useDebouncedValue(sessionSearch, 300);
@@ -264,10 +286,16 @@ export function useProgramBuilder(
     });
   }, [categoryLabelById, collator, exerciseItems]);
 
-  const exerciseMap = React.useMemo(
-    () => new Map(exerciseLibrary.map((exercise) => [exercise.id, exercise])),
-    [exerciseLibrary],
-  );
+  const exerciseMapRef = React.useRef(new Map<string, ExerciseLibraryItem>());
+
+  const exerciseMap = React.useMemo(() => {
+    const merged = new Map(exerciseMapRef.current);
+    exerciseLibrary.forEach((exercise) => {
+      merged.set(exercise.id, exercise);
+    });
+    exerciseMapRef.current = merged;
+    return merged;
+  }, [exerciseLibrary]);
 
   const exerciseTypeOptions = React.useMemo<ExerciseTypeOption[]>(
     () => [
@@ -420,6 +448,10 @@ export function useProgramBuilder(
 
   const updateProgramName = React.useCallback((value: string) => {
     setForm((prev) => ({ ...prev, programName: value }));
+  }, []);
+
+  const updateProgramDescription = React.useCallback((value: string) => {
+    setProgramDescription(value);
   }, []);
 
   const handleAddSessionFromTemplate = React.useCallback(
@@ -739,16 +771,25 @@ export function useProgramBuilder(
     setExerciseType('all');
     setSessions([]);
     setForm({ ...INITIAL_FORM_STATE, programName: builderCopy.structure.title });
+    setProgramDescription(builderCopy.structure.header_description);
     idCountersRef.current = { session: 0, exercise: 0 };
-  }, [builderCopy.structure.title]);
+    exerciseMapRef.current = new Map();
+  }, [builderCopy.structure.header_description, builderCopy.structure.title]);
 
-  const handleSubmit = React.useCallback(async () => {
-    const name = form.programName?.trim();
-    const duration = Number.parseInt(form.duration, 10);
-    const frequency = Number.parseInt(form.frequency, 10);
+  const handleSubmit = React.useCallback(async (event?: React.SyntheticEvent) => {
+    event?.preventDefault();
+    event?.stopPropagation();
+
+    const name = trimmedProgramName;
+    const duration = parsedDuration;
+    const frequency = parsedFrequency;
 
     if (!name || !duration || !frequency) {
-      flash.error('Please fill required fields');
+      flashError(
+        t('programs-coatch.builder.errors.missing_required_fields', {
+          defaultValue: 'Please fill required fields.',
+        }),
+      );
       return;
     }
 
@@ -789,7 +830,7 @@ export function useProgramBuilder(
         label: name,
         duration,
         frequency,
-        description: form.description || '',
+        description: programDescription.trim() || '',
         sessionIds: sessions.map((session) => session.sessionId),
         sessions: sessionSnapshots,
         userId: form.athlete || null,
@@ -798,17 +839,17 @@ export function useProgramBuilder(
       resetBuilder();
       onCancel();
     } catch (error) {
-      flash.error(t('common.unexpected_error'));
+      flashError(t('common.unexpected_error'));
     }
   }, [
     createProgram,
     exerciseMap,
-    flash,
-    form.description,
-    form.frequency,
-    form.programName,
-    form.duration,
+    flashError,
     form.athlete,
+    parsedDuration,
+    parsedFrequency,
+    programDescription,
+    trimmedProgramName,
     i18n.language,
     onCancel,
     resetBuilder,
@@ -850,6 +891,7 @@ export function useProgramBuilder(
     handleSelectAthlete,
     handleFormChange,
     updateProgramName,
+    updateProgramDescription,
     handleAddSessionFromTemplate,
     handleCreateEmptySession,
     handleRemoveSession,
@@ -866,5 +908,6 @@ export function useProgramBuilder(
     handleMoveExerciseDown,
     handleSubmit,
     userLabel,
+    isSubmitDisabled,
   };
 }
