@@ -134,6 +134,7 @@ export function ProgramBuilderPanel({
   const [isEditingStructureDescription, setIsEditingStructureDescription] = React.useState(false);
   const structureTitleRef = React.useRef<HTMLInputElement | null>(null);
   const structureDescriptionRef = React.useRef<HTMLTextAreaElement | null>(null);
+  const prevStructureDescriptionRef = React.useRef(builderCopy.structure.header_description);
   const debouncedStructureTitleDraft = useDebouncedValue(structureTitleDraft, 300);
   const debouncedStructureDescriptionDraft = useDebouncedValue(structureDescriptionDraft, 300);
 
@@ -178,10 +179,15 @@ export function ProgramBuilderPanel({
   ]);
 
   React.useEffect(() => {
-    if (!isEditingStructureDescription) {
-      setStructureDescription(builderCopy.structure.header_description);
-      setStructureDescriptionDraft(builderCopy.structure.header_description);
-      updateProgramDescription(builderCopy.structure.header_description);
+    const previous = prevStructureDescriptionRef.current;
+    const next = builderCopy.structure.header_description;
+    if (previous !== next) {
+      prevStructureDescriptionRef.current = next;
+      if (!isEditingStructureDescription) {
+        setStructureDescription(next);
+        setStructureDescriptionDraft(next);
+        updateProgramDescription(next);
+      }
     }
   }, [
     builderCopy.structure.header_description,
@@ -690,11 +696,12 @@ export function ProgramBuilderPanel({
               </Stack>
 
               <Tooltip title={builderCopy.library.tooltips.add_empty_session} arrow>
-                <span style={{ display: 'inline-flex' }}>
+                <span style={{ display: 'flex', width: '100%' }}>
                   <Button
                     variant="outlined"
                     size="small"
                     startIcon={<Add fontSize="small" />}
+                    fullWidth
                     onClick={handleCreateEmptySession}
                   >
                     {builderCopy.config.button_create}
