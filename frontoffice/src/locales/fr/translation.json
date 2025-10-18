@@ -58,7 +58,7 @@
       "templates_limit_hint": "Affichage des 10 sessions maximum triés par ordre alphabétique.",
       "structure": {
         "title": "Nom du programme",
-        "header_description": "Ajustez l'organisation de votre programme brouillon.",
+        "header_description": "Ajouter une description à votre programme.",
         "summary": "{{count}} seances",
         "session_counter_one": "{{count}} séance",
         "session_counter_other": "{{count}} séances",
