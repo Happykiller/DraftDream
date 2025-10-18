@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { Add, Public } from '@mui/icons-material';
 
 import type { BuilderCopy, ExerciseLibraryItem } from './programBuilderTypes';
-import { logWithTimestamp } from './programBuilderUtils';
 
 type ProgramBuilderExerciseLibraryItemProps = {
   exercise: ExerciseLibraryItem;
@@ -34,13 +33,9 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
 
   const handleAddClick = React.useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
-      logWithTimestamp('log', '[ProgramBuilder][ExerciseLibraryItem] add exercise clicked', {
-        exerciseId: exercise.id,
-        label: exercise.label,
-      });
       onAdd(event);
     },
-    [exercise.id, exercise.label, onAdd],
+    [onAdd],
   );
 
   return (

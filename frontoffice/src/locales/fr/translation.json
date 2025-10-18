@@ -106,7 +106,8 @@
           "add_empty_session": "Ajouter une nouvelle séance vide",
           "session_duration": "Modifier la durée de la séance",
           "add_session_template": "Ajouter cette séance au programme"
-        }
+        },
+        "no_sessions_warning": "Creez une seance avant d'ajouter des exercices."
       },
       "footer": {
         "cancel": "Annuler",
@@ -116,6 +117,11 @@
         "missing_required_fields": "Veuillez remplir les champs obligatoires."
       },
       "draft_label": "Brouillon"
+    },
+    "notifications": {
+      "program_created": "Programme créé",
+      "program_updated": "Programme mis à jour",
+      "program_deleted": "Programme supprimé"
     }
   },
   "sandbox": {

@@ -22,7 +22,6 @@ import type {
 import {
   parseRestSecondsValue,
   parseSeriesCount,
-  logWithTimestamp,
 } from '@src/components/programs/programBuilderUtils';
 
 import type { ProgramExercise } from '@src/components/programs/programBuilderTypes';
@@ -420,7 +419,6 @@ export function useProgramBuilder(
 
   const createEmptySession = React.useCallback((): ProgramSession => {
     const id = nextId('session');
-    logWithTimestamp('log', '[ProgramBuilder][createEmptySession] generating new draft session', { id });
     return {
       id,
       sessionId: id,
@@ -456,33 +454,15 @@ export function useProgramBuilder(
 
   const handleAddSessionFromTemplate = React.useCallback(
     (templateId: string, position?: number) => {
-      logWithTimestamp('log', '[ProgramBuilder][handleAddSessionFromTemplate] request', {
-        templateId,
-        position,
-      });
       const template = sessionTemplates.find((item) => item.id === templateId);
       if (!template) {
-        logWithTimestamp('warn', '[ProgramBuilder][handleAddSessionFromTemplate] template not found', {
-          templateId,
-          available: sessionTemplates.map((item) => item.id),
-        });
         return;
       }
 
-      logWithTimestamp('log', '[ProgramBuilder][handleAddSessionFromTemplate] template resolved', {
-        templateId,
-        templateLabel: template.label,
-        position,
-      });
       const session = createSessionFromTemplate(template);
       setSessions((prev) => {
         const insertAt =
           position != null ? Math.min(Math.max(position, 0), prev.length) : prev.length;
-        logWithTimestamp('log', '[ProgramBuilder][handleAddSessionFromTemplate] inserting session', {
-          insertAt,
-          previousLength: prev.length,
-          sessionId: session.id,
-        });
         const next = [...prev];
         next.splice(insertAt, 0, session);
         return next;
@@ -493,27 +473,15 @@ export function useProgramBuilder(
 
   const handleCreateEmptySession = React.useCallback(() => {
     const emptySession = createEmptySession();
-    logWithTimestamp('log', '[ProgramBuilder][handleCreateEmptySession] appending empty session', {
-      sessionId: emptySession.id,
-    });
     setSessions((prev) => {
-      logWithTimestamp('log', '[ProgramBuilder][handleCreateEmptySession] previous length', prev.length);
       return [...prev, emptySession];
     });
   }, [createEmptySession]);
 
   const handleAddExerciseToSession = React.useCallback(
     (sessionId: string, exerciseId: string, position?: number) => {
-      logWithTimestamp('log', '[ProgramBuilder][handleAddExerciseToSession] request', {
-        sessionId,
-        exerciseId,
-        position,
-      });
       const exercise = exerciseMap.get(exerciseId);
       if (!exercise) {
-        logWithTimestamp('warn', '[ProgramBuilder][handleAddExerciseToSession] exercise not found', {
-          exerciseId,
-        });
         return;
       }
 
@@ -526,12 +494,6 @@ export function useProgramBuilder(
           const exercises = [...session.exercises];
           const insertAt =
             position != null ? Math.min(Math.max(position, 0), exercises.length) : exercises.length;
-          logWithTimestamp('log', '[ProgramBuilder][handleAddExerciseToSession] inserting exercise', {
-            sessionId,
-            exerciseId: exercise.id,
-            insertAt,
-            previousLength: exercises.length,
-          });
           const programExercise: ProgramExercise = {
             id: nextId('exercise'),
             exerciseId: exercise.id,
@@ -554,15 +516,10 @@ export function useProgramBuilder(
   );
 
   const handleRemoveSession = React.useCallback((sessionId: string) => {
-    logWithTimestamp('log', '[ProgramBuilder][handleRemoveSession] removing session', { sessionId });
     setSessions((prev) => prev.filter((session) => session.id !== sessionId));
   }, []);
 
   const handleRemoveExercise = React.useCallback((sessionId: string, exerciseId: string) => {
-    logWithTimestamp('log', '[ProgramBuilder][handleRemoveExercise] removing exercise', {
-      sessionId,
-      exerciseId,
-    });
     setSessions((prev) =>
       prev.map((session) => {
         if (session.id !== sessionId) {
@@ -577,10 +534,6 @@ export function useProgramBuilder(
   }, []);
 
   const handleSessionLabelChange = React.useCallback((sessionId: string, label: string) => {
-    logWithTimestamp('log', '[ProgramBuilder][handleSessionLabelChange] update label', {
-      sessionId,
-      label,
-    });
     setSessions((prev) =>
       prev.map((session) => (session.id === sessionId ? { ...session, label } : session)),
     );
@@ -588,10 +541,6 @@ export function useProgramBuilder(
 
   const handleSessionDescriptionChange = React.useCallback(
     (sessionId: string, description: string) => {
-      logWithTimestamp('log', '[ProgramBuilder][handleSessionDescriptionChange] update description', {
-        sessionId,
-        description,
-      });
       setSessions((prev) =>
         prev.map((session) => (session.id === sessionId ? { ...session, description } : session)),
       );
@@ -600,10 +549,6 @@ export function useProgramBuilder(
 
   const handleSessionDurationChange = React.useCallback(
     (sessionId: string, duration: number) => {
-      logWithTimestamp('log', '[ProgramBuilder][handleSessionDurationChange] update duration', {
-        sessionId,
-        duration,
-      });
       setSessions((prev) =>
         prev.map((session) => (session.id === sessionId ? { ...session, duration } : session)),
       );
@@ -612,11 +557,6 @@ export function useProgramBuilder(
 
   const handleExerciseLabelChange = React.useCallback(
     (sessionId: string, exerciseId: string, label: string) => {
-      logWithTimestamp('log', '[ProgramBuilder][handleExerciseLabelChange] update label', {
-        sessionId,
-        exerciseId,
-        label,
-      });
       setSessions((prev) =>
         prev.map((session) => {
           if (session.id !== sessionId) {
@@ -637,15 +577,6 @@ export function useProgramBuilder(
 
   const handleExerciseDescriptionChange = React.useCallback(
     (sessionId: string, exerciseId: string, description: string) => {
-      logWithTimestamp(
-        'log',
-        '[ProgramBuilder][handleExerciseDescriptionChange] update description',
-        {
-          sessionId,
-          exerciseId,
-          description,
-        },
-      );
       setSessions((prev) =>
         prev.map((session) => {
           if (session.id !== sessionId) {
@@ -677,11 +608,6 @@ export function useProgramBuilder(
       const next = [...prev];
       const [current] = next.splice(index, 1);
       next.splice(index - 1, 0, current);
-      logWithTimestamp('log', '[ProgramBuilder][handleMoveSessionUp] reordered session', {
-        sessionId,
-        fromIndex: index,
-        toIndex: index - 1,
-      });
       return next;
     });
   }, []);
@@ -695,11 +621,6 @@ export function useProgramBuilder(
       const next = [...prev];
       const [current] = next.splice(index, 1);
       next.splice(index + 1, 0, current);
-      logWithTimestamp('log', '[ProgramBuilder][handleMoveSessionDown] reordered session', {
-        sessionId,
-        fromIndex: index,
-        toIndex: index + 1,
-      });
       return next;
     });
   }, []);
@@ -719,12 +640,6 @@ export function useProgramBuilder(
         const exercises = [...session.exercises];
         const [current] = exercises.splice(index, 1);
         exercises.splice(index - 1, 0, current);
-        logWithTimestamp('log', '[ProgramBuilder][handleMoveExerciseUp] reordered exercise', {
-          sessionId,
-          exerciseId,
-          fromIndex: index,
-          toIndex: index - 1,
-        });
         return {
           ...session,
           exercises,
@@ -748,12 +663,6 @@ export function useProgramBuilder(
         const exercises = [...session.exercises];
         const [current] = exercises.splice(index, 1);
         exercises.splice(index + 1, 0, current);
-        logWithTimestamp('log', '[ProgramBuilder][handleMoveExerciseDown] reordered exercise', {
-          sessionId,
-          exerciseId,
-          fromIndex: index,
-          toIndex: index + 1,
-        });
         return {
           ...session,
           exercises,
@@ -856,10 +765,6 @@ export function useProgramBuilder(
     sessions,
     t,
   ]);
-
-  React.useEffect(() => {
-    logWithTimestamp('log', '[ProgramBuilder][state] sessions updated', sessions);
-  }, [sessions]);
 
   return {
     form,

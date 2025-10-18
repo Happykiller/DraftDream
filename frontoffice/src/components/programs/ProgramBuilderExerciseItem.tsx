@@ -24,7 +24,6 @@ import type {
   ExerciseLibraryItem,
   ProgramExercise,
 } from './programBuilderTypes';
-import { logWithTimestamp } from './programBuilderUtils';
 
 type ProgramBuilderExerciseItemProps = {
   exerciseItem: ProgramExercise;
@@ -248,10 +247,6 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
 
   const handleRemoveClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
-    logWithTimestamp('log', '[ProgramBuilder][ExerciseItem] remove exercise clicked', {
-      parentSessionExerciseId: exerciseItem.id,
-      exerciseId: exercise.id,
-    });
     onRemove(exerciseItem.id);
   };
 
@@ -262,11 +257,6 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
     if (!canMoveUp) {
       return;
     }
-    logWithTimestamp('log', '[ProgramBuilder][ExerciseItem] move exercise up', {
-      parentSessionExerciseId: exerciseItem.id,
-      exerciseId: exercise.id,
-      fromIndex: index,
-    });
     onMoveUp();
   };
 
@@ -274,11 +264,6 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
     if (!canMoveDown) {
       return;
     }
-    logWithTimestamp('log', '[ProgramBuilder][ExerciseItem] move exercise down', {
-      parentSessionExerciseId: exerciseItem.id,
-      exerciseId: exercise.id,
-      fromIndex: index,
-    });
     onMoveDown();
   };
 

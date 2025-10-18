@@ -1,5 +1,6 @@
 // src/hooks/usePrograms.ts
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import inversify from '@src/commons/inversify';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
@@ -161,6 +162,7 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
   const [items, setItems] = React.useState<Program[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
+  const { t } = useTranslation();
   const flashError = useFlashStore((state) => state.error);
   const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
@@ -238,14 +240,18 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
           },
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flashSuccess('Program created');
+        flashSuccess(
+          t('programs-coatch.notifications.program_created', {
+            defaultValue: 'Program created',
+          }),
+        );
         await load();
       } catch (e: any) {
         flashError(e?.message ?? 'Create failed');
         throw e;
       }
     },
-    [flashError, flashSuccess, gql, load]
+    [flashError, flashSuccess, gql, load, t]
   );
 
   const update = React.useCallback(
@@ -293,14 +299,18 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
           },
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flashSuccess('Program updated');
+        flashSuccess(
+          t('programs-coatch.notifications.program_updated', {
+            defaultValue: 'Program updated',
+          }),
+        );
         await load();
       } catch (e: any) {
         flashError(e?.message ?? 'Update failed');
         throw e;
       }
     },
-    [flashError, flashSuccess, gql, load]
+    [flashError, flashSuccess, gql, load, t]
   );
 
   const remove = React.useCallback(
@@ -312,14 +322,18 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
           variables: { id },
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flashSuccess('Program deleted');
+        flashSuccess(
+          t('programs-coatch.notifications.program_deleted', {
+            defaultValue: 'Program deleted',
+          }),
+        );
         await load();
       } catch (e: any) {
         flashError(e?.message ?? 'Delete failed');
         throw e;
       }
     },
-    [flashError, flashSuccess, gql, load]
+    [flashError, flashSuccess, gql, load, t]
   );
 
   return { items, total, loading, create, update, remove, reload: load };

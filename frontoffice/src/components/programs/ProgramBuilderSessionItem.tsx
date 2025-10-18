@@ -24,7 +24,6 @@ import type {
   ProgramSession,
 } from './programBuilderTypes';
 import { ProgramBuilderExerciseItem } from './ProgramBuilderExerciseItem';
-import { logWithTimestamp } from './programBuilderUtils';
 
 type ProgramBuilderSessionItemProps = {
   session: ProgramSession;
@@ -329,18 +328,10 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
     event: React.MouseEvent<HTMLButtonElement>,
   ): void => {
     event.stopPropagation();
-    logWithTimestamp('log', '[ProgramBuilder][SessionItem] remove session clicked', {
-      sessionId: session.id,
-      label: session.label,
-    });
     onRemoveSession();
   };
 
   const handleRemoveExercise = (exerciseId: string): void => {
-    logWithTimestamp('log', '[ProgramBuilder][SessionItem] remove exercise clicked', {
-      sessionId: session.id,
-      exerciseId,
-    });
     onRemoveExercise(exerciseId);
   };
 
@@ -351,37 +342,24 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
     if (!canMoveUp) {
       return;
     }
-    logWithTimestamp('log', '[ProgramBuilder][SessionItem] move session up', {
-      sessionId: session.id,
-      fromIndex: index,
-    });
     onMoveUp();
-  }, [canMoveUp, index, onMoveUp, session.id]);
+  }, [canMoveUp, index, onMoveUp]);
 
   const handleMoveDownClick = React.useCallback(() => {
     if (!canMoveDown) {
       return;
     }
-    logWithTimestamp('log', '[ProgramBuilder][SessionItem] move session down', {
-      sessionId: session.id,
-      fromIndex: index,
-    });
     onMoveDown();
-  }, [canMoveDown, index, onMoveDown, session.id]);
+  }, [canMoveDown, index, onMoveDown]);
 
   const handleMoveExerciseUp = React.useCallback(
     (exerciseId: string, position: number) => {
       if (position === 0) {
         return;
       }
-      logWithTimestamp('log', '[ProgramBuilder][SessionItem] move exercise up', {
-        sessionId: session.id,
-        exerciseId,
-        fromIndex: position,
-      });
       onMoveExerciseUp(exerciseId);
     },
-    [onMoveExerciseUp, session.id],
+    [onMoveExerciseUp],
   );
 
   const handleMoveExerciseDown = React.useCallback(
@@ -389,14 +367,9 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
       if (position >= lastIndex) {
         return;
       }
-      logWithTimestamp('log', '[ProgramBuilder][SessionItem] move exercise down', {
-        sessionId: session.id,
-        exerciseId,
-        fromIndex: position,
-      });
       onMoveExerciseDown(exerciseId);
     },
-    [onMoveExerciseDown, session.id],
+    [onMoveExerciseDown],
   );
 
   return (

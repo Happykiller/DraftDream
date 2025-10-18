@@ -4,7 +4,6 @@ import { Chip, IconButton, Paper, Stack, Tooltip, Typography } from '@mui/materi
 import { Add } from '@mui/icons-material';
 
 import type { BuilderCopy, SessionTemplate } from './programBuilderTypes';
-import { logWithTimestamp } from './programBuilderUtils';
 
 type ProgramBuilderSessionTemplateItemProps = {
   template: SessionTemplate;
@@ -33,12 +32,8 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
   ]);
 
   const handleAddClick = React.useCallback(() => {
-    logWithTimestamp('log', '[ProgramBuilder][SessionLibraryItem] add session clicked', {
-      templateId: template.id,
-      label: template.label,
-    });
     onAdd();
-  }, [onAdd, template.id, template.label]);
+  }, [onAdd]);
 
   return (
     <Paper
