@@ -55,6 +55,7 @@
       },
       "templates_title": "Session templates",
       "templates_subtitle": "Choose a template from the list or click to add it.",
+      "templates_limit_hint": "Showing up to 10 sessions sorted alphabetically.",
       "structure": {
         "title": "Program name",
         "header_description": "Adjust the outline of your draft program.",
@@ -67,6 +68,7 @@
         "session_prefix": "Session",
         "duration_unit": "min",
         "description_placeholder": "Session description (optional)...",
+        "exercise_description_placeholder": "Exercise description (optional)...",
         "tags_label": "Target groups",
         "drop_zone": "Add session here",
         "exercise_drop_zone": "Add exercise here",

@@ -55,6 +55,7 @@
       },
       "templates_title": "Bibliotheque de seances",
       "templates_subtitle": "Choisissez une séance dans la liste ou cliquez pour l'ajouter.",
+      "templates_limit_hint": "Affichage des 10 sessions maximum triés par ordre alphabétique.",
       "structure": {
         "title": "Nom du programme",
         "header_description": "Ajustez l'organisation de votre programme brouillon.",
@@ -67,6 +68,7 @@
         "session_prefix": "Seance",
         "duration_unit": "min",
         "description_placeholder": "Description de la séance (optionnel)...",
+        "exercise_description_placeholder": "Notes ou consignes de l'exercice...",
         "tags_label": "Groupes cibles",
         "drop_zone": "Ajouter la séance ici",
         "exercise_drop_zone": "Ajouter l'exercice ici",
