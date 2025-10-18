@@ -128,6 +128,7 @@ export type BuilderCopy = {
       delete_exercise: string;
       add_empty_session: string;
       session_duration: string;
+      add_session_template: string;
     };
   };
   footer: {

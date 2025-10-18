@@ -104,7 +104,8 @@
           "move_exercise_down": "Move exercise down",
           "delete_exercise": "Remove exercise",
           "add_empty_session": "Add a new empty session",
-          "session_duration": "Edit session duration"
+          "session_duration": "Edit session duration",
+          "add_session_template": "Add this session to the program"
         }
       },
       "footer": {

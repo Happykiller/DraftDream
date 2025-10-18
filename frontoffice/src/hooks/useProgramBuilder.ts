@@ -279,10 +279,16 @@ export function useProgramBuilder(
     });
   }, [categoryLabelById, collator, exerciseItems]);
 
-  const exerciseMap = React.useMemo(
-    () => new Map(exerciseLibrary.map((exercise) => [exercise.id, exercise])),
-    [exerciseLibrary],
-  );
+  const exerciseMapRef = React.useRef(new Map<string, ExerciseLibraryItem>());
+
+  const exerciseMap = React.useMemo(() => {
+    const merged = new Map(exerciseMapRef.current);
+    exerciseLibrary.forEach((exercise) => {
+      merged.set(exercise.id, exercise);
+    });
+    exerciseMapRef.current = merged;
+    return merged;
+  }, [exerciseLibrary]);
 
   const exerciseTypeOptions = React.useMemo<ExerciseTypeOption[]>(
     () => [
@@ -755,6 +761,7 @@ export function useProgramBuilder(
     setSessions([]);
     setForm({ ...INITIAL_FORM_STATE, programName: builderCopy.structure.title });
     idCountersRef.current = { session: 0, exercise: 0 };
+    exerciseMapRef.current = new Map();
   }, [builderCopy.structure.title]);
 
   const handleSubmit = React.useCallback(async (event?: React.SyntheticEvent) => {

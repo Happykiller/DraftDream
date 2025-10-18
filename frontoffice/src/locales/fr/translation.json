@@ -104,7 +104,8 @@
           "move_exercise_down": "Descendre l'exercice",
           "delete_exercise": "Supprimer l'exercice",
           "add_empty_session": "Ajouter une nouvelle séance vide",
-          "session_duration": "Modifier la durée de la séance"
+          "session_duration": "Modifier la durée de la séance",
+          "add_session_template": "Ajouter cette séance au programme"
         }
       },
       "footer": {
