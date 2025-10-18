@@ -38,7 +38,7 @@
     },
     "builder": {
       "title": "Program builder",
-      "subtitle": "Drag and drop sessions and exercises to craft a custom plan.",
+      "subtitle": "Select sessions and exercises to craft a custom plan.",
       "config": {
         "title": "Program configuration",
         "client_label": "Athlete",
@@ -54,16 +54,16 @@
         "button_create": "Create a session"
       },
       "templates_title": "Session templates",
-      "templates_subtitle": "Drag a template or click to append it.",
+      "templates_subtitle": "Choose a template from the list or click to add it.",
       "structure": {
         "title": "Program structure",
         "summary": "{{count}} sessions",
-        "empty": "Drag a session from the left column to get started.",
+        "empty": "Add a session from the left column to get started.",
         "session_prefix": "Session",
         "duration_unit": "min",
         "tags_label": "Target groups",
-        "drop_zone": "Drop session here",
-        "exercise_drop_zone": "Drop exercise here",
+        "drop_zone": "Add session here",
+        "exercise_drop_zone": "Add exercise here",
         "custom_session_label": "Custom session"
       },
       "library": {
@@ -78,7 +78,7 @@
         "limit_hint": "Showing up to 10 exercises sorted alphabetically.",
         "empty_state": "No exercises match your filters.",
         "button_create": "Create an exercise",
-        "subtitle": "Drag an exercise onto a session to add it.",
+        "subtitle": "Add an exercise to a session to include it.",
         "sets_label": "sets",
         "reps_label": "reps",
         "rest_label": "rest"
