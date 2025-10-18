@@ -232,6 +232,7 @@ export function useProgramBuilder(
         categoryId: item.categoryId,
         categoryLabel,
         type: item.visibility,
+        visibility: item.visibility,
         duration: item.rest ?? 0,
         sets: parseSeriesCount(item.series),
         reps: item.repetitions,
