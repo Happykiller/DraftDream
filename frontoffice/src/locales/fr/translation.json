@@ -82,23 +82,23 @@
         "subtitle": "Ajoutez un exercice à une séance pour l'intégrer.",
         "sets_label": " series",
         "reps_label": " reps",
-        "rest_label": ""
-      },
-      "tooltips": {
-        "add_exercise": "Ajouter cet exercice à la séance sélectionnée",
-        "public_exercise": "Exercice public disponible en ligne",
-        "primary_muscle_chip": "Muscle principal : {{label}}",
-        "secondary_muscle_chip": "Muscle secondaire : {{label}}",
-        "equipment_chip": "Équipement : {{label}}",
-        "tag_chip": "Tag : {{label}}",
-        "move_session_up": "Monter la séance",
-        "move_session_down": "Descendre la séance",
-        "delete_session": "Supprimer la séance",
-        "move_exercise_up": "Monter l'exercice",
-        "move_exercise_down": "Descendre l'exercice",
-        "delete_exercise": "Supprimer l'exercice",
-        "add_empty_session": "Ajouter une nouvelle séance vide",
-        "session_duration": "Modifier la durée de la séance"
+        "rest_label": "",
+        "tooltips": {
+          "add_exercise": "Ajouter cet exercice à la séance sélectionnée",
+          "public_exercise": "Exercice public disponible en ligne",
+          "primary_muscle_chip": "Muscle principal : {{label}}",
+          "secondary_muscle_chip": "Muscle secondaire : {{label}}",
+          "equipment_chip": "Équipement : {{label}}",
+          "tag_chip": "Tag : {{label}}",
+          "move_session_up": "Monter la séance",
+          "move_session_down": "Descendre la séance",
+          "delete_session": "Supprimer la séance",
+          "move_exercise_up": "Monter l'exercice",
+          "move_exercise_down": "Descendre l'exercice",
+          "delete_exercise": "Supprimer l'exercice",
+          "add_empty_session": "Ajouter une nouvelle séance vide",
+          "session_duration": "Modifier la durée de la séance"
+        }
       },
       "footer": {
         "cancel": "Annuler",
