@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
-import { Box, Chip, IconButton, Paper, Stack, Typography } from '@mui/material';
+import { Box, Chip, IconButton, Paper, Stack, Tooltip, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Add, Public } from '@mui/icons-material';
 
-import type { ExerciseLibraryItem } from './programBuilderTypes';
+import type { BuilderCopy, ExerciseLibraryItem } from './programBuilderTypes';
 import { logWithTimestamp } from './programBuilderUtils';
 
 type ProgramBuilderExerciseLibraryItemProps = {
@@ -23,6 +23,13 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
   const setsLabel = t('programs-coatch.builder.library.sets_label', { defaultValue: 'sets' });
   const repsLabel = t('programs-coatch.builder.library.reps_label', { defaultValue: 'reps' });
   const restLabel = t('programs-coatch.builder.library.rest_label', { defaultValue: 'rest' });
+  const tooltips = React.useMemo(
+    () =>
+      t('programs-coatch.builder.library.tooltips', {
+        returnObjects: true,
+      }) as BuilderCopy['library']['tooltips'],
+    [t],
+  );
   const isPublic = exercise.visibility === 'PUBLIC';
 
   const handleAddClick = React.useCallback(
@@ -43,6 +50,7 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
         p: 1.5,
         borderRadius: 2,
         cursor: 'default',
+        position: 'relative',
         '&:hover': {
           borderColor: theme.palette.primary.main,
           boxShadow: theme.shadows[1],
@@ -75,62 +83,80 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
           {exercise.muscles.length > 0 ? (
             <Stack direction="row" spacing={0.5} flexWrap="wrap">
               {exercise.muscles.map((muscle) => (
-                <Chip
+                <Tooltip
                   key={`${exercise.id}-muscle-${muscle.id}`}
-                  label={muscle.label}
-                  size="small"
-                  color={muscle.role === 'primary' ? 'primary' : 'default'}
-                  variant={muscle.role === 'primary' ? 'filled' : 'outlined'}
-                />
+                  title={
+                    muscle.role === 'primary'
+                      ? tooltips.primary_muscle_chip.replace('{{label}}', muscle.label)
+                      : tooltips.secondary_muscle_chip.replace('{{label}}', muscle.label)
+                  }
+                  arrow
+                >
+                  <Chip
+                    label={muscle.label}
+                    size="small"
+                    color={muscle.role === 'primary' ? 'primary' : 'default'}
+                    variant={muscle.role === 'primary' ? 'filled' : 'outlined'}
+                  />
+                </Tooltip>
               ))}
             </Stack>
           ) : null}
           {exercise.tags.length > 0 ? (
             <Stack direction="row" spacing={0.5} flexWrap="wrap">
               {exercise.tags.map((tag) => (
-                <Chip
+                <Tooltip
                   key={`${exercise.id}-tag-${tag.id}`}
-                  label={tag.label}
-                  size="small"
-                  color="secondary"
-                  variant="outlined"
-                />
+                  title={tooltips.tag_chip.replace('{{label}}', tag.label)}
+                  arrow
+                >
+                  <Chip label={tag.label} size="small" color="secondary" variant="outlined" />
+                </Tooltip>
               ))}
             </Stack>
           ) : null}
           {exercise.equipment.length > 0 ? (
             <Stack direction="row" spacing={0.5} flexWrap="wrap">
               {exercise.equipment.map((eq) => (
-                <Chip
+                <Tooltip
                   key={`${exercise.id}-equipment-${eq.id}`}
-                  label={eq.label}
-                  size="small"
-                  variant="outlined"
-                />
+                  title={tooltips.equipment_chip.replace('{{label}}', eq.label)}
+                  arrow
+                >
+                  <Chip label={eq.label} size="small" variant="outlined" />
+                </Tooltip>
               ))}
             </Stack>
           ) : null}
           {isPublic ? (
-            <Box
-              sx={{
-                mt: 'auto',
-                display: 'flex',
-                alignItems: 'center',
-                color: theme.palette.text.disabled,
-              }}
-            >
-              <Public fontSize="small" aria-hidden />
-            </Box>
+            <Tooltip title={tooltips.public_exercise} arrow>
+              <Box
+                sx={{
+                  position: 'absolute',
+                  right: theme.spacing(1),
+                  bottom: theme.spacing(1),
+                  display: 'flex',
+                  alignItems: 'center',
+                  color: theme.palette.text.disabled,
+                }}
+              >
+                <Public fontSize="small" aria-hidden />
+              </Box>
+            </Tooltip>
           ) : null}
         </Stack>
-        <IconButton
-          size="small"
-          onClick={handleAddClick}
-          disabled={disabled}
-          aria-label="add-exercise-to-session"
-        >
-          <Add fontSize="small" />
-        </IconButton>
+        <Tooltip title={tooltips.add_exercise} arrow>
+          <span style={{ display: 'inline-flex' }}>
+            <IconButton
+              size="small"
+              onClick={handleAddClick}
+              disabled={disabled}
+              aria-label="add-exercise-to-session"
+            >
+              <Add fontSize="small" />
+            </IconButton>
+          </span>
+        </Tooltip>
       </Stack>
     </Paper>
   );

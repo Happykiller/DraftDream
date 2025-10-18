@@ -5,7 +5,16 @@ import {
   KeyboardArrowUp,
 } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
-import { Chip, IconButton, Paper, Stack, TextField, Typography } from '@mui/material';
+import {
+  Chip,
+  IconButton,
+  InputAdornment,
+  Paper,
+  Stack,
+  TextField,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 
 import type {
   BuilderCopy,
@@ -21,6 +30,8 @@ type ProgramBuilderSessionItemProps = {
   totalSessions: number;
   builderCopy: BuilderCopy;
   onLabelChange: (sessionId: string, label: string) => void;
+  onDescriptionChange: (sessionId: string, description: string) => void;
+  onDurationChange: (sessionId: string, duration: number) => void;
   onRemoveSession: () => void;
   onRemoveExercise: (exerciseId: string) => void;
   onMoveUp: () => void;
@@ -41,6 +52,8 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
   totalSessions,
   builderCopy,
   onLabelChange,
+  onDescriptionChange,
+  onDurationChange,
   onRemoveSession,
   onRemoveExercise,
   onMoveUp,
@@ -55,6 +68,11 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
   const [isEditingLabel, setIsEditingLabel] = React.useState(false);
   const [labelDraft, setLabelDraft] = React.useState(session.label);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const [isEditingDescription, setIsEditingDescription] = React.useState(false);
+  const [descriptionDraft, setDescriptionDraft] = React.useState(session.description);
+  const descriptionInputRef = React.useRef<HTMLTextAreaElement | null>(null);
+  const tooltips = builderCopy.library.tooltips;
+  const descriptionPlaceholder = builderCopy.structure.description_placeholder;
 
   React.useEffect(() => {
     if (!isEditingLabel) {
@@ -68,6 +86,19 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
       inputRef.current.select();
     }
   }, [isEditingLabel]);
+
+  React.useEffect(() => {
+    if (!isEditingDescription) {
+      setDescriptionDraft(session.description);
+    }
+  }, [isEditingDescription, session.description]);
+
+  React.useEffect(() => {
+    if (isEditingDescription && descriptionInputRef.current) {
+      descriptionInputRef.current.focus();
+      descriptionInputRef.current.select();
+    }
+  }, [isEditingDescription]);
 
   const commitLabelChange = React.useCallback(() => {
     const trimmed = labelDraft.trim();
@@ -117,6 +148,47 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
     }
   }, [commitLabelChange, isEditingLabel]);
 
+  const commitDescriptionChange = React.useCallback(() => {
+    const nextDescription = descriptionDraft.trim();
+    setIsEditingDescription(false);
+    if (nextDescription !== session.description) {
+      onDescriptionChange(session.id, nextDescription);
+    }
+  }, [descriptionDraft, onDescriptionChange, session.description, session.id]);
+
+  const cancelDescriptionEdition = React.useCallback(() => {
+    setIsEditingDescription(false);
+    setDescriptionDraft(session.description);
+  }, [session.description]);
+
+  const handleDescriptionDoubleClick = React.useCallback(
+    (event: React.MouseEvent<HTMLParagraphElement>) => {
+      event.stopPropagation();
+      setDescriptionDraft(session.description);
+      setIsEditingDescription(true);
+    },
+    [session.description],
+  );
+
+  const handleDescriptionKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        commitDescriptionChange();
+      } else if (event.key === 'Escape') {
+        event.preventDefault();
+        cancelDescriptionEdition();
+      }
+    },
+    [cancelDescriptionEdition, commitDescriptionChange],
+  );
+
+  const handleDescriptionBlur = React.useCallback(() => {
+    if (isEditingDescription) {
+      commitDescriptionChange();
+    }
+  }, [commitDescriptionChange, isEditingDescription]);
+
   const handleRemoveSession = (
     event: React.MouseEvent<HTMLButtonElement>,
   ): void => {
@@ -160,6 +232,15 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
     });
     onMoveDown();
   }, [canMoveDown, index, onMoveDown, session.id]);
+
+  const handleDurationChange = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const nextValue = Number.parseInt(event.target.value, 10);
+      const normalized = Number.isNaN(nextValue) ? 0 : Math.max(0, nextValue);
+      onDurationChange(session.id, normalized);
+    },
+    [onDurationChange, session.id],
+  );
 
   const handleMoveExerciseUp = React.useCallback(
     (exerciseId: string, position: number) => {
@@ -206,69 +287,129 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
       }}
     >
       <Stack spacing={1.5}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Stack direction="row" spacing={1.5} alignItems="center">
-            <Stack spacing={0.5} alignItems="center">
-              <IconButton
-                size="small"
-                onClick={handleMoveUpClick}
-                disabled={!canMoveUp}
-                aria-label="move-session-up"
-              >
-                <KeyboardArrowUp fontSize="small" />
-              </IconButton>
-              <IconButton
-                size="small"
-                onClick={handleMoveDownClick}
-                disabled={!canMoveDown}
-                aria-label="move-session-down"
-              >
-                <KeyboardArrowDown fontSize="small" />
-              </IconButton>
+        <Stack spacing={0.75}>
+          <Stack direction="row" justifyContent="space-between" alignItems="center">
+            <Stack direction="row" spacing={1.5} alignItems="center">
+              <Stack spacing={0.5} alignItems="center">
+                <Tooltip title={tooltips.move_session_up} arrow>
+                  <span style={{ display: 'inline-flex' }}>
+                    <IconButton
+                      size="small"
+                      onClick={handleMoveUpClick}
+                      disabled={!canMoveUp}
+                      aria-label="move-session-up"
+                    >
+                      <KeyboardArrowUp fontSize="small" />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+                <Tooltip title={tooltips.move_session_down} arrow>
+                  <span style={{ display: 'inline-flex' }}>
+                    <IconButton
+                      size="small"
+                      onClick={handleMoveDownClick}
+                      disabled={!canMoveDown}
+                      aria-label="move-session-down"
+                    >
+                      <KeyboardArrowDown fontSize="small" />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+              </Stack>
+              <Stack direction="row" spacing={1} alignItems="center">
+                <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                  {builderCopy.structure.session_prefix} {index + 1} -
+                </Typography>
+                {isEditingLabel ? (
+                  <TextField
+                    inputRef={inputRef}
+                    value={labelDraft}
+                    onChange={(event) => setLabelDraft(event.target.value)}
+                    onBlur={handleLabelBlur}
+                    onKeyDown={handleLabelKeyDown}
+                    size="small"
+                    variant="standard"
+                    inputProps={{
+                      'aria-label': 'session-label',
+                      sx: { fontWeight: 600 },
+                    }}
+                    sx={{ minWidth: 120 }}
+                  />
+                ) : (
+                  <Typography
+                    variant="subtitle1"
+                    sx={{ fontWeight: 600, cursor: 'text' }}
+                    onDoubleClick={handleLabelDoubleClick}
+                  >
+                    {session.label}
+                  </Typography>
+                )}
+              </Stack>
             </Stack>
             <Stack direction="row" spacing={1} alignItems="center">
-              <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                {builderCopy.structure.session_prefix} {index + 1} -
-              </Typography>
-              {isEditingLabel ? (
+              <Tooltip title={tooltips.session_duration} arrow>
                 <TextField
-                  inputRef={inputRef}
-                  value={labelDraft}
-                  onChange={(event) => setLabelDraft(event.target.value)}
-                  onBlur={handleLabelBlur}
-                  onKeyDown={handleLabelKeyDown}
+                  type="number"
                   size="small"
-                  variant="standard"
+                  value={session.duration}
+                  onChange={handleDurationChange}
                   inputProps={{
-                    'aria-label': 'session-label',
-                    sx: { fontWeight: 600 },
+                    min: 0,
+                    'aria-label': 'session-duration',
                   }}
-                  sx={{ minWidth: 120 }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        {builderCopy.structure.duration_unit}
+                      </InputAdornment>
+                    ),
+                  }}
+                  sx={{ width: 120 }}
                 />
-              ) : (
-                <Typography
-                  variant="subtitle1"
-                  sx={{ fontWeight: 600, cursor: 'text' }}
-                  onDoubleClick={handleLabelDoubleClick}
-                >
-                  {session.label}
-                </Typography>
-              )}
+              </Tooltip>
+              <Tooltip title={tooltips.delete_session} arrow>
+                <span style={{ display: 'inline-flex' }}>
+                  <IconButton
+                    size="small"
+                    onClick={handleRemoveSession}
+                    aria-label="delete-session"
+                  >
+                    <DeleteOutline fontSize="small" />
+                  </IconButton>
+                </span>
+              </Tooltip>
             </Stack>
           </Stack>
-          <Stack direction="row" spacing={1} alignItems="center">
-            <Chip
-              label={`${session.duration} ${builderCopy.structure.duration_unit}`}
+          {isEditingDescription ? (
+            <TextField
+              inputRef={descriptionInputRef}
+              value={descriptionDraft}
+              onChange={(event) => setDescriptionDraft(event.target.value)}
+              onBlur={handleDescriptionBlur}
+              onKeyDown={handleDescriptionKeyDown}
               size="small"
+              variant="standard"
+              placeholder={descriptionPlaceholder}
+              multiline
+              minRows={1}
+              inputProps={{
+                'aria-label': 'session-description',
+              }}
+              fullWidth
             />
-            <IconButton
-              size="small"
-              onClick={handleRemoveSession}
-              aria-label="delete-session"
+          ) : (
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{
+                cursor: 'text',
+                fontStyle: session.description ? 'normal' : 'italic',
+              }}
+              onDoubleClick={handleDescriptionDoubleClick}
             >
-              <DeleteOutline fontSize="small" />
-            </IconButton>
-          </Stack>
+              {session.description || descriptionPlaceholder}
+            </Typography>
+          )}
         </Stack>
 
         <Stack direction="row" spacing={0.5} flexWrap="wrap">

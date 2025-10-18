@@ -70,6 +70,8 @@ type UseProgramBuilderResult = {
   handleRemoveSession: (sessionId: string) => void;
   handleRemoveExercise: (sessionId: string, exerciseId: string) => void;
   handleSessionLabelChange: (sessionId: string, label: string) => void;
+  handleSessionDescriptionChange: (sessionId: string, description: string) => void;
+  handleSessionDurationChange: (sessionId: string, duration: number) => void;
   handleExerciseLabelChange: (
     sessionId: string,
     exerciseId: string,
@@ -164,6 +166,7 @@ export function useProgramBuilder(
       id: item.id,
       label: item.label,
       duration: item.durationMin,
+      description: item.description ?? '',
       tags: [],
       exercises: item.exerciseIds.map((exerciseId) => ({ exerciseId })),
     }));
@@ -351,6 +354,7 @@ export function useProgramBuilder(
         sessionId: template.id,
         label: template.label,
         duration: template.duration,
+        description: template.description,
         tags: template.tags,
         exercises,
       } satisfies ProgramSession;
@@ -366,6 +370,7 @@ export function useProgramBuilder(
       sessionId: id,
       label: builderCopy.structure.custom_session_label,
       duration: 0,
+      description: '',
       tags: [],
       exercises: [],
     };
@@ -515,6 +520,30 @@ export function useProgramBuilder(
     );
   }, []);
 
+  const handleSessionDescriptionChange = React.useCallback(
+    (sessionId: string, description: string) => {
+      logWithTimestamp('log', '[ProgramBuilder][handleSessionDescriptionChange] update description', {
+        sessionId,
+        description,
+      });
+      setSessions((prev) =>
+        prev.map((session) => (session.id === sessionId ? { ...session, description } : session)),
+      );
+    },
+  []);
+
+  const handleSessionDurationChange = React.useCallback(
+    (sessionId: string, duration: number) => {
+      logWithTimestamp('log', '[ProgramBuilder][handleSessionDurationChange] update duration', {
+        sessionId,
+        duration,
+      });
+      setSessions((prev) =>
+        prev.map((session) => (session.id === sessionId ? { ...session, duration } : session)),
+      );
+    },
+  []);
+
   const handleExerciseLabelChange = React.useCallback(
     (sessionId: string, exerciseId: string, label: string) => {
       logWithTimestamp('log', '[ProgramBuilder][handleExerciseLabelChange] update label', {
@@ -662,7 +691,7 @@ export function useProgramBuilder(
         templateSessionId: session.sessionId,
         label: session.label,
         durationMin: session.duration,
-        description: undefined,
+        description: session.description ? session.description : undefined,
         exercises: session.exercises
           .map((exercise) => {
             const base = exerciseMap.get(exercise.exerciseId);
@@ -756,6 +785,8 @@ export function useProgramBuilder(
     handleRemoveSession,
     handleRemoveExercise,
     handleSessionLabelChange,
+    handleSessionDescriptionChange,
+    handleSessionDurationChange,
     handleExerciseLabelChange,
     handleAddExerciseToSession,
     handleMoveSessionUp,
