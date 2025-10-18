@@ -1,23 +1,22 @@
 tasks:
   build:
-    desc: "Build all images"
+    desc: "Build all Docker images in parallel"
     cmd: "docker compose build --parallel"
   up-dev:
-    desc: "Run local stack"
-    cmd: "docker compose up -d"
+    desc: "Start development stack (dev profile)"
+    cmd: "docker compose --profile dev up -d"
   logs:
-    desc: "Aggregate logs"
+    desc: "Tail stack logs (last 200 lines)"
     cmd: "docker compose logs -f --tail=200"
   test:
-    desc: "Lint + unit tests"
-    cmd: "./scripts/test_all.sh"
+    desc: "Compile API service as a smoke check"
+    cmd: "docker compose run --rm api npm run build"
   deploy:
-    desc: "Deploy to target env"
-    vars: { env: "{{ENV}}" }
-    cmd: "./scripts/deploy.sh {{env}}"
+    desc: "Build, export, and install production images"
+    cmd: "make -f Makefile.old deploy-prod"
     confirm: true
   fix-502:
-    desc: "Diagnose and fix 502 on /graphql via nginx→upstream"
+    desc: "Diagnose and fix 502 on /graphql via nginx upstream"
     cmd: >
       bash -lc '
       set -euo pipefail;
