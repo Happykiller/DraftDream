@@ -42,6 +42,7 @@ export type ProgramExercise = {
   reps: string;
   rest: string;
   customLabel?: string;
+  customDescription?: string;
 };
 
 export type ProgramSession = {
@@ -81,6 +82,7 @@ export type BuilderCopy = {
   };
   templates_title: string;
   templates_subtitle: string;
+  templates_limit_hint?: string;
   structure: {
     title: string;
     summary: string;
@@ -93,6 +95,7 @@ export type BuilderCopy = {
     session_prefix: string;
     duration_unit: string;
     description_placeholder: string;
+    exercise_description_placeholder?: string;
     tags_label: string;
     exercise_drop_zone: string;
     custom_session_label: string;

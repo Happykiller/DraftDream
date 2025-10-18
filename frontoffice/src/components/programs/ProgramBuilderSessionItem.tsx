@@ -44,6 +44,11 @@ type ProgramBuilderSessionItemProps = {
     exerciseId: string,
     label: string,
   ) => void;
+  onExerciseDescriptionChange: (
+    sessionId: string,
+    exerciseId: string,
+    description: string,
+  ) => void;
   onMoveExerciseUp: (exerciseId: string) => void;
   onMoveExerciseDown: (exerciseId: string) => void;
 };
@@ -62,6 +67,7 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
   onMoveDown,
   getExerciseById,
   onExerciseLabelChange,
+  onExerciseDescriptionChange,
   onMoveExerciseUp,
   onMoveExerciseDown,
 }: ProgramBuilderSessionItemProps): React.JSX.Element {
@@ -242,7 +248,7 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
   );
 
   const handleDescriptionKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
       if (event.key === 'Enter' && !event.shiftKey) {
         event.preventDefault();
         commitDescriptionChange();
@@ -612,6 +618,9 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
                   onRemove={handleRemoveExercise}
                   onLabelChange={(nextLabel) =>
                     onExerciseLabelChange(session.id, exerciseItem.id, nextLabel)
+                  }
+                  onDescriptionChange={(nextDescription) =>
+                    onExerciseDescriptionChange(session.id, exerciseItem.id, nextDescription)
                   }
                   onMoveUp={() => handleMoveExerciseUp(exerciseItem.id, exerciseIndex)}
                   onMoveDown={() =>

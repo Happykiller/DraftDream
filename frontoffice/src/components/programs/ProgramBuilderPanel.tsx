@@ -26,6 +26,7 @@ import { ProgramBuilderExerciseLibraryItem } from './ProgramBuilderExerciseLibra
 import type { BuilderCopy } from './programBuilderTypes';
 
 import type { User } from '@src/hooks/useUsers';
+import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
 import { useProgramBuilder } from '@src/hooks/useProgramBuilder';
 
 interface ProgramBuilderPanelProps {
@@ -56,6 +57,7 @@ export function ProgramBuilderPanel({
     exerciseTypeOptions,
     exerciseMap,
     limitHint,
+    sessionLimitHint,
     emptyExercisesMessage,
     summaryText: _summaryText,
     sessionsLoading,
@@ -78,6 +80,7 @@ export function ProgramBuilderPanel({
     handleSessionDescriptionChange,
     handleSessionDurationChange,
     handleExerciseLabelChange,
+    handleExerciseDescriptionChange,
     handleAddExerciseToSession,
     handleMoveSessionUp,
     handleMoveSessionDown,
@@ -129,6 +132,7 @@ export function ProgramBuilderPanel({
   const [isEditingStructureDescription, setIsEditingStructureDescription] = React.useState(false);
   const structureTitleRef = React.useRef<HTMLInputElement | null>(null);
   const structureDescriptionRef = React.useRef<HTMLTextAreaElement | null>(null);
+  const debouncedStructureTitleDraft = useDebouncedValue(structureTitleDraft, 300);
 
   React.useEffect(() => {
     if (!isEditingStructureTitle) {
@@ -140,6 +144,21 @@ export function ProgramBuilderPanel({
   React.useEffect(() => {
     updateProgramName(builderCopy.structure.title);
   }, [builderCopy.structure.title, updateProgramName]);
+
+  React.useEffect(() => {
+    if (!isEditingStructureTitle) {
+      return;
+    }
+    const trimmed = debouncedStructureTitleDraft.trim();
+    const fallback = structureTitle || builderCopy.structure.title;
+    updateProgramName(trimmed || fallback);
+  }, [
+    builderCopy.structure.title,
+    debouncedStructureTitleDraft,
+    isEditingStructureTitle,
+    structureTitle,
+    updateProgramName,
+  ]);
 
   React.useEffect(() => {
     if (!isEditingStructureDescription) {
@@ -205,7 +224,8 @@ export function ProgramBuilderPanel({
   const cancelStructureTitle = React.useCallback(() => {
     setStructureTitleDraft(structureTitle);
     setIsEditingStructureTitle(false);
-  }, [structureTitle]);
+    updateProgramName(structureTitle);
+  }, [structureTitle, updateProgramName]);
 
   const handleStructureTitleInputKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -267,7 +287,7 @@ export function ProgramBuilderPanel({
   }, [structureDescription]);
 
   const handleStructureDescriptionInputKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
       if (event.key === 'Enter' && !event.shiftKey) {
         event.preventDefault();
         commitStructureDescription();
@@ -422,6 +442,8 @@ export function ProgramBuilderPanel({
                     fullWidth
                     value={form.duration}
                     onChange={handleFormChange('duration')}
+                    required
+                    inputProps={{ 'aria-required': true }}
                   />
                   <TextField
                     label={builderCopy.config.frequency_label}
@@ -429,6 +451,8 @@ export function ProgramBuilderPanel({
                     fullWidth
                     value={form.frequency}
                     onChange={handleFormChange('frequency')}
+                    required
+                    inputProps={{ 'aria-required': true }}
                   />
                 </Stack>
 
@@ -465,6 +489,10 @@ export function ProgramBuilderPanel({
                       ),
                     }}
                   />
+
+                  <Typography variant="caption" color="text.secondary">
+                    {sessionLimitHint}
+                  </Typography>
 
                   <Stack spacing={1.5}>
                     {sessionsLoading ? (
@@ -630,6 +658,7 @@ export function ProgramBuilderPanel({
                       onMoveDown={() => handleMoveSessionDown(session.id)}
                       getExerciseById={(exerciseId) => exerciseMap.get(exerciseId)}
                       onExerciseLabelChange={handleExerciseLabelChange}
+                      onExerciseDescriptionChange={handleExerciseDescriptionChange}
                       onMoveExerciseUp={(exerciseId) =>
                         handleMoveExerciseUp(session.id, exerciseId)
                       }
@@ -793,3 +822,5 @@ export function ProgramBuilderPanel({
     </>
   );
 }
+
+export type { BuilderCopy } from './programBuilderTypes';

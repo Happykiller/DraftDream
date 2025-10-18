@@ -50,6 +50,7 @@ type UseProgramBuilderResult = {
   exerciseTypeOptions: ExerciseTypeOption[];
   exerciseMap: Map<string, ExerciseLibraryItem>;
   limitHint: string;
+  sessionLimitHint: string;
   emptyExercisesMessage: string;
   summaryText: string;
   sessionsLoading: boolean;
@@ -77,6 +78,11 @@ type UseProgramBuilderResult = {
     sessionId: string,
     exerciseId: string,
     label: string,
+  ) => void;
+  handleExerciseDescriptionChange: (
+    sessionId: string,
+    exerciseId: string,
+    description: string,
   ) => void;
   handleAddExerciseToSession: (sessionId: string, exerciseId: string, position?: number) => void;
   handleMoveSessionUp: (sessionId: string) => void;
@@ -300,6 +306,15 @@ export function useProgramBuilder(
     [builderCopy.library.limit_hint, t],
   );
 
+  const sessionLimitHint = React.useMemo(
+    () =>
+      builderCopy.templates_limit_hint ??
+      t('programs-coatch.builder.templates_limit_hint', {
+        defaultValue: 'Showing up to 10 sessions sorted alphabetically.',
+      }),
+    [builderCopy.templates_limit_hint, t],
+  );
+
   const emptyExercisesMessage = React.useMemo(
     () =>
       builderCopy.library.empty_state ??
@@ -349,16 +364,18 @@ export function useProgramBuilder(
             return null;
           }
 
-          return {
+          const programExercise: ProgramExercise = {
             id: nextId('exercise'),
             exerciseId: base.id,
             sets: exerciseRef.sets ?? base.sets,
             reps: exerciseRef.reps ?? base.reps,
             rest: exerciseRef.rest ?? base.rest,
             customLabel: undefined,
-          } satisfies ProgramExercise;
+            customDescription: undefined,
+          };
+          return programExercise;
         })
-        .filter((exercise): exercise is ProgramExercise => Boolean(exercise));
+        .filter((exercise): exercise is ProgramExercise => exercise !== null);
 
       return {
         id: nextId('session'),
@@ -483,14 +500,16 @@ export function useProgramBuilder(
             insertAt,
             previousLength: exercises.length,
           });
-          exercises.splice(insertAt, 0, {
+          const programExercise: ProgramExercise = {
             id: nextId('exercise'),
             exerciseId: exercise.id,
             sets: exercise.sets,
             reps: exercise.reps,
             rest: exercise.rest,
             customLabel: undefined,
-          });
+            customDescription: undefined,
+          };
+          exercises.splice(insertAt, 0, programExercise);
 
           return {
             ...session,
@@ -577,6 +596,39 @@ export function useProgramBuilder(
               ? { ...exercise, customLabel: label || undefined }
               : exercise,
           );
+          return { ...session, exercises };
+        }),
+      );
+    },
+    [],
+  );
+
+  const handleExerciseDescriptionChange = React.useCallback(
+    (sessionId: string, exerciseId: string, description: string) => {
+      logWithTimestamp(
+        'log',
+        '[ProgramBuilder][handleExerciseDescriptionChange] update description',
+        {
+          sessionId,
+          exerciseId,
+          description,
+        },
+      );
+      setSessions((prev) =>
+        prev.map((session) => {
+          if (session.id !== sessionId) {
+            return session;
+          }
+
+          const exercises = session.exercises.map((exercise) =>
+            exercise.id === exerciseId
+              ? {
+                  ...exercise,
+                  customDescription: description.trim() ? description.trim() : undefined,
+                }
+              : exercise,
+          );
+
           return { ...session, exercises };
         }),
       );
@@ -720,7 +772,8 @@ export function useProgramBuilder(
               series: String(exercise.sets),
               repetitions: exercise.reps,
               restSeconds: parseRestSecondsValue(exercise.rest),
-              description: undefined,
+              description:
+                exercise.customDescription ?? base.description ?? undefined,
               instructions: undefined,
               charge: undefined,
               videoUrl: undefined,
@@ -782,6 +835,7 @@ export function useProgramBuilder(
     exerciseTypeOptions,
     exerciseMap,
     limitHint,
+    sessionLimitHint,
     emptyExercisesMessage,
     summaryText,
     sessionsLoading,
@@ -804,6 +858,7 @@ export function useProgramBuilder(
     handleSessionDescriptionChange,
     handleSessionDurationChange,
     handleExerciseLabelChange,
+    handleExerciseDescriptionChange,
     handleAddExerciseToSession,
     handleMoveSessionUp,
     handleMoveSessionDown,

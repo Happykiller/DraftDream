@@ -6,6 +6,7 @@ import {
   KeyboardArrowUp,
 } from '@mui/icons-material';
 import {
+  Box,
   Chip,
   IconButton,
   Paper,
@@ -32,6 +33,7 @@ type ProgramBuilderExerciseItemProps = {
   totalExercises: number;
   onRemove: (exerciseId: string) => void;
   onLabelChange: (label: string) => void;
+  onDescriptionChange: (description: string) => void;
   onMoveUp: () => void;
   onMoveDown: () => void;
 };
@@ -43,6 +45,7 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
   totalExercises,
   onRemove,
   onLabelChange,
+  onDescriptionChange,
   onMoveUp,
   onMoveDown,
 }: ProgramBuilderExerciseItemProps): React.JSX.Element {
@@ -78,6 +81,18 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
   const displayLabel = exerciseItem.customLabel ?? exercise.label;
   const [labelDraft, setLabelDraft] = React.useState(displayLabel);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const baseDescription = exercise.description ?? '';
+  const displayDescription = exerciseItem.customDescription ?? baseDescription;
+  const [isEditingDescription, setIsEditingDescription] = React.useState(false);
+  const [descriptionDraft, setDescriptionDraft] = React.useState(displayDescription);
+  const descriptionInputRef = React.useRef<HTMLTextAreaElement | null>(null);
+  const descriptionPlaceholder = React.useMemo(
+    () =>
+      t('programs-coatch.builder.structure.exercise_description_placeholder', {
+        defaultValue: 'Exercise description (optional)...',
+      }),
+    [t],
+  );
 
   React.useEffect(() => {
     if (!isEditingLabel) {
@@ -92,6 +107,19 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
     }
   }, [isEditingLabel]);
 
+  React.useEffect(() => {
+    if (!isEditingDescription) {
+      setDescriptionDraft(displayDescription);
+    }
+  }, [displayDescription, isEditingDescription]);
+
+  React.useEffect(() => {
+    if (isEditingDescription && descriptionInputRef.current) {
+      descriptionInputRef.current.focus();
+      descriptionInputRef.current.select();
+    }
+  }, [isEditingDescription]);
+
   const commitLabelChange = React.useCallback(() => {
     const trimmed = labelDraft.trim();
     const nextLabel = trimmed || exercise.label;
@@ -105,6 +133,28 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
     setIsEditingLabel(false);
     setLabelDraft(displayLabel);
   }, [displayLabel]);
+
+  const commitDescriptionChange = React.useCallback(() => {
+    const trimmed = descriptionDraft.trim();
+    const current = (exerciseItem.customDescription ?? baseDescription).trim();
+    setIsEditingDescription(false);
+    if (trimmed === current) {
+      setDescriptionDraft(displayDescription);
+      return;
+    }
+    onDescriptionChange(trimmed);
+  }, [
+    baseDescription,
+    descriptionDraft,
+    displayDescription,
+    exerciseItem.customDescription,
+    onDescriptionChange,
+  ]);
+
+  const cancelDescriptionEdition = React.useCallback(() => {
+    setIsEditingDescription(false);
+    setDescriptionDraft(displayDescription);
+  }, [displayDescription]);
 
   const handleLabelClick = React.useCallback(
     (event: React.MouseEvent<HTMLSpanElement | HTMLParagraphElement>) => {
@@ -150,6 +200,51 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
       commitLabelChange();
     }
   }, [commitLabelChange, isEditingLabel]);
+
+  const handleDescriptionClick = React.useCallback(
+    (event: React.MouseEvent<HTMLSpanElement | HTMLParagraphElement>) => {
+      event.stopPropagation();
+      if (isEditingDescription) {
+        return;
+      }
+      setDescriptionDraft(displayDescription);
+      setIsEditingDescription(true);
+    },
+    [displayDescription, isEditingDescription],
+  );
+
+  const handleDescriptionDisplayKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLSpanElement | HTMLParagraphElement>) => {
+      if (isEditingDescription) {
+        return;
+      }
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        setDescriptionDraft(displayDescription);
+        setIsEditingDescription(true);
+      }
+    },
+    [displayDescription, isEditingDescription],
+  );
+
+  const handleDescriptionKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        commitDescriptionChange();
+      } else if (event.key === 'Escape') {
+        event.preventDefault();
+        cancelDescriptionEdition();
+      }
+    },
+    [cancelDescriptionEdition, commitDescriptionChange],
+  );
+
+  const handleDescriptionBlur = React.useCallback(() => {
+    if (isEditingDescription) {
+      commitDescriptionChange();
+    }
+  }, [commitDescriptionChange, isEditingDescription]);
 
   const handleRemoveClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
@@ -273,15 +368,49 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
                 {displayLabel}
               </Typography>
             )}
-            {exercise.description ? (
+            {isEditingDescription ? (
+              <TextField
+                inputRef={descriptionInputRef}
+                value={descriptionDraft}
+                onChange={(event) => setDescriptionDraft(event.target.value)}
+                onBlur={handleDescriptionBlur}
+                onKeyDown={handleDescriptionKeyDown}
+                size="small"
+                variant="standard"
+                multiline
+                minRows={2}
+                placeholder={descriptionPlaceholder}
+                inputProps={{ 'aria-label': 'exercise-description' }}
+                fullWidth
+              />
+            ) : (
               <Typography
                 variant="body2"
                 color="text.secondary"
-                sx={{ whiteSpace: 'pre-wrap' }}
+                sx={{
+                  ...interactiveSurfaceSx,
+                  display: 'inline-flex',
+                  alignItems: 'flex-start',
+                  gap: 0.5,
+                  maxWidth: '100%',
+                }}
+                onClick={handleDescriptionClick}
+                onKeyDown={handleDescriptionDisplayKeyDown}
+                tabIndex={0}
+                role="button"
               >
-                {exercise.description}
+                <Edit fontSize="inherit" color="disabled" />
+                <Box
+                  component="span"
+                  sx={{
+                    whiteSpace: 'pre-wrap',
+                    fontStyle: displayDescription ? 'normal' : 'italic',
+                  }}
+                >
+                  {displayDescription || descriptionPlaceholder}
+                </Box>
               </Typography>
-            ) : null}
+            )}
             <Typography variant="caption" color="text.secondary">
               {exerciseItem.sets} x {exerciseItem.reps} - {exerciseItem.rest}
             </Typography>
@@ -289,31 +418,39 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
               exercise.tags.length > 0 ||
               exercise.equipment.length > 0) && (
               <Stack direction="row" spacing={0.5} flexWrap="wrap">
-                {exercise.muscles.map((muscle) => (
-                  <Chip
-                    key={`${exercise.id}-muscle-${muscle.id}`}
-                    label={muscle.label}
-                    size="small"
-                    color={muscle.role === 'primary' ? 'primary' : 'default'}
-                    variant={muscle.role === 'primary' ? 'filled' : 'outlined'}
-                  />
-                ))}
+                {exercise.muscles.map((muscle) => {
+                  const tooltipTitle =
+                    muscle.role === 'primary'
+                      ? tooltips.primary_muscle_chip.replace('{{label}}', muscle.label)
+                      : tooltips.secondary_muscle_chip.replace('{{label}}', muscle.label);
+                  return (
+                    <Tooltip key={`${exercise.id}-muscle-${muscle.id}`} title={tooltipTitle} arrow>
+                      <Chip
+                        label={muscle.label}
+                        size="small"
+                        color={muscle.role === 'primary' ? 'primary' : 'default'}
+                        variant={muscle.role === 'primary' ? 'filled' : 'outlined'}
+                      />
+                    </Tooltip>
+                  );
+                })}
                 {exercise.tags.map((tag) => (
-                  <Chip
+                  <Tooltip
                     key={`${exercise.id}-tag-${tag.id}`}
-                    label={tag.label}
-                    size="small"
-                    color="secondary"
-                    variant="outlined"
-                  />
+                    title={tooltips.tag_chip.replace('{{label}}', tag.label)}
+                    arrow
+                  >
+                    <Chip label={tag.label} size="small" color="secondary" variant="outlined" />
+                  </Tooltip>
                 ))}
                 {exercise.equipment.map((eq) => (
-                  <Chip
+                  <Tooltip
                     key={`${exercise.id}-equipment-${eq.id}`}
-                    label={eq.label}
-                    size="small"
-                    variant="outlined"
-                  />
+                    title={tooltips.equipment_chip.replace('{{label}}', eq.label)}
+                    arrow
+                  >
+                    <Chip label={eq.label} size="small" variant="outlined" />
+                  </Tooltip>
                 ))}
               </Stack>
             )}
