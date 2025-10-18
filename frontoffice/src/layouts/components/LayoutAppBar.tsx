@@ -33,12 +33,25 @@ export function LayoutAppBar({ pageTitle, userName, userRole, onMenuClick, onLog
   const { t } = useTranslation();
   const { user, loading } = useUser();
 
+  const fallbackName = React.useMemo(() => userName?.trim() ?? '', [userName]);
+
   const displayName = React.useMemo(() => {
-    if (loading) return t('header.loading_user');
-    if (user) return `${user.first_name} ${user.last_name}`.trim();
-    const fallback = userName?.trim();
-    return fallback && fallback.length > 0 ? fallback : t('header.unknown_user');
-  }, [loading, t, user, userName]);
+    const fallbackDisplay =
+      fallbackName.length > 0 ? fallbackName : t('header.unknown_user');
+
+    if (user) {
+      const first = user.first_name?.trim() ?? '';
+      const last = user.last_name?.trim() ?? '';
+      const combined = `${first} ${last}`.trim();
+      return combined.length > 0 ? combined : fallbackDisplay;
+    }
+
+    if (loading) {
+      return fallbackName.length > 0 ? fallbackName : t('header.loading_user');
+    }
+
+    return fallbackDisplay;
+  }, [fallbackName, loading, t, user]);
 
   const displayRole = React.useMemo(() => user?.type ?? userRole ?? null, [user?.type, userRole]);
 

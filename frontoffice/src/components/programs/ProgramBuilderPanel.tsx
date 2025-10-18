@@ -116,6 +116,19 @@ export function ProgramBuilderPanel({
     exerciseId: string;
   } | null>(null);
 
+  const [structureTitle, setStructureTitle] = React.useState(builderCopy.structure.title);
+  const [structureTitleDraft, setStructureTitleDraft] = React.useState(builderCopy.structure.title);
+  const [structureDescription, setStructureDescription] = React.useState(
+    builderCopy.structure.header_description,
+  );
+  const [structureDescriptionDraft, setStructureDescriptionDraft] = React.useState(
+    builderCopy.structure.header_description,
+  );
+  const [isEditingStructureTitle, setIsEditingStructureTitle] = React.useState(false);
+  const [isEditingStructureDescription, setIsEditingStructureDescription] = React.useState(false);
+  const structureTitleRef = React.useRef<HTMLInputElement | null>(null);
+  const structureDescriptionRef = React.useRef<HTMLTextAreaElement | null>(null);
+
   React.useEffect(() => {
     if (!isEditingStructureTitle) {
       setStructureTitle(builderCopy.structure.title);
@@ -291,19 +304,6 @@ export function ProgramBuilderPanel({
     },
     [isEditingStructureDescription, structureDescription],
   );
-
-  const [structureTitle, setStructureTitle] = React.useState(builderCopy.structure.title);
-  const [structureTitleDraft, setStructureTitleDraft] = React.useState(builderCopy.structure.title);
-  const [structureDescription, setStructureDescription] = React.useState(
-    builderCopy.structure.header_description,
-  );
-  const [structureDescriptionDraft, setStructureDescriptionDraft] = React.useState(
-    builderCopy.structure.header_description,
-  );
-  const [isEditingStructureTitle, setIsEditingStructureTitle] = React.useState(false);
-  const [isEditingStructureDescription, setIsEditingStructureDescription] = React.useState(false);
-  const structureTitleRef = React.useRef<HTMLInputElement | null>(null);
-  const structureDescriptionRef = React.useRef<HTMLTextAreaElement | null>(null);
 
   const handleOpenExerciseMenu = React.useCallback(
     (exerciseId: string, anchor: HTMLElement) => {

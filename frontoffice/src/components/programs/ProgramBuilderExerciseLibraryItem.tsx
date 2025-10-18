@@ -80,7 +80,9 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
               {restLabel}{exercise.rest}
             </Typography>
           </Stack>
-          {exercise.muscles.length > 0 ? (
+          {exercise.muscles.length > 0 ||
+          exercise.tags.length > 0 ||
+          exercise.equipment.length > 0 ? (
             <Stack direction="row" spacing={0.5} flexWrap="wrap">
               {exercise.muscles.map((muscle) => (
                 <Tooltip
@@ -100,10 +102,6 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
                   />
                 </Tooltip>
               ))}
-            </Stack>
-          ) : null}
-          {exercise.tags.length > 0 ? (
-            <Stack direction="row" spacing={0.5} flexWrap="wrap">
               {exercise.tags.map((tag) => (
                 <Tooltip
                   key={`${exercise.id}-tag-${tag.id}`}
@@ -113,10 +111,6 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
                   <Chip label={tag.label} size="small" color="secondary" variant="outlined" />
                 </Tooltip>
               ))}
-            </Stack>
-          ) : null}
-          {exercise.equipment.length > 0 ? (
-            <Stack direction="row" spacing={0.5} flexWrap="wrap">
               {exercise.equipment.map((eq) => (
                 <Tooltip
                   key={`${exercise.id}-equipment-${eq.id}`}
