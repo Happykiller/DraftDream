@@ -3,6 +3,15 @@ import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { UserGql } from '@graphql/user/user.gql.types';
 
 @ObjectType()
+export class SessionExerciseSummaryGql {
+  @Field(() => ID)
+  id!: string;
+
+  @Field()
+  label!: string;
+}
+
+@ObjectType()
 export class SessionSportGql {
   @Field(() => ID) id!: string;
   @Field() slug!: string;
@@ -14,6 +23,9 @@ export class SessionSportGql {
 
   /** Ordered list of exercise IDs */
   @Field(() => [ID]) exerciseIds!: string[];
+
+  @Field(() => [SessionExerciseSummaryGql])
+  exercises!: SessionExerciseSummaryGql[];
 
   // Ownership
   @Field() createdBy!: string;

@@ -57,7 +57,12 @@
       "templates_subtitle": "Choisissez une séance dans la liste ou cliquez pour l'ajouter.",
       "structure": {
         "title": "Structure du programme",
+        "header_description": "Ajustez l'organisation de votre programme brouillon.",
         "summary": "{{count}} seances",
+        "session_counter_one": "{{count}} séance",
+        "session_counter_other": "{{count}} séances",
+        "exercise_counter_one": "{{count}} exercice",
+        "exercise_counter_other": "{{count}} exercices",
         "empty": "Ajoutez une séance depuis la colonne de gauche pour démarrer.",
         "session_prefix": "Seance",
         "duration_unit": "min",

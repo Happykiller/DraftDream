@@ -19,6 +19,7 @@ export type ExerciseLibraryItem = {
 
 export type TemplateExerciseRef = {
   exerciseId: string;
+  label: string;
   sets?: number;
   reps?: string;
   rest?: string;
@@ -82,6 +83,11 @@ export type BuilderCopy = {
   structure: {
     title: string;
     summary: string;
+    header_description: string;
+    session_counter_one: string;
+    session_counter_other: string;
+    exercise_counter_one: string;
+    exercise_counter_other: string;
     empty: string;
     session_prefix: string;
     duration_unit: string;

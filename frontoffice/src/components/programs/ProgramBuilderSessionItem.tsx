@@ -4,7 +4,7 @@ import {
   KeyboardArrowDown,
   KeyboardArrowUp,
 } from '@mui/icons-material';
-import { useTheme } from '@mui/material/styles';
+import { alpha, useTheme } from '@mui/material/styles';
 import {
   Chip,
   IconButton,
@@ -64,6 +64,25 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
   onMoveExerciseDown,
 }: ProgramBuilderSessionItemProps): React.JSX.Element {
   const theme = useTheme();
+  const primaryMain = theme.palette.primary.main;
+
+  const interactiveSurfaceSx = React.useMemo(
+    () => ({
+      cursor: 'pointer',
+      borderRadius: 1,
+      px: 0.75,
+      py: 0.25,
+      transition: 'background-color 120ms ease',
+      '&:hover': {
+        backgroundColor: alpha(primaryMain, 0.08),
+      },
+      '&:focus-visible': {
+        outline: `2px solid ${alpha(primaryMain, 0.32)}`,
+        outlineOffset: 2,
+      },
+    }),
+    [primaryMain],
+  );
 
   const [isEditingLabel, setIsEditingLabel] = React.useState(false);
   const [labelDraft, setLabelDraft] = React.useState(session.label);
@@ -71,6 +90,9 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
   const [isEditingDescription, setIsEditingDescription] = React.useState(false);
   const [descriptionDraft, setDescriptionDraft] = React.useState(session.description);
   const descriptionInputRef = React.useRef<HTMLTextAreaElement | null>(null);
+  const [isEditingDuration, setIsEditingDuration] = React.useState(false);
+  const [durationDraft, setDurationDraft] = React.useState(String(session.duration));
+  const durationInputRef = React.useRef<HTMLInputElement | null>(null);
   const tooltips = builderCopy.library.tooltips;
   const descriptionPlaceholder = builderCopy.structure.description_placeholder;
 
@@ -100,6 +122,19 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
     }
   }, [isEditingDescription]);
 
+  React.useEffect(() => {
+    if (!isEditingDuration) {
+      setDurationDraft(String(session.duration));
+    }
+  }, [isEditingDuration, session.duration]);
+
+  React.useEffect(() => {
+    if (isEditingDuration && durationInputRef.current) {
+      durationInputRef.current.focus();
+      durationInputRef.current.select();
+    }
+  }, [isEditingDuration]);
+
   const commitLabelChange = React.useCallback(() => {
     const trimmed = labelDraft.trim();
     const nextLabel = trimmed || builderCopy.structure.custom_session_label;
@@ -120,13 +155,30 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
     setLabelDraft(session.label);
   }, [session.label]);
 
-  const handleLabelDoubleClick = React.useCallback(
+  const handleLabelClick = React.useCallback(
     (event: React.MouseEvent<HTMLSpanElement | HTMLParagraphElement>) => {
       event.stopPropagation();
+      if (isEditingLabel) {
+        return;
+      }
       setLabelDraft(session.label);
       setIsEditingLabel(true);
     },
-    [session.label],
+    [isEditingLabel, session.label],
+  );
+
+  const handleLabelDisplayKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLSpanElement | HTMLParagraphElement>) => {
+      if (isEditingLabel) {
+        return;
+      }
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        setLabelDraft(session.label);
+        setIsEditingLabel(true);
+      }
+    },
+    [isEditingLabel, session.label],
   );
 
   const handleLabelKeyDown = React.useCallback(
@@ -161,13 +213,30 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
     setDescriptionDraft(session.description);
   }, [session.description]);
 
-  const handleDescriptionDoubleClick = React.useCallback(
+  const handleDescriptionClick = React.useCallback(
     (event: React.MouseEvent<HTMLParagraphElement>) => {
       event.stopPropagation();
+      if (isEditingDescription) {
+        return;
+      }
       setDescriptionDraft(session.description);
       setIsEditingDescription(true);
     },
-    [session.description],
+    [isEditingDescription, session.description],
+  );
+
+  const handleDescriptionDisplayKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLParagraphElement>) => {
+      if (isEditingDescription) {
+        return;
+      }
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        setDescriptionDraft(session.description);
+        setIsEditingDescription(true);
+      }
+    },
+    [isEditingDescription, session.description],
   );
 
   const handleDescriptionKeyDown = React.useCallback(
@@ -188,6 +257,65 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
       commitDescriptionChange();
     }
   }, [commitDescriptionChange, isEditingDescription]);
+
+  const commitDurationChange = React.useCallback(() => {
+    const parsed = Number.parseInt(durationDraft, 10);
+    const normalized = Number.isNaN(parsed) ? 0 : Math.max(0, parsed);
+    setIsEditingDuration(false);
+    if (normalized !== session.duration) {
+      onDurationChange(session.id, normalized);
+    }
+  }, [durationDraft, onDurationChange, session.duration, session.id]);
+
+  const cancelDurationEdition = React.useCallback(() => {
+    setIsEditingDuration(false);
+    setDurationDraft(String(session.duration));
+  }, [session.duration]);
+
+  const handleDurationKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        commitDurationChange();
+      } else if (event.key === 'Escape') {
+        event.preventDefault();
+        cancelDurationEdition();
+      }
+    },
+    [cancelDurationEdition, commitDurationChange],
+  );
+
+  const handleDurationBlur = React.useCallback(() => {
+    if (isEditingDuration) {
+      commitDurationChange();
+    }
+  }, [commitDurationChange, isEditingDuration]);
+
+  const handleDurationClick = React.useCallback(
+    (event: React.MouseEvent<HTMLSpanElement | HTMLParagraphElement>) => {
+      event.stopPropagation();
+      if (isEditingDuration) {
+        return;
+      }
+      setDurationDraft(String(session.duration));
+      setIsEditingDuration(true);
+    },
+    [isEditingDuration, session.duration],
+  );
+
+  const handleDurationDisplayKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLSpanElement | HTMLParagraphElement>) => {
+      if (isEditingDuration) {
+        return;
+      }
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        setDurationDraft(String(session.duration));
+        setIsEditingDuration(true);
+      }
+    },
+    [isEditingDuration, session.duration],
+  );
 
   const handleRemoveSession = (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -232,15 +360,6 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
     });
     onMoveDown();
   }, [canMoveDown, index, onMoveDown, session.id]);
-
-  const handleDurationChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const nextValue = Number.parseInt(event.target.value, 10);
-      const normalized = Number.isNaN(nextValue) ? 0 : Math.max(0, nextValue);
-      onDurationChange(session.id, normalized);
-    },
-    [onDurationChange, session.id],
-  );
 
   const handleMoveExerciseUp = React.useCallback(
     (exerciseId: string, position: number) => {
@@ -338,8 +457,17 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
                 ) : (
                   <Typography
                     variant="subtitle1"
-                    sx={{ fontWeight: 600, cursor: 'text' }}
-                    onDoubleClick={handleLabelDoubleClick}
+                    component="span"
+                    sx={{
+                      fontWeight: 600,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      ...interactiveSurfaceSx,
+                    }}
+                    onClick={handleLabelClick}
+                    onKeyDown={handleLabelDisplayKeyDown}
+                    tabIndex={0}
+                    role="button"
                   >
                     {session.label}
                   </Typography>
@@ -348,24 +476,48 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
             </Stack>
             <Stack direction="row" spacing={1} alignItems="center">
               <Tooltip title={tooltips.session_duration} arrow>
-                <TextField
-                  type="number"
-                  size="small"
-                  value={session.duration}
-                  onChange={handleDurationChange}
-                  inputProps={{
-                    min: 0,
-                    'aria-label': 'session-duration',
-                  }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        {builderCopy.structure.duration_unit}
-                      </InputAdornment>
-                    ),
-                  }}
-                  sx={{ width: 120 }}
-                />
+                {isEditingDuration ? (
+                  <TextField
+                    inputRef={durationInputRef}
+                    value={durationDraft}
+                    onChange={(event) => setDurationDraft(event.target.value)}
+                    onBlur={handleDurationBlur}
+                    onKeyDown={handleDurationKeyDown}
+                    size="small"
+                    variant="standard"
+                    type="number"
+                    inputProps={{
+                      min: 0,
+                      'aria-label': 'session-duration',
+                    }}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          {builderCopy.structure.duration_unit}
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{ width: 120 }}
+                  />
+                ) : (
+                  <Typography
+                    variant="body2"
+                    component="span"
+                    sx={{
+                      ...interactiveSurfaceSx,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      fontWeight: 500,
+                    }}
+                    onClick={handleDurationClick}
+                    onKeyDown={handleDurationDisplayKeyDown}
+                    tabIndex={0}
+                    role="button"
+                    aria-label="session-duration-display"
+                  >
+                    {session.duration} {builderCopy.structure.duration_unit}
+                  </Typography>
+                )}
               </Tooltip>
               <Tooltip title={tooltips.delete_session} arrow>
                 <span style={{ display: 'inline-flex' }}>
@@ -380,37 +532,43 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
               </Tooltip>
             </Stack>
           </Stack>
-          {isEditingDescription ? (
-            <TextField
-              inputRef={descriptionInputRef}
-              value={descriptionDraft}
-              onChange={(event) => setDescriptionDraft(event.target.value)}
-              onBlur={handleDescriptionBlur}
-              onKeyDown={handleDescriptionKeyDown}
-              size="small"
-              variant="standard"
-              placeholder={descriptionPlaceholder}
-              multiline
-              minRows={1}
-              inputProps={{
-                'aria-label': 'session-description',
-              }}
-              fullWidth
-            />
-          ) : (
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{
-                cursor: 'text',
-                fontStyle: session.description ? 'normal' : 'italic',
-              }}
-              onDoubleClick={handleDescriptionDoubleClick}
-            >
-              {session.description || descriptionPlaceholder}
-            </Typography>
-          )}
-        </Stack>
+        {isEditingDescription ? (
+          <TextField
+            inputRef={descriptionInputRef}
+            value={descriptionDraft}
+            onChange={(event) => setDescriptionDraft(event.target.value)}
+            onBlur={handleDescriptionBlur}
+            onKeyDown={handleDescriptionKeyDown}
+            size="small"
+            variant="standard"
+            placeholder={descriptionPlaceholder}
+            multiline
+            minRows={1}
+            inputProps={{
+              'aria-label': 'session-description',
+            }}
+            fullWidth
+          />
+        ) : (
+          <Typography
+            variant="body2"
+            component="p"
+            color="text.secondary"
+            sx={{
+              ...interactiveSurfaceSx,
+              display: 'inline-block',
+              maxWidth: '100%',
+              fontStyle: session.description ? 'normal' : 'italic',
+            }}
+            onClick={handleDescriptionClick}
+            onKeyDown={handleDescriptionDisplayKeyDown}
+            tabIndex={0}
+            role="button"
+          >
+            {session.description || descriptionPlaceholder}
+          </Typography>
+        )}
+      </Stack>
 
         <Stack direction="row" spacing={0.5} flexWrap="wrap">
           {session.tags.map((tag) => (

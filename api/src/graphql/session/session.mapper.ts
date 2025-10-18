@@ -11,6 +11,7 @@ export function mapSessionUsecaseToGql(m: SessionUsecaseModel): SessionSportGql 
     durationMin: m.durationMin,
     description: m.description,
     exerciseIds: [...m.exerciseIds],
+    exercises: [],
     createdBy: m.createdBy,
     createdAt: m.createdAt,
     updatedAt: m.updatedAt,
