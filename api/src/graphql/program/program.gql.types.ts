@@ -80,7 +80,7 @@ export class ProgramSessionInput {
 
 @InputType()
 export class CreateProgramInput {
-  @Field() slug!: string;
+  @Field({ nullable: true }) slug?: string;
   @Field() locale!: string;
   @Field() label!: string;
   @Field(() => Int) duration!: number;

@@ -488,7 +488,7 @@ input UpdateSessionInput {
 }
 
 input CreateProgramInput {
-  slug: String!
+  slug: String
   locale: String!
   label: String!
   duration: Int!

@@ -16,6 +16,7 @@ import { mapProgramUsecaseToGql } from '@graphql/program/program.mapper';
 import { UserGql } from '@graphql/user/user.gql.types';
 import { mapUserUsecaseToGql } from '@graphql/user/user.mapper';
 import inversify from '@src/inversify/investify';
+import { buildSlug, slugifyCandidate } from '@src/common/slug.util';
 import type { ProgramSessionSnapshotUsecaseDto } from '@usecases/program/program.usecase.dto';
 
 @Resolver(() => ProgramGql)
@@ -34,15 +35,15 @@ export class ProgramResolver {
     @Args('input') input: CreateProgramInput,
     @Context('req') req: any,
   ): Promise<ProgramGql | null> {
+    const slug = buildSlug({ slug: input.slug, label: input.label, fallback: 'program' });
     const sessions = await this.resolveSessions(input.sessions, input.sessionIds);
     const payload = {
-      slug: input.slug,
+      slug,
       locale: input.locale,
       label: input.label,
       duration: input.duration,
       frequency: input.frequency,
       description: input.description,
-      sessionIds: sessions.map((session) => session.templateSessionId ?? session.id),
       sessions,
       userId: input.userId ?? undefined,
       createdBy: req?.user?.id,
@@ -56,7 +57,6 @@ export class ProgramResolver {
   @Auth(Role.ADMIN, Role.COACH)
   async program_update(@Args('input') input: UpdateProgramInput): Promise<ProgramGql | null> {
     const updateDto: any = {
-      slug: input.slug,
       locale: input.locale,
       label: input.label,
       duration: input.duration,
@@ -65,14 +65,26 @@ export class ProgramResolver {
       userId: input.userId ?? undefined,
     };
 
+    if (input.slug !== undefined) {
+      const normalized = slugifyCandidate(input.slug);
+      if (normalized) {
+        updateDto.slug = normalized;
+      } else {
+        let fallbackLabel = input.label;
+        if (!fallbackLabel || !fallbackLabel.trim()) {
+          const current = await inversify.getProgramUsecase.execute({ id: input.id });
+          fallbackLabel = current?.label;
+        }
+        updateDto.slug = buildSlug({ label: fallbackLabel, fallback: 'program' });
+      }
+    }
+
     if (input.sessions !== undefined) {
       const sessions = await this.resolveSessions(input.sessions, undefined);
       updateDto.sessions = sessions;
-      updateDto.sessionIds = sessions.map((session) => session.templateSessionId ?? session.id);
     } else if (input.sessionIds !== undefined) {
       const sessions = await this.resolveSessions(undefined, input.sessionIds);
       updateDto.sessions = sessions;
-      updateDto.sessionIds = sessions.map((session) => session.templateSessionId ?? session.id);
     }
 
     const updated = await inversify.updateProgramUsecase.execute(input.id, updateDto);
