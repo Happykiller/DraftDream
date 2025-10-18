@@ -31,8 +31,6 @@ export type CreateProgramDto = {
   duration: number;
   frequency: number;
   description?: string;
-  /** Ordered list of session template IDs (order by array index). */
-  sessionIds: string[];
   /** Snapshot of sessions attached to the program. */
   sessions: ProgramSessionSnapshotDto[];
   /** Optional assigned user id */
@@ -61,8 +59,6 @@ export type UpdateProgramDto = Partial<{
   duration: number;
   frequency: number;
   description: string;
-  /** Replace the whole ordered list of session template IDs. */
-  sessionIds: string[];
   /** Replace the whole snapshot definition. */
   sessions: ProgramSessionSnapshotDto[];
   /** Set/replace the assigned user id */

@@ -49,7 +49,6 @@ type ProgramDoc = {
   duration: number;
   frequency: number;
   description?: string;
-  sessionIds: string[];
   sessions?: ProgramSessionDoc[];
   userId?: ObjectId;
   createdBy: ObjectId;
@@ -92,7 +91,6 @@ export class BddServiceProgramMongo {
       duration: Math.trunc(dto.duration),
       frequency: Math.trunc(dto.frequency),
       description: dto.description,
-      sessionIds: [...dto.sessionIds],
       sessions: dto.sessions?.map(this.toSessionDoc) ?? [],
       userId: dto.userId ? this.toObjectId(dto.userId) : undefined,
       createdBy: this.toObjectId(dto.createdBy),
@@ -162,7 +160,6 @@ export class BddServiceProgramMongo {
     if (patch.duration !== undefined) $set.duration = Math.trunc(patch.duration);
     if (patch.frequency !== undefined) $set.frequency = Math.trunc(patch.frequency);
     if (patch.description !== undefined) $set.description = patch.description;
-    if (patch.sessionIds !== undefined) $set.sessionIds = [...patch.sessionIds];
     if (patch.sessions !== undefined) $set.sessions = patch.sessions.map(this.toSessionDoc);
     if (patch.userId !== undefined) $set.userId = this.toObjectId(patch.userId);
 
@@ -224,11 +221,6 @@ export class BddServiceProgramMongo {
   });
 
   private toModel = (doc: ProgramDoc): Program => {
-    const sessions: ProgramSessionSnapshot[] = (doc.sessions ?? []).map(this.toSessionModel);
-    const sessionIds = doc.sessionIds?.length
-      ? [...doc.sessionIds]
-      : sessions.map((session) => session.templateSessionId ?? session.id);
-
     return {
       id: doc._id.toHexString(),
       slug: doc.slug,
@@ -237,8 +229,7 @@ export class BddServiceProgramMongo {
       duration: doc.duration,
       frequency: doc.frequency,
       description: doc.description,
-      sessionIds,
-      sessions,
+      sessions: (doc.sessions ?? []).map(this.toSessionModel),
       userId: doc.userId ? doc.userId.toHexString() : undefined,
       createdBy: doc.createdBy.toHexString(),
       deletedAt: doc.deletedAt,

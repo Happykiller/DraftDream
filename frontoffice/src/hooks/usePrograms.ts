@@ -162,7 +162,7 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
   const [items, setItems] = React.useState<Program[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const flashError = useFlashStore((state) => state.error);
   const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
@@ -199,8 +199,8 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
 
   const create = React.useCallback(
     async (input: {
-      slug: string;
-      locale: string;
+      slug?: string;
+      locale?: string;
       label: string;
       duration: number;
       frequency: number;
@@ -210,12 +210,17 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
       userId?: string | null;
     }) => {
       try {
+        const locale = (input.locale ?? i18n.language)?.trim() || i18n.language;
+        const slug = input.slug?.trim();
+
         const { errors } = await gql.send<CreateProgramPayload>({
           query: CREATE_M,
           operationName: 'CreateProgram',
           variables: {
             input: {
               ...input,
+              slug: slug && slug.length ? slug : undefined,
+              locale,
               sessionIds: input.sessionIds?.filter(Boolean),
               sessions: input.sessions?.map((session) => ({
                 ...session,
@@ -251,7 +256,7 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
         throw e;
       }
     },
-    [flashError, flashSuccess, gql, load, t]
+    [flashError, flashSuccess, gql, i18n.language, load, t]
   );
 
   const update = React.useCallback(
@@ -268,12 +273,17 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
       userId?: string | null;
     }) => {
       try {
+        const locale = (input.locale ?? i18n.language)?.trim() || i18n.language;
+        const slug = input.slug?.trim();
+
         const { errors } = await gql.send<UpdateProgramPayload>({
           query: UPDATE_M,
           operationName: 'UpdateProgram',
           variables: {
             input: {
               ...input,
+              slug: slug && slug.length ? slug : undefined,
+              locale,
               description: input.description ?? undefined,
               sessionIds: input.sessionIds?.filter(Boolean),
               sessions: input.sessions?.map((session) => ({
@@ -310,7 +320,7 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
         throw e;
       }
     },
-    [flashError, flashSuccess, gql, load, t]
+    [flashError, flashSuccess, gql, i18n.language, load, t]
   );
 
   const remove = React.useCallback(

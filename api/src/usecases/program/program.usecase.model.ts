@@ -32,7 +32,6 @@ export type ProgramUsecaseModel = {
   duration: number;
   frequency: number;
   description?: string;
-  sessionIds: string[];
   sessions: ProgramSessionUsecaseModel[];
   userId?: string;
   createdBy: string;

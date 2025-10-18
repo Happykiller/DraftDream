@@ -41,8 +41,6 @@ export interface Program {
   /** Number of training sessions per week. */
   frequency: number;
   description?: string;
-  /** Ordered list of session template IDs. Array index represents the order. */
-  sessionIds: string[];
   /** Snapshot of the program structure with editable sessions/exercises. */
   sessions: ProgramSessionSnapshot[];
   /** Optional assigned user id (the owner/assignee of the program). */
