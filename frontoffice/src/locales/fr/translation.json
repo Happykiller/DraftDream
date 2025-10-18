@@ -42,7 +42,7 @@
       "config": {
         "title": "Configuration du programme",
         "client_label": "Athlete",
-        "client_placeholder": "Ex: Programme perte de poids",
+        "client_placeholder": "Jean Dupont",
         "program_name_label": "Nom du programme",
         "duration_label": "Duree (sem.)",
         "frequency_label": "Freq./sem.",
