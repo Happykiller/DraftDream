@@ -18,6 +18,7 @@ import { mapUserUsecaseToGql } from '@graphql/user/user.mapper';
 import inversify from '@src/inversify/investify';
 import { buildSlug, slugifyCandidate } from '@src/common/slug.util';
 import type { ProgramSessionSnapshotUsecaseDto } from '@usecases/program/program.usecase.dto';
+import type { ProgramUsecaseModel } from '@usecases/program/program.usecase.model';
 
 @Resolver(() => ProgramGql)
 export class ProgramResolver {
@@ -36,7 +37,9 @@ export class ProgramResolver {
     @Context('req') req: any,
   ): Promise<ProgramGql | null> {
     const slug = buildSlug({ slug: input.slug, label: input.label, fallback: 'program' });
-    const sessions = await this.resolveSessions(input.sessions, input.sessionIds);
+    const sessions = await this.resolveSessions(input.sessions, input.sessionIds, {
+      defaultLocale: input.locale,
+    });
     const payload = {
       slug,
       locale: input.locale,
@@ -65,6 +68,14 @@ export class ProgramResolver {
       userId: input.userId ?? undefined,
     };
 
+    let cachedProgram: ProgramUsecaseModel | null | undefined;
+    const getCurrentProgram = async (): Promise<ProgramUsecaseModel | null> => {
+      if (cachedProgram === undefined) {
+        cachedProgram = await inversify.getProgramUsecase.execute({ id: input.id });
+      }
+      return cachedProgram ?? null;
+    };
+
     if (input.slug !== undefined) {
       const normalized = slugifyCandidate(input.slug);
       if (normalized) {
@@ -72,7 +83,7 @@ export class ProgramResolver {
       } else {
         let fallbackLabel = input.label;
         if (!fallbackLabel || !fallbackLabel.trim()) {
-          const current = await inversify.getProgramUsecase.execute({ id: input.id });
+          const current = await getCurrentProgram();
           fallbackLabel = current?.label;
         }
         updateDto.slug = buildSlug({ label: fallbackLabel, fallback: 'program' });
@@ -80,10 +91,20 @@ export class ProgramResolver {
     }
 
     if (input.sessions !== undefined) {
-      const sessions = await this.resolveSessions(input.sessions, undefined);
+      const defaultLocale =
+        this.normalizeLocaleValue(input.locale) ??
+        this.normalizeLocaleValue((await getCurrentProgram())?.locale);
+      const sessions = await this.resolveSessions(input.sessions, undefined, {
+        defaultLocale,
+      });
       updateDto.sessions = sessions;
     } else if (input.sessionIds !== undefined) {
-      const sessions = await this.resolveSessions(undefined, input.sessionIds);
+      const defaultLocale =
+        this.normalizeLocaleValue(input.locale) ??
+        this.normalizeLocaleValue((await getCurrentProgram())?.locale);
+      const sessions = await this.resolveSessions(undefined, input.sessionIds, {
+        defaultLocale,
+      });
       updateDto.sessions = sessions;
     }
 
@@ -136,13 +157,16 @@ export class ProgramResolver {
   private async resolveSessions(
     sessionsInput?: ProgramSessionInput[] | null,
     sessionIds?: string[] | null,
+    options: { defaultLocale?: string | null } = {},
   ): Promise<ProgramSessionSnapshotUsecaseDto[]> {
+    const defaultLocale = this.normalizeLocaleValue(options.defaultLocale);
+
     if (sessionsInput && sessionsInput.length) {
       return sessionsInput.map((session) => ({
         id: session.id ?? this.generateId(),
         templateSessionId: session.templateSessionId,
-        slug: session.slug,
-        locale: session.locale,
+        slug: buildSlug({ slug: session.slug, label: session.label, fallback: 'session' }),
+        locale: this.normalizeLocaleValue(session.locale) ?? defaultLocale,
         label: session.label.trim(),
         durationMin: session.durationMin,
         description: session.description ?? undefined,
@@ -182,8 +206,8 @@ export class ProgramResolver {
       resolved.push({
         id: this.generateId(),
         templateSessionId: session.id,
-        slug: session.slug,
-        locale: session.locale,
+        slug: buildSlug({ slug: session.slug, label: session.label, fallback: 'session' }),
+        locale: this.normalizeLocaleValue(session.locale) ?? defaultLocale,
         label: session.label,
         durationMin: session.durationMin,
         description: session.description ?? undefined,
@@ -206,5 +230,10 @@ export class ProgramResolver {
     }
 
     return resolved;
+  }
+
+  private normalizeLocaleValue(locale?: string | null): string | undefined {
+    const normalized = locale?.trim().toLowerCase();
+    return normalized || undefined;
   }
 }
