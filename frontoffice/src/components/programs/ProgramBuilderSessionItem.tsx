@@ -1,7 +1,11 @@
 import * as React from 'react';
-import { DeleteOutline, DragIndicator } from '@mui/icons-material';
+import {
+  DeleteOutline,
+  KeyboardArrowDown,
+  KeyboardArrowUp,
+} from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
-import { Box, Chip, IconButton, Paper, Stack, TextField, Typography } from '@mui/material';
+import { Chip, IconButton, Paper, Stack, TextField, Typography } from '@mui/material';
 
 import type {
   BuilderCopy,
@@ -9,57 +13,42 @@ import type {
   ProgramSession,
 } from './programBuilderTypes';
 import { ProgramBuilderExerciseItem } from './ProgramBuilderExerciseItem';
-import { ProgramBuilderExerciseDropZone } from './ProgramBuilderExerciseDropZone';
 import { logWithTimestamp } from './programBuilderUtils';
 
 type ProgramBuilderSessionItemProps = {
   session: ProgramSession;
   index: number;
+  totalSessions: number;
   builderCopy: BuilderCopy;
   onLabelChange: (sessionId: string, label: string) => void;
   onRemoveSession: () => void;
   onRemoveExercise: (exerciseId: string) => void;
-  onDragStart: (event: React.DragEvent<HTMLDivElement>) => void;
-  onDragEnd?: () => void;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
   getExerciseById: (exerciseId: string) => ExerciseLibraryItem | undefined;
-  isDraggingExercise: boolean;
-  exerciseDropLabel: string;
-  exerciseDropEffect: 'copy' | 'move';
-  onExerciseDrop: (
-    sessionId: string,
-    position: number,
-    event: React.DragEvent<HTMLDivElement>,
-  ) => void;
   onExerciseLabelChange: (
     sessionId: string,
     exerciseId: string,
     label: string,
   ) => void;
-  onExerciseDragStart: (
-    sessionId: string,
-    exerciseId: string,
-    event: React.DragEvent<HTMLDivElement>,
-  ) => void;
-  onExerciseDragEnd: () => void;
+  onMoveExerciseUp: (exerciseId: string) => void;
+  onMoveExerciseDown: (exerciseId: string) => void;
 };
 
 export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessionItem({
   session,
   index,
+  totalSessions,
   builderCopy,
   onLabelChange,
   onRemoveSession,
   onRemoveExercise,
-  onDragStart,
-  onDragEnd,
+  onMoveUp,
+  onMoveDown,
   getExerciseById,
-  isDraggingExercise,
-  exerciseDropLabel,
-  exerciseDropEffect,
-  onExerciseDrop,
   onExerciseLabelChange,
-  onExerciseDragStart,
-  onExerciseDragEnd,
+  onMoveExerciseUp,
+  onMoveExerciseDown,
 }: ProgramBuilderSessionItemProps): React.JSX.Element {
   const theme = useTheme();
 
@@ -147,57 +136,59 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
     onRemoveExercise(exerciseId);
   };
 
-  const handleDragStartInternal = React.useCallback(
-    (event: React.DragEvent<HTMLDivElement>) => {
-      event.stopPropagation();
-      if (isEditingLabel) {
-        logWithTimestamp('log', '[ProgramBuilder][SessionItem] drag prevented while editing label', {
-          sessionId: session.id,
-        });
-        event.preventDefault();
-        event.stopPropagation();
+  const canMoveUp = index > 0;
+  const canMoveDown = index < totalSessions - 1;
+
+  const handleMoveUpClick = React.useCallback(() => {
+    if (!canMoveUp) {
+      return;
+    }
+    logWithTimestamp('log', '[ProgramBuilder][SessionItem] move session up', {
+      sessionId: session.id,
+      fromIndex: index,
+    });
+    onMoveUp();
+  }, [canMoveUp, index, onMoveUp, session.id]);
+
+  const handleMoveDownClick = React.useCallback(() => {
+    if (!canMoveDown) {
+      return;
+    }
+    logWithTimestamp('log', '[ProgramBuilder][SessionItem] move session down', {
+      sessionId: session.id,
+      fromIndex: index,
+    });
+    onMoveDown();
+  }, [canMoveDown, index, onMoveDown, session.id]);
+
+  const handleMoveExerciseUp = React.useCallback(
+    (exerciseId: string, position: number) => {
+      if (position === 0) {
         return;
       }
-      logWithTimestamp('log', '[ProgramBuilder][SessionItem] drag start', {
+      logWithTimestamp('log', '[ProgramBuilder][SessionItem] move exercise up', {
         sessionId: session.id,
-        sessionLabel: session.label,
+        exerciseId,
+        fromIndex: position,
       });
-      onDragStart(event);
+      onMoveExerciseUp(exerciseId);
     },
-    [isEditingLabel, onDragStart, session.id, session.label],
+    [onMoveExerciseUp, session.id],
   );
 
-  const handleDragEndInternal = React.useCallback(
-    (event: React.DragEvent<HTMLDivElement>) => {
-      event.stopPropagation();
-      logWithTimestamp('log', '[ProgramBuilder][SessionItem] drag end', {
+  const handleMoveExerciseDown = React.useCallback(
+    (exerciseId: string, position: number, lastIndex: number) => {
+      if (position >= lastIndex) {
+        return;
+      }
+      logWithTimestamp('log', '[ProgramBuilder][SessionItem] move exercise down', {
         sessionId: session.id,
-        sessionLabel: session.label,
-        dropEffect: event.dataTransfer.dropEffect,
+        exerciseId,
+        fromIndex: position,
       });
-      onDragEnd?.();
+      onMoveExerciseDown(exerciseId);
     },
-    [onDragEnd, session.id, session.label],
-  );
-
-  const handleMouseDown = React.useCallback(
-    (event: React.MouseEvent<HTMLSpanElement>) => {
-      logWithTimestamp('log', '[ProgramBuilder][SessionItem] mouse down on drag handle', {
-        sessionId: session.id,
-        button: event.button,
-      });
-    },
-    [session.id],
-  );
-
-  const handleMouseUp = React.useCallback(
-    (event: React.MouseEvent<HTMLSpanElement>) => {
-      logWithTimestamp('log', '[ProgramBuilder][SessionItem] mouse up on drag handle', {
-        sessionId: session.id,
-        button: event.button,
-      });
-    },
-    [session.id],
+    [onMoveExerciseDown, session.id],
   );
 
   return (
@@ -216,22 +207,25 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
     >
       <Stack spacing={1.5}>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Stack direction="row" spacing={1} alignItems="center">
-            <Box
-              component="span"
-              draggable={!isEditingLabel}
-              onDragStart={handleDragStartInternal}
-              onDragEnd={handleDragEndInternal}
-              onMouseDown={handleMouseDown}
-              onMouseUp={handleMouseUp}
-              sx={{
-                cursor: isEditingLabel ? 'not-allowed' : 'grab',
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              <DragIndicator fontSize="small" color="disabled" />
-            </Box>
+          <Stack direction="row" spacing={1.5} alignItems="center">
+            <Stack spacing={0.5} alignItems="center">
+              <IconButton
+                size="small"
+                onClick={handleMoveUpClick}
+                disabled={!canMoveUp}
+                aria-label="move-session-up"
+              >
+                <KeyboardArrowUp fontSize="small" />
+              </IconButton>
+              <IconButton
+                size="small"
+                onClick={handleMoveDownClick}
+                disabled={!canMoveDown}
+                aria-label="move-session-down"
+              >
+                <KeyboardArrowDown fontSize="small" />
+              </IconButton>
+            </Stack>
             <Stack direction="row" spacing={1} alignItems="center">
               <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                 {builderCopy.structure.session_prefix} {index + 1} -
@@ -284,18 +278,10 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
         </Stack>
 
         <Stack spacing={1}>
-          <ProgramBuilderExerciseDropZone
-            label={exerciseDropLabel}
-            dropEffect={exerciseDropEffect}
-            onDrop={(event) => onExerciseDrop(session.id, 0, event)}
-            isVisible={isDraggingExercise}
-          />
           {session.exercises.length === 0 ? (
-            !isDraggingExercise && (
-              <Typography variant="body2" color="text.secondary">
-                {builderCopy.library.subtitle}
-              </Typography>
-            )
+            <Typography variant="body2" color="text.secondary">
+              {builderCopy.library.subtitle}
+            </Typography>
           ) : (
             session.exercises.map((exerciseItem, exerciseIndex) => {
               const exercise = getExerciseById(exerciseItem.exerciseId);
@@ -304,29 +290,25 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
               }
 
               return (
-                <React.Fragment key={exerciseItem.id}>
-                  <ProgramBuilderExerciseItem
-                    exerciseItem={exerciseItem}
-                    exercise={exercise}
-                    index={exerciseIndex}
-                    onRemove={handleRemoveExercise}
-                    onLabelChange={(nextLabel) =>
-                      onExerciseLabelChange(session.id, exerciseItem.id, nextLabel)
-                    }
-                    onDragStart={(event) =>
-                      onExerciseDragStart(session.id, exerciseItem.id, event)
-                    }
-                    onDragEnd={onExerciseDragEnd}
-                  />
-                  <ProgramBuilderExerciseDropZone
-                    label={exerciseDropLabel}
-                    dropEffect={exerciseDropEffect}
-                    onDrop={(event) =>
-                      onExerciseDrop(session.id, exerciseIndex + 1, event)
-                    }
-                    isVisible={isDraggingExercise}
-                  />
-                </React.Fragment>
+                <ProgramBuilderExerciseItem
+                  key={exerciseItem.id}
+                  exerciseItem={exerciseItem}
+                  exercise={exercise}
+                  index={exerciseIndex}
+                  totalExercises={session.exercises.length}
+                  onRemove={handleRemoveExercise}
+                  onLabelChange={(nextLabel) =>
+                    onExerciseLabelChange(session.id, exerciseItem.id, nextLabel)
+                  }
+                  onMoveUp={() => handleMoveExerciseUp(exerciseItem.id, exerciseIndex)}
+                  onMoveDown={() =>
+                    handleMoveExerciseDown(
+                      exerciseItem.id,
+                      exerciseIndex,
+                      session.exercises.length - 1,
+                    )
+                  }
+                />
               );
             })
           )}

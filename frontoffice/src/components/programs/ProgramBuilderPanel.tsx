@@ -10,6 +10,7 @@ import {
   Divider,
   Grid,
   InputAdornment,
+  Menu,
   MenuItem,
   Paper,
   Stack,
@@ -20,10 +21,8 @@ import { Add, Search } from '@mui/icons-material';
 
 import { ProgramBuilderSessionItem } from './ProgramBuilderSessionItem';
 import { ProgramBuilderSessionLibraryItem } from './ProgramBuilderSessionLibraryItem';
-import { ProgramBuilderSessionDropZone } from './ProgramBuilderSessionDropZone';
 import { ProgramBuilderExerciseLibraryItem } from './ProgramBuilderExerciseLibraryItem';
 import type { BuilderCopy } from './programBuilderTypes';
-import { beginDrag } from './programBuilderUtils';
 
 import type { User } from '@src/hooks/useUsers';
 import { useProgramBuilder } from '@src/hooks/useProgramBuilder';
@@ -57,16 +56,10 @@ export function ProgramBuilderPanel({
     limitHint,
     emptyExercisesMessage,
     summaryText,
-    sessionDropZoneLabel,
-    exerciseDropZoneLabel,
     sessionsLoading,
     exercisesLoading,
     categoriesLoading,
     usersLoading,
-    isDraggingSession,
-    isDraggingExercise,
-    sessionDragOrigin,
-    exerciseDragOrigin,
     setSessionSearch,
     setExerciseSearch,
     setExerciseCategory,
@@ -80,32 +73,57 @@ export function ProgramBuilderPanel({
     handleRemoveExercise,
     handleSessionLabelChange,
     handleExerciseLabelChange,
-    handleExerciseDropAtPosition,
-    handleSessionDropAtPosition,
-    handleSessionDragStartFromLibrary,
-    handleSessionDragStartFromDraft,
-    handleSessionDragEnd,
-    handleExerciseDragStartFromLibrary,
-    handleExerciseDragStartFromSession,
-    handleExerciseDragEnd,
+    handleAddExerciseToSession,
+    handleMoveSessionUp,
+    handleMoveSessionDown,
+    handleMoveExerciseUp,
+    handleMoveExerciseDown,
     handleSubmit,
     userLabel,
   } = useProgramBuilder(builderCopy, onCancel);
 
-  const sessionDropEffect: 'copy' | 'move' =
-    sessionDragOrigin === 'draft' ? 'move' : 'copy';
-  const exerciseDropEffect: 'copy' | 'move' =
-    exerciseDragOrigin === 'draft' ? 'move' : 'copy';
+  const addExerciseFallbackLabel = t(
+    'programs-coatch.builder.library.no_sessions_warning',
+    { defaultValue: 'Create a session before adding exercises.' },
+  );
+
+  const [exerciseMenuAnchor, setExerciseMenuAnchor] = React.useState<{
+    anchor: HTMLElement;
+    exerciseId: string;
+  } | null>(null);
+
+  const handleOpenExerciseMenu = React.useCallback(
+    (exerciseId: string, anchor: HTMLElement) => {
+      setExerciseMenuAnchor({ exerciseId, anchor });
+    },
+    [],
+  );
+
+  const handleCloseExerciseMenu = React.useCallback(() => {
+    setExerciseMenuAnchor(null);
+  }, []);
+
+  const handleAddExerciseFromMenu = React.useCallback(
+    (sessionId: string) => {
+      if (!exerciseMenuAnchor) {
+        return;
+      }
+      handleAddExerciseToSession(sessionId, exerciseMenuAnchor.exerciseId);
+      handleCloseExerciseMenu();
+    },
+    [exerciseMenuAnchor, handleAddExerciseToSession, handleCloseExerciseMenu],
+  );
 
   return (
-    <Paper
-      elevation={4}
-      sx={{
-        borderRadius: 3,
-        p: { xs: 2, md: 3 },
-        bgcolor: alpha(theme.palette.background.paper, 0.98),
-      }}
-    >
+    <>
+      <Paper
+        elevation={4}
+        sx={{
+          borderRadius: 3,
+          p: { xs: 2, md: 3 },
+          bgcolor: alpha(theme.palette.background.paper, 0.98),
+        }}
+      >
       <Stack spacing={3}>
         <Stack direction="row" spacing={1} alignItems="center">
           <Typography variant="h6" sx={{ fontWeight: 700 }}>
@@ -253,11 +271,7 @@ export function ProgramBuilderPanel({
                           key={template.id}
                           template={template}
                           builderCopy={builderCopy}
-                          onDragStart={(event) => {
-                            handleSessionDragStartFromLibrary();
-                            beginDrag(event, { type: 'session', id: template.id });
-                          }}
-                          onDragEnd={handleSessionDragEnd}
+                          onAdd={() => handleAddSessionFromTemplate(template.id)}
                         />
                       ))
                     )}
@@ -288,15 +302,13 @@ export function ProgramBuilderPanel({
                 </Stack>
               </Stack>
 
-              <Box
+              <Stack
+                spacing={1.5}
                 sx={{
                   border: `1px dashed ${alpha(theme.palette.text.primary, 0.2)}`,
                   borderRadius: 2,
                   p: 2,
                   minHeight: 280,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 1.5,
                   bgcolor: alpha(theme.palette.background.default, 0.4),
                 }}
               >
@@ -305,65 +317,34 @@ export function ProgramBuilderPanel({
                     <Typography variant="body2" color="text.secondary" textAlign="center">
                       {builderCopy.structure.empty}
                     </Typography>
-                    <ProgramBuilderSessionDropZone
-                      label={sessionDropZoneLabel}
-                      dropEffect={sessionDropEffect}
-                      onDrop={(event) => handleSessionDropAtPosition(0, event)}
-                      isVisible={isDraggingSession}
-                    />
                   </Stack>
                 ) : (
-                  <>
-                    <ProgramBuilderSessionDropZone
-                      label={sessionDropZoneLabel}
-                      dropEffect={sessionDropEffect}
-                      onDrop={(event) => handleSessionDropAtPosition(0, event)}
-                      isVisible={isDraggingSession}
+                  sessions.map((session, index) => (
+                    <ProgramBuilderSessionItem
+                      key={session.id}
+                      session={session}
+                      index={index}
+                      totalSessions={sessions.length}
+                      builderCopy={builderCopy}
+                      onLabelChange={handleSessionLabelChange}
+                      onRemoveSession={() => handleRemoveSession(session.id)}
+                      onRemoveExercise={(exerciseId) =>
+                        handleRemoveExercise(session.id, exerciseId)
+                      }
+                      onMoveUp={() => handleMoveSessionUp(session.id)}
+                      onMoveDown={() => handleMoveSessionDown(session.id)}
+                      getExerciseById={(exerciseId) => exerciseMap.get(exerciseId)}
+                      onExerciseLabelChange={handleExerciseLabelChange}
+                      onMoveExerciseUp={(exerciseId) =>
+                        handleMoveExerciseUp(session.id, exerciseId)
+                      }
+                      onMoveExerciseDown={(exerciseId) =>
+                        handleMoveExerciseDown(session.id, exerciseId)
+                      }
                     />
-                    {sessions.map((session, index) => (
-                      <React.Fragment key={session.id}>
-                        <ProgramBuilderSessionItem
-                          session={session}
-                          index={index}
-                          builderCopy={builderCopy}
-                          onLabelChange={handleSessionLabelChange}
-                          onRemoveSession={() => handleRemoveSession(session.id)}
-                          onRemoveExercise={(exerciseId) =>
-                            handleRemoveExercise(session.id, exerciseId)
-                          }
-                          onDragStart={(event) => {
-                            handleSessionDragStartFromDraft();
-                            beginDrag(event, { type: 'session-move', id: session.id });
-                          }}
-                          onDragEnd={handleSessionDragEnd}
-                          getExerciseById={(exerciseId) => exerciseMap.get(exerciseId)}
-                          isDraggingExercise={isDraggingExercise}
-                          exerciseDropLabel={exerciseDropZoneLabel}
-                          exerciseDropEffect={exerciseDropEffect}
-                          onExerciseDrop={handleExerciseDropAtPosition}
-                          onExerciseLabelChange={handleExerciseLabelChange}
-                          onExerciseDragStart={(sessionId, exerciseId, dragEvent) => {
-                            handleExerciseDragStartFromSession();
-                            beginDrag(dragEvent, {
-                              type: 'exercise-move',
-                              sessionId,
-                              id: exerciseId,
-                            });
-                          }}
-                          onExerciseDragEnd={handleExerciseDragEnd}
-                        />
-                        <ProgramBuilderSessionDropZone
-                          key={`session-drop-${index + 1}`}
-                          label={sessionDropZoneLabel}
-                          dropEffect={sessionDropEffect}
-                          onDrop={(event) => handleSessionDropAtPosition(index + 1, event)}
-                          isVisible={isDraggingSession}
-                        />
-                      </React.Fragment>
-                    ))}
-                  </>
+                  ))
                 )}
-              </Box>
+              </Stack>
 
               <Button
                 variant="outlined"
@@ -462,11 +443,10 @@ export function ProgramBuilderPanel({
                     <ProgramBuilderExerciseLibraryItem
                       key={exercise.id}
                       exercise={exercise}
-                      onDragStart={(event) => {
-                        handleExerciseDragStartFromLibrary();
-                        beginDrag(event, { type: 'exercise', id: exercise.id });
-                      }}
-                      onDragEnd={handleExerciseDragEnd}
+                      disabled={sessions.length === 0}
+                      onAdd={(event) =>
+                        handleOpenExerciseMenu(exercise.id, event.currentTarget)
+                      }
                     />
                   ))
                 )}
@@ -484,6 +464,25 @@ export function ProgramBuilderPanel({
           </Button>
         </Stack>
       </Stack>
-    </Paper>
+      </Paper>
+
+      <Menu
+        anchorEl={exerciseMenuAnchor?.anchor ?? null}
+        open={Boolean(exerciseMenuAnchor)}
+        onClose={handleCloseExerciseMenu}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        {sessions.length === 0 ? (
+          <MenuItem disabled>{addExerciseFallbackLabel}</MenuItem>
+        ) : (
+          sessions.map((session) => (
+            <MenuItem key={session.id} onClick={() => handleAddExerciseFromMenu(session.id)}>
+              {session.label}
+            </MenuItem>
+          ))
+        )}
+      </Menu>
+    </>
   );
 }

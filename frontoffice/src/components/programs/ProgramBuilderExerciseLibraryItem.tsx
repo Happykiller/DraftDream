@@ -1,22 +1,22 @@
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
-import { Box, Chip, Paper, Stack, Typography } from '@mui/material';
+import { Chip, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { Add } from '@mui/icons-material';
 
 import type { ExerciseLibraryItem } from './programBuilderTypes';
-import { DragIndicator } from '@mui/icons-material';
 import { logWithTimestamp } from './programBuilderUtils';
 
 type ProgramBuilderExerciseLibraryItemProps = {
   exercise: ExerciseLibraryItem;
-  onDragStart: (event: React.DragEvent<HTMLDivElement>) => void;
-  onDragEnd?: () => void;
+  onAdd: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  disabled?: boolean;
 };
 
 export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuilderExerciseLibraryItem({
   exercise,
-  onDragStart,
-  onDragEnd,
+  onAdd,
+  disabled = false,
 }: ProgramBuilderExerciseLibraryItemProps): React.JSX.Element {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -24,43 +24,15 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
   const repsLabel = t('programs-coatch.builder.library.reps_label', { defaultValue: 'reps' });
   const restLabel = t('programs-coatch.builder.library.rest_label', { defaultValue: 'rest' });
 
-  const handleDragStart = React.useCallback(
-    (event: React.DragEvent<HTMLDivElement>) => {
-      logWithTimestamp('log', '[ProgramBuilder][ExerciseLibraryItem] drag start', {
+  const handleAddClick = React.useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      logWithTimestamp('log', '[ProgramBuilder][ExerciseLibraryItem] add exercise clicked', {
         exerciseId: exercise.id,
         label: exercise.label,
       });
-      onDragStart(event);
+      onAdd(event);
     },
-    [exercise.id, exercise.label, onDragStart],
-  );
-
-  const handleDragEnd = React.useCallback(() => {
-    logWithTimestamp('log', '[ProgramBuilder][ExerciseLibraryItem] drag end', {
-      exerciseId: exercise.id,
-      label: exercise.label,
-    });
-    onDragEnd?.();
-  }, [exercise.id, exercise.label, onDragEnd]);
-
-  const handleMouseDown = React.useCallback(
-    (event: React.MouseEvent<HTMLSpanElement>) => {
-      logWithTimestamp('log', '[ProgramBuilder][ExerciseLibraryItem] mouse down on drag handle', {
-        exerciseId: exercise.id,
-        button: event.button,
-      });
-    },
-    [exercise.id],
-  );
-
-  const handleMouseUp = React.useCallback(
-    (event: React.MouseEvent<HTMLSpanElement>) => {
-      logWithTimestamp('log', '[ProgramBuilder][ExerciseLibraryItem] mouse up on drag handle', {
-        exerciseId: exercise.id,
-        button: event.button,
-      });
-    },
-    [exercise.id],
+    [exercise.id, exercise.label, onAdd],
   );
 
   return (
@@ -77,22 +49,6 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
       }}
     >
       <Stack direction="row" spacing={1.5} alignItems="flex-start">
-        <Box
-          component="span"
-          draggable
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
-          sx={{
-            cursor: 'grab',
-            display: 'flex',
-            alignItems: 'center',
-            pt: 0.25,
-          }}
-        >
-          <DragIndicator fontSize="small" color="disabled" />
-        </Box>
         <Stack spacing={1} flex={1}>
           <Stack spacing={0.25}>
             <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
@@ -154,6 +110,14 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
             </Stack>
           ) : null}
         </Stack>
+        <IconButton
+          size="small"
+          onClick={handleAddClick}
+          disabled={disabled}
+          aria-label="add-exercise-to-session"
+        >
+          <Add fontSize="small" />
+        </IconButton>
       </Stack>
     </Paper>
   );

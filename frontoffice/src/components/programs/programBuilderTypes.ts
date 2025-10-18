@@ -57,12 +57,6 @@ export type ProgramForm = {
   description: string;
 };
 
-export type DragPayload =
-  | { type: 'session'; id: string }
-  | { type: 'exercise'; id: string }
-  | { type: 'session-move'; id: string }
-  | { type: 'exercise-move'; sessionId: string; id: string };
-
 export type BuilderCopy = {
   title: string;
   subtitle: string;
