@@ -163,6 +163,7 @@ type ProgramGql {
   createdAt: DateTime!
   updatedAt: DateTime!
   creator: UserGql
+  athlete: UserGql
 }
 
 type ProgramListGql {
