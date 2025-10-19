@@ -17,12 +17,15 @@ import {
 } from '@mui/material';
 import {
   CalendarMonthOutlined,
+  ContentCopyOutlined,
+  DeleteOutline,
+  EditOutlined,
   FitnessCenterOutlined,
   HistoryOutlined,
-  MoreVert,
   PersonOutline,
   ScheduleOutlined,
   UpdateOutlined,
+  VisibilityOutlined,
 } from '@mui/icons-material';
 
 import type { Program } from '@src/hooks/usePrograms';
@@ -45,10 +48,6 @@ function deriveProgramDifficulty(program: Program): ProgramDifficulty | null {
   return difficulty[0] ?? null;
 }
 
-function deriveProgramStatus(program: Program): 'active' | 'draft' {
-  return program.userId ? 'active' : 'draft';
-}
-
 function formatDate(value: string, locale: string): string {
   try {
     return new Intl.DateTimeFormat(locale, {
@@ -69,9 +68,7 @@ export function ProgramCard({ program }: ProgramCardProps): React.JSX.Element {
     0,
   );
   const primarySession = program.sessions[0];
-  const programStatus = deriveProgramStatus(program);
   const difficulty = deriveProgramDifficulty(program);
-  const creatorLabel = program.creator?.email ?? program.createdBy ?? '';
 
   const createdOn = React.useMemo(
     () => formatDate(program.createdAt, i18n.language),
@@ -97,38 +94,45 @@ export function ProgramCard({ program }: ProgramCardProps): React.JSX.Element {
     >
       <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={2}>
         <Stack spacing={1} flex={1} minWidth={0}>
-          <Typography variant="subtitle2" color="text.secondary">
-            {t('programs-coatch.list.created_by', {
-              name: creatorLabel || t('programs-coatch.list.created_by_unknown'),
-            })}
-          </Typography>
           <Typography variant="h6" sx={{ fontWeight: 600 }} noWrap>
             {program.label}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ minHeight: 40 }}>
             {program.description || t('programs-coatch.list.no_description')}
           </Typography>
-          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-            <Chip
-              label={t(`programs-coatch.list.status.${programStatus}`)}
-              size="small"
-              color={programStatus === 'active' ? 'success' : 'default'}
-            />
-            {difficulty && (
+          {difficulty && (
+            <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
               <Chip
                 label={t(`programs-coatch.list.difficulty.${difficulty}`)}
                 size="small"
                 color="info"
                 variant="outlined"
               />
-            )}
-          </Stack>
+            </Stack>
+          )}
         </Stack>
-        <Tooltip title={t('programs-coatch.list.actions.more')}>
-          <IconButton size="small" aria-label={t('programs-coatch.list.actions.more')}>
-            <MoreVert fontSize="small" />
-          </IconButton>
-        </Tooltip>
+        <Stack direction="row" spacing={0.5}>
+          <Tooltip title={t('programs-coatch.list.actions.view')}>
+            <IconButton size="small" aria-label={t('programs-coatch.list.actions.view')}>
+              <VisibilityOutlined fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title={t('programs-coatch.list.actions.copy')}>
+            <IconButton size="small" aria-label={t('programs-coatch.list.actions.copy')}>
+              <ContentCopyOutlined fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title={t('programs-coatch.list.actions.edit')}>
+            <IconButton size="small" aria-label={t('programs-coatch.list.actions.edit')}>
+              <EditOutlined fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title={t('programs-coatch.list.actions.delete')}>
+            <IconButton size="small" aria-label={t('programs-coatch.list.actions.delete')}>
+              <DeleteOutline fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        </Stack>
       </Stack>
 
       <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
@@ -238,14 +242,25 @@ export function ProgramCard({ program }: ProgramCardProps): React.JSX.Element {
 
       <Divider flexItem />
 
-      <Stack direction="row" spacing={3} flexWrap="wrap" useFlexGap>
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        alignItems={{ xs: 'flex-start', sm: 'center' }}
+        justifyContent={{ xs: 'flex-start', sm: 'space-between' }}
+        spacing={{ xs: 1, sm: 3 }}
+        sx={{ width: '100%' }}
+      >
         <Stack direction="row" spacing={1} alignItems="center">
           <HistoryOutlined fontSize="small" color="action" />
           <Typography variant="caption" color="text.secondary">
             {t('programs-coatch.list.created_on', { date: createdOn })}
           </Typography>
         </Stack>
-        <Stack direction="row" spacing={1} alignItems="center">
+        <Stack
+          direction="row"
+          spacing={1}
+          alignItems="center"
+          sx={{ ml: { xs: 0, sm: 'auto' } }}
+        >
           <UpdateOutlined fontSize="small" color="action" />
           <Typography variant="caption" color="text.secondary">
             {t('programs-coatch.list.updated_on', { date: updatedOn })}

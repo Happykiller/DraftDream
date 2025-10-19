@@ -199,7 +199,10 @@
       "more_exercises_other": "+ {{count}} exercices",
       "no_sessions": "Aucune séance pour le moment.",
       "actions": {
-        "more": "Plus d'actions"
+        "view": "Voir",
+        "copy": "Copier",
+        "edit": "Modifier",
+        "delete": "Supprimer"
       },
       "created_on": "Créé le {{date}}",
       "updated_on": "Modifié le {{date}}"
