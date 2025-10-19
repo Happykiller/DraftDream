@@ -59,12 +59,11 @@ export class BddServiceExerciseMongo {
     ]);
   }
 
-  /** Insert a new exercise. Returns null on duplicate slug/locale (active docs). */
+  /** Insert a new exercise. Automatically resolves slug collisions. */
   async create(dto: CreateExerciseDto): Promise<Exercise | null> {
     const now = new Date();
 
-    const doc: Omit<ExerciseDoc, '_id'> = {
-      slug: dto.slug.toLowerCase().trim(),
+    const baseDoc: Omit<ExerciseDoc, '_id' | 'slug'> = {
       locale: dto.locale.toLowerCase().trim(),
       label: dto.label.trim(),
       description: dto.description,
@@ -88,14 +87,25 @@ export class BddServiceExerciseMongo {
       updatedAt: now,
     };
 
-    try {
-      const res = await (await this.col()).insertOne(doc as ExerciseDoc);
-      return this.toModel({ _id: res.insertedId, ...doc } as ExerciseDoc);
-    } catch (e: any) {
-      // code 11000 => duplicate key (unique index violation)
-      if (e?.code === 11000) return null;
-      throw e;
+    const baseSlug = this.normalizeSlug(dto.slug);
+    const collection = await this.col();
+
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      const candidateSlug = this.buildSlugCandidate(baseSlug, attempt);
+      const doc: Omit<ExerciseDoc, '_id'> = { ...baseDoc, slug: candidateSlug };
+
+      try {
+        const res = await collection.insertOne(doc as ExerciseDoc);
+        return this.toModel({ _id: res.insertedId, ...doc } as ExerciseDoc);
+      } catch (e: any) {
+        if (e?.code === 11000) {
+          continue;
+        }
+        throw e;
+      }
     }
+
+    return null;
   }
 
   /** Get by id. */
@@ -200,6 +210,31 @@ export class BddServiceExerciseMongo {
     } catch {
       throw new Error('InvalidObjectId');
     }
+  };
+
+  private normalizeSlug = (input: string): string => {
+    const MAX_LENGTH = 60;
+    const normalized = (input ?? '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '')
+      .slice(0, MAX_LENGTH);
+    return normalized || 'exercise';
+  };
+
+  private buildSlugCandidate = (base: string, attempt: number): string => {
+    if (attempt === 0) {
+      return base;
+    }
+
+    const MAX_LENGTH = 60;
+    const suffix = `-${attempt + 1}`;
+    const maxBaseLength = Math.max(1, MAX_LENGTH - suffix.length);
+    const trimmedBase = base.slice(0, maxBaseLength).replace(/-+$/g, '');
+    const effectiveBase = trimmedBase || base.slice(0, maxBaseLength);
+    return `${effectiveBase}${suffix}`;
   };
 
   private toModel = (doc: ExerciseDoc): Exercise => ({

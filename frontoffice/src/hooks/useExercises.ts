@@ -66,7 +66,7 @@ type ExerciseListPayload = {
   };
 };
 
-type CreatePayload = { exercise_create: Exercise };
+type CreatePayload = { exercise_create: Exercise | null };
 type UpdatePayload = { exercise_update: Exercise };
 type DeletePayload = { exercise_delete: boolean };
 
@@ -187,29 +187,46 @@ export function useExercises({
     async (input: CreateExerciseInput) => {
       try {
         const { data, errors } = await gql.send<CreatePayload>({
-          query: CREATE_M, variables: { input }, operationName: 'CreateExercise',
+          query: CREATE_M,
+          variables: { input },
+          operationName: 'CreateExercise',
         });
         if (errors?.length) throw new Error(errors[0].message);
+
+        const created = data?.exercise_create ?? undefined;
+        if (!created) {
+          flashError(
+            t('programs-coatch.builder.library.create_dialog.flash.failure', {
+              defaultValue: 'Unable to create the exercise template.',
+            }),
+          );
+          return undefined;
+        }
+
         flashSuccess(
           t('programs-coatch.builder.library.create_dialog.flash.success', {
             defaultValue: 'Exercise template created successfully.',
           }),
         );
-        const created = data?.exercise_create;
-        if (created) {
-          let existed = false;
-          setItems((previous) => {
-            existed = previous.some((item) => item.id === created.id);
-            const next = [created, ...previous.filter((item) => item.id !== created.id)];
-            return next.slice(0, limit);
-          });
-          if (!existed) {
-            setTotal((current) => current + 1);
-          }
+
+        let existed = false;
+        setItems((previous) => {
+          existed = previous.some((item) => item.id === created.id);
+          const next = [created, ...previous.filter((item) => item.id !== created.id)];
+          return next.slice(0, limit);
+        });
+        if (!existed) {
+          setTotal((current) => current + 1);
         }
-        return data?.exercise_create;
+
+        return created;
       } catch (e: any) {
-        flashError(e?.message ?? 'Create failed');
+        flashError(
+          e?.message ??
+            t('programs-coatch.builder.library.create_dialog.flash.failure', {
+              defaultValue: 'Unable to create the exercise template.',
+            }),
+        );
         throw e;
       }
     },

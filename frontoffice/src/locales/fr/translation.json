@@ -111,7 +111,8 @@
           "title": "Créer un template d'exercice",
           "subtitle": "Créez un exercice réutilisable pour vos programmes",
           "flash": {
-            "success": "Template d'exercice créé avec succès."
+            "success": "Template d'exercice créé avec succès.",
+            "failure": "Impossible de créer le template d'exercice."
           },
           "actions": {
             "cancel": "Annuler",

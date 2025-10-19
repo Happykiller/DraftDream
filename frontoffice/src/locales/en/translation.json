@@ -110,7 +110,8 @@
           "title": "Create an exercise template",
           "subtitle": "Create a reusable exercise for your programs.",
           "flash": {
-            "success": "Exercise template created successfully."
+            "success": "Exercise template created successfully.",
+            "failure": "Unable to create the exercise template."
           },
           "actions": {
             "cancel": "Cancel",
