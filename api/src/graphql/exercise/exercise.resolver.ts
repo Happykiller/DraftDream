@@ -120,7 +120,6 @@ export class ExerciseResolver {
   @Mutation(() => ExerciseGql, { name: 'exercise_update', nullable: true })
   @Auth(Role.ADMIN, Role.COACH)
   async exercise_update(@Args('input') input: UpdateExerciseInput): Promise<ExerciseGql | null> {
-    try {
       const updated = await inversify.updateExerciseUsecase.execute(input.id, {
         slug: input.slug,
         locale: input.locale,
@@ -140,19 +139,8 @@ export class ExerciseResolver {
         equipmentIds: input.equipmentIds,
         tagIds: input.tagIds,
       });
-      return updated ? mapExerciseUsecaseToGql(updated) : null;
-    } catch (error: any) {
-      if (error instanceof Error) {
-        if (error.message === 'ExerciseSlugConflict') {
-          throw new ConflictException('Exercise slug already exists for this locale.');
-        }
-        if (error.message === 'ExerciseUpdateNotFound') {
-          throw new NotFoundException('Exercise not found.');
-        }
-      }
-      throw error;
+      return mapExerciseUsecaseToGql(updated)
     }
-  }
 
   @Mutation(() => Boolean, { name: 'exercise_softDelete' })
   @Auth(Role.ADMIN, Role.COACH)

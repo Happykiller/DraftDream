@@ -9,6 +9,7 @@ import {
   ListExercisesDto,
   UpdateExerciseDto,
 } from '@services/db/dtos/exercise.dto';
+import { ERRORS } from '@src/common/ERROR';
 
 type ExerciseDoc = {
   _id: ObjectId;
@@ -158,7 +159,7 @@ export class BddServiceExerciseMongo {
    * Partial update.
    * Throws when the target exercise cannot be found or when the slug collides with another exercise.
    */
-  async update(id: string, patch: UpdateExerciseDto): Promise<Exercise | null> {
+  async update(id: string, patch: UpdateExerciseDto): Promise<Exercise> {
     const _id = this.toObjectId(id);
     const $set: Partial<ExerciseDoc> = { updatedAt: new Date() };
 
@@ -188,16 +189,14 @@ export class BddServiceExerciseMongo {
         { returnDocument: 'after' }
       );
 
-      if (!res.value) {
-        throw new Error('ExerciseUpdateNotFound');
+      if (!res) {
+        throw new Error(ERRORS.EXERCISE_UPDATE_NOT_FOUND);
       }
 
-      return this.toModel(res.value);
+      return this.toModel(res);
     } catch (e: any) {
-      if (e?.code === 11000) {
-        throw new Error('ExerciseSlugConflict');
-      }
-      throw e;
+      inversify.loggerService.error(`BddServiceExerciseMongo#update => ${e?.message ?? e}`);
+      throw new Error(ERRORS.UPDATE_EXERCISE_MONGO);
     }
   }
 

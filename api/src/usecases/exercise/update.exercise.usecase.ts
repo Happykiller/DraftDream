@@ -8,15 +8,11 @@ import type { ExerciseUsecaseModel } from '@usecases/exercise/exercise.usecase.m
 export class UpdateExerciseUsecase {
   constructor(private readonly inversify: Inversify) {}
 
-  async execute(id: string, patch: UpdateExerciseUsecaseDto): Promise<ExerciseUsecaseModel | null> {
+  async execute(id: string, patch: UpdateExerciseUsecaseDto): Promise<ExerciseUsecaseModel> {
     try {
       const res = await this.inversify.bddService.exercise.update(id, patch);
-      return res ? mapExerciseToUsecase(res) : null;
+      return mapExerciseToUsecase(res);
     } catch (e: any) {
-      if (e instanceof Error && ['ExerciseSlugConflict', 'ExerciseUpdateNotFound'].includes(e.message)) {
-        throw e;
-      }
-
       this.inversify.loggerService.error(`UpdateExerciseUsecase#execute => ${e?.message ?? e}`);
       throw new Error(ERRORS.UPDATE_EXERCISE_USECASE);
     }
