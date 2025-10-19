@@ -14,6 +14,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { alpha, useTheme } from '@mui/material/styles';
 import { Add, Edit } from '@mui/icons-material';
 
 import type {
@@ -54,6 +55,7 @@ export function ProgramBuilderCreateExerciseDialog({
   onUpdated,
 }: ProgramBuilderCreateExerciseDialogProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
+    const theme = useTheme();
   const locale = i18n.language || 'fr';
   const collator = React.useMemo(
     () => new Intl.Collator(locale, { sensitivity: 'base' }),
@@ -445,15 +447,15 @@ export function ProgramBuilderCreateExerciseDialog({
       maxWidth="md"
     >
       <Box component="form" onSubmit={handleSubmit} noValidate>
-        <DialogTitle>
+        <DialogTitle sx={{backgroundColor: alpha(theme.palette.success.main, 0.20)}}>
           <Stack direction="row" spacing={2} alignItems="center">
             <Box
               aria-hidden
               sx={{
-                width: 56,
-                height: 56,
+                width: 40,
+                height: 40,
                 borderRadius: 2,
-                bgcolor: 'primary.main',
+                bgcolor: 'success.main',
                 color: 'primary.contrastText',
                 display: 'flex',
                 alignItems: 'center',
@@ -664,13 +666,13 @@ export function ProgramBuilderCreateExerciseDialog({
             </Stack>
           </Stack>
         </DialogContent>
-        <DialogActions>
+        <DialogActions  sx={{ backgroundColor: '#e0dcdce0' }}>
           <Button onClick={onClose} disabled={submitting} color="inherit">
             {cancelLabel}
           </Button>
           <Button
             type="submit"
-            variant="outlined"
+            variant="contained"
             startIcon={isEditMode ? <Edit /> : <Add />}
             disabled={isSubmitDisabled}
           >

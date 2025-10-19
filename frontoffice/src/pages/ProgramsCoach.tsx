@@ -29,6 +29,7 @@ export function ProgramsCoach(): React.JSX.Element {
           {!builderOpen && (
             <Button
               variant="contained"
+              color="success"
               startIcon={<Add fontSize="small" />}
               onClick={() => setBuilderOpen(true)}
             >
