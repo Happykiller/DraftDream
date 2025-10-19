@@ -1,15 +1,9 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Avatar,
-  Box,
   Chip,
   Divider,
   IconButton,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
   Paper,
   Stack,
   Tooltip,
@@ -134,22 +128,36 @@ export function ProgramCard({ program }: ProgramCardProps): React.JSX.Element {
       }}
     >
       <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={2}>
-        <Stack spacing={1} flex={1} minWidth={0}>
+        <Stack flex={1} minWidth={0}>
           <Typography variant="h6" sx={{ fontWeight: 600 }} noWrap>
             {program.label}
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ minHeight: 40 }}>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{
+              minHeight: 40,
+              mt: 0.75,
+            }}
+          >
             {program.description || t('programs-coatch.list.no_description')}
           </Typography>
           {(difficulty || athleteLabel) && (
-            <Stack spacing={0.5} alignItems="flex-start">
+            <Stack
+              spacing={0.5}
+              alignItems="flex-start"
+              sx={{ mt: difficulty ? 0.75 : 0 }}
+            >
               {difficulty && (
                 <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
                   <Chip
                     label={t(`programs-coatch.list.difficulty.${difficulty}`)}
                     size="small"
-                    color="info"
-                    variant="outlined"
+                    sx={(theme) => ({
+                      bgcolor: alpha(theme.palette.success.main, 0.16),
+                      color: theme.palette.success.main,
+                      fontWeight: 600,
+                    })}
                   />
                 </Stack>
               )}
@@ -223,73 +231,46 @@ export function ProgramCard({ program }: ProgramCardProps): React.JSX.Element {
           {t('programs-coatch.list.program_sessions_title')}
         </Typography>
         {primarySession ? (
-          <Paper
-            variant="outlined"
-            sx={{
-              borderRadius: 2,
-              p: 2,
-              bgcolor: (theme) => theme.palette.action.hover,
-            }}
-          >
-            <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={2}>
-              <Stack spacing={0.5} flex={1} minWidth={0}>
-                <Typography variant="subtitle2" sx={{ fontWeight: 600 }} noWrap>
-                  {primarySession.label}
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  {t('programs-coatch.list.session_exercises', {
-                    count: primarySession.exercises.length,
-                  })}
-                </Typography>
-              </Stack>
-              <Avatar sx={{ width: 32, height: 32 }}>
-                <PersonOutline fontSize="small" />
-              </Avatar>
+          <Stack spacing={1}>
+            <Stack direction="row" justifyContent="space-between" alignItems="baseline">
+              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                {primarySession.label}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                {t('programs-coatch.list.session_exercises', {
+                  count: primarySession.exercises.length,
+                })}
+              </Typography>
             </Stack>
             {primarySession.exercises.length > 0 && (
-              <List dense disablePadding sx={{ mt: 1 }}>
+              <Stack spacing={0.5}>
                 {primarySession.exercises.slice(0, 3).map((exercise) => (
-                  <ListItem
+                  <Stack
                     key={exercise.id}
-                    disableGutters
-                    sx={{
-                      px: 0,
-                      py: 0.5,
-                    }}
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="baseline"
                   >
-                    <ListItemAvatar>
-                      <Avatar>
-                        <HistoryOutlined fontSize="small" />
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={
-                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                          {exercise.label}
-                        </Typography>
-                      }
-                      secondary={
-                        <Typography variant="caption" color="text.secondary">
-                          {exercise.series && exercise.repetitions
-                            ? `${exercise.series} × ${exercise.repetitions}`
-                            : exercise.series || exercise.repetitions || ''}
-                        </Typography>
-                      }
-                    />
-                  </ListItem>
+                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                      {exercise.label}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {exercise.series && exercise.repetitions
+                        ? `${exercise.series} × ${exercise.repetitions}`
+                        : exercise.series || exercise.repetitions || ''}
+                    </Typography>
+                  </Stack>
                 ))}
                 {primarySession.exercises.length > 3 && (
-                  <Box sx={{ mt: 1 }}>
-                    <Typography variant="caption" color="text.secondary">
-                      {t('programs-coatch.list.more_exercises', {
-                        count: primarySession.exercises.length - 3,
-                      })}
-                    </Typography>
-                  </Box>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('programs-coatch.list.more_exercises', {
+                      count: primarySession.exercises.length - 3,
+                    })}
+                  </Typography>
                 )}
-              </List>
+              </Stack>
             )}
-          </Paper>
+          </Stack>
         ) : (
           <Typography variant="body2" color="text.secondary">
             {t('programs-coatch.list.no_sessions')}
