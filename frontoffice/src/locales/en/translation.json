@@ -171,6 +171,36 @@
       "program_created": "Program created",
       "program_updated": "Program updated",
       "program_deleted": "Program deleted"
+    },
+    "list": {
+      "created_by": "Created by {{name}}",
+      "created_by_unknown": "Unknown coach",
+      "no_description": "No description provided.",
+      "status": {
+        "active": "Active",
+        "draft": "Draft"
+      },
+      "difficulty": {
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced"
+      },
+      "duration_weeks_one": "{{count}} week",
+      "duration_weeks_other": "{{count}} weeks",
+      "frequency_week_one": "{{count}} session/week",
+      "frequency_week_other": "{{count}} sessions/week",
+      "sessions_summary": "{{sessions}} sessions • {{exercises}} exercises",
+      "program_sessions_title": "Program sessions",
+      "session_exercises_one": "{{count}} exercise",
+      "session_exercises_other": "{{count}} exercises",
+      "more_exercises_one": "+ {{count}} exercise",
+      "more_exercises_other": "+ {{count}} exercises",
+      "no_sessions": "No sessions yet.",
+      "actions": {
+        "more": "More actions"
+      },
+      "created_on": "Created on {{date}}",
+      "updated_on": "Updated on {{date}}"
     }
   },
   "sandbox": {
