@@ -15,6 +15,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import {
   CalendarMonthOutlined,
   ContentCopyOutlined,
@@ -38,15 +39,42 @@ type ProgramDifficulty = 'beginner' | 'intermediate' | 'advanced';
 
 const DIFFICULTY_PRIORITY: ProgramDifficulty[] = ['advanced', 'intermediate', 'beginner'];
 
+function normalizeDifficulty(level?: string | null): ProgramDifficulty | null {
+  if (!level) {
+    return null;
+  }
+
+  const normalized = level.toLowerCase();
+
+  if (normalized === 'beginner' || normalized === 'intermediate' || normalized === 'advanced') {
+    return normalized;
+  }
+
+  return null;
+}
+
 function deriveProgramDifficulty(program: Program): ProgramDifficulty | null {
   const difficulty = program.sessions
     .flatMap((session) => session.exercises)
-    .map((exercise) => exercise.level)
+    .map((exercise) => normalizeDifficulty(exercise.level))
     .filter((level): level is ProgramDifficulty => Boolean(level))
     .sort((a, b) => DIFFICULTY_PRIORITY.indexOf(a) - DIFFICULTY_PRIORITY.indexOf(b));
 
   return difficulty[0] ?? null;
 }
+
+type ProgramAction = {
+  key: 'view' | 'copy' | 'edit' | 'delete';
+  color: 'primary' | 'secondary' | 'success' | 'error';
+  Icon: typeof VisibilityOutlined;
+};
+
+const PROGRAM_ACTIONS: ProgramAction[] = [
+  { key: 'view', color: 'primary', Icon: VisibilityOutlined },
+  { key: 'copy', color: 'secondary', Icon: ContentCopyOutlined },
+  { key: 'edit', color: 'success', Icon: EditOutlined },
+  { key: 'delete', color: 'error', Icon: DeleteOutline },
+];
 
 function formatDate(value: string, locale: string): string {
   try {
@@ -112,26 +140,30 @@ export function ProgramCard({ program }: ProgramCardProps): React.JSX.Element {
           )}
         </Stack>
         <Stack direction="row" spacing={0.5}>
-          <Tooltip title={t('programs-coatch.list.actions.view')}>
-            <IconButton size="small" aria-label={t('programs-coatch.list.actions.view')}>
-              <VisibilityOutlined fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title={t('programs-coatch.list.actions.copy')}>
-            <IconButton size="small" aria-label={t('programs-coatch.list.actions.copy')}>
-              <ContentCopyOutlined fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title={t('programs-coatch.list.actions.edit')}>
-            <IconButton size="small" aria-label={t('programs-coatch.list.actions.edit')}>
-              <EditOutlined fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title={t('programs-coatch.list.actions.delete')}>
-            <IconButton size="small" aria-label={t('programs-coatch.list.actions.delete')}>
-              <DeleteOutline fontSize="small" />
-            </IconButton>
-          </Tooltip>
+          {PROGRAM_ACTIONS.map(({ key, color, Icon }) => {
+            const label = t(`programs-coatch.list.actions.${key}`);
+
+            return (
+              <Tooltip key={key} title={label}>
+                <IconButton
+                  size="small"
+                  aria-label={label}
+                  sx={(theme) => ({
+                    color: theme.palette.text.secondary,
+                    transition: theme.transitions.create(['color', 'background-color'], {
+                      duration: theme.transitions.duration.shorter,
+                    }),
+                    '&:hover': {
+                      bgcolor: alpha(theme.palette[color].main, 0.12),
+                      color: theme.palette[color].main,
+                    },
+                  })}
+                >
+                  <Icon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            );
+          })}
         </Stack>
       </Stack>
 
