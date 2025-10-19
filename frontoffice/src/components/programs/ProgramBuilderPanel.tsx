@@ -5,7 +5,6 @@ import {
   Autocomplete,
   Box,
   Button,
-  Chip,
   CircularProgress,
   Divider,
   Grid,
@@ -462,44 +461,52 @@ export function ProgramBuilderPanel({
 
   return (
     <>
-      {/* Main Panel */ }
+      {/* Main Panel */}
       <Paper
         elevation={4}
         sx={{
           borderRadius: 3,
-          p: { xs: 2, md: 3 },
           bgcolor: alpha(theme.palette.background.paper, 0.98),
         }}
       >
-        <Stack spacing={3}>
-          {/* Header */ }
-          <Stack direction="row" spacing={1} alignItems="center">
-            <Typography variant="h6" sx={{ fontWeight: 700 }}>
-              {builderCopy.title}
-            </Typography>
-            <Chip
-              label={builderCopy.draft_label}
-              variant="outlined"
-              size="small"
-              color="default"
-            />
+        <Stack>
+          {/* Header */}
+          <Stack direction="row" spacing={2} alignItems="center" sx={{ backgroundColor: alpha(theme.palette.success.main, 0.20), p: 1 }}>
+            <Box
+              aria-hidden
+              sx={{
+                width: 40,
+                height: 40,
+                borderRadius: 2,
+                bgcolor: 'success.main',
+                color: 'primary.contrastText',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}
+            >
+              <Add fontSize="large" />
+            </Box>
+            <Stack spacing={0.5}>
+              <Typography variant="h6" component="span" sx={{ fontWeight: 700 }}>
+                {builderCopy.title}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {builderCopy.subtitle}
+              </Typography>
+            </Stack>
           </Stack>
 
-          {/* Subtitle */ }
-          <Stack spacing={0.5}>
-            <Typography variant="body2" color="text.secondary">
-              {builderCopy.subtitle}
-            </Typography>
-          </Stack>
+          <Divider />
 
-          {/* Content Grid */ }
-          <Grid container spacing={3}>
-            {/* Configuration Panel */ }
-            <Grid size={{ xs: 12, md: 3, lg: 3 }}>
-              <Stack spacing={3}>
-                <Paper
+          {/* Content Grid */}
+          <Grid container>
+            {/* Configuration Panel */}
+            <Grid size={{ xs: 12, md: 3, lg: 3 }} sx={{ backgroundColor: '#f3f2f2e0', p: 1 }}>
+              <Grid spacing={3}>
+                <Grid
                   sx={{
-                    p: 2.5,
                     borderRadius: 2,
                     display: 'flex',
                     flexDirection: 'column',
@@ -545,6 +552,7 @@ export function ProgramBuilderPanel({
                         }}
                       />
                     )}
+                    sx={{backgroundColor: theme.palette.background.default}}
                   />
 
                   <Stack direction="row" spacing={1.5}>
@@ -556,6 +564,7 @@ export function ProgramBuilderPanel({
                       onChange={handleFormChange('duration')}
                       required
                       inputProps={{ 'aria-required': true }}
+                    sx={{backgroundColor: theme.palette.background.default}}
                     />
                     <TextField
                       label={builderCopy.config.frequency_label}
@@ -565,12 +574,13 @@ export function ProgramBuilderPanel({
                       onChange={handleFormChange('frequency')}
                       required
                       inputProps={{ 'aria-required': true }}
+                    sx={{backgroundColor: theme.palette.background.default}}
                     />
                   </Stack>
 
                   <Divider />
 
-                  {/* Session Templates Library */ }
+                  {/* Session Templates Library */}
                   <Stack spacing={1}>
                     <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                       {builderCopy.templates_title}
@@ -592,6 +602,7 @@ export function ProgramBuilderPanel({
                           </InputAdornment>
                         ),
                       }}
+                    sx={{backgroundColor: theme.palette.background.default}}
                     />
 
                     <Typography variant="caption" color="text.secondary">
@@ -619,15 +630,14 @@ export function ProgramBuilderPanel({
                       )}
                     </Stack>
                   </Stack>
-                </Paper>
-              </Stack>
+                </Grid>
+              </Grid>
             </Grid>
 
-            {/* Structure Panel */ }
-            <Grid size={{ xs: 12, md: 5, lg: 5 }}>
-              <Paper
+            {/* Structure Panel */}
+            <Grid size={{ xs: 12, md: 5, lg: 5 }} sx={{ p: 1 }}>
+              <Box
                 sx={{
-                  p: 2.5,
                   borderRadius: 2,
                   display: 'flex',
                   flexDirection: 'column',
@@ -778,7 +788,7 @@ export function ProgramBuilderPanel({
                 <Tooltip title={builderCopy.library.tooltips.add_empty_session} arrow>
                   <span style={{ display: 'flex', width: '100%' }}>
                     <Button
-                      variant="outlined"
+                      variant="contained"
                       size="small"
                       startIcon={<Add fontSize="small" />}
                       fullWidth
@@ -788,14 +798,13 @@ export function ProgramBuilderPanel({
                     </Button>
                   </span>
                 </Tooltip>
-              </Paper>
+              </Box>
             </Grid>
 
-            {/* Exercise Library Panel */ }
-            <Grid size={{ xs: 12, md: 4, lg: 4 }}>
-              <Paper
+            {/* Exercise Library Panel */}
+            <Grid size={{ xs: 12, md: 4, lg: 4 }} sx={{ backgroundColor: '#f3f2f2e0', p: 1 }}>
+              <Box
                 sx={{
-                  p: 2.5,
                   borderRadius: 2,
                   minHeight: 420,
                   display: 'flex',
@@ -825,10 +834,11 @@ export function ProgramBuilderPanel({
                       </InputAdornment>
                     ),
                   }}
+                    sx={{backgroundColor: theme.palette.background.default}}
                 />
 
                 <Button
-                  variant="outlined"
+                  variant="contained"
                   size="small"
                   startIcon={<Add fontSize="small" />}
                   fullWidth
@@ -846,6 +856,7 @@ export function ProgramBuilderPanel({
                     value={exerciseCategory}
                     disabled={categoriesLoading && !exerciseCategoryOptions.length}
                     onChange={(event) => setExerciseCategory(event.target.value)}
+                    sx={{backgroundColor: theme.palette.background.default}}
                   >
                     <MenuItem value="all">{builderCopy.library.primary_filter_all}</MenuItem>
                     {exerciseCategoryOptions.map((category) => (
@@ -861,6 +872,7 @@ export function ProgramBuilderPanel({
                     label={builderCopy.library.secondary_filter_label}
                     value={exerciseType}
                     onChange={(event) => setExerciseType(event.target.value as typeof exerciseType)}
+                    sx={{backgroundColor: theme.palette.background.default}}
                   >
                     {exerciseTypeOptions.map((option) => (
                       <MenuItem key={option.value} value={option.value}>
@@ -897,12 +909,12 @@ export function ProgramBuilderPanel({
                     ))
                   )}
                 </Stack>
-              </Paper>
+              </Box>
             </Grid>
           </Grid>
 
-          {/* Footer */ }
-          <Stack direction="row" justifyContent="flex-end" spacing={1.5}>
+          {/* Footer */}
+          <Stack direction="row" justifyContent="flex-end" spacing={2} sx={{ p: 2, backgroundColor: '#e0dcdce0' }}>
             <Tooltip title={builderCopy.footer.cancel} arrow>
               <span style={{ display: 'inline-flex' }}>
                 <Button variant="text" color="inherit" onClick={onCancel}>
@@ -926,7 +938,7 @@ export function ProgramBuilderPanel({
         </Stack>
       </Paper>
 
-      {/* Exercise Add Menu */ }
+      {/* Exercise Add Menu */}
       <Menu
         anchorEl={exerciseMenuAnchor?.anchor ?? null}
         open={Boolean(exerciseMenuAnchor)}
@@ -945,7 +957,7 @@ export function ProgramBuilderPanel({
         )}
       </Menu>
 
-      {/* Exercise Create/Edit Dialog */ }
+      {/* Exercise Create/Edit Dialog */}
       <ProgramBuilderCreateExerciseDialog
         open={isExerciseDialogOpen}
         mode={exerciseBeingEdited ? 'edit' : 'create'}

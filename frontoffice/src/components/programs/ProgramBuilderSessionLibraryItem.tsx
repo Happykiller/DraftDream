@@ -44,7 +44,7 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
         cursor: 'default',
         transition: 'border-color 150ms ease, background-color 150ms ease',
         '&:hover': {
-          borderColor: theme.palette.secondary.main,
+          borderColor: theme.palette.success.main,
           boxShadow: theme.shadows[2],
         },
       }}
@@ -69,7 +69,7 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
             <Chip
               label={`${template.duration} ${builderCopy.structure.duration_unit}`}
               size="small"
-              color="secondary"
+              color="success"
               variant="outlined"
             />
             <Tooltip title={builderCopy.library.tooltips.add_session_template} arrow>
