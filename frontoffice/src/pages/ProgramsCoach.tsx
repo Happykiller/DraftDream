@@ -18,7 +18,7 @@ export function ProgramsCoach(): React.JSX.Element {
   }) as unknown as BuilderCopy;
 
   return (
-    <Stack spacing={3} sx={{ mt: 2 }}>
+    <Stack spacing={2} sx={{ mt: 2 }}>
       <Stack
         direction={{ xs: 'column', md: 'row' }}
         alignItems={{ xs: 'flex-start', md: 'center' }}
