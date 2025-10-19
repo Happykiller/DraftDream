@@ -107,8 +107,11 @@
           "add_session_template": "Add this session to the program"
         },
         "create_dialog": {
-          "title": "Create an exercise",
-          "description": "Define a private exercise to reuse in your programs.",
+          "title": "Create an exercise template",
+          "subtitle": "Create a reusable exercise for your programs.",
+          "flash": {
+            "success": "Exercise template created successfully."
+          },
           "actions": {
             "cancel": "Cancel",
             "submit": "Create",
@@ -121,8 +124,8 @@
             "level": "Level",
             "series": "Series",
             "repetitions": "Repetitions",
-            "rest": "Rest (seconds)",
-            "charge": "Load (optional)",
+            "rest": "Rest (sec)",
+            "charge": "Weight / Load (optional)",
             "video_url": "Video URL (optional)",
             "category": "Category",
             "primary_muscles": "Primary muscles",

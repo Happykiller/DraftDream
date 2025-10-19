@@ -9,10 +9,12 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  MenuItem,
   Stack,
   TextField,
   Typography,
 } from '@mui/material';
+import { Add } from '@mui/icons-material';
 
 import type {
   CreateExerciseInput,
@@ -210,8 +212,9 @@ export function ProgramBuilderCreateExerciseDialog({
       const created = await createExercise(payload);
       if (created) {
         onCreated?.(created);
+        onClose();
       }
-    } catch (error) {
+    } catch (_error: unknown) {
       // Flash messaging is already handled by the hook; nothing more to do here.
     } finally {
       setSubmitting(false);
@@ -243,10 +246,10 @@ export function ProgramBuilderCreateExerciseDialog({
   }, [tagIds, tagOptions]);
 
   const title = t('programs-coatch.builder.library.create_dialog.title', {
-    defaultValue: 'Create an exercise',
+    defaultValue: 'Create an exercise template',
   });
-  const descriptionCopy = t('programs-coatch.builder.library.create_dialog.description', {
-    defaultValue: 'Define a private exercise to reuse in your programs.',
+  const subtitle = t('programs-coatch.builder.library.create_dialog.subtitle', {
+    defaultValue: 'Create a reusable exercise for your programs.',
   });
 
   const cancelLabel = t('programs-coatch.builder.library.create_dialog.actions.cancel', {
@@ -281,10 +284,10 @@ export function ProgramBuilderCreateExerciseDialog({
         defaultValue: 'Repetitions',
       }),
       rest: t('programs-coatch.builder.library.create_dialog.fields.rest', {
-        defaultValue: 'Rest (seconds)',
+        defaultValue: 'Rest (sec)',
       }),
       charge: t('programs-coatch.builder.library.create_dialog.fields.charge', {
-        defaultValue: 'Load (optional)',
+        defaultValue: 'Weight / Load (optional)',
       }),
       videoUrl: t('programs-coatch.builder.library.create_dialog.fields.video_url', {
         defaultValue: 'Video URL (optional)',
@@ -325,32 +328,58 @@ export function ProgramBuilderCreateExerciseDialog({
       maxWidth="md"
     >
       <Box component="form" onSubmit={handleSubmit} noValidate>
-        <DialogTitle>{title}</DialogTitle>
+        <DialogTitle>
+          <Stack direction="row" spacing={2} alignItems="center">
+            <Box
+              aria-hidden
+              sx={{
+                width: 56,
+                height: 56,
+                borderRadius: 2,
+                bgcolor: 'primary.main',
+                color: 'primary.contrastText',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}
+            >
+              <Add fontSize="large" />
+            </Box>
+            <Stack spacing={0.5}>
+              <Typography variant="h6" component="span" sx={{ fontWeight: 700 }}>
+                {title}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {subtitle}
+              </Typography>
+            </Stack>
+          </Stack>
+        </DialogTitle>
         <DialogContent dividers>
           <Stack spacing={3}>
-            <Typography variant="body2" color="text.secondary">
-              {descriptionCopy}
-            </Typography>
-
             <Stack spacing={2}>
-              <TextField
-                required
-                fullWidth
-                label={fieldCopy.label}
-                value={label}
-                onChange={(event) => setLabel(event.target.value)}
-              />
+              <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+                <TextField
+                  required
+                  fullWidth
+                  label={fieldCopy.label}
+                  value={label}
+                  onChange={(event) => setLabel(event.target.value)}
+                />
 
-              <Autocomplete
-                options={categoryOptionsByLocale}
-                value={categoryValue}
-                onChange={(_event, option) => setCategoryId(option?.id ?? '')}
-                getOptionLabel={(option) => option.label}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                renderInput={(params) => (
-                  <TextField {...params} required label={fieldCopy.category} />
-                )}
-              />
+                <Autocomplete
+                  fullWidth
+                  options={categoryOptionsByLocale}
+                  value={categoryValue}
+                  onChange={(_event, option) => setCategoryId(option?.id ?? '')}
+                  getOptionLabel={(option) => option.label}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  renderInput={(params) => (
+                    <TextField {...params} required label={fieldCopy.category} />
+                  )}
+                />
+              </Stack>
 
               <Autocomplete
                 multiple
@@ -401,7 +430,29 @@ export function ProgramBuilderCreateExerciseDialog({
                 )}
               />
 
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+              <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+                <TextField
+                  select
+                  fullWidth
+                  label={fieldCopy.level}
+                  value={level}
+                  onChange={(event) => setLevel(event.target.value as ExerciseLevel)}
+                >
+                  {levelOptions.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <TextField
+                  fullWidth
+                  label={fieldCopy.videoUrl}
+                  value={videoUrl}
+                  onChange={(event) => setVideoUrl(event.target.value)}
+                />
+              </Stack>
+
+              <Stack direction={{ xs: 'column', lg: 'row' }} spacing={2}>
                 <TextField
                   required
                   fullWidth
@@ -416,28 +467,6 @@ export function ProgramBuilderCreateExerciseDialog({
                   value={repetitions}
                   onChange={(event) => setRepetitions(event.target.value)}
                 />
-              </Stack>
-
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                <Autocomplete
-                  options={levelOptions}
-                  value={levelOptions.find((option) => option.value === level) ?? levelOptions[0]}
-                  onChange={(_event, option) => option && setLevel(option.value)}
-                  getOptionLabel={(option) => option.label}
-                  isOptionEqualToValue={(option, value) => option.value === value.value}
-                  renderInput={(params) => <TextField {...params} label={fieldCopy.level} />}
-                />
-                <TextField
-                  fullWidth
-                  label={fieldCopy.rest}
-                  type="number"
-                  value={rest}
-                  onChange={(event) => setRest(event.target.value)}
-                  inputProps={{ min: 0 }}
-                />
-              </Stack>
-
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 <TextField
                   fullWidth
                   label={fieldCopy.charge}
@@ -446,9 +475,11 @@ export function ProgramBuilderCreateExerciseDialog({
                 />
                 <TextField
                   fullWidth
-                  label={fieldCopy.videoUrl}
-                  value={videoUrl}
-                  onChange={(event) => setVideoUrl(event.target.value)}
+                  label={fieldCopy.rest}
+                  type="number"
+                  value={rest}
+                  onChange={(event) => setRest(event.target.value)}
+                  inputProps={{ min: 0 }}
                 />
               </Stack>
 
@@ -520,7 +551,12 @@ export function ProgramBuilderCreateExerciseDialog({
           <Button onClick={onClose} disabled={submitting} color="inherit">
             {cancelLabel}
           </Button>
-          <Button type="submit" variant="contained" disabled={isSubmitDisabled}>
+          <Button
+            type="submit"
+            variant="outlined"
+            startIcon={<Add />}
+            disabled={isSubmitDisabled}
+          >
             {submitLabel}
           </Button>
         </DialogActions>

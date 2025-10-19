@@ -108,8 +108,11 @@
           "add_session_template": "Ajouter cette séance au programme"
         },
         "create_dialog": {
-          "title": "Créer un exercice",
-          "description": "Définissez un exercice privé à réutiliser dans vos programmes.",
+          "title": "Créer un template d'exercice",
+          "subtitle": "Créez un exercice réutilisable pour vos programmes",
+          "flash": {
+            "success": "Template d'exercice créé avec succès."
+          },
           "actions": {
             "cancel": "Annuler",
             "submit": "Créer",
@@ -122,8 +125,8 @@
             "level": "Niveau",
             "series": "Séries",
             "repetitions": "Répétitions",
-            "rest": "Repos (secondes)",
-            "charge": "Charge (optionnel)",
+            "rest": "Repos (sec)",
+            "charge": "Poids / Charge (optionnel)",
             "video_url": "URL vidéo (optionnel)",
             "category": "Catégorie",
             "primary_muscles": "Muscles principaux",
