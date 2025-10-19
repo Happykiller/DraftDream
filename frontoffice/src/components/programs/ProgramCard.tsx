@@ -97,6 +97,19 @@ export function ProgramCard({ program }: ProgramCardProps): React.JSX.Element {
   );
   const primarySession = program.sessions[0];
   const difficulty = deriveProgramDifficulty(program);
+  const athleteLabel = React.useMemo(() => {
+    if (!program.athlete) {
+      return null;
+    }
+
+    const { first_name, last_name, email } = program.athlete;
+    const displayName = [first_name, last_name]
+      .filter((value): value is string => Boolean(value && value.trim()))
+      .join(' ')
+      .trim();
+
+    return displayName || email;
+  }, [program.athlete]);
 
   const createdOn = React.useMemo(
     () => formatDate(program.createdAt, i18n.language),
@@ -128,14 +141,26 @@ export function ProgramCard({ program }: ProgramCardProps): React.JSX.Element {
           <Typography variant="body2" color="text.secondary" sx={{ minHeight: 40 }}>
             {program.description || t('programs-coatch.list.no_description')}
           </Typography>
-          {difficulty && (
-            <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-              <Chip
-                label={t(`programs-coatch.list.difficulty.${difficulty}`)}
-                size="small"
-                color="info"
-                variant="outlined"
-              />
+          {(difficulty || athleteLabel) && (
+            <Stack spacing={0.5} alignItems="flex-start">
+              {difficulty && (
+                <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                  <Chip
+                    label={t(`programs-coatch.list.difficulty.${difficulty}`)}
+                    size="small"
+                    color="info"
+                    variant="outlined"
+                  />
+                </Stack>
+              )}
+              {athleteLabel && (
+                <Stack direction="row" spacing={0.5} alignItems="center">
+                  <PersonOutline fontSize="small" color="action" />
+                  <Typography variant="caption" color="text.secondary">
+                    {t('programs-coatch.list.assigned_to', { name: athleteLabel })}
+                  </Typography>
+                </Stack>
+              )}
             </Stack>
           )}
         </Stack>

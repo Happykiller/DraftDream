@@ -929,6 +929,7 @@ export function ProgramBuilderPanel({
                   type="button"
                   onClick={handleSubmit}
                   disabled={isSubmitDisabled}
+                  color="success"
                 >
                   {builderCopy.footer.submit}
                 </Button>

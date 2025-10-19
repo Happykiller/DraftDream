@@ -5,9 +5,11 @@ import inversify from '@src/commons/inversify';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
-export interface ProgramCreator {
+export interface ProgramUser {
   id: string;
   email: string;
+  first_name?: string | null;
+  last_name?: string | null;
 }
 
 export interface ProgramSessionExercise {
@@ -47,7 +49,8 @@ export interface Program {
   createdBy: string;
   createdAt: string;
   updatedAt: string;
-  creator?: ProgramCreator | null;
+  creator?: ProgramUser | null;
+  athlete?: ProgramUser | null;
   sessions: ProgramSession[];
 }
 
@@ -85,7 +88,8 @@ const LIST_Q = `
         createdBy
         createdAt
         updatedAt
-        creator { id email }
+        creator { id email first_name last_name }
+        athlete { id email first_name last_name }
       }
       total
       page
@@ -114,7 +118,8 @@ const CREATE_M = `
       createdBy
       createdAt
       updatedAt
-      creator { id email }
+      creator { id email first_name last_name }
+      athlete { id email first_name last_name }
     }
   }
 `;
@@ -139,7 +144,8 @@ const UPDATE_M = `
       createdBy
       createdAt
       updatedAt
-      creator { id email }
+      creator { id email first_name last_name }
+      athlete { id email first_name last_name }
     }
   }
 `;
