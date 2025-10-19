@@ -171,6 +171,29 @@
       "program_created": "Program created",
       "program_updated": "Program updated",
       "program_deleted": "Program deleted"
+    },
+    "list": {
+      "no_description": "No description provided.",
+      "difficulty": {
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced"
+      },
+      "sessions_summary": "{{sessions}} sessions • {{exercises}} exercises",
+      "program_sessions_title": "Program sessions",
+      "session_exercises_one": "{{count}} exercise",
+      "session_exercises_other": "{{count}} exercises",
+      "more_exercises_one": "+ {{count}} exercise",
+      "more_exercises_other": "+ {{count}} exercises",
+      "no_sessions": "No sessions yet.",
+      "actions": {
+        "view": "View program",
+        "duplicate": "Duplicate program",
+        "edit": "Edit program",
+        "delete": "Delete program"
+      },
+      "created_on": "Created on {{date}}",
+      "updated_on": "Updated on {{date}}"
     }
   },
   "sandbox": {

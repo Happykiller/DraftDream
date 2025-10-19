@@ -173,6 +173,29 @@
       "program_created": "Programme créé",
       "program_updated": "Programme mis à jour",
       "program_deleted": "Programme supprimé"
+    },
+    "list": {
+      "no_description": "Aucune description fournie.",
+      "difficulty": {
+        "beginner": "Débutant",
+        "intermediate": "Intermédiaire",
+        "advanced": "Avancé"
+      },
+      "sessions_summary": "{{sessions}} séances • {{exercises}} exercices",
+      "program_sessions_title": "Séances du programme",
+      "session_exercises_one": "{{count}} exercice",
+      "session_exercises_other": "{{count}} exercices",
+      "more_exercises_one": "+ {{count}} exercice",
+      "more_exercises_other": "+ {{count}} exercices",
+      "no_sessions": "Aucune séance pour le moment.",
+      "actions": {
+        "view": "Voir le programme",
+        "duplicate": "Dupliquer le programme",
+        "edit": "Modifier le programme",
+        "delete": "Supprimer le programme"
+      },
+      "created_on": "Créé le {{date}}",
+      "updated_on": "Modifié le {{date}}"
     }
   },
   "sandbox": {
