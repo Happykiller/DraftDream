@@ -12,10 +12,10 @@ import {
 import { alpha } from '@mui/material/styles';
 import {
   CalendarMonthOutlined,
+  CenterFocusStrongOutlined,
   ContentCopyOutlined,
   DeleteOutline,
   EditOutlined,
-  FitnessCenterOutlined,
   HistoryOutlined,
   PersonOutline,
   ScheduleOutlined,
@@ -89,7 +89,6 @@ export function ProgramCard({ program }: ProgramCardProps): React.JSX.Element {
     (total, session) => total + session.exercises.length,
     0,
   );
-  const primarySession = program.sessions[0];
   const difficulty = deriveProgramDifficulty(program);
   const athleteLabel = React.useMemo(() => {
     if (!program.athlete) {
@@ -165,7 +164,7 @@ export function ProgramCard({ program }: ProgramCardProps): React.JSX.Element {
                 <Stack direction="row" spacing={0.5} alignItems="center">
                   <PersonOutline fontSize="small" color="action" />
                   <Typography variant="caption" color="text.secondary">
-                    {t('programs-coatch.list.assigned_to', { name: athleteLabel })}
+                    {athleteLabel}
                   </Typography>
                 </Stack>
               )}
@@ -202,20 +201,20 @@ export function ProgramCard({ program }: ProgramCardProps): React.JSX.Element {
 
       <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
         <Stack direction="row" spacing={1} alignItems="center">
-          <CalendarMonthOutlined fontSize="small" color="primary" />
-          <Typography variant="body2">
+          <CalendarMonthOutlined fontSize="small" color="action" />
+          <Typography variant="body2" color="text.secondary">
             {t('programs-coatch.list.duration_weeks', { count: program.duration })}
           </Typography>
         </Stack>
         <Stack direction="row" spacing={1} alignItems="center">
-          <ScheduleOutlined fontSize="small" color="primary" />
-          <Typography variant="body2">
+          <ScheduleOutlined fontSize="small" color="action" />
+          <Typography variant="body2" color="text.secondary">
             {t('programs-coatch.list.frequency_week', { count: program.frequency })}
           </Typography>
         </Stack>
         <Stack direction="row" spacing={1} alignItems="center">
-          <FitnessCenterOutlined fontSize="small" color="primary" />
-          <Typography variant="body2">
+          <CenterFocusStrongOutlined fontSize="small" color="action" />
+          <Typography variant="body2" color="text.secondary">
             {t('programs-coatch.list.sessions_summary', {
               sessions: sessionsCount,
               exercises: exercisesCount,
@@ -230,46 +229,50 @@ export function ProgramCard({ program }: ProgramCardProps): React.JSX.Element {
         <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
           {t('programs-coatch.list.program_sessions_title')}
         </Typography>
-        {primarySession ? (
-          <Stack spacing={1}>
-            <Stack direction="row" justifyContent="space-between" alignItems="baseline">
-              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                {primarySession.label}
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                {t('programs-coatch.list.session_exercises', {
-                  count: primarySession.exercises.length,
-                })}
-              </Typography>
-            </Stack>
-            {primarySession.exercises.length > 0 && (
-              <Stack spacing={0.5}>
-                {primarySession.exercises.slice(0, 3).map((exercise) => (
-                  <Stack
-                    key={exercise.id}
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="baseline"
-                  >
-                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                      {exercise.label}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {exercise.series && exercise.repetitions
-                        ? `${exercise.series} × ${exercise.repetitions}`
-                        : exercise.series || exercise.repetitions || ''}
-                    </Typography>
-                  </Stack>
-                ))}
-                {primarySession.exercises.length > 3 && (
+        {program.sessions.length > 0 ? (
+          <Stack spacing={1.5}>
+            {program.sessions.map((session) => (
+              <Stack key={session.id} spacing={1}>
+                <Stack direction="row" justifyContent="space-between" alignItems="baseline">
+                  <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                    {session.label}
+                  </Typography>
                   <Typography variant="caption" color="text.secondary">
-                    {t('programs-coatch.list.more_exercises', {
-                      count: primarySession.exercises.length - 3,
+                    {t('programs-coatch.list.session_exercises', {
+                      count: session.exercises.length,
                     })}
                   </Typography>
+                </Stack>
+                {session.exercises.length > 0 && (
+                  <Stack spacing={0.5}>
+                    {session.exercises.slice(0, 3).map((exercise) => (
+                      <Stack
+                        key={exercise.id}
+                        direction="row"
+                        justifyContent="space-between"
+                        alignItems="baseline"
+                      >
+                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                          {exercise.label}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {exercise.series && exercise.repetitions
+                            ? `${exercise.series} × ${exercise.repetitions}`
+                            : exercise.series || exercise.repetitions || ''}
+                        </Typography>
+                      </Stack>
+                    ))}
+                    {session.exercises.length > 3 && (
+                      <Typography variant="caption" color="text.secondary">
+                        {t('programs-coatch.list.more_exercises', {
+                          count: session.exercises.length - 3,
+                        })}
+                      </Typography>
+                    )}
+                  </Stack>
                 )}
               </Stack>
-            )}
+            ))}
           </Stack>
         ) : (
           <Typography variant="body2" color="text.secondary">
