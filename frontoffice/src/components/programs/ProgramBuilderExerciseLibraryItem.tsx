@@ -65,9 +65,29 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
       <Stack direction="row" spacing={1.5} alignItems="flex-start">
         <Stack spacing={1} flex={1}>
           <Stack spacing={0.25}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-              {exercise.label}
-            </Typography>
+            <Stack direction="row" spacing={0.5} alignItems="center">
+              {canEdit ? (
+                <Tooltip title={tooltips.edit_exercise} arrow>
+                  <span style={{ display: 'inline-flex' }}>
+                    <IconButton
+                      size="small"
+                      onClick={handleEditClick}
+                      disabled={!onEdit}
+                      aria-label="edit-exercise-template"
+                      sx={{
+                        p: 0.25,
+                        borderRadius: 1,
+                      }}
+                    >
+                      <Edit fontSize="small" />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+              ) : null}
+              <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                {exercise.label}
+              </Typography>
+            </Stack>
             {exercise.categoryLabel ? (
               <Typography variant="body2" color="text.secondary">
                 {exercise.categoryLabel}
@@ -145,20 +165,6 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
           ) : null}
         </Stack>
         <Stack spacing={0.5} alignItems="flex-end">
-          {canEdit ? (
-            <Tooltip title={tooltips.edit_exercise} arrow>
-              <span style={{ display: 'inline-flex' }}>
-                <IconButton
-                  size="small"
-                  onClick={handleEditClick}
-                  disabled={!onEdit}
-                  aria-label="edit-exercise-template"
-                >
-                  <Edit fontSize="small" />
-                </IconButton>
-              </span>
-            </Tooltip>
-          ) : null}
           <Tooltip title={tooltips.add_exercise} arrow>
             <span style={{ display: 'inline-flex' }}>
               <IconButton

@@ -231,21 +231,36 @@ export function ProgramBuilderCreateExerciseDialog({
     try {
       if (isEditMode && updateExercise && exercise) {
         const trimmedLabel = label.trim();
+        const trimmedSeries = series.trim();
+        const trimmedRepetitions = repetitions.trim();
+        const nextCategoryId = categoryId.trim();
         const payload: UpdateExerciseInput = {
           id: exercise.id,
-          slug: slugify(trimmedLabel),
-          locale: exercise.locale || locale,
           label: trimmedLabel,
           level,
-          series: series.trim(),
-          repetitions: repetitions.trim(),
+          series: trimmedSeries,
+          repetitions: trimmedRepetitions,
           visibility: exercise.visibility,
-          categoryId: categoryId || null,
           primaryMuscleIds,
           secondaryMuscleIds,
           equipmentIds,
           tagIds,
         };
+
+        if (exercise.locale) {
+          payload.locale = exercise.locale;
+        }
+        if (!exercise.locale && locale) {
+          payload.locale = locale;
+        }
+        if (nextCategoryId) {
+          payload.categoryId = nextCategoryId;
+        }
+
+        const nextSlug = slugify(trimmedLabel);
+        if (nextSlug !== exercise.slug) {
+          payload.slug = nextSlug;
+        }
 
         const trimmedDescription = description.trim();
         payload.description = trimmedDescription ? trimmedDescription : null;
