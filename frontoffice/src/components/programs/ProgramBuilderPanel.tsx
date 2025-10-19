@@ -407,13 +407,15 @@ export function ProgramBuilderPanel({
       if (exerciseCategory !== 'all' && exerciseCategory !== exercise.categoryId) {
         setExerciseCategory('all');
       }
-      if (exerciseType === 'PUBLIC') {
+      if (exerciseType !== 'all' && exerciseType !== exercise.visibility) {
         setExerciseType('all');
       }
+      handleCloseCreateExerciseDialog();
     },
     [
       exerciseCategory,
       exerciseType,
+      handleCloseCreateExerciseDialog,
       registerExercise,
       setExerciseCategory,
       setExerciseType,
