@@ -108,7 +108,7 @@
         },
         "create_dialog": {
           "title": "Create an exercise template",
-          "description": "Define a private exercise to reuse in your programs.",
+          "subtitle": "Create a reusable exercise for your programs.",
           "actions": {
             "cancel": "Cancel",
             "submit": "Create",

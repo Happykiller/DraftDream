@@ -109,7 +109,7 @@
         },
         "create_dialog": {
           "title": "Créer un template d'exercice",
-          "description": "Définissez un exercice privé à réutiliser dans vos programmes.",
+          "subtitle": "Créez un exercice réutilisable pour vos programmes",
           "actions": {
             "cancel": "Annuler",
             "submit": "Créer",

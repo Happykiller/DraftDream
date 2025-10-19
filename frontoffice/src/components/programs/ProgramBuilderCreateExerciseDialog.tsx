@@ -247,8 +247,8 @@ export function ProgramBuilderCreateExerciseDialog({
   const title = t('programs-coatch.builder.library.create_dialog.title', {
     defaultValue: 'Create an exercise template',
   });
-  const descriptionCopy = t('programs-coatch.builder.library.create_dialog.description', {
-    defaultValue: 'Define a private exercise to reuse in your programs.',
+  const subtitle = t('programs-coatch.builder.library.create_dialog.subtitle', {
+    defaultValue: 'Create a reusable exercise for your programs.',
   });
 
   const cancelLabel = t('programs-coatch.builder.library.create_dialog.actions.cancel', {
@@ -345,17 +345,18 @@ export function ProgramBuilderCreateExerciseDialog({
             >
               <Add fontSize="large" />
             </Box>
-            <Typography variant="h6" component="span" sx={{ fontWeight: 700 }}>
-              {title}
-            </Typography>
+            <Stack spacing={0.5}>
+              <Typography variant="h6" component="span" sx={{ fontWeight: 700 }}>
+                {title}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {subtitle}
+              </Typography>
+            </Stack>
           </Stack>
         </DialogTitle>
         <DialogContent dividers>
           <Stack spacing={3}>
-            <Typography variant="body2" color="text.secondary">
-              {descriptionCopy}
-            </Typography>
-
             <Stack spacing={2}>
               <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
                 <TextField
