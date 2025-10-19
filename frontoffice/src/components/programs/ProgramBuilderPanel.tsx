@@ -462,6 +462,7 @@ export function ProgramBuilderPanel({
 
   return (
     <>
+      {/* Main Panel */ }
       <Paper
         elevation={4}
         sx={{
@@ -471,6 +472,7 @@ export function ProgramBuilderPanel({
         }}
       >
         <Stack spacing={3}>
+          {/* Header */ }
           <Stack direction="row" spacing={1} alignItems="center">
             <Typography variant="h6" sx={{ fontWeight: 700 }}>
               {builderCopy.title}
@@ -483,13 +485,16 @@ export function ProgramBuilderPanel({
             />
           </Stack>
 
+          {/* Subtitle */ }
           <Stack spacing={0.5}>
             <Typography variant="body2" color="text.secondary">
               {builderCopy.subtitle}
             </Typography>
           </Stack>
 
+          {/* Content Grid */ }
           <Grid container spacing={3}>
+            {/* Configuration Panel */ }
             <Grid size={{ xs: 12, md: 3, lg: 3 }}>
               <Stack spacing={3}>
                 <Paper
@@ -565,6 +570,7 @@ export function ProgramBuilderPanel({
 
                   <Divider />
 
+                  {/* Session Templates Library */ }
                   <Stack spacing={1}>
                     <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                       {builderCopy.templates_title}
@@ -617,6 +623,7 @@ export function ProgramBuilderPanel({
               </Stack>
             </Grid>
 
+            {/* Structure Panel */ }
             <Grid size={{ xs: 12, md: 5, lg: 5 }}>
               <Paper
                 sx={{
@@ -784,6 +791,7 @@ export function ProgramBuilderPanel({
               </Paper>
             </Grid>
 
+            {/* Exercise Library Panel */ }
             <Grid size={{ xs: 12, md: 4, lg: 4 }}>
               <Paper
                 sx={{
@@ -893,6 +901,7 @@ export function ProgramBuilderPanel({
             </Grid>
           </Grid>
 
+          {/* Footer */ }
           <Stack direction="row" justifyContent="flex-end" spacing={1.5}>
             <Tooltip title={builderCopy.footer.cancel} arrow>
               <span style={{ display: 'inline-flex' }}>
@@ -917,6 +926,7 @@ export function ProgramBuilderPanel({
         </Stack>
       </Paper>
 
+      {/* Exercise Add Menu */ }
       <Menu
         anchorEl={exerciseMenuAnchor?.anchor ?? null}
         open={Boolean(exerciseMenuAnchor)}
@@ -935,6 +945,7 @@ export function ProgramBuilderPanel({
         )}
       </Menu>
 
+      {/* Exercise Create/Edit Dialog */ }
       <ProgramBuilderCreateExerciseDialog
         open={isExerciseDialogOpen}
         mode={exerciseBeingEdited ? 'edit' : 'create'}
