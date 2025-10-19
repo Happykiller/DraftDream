@@ -675,6 +675,7 @@ export function ProgramBuilderCreateExerciseDialog({
             variant="contained"
             startIcon={isEditMode ? <Edit /> : <Add />}
             disabled={isSubmitDisabled}
+            color="success"
           >
             {submitLabel}
           </Button>

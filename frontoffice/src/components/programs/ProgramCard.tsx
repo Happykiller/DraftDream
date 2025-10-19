@@ -1,28 +1,26 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Avatar,
-  Box,
   Chip,
   Divider,
   IconButton,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
   Paper,
   Stack,
   Tooltip,
   Typography,
 } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import {
   CalendarMonthOutlined,
-  FitnessCenterOutlined,
+  CenterFocusStrongOutlined,
+  ContentCopyOutlined,
+  DeleteOutline,
+  EditOutlined,
   HistoryOutlined,
-  MoreVert,
   PersonOutline,
   ScheduleOutlined,
   UpdateOutlined,
+  VisibilityOutlined,
 } from '@mui/icons-material';
 
 import type { Program } from '@src/hooks/usePrograms';
@@ -35,19 +33,42 @@ type ProgramDifficulty = 'beginner' | 'intermediate' | 'advanced';
 
 const DIFFICULTY_PRIORITY: ProgramDifficulty[] = ['advanced', 'intermediate', 'beginner'];
 
+function normalizeDifficulty(level?: string | null): ProgramDifficulty | null {
+  if (!level) {
+    return null;
+  }
+
+  const normalized = level.toLowerCase();
+
+  if (normalized === 'beginner' || normalized === 'intermediate' || normalized === 'advanced') {
+    return normalized;
+  }
+
+  return null;
+}
+
 function deriveProgramDifficulty(program: Program): ProgramDifficulty | null {
   const difficulty = program.sessions
     .flatMap((session) => session.exercises)
-    .map((exercise) => exercise.level)
+    .map((exercise) => normalizeDifficulty(exercise.level))
     .filter((level): level is ProgramDifficulty => Boolean(level))
     .sort((a, b) => DIFFICULTY_PRIORITY.indexOf(a) - DIFFICULTY_PRIORITY.indexOf(b));
 
   return difficulty[0] ?? null;
 }
 
-function deriveProgramStatus(program: Program): 'active' | 'draft' {
-  return program.userId ? 'active' : 'draft';
-}
+type ProgramAction = {
+  key: 'view' | 'copy' | 'edit' | 'delete';
+  color: 'primary' | 'secondary' | 'success' | 'error';
+  Icon: typeof VisibilityOutlined;
+};
+
+const PROGRAM_ACTIONS: ProgramAction[] = [
+  { key: 'view', color: 'primary', Icon: VisibilityOutlined },
+  { key: 'copy', color: 'secondary', Icon: ContentCopyOutlined },
+  { key: 'edit', color: 'success', Icon: EditOutlined },
+  { key: 'delete', color: 'error', Icon: DeleteOutline },
+];
 
 function formatDate(value: string, locale: string): string {
   try {
@@ -68,10 +89,20 @@ export function ProgramCard({ program }: ProgramCardProps): React.JSX.Element {
     (total, session) => total + session.exercises.length,
     0,
   );
-  const primarySession = program.sessions[0];
-  const programStatus = deriveProgramStatus(program);
   const difficulty = deriveProgramDifficulty(program);
-  const creatorLabel = program.creator?.email ?? program.createdBy ?? '';
+  const athleteLabel = React.useMemo(() => {
+    if (!program.athlete) {
+      return null;
+    }
+
+    const { first_name, last_name, email } = program.athlete;
+    const displayName = [first_name, last_name]
+      .filter((value): value is string => Boolean(value && value.trim()))
+      .join(' ')
+      .trim();
+
+    return displayName || email;
+  }, [program.athlete]);
 
   const createdOn = React.useMemo(
     () => formatDate(program.createdAt, i18n.language),
@@ -96,57 +127,94 @@ export function ProgramCard({ program }: ProgramCardProps): React.JSX.Element {
       }}
     >
       <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={2}>
-        <Stack spacing={1} flex={1} minWidth={0}>
-          <Typography variant="subtitle2" color="text.secondary">
-            {t('programs-coatch.list.created_by', {
-              name: creatorLabel || t('programs-coatch.list.created_by_unknown'),
-            })}
-          </Typography>
+        <Stack flex={1} minWidth={0}>
           <Typography variant="h6" sx={{ fontWeight: 600 }} noWrap>
             {program.label}
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ minHeight: 40 }}>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{
+              minHeight: 40,
+              mt: 0.75,
+            }}
+          >
             {program.description || t('programs-coatch.list.no_description')}
           </Typography>
-          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-            <Chip
-              label={t(`programs-coatch.list.status.${programStatus}`)}
-              size="small"
-              color={programStatus === 'active' ? 'success' : 'default'}
-            />
-            {difficulty && (
-              <Chip
-                label={t(`programs-coatch.list.difficulty.${difficulty}`)}
-                size="small"
-                color="info"
-                variant="outlined"
-              />
-            )}
-          </Stack>
+          {(difficulty || athleteLabel) && (
+            <Stack
+              spacing={0.5}
+              alignItems="flex-start"
+              sx={{ mt: difficulty ? 0.75 : 0 }}
+            >
+              {difficulty && (
+                <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                  <Chip
+                    label={t(`programs-coatch.list.difficulty.${difficulty}`)}
+                    size="small"
+                    sx={(theme) => ({
+                      bgcolor: alpha(theme.palette.success.main, 0.16),
+                      color: theme.palette.success.main,
+                      fontWeight: 600,
+                    })}
+                  />
+                </Stack>
+              )}
+              {athleteLabel && (
+                <Stack direction="row" spacing={0.5} alignItems="center">
+                  <PersonOutline fontSize="small" color="action" />
+                  <Typography variant="caption" color="text.secondary">
+                    {athleteLabel}
+                  </Typography>
+                </Stack>
+              )}
+            </Stack>
+          )}
         </Stack>
-        <Tooltip title={t('programs-coatch.list.actions.more')}>
-          <IconButton size="small" aria-label={t('programs-coatch.list.actions.more')}>
-            <MoreVert fontSize="small" />
-          </IconButton>
-        </Tooltip>
+        <Stack direction="row" spacing={0.5}>
+          {PROGRAM_ACTIONS.map(({ key, color, Icon }) => {
+            const label = t(`programs-coatch.list.actions.${key}`);
+
+            return (
+              <Tooltip key={key} title={label}>
+                <IconButton
+                  size="small"
+                  aria-label={label}
+                  sx={(theme) => ({
+                    color: theme.palette.text.secondary,
+                    transition: theme.transitions.create(['color', 'background-color'], {
+                      duration: theme.transitions.duration.shorter,
+                    }),
+                    '&:hover': {
+                      bgcolor: alpha(theme.palette[color].main, 0.12),
+                      color: theme.palette[color].main,
+                    },
+                  })}
+                >
+                  <Icon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            );
+          })}
+        </Stack>
       </Stack>
 
       <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
         <Stack direction="row" spacing={1} alignItems="center">
-          <CalendarMonthOutlined fontSize="small" color="primary" />
-          <Typography variant="body2">
+          <CalendarMonthOutlined fontSize="small" color="action" />
+          <Typography variant="body2" color="text.secondary">
             {t('programs-coatch.list.duration_weeks', { count: program.duration })}
           </Typography>
         </Stack>
         <Stack direction="row" spacing={1} alignItems="center">
-          <ScheduleOutlined fontSize="small" color="primary" />
-          <Typography variant="body2">
+          <ScheduleOutlined fontSize="small" color="action" />
+          <Typography variant="body2" color="text.secondary">
             {t('programs-coatch.list.frequency_week', { count: program.frequency })}
           </Typography>
         </Stack>
         <Stack direction="row" spacing={1} alignItems="center">
-          <FitnessCenterOutlined fontSize="small" color="primary" />
-          <Typography variant="body2">
+          <CenterFocusStrongOutlined fontSize="small" color="action" />
+          <Typography variant="body2" color="text.secondary">
             {t('programs-coatch.list.sessions_summary', {
               sessions: sessionsCount,
               exercises: exercisesCount,
@@ -161,74 +229,51 @@ export function ProgramCard({ program }: ProgramCardProps): React.JSX.Element {
         <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
           {t('programs-coatch.list.program_sessions_title')}
         </Typography>
-        {primarySession ? (
-          <Paper
-            variant="outlined"
-            sx={{
-              borderRadius: 2,
-              p: 2,
-              bgcolor: (theme) => theme.palette.action.hover,
-            }}
-          >
-            <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={2}>
-              <Stack spacing={0.5} flex={1} minWidth={0}>
-                <Typography variant="subtitle2" sx={{ fontWeight: 600 }} noWrap>
-                  {primarySession.label}
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  {t('programs-coatch.list.session_exercises', {
-                    count: primarySession.exercises.length,
-                  })}
-                </Typography>
-              </Stack>
-              <Avatar sx={{ width: 32, height: 32 }}>
-                <PersonOutline fontSize="small" />
-              </Avatar>
-            </Stack>
-            {primarySession.exercises.length > 0 && (
-              <List dense disablePadding sx={{ mt: 1 }}>
-                {primarySession.exercises.slice(0, 3).map((exercise) => (
-                  <ListItem
-                    key={exercise.id}
-                    disableGutters
-                    sx={{
-                      px: 0,
-                      py: 0.5,
-                    }}
-                  >
-                    <ListItemAvatar>
-                      <Avatar>
-                        <HistoryOutlined fontSize="small" />
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={
+        {program.sessions.length > 0 ? (
+          <Stack spacing={1.5}>
+            {program.sessions.map((session) => (
+              <Stack key={session.id} spacing={1}>
+                <Stack direction="row" justifyContent="space-between" alignItems="baseline">
+                  <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                    {session.label}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('programs-coatch.list.session_exercises', {
+                      count: session.exercises.length,
+                    })}
+                  </Typography>
+                </Stack>
+                {session.exercises.length > 0 && (
+                  <Stack spacing={0.5}>
+                    {session.exercises.slice(0, 3).map((exercise) => (
+                      <Stack
+                        key={exercise.id}
+                        direction="row"
+                        justifyContent="space-between"
+                        alignItems="baseline"
+                      >
                         <Typography variant="body2" sx={{ fontWeight: 500 }}>
                           {exercise.label}
                         </Typography>
-                      }
-                      secondary={
                         <Typography variant="caption" color="text.secondary">
                           {exercise.series && exercise.repetitions
                             ? `${exercise.series} × ${exercise.repetitions}`
                             : exercise.series || exercise.repetitions || ''}
                         </Typography>
-                      }
-                    />
-                  </ListItem>
-                ))}
-                {primarySession.exercises.length > 3 && (
-                  <Box sx={{ mt: 1 }}>
-                    <Typography variant="caption" color="text.secondary">
-                      {t('programs-coatch.list.more_exercises', {
-                        count: primarySession.exercises.length - 3,
-                      })}
-                    </Typography>
-                  </Box>
+                      </Stack>
+                    ))}
+                    {session.exercises.length > 3 && (
+                      <Typography variant="caption" color="text.secondary">
+                        {t('programs-coatch.list.more_exercises', {
+                          count: session.exercises.length - 3,
+                        })}
+                      </Typography>
+                    )}
+                  </Stack>
                 )}
-              </List>
-            )}
-          </Paper>
+              </Stack>
+            ))}
+          </Stack>
         ) : (
           <Typography variant="body2" color="text.secondary">
             {t('programs-coatch.list.no_sessions')}
@@ -238,14 +283,25 @@ export function ProgramCard({ program }: ProgramCardProps): React.JSX.Element {
 
       <Divider flexItem />
 
-      <Stack direction="row" spacing={3} flexWrap="wrap" useFlexGap>
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        alignItems={{ xs: 'flex-start', sm: 'center' }}
+        justifyContent={{ xs: 'flex-start', sm: 'space-between' }}
+        spacing={{ xs: 1, sm: 3 }}
+        sx={{ width: '100%' }}
+      >
         <Stack direction="row" spacing={1} alignItems="center">
           <HistoryOutlined fontSize="small" color="action" />
           <Typography variant="caption" color="text.secondary">
             {t('programs-coatch.list.created_on', { date: createdOn })}
           </Typography>
         </Stack>
-        <Stack direction="row" spacing={1} alignItems="center">
+        <Stack
+          direction="row"
+          spacing={1}
+          alignItems="center"
+          sx={{ ml: { xs: 0, sm: 'auto' } }}
+        >
           <UpdateOutlined fontSize="small" color="action" />
           <Typography variant="caption" color="text.secondary">
             {t('programs-coatch.list.updated_on', { date: updatedOn })}

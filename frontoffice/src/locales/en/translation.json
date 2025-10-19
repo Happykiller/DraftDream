@@ -196,8 +196,12 @@
       "more_exercises_one": "+ {{count}} exercise",
       "more_exercises_other": "+ {{count}} exercises",
       "no_sessions": "No sessions yet.",
+      "assigned_to": "Assigned to {{name}}",
       "actions": {
-        "more": "More actions"
+        "view": "View",
+        "copy": "Copy",
+        "edit": "Edit",
+        "delete": "Delete"
       },
       "created_on": "Created on {{date}}",
       "updated_on": "Updated on {{date}}"

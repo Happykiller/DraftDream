@@ -49,6 +49,9 @@ export class ProgramGql {
 
   @Field(() => UserGql, { nullable: true })
   creator?: UserGql | null;
+
+  @Field(() => UserGql, { nullable: true })
+  athlete?: UserGql | null;
 }
 
 @InputType()

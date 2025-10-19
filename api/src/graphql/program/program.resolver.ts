@@ -30,6 +30,14 @@ export class ProgramResolver {
     return user ? mapUserUsecaseToGql(user) : null;
   }
 
+  @ResolveField(() => UserGql, { name: 'athlete', nullable: true })
+  async athlete(@Parent() program: ProgramGql): Promise<UserGql | null> {
+    const userId = program.userId;
+    if (!userId) return null;
+    const user = await inversify.getUserUsecase.execute({ id: userId });
+    return user ? mapUserUsecaseToGql(user) : null;
+  }
+
   @Mutation(() => ProgramGql, { name: 'program_create', nullable: true })
   @Auth(Role.ADMIN, Role.COACH)
   async program_create(

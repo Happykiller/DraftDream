@@ -39,11 +39,18 @@ export function ProgramsCoach(): React.JSX.Element {
     <Stack spacing={2} sx={{ mt: 2 }}>
       <Stack
         direction={{ xs: 'column', md: 'row' }}
-        alignItems={{ xs: 'flex-start', md: 'center' }}
-        justifyContent="space-between"
+        alignItems={{ xs: 'stretch', md: 'center' }}
+        justifyContent="flex-end"
         spacing={2}
       >
-        <Stack direction="row" spacing={1.5}>
+        <Stack
+          direction="row"
+          spacing={1.5}
+          sx={{
+            width: '100%',
+            justifyContent: 'flex-end',
+          }}
+        >
           {!builderOpen && (
             <Button
               variant="contained"
