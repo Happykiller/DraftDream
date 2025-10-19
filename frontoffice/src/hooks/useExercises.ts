@@ -29,6 +29,27 @@ export type CreateExerciseInput = {
   tagIds?: string[];
 };
 
+export type UpdateExerciseInput = {
+  id: string;
+  slug?: string;
+  locale?: string;
+  label?: string;
+  level?: ExerciseLevel;
+  series?: string;
+  repetitions?: string;
+  description?: string | null;
+  instructions?: string | null;
+  charge?: string | null;
+  rest?: number | null;
+  videoUrl?: string | null;
+  visibility?: ExerciseVisibility;
+  categoryId?: string | null;
+  primaryMuscleIds?: string[];
+  secondaryMuscleIds?: string[];
+  equipmentIds?: string[];
+  tagIds?: string[];
+};
+
 export interface Creator { id: string; email: string; }
 
 export interface Exercise {
@@ -234,30 +255,51 @@ export function useExercises({
   );
 
   const update = React.useCallback(
-    async (input: {
-      id: string;
-      slug?: string; locale?: string; label?: string; level?: ExerciseLevel;
-      series?: string; repetitions?: string; description?: string; instructions?: string;
-      charge?: string; rest?: number; videoUrl?: string; visibility?: ExerciseVisibility;
-      categoryId?: string | null;
-      primaryMuscleIds?: string[];
-      secondaryMuscleIds?: string[];
-      equipmentIds?: string[];
-      tagIds?: string[];
-    }) => {
+    async (input: UpdateExerciseInput) => {
       try {
-        const { errors } = await gql.send<UpdatePayload>({
-          query: UPDATE_M, variables: { input }, operationName: 'UpdateExercise',
+        const { data, errors } = await gql.send<UpdatePayload>({
+          query: UPDATE_M,
+          variables: { input },
+          operationName: 'UpdateExercise',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flashSuccess('Exercise updated');
-        await load();
+
+        const updated = data?.exercise_update ?? undefined;
+        if (!updated) {
+          flashError(
+            t('programs-coatch.builder.library.edit_dialog.flash.failure', {
+              defaultValue: 'Unable to update the exercise template.',
+            }),
+          );
+          return undefined;
+        }
+
+        flashSuccess(
+          t('programs-coatch.builder.library.edit_dialog.flash.success', {
+            defaultValue: 'Exercise template updated successfully.',
+          }),
+        );
+
+        setItems((previous) => {
+          const exists = previous.some((item) => item.id === updated.id);
+          if (!exists) {
+            return [updated, ...previous].slice(0, limit);
+          }
+          return previous.map((item) => (item.id === updated.id ? updated : item));
+        });
+
+        return updated;
       } catch (e: any) {
-        flashError(e?.message ?? 'Update failed');
+        flashError(
+          e?.message ??
+            t('programs-coatch.builder.library.edit_dialog.flash.failure', {
+              defaultValue: 'Unable to update the exercise template.',
+            }),
+        );
         throw e;
       }
     },
-    [flashError, flashSuccess, gql, load]
+    [flashError, flashSuccess, gql, limit, t],
   );
 
   const remove = React.useCallback(

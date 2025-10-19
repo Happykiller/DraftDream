@@ -1,6 +1,8 @@
 // src/graphql/exercise/exercise.resolver.ts
 // Comments in English.
+import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Args, Context, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+
 import { Role } from '@graphql/common/ROLE';
 import { Auth } from '@graphql/decorators/auth.decorator';
 import { CategoryGql } from '@graphql/category/category.gql.types';
@@ -118,27 +120,27 @@ export class ExerciseResolver {
   @Mutation(() => ExerciseGql, { name: 'exercise_update', nullable: true })
   @Auth(Role.ADMIN, Role.COACH)
   async exercise_update(@Args('input') input: UpdateExerciseInput): Promise<ExerciseGql | null> {
-    const updated = await inversify.updateExerciseUsecase.execute(input.id, {
-      slug: input.slug,
-      locale: input.locale,
-      label: input.label,
-      description: input.description,
-      instructions: input.instructions,
-      level: input.level,
-      series: input.series,
-      repetitions: input.repetitions,
-      charge: input.charge,
-      rest: input.rest,
-      videoUrl: input.videoUrl,
-      visibility: input.visibility,
-      categoryId: input.categoryId,
-      primaryMuscleIds: input.primaryMuscleIds,
-      secondaryMuscleIds: input.secondaryMuscleIds,
-      equipmentIds: input.equipmentIds,
-      tagIds: input.tagIds,
-    });
-    return updated ? mapExerciseUsecaseToGql(updated) : null;
-  }
+      const updated = await inversify.updateExerciseUsecase.execute(input.id, {
+        slug: input.slug,
+        locale: input.locale,
+        label: input.label,
+        description: input.description,
+        instructions: input.instructions,
+        level: input.level,
+        series: input.series,
+        repetitions: input.repetitions,
+        charge: input.charge,
+        rest: input.rest,
+        videoUrl: input.videoUrl,
+        visibility: input.visibility,
+        categoryId: input.categoryId,
+        primaryMuscleIds: input.primaryMuscleIds,
+        secondaryMuscleIds: input.secondaryMuscleIds,
+        equipmentIds: input.equipmentIds,
+        tagIds: input.tagIds,
+      });
+      return mapExerciseUsecaseToGql(updated)
+    }
 
   @Mutation(() => Boolean, { name: 'exercise_softDelete' })
   @Auth(Role.ADMIN, Role.COACH)

@@ -92,6 +92,7 @@
         "rest_label": "",
         "tooltips": {
           "add_exercise": "Ajouter cet exercice à la séance sélectionnée",
+          "edit_exercise": "Modifier cet exercice",
           "public_exercise": "Exercice public disponible en ligne",
           "primary_muscle_chip": "Muscle principal : {{label}}",
           "secondary_muscle_chip": "Muscle secondaire : {{label}}",
@@ -142,6 +143,19 @@
             "beginner": "Débutant",
             "intermediate": "Intermédiaire",
             "advanced": "Avancé"
+          }
+        },
+        "edit_dialog": {
+          "title": "Modifier le template d'exercice",
+          "subtitle": "Mettez à jour votre exercice réutilisable.",
+          "flash": {
+            "success": "Template d'exercice mis à jour avec succès.",
+            "failure": "Impossible de mettre à jour le template d'exercice."
+          },
+          "actions": {
+            "cancel": "Annuler",
+            "submit": "Enregistrer",
+            "submitting": "Enregistrement..."
           }
         },
         "no_sessions_warning": "Creez une seance avant d'ajouter des exercices."

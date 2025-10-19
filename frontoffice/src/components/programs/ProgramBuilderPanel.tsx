@@ -93,7 +93,9 @@ export function ProgramBuilderPanel({
     userLabel,
     isSubmitDisabled,
     createExercise,
+    updateExercise,
     registerExercise,
+    getRawExerciseById,
   } = useProgramBuilder(builderCopy, onCancel);
 
   const interactiveSurfaceSx = React.useMemo(
@@ -126,7 +128,8 @@ export function ProgramBuilderPanel({
     exerciseId: string;
   } | null>(null);
 
-  const [isCreateExerciseDialogOpen, setIsCreateExerciseDialogOpen] = React.useState(false);
+  const [isExerciseDialogOpen, setIsExerciseDialogOpen] = React.useState(false);
+  const [exerciseBeingEdited, setExerciseBeingEdited] = React.useState<Exercise | null>(null);
 
   const [structureTitle, setStructureTitle] = React.useState(builderCopy.structure.title);
   const [structureTitleDraft, setStructureTitleDraft] = React.useState(builderCopy.structure.title);
@@ -394,11 +397,13 @@ export function ProgramBuilderPanel({
   );
 
   const handleOpenCreateExerciseDialog = React.useCallback(() => {
-    setIsCreateExerciseDialogOpen(true);
+    setExerciseBeingEdited(null);
+    setIsExerciseDialogOpen(true);
   }, []);
 
-  const handleCloseCreateExerciseDialog = React.useCallback(() => {
-    setIsCreateExerciseDialogOpen(false);
+  const handleCloseExerciseDialog = React.useCallback(() => {
+    setIsExerciseDialogOpen(false);
+    setExerciseBeingEdited(null);
   }, []);
 
   const handleExerciseCreated = React.useCallback(
@@ -410,16 +415,49 @@ export function ProgramBuilderPanel({
       if (exerciseType !== 'all' && exerciseType !== exercise.visibility) {
         setExerciseType('all');
       }
-      handleCloseCreateExerciseDialog();
+      handleCloseExerciseDialog();
     },
     [
       exerciseCategory,
       exerciseType,
-      handleCloseCreateExerciseDialog,
+      handleCloseExerciseDialog,
       registerExercise,
       setExerciseCategory,
       setExerciseType,
     ],
+  );
+
+  const handleExerciseUpdated = React.useCallback(
+    (exercise: Exercise) => {
+      registerExercise(exercise);
+      if (exerciseCategory !== 'all' && exerciseCategory !== exercise.categoryId) {
+        setExerciseCategory('all');
+      }
+      if (exerciseType !== 'all' && exerciseType !== exercise.visibility) {
+        setExerciseType('all');
+      }
+      handleCloseExerciseDialog();
+    },
+    [
+      exerciseCategory,
+      exerciseType,
+      handleCloseExerciseDialog,
+      registerExercise,
+      setExerciseCategory,
+      setExerciseType,
+    ],
+  );
+
+  const handleOpenEditExerciseDialog = React.useCallback(
+    (exerciseId: string) => {
+      const exercise = getRawExerciseById(exerciseId);
+      if (!exercise) {
+        return;
+      }
+      setExerciseBeingEdited(exercise);
+      setIsExerciseDialogOpen(true);
+    },
+    [getRawExerciseById],
   );
 
   return (
@@ -846,6 +884,7 @@ export function ProgramBuilderPanel({
                       onAdd={(event) =>
                         handleOpenExerciseMenu(exercise.id, event.currentTarget)
                       }
+                      onEdit={handleOpenEditExerciseDialog}
                     />
                   ))
                 )}
@@ -897,11 +936,15 @@ export function ProgramBuilderPanel({
       </Menu>
 
       <ProgramBuilderCreateExerciseDialog
-        open={isCreateExerciseDialogOpen}
+        open={isExerciseDialogOpen}
+        mode={exerciseBeingEdited ? 'edit' : 'create'}
+        exercise={exerciseBeingEdited ?? undefined}
         categoryOptions={exerciseCategoryOptions}
         createExercise={createExercise}
-        onClose={handleCloseCreateExerciseDialog}
+        updateExercise={updateExercise}
+        onClose={handleCloseExerciseDialog}
         onCreated={handleExerciseCreated}
+        onUpdated={handleExerciseUpdated}
       />
     </>
   );

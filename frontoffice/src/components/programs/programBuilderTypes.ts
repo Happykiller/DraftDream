@@ -8,6 +8,7 @@ export type ExerciseLibraryItem = {
   categoryLabel: string;
   type: ExerciseVisibility;
   visibility: ExerciseVisibility;
+  canEdit?: boolean;
   duration: number;
   sets: number;
   reps: string;
@@ -112,6 +113,7 @@ export type BuilderCopy = {
     empty_state?: string;
     tooltips: {
       add_exercise: string;
+      edit_exercise: string;
       public_exercise: string;
       primary_muscle_chip: string;
       secondary_muscle_chip: string;

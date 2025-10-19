@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Box, Chip, IconButton, Paper, Stack, Tooltip, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { Add, Public } from '@mui/icons-material';
+import { Add, Edit, Public } from '@mui/icons-material';
 
 import type { BuilderCopy, ExerciseLibraryItem } from './programBuilderTypes';
 
@@ -10,12 +10,14 @@ type ProgramBuilderExerciseLibraryItemProps = {
   exercise: ExerciseLibraryItem;
   onAdd: (event: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
+  onEdit?: (exerciseId: string) => void;
 };
 
 export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuilderExerciseLibraryItem({
   exercise,
   onAdd,
   disabled = false,
+  onEdit,
 }: ProgramBuilderExerciseLibraryItemProps): React.JSX.Element {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -30,6 +32,7 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
     [t],
   );
   const isPublic = exercise.visibility === 'PUBLIC';
+  const canEdit = exercise.canEdit === true;
 
   const handleAddClick = React.useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -37,6 +40,13 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
     },
     [onAdd],
   );
+
+  const handleEditClick = React.useCallback(() => {
+    if (!onEdit) {
+      return;
+    }
+    onEdit(exercise.id);
+  }, [exercise.id, onEdit]);
 
   return (
     <Paper
@@ -55,9 +65,29 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
       <Stack direction="row" spacing={1.5} alignItems="flex-start">
         <Stack spacing={1} flex={1}>
           <Stack spacing={0.25}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-              {exercise.label}
-            </Typography>
+            <Stack direction="row" spacing={0.5} alignItems="center">
+              {canEdit ? (
+                <Tooltip title={tooltips.edit_exercise} arrow>
+                  <span style={{ display: 'inline-flex' }}>
+                    <IconButton
+                      size="small"
+                      onClick={handleEditClick}
+                      disabled={!onEdit}
+                      aria-label="edit-exercise-template"
+                      sx={{
+                        p: 0.25,
+                        borderRadius: 1,
+                      }}
+                    >
+                      <Edit fontSize="small" />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+              ) : null}
+              <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                {exercise.label}
+              </Typography>
+            </Stack>
             {exercise.categoryLabel ? (
               <Typography variant="body2" color="text.secondary">
                 {exercise.categoryLabel}
@@ -134,18 +164,20 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
             </Tooltip>
           ) : null}
         </Stack>
-        <Tooltip title={tooltips.add_exercise} arrow>
-          <span style={{ display: 'inline-flex' }}>
-            <IconButton
-              size="small"
-              onClick={handleAddClick}
-              disabled={disabled}
-              aria-label="add-exercise-to-session"
-            >
-              <Add fontSize="small" />
-            </IconButton>
-          </span>
-        </Tooltip>
+        <Stack spacing={0.5} alignItems="flex-end">
+          <Tooltip title={tooltips.add_exercise} arrow>
+            <span style={{ display: 'inline-flex' }}>
+              <IconButton
+                size="small"
+                onClick={handleAddClick}
+                disabled={disabled}
+                aria-label="add-exercise-to-session"
+              >
+                <Add fontSize="small" />
+              </IconButton>
+            </span>
+          </Tooltip>
+        </Stack>
       </Stack>
     </Paper>
   );
