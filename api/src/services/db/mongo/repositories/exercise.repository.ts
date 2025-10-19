@@ -154,7 +154,10 @@ export class BddServiceExerciseMongo {
     return { items: rows.map(this.toModel), total, page, limit };
   }
 
-  /** Partial update. Returns null on unique index conflict. */
+  /**
+   * Partial update.
+   * Throws when the target exercise cannot be found or when the slug collides with another exercise.
+   */
   async update(id: string, patch: UpdateExerciseDto): Promise<Exercise | null> {
     const _id = this.toObjectId(id);
     const $set: Partial<ExerciseDoc> = { updatedAt: new Date() };
@@ -184,9 +187,16 @@ export class BddServiceExerciseMongo {
         { $set },
         { returnDocument: 'after' }
       );
-      return res.value ? this.toModel(res.value) : null;
+
+      if (!res.value) {
+        throw new Error('ExerciseUpdateNotFound');
+      }
+
+      return this.toModel(res.value);
     } catch (e: any) {
-      if (e?.code === 11000) return null;
+      if (e?.code === 11000) {
+        throw new Error('ExerciseSlugConflict');
+      }
       throw e;
     }
   }

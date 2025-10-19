@@ -13,6 +13,10 @@ export class UpdateExerciseUsecase {
       const res = await this.inversify.bddService.exercise.update(id, patch);
       return res ? mapExerciseToUsecase(res) : null;
     } catch (e: any) {
+      if (e instanceof Error && ['ExerciseSlugConflict', 'ExerciseUpdateNotFound'].includes(e.message)) {
+        throw e;
+      }
+
       this.inversify.loggerService.error(`UpdateExerciseUsecase#execute => ${e?.message ?? e}`);
       throw new Error(ERRORS.UPDATE_EXERCISE_USECASE);
     }
