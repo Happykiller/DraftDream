@@ -782,10 +782,10 @@ export function ProgramBuilderPanel({
               />
 
               <Button
-                variant="contained"
+                variant="outlined"
                 size="small"
                 startIcon={<Add fontSize="small" />}
-                sx={{ alignSelf: 'flex-start' }}
+                fullWidth
                 onClick={handleOpenCreateExerciseDialog}
               >
                 {builderCopy.library.button_create}
