@@ -105,6 +105,39 @@
           "add_empty_session": "Add a new empty session",
           "session_duration": "Edit session duration",
           "add_session_template": "Add this session to the program"
+        },
+        "create_dialog": {
+          "title": "Create an exercise",
+          "description": "Define a private exercise to reuse in your programs.",
+          "actions": {
+            "cancel": "Cancel",
+            "submit": "Create",
+            "submitting": "Creating..."
+          },
+          "fields": {
+            "label": "Exercise name",
+            "description": "Description (optional)",
+            "instructions": "Instructions (optional)",
+            "level": "Level",
+            "series": "Series",
+            "repetitions": "Repetitions",
+            "rest": "Rest (seconds)",
+            "charge": "Load (optional)",
+            "video_url": "Video URL (optional)",
+            "category": "Category",
+            "primary_muscles": "Primary muscles",
+            "secondary_muscles": "Secondary muscles (optional)",
+            "equipment": "Equipment (optional)",
+            "tags": "Tags (optional)"
+          },
+          "helper": {
+            "primary_muscles": "Select at least one primary muscle."
+          },
+          "levels": {
+            "beginner": "Beginner",
+            "intermediate": "Intermediate",
+            "advanced": "Advanced"
+          }
         }
       },
       "footer": {

@@ -107,6 +107,39 @@
           "session_duration": "Modifier la durée de la séance",
           "add_session_template": "Ajouter cette séance au programme"
         },
+        "create_dialog": {
+          "title": "Créer un exercice",
+          "description": "Définissez un exercice privé à réutiliser dans vos programmes.",
+          "actions": {
+            "cancel": "Annuler",
+            "submit": "Créer",
+            "submitting": "Création..."
+          },
+          "fields": {
+            "label": "Nom de l'exercice",
+            "description": "Description (optionnel)",
+            "instructions": "Consignes (optionnel)",
+            "level": "Niveau",
+            "series": "Séries",
+            "repetitions": "Répétitions",
+            "rest": "Repos (secondes)",
+            "charge": "Charge (optionnel)",
+            "video_url": "URL vidéo (optionnel)",
+            "category": "Catégorie",
+            "primary_muscles": "Muscles principaux",
+            "secondary_muscles": "Muscles secondaires (optionnel)",
+            "equipment": "Équipements (optionnel)",
+            "tags": "Tags (optionnel)"
+          },
+          "helper": {
+            "primary_muscles": "Sélectionnez au moins un muscle principal."
+          },
+          "levels": {
+            "beginner": "Débutant",
+            "intermediate": "Intermédiaire",
+            "advanced": "Avancé"
+          }
+        },
         "no_sessions_warning": "Creez une seance avant d'ajouter des exercices."
       },
       "footer": {

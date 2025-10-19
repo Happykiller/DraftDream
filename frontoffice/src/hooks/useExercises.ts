@@ -7,6 +7,26 @@ import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 export type ExerciseVisibility = 'PRIVATE' | 'PUBLIC';
 export type ExerciseLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 
+export type CreateExerciseInput = {
+  slug: string;
+  locale: string;
+  label: string;
+  level: ExerciseLevel;
+  series: string;
+  repetitions: string;
+  description?: string;
+  instructions?: string;
+  charge?: string;
+  rest?: number;
+  videoUrl?: string;
+  visibility: ExerciseVisibility;
+  categoryId: string;
+  primaryMuscleIds: string[];
+  secondaryMuscleIds?: string[];
+  equipmentIds?: string[];
+  tagIds?: string[];
+};
+
 export interface Creator { id: string; email: string; }
 
 export interface Exercise {
@@ -161,29 +181,32 @@ export function useExercises({
   React.useEffect(() => { void load(); }, [load]);
 
   const create = React.useCallback(
-    async (input: {
-      slug: string; locale: string; label: string; level: ExerciseLevel;
-      series: string; repetitions: string; description?: string; instructions?: string;
-      charge?: string; rest?: number; videoUrl?: string; visibility: ExerciseVisibility;
-      categoryId: string;                           // required
-      primaryMuscleIds: string[];                   // required (non-empty)
-      secondaryMuscleIds?: string[];
-      equipmentIds?: string[];
-      tagIds?: string[];
-    }) => {
+    async (input: CreateExerciseInput) => {
       try {
-        const { errors } = await gql.send<CreatePayload>({
+        const { data, errors } = await gql.send<CreatePayload>({
           query: CREATE_M, variables: { input }, operationName: 'CreateExercise',
         });
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Exercise created');
-        await load();
+        const created = data?.exercise_create;
+        if (created) {
+          let existed = false;
+          setItems((previous) => {
+            existed = previous.some((item) => item.id === created.id);
+            const next = [created, ...previous.filter((item) => item.id !== created.id)];
+            return next.slice(0, limit);
+          });
+          if (!existed) {
+            setTotal((current) => current + 1);
+          }
+        }
+        return data?.exercise_create;
       } catch (e: any) {
         flashError(e?.message ?? 'Create failed');
         throw e;
       }
     },
-    [flashError, flashSuccess, gql, load]
+    [flashError, flashSuccess, gql, limit]
   );
 
   const update = React.useCallback(

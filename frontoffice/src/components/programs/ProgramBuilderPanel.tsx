@@ -23,8 +23,10 @@ import { Add, Edit, Search } from '@mui/icons-material';
 import { ProgramBuilderSessionItem } from './ProgramBuilderSessionItem';
 import { ProgramBuilderSessionLibraryItem } from './ProgramBuilderSessionLibraryItem';
 import { ProgramBuilderExerciseLibraryItem } from './ProgramBuilderExerciseLibraryItem';
+import { ProgramBuilderCreateExerciseDialog } from './ProgramBuilderCreateExerciseDialog';
 import type { BuilderCopy } from './programBuilderTypes';
 
+import type { Exercise } from '@hooks/useExercises';
 import type { User } from '@src/hooks/useUsers';
 import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
 import { useProgramBuilder } from '@src/hooks/useProgramBuilder';
@@ -90,6 +92,7 @@ export function ProgramBuilderPanel({
     handleSubmit,
     userLabel,
     isSubmitDisabled,
+    createExercise,
   } = useProgramBuilder(builderCopy, onCancel);
 
   const interactiveSurfaceSx = React.useMemo(
@@ -121,6 +124,8 @@ export function ProgramBuilderPanel({
     anchor: HTMLElement;
     exerciseId: string;
   } | null>(null);
+
+  const [isCreateExerciseDialogOpen, setIsCreateExerciseDialogOpen] = React.useState(false);
 
   const [structureTitle, setStructureTitle] = React.useState(builderCopy.structure.title);
   const [structureTitleDraft, setStructureTitleDraft] = React.useState(builderCopy.structure.title);
@@ -385,6 +390,27 @@ export function ProgramBuilderPanel({
       handleCloseExerciseMenu();
     },
     [exerciseMenuAnchor, handleAddExerciseToSession, handleCloseExerciseMenu],
+  );
+
+  const handleOpenCreateExerciseDialog = React.useCallback(() => {
+    setIsCreateExerciseDialogOpen(true);
+  }, []);
+
+  const handleCloseCreateExerciseDialog = React.useCallback(() => {
+    setIsCreateExerciseDialogOpen(false);
+  }, []);
+
+  const handleExerciseCreated = React.useCallback(
+    (exercise: Exercise) => {
+      if (exerciseCategory !== 'all' && exerciseCategory !== exercise.categoryId) {
+        setExerciseCategory('all');
+      }
+      if (exerciseType === 'PUBLIC') {
+        setExerciseType('all');
+      }
+      setIsCreateExerciseDialogOpen(false);
+    },
+    [exerciseCategory, exerciseType, setExerciseCategory, setExerciseType],
   );
 
   return (
@@ -746,6 +772,16 @@ export function ProgramBuilderPanel({
                 }}
               />
 
+              <Button
+                variant="contained"
+                size="small"
+                startIcon={<Add fontSize="small" />}
+                sx={{ alignSelf: 'flex-start' }}
+                onClick={handleOpenCreateExerciseDialog}
+              >
+                {builderCopy.library.button_create}
+              </Button>
+
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
                 <TextField
                   select
@@ -850,6 +886,14 @@ export function ProgramBuilderPanel({
           ))
         )}
       </Menu>
+
+      <ProgramBuilderCreateExerciseDialog
+        open={isCreateExerciseDialogOpen}
+        categoryOptions={exerciseCategoryOptions}
+        createExercise={createExercise}
+        onClose={handleCloseCreateExerciseDialog}
+        onCreated={handleExerciseCreated}
+      />
     </>
   );
 }

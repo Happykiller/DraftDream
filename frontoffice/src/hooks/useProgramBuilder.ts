@@ -2,7 +2,10 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useSessions } from '@hooks/useSessions';
-import { useExercises, type ExerciseVisibility } from '@hooks/useExercises';
+import {
+  useExercises,
+  type ExerciseVisibility,
+} from '@hooks/useExercises';
 import { useCategories } from '@hooks/useCategories';
 import { useUsers, type User } from '@src/hooks/useUsers';
 import { usePrograms } from '@src/hooks/usePrograms';
@@ -91,6 +94,7 @@ type UseProgramBuilderResult = {
   handleSubmit: (event?: React.SyntheticEvent) => Promise<void>;
   userLabel: (user: User | null) => string;
   isSubmitDisabled: boolean;
+  createExercise: ReturnType<typeof useExercises>['create'];
 };
 
 /**
@@ -162,12 +166,13 @@ export function useProgramBuilder(
     q: debouncedSessionSearch,
   });
 
-  const { items: exerciseItems, loading: exercisesLoading } = useExercises({
+  const { items: exerciseItems, loading: exercisesLoading, create: createExercise } = useExercises({
     page: 1,
     limit: 10,
     q: debouncedExerciseSearch,
     visibility: exerciseVisibilityFilter,
     categoryId: exerciseCategoryFilter,
+    locale: i18n.language,
   });
 
   const { items: categoryItems, loading: categoriesLoading } = useCategories({
@@ -212,12 +217,15 @@ export function useProgramBuilder(
   const exerciseCategoryOptions = React.useMemo<ExerciseCategoryOption[]>(() => {
     const dedup = new Map<string, ExerciseCategoryOption>();
     for (const item of categoryItems) {
+      if (item.locale && item.locale !== i18n.language) {
+        continue;
+      }
       const label = item.label || item.slug || item.locale;
       if (!label) continue;
       dedup.set(item.id, { id: item.id, label });
     }
     return Array.from(dedup.values()).sort((a, b) => collator.compare(a.label, b.label));
-  }, [categoryItems, collator]);
+  }, [categoryItems, collator, i18n.language]);
 
   const categoryLabelById = React.useMemo(
     () => new Map(exerciseCategoryOptions.map((option) => [option.id, option.label])),
@@ -814,5 +822,6 @@ export function useProgramBuilder(
     handleSubmit,
     userLabel,
     isSubmitDisabled,
+    createExercise,
   };
 }
