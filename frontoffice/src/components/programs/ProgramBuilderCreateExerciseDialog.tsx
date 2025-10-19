@@ -14,12 +14,13 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { Add } from '@mui/icons-material';
+import { Add, Edit } from '@mui/icons-material';
 
 import type {
   CreateExerciseInput,
   Exercise,
   ExerciseLevel,
+  UpdateExerciseInput,
 } from '@hooks/useExercises';
 import { useMuscles } from '@hooks/useMuscles';
 import { useEquipment } from '@hooks/useEquipment';
@@ -31,18 +32,26 @@ type Option = { id: string; label: string };
 
 type ProgramBuilderCreateExerciseDialogProps = {
   open: boolean;
+  mode?: 'create' | 'edit';
+  exercise?: Exercise;
   categoryOptions: ExerciseCategoryOption[];
   createExercise: (input: CreateExerciseInput) => Promise<Exercise | undefined>;
+  updateExercise?: (input: UpdateExerciseInput) => Promise<Exercise | undefined>;
   onClose: () => void;
   onCreated?: (exercise: Exercise) => void;
+  onUpdated?: (exercise: Exercise) => void;
 };
 
 export function ProgramBuilderCreateExerciseDialog({
   open,
+  mode = 'create',
+  exercise,
   categoryOptions,
   createExercise,
+  updateExercise,
   onClose,
   onCreated,
+  onUpdated,
 }: ProgramBuilderCreateExerciseDialogProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
   const locale = i18n.language || 'fr';
@@ -50,6 +59,10 @@ export function ProgramBuilderCreateExerciseDialog({
     () => new Intl.Collator(locale, { sensitivity: 'base' }),
     [locale],
   );
+  const isEditMode = mode === 'edit';
+  const dialogNamespace = isEditMode
+    ? 'programs-coatch.builder.library.edit_dialog'
+    : 'programs-coatch.builder.library.create_dialog';
 
   const { items: muscles, loading: musclesLoading } = useMuscles({
     page: 1,
@@ -109,26 +122,69 @@ export function ProgramBuilderCreateExerciseDialog({
   const [equipmentIds, setEquipmentIds] = React.useState<string[]>([]);
   const [tagIds, setTagIds] = React.useState<string[]>([]);
   const [submitting, setSubmitting] = React.useState(false);
+  const previousExerciseIdRef = React.useRef<string | null>(null);
 
   React.useEffect(() => {
-    if (!open) {
-      setLabel('');
-      setDescription('');
-      setInstructions('');
-      setSeries('3');
-      setRepetitions('12');
-      setRest('');
-      setCharge('');
-      setVideoUrl('');
-      setCategoryId('');
-      setLevel('BEGINNER');
-      setPrimaryMuscleIds([]);
-      setSecondaryMuscleIds([]);
-      setEquipmentIds([]);
-      setTagIds([]);
-      setSubmitting(false);
+    if (open) {
+      return;
     }
+    setLabel('');
+    setDescription('');
+    setInstructions('');
+    setSeries('3');
+    setRepetitions('12');
+    setRest('');
+    setCharge('');
+    setVideoUrl('');
+    setCategoryId('');
+    setLevel('BEGINNER');
+    setPrimaryMuscleIds([]);
+    setSecondaryMuscleIds([]);
+    setEquipmentIds([]);
+    setTagIds([]);
+    setSubmitting(false);
+    previousExerciseIdRef.current = null;
   }, [open]);
+
+  React.useEffect(() => {
+    if (!open || !isEditMode || !exercise) {
+      return;
+    }
+    if (previousExerciseIdRef.current === exercise.id) {
+      return;
+    }
+    previousExerciseIdRef.current = exercise.id;
+    setLabel(exercise.label ?? '');
+    setDescription(exercise.description ?? '');
+    setInstructions(exercise.instructions ?? '');
+    setSeries(exercise.series ?? '');
+    setRepetitions(exercise.repetitions ?? '');
+    setRest(exercise.rest != null ? String(exercise.rest) : '');
+    setCharge(exercise.charge ?? '');
+    setVideoUrl(exercise.videoUrl ?? '');
+    setCategoryId(exercise.categoryId ?? '');
+    setLevel(exercise.level);
+    setPrimaryMuscleIds(
+      (exercise.primaryMuscles ?? [])
+        .filter((muscle): muscle is NonNullable<typeof muscle> => Boolean(muscle?.id))
+        .map((muscle) => muscle!.id),
+    );
+    setSecondaryMuscleIds(
+      (exercise.secondaryMuscles ?? [])
+        .filter((muscle): muscle is NonNullable<typeof muscle> => Boolean(muscle?.id))
+        .map((muscle) => muscle!.id),
+    );
+    setEquipmentIds(
+      (exercise.equipment ?? [])
+        .filter((item): item is NonNullable<typeof item> => Boolean(item?.id))
+        .map((item) => item!.id),
+    );
+    setTagIds(
+      (exercise.tags ?? [])
+        .filter((item): item is NonNullable<typeof item> => Boolean(item?.id))
+        .map((item) => item!.id),
+    );
+  }, [exercise, isEditMode, open]);
 
   const levelOptions = React.useMemo<{ value: ExerciseLevel; label: string }[]>(
     () => [
@@ -167,52 +223,96 @@ export function ProgramBuilderCreateExerciseDialog({
     if (isSubmitDisabled) {
       return;
     }
+    if (isEditMode && (!updateExercise || !exercise)) {
+      return;
+    }
 
     setSubmitting(true);
     try {
-      const payload: CreateExerciseInput = {
-        slug: slugify(label.trim()),
-        locale,
-        label: label.trim(),
-        level,
-        series: series.trim(),
-        repetitions: repetitions.trim(),
-        visibility: 'PRIVATE',
-        categoryId,
-        primaryMuscleIds,
-      };
+      if (isEditMode && updateExercise && exercise) {
+        const trimmedLabel = label.trim();
+        const payload: UpdateExerciseInput = {
+          id: exercise.id,
+          slug: slugify(trimmedLabel),
+          locale: exercise.locale || locale,
+          label: trimmedLabel,
+          level,
+          series: series.trim(),
+          repetitions: repetitions.trim(),
+          visibility: exercise.visibility,
+          categoryId: categoryId || null,
+          primaryMuscleIds,
+          secondaryMuscleIds,
+          equipmentIds,
+          tagIds,
+        };
 
-      if (description.trim()) {
-        payload.description = description.trim();
-      }
-      if (instructions.trim()) {
-        payload.instructions = instructions.trim();
-      }
-      if (charge.trim()) {
-        payload.charge = charge.trim();
-      }
-      if (videoUrl.trim()) {
-        payload.videoUrl = videoUrl.trim();
-      }
-      if (secondaryMuscleIds.length > 0) {
-        payload.secondaryMuscleIds = secondaryMuscleIds;
-      }
-      if (equipmentIds.length > 0) {
-        payload.equipmentIds = equipmentIds;
-      }
-      if (tagIds.length > 0) {
-        payload.tagIds = tagIds;
-      }
+        const trimmedDescription = description.trim();
+        payload.description = trimmedDescription ? trimmedDescription : null;
+        const trimmedInstructions = instructions.trim();
+        payload.instructions = trimmedInstructions ? trimmedInstructions : null;
+        const trimmedCharge = charge.trim();
+        payload.charge = trimmedCharge ? trimmedCharge : null;
+        const trimmedVideoUrl = videoUrl.trim();
+        payload.videoUrl = trimmedVideoUrl ? trimmedVideoUrl : null;
 
-      const parsedRest = Number.parseInt(rest, 10);
-      if (!Number.isNaN(parsedRest) && parsedRest >= 0) {
-        payload.rest = parsedRest;
-      }
+        const parsedRest = Number.parseInt(rest, 10);
+        payload.rest = Number.isNaN(parsedRest) || parsedRest < 0 ? null : parsedRest;
 
-      const created = await createExercise(payload);
-      if (created) {
-        onCreated?.(created);
-        onClose();
+        const updated = await updateExercise(payload);
+        if (updated) {
+          onUpdated?.(updated);
+          onClose();
+        }
+      } else {
+        const payload: CreateExerciseInput = {
+          slug: slugify(label.trim()),
+          locale,
+          label: label.trim(),
+          level,
+          series: series.trim(),
+          repetitions: repetitions.trim(),
+          visibility: 'PRIVATE',
+          categoryId,
+          primaryMuscleIds,
+        };
+
+        const trimmedDescription = description.trim();
+        if (trimmedDescription) {
+          payload.description = trimmedDescription;
+        }
+        const trimmedInstructions = instructions.trim();
+        if (trimmedInstructions) {
+          payload.instructions = trimmedInstructions;
+        }
+        const trimmedCharge = charge.trim();
+        if (trimmedCharge) {
+          payload.charge = trimmedCharge;
+        }
+        const trimmedVideoUrl = videoUrl.trim();
+        if (trimmedVideoUrl) {
+          payload.videoUrl = trimmedVideoUrl;
+        }
+        if (secondaryMuscleIds.length > 0) {
+          payload.secondaryMuscleIds = secondaryMuscleIds;
+        }
+        if (equipmentIds.length > 0) {
+          payload.equipmentIds = equipmentIds;
+        }
+        if (tagIds.length > 0) {
+          payload.tagIds = tagIds;
+        }
+
+        const parsedRest = Number.parseInt(rest, 10);
+        if (!Number.isNaN(parsedRest) && parsedRest >= 0) {
+          payload.rest = parsedRest;
+        }
+
+        const created = await createExercise(payload);
+        if (created) {
+          onCreated?.(created);
+          onClose();
+        }
       }
     } catch (_error: unknown) {
       // Flash messaging is already handled by the hook; nothing more to do here.
@@ -245,22 +345,24 @@ export function ProgramBuilderCreateExerciseDialog({
     return tagOptions.filter((option) => map.has(option.id));
   }, [tagIds, tagOptions]);
 
-  const title = t('programs-coatch.builder.library.create_dialog.title', {
-    defaultValue: 'Create an exercise template',
+  const title = t(`${dialogNamespace}.title`, {
+    defaultValue: isEditMode ? 'Edit exercise template' : 'Create an exercise template',
   });
-  const subtitle = t('programs-coatch.builder.library.create_dialog.subtitle', {
-    defaultValue: 'Create a reusable exercise for your programs.',
+  const subtitle = t(`${dialogNamespace}.subtitle`, {
+    defaultValue: isEditMode
+      ? 'Update your reusable exercise.'
+      : 'Create a reusable exercise for your programs.',
   });
 
-  const cancelLabel = t('programs-coatch.builder.library.create_dialog.actions.cancel', {
+  const cancelLabel = t(`${dialogNamespace}.actions.cancel`, {
     defaultValue: 'Cancel',
   });
   const submitLabel = submitting
-    ? t('programs-coatch.builder.library.create_dialog.actions.submitting', {
-        defaultValue: 'Creating...'
+    ? t(`${dialogNamespace}.actions.submitting`, {
+        defaultValue: isEditMode ? 'Saving...' : 'Creating...',
       })
-    : t('programs-coatch.builder.library.create_dialog.actions.submit', {
-        defaultValue: 'Create',
+    : t(`${dialogNamespace}.actions.submit`, {
+        defaultValue: isEditMode ? 'Save' : 'Create',
       });
 
   const fieldCopy = React.useMemo(
@@ -344,7 +446,7 @@ export function ProgramBuilderCreateExerciseDialog({
                 flexShrink: 0,
               }}
             >
-              <Add fontSize="large" />
+              {isEditMode ? <Edit fontSize="large" /> : <Add fontSize="large" />}
             </Box>
             <Stack spacing={0.5}>
               <Typography variant="h6" component="span" sx={{ fontWeight: 700 }}>
@@ -554,7 +656,7 @@ export function ProgramBuilderCreateExerciseDialog({
           <Button
             type="submit"
             variant="outlined"
-            startIcon={<Add />}
+            startIcon={isEditMode ? <Edit /> : <Add />}
             disabled={isSubmitDisabled}
           >
             {submitLabel}

@@ -13,6 +13,7 @@ import { usePrograms } from '@src/hooks/usePrograms';
 import { useFlashStore } from '@src/hooks/useFlashStore';
 import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
 import { slugify } from '@src/utils/slugify';
+import { session } from '@stores/session';
 
 import type {
   BuilderCopy,
@@ -96,7 +97,9 @@ type UseProgramBuilderResult = {
   userLabel: (user: User | null) => string;
   isSubmitDisabled: boolean;
   createExercise: ReturnType<typeof useExercises>['create'];
+  updateExercise: ReturnType<typeof useExercises>['update'];
   registerExercise: (exercise: Exercise) => void;
+  getRawExerciseById: (exerciseId: string) => Exercise | undefined;
 };
 
 /**
@@ -124,6 +127,16 @@ export function useProgramBuilder(
   const [programDescription, setProgramDescription] = React.useState(
     builderCopy.structure.header_description,
   );
+  const [currentUserId, setCurrentUserId] = React.useState<string | null>(
+    () => session.getState().id,
+  );
+
+  React.useEffect(() => {
+    const unsubscribe = session.subscribe((state) => {
+      setCurrentUserId(state.id);
+    });
+    return unsubscribe;
+  }, []);
 
   React.useEffect(() => {
     setProgramDescription(builderCopy.structure.header_description);
@@ -168,7 +181,12 @@ export function useProgramBuilder(
     q: debouncedSessionSearch,
   });
 
-  const { items: exerciseItems, loading: exercisesLoading, create: createExercise } = useExercises({
+  const {
+    items: exerciseItems,
+    loading: exercisesLoading,
+    create: createExercise,
+    update: updateExercise,
+  } = useExercises({
     page: 1,
     limit: 10,
     q: debouncedExerciseSearch,
@@ -215,6 +233,16 @@ export function useProgramBuilder(
     });
     return Array.from(merged.values());
   }, [exerciseItems, exerciseOverrides]);
+
+  const rawExerciseMap = React.useMemo(
+    () => new Map(combinedExercises.map((exercise) => [exercise.id, exercise])),
+    [combinedExercises],
+  );
+
+  const getRawExerciseById = React.useCallback(
+    (exerciseId: string) => rawExerciseMap.get(exerciseId),
+    [rawExerciseMap],
+  );
 
   const { items: categoryItems, loading: categoriesLoading } = useCategories({
     page: 1,
@@ -322,6 +350,10 @@ export function useProgramBuilder(
         categoryLabel,
         type: item.visibility,
         visibility: item.visibility,
+        canEdit:
+          item.visibility === 'PRIVATE' &&
+          Boolean(currentUserId) &&
+          item.createdBy === currentUserId,
         duration: item.rest ?? 0,
         sets: parseSeriesCount(item.series),
         reps: item.repetitions,
@@ -332,7 +364,7 @@ export function useProgramBuilder(
         equipment,
       };
     });
-  }, [categoryLabelById, collator, combinedExercises]);
+  }, [categoryLabelById, collator, combinedExercises, currentUserId]);
 
   const exerciseMapRef = React.useRef(new Map<string, ExerciseLibraryItem>());
 
@@ -869,6 +901,8 @@ export function useProgramBuilder(
     userLabel,
     isSubmitDisabled,
     createExercise,
+    updateExercise,
     registerExercise,
+    getRawExerciseById,
   };
 }

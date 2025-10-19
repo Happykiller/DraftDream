@@ -91,6 +91,7 @@
         "rest_label": "",
         "tooltips": {
           "add_exercise": "Add this exercise to the selected session",
+          "edit_exercise": "Edit this exercise",
           "public_exercise": "Public exercise available online",
           "primary_muscle_chip": "Primary muscle: {{label}}",
           "secondary_muscle_chip": "Secondary muscle: {{label}}",
@@ -141,6 +142,19 @@
             "beginner": "Beginner",
             "intermediate": "Intermediate",
             "advanced": "Advanced"
+          }
+        },
+        "edit_dialog": {
+          "title": "Edit exercise template",
+          "subtitle": "Update your reusable exercise.",
+          "flash": {
+            "success": "Exercise template updated successfully.",
+            "failure": "Unable to update the exercise template."
+          },
+          "actions": {
+            "cancel": "Cancel",
+            "submit": "Save",
+            "submitting": "Saving..."
           }
         }
       },
