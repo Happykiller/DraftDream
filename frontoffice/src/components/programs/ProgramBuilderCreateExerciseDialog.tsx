@@ -213,7 +213,7 @@ export function ProgramBuilderCreateExerciseDialog({
       if (created) {
         onCreated?.(created);
       }
-    } catch (error) {
+    } catch (_error: unknown) {
       // Flash messaging is already handled by the hook; nothing more to do here.
     } finally {
       setSubmitting(false);

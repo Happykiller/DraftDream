@@ -755,7 +755,7 @@ export function useProgramBuilder(
 
       resetBuilder();
       onCancel();
-    } catch (error) {
+    } catch (_error: unknown) {
       flashError(t('common.unexpected_error'));
     }
   }, [
