@@ -109,6 +109,9 @@
         "create_dialog": {
           "title": "Create an exercise template",
           "subtitle": "Create a reusable exercise for your programs.",
+          "flash": {
+            "success": "Exercise template created successfully."
+          },
           "actions": {
             "cancel": "Cancel",
             "submit": "Create",

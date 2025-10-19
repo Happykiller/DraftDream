@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useSessions } from '@hooks/useSessions';
 import {
   useExercises,
+  type Exercise,
   type ExerciseVisibility,
 } from '@hooks/useExercises';
 import { useCategories } from '@hooks/useCategories';
@@ -95,6 +96,7 @@ type UseProgramBuilderResult = {
   userLabel: (user: User | null) => string;
   isSubmitDisabled: boolean;
   createExercise: ReturnType<typeof useExercises>['create'];
+  registerExercise: (exercise: Exercise) => void;
 };
 
 /**
@@ -175,6 +177,45 @@ export function useProgramBuilder(
     locale: i18n.language,
   });
 
+  const [exerciseOverrides, setExerciseOverrides] = React.useState<
+    Map<string, Exercise>
+  >(() => new Map());
+
+  const registerExercise = React.useCallback((exercise: Exercise) => {
+    setExerciseOverrides((prev) => {
+      const next = new Map(prev);
+      next.set(exercise.id, exercise);
+      return next;
+    });
+  }, []);
+
+  React.useEffect(() => {
+    setExerciseOverrides((prev) => {
+      if (prev.size === 0) {
+        return prev;
+      }
+      let changed = false;
+      const next = new Map(prev);
+      for (const item of exerciseItems) {
+        if (next.delete(item.id)) {
+          changed = true;
+        }
+      }
+      return changed ? next : prev;
+    });
+  }, [exerciseItems]);
+
+  const combinedExercises = React.useMemo(() => {
+    const merged = new Map<string, Exercise>();
+    exerciseItems.forEach((item) => {
+      merged.set(item.id, item);
+    });
+    exerciseOverrides.forEach((item) => {
+      merged.set(item.id, item);
+    });
+    return Array.from(merged.values());
+  }, [exerciseItems, exerciseOverrides]);
+
   const { items: categoryItems, loading: categoriesLoading } = useCategories({
     page: 1,
     limit: 100,
@@ -233,7 +274,7 @@ export function useProgramBuilder(
   );
 
   const exerciseLibrary = React.useMemo<ExerciseLibraryItem[]>(() => {
-    const sorted = [...exerciseItems].sort((a, b) => collator.compare(a.label, b.label));
+    const sorted = [...combinedExercises].sort((a, b) => collator.compare(a.label, b.label));
     return sorted.map((item) => {
       const seenMuscles = new Set<string>();
       const muscles: ExerciseLibraryItem['muscles'] = [];
@@ -291,7 +332,7 @@ export function useProgramBuilder(
         equipment,
       };
     });
-  }, [categoryLabelById, collator, exerciseItems]);
+  }, [categoryLabelById, collator, combinedExercises]);
 
   const exerciseMapRef = React.useRef(new Map<string, ExerciseLibraryItem>());
 
@@ -691,7 +732,12 @@ export function useProgramBuilder(
     setProgramDescription(builderCopy.structure.header_description);
     idCountersRef.current = { session: 0, exercise: 0 };
     exerciseMapRef.current = new Map();
-  }, [builderCopy.structure.header_description, builderCopy.structure.title]);
+    setExerciseOverrides(() => new Map());
+  }, [
+    builderCopy.structure.header_description,
+    builderCopy.structure.title,
+    setExerciseOverrides,
+  ]);
 
   const handleSubmit = React.useCallback(async (event?: React.SyntheticEvent) => {
     event?.preventDefault();
@@ -823,5 +869,6 @@ export function useProgramBuilder(
     userLabel,
     isSubmitDisabled,
     createExercise,
+    registerExercise,
   };
 }

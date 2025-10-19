@@ -212,6 +212,7 @@ export function ProgramBuilderCreateExerciseDialog({
       const created = await createExercise(payload);
       if (created) {
         onCreated?.(created);
+        onClose();
       }
     } catch (_error: unknown) {
       // Flash messaging is already handled by the hook; nothing more to do here.

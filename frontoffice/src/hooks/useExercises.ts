@@ -1,5 +1,7 @@
 // src/hooks/useExercises.ts
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
+
 import inversify from '@src/commons/inversify';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
@@ -144,6 +146,7 @@ export function useExercises({
   const [items, setItems] = React.useState<Exercise[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
+  const { t } = useTranslation();
   const flashError = useFlashStore((state) => state.error);
   const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
@@ -187,7 +190,11 @@ export function useExercises({
           query: CREATE_M, variables: { input }, operationName: 'CreateExercise',
         });
         if (errors?.length) throw new Error(errors[0].message);
-        flashSuccess('Exercise created');
+        flashSuccess(
+          t('programs-coatch.builder.library.create_dialog.flash.success', {
+            defaultValue: 'Exercise template created successfully.',
+          }),
+        );
         const created = data?.exercise_create;
         if (created) {
           let existed = false;
@@ -206,7 +213,7 @@ export function useExercises({
         throw e;
       }
     },
-    [flashError, flashSuccess, gql, limit]
+    [flashError, flashSuccess, gql, limit, t]
   );
 
   const update = React.useCallback(

@@ -110,6 +110,9 @@
         "create_dialog": {
           "title": "Créer un template d'exercice",
           "subtitle": "Créez un exercice réutilisable pour vos programmes",
+          "flash": {
+            "success": "Template d'exercice créé avec succès."
+          },
           "actions": {
             "cancel": "Annuler",
             "submit": "Créer",

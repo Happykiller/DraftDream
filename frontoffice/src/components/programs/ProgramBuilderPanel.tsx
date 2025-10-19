@@ -93,6 +93,7 @@ export function ProgramBuilderPanel({
     userLabel,
     isSubmitDisabled,
     createExercise,
+    registerExercise,
   } = useProgramBuilder(builderCopy, onCancel);
 
   const interactiveSurfaceSx = React.useMemo(
@@ -402,15 +403,21 @@ export function ProgramBuilderPanel({
 
   const handleExerciseCreated = React.useCallback(
     (exercise: Exercise) => {
+      registerExercise(exercise);
       if (exerciseCategory !== 'all' && exerciseCategory !== exercise.categoryId) {
         setExerciseCategory('all');
       }
       if (exerciseType === 'PUBLIC') {
         setExerciseType('all');
       }
-      setIsCreateExerciseDialogOpen(false);
     },
-    [exerciseCategory, exerciseType, setExerciseCategory, setExerciseType],
+    [
+      exerciseCategory,
+      exerciseType,
+      registerExercise,
+      setExerciseCategory,
+      setExerciseType,
+    ],
   );
 
   return (
