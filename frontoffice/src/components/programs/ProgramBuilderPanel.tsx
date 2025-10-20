@@ -467,6 +467,8 @@ export function ProgramBuilderPanel({
         sx={{
           borderRadius: 3,
           bgcolor: alpha(theme.palette.background.paper, 0.98),
+          overflow: 'hidden',
+          mb: 4,
         }}
       >
         <Stack>
@@ -741,11 +743,17 @@ export function ProgramBuilderPanel({
                 <Stack
                   spacing={1.5}
                   sx={{
-                    border: `1px dashed ${alpha(theme.palette.text.primary, 0.2)}`,
+                    border:
+                      sessions.length === 0
+                        ? `1px dashed ${theme.palette.success.main}`
+                        : 'none',
                     borderRadius: 2,
-                    p: 2,
+                    p: sessions.length === 0 ? 2 : 0,
                     minHeight: 280,
-                    bgcolor: alpha(theme.palette.background.default, 0.4),
+                    bgcolor:
+                      sessions.length === 0
+                        ? alpha(theme.palette.background.default, 0.4)
+                        : 'transparent',
                   }}
                 >
                   {sessions.length === 0 ? (
