@@ -172,7 +172,8 @@
     "notifications": {
       "program_created": "Programme créé",
       "program_updated": "Programme mis à jour",
-      "program_deleted": "Programme supprimé"
+      "program_deleted": "Programme supprimé",
+      "program_delete_failed": "Impossible de supprimer le programme."
     },
     "list": {
       "created_by": "Créé par {{name}}",
