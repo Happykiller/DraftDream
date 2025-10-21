@@ -109,6 +109,7 @@ type UseProgramBuilderResult = {
 export function useProgramBuilder(
   builderCopy: BuilderCopy,
   onCancel: () => void,
+  onCreated: () => void,
 ): UseProgramBuilderResult {
   const { t, i18n } = useTranslation();
   const flashError = useFlashStore((state) => state.error);
@@ -831,6 +832,7 @@ export function useProgramBuilder(
         userId: form.athlete || null,
       });
 
+      onCreated();
       resetBuilder();
       onCancel();
     } catch (_error: unknown) {
@@ -847,6 +849,7 @@ export function useProgramBuilder(
     trimmedProgramName,
     i18n.language,
     onCancel,
+    onCreated,
     resetBuilder,
     sessions,
     t,

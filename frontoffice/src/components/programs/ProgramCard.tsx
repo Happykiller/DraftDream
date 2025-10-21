@@ -27,6 +27,7 @@ import type { Program } from '@src/hooks/usePrograms';
 
 interface ProgramCardProps {
   program: Program;
+  onDelete?: (programId: string) => void;
 }
 
 type ProgramDifficulty = 'beginner' | 'intermediate' | 'advanced';
@@ -77,12 +78,12 @@ function formatDate(value: string, locale: string): string {
       month: '2-digit',
       year: 'numeric',
     }).format(new Date(value));
-  } catch (error) {
+  } catch (_error) {
     return value;
   }
 }
 
-export function ProgramCard({ program }: ProgramCardProps): React.JSX.Element {
+export function ProgramCard({ program, onDelete }: ProgramCardProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
   const sessionsCount = program.sessions.length;
   const exercisesCount = program.sessions.reduce(
@@ -111,6 +112,15 @@ export function ProgramCard({ program }: ProgramCardProps): React.JSX.Element {
   const updatedOn = React.useMemo(
     () => formatDate(program.updatedAt, i18n.language),
     [i18n.language, program.updatedAt],
+  );
+
+  const handleActionClick = React.useCallback(
+    (actionKey: ProgramAction['key']) => {
+      if (actionKey === 'delete') {
+        onDelete?.(program.id);
+      }
+    },
+    [onDelete, program.id],
   );
 
   return (
@@ -180,6 +190,7 @@ export function ProgramCard({ program }: ProgramCardProps): React.JSX.Element {
                 <IconButton
                   size="small"
                   aria-label={label}
+                  onClick={() => handleActionClick(key)}
                   sx={(theme) => ({
                     color: theme.palette.text.secondary,
                     transition: theme.transitions.create(['color', 'background-color'], {
