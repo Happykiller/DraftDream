@@ -65,7 +65,7 @@ export function ProgramsCoach(): React.JSX.Element {
           {!builderOpen && (
             <Button
               variant="contained"
-              color="success"
+              color="primary"
               startIcon={<Add fontSize="small" />}
               onClick={() => setBuilderOpen(true)}
             >
@@ -92,7 +92,7 @@ export function ProgramsCoach(): React.JSX.Element {
           {!loading && programs.length > 0 && (
             <Grid container spacing={3}>
               {programs.map((program) => (
-                <Grid size={{xs:12, sm:6, lg:4}}  key={program.id}>
+                <Grid size={{ xs: 12, sm: 6, lg: 3 }} key={program.id}>
                   <ProgramCard program={program} onDelete={handleDeleteProgram} />
                 </Grid>
               ))}
