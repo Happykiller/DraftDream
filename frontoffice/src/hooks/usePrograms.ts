@@ -65,7 +65,7 @@ type ProgramListPayload = {
 
 type CreateProgramPayload = { program_create: Program };
 type UpdateProgramPayload = { program_update: Program };
-type DeleteProgramPayload = { program_delete: boolean };
+type DeleteProgramPayload = { program_softDelete: boolean };
 
 const LIST_Q = `
   query ListPrograms($input: ListProgramsInput) {
@@ -151,8 +151,8 @@ const UPDATE_M = `
 `;
 
 const DELETE_M = `
-  mutation DeleteProgram($id: ID!) {
-    program_delete(id: $id)
+  mutation SoftDeleteProgram($id: ID!) {
+    program_softDelete(id: $id)
   }
 `;
 
@@ -332,12 +332,19 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
   const remove = React.useCallback(
     async (id: string) => {
       try {
-        const { errors } = await gql.send<DeleteProgramPayload>({
+        const { data, errors } = await gql.send<DeleteProgramPayload>({
           query: DELETE_M,
-          operationName: 'DeleteProgram',
+          operationName: 'SoftDeleteProgram',
           variables: { id },
         });
         if (errors?.length) throw new Error(errors[0].message);
+        if (!data?.program_softDelete) {
+          throw new Error(
+            t('programs-coatch.notifications.program_delete_failed', {
+              defaultValue: 'Failed to delete program',
+            }),
+          );
+        }
         flashSuccess(
           t('programs-coatch.notifications.program_deleted', {
             defaultValue: 'Program deleted',

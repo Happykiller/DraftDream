@@ -33,11 +33,13 @@ import { useProgramBuilder } from '@src/hooks/useProgramBuilder';
 interface ProgramBuilderPanelProps {
   builderCopy: BuilderCopy;
   onCancel: () => void;
+  onCreated: () => void;
 }
 
 export function ProgramBuilderPanel({
   builderCopy,
   onCancel,
+  onCreated,
 }: ProgramBuilderPanelProps): React.JSX.Element {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -95,7 +97,7 @@ export function ProgramBuilderPanel({
     updateExercise,
     registerExercise,
     getRawExerciseById,
-  } = useProgramBuilder(builderCopy, onCancel);
+  } = useProgramBuilder(builderCopy, onCancel, onCreated);
 
   const interactiveSurfaceSx = React.useMemo(
     () => ({
@@ -744,8 +746,8 @@ export function ProgramBuilderPanel({
                   spacing={1.5}
                   sx={{
                     border:
-                      sessions.length === 0
-                        ? `1px dashed ${theme.palette.success.main}`
+                      sessionCount === 0
+                        ? `1px dashed ${alpha(theme.palette.text.primary, 0.2)}`
                         : 'none',
                     borderRadius: 2,
                     p: sessions.length === 0 ? 2 : 0,

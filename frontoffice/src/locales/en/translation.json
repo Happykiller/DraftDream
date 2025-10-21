@@ -170,7 +170,8 @@
     "notifications": {
       "program_created": "Program created",
       "program_updated": "Program updated",
-      "program_deleted": "Program deleted"
+      "program_deleted": "Program deleted",
+      "program_delete_failed": "Unable to delete the program."
     },
     "list": {
       "created_by": "Created by {{name}}",
