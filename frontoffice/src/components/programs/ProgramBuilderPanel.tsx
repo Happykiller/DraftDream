@@ -743,7 +743,10 @@ export function ProgramBuilderPanel({
                 <Stack
                   spacing={1.5}
                   sx={{
-                    border: `1px dashed ${alpha(theme.palette.text.primary, 0.2)}`,
+                    border:
+                      sessionCount === 0
+                        ? `1px dashed ${alpha(theme.palette.text.primary, 0.2)}`
+                        : 'none',
                     borderRadius: 2,
                     p: 2,
                     minHeight: 280,

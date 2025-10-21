@@ -72,6 +72,15 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
 }: ProgramBuilderSessionItemProps): React.JSX.Element {
   const theme = useTheme();
   const primaryMain = theme.palette.primary.main;
+  const successMain = theme.palette.success.main;
+  const successBorderColor = React.useMemo(
+    () => alpha(successMain, 0.45),
+    [successMain],
+  );
+  const successHoverBackground = React.useMemo(
+    () => alpha(successMain, 0.08),
+    [successMain],
+  );
 
   const interactiveSurfaceSx = React.useMemo(
     () => ({
@@ -380,9 +389,11 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
         borderRadius: 2,
         cursor: 'default',
         transition: 'border-color 150ms ease, background-color 150ms ease',
+        borderColor: successBorderColor,
         '&:hover': {
-          borderColor: theme.palette.secondary.main,
+          borderColor: successMain,
           boxShadow: theme.shadows[2],
+          backgroundColor: successHoverBackground,
         },
       }}
     >
