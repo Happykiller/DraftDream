@@ -70,9 +70,6 @@
       "video_url": "URL vidéo",
       "instructions": "Instructions",
       "category": "Catégorie",
-      "primary_muscles": "Muscles principaux",
-      "secondary_muscles": "Muscles secondaires",
-      "secondary_muscles_optional": "Muscles secondaires (optionnel)",
       "equipment_optional": "Équipement (optionnel)",
       "tags_optional": "Tags (optionnel)"
     },

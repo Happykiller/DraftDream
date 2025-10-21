@@ -119,8 +119,7 @@ export function ProgramBuilderCreateExerciseDialog({
   const [videoUrl, setVideoUrl] = React.useState('');
   const [categoryId, setCategoryId] = React.useState('');
   const [level, setLevel] = React.useState<ExerciseLevel>('BEGINNER');
-  const [primaryMuscleIds, setPrimaryMuscleIds] = React.useState<string[]>([]);
-  const [secondaryMuscleIds, setSecondaryMuscleIds] = React.useState<string[]>([]);
+  const [muscleIds, setMuscleIds] = React.useState<string[]>([]);
   const [equipmentIds, setEquipmentIds] = React.useState<string[]>([]);
   const [tagIds, setTagIds] = React.useState<string[]>([]);
   const [submitting, setSubmitting] = React.useState(false);
@@ -140,8 +139,7 @@ export function ProgramBuilderCreateExerciseDialog({
     setVideoUrl('');
     setCategoryId('');
     setLevel('BEGINNER');
-    setPrimaryMuscleIds([]);
-    setSecondaryMuscleIds([]);
+    setMuscleIds([]);
     setEquipmentIds([]);
     setTagIds([]);
     setSubmitting(false);
@@ -166,13 +164,8 @@ export function ProgramBuilderCreateExerciseDialog({
     setVideoUrl(exercise.videoUrl ?? '');
     setCategoryId(exercise.categoryId ?? '');
     setLevel(exercise.level);
-    setPrimaryMuscleIds(
-      (exercise.primaryMuscles ?? [])
-        .filter((muscle): muscle is NonNullable<typeof muscle> => Boolean(muscle?.id))
-        .map((muscle) => muscle!.id),
-    );
-    setSecondaryMuscleIds(
-      (exercise.secondaryMuscles ?? [])
+    setMuscleIds(
+      (exercise.muscles ?? [])
         .filter((muscle): muscle is NonNullable<typeof muscle> => Boolean(muscle?.id))
         .map((muscle) => muscle!.id),
     );
@@ -218,7 +211,7 @@ export function ProgramBuilderCreateExerciseDialog({
     !series.trim() ||
     !repetitions.trim() ||
     !categoryId ||
-    primaryMuscleIds.length === 0;
+    muscleIds.length === 0;
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -243,8 +236,7 @@ export function ProgramBuilderCreateExerciseDialog({
           series: trimmedSeries,
           repetitions: trimmedRepetitions,
           visibility: exercise.visibility,
-          primaryMuscleIds,
-          secondaryMuscleIds,
+          muscleIds,
           equipmentIds,
           tagIds,
         };
@@ -291,7 +283,7 @@ export function ProgramBuilderCreateExerciseDialog({
           repetitions: repetitions.trim(),
           visibility: 'PRIVATE',
           categoryId,
-          primaryMuscleIds,
+          muscleIds,
         };
 
         const trimmedDescription = description.trim();
@@ -309,9 +301,6 @@ export function ProgramBuilderCreateExerciseDialog({
         const trimmedVideoUrl = videoUrl.trim();
         if (trimmedVideoUrl) {
           payload.videoUrl = trimmedVideoUrl;
-        }
-        if (secondaryMuscleIds.length > 0) {
-          payload.secondaryMuscleIds = secondaryMuscleIds;
         }
         if (equipmentIds.length > 0) {
           payload.equipmentIds = equipmentIds;
@@ -342,15 +331,10 @@ export function ProgramBuilderCreateExerciseDialog({
     return categoryOptionsByLocale.find((option) => option.id === categoryId) ?? null;
   }, [categoryId, categoryOptionsByLocale]);
 
-  const selectedPrimaryMuscles = React.useMemo<Option[]>(() => {
-    const map = new Map(primaryMuscleIds.map((id) => [id, id]));
+  const selectedMuscles = React.useMemo<Option[]>(() => {
+    const map = new Map(muscleIds.map((id) => [id, id]));
     return muscleOptions.filter((option) => map.has(option.id));
-  }, [muscleOptions, primaryMuscleIds]);
-
-  const selectedSecondaryMuscles = React.useMemo<Option[]>(() => {
-    const map = new Map(secondaryMuscleIds.map((id) => [id, id]));
-    return muscleOptions.filter((option) => map.has(option.id));
-  }, [muscleOptions, secondaryMuscleIds]);
+  }, [muscleIds, muscleOptions]);
 
   const selectedEquipment = React.useMemo<Option[]>(() => {
     const map = new Map(equipmentIds.map((id) => [id, id]));
@@ -414,11 +398,8 @@ export function ProgramBuilderCreateExerciseDialog({
       category: t('programs-coatch.builder.library.create_dialog.fields.category', {
         defaultValue: 'Category',
       }),
-      primaryMuscles: t('programs-coatch.builder.library.create_dialog.fields.primary_muscles', {
-        defaultValue: 'Primary muscles',
-      }),
-      secondaryMuscles: t('programs-coatch.builder.library.create_dialog.fields.secondary_muscles', {
-        defaultValue: 'Secondary muscles (optional)',
+      muscles: t('programs-coatch.builder.library.create_dialog.fields.muscles', {
+        defaultValue: 'Muscles',
       }),
       equipment: t('programs-coatch.builder.library.create_dialog.fields.equipment', {
         defaultValue: 'Equipment (optional)',
@@ -432,8 +413,8 @@ export function ProgramBuilderCreateExerciseDialog({
 
   const helperCopy = React.useMemo(
     () => ({
-      primaryMuscles: t('programs-coatch.builder.library.create_dialog.helper.primary_muscles', {
-        defaultValue: 'Select at least one primary muscle.',
+      muscles: t('programs-coatch.builder.library.create_dialog.helper.muscles', {
+        defaultValue: 'Select at least one muscle.',
       }),
     }),
     [t],
@@ -503,8 +484,8 @@ export function ProgramBuilderCreateExerciseDialog({
               <Autocomplete
                 multiple
                 options={muscleOptions}
-                value={selectedPrimaryMuscles}
-                onChange={(_event, next) => setPrimaryMuscleIds(next.map((option) => option.id))}
+                value={selectedMuscles}
+                onChange={(_event, next) => setMuscleIds(next.map((option) => option.id))}
                 loading={musclesLoading}
                 getOptionLabel={(option) => option.label}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
@@ -521,31 +502,9 @@ export function ProgramBuilderCreateExerciseDialog({
                   <TextField
                     {...params}
                     required
-                    label={fieldCopy.primaryMuscles}
-                    helperText={helperCopy.primaryMuscles}
+                    label={fieldCopy.muscles}
+                    helperText={helperCopy.muscles}
                   />
-                )}
-              />
-
-              <Autocomplete
-                multiple
-                options={muscleOptions}
-                value={selectedSecondaryMuscles}
-                onChange={(_event, next) => setSecondaryMuscleIds(next.map((option) => option.id))}
-                loading={musclesLoading}
-                getOptionLabel={(option) => option.label}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                renderTags={(tagValue, getTagProps) =>
-                  tagValue.map((option, index) => (
-                    <Chip
-                      {...getTagProps({ index })}
-                      key={option.id}
-                      label={option.label}
-                    />
-                  ))
-                }
-                renderInput={(params) => (
-                  <TextField {...params} label={fieldCopy.secondaryMuscles} />
                 )}
               />
 

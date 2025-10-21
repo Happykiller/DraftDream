@@ -19,8 +19,7 @@ export const mapExerciseToUsecase = (e: Exercise): ExerciseUsecaseModel => ({
   visibility: e.visibility,
 
   categoryId: e.category.id,
-  primaryMuscleIds: (e.primaryMuscles ?? []).map((m) => m.id),
-  secondaryMuscleIds: (e.secondaryMuscles ?? []).map((m) => m.id),
+  muscleIds: (e.muscles ?? []).map((m) => m.id),
   equipmentIds: (e.equipment ?? []).map((eq) => eq.id),
   tagIds: (e.tags ?? []).map((t) => t.id),
 

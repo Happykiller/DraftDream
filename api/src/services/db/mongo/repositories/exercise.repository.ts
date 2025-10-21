@@ -27,8 +27,7 @@ type ExerciseDoc = {
   visibility: 'private' | 'public';
 
   category: ObjectId;
-  primaryMuscles: ObjectId[];
-  secondaryMuscles?: ObjectId[];
+  muscles: ObjectId[];
   equipment?: ObjectId[];
   tags?: ObjectId[];
 
@@ -78,8 +77,7 @@ export class BddServiceExerciseMongo {
       visibility: dto.visibility,
 
       category: this.toObjectId(dto.categoryId),
-      primaryMuscles: (dto.primaryMuscleIds ?? []).map(this.toObjectId),
-      secondaryMuscles: dto.secondaryMuscleIds?.map(this.toObjectId),
+      muscles: (dto.muscleIds ?? []).map(this.toObjectId),
       equipment: dto.equipmentIds?.map(this.toObjectId),
       tags: dto.tagIds?.map(this.toObjectId),
 
@@ -177,8 +175,7 @@ export class BddServiceExerciseMongo {
     if (patch.visibility !== undefined) $set.visibility = patch.visibility;
 
     if (patch.categoryId !== undefined) $set.category = this.toObjectId(patch.categoryId);
-    if (patch.primaryMuscleIds !== undefined) $set.primaryMuscles = patch.primaryMuscleIds.map(this.toObjectId);
-    if (patch.secondaryMuscleIds !== undefined) $set.secondaryMuscles = patch.secondaryMuscleIds.map(this.toObjectId);
+    if (patch.muscleIds !== undefined) $set.muscles = patch.muscleIds.map(this.toObjectId);
     if (patch.equipmentIds !== undefined) $set.equipment = patch.equipmentIds.map(this.toObjectId);
     if (patch.tagIds !== undefined) $set.tags = patch.tagIds.map(this.toObjectId);
 
@@ -268,12 +265,7 @@ export class BddServiceExerciseMongo {
       visibility: 'private',
       createdBy: '', createdAt: doc.createdAt, updatedAt: doc.updatedAt,
     },
-    primaryMuscles: (doc.primaryMuscles ?? []).map((oid) => ({
-      id: oid.toHexString(),
-      slug: '', locale: doc.locale, label: '', visibility: 'private',
-      createdBy: '', createdAt: doc.createdAt, updatedAt: doc.updatedAt,
-    })),
-    secondaryMuscles: (doc.secondaryMuscles ?? []).map((oid) => ({
+    muscles: (doc.muscles ?? []).map((oid) => ({
       id: oid.toHexString(),
       slug: '', locale: doc.locale, label: '', visibility: 'private',
       createdBy: '', createdAt: doc.createdAt, updatedAt: doc.updatedAt,

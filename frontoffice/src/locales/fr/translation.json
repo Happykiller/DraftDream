@@ -94,8 +94,7 @@
           "add_exercise": "Ajouter cet exercice à la séance sélectionnée",
           "edit_exercise": "Modifier cet exercice",
           "public_exercise": "Exercice public disponible en ligne",
-          "primary_muscle_chip": "Muscle principal : {{label}}",
-          "secondary_muscle_chip": "Muscle secondaire : {{label}}",
+          "muscle_chip": "Muscle : {{label}}",
           "equipment_chip": "Équipement : {{label}}",
           "tag_chip": "Tag : {{label}}",
           "move_session_up": "Monter la séance",
@@ -131,13 +130,12 @@
             "charge": "Poids / Charge (optionnel)",
             "video_url": "URL vidéo (optionnel)",
             "category": "Catégorie",
-            "primary_muscles": "Muscles principaux",
-            "secondary_muscles": "Muscles secondaires (optionnel)",
+            "muscles": "Muscles",
             "equipment": "Équipements (optionnel)",
             "tags": "Tags (optionnel)"
           },
           "helper": {
-            "primary_muscles": "Sélectionnez au moins un muscle principal."
+            "muscles": "Sélectionnez au moins un muscle."
           },
           "levels": {
             "beginner": "Débutant",

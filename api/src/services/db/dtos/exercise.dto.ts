@@ -16,8 +16,7 @@ export type CreateExerciseDto = {
   videoUrl?: string;
   visibility: Visibility;
   categoryId: string;
-  primaryMuscleIds: string[];
-  secondaryMuscleIds?: string[];
+  muscleIds: string[];
   equipmentIds?: string[];
   tagIds?: string[];
 
@@ -55,8 +54,7 @@ export type UpdateExerciseDto = Partial<{
 
   // Relations (replace whole sets)
   categoryId: string;
-  primaryMuscleIds: string[];
-  secondaryMuscleIds: string[];
+  muscleIds: string[];
   equipmentIds: string[];
   tagIds: string[];
-}>;
+}>; 

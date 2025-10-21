@@ -17,8 +17,7 @@ export type ExerciseUsecaseModel = {
   visibility: 'private' | 'public';
 
   categoryId: string;
-  primaryMuscleIds: string[];
-  secondaryMuscleIds?: string[];
+  muscleIds: string[];
   equipmentIds?: string[];
   tagIds?: string[];
 

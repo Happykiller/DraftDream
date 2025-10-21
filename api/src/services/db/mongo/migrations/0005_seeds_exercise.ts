@@ -15,8 +15,7 @@ type ExerciseSeed = {
   videoUrl?: string;
   visibility: 'private' | 'public';
   categorySlug: string;
-  primaryMuscleSlugs: string[];
-  secondaryMuscleSlugs?: string[];
+  muscleSlugs: string[];
   equipmentSlugs?: string[];
 };
 
@@ -34,8 +33,7 @@ const EXERCISE_SEEDS: ExerciseSeed[] = [
     rest: 60,
     visibility: 'public',
     categorySlug: 'haut-du-corps',
-    primaryMuscleSlugs: ['pectoraux'],
-    secondaryMuscleSlugs: ['triceps', 'epaules'],
+    muscleSlugs: ['pectoraux', 'triceps', 'epaules'],
   },
   {
     slug: 'squat-barre',
@@ -51,8 +49,7 @@ const EXERCISE_SEEDS: ExerciseSeed[] = [
     charge: 'Barre chargee',
     visibility: 'public',
     categorySlug: 'bas-du-corps',
-    primaryMuscleSlugs: ['quadriceps'],
-    secondaryMuscleSlugs: ['ischio-jambiers', 'fessiers'],
+    muscleSlugs: ['quadriceps', 'ischio-jambiers', 'fessiers'],
     equipmentSlugs: ['barre'],
   },
   {
@@ -68,8 +65,7 @@ const EXERCISE_SEEDS: ExerciseSeed[] = [
     rest: 90,
     visibility: 'public',
     categorySlug: 'full-body',
-    primaryMuscleSlugs: ['ischio-jambiers', 'fessiers'],
-    secondaryMuscleSlugs: ['dos', 'dorsaux'],
+    muscleSlugs: ['ischio-jambiers', 'fessiers', 'dos', 'dorsaux'],
     equipmentSlugs: ['kettlebell'],
   },
   {
@@ -85,8 +81,7 @@ const EXERCISE_SEEDS: ExerciseSeed[] = [
     rest: 60,
     visibility: 'public',
     categorySlug: 'core',
-    primaryMuscleSlugs: ['abdominaux'],
-    secondaryMuscleSlugs: ['obliques'],
+    muscleSlugs: ['abdominaux', 'obliques'],
   },
   {
     slug: 'burpees',
@@ -101,8 +96,7 @@ const EXERCISE_SEEDS: ExerciseSeed[] = [
     rest: 75,
     visibility: 'public',
     categorySlug: 'cardio',
-    primaryMuscleSlugs: ['cardio'],
-    secondaryMuscleSlugs: ['pectoraux', 'quadriceps'],
+    muscleSlugs: ['cardio', 'pectoraux', 'quadriceps'],
   },
   {
     slug: 'rowing-halteres',
@@ -117,8 +111,7 @@ const EXERCISE_SEEDS: ExerciseSeed[] = [
     rest: 75,
     visibility: 'public',
     categorySlug: 'haut-du-corps',
-    primaryMuscleSlugs: ['dos'],
-    secondaryMuscleSlugs: ['dorsaux', 'biceps'],
+    muscleSlugs: ['dos', 'dorsaux', 'biceps'],
     equipmentSlugs: ['halteres'],
   },
 ];
@@ -192,12 +185,7 @@ const migration: Migration = {
     const now = new Date();
     const ops = EXERCISE_SEEDS.map((seed) => {
       const categoryId = getId(categoriesBySlug, seed.categorySlug, 'category');
-      const primaryMuscles = seed.primaryMuscleSlugs.map((slug) =>
-        getId(musclesBySlug, slug, 'primary muscle')
-      );
-      const secondaryMuscles = (seed.secondaryMuscleSlugs ?? []).map((slug) =>
-        getId(musclesBySlug, slug, 'secondary muscle')
-      );
+      const muscles = seed.muscleSlugs.map((slug) => getId(musclesBySlug, slug, 'muscle'));
       const equipmentIds = (seed.equipmentSlugs ?? []).map((slug) =>
         getId(equipmentsBySlug, slug, 'equipment')
       );
@@ -211,8 +199,7 @@ const migration: Migration = {
         repetitions: seed.repetitions,
         visibility: seed.visibility,
         category: categoryId,
-        primaryMuscles,
-        secondaryMuscles,
+        muscles,
         equipment: equipmentIds,
         tags: [],
         updatedAt: now,

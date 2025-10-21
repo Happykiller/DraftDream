@@ -236,16 +236,14 @@ type ExerciseGql {
   videoUrl: String
   visibility: ExerciseVisibility!
   categoryId: ID!
-  primaryMuscleIds: [ID!]!
-  secondaryMuscleIds: [ID!]
+  muscleIds: [ID!]!
   equipmentIds: [ID!]
   tagIds: [ID!]
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   category: CategoryGql
-  primaryMuscles: [MuscleGql!]!
-  secondaryMuscles: [MuscleGql!]
+  muscles: [MuscleGql!]!
   equipment: [EquipmentGql!]
   tags: [TagGql!]
   creator: UserGql
@@ -570,8 +568,7 @@ input CreateExerciseInput {
   videoUrl: String
   visibility: ExerciseVisibility!
   categoryId: ID!
-  primaryMuscleIds: [ID!]!
-  secondaryMuscleIds: [ID!]
+  muscleIds: [ID!]!
   equipmentIds: [ID!]
   tagIds: [ID!]
 }
@@ -591,8 +588,7 @@ input UpdateExerciseInput {
   videoUrl: String
   visibility: ExerciseVisibility
   categoryId: ID
-  primaryMuscleIds: [ID!]
-  secondaryMuscleIds: [ID!]
+  muscleIds: [ID!]
   equipmentIds: [ID!]
   tagIds: [ID!]
 }

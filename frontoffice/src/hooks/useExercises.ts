@@ -23,8 +23,7 @@ export type CreateExerciseInput = {
   videoUrl?: string;
   visibility: ExerciseVisibility;
   categoryId: string;
-  primaryMuscleIds: string[];
-  secondaryMuscleIds?: string[];
+  muscleIds: string[];
   equipmentIds?: string[];
   tagIds?: string[];
 };
@@ -44,8 +43,7 @@ export type UpdateExerciseInput = {
   videoUrl?: string | null;
   visibility?: ExerciseVisibility;
   categoryId?: string | null;
-  primaryMuscleIds?: string[];
-  secondaryMuscleIds?: string[];
+  muscleIds?: string[];
   equipmentIds?: string[];
   tagIds?: string[];
 };
@@ -72,8 +70,7 @@ export interface Exercise {
   updatedAt: string;
   creator?: Creator | null;
   category?: { id: string; label: string } | null;
-  primaryMuscles?: { id: string; label: string }[];
-  secondaryMuscles?: { id: string; label: string }[];
+  muscles?: { id: string; label: string }[];
   equipment?: { id: string; label: string }[];
   tags?: { id: string; label: string }[];
 }
@@ -99,8 +96,7 @@ const LIST_Q = `
         charge rest videoUrl visibility categoryId createdBy createdAt updatedAt
         creator { id email }
         category { id label }
-        primaryMuscles { id label }
-        secondaryMuscles { id label }
+        muscles { id label }
         equipment { id label }
         tags { id label }
       }
@@ -116,8 +112,7 @@ const CREATE_M = `
       charge rest videoUrl visibility categoryId createdBy createdAt updatedAt
       creator { id email }
       category { id label }
-      primaryMuscles { id label }
-      secondaryMuscles { id label }
+      muscles { id label }
       equipment { id label }
       tags { id label }
     }
@@ -131,8 +126,7 @@ const UPDATE_M = `
       charge rest videoUrl visibility categoryId createdBy createdAt updatedAt
       creator { id email }
       category { id label }
-      primaryMuscles { id label }
-      secondaryMuscles { id label }
+      muscles { id label }
       equipment { id label }
       tags { id label }
     }
