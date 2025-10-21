@@ -93,8 +93,7 @@
           "add_exercise": "Add this exercise to the selected session",
           "edit_exercise": "Edit this exercise",
           "public_exercise": "Public exercise available online",
-          "primary_muscle_chip": "Primary muscle: {{label}}",
-          "secondary_muscle_chip": "Secondary muscle: {{label}}",
+          "muscle_chip": "Muscle: {{label}}",
           "equipment_chip": "Equipment: {{label}}",
           "tag_chip": "Tag: {{label}}",
           "move_session_up": "Move session up",
@@ -130,13 +129,12 @@
             "charge": "Weight / Load (optional)",
             "video_url": "Video URL (optional)",
             "category": "Category",
-            "primary_muscles": "Primary muscles",
-            "secondary_muscles": "Secondary muscles (optional)",
+            "muscles": "Muscles",
             "equipment": "Equipment (optional)",
             "tags": "Tags (optional)"
           },
           "helper": {
-            "primary_muscles": "Select at least one primary muscle."
+            "muscles": "Select at least one muscle."
           },
           "levels": {
             "beginner": "Beginner",

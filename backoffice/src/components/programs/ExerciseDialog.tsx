@@ -32,8 +32,7 @@ export interface ExerciseDialogValues {
   videoUrl?: string;
   visibility: ExerciseVisibility;
   category: RefEntity | null;
-  primaryMuscles: RefEntity[];
-  secondaryMuscles: RefEntity[];
+  muscles: RefEntity[];
   equipment: RefEntity[];
   tags: RefEntity[];
 }
@@ -64,8 +63,7 @@ const DEFAULTS: ExerciseDialogValues = {
   videoUrl: '',
   visibility: 'PRIVATE',
   category: null,
-  primaryMuscles: [],
-  secondaryMuscles: [],
+  muscles: [],
   equipment: [],
   tags: [],
 };
@@ -102,8 +100,7 @@ export function ExerciseDialog({
         videoUrl: initial.videoUrl ?? '',
         visibility: initial.visibility,
         category: null,
-        primaryMuscles: [],
-        secondaryMuscles: [],
+        muscles: [],
         equipment: [],
         tags: [],
       }));
@@ -124,7 +121,7 @@ export function ExerciseDialog({
     event.preventDefault();
     if (!isEdit) {
       if (!values.category) return;
-      if (values.primaryMuscles.length === 0) return;
+      if (values.muscles.length === 0) return;
     }
     await onSubmit(values);
     onClose();
@@ -280,34 +277,19 @@ export function ExerciseDialog({
             renderInput={(params) => <TextField {...params} label={t('common.labels.category')} />}
           />
 
-          {/* Primary muscles define progression logic, therefore we surface the selection prominently. */}
+          {/* Muscles drive programming logic; coaches must confirm at least one target group. */}
           <Autocomplete
             multiple
             options={muscleOptions}
             getOptionLabel={(option) => option.label || option.slug}
-            value={values.primaryMuscles}
-            onChange={(_, value) => setValues((prev) => ({ ...prev, primaryMuscles: value }))}
+            value={values.muscles}
+            onChange={(_, value) => setValues((prev) => ({ ...prev, muscles: value }))}
             renderTags={(tagValue, getTagProps) =>
               tagValue.map((option, index) => (
                 <Chip {...getTagProps({ index })} key={option.id} label={option.label || option.slug} />
               ))
             }
-            renderInput={(params) => <TextField {...params} label={t('common.labels.primary_muscles')} />}
-          />
-
-          {/* Secondary muscles remain optional because trainees might isolate fewer groups. */}
-          <Autocomplete
-            multiple
-            options={muscleOptions}
-            getOptionLabel={(option) => option.label || option.slug}
-            value={values.secondaryMuscles}
-            onChange={(_, value) => setValues((prev) => ({ ...prev, secondaryMuscles: value }))}
-            renderTags={(tagValue, getTagProps) =>
-              tagValue.map((option, index) => (
-                <Chip {...getTagProps({ index })} key={option.id} label={option.label || option.slug} />
-              ))
-            }
-            renderInput={(params) => <TextField {...params} label={t('common.labels.secondary_muscles_optional')} />}
+            renderInput={(params) => <TextField {...params} label={t('common.labels.muscles')} />}
           />
 
           {/* Equipment mapping ensures coaches only pick gear available in the gym inventory. */}

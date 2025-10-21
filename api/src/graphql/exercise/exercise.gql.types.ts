@@ -35,8 +35,7 @@ export class ExerciseGql {
   @Field({ nullable: true }) videoUrl?: string;
   @Field(() => ExerciseVisibility) visibility!: ExerciseVisibility;
   @Field(() => ID) categoryId!: string;
-  @Field(() => [ID]) primaryMuscleIds!: string[];
-  @Field(() => [ID], { nullable: true }) secondaryMuscleIds?: string[];
+  @Field(() => [ID]) muscleIds!: string[];
   @Field(() => [ID], { nullable: true }) equipmentIds?: string[];
   @Field(() => [ID], { nullable: true }) tagIds?: string[];
 
@@ -51,9 +50,7 @@ export class ExerciseGql {
   @Field(() => CategoryGql, { nullable: true })
   category?: CategoryGql | null;
   @Field(() => [MuscleGql])
-  primaryMuscles?: MuscleGql[];
-  @Field(() => [MuscleGql], { nullable: true })
-  secondaryMuscles?: MuscleGql[] | null;
+  muscles?: MuscleGql[];
   @Field(() => [EquipmentGql], { nullable: true })
   equipment?: EquipmentGql[] | null;
   @Field(() => [TagGql], { nullable: true })
@@ -77,8 +74,7 @@ export class CreateExerciseInput {
   @Field({ nullable: true }) videoUrl?: string;
   @Field(() => ExerciseVisibility) visibility!: ExerciseVisibility;
   @Field(() => ID) categoryId!: string;
-  @Field(() => [ID]) primaryMuscleIds!: string[];
-  @Field(() => [ID], { nullable: true }) secondaryMuscleIds?: string[];
+  @Field(() => [ID]) muscleIds!: string[];
   @Field(() => [ID], { nullable: true }) equipmentIds?: string[];
   @Field(() => [ID], { nullable: true }) tagIds?: string[];
 }
@@ -101,8 +97,7 @@ export class UpdateExerciseInput {
 
   // Relations (replace whole sets)
   @Field(() => ID, { nullable: true }) categoryId?: string;
-  @Field(() => [ID], { nullable: true }) primaryMuscleIds?: string[];
-  @Field(() => [ID], { nullable: true }) secondaryMuscleIds?: string[];
+  @Field(() => [ID], { nullable: true }) muscleIds?: string[];
   @Field(() => [ID], { nullable: true }) equipmentIds?: string[];
   @Field(() => [ID], { nullable: true }) tagIds?: string[];
 }

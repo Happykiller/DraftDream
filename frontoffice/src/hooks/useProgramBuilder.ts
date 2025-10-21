@@ -307,21 +307,11 @@ export function useProgramBuilder(
     return sorted.map((item) => {
       const seenMuscles = new Set<string>();
       const muscles: ExerciseLibraryItem['muscles'] = [];
-      for (const muscle of item.primaryMuscles ?? []) {
+      for (const muscle of item.muscles ?? []) {
         if (!muscle?.id || seenMuscles.has(muscle.id)) continue;
         muscles.push({
           id: muscle.id,
           label: muscle.label ?? muscle.id,
-          role: 'primary',
-        });
-        seenMuscles.add(muscle.id);
-      }
-      for (const muscle of item.secondaryMuscles ?? []) {
-        if (!muscle?.id || seenMuscles.has(muscle.id)) continue;
-        muscles.push({
-          id: muscle.id,
-          label: muscle.label ?? muscle.id,
-          role: 'secondary',
         });
         seenMuscles.add(muscle.id);
       }

@@ -44,20 +44,9 @@ export class ExerciseResolver {
     return category ? mapCategoryUsecaseToGql(category) : null;
   }
 
-  @ResolveField(() => [MuscleGql], { name: 'primaryMuscles' })
-  async primaryMuscles(@Parent() exercise: ExerciseGql): Promise<MuscleGql[]> {
-    const ids = exercise.primaryMuscleIds ?? [];
-    if (!ids.length) return [];
-    const muscles = await Promise.all(ids.map((id) => inversify.getMuscleUsecase.execute({ id })));
-    return muscles
-      .filter((muscle): muscle is NonNullable<typeof muscle> => Boolean(muscle))
-      .map(mapMuscleUsecaseToGql);
-  }
-
-  @ResolveField(() => [MuscleGql], { name: 'secondaryMuscles', nullable: true })
-  async secondaryMuscles(@Parent() exercise: ExerciseGql): Promise<MuscleGql[] | null> {
-    const ids = exercise.secondaryMuscleIds;
-    if (!ids) return null;
+  @ResolveField(() => [MuscleGql], { name: 'muscles' })
+  async muscles(@Parent() exercise: ExerciseGql): Promise<MuscleGql[]> {
+    const ids = exercise.muscleIds ?? [];
     if (!ids.length) return [];
     const muscles = await Promise.all(ids.map((id) => inversify.getMuscleUsecase.execute({ id })));
     return muscles
@@ -108,8 +97,7 @@ export class ExerciseResolver {
       videoUrl: input.videoUrl,
       visibility: input.visibility,
       categoryId: input.categoryId,
-      primaryMuscleIds: input.primaryMuscleIds,
-      secondaryMuscleIds: input.secondaryMuscleIds,
+      muscleIds: input.muscleIds,
       equipmentIds: input.equipmentIds,
       tagIds: input.tagIds,
       createdBy: req?.user?.id,
@@ -120,27 +108,26 @@ export class ExerciseResolver {
   @Mutation(() => ExerciseGql, { name: 'exercise_update', nullable: true })
   @Auth(Role.ADMIN, Role.COACH)
   async exercise_update(@Args('input') input: UpdateExerciseInput): Promise<ExerciseGql | null> {
-      const updated = await inversify.updateExerciseUsecase.execute(input.id, {
-        slug: input.slug,
-        locale: input.locale,
-        label: input.label,
-        description: input.description,
-        instructions: input.instructions,
-        level: input.level,
-        series: input.series,
-        repetitions: input.repetitions,
-        charge: input.charge,
-        rest: input.rest,
-        videoUrl: input.videoUrl,
-        visibility: input.visibility,
-        categoryId: input.categoryId,
-        primaryMuscleIds: input.primaryMuscleIds,
-        secondaryMuscleIds: input.secondaryMuscleIds,
-        equipmentIds: input.equipmentIds,
-        tagIds: input.tagIds,
-      });
-      return mapExerciseUsecaseToGql(updated)
-    }
+    const updated = await inversify.updateExerciseUsecase.execute(input.id, {
+      slug: input.slug,
+      locale: input.locale,
+      label: input.label,
+      description: input.description,
+      instructions: input.instructions,
+      level: input.level,
+      series: input.series,
+      repetitions: input.repetitions,
+      charge: input.charge,
+      rest: input.rest,
+      videoUrl: input.videoUrl,
+      visibility: input.visibility,
+      categoryId: input.categoryId,
+      muscleIds: input.muscleIds,
+      equipmentIds: input.equipmentIds,
+      tagIds: input.tagIds,
+    });
+    return mapExerciseUsecaseToGql(updated);
+  }
 
   @Mutation(() => Boolean, { name: 'exercise_softDelete' })
   @Auth(Role.ADMIN, Role.COACH)

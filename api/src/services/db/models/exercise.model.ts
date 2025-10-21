@@ -24,8 +24,7 @@ export interface Exercise {
 
   // Relations
   category: Category;
-  primaryMuscles: Muscle[];
-  secondaryMuscles?: Muscle[];
+  muscles: Muscle[];
   equipment?: Equipment[];
   tags?: Tag[];
 

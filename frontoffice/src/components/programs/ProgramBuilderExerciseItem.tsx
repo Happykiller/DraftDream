@@ -403,22 +403,15 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
               exercise.tags.length > 0 ||
               exercise.equipment.length > 0) && (
               <Stack direction="row" spacing={0.5} flexWrap="wrap">
-                {exercise.muscles.map((muscle) => {
-                  const tooltipTitle =
-                    muscle.role === 'primary'
-                      ? tooltips.primary_muscle_chip.replace('{{label}}', muscle.label)
-                      : tooltips.secondary_muscle_chip.replace('{{label}}', muscle.label);
-                  return (
-                    <Tooltip key={`${exercise.id}-muscle-${muscle.id}`} title={tooltipTitle} arrow>
-                      <Chip
-                        label={muscle.label}
-                        size="small"
-                        color={muscle.role === 'primary' ? 'primary' : 'default'}
-                        variant={muscle.role === 'primary' ? 'filled' : 'outlined'}
-                      />
-                    </Tooltip>
-                  );
-                })}
+                {exercise.muscles.map((muscle) => (
+                  <Tooltip
+                    key={`${exercise.id}-muscle-${muscle.id}`}
+                    title={tooltips.muscle_chip.replace('{{label}}', muscle.label)}
+                    arrow
+                  >
+                    <Chip label={muscle.label} size="small" color="primary" variant="filled" />
+                  </Tooltip>
+                ))}
                 {exercise.tags.map((tag) => (
                   <Tooltip
                     key={`${exercise.id}-tag-${tag.id}`}

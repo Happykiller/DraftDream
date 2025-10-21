@@ -119,8 +119,7 @@ export function useExercises({ page, limit, q }: UseExercisesParams) {
       series: string; repetitions: string; description?: string; instructions?: string;
       charge?: string; rest?: number; videoUrl?: string; visibility: ExerciseVisibility;
       categoryId: string;                           // required
-      primaryMuscleIds: string[];                   // required (non-empty)
-      secondaryMuscleIds?: string[];
+      muscleIds: string[];                          // required (non-empty)
       equipmentIds?: string[];
       tagIds?: string[];
     }) => {
@@ -146,8 +145,7 @@ export function useExercises({ page, limit, q }: UseExercisesParams) {
       series?: string; repetitions?: string; description?: string; instructions?: string;
       charge?: string; rest?: number; videoUrl?: string; visibility?: ExerciseVisibility;
       categoryId?: string | null;
-      primaryMuscleIds?: string[];
-      secondaryMuscleIds?: string[];
+      muscleIds?: string[];
       equipmentIds?: string[];
       tagIds?: string[];
     }) => {

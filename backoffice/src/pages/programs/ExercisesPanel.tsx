@@ -49,8 +49,7 @@ export function ExercisesPanel(): React.JSX.Element {
     videoUrl: v.videoUrl || undefined,
     visibility: v.visibility,
     categoryId: v.category!.id,                        // required
-    primaryMuscleIds: ids(v.primaryMuscles),          // required (non-empty)
-    secondaryMuscleIds: ids(v.secondaryMuscles),
+    muscleIds: ids(v.muscles),                        // required (non-empty)
     equipmentIds: ids(v.equipment),
     tagIds: ids(v.tags),
   });
@@ -71,8 +70,7 @@ export function ExercisesPanel(): React.JSX.Element {
     // visibility modifiable selon schéma (oui) → on l’envoie si différent
     visibility: v.visibility,
     categoryId: v.category ? v.category.id : undefined,
-    primaryMuscleIds: ids(v.primaryMuscles),
-    secondaryMuscleIds: ids(v.secondaryMuscles),
+    muscleIds: ids(v.muscles),
     equipmentIds: ids(v.equipment),
     tagIds: ids(v.tags),
   });

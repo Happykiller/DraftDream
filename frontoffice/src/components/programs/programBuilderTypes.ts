@@ -14,7 +14,7 @@ export type ExerciseLibraryItem = {
   reps: string;
   rest: string;
   description?: string;
-  muscles: { id: string; label: string; role: 'primary' | 'secondary' }[];
+  muscles: { id: string; label: string }[];
   tags: { id: string; label: string }[];
   equipment: { id: string; label: string }[];
 };
@@ -115,8 +115,7 @@ export type BuilderCopy = {
       add_exercise: string;
       edit_exercise: string;
       public_exercise: string;
-      primary_muscle_chip: string;
-      secondary_muscle_chip: string;
+      muscle_chip: string;
       equipment_chip: string;
       tag_chip: string;
       move_session_up: string;

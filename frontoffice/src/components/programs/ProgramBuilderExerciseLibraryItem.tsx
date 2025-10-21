@@ -112,19 +112,10 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
               {exercise.muscles.map((muscle) => (
                 <Tooltip
                   key={`${exercise.id}-muscle-${muscle.id}`}
-                  title={
-                    muscle.role === 'primary'
-                      ? tooltips.primary_muscle_chip.replace('{{label}}', muscle.label)
-                      : tooltips.secondary_muscle_chip.replace('{{label}}', muscle.label)
-                  }
+                  title={tooltips.muscle_chip.replace('{{label}}', muscle.label)}
                   arrow
                 >
-                  <Chip
-                    label={muscle.label}
-                    size="small"
-                    color={muscle.role === 'primary' ? 'primary' : 'default'}
-                    variant={muscle.role === 'primary' ? 'filled' : 'outlined'}
-                  />
+                  <Chip label={muscle.label} size="small" color="primary" variant="filled" />
                 </Tooltip>
               ))}
               {exercise.tags.map((tag) => (
