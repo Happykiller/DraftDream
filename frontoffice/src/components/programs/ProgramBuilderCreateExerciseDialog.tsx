@@ -1,7 +1,10 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
+import Autocomplete, {
+  createFilterOptions,
+  type FilterOptionsState,
+} from '@mui/material/Autocomplete';
 import {
-  Autocomplete,
   Box,
   Button,
   Chip,
@@ -30,6 +33,11 @@ import type { ExerciseCategoryOption } from '@components/programs/programBuilder
 import { slugify } from '@src/utils/slugify';
 
 type Option = { id: string; label: string };
+
+type CreatableOption = Option & {
+  inputValue?: string;
+  isCreateOption?: boolean;
+};
 
 type ProgramBuilderCreateExerciseDialogProps = {
   open: boolean;
@@ -66,17 +74,17 @@ export function ProgramBuilderCreateExerciseDialog({
     ? 'programs-coatch.builder.library.edit_dialog'
     : 'programs-coatch.builder.library.create_dialog';
 
-  const { items: muscles, loading: musclesLoading } = useMuscles({
+  const { items: muscles, loading: musclesLoading, create: createMuscle } = useMuscles({
     page: 1,
     limit: 100,
     q: '',
   });
-  const { items: equipment, loading: equipmentLoading } = useEquipment({
+  const { items: equipment, loading: equipmentLoading, create: createEquipment } = useEquipment({
     page: 1,
     limit: 100,
     q: '',
   });
-  const { items: tags, loading: tagsLoading } = useTags({
+  const { items: tags, loading: tagsLoading, create: createTag } = useTags({
     page: 1,
     limit: 100,
     q: '',
@@ -88,26 +96,56 @@ export function ProgramBuilderCreateExerciseDialog({
       .sort((a, b) => collator.compare(a.label, b.label));
   }, [categoryOptions, collator]);
 
-  const muscleOptions = React.useMemo<Option[]>(() => {
+  const muscleOptions = React.useMemo<CreatableOption[]>(() => {
     return muscles
       .filter((muscle) => !muscle.locale || muscle.locale === locale)
       .map((muscle) => ({ id: muscle.id, label: muscle.label || muscle.slug }))
       .sort((a, b) => collator.compare(a.label, b.label));
   }, [collator, locale, muscles]);
 
-  const equipmentOptions = React.useMemo<Option[]>(() => {
+  const equipmentOptions = React.useMemo<CreatableOption[]>(() => {
     return equipment
       .filter((item) => !item.locale || item.locale === locale)
       .map((item) => ({ id: item.id, label: item.label || item.slug }))
       .sort((a, b) => collator.compare(a.label, b.label));
   }, [collator, equipment, locale]);
 
-  const tagOptions = React.useMemo<Option[]>(() => {
+  const tagOptions = React.useMemo<CreatableOption[]>(() => {
     return tags
       .filter((item) => !item.locale || item.locale === locale)
       .map((item) => ({ id: item.id, label: item.label || item.slug }))
       .sort((a, b) => collator.compare(a.label, b.label));
   }, [collator, locale, tags]);
+
+  const creatableFilter = React.useMemo(
+    () => createFilterOptions<CreatableOption>(),
+    [],
+  );
+
+  const filterCreatableOptions = React.useCallback(
+    (options: CreatableOption[], params: FilterOptionsState<CreatableOption>) => {
+      const filtered = creatableFilter(options, params);
+      const trimmed = params.inputValue.trim();
+      if (!trimmed) {
+        return filtered;
+      }
+      const alreadyExists = options.some(
+        (option) => collator.compare(option.label, trimmed) === 0,
+      );
+      const alreadyInFiltered = filtered.some(
+        (option) => collator.compare(option.label, trimmed) === 0,
+      );
+      if (!alreadyExists && !alreadyInFiltered) {
+        filtered.push({
+          inputValue: trimmed,
+          label: trimmed,
+          isCreateOption: true,
+        });
+      }
+      return filtered;
+    },
+    [collator, creatableFilter],
+  );
 
   const [label, setLabel] = React.useState('');
   const [description, setDescription] = React.useState('');
@@ -122,8 +160,132 @@ export function ProgramBuilderCreateExerciseDialog({
   const [muscleIds, setMuscleIds] = React.useState<string[]>([]);
   const [equipmentIds, setEquipmentIds] = React.useState<string[]>([]);
   const [tagIds, setTagIds] = React.useState<string[]>([]);
+  const [creatingMuscle, setCreatingMuscle] = React.useState(false);
+  const [creatingEquipment, setCreatingEquipment] = React.useState(false);
+  const [creatingTag, setCreatingTag] = React.useState(false);
   const [submitting, setSubmitting] = React.useState(false);
   const previousExerciseIdRef = React.useRef<string | null>(null);
+
+  const handleCreatableSelection = React.useCallback(
+    async (
+      next: CreatableOption[],
+      setIds: React.Dispatch<React.SetStateAction<string[]>>,
+      setPending: React.Dispatch<React.SetStateAction<boolean>>,
+      createItem: (label: string) => Promise<Option | undefined>,
+    ) => {
+      const sanitized = next.filter((option) => !option.isCreateOption);
+      const sanitizedIds = Array.from(new Set(sanitized.map((option) => option.id)));
+      const candidate = next.find((option) => option.isCreateOption && option.inputValue);
+      if (!candidate) {
+        setIds(sanitizedIds);
+        return;
+      }
+      const trimmed = candidate.inputValue?.trim();
+      if (!trimmed) {
+        setIds(sanitizedIds);
+        return;
+      }
+      setPending(true);
+      try {
+        const created = await createItem(trimmed);
+        if (!created) {
+          setIds(sanitizedIds);
+          return;
+        }
+        const updated = Array.from(new Set([...sanitizedIds, created.id]));
+        setIds(updated);
+      } catch (_error: unknown) {
+        setIds(sanitizedIds);
+      } finally {
+        setPending(false);
+      }
+    },
+    [],
+  );
+
+  const createMuscleOption = React.useCallback(
+    async (nextLabel: string) => {
+      const trimmed = nextLabel.trim();
+      if (!trimmed) {
+        return undefined;
+      }
+      try {
+        const created = await createMuscle({
+          slug: slugify(trimmed),
+          locale,
+          label: trimmed,
+          visibility: 'PRIVATE',
+        });
+        return { id: created.id, label: created.label || trimmed };
+      } catch (_error: unknown) {
+        return undefined;
+      }
+    },
+    [createMuscle, locale],
+  );
+
+  const createEquipmentOption = React.useCallback(
+    async (nextLabel: string) => {
+      const trimmed = nextLabel.trim();
+      if (!trimmed) {
+        return undefined;
+      }
+      try {
+        const created = await createEquipment({
+          slug: slugify(trimmed),
+          locale,
+          label: trimmed,
+          visibility: 'PRIVATE',
+        });
+        return { id: created.id, label: created.label || trimmed };
+      } catch (_error: unknown) {
+        return undefined;
+      }
+    },
+    [createEquipment, locale],
+  );
+
+  const createTagOption = React.useCallback(
+    async (nextLabel: string) => {
+      const trimmed = nextLabel.trim();
+      if (!trimmed) {
+        return undefined;
+      }
+      try {
+        const created = await createTag({
+          slug: slugify(trimmed),
+          locale,
+          label: trimmed,
+          visibility: 'PRIVATE',
+        });
+        return { id: created.id, label: created.label || trimmed };
+      } catch (_error: unknown) {
+        return undefined;
+      }
+    },
+    [createTag, locale],
+  );
+
+  const handleMusclesChange = React.useCallback(
+    (_event: React.SyntheticEvent<Element, Event>, next: CreatableOption[]) => {
+      void handleCreatableSelection(next, setMuscleIds, setCreatingMuscle, createMuscleOption);
+    },
+    [createMuscleOption, handleCreatableSelection, setMuscleIds],
+  );
+
+  const handleEquipmentChange = React.useCallback(
+    (_event: React.SyntheticEvent<Element, Event>, next: CreatableOption[]) => {
+      void handleCreatableSelection(next, setEquipmentIds, setCreatingEquipment, createEquipmentOption);
+    },
+    [createEquipmentOption, handleCreatableSelection, setEquipmentIds],
+  );
+
+  const handleTagsChange = React.useCallback(
+    (_event: React.SyntheticEvent<Element, Event>, next: CreatableOption[]) => {
+      void handleCreatableSelection(next, setTagIds, setCreatingTag, createTagOption);
+    },
+    [createTagOption, handleCreatableSelection, setTagIds],
+  );
 
   React.useEffect(() => {
     if (open) {
@@ -142,6 +304,9 @@ export function ProgramBuilderCreateExerciseDialog({
     setMuscleIds([]);
     setEquipmentIds([]);
     setTagIds([]);
+    setCreatingMuscle(false);
+    setCreatingEquipment(false);
+    setCreatingTag(false);
     setSubmitting(false);
     previousExerciseIdRef.current = null;
   }, [open]);
@@ -207,6 +372,9 @@ export function ProgramBuilderCreateExerciseDialog({
 
   const isSubmitDisabled =
     submitting ||
+    creatingMuscle ||
+    creatingEquipment ||
+    creatingTag ||
     !label.trim() ||
     !series.trim() ||
     !repetitions.trim() ||
@@ -331,17 +499,17 @@ export function ProgramBuilderCreateExerciseDialog({
     return categoryOptionsByLocale.find((option) => option.id === categoryId) ?? null;
   }, [categoryId, categoryOptionsByLocale]);
 
-  const selectedMuscles = React.useMemo<Option[]>(() => {
+  const selectedMuscles = React.useMemo<CreatableOption[]>(() => {
     const map = new Map(muscleIds.map((id) => [id, id]));
     return muscleOptions.filter((option) => map.has(option.id));
   }, [muscleIds, muscleOptions]);
 
-  const selectedEquipment = React.useMemo<Option[]>(() => {
+  const selectedEquipment = React.useMemo<CreatableOption[]>(() => {
     const map = new Map(equipmentIds.map((id) => [id, id]));
     return equipmentOptions.filter((option) => map.has(option.id));
   }, [equipmentIds, equipmentOptions]);
 
-  const selectedTags = React.useMemo<Option[]>(() => {
+  const selectedTags = React.useMemo<CreatableOption[]>(() => {
     const map = new Map(tagIds.map((id) => [id, id]));
     return tagOptions.filter((option) => map.has(option.id));
   }, [tagIds, tagOptions]);
@@ -420,6 +588,27 @@ export function ProgramBuilderCreateExerciseDialog({
     [t],
   );
 
+  const creationOptionCopy = React.useMemo(
+    () => ({
+      muscle: (value: string) =>
+        t('programs-coatch.builder.library.create_dialog.create_option.muscle', {
+          defaultValue: `Create muscle "${value}"`,
+          label: value,
+        }),
+      equipment: (value: string) =>
+        t('programs-coatch.builder.library.create_dialog.create_option.equipment', {
+          defaultValue: `Create equipment "${value}"`,
+          label: value,
+        }),
+      tag: (value: string) =>
+        t('programs-coatch.builder.library.create_dialog.create_option.tag', {
+          defaultValue: `Create tag "${value}"`,
+          label: value,
+        }),
+    }),
+    [t],
+  );
+
   return (
     <Dialog
       open={open}
@@ -485,10 +674,26 @@ export function ProgramBuilderCreateExerciseDialog({
                 multiple
                 options={muscleOptions}
                 value={selectedMuscles}
-                onChange={(_event, next) => setMuscleIds(next.map((option) => option.id))}
-                loading={musclesLoading}
-                getOptionLabel={(option) => option.label}
+                onChange={handleMusclesChange}
+                filterOptions={filterCreatableOptions}
+                loading={musclesLoading || creatingMuscle}
+                getOptionLabel={(option) => option.inputValue ?? option.label}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
+                renderOption={(props, option) => {
+                  const { key, ...optionProps } = props as typeof props & {
+                    key: React.Key;
+                  };
+                  const optionLabel =
+                    option.isCreateOption && option.inputValue
+                      ? creationOptionCopy.muscle(option.inputValue)
+                      : option.label;
+
+                  return (
+                    <li {...optionProps} key={(option.id as React.Key) ?? key}>
+                      {optionLabel}
+                    </li>
+                  );
+                }}
                 renderTags={(tagValue, getTagProps) =>
                   tagValue.map((option, index) => (
                     <Chip
@@ -583,10 +788,26 @@ export function ProgramBuilderCreateExerciseDialog({
                 multiple
                 options={equipmentOptions}
                 value={selectedEquipment}
-                onChange={(_event, next) => setEquipmentIds(next.map((option) => option.id))}
-                loading={equipmentLoading}
-                getOptionLabel={(option) => option.label}
+                onChange={handleEquipmentChange}
+                filterOptions={filterCreatableOptions}
+                loading={equipmentLoading || creatingEquipment}
+                getOptionLabel={(option) => option.inputValue ?? option.label}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
+                renderOption={(props, option) => {
+                  const { key, ...optionProps } = props as typeof props & {
+                    key: React.Key;
+                  };
+                  const optionLabel =
+                    option.isCreateOption && option.inputValue
+                      ? creationOptionCopy.equipment(option.inputValue)
+                      : option.label;
+
+                  return (
+                    <li {...optionProps} key={(option.id as React.Key) ?? key}>
+                      {optionLabel}
+                    </li>
+                  );
+                }}
                 renderTags={(tagValue, getTagProps) =>
                   tagValue.map((option, index) => (
                     <Chip
@@ -605,10 +826,26 @@ export function ProgramBuilderCreateExerciseDialog({
                 multiple
                 options={tagOptions}
                 value={selectedTags}
-                onChange={(_event, next) => setTagIds(next.map((option) => option.id))}
-                loading={tagsLoading}
-                getOptionLabel={(option) => option.label}
+                onChange={handleTagsChange}
+                filterOptions={filterCreatableOptions}
+                loading={tagsLoading || creatingTag}
+                getOptionLabel={(option) => option.inputValue ?? option.label}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
+                renderOption={(props, option) => {
+                  const { key, ...optionProps } = props as typeof props & {
+                    key: React.Key;
+                  };
+                  const optionLabel =
+                    option.isCreateOption && option.inputValue
+                      ? creationOptionCopy.tag(option.inputValue)
+                      : option.label;
+
+                  return (
+                    <li {...optionProps} key={(option.id as React.Key) ?? key}>
+                      {optionLabel}
+                    </li>
+                  );
+                }}
                 renderTags={(tagValue, getTagProps) =>
                   tagValue.map((option, index) => (
                     <Chip

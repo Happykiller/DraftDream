@@ -28,7 +28,7 @@ export class TagResolver {
   }
 
   @Mutation(() => TagGql, { name: 'tag_create', nullable: true })
-  @Auth(Role.ADMIN)
+  @Auth(Role.ADMIN, Role.COACH)
   async tag_create(
     @Args('input') input: CreateTagInput,
     @Context('req') req: any,
@@ -70,7 +70,7 @@ export class TagResolver {
   }
 
   @Mutation(() => TagGql, { name: 'tag_update', nullable: true })
-  @Auth(Role.ADMIN)
+  @Auth(Role.ADMIN, Role.COACH)
   async tag_update(@Args('input') input: UpdateTagInput): Promise<TagGql | null> {
     const updated = await inversify.updateTagUsecase.execute({
       id: input.id,
@@ -83,7 +83,7 @@ export class TagResolver {
   }
 
   @Mutation(() => Boolean, { name: 'tag_delete' })
-  @Auth(Role.ADMIN)
+  @Auth(Role.ADMIN, Role.COACH)
   async tag_delete(@Args('id', { type: () => ID }) id: string): Promise<boolean> {
     return inversify.deleteTagUsecase.execute({ id });
   }

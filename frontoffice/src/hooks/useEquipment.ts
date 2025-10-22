@@ -104,14 +104,17 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
       visibility: EquipmentVisibility;
     }) => {
       try {
-        const { errors } = await gql.send<CreatePayload>({
+        const { data, errors } = await gql.send<CreatePayload>({
           query: CREATE_M,
           variables: { input },
           operationName: 'CreateEquipment',
         });
         if (errors?.length) throw new Error(errors[0].message);
+        const created = data?.equipment_create;
+        if (!created) throw new Error('CreateEquipment returned no data');
         flashSuccess('Equipment created');
         await load();
+        return created;
       } catch (e: any) {
         flashError(e?.message ?? 'Create failed');
         throw e;

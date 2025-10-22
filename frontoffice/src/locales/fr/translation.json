@@ -137,6 +137,11 @@
           "helper": {
             "muscles": "Sélectionnez au moins un muscle."
           },
+          "create_option": {
+            "muscle": "Créer le muscle \"{{label}}\"",
+            "equipment": "Créer l'équipement \"{{label}}\"",
+            "tag": "Créer le tag \"{{label}}\""
+          },
           "levels": {
             "beginner": "Débutant",
             "intermediate": "Intermédiaire",
