@@ -16,7 +16,7 @@ export interface TagDialogProps {
   mode: 'create' | 'edit';
   initial?: Tag;
   onClose: () => void;
-  onSubmit: (values: TagDialogValues) => Promise<void> | void;
+  onSubmit: (values: TagDialogValues) => Promise<unknown> | void;
 }
 
 const DEFAULTS: TagDialogValues = { slug: '', label: '', locale: 'en', visibility: 'PRIVATE' };

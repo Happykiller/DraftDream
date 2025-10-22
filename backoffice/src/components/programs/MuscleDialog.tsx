@@ -17,7 +17,7 @@ export interface MuscleDialogProps {
   mode: 'create' | 'edit';
   initial?: Muscle;
   onClose: () => void;
-  onSubmit: (values: MuscleDialogValues) => Promise<void> | void;
+  onSubmit: (values: MuscleDialogValues) => Promise<unknown> | void;
 }
 
 const DEFAULTS: MuscleDialogValues = { slug: '', label: '', locale: 'en', visibility: 'PRIVATE' };

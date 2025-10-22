@@ -16,7 +16,7 @@ export interface EquipmentDialogProps {
   mode: 'create' | 'edit';
   initial?: Equipment;
   onClose: () => void;
-  onSubmit: (values: EquipmentDialogValues) => Promise<void> | void;
+  onSubmit: (values: EquipmentDialogValues) => Promise<unknown> | void;
 }
 
 const DEFAULTS: EquipmentDialogValues = { slug: '', label: '', locale: 'en', visibility: 'PRIVATE' };

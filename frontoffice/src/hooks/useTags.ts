@@ -103,14 +103,17 @@ export function useTags({ page, limit, q }: UseTagsParams) {
       visibility: TagVisibility;
     }) => {
       try {
-        const { errors } = await gql.send<CreatePayload>({
+        const { data, errors } = await gql.send<CreatePayload>({
           query: CREATE_M,
           variables: { input },
           operationName: 'CreateTag',
         });
         if (errors?.length) throw new Error(errors[0].message);
+        const created = data?.tag_create;
+        if (!created) throw new Error('CreateTag returned no data');
         flashSuccess('Tag created');
         await load();
+        return created;
       } catch (e: any) {
         flashError(e?.message ?? 'Create failed');
         throw e;

@@ -105,14 +105,17 @@ export function useMuscles({ page, limit, q }: UseMusclesParams) {
       visibility: MuscleVisibility;
     }) => {
       try {
-        const { errors } = await gql.send<CreatePayload>({
+        const { data, errors } = await gql.send<CreatePayload>({
           query: CREATE_M,
           variables: { input },
           operationName: 'CreateMuscle',
         });
         if (errors?.length) throw new Error(errors[0].message);
+        const created = data?.muscle_create;
+        if (!created) throw new Error('CreateMuscle returned no data');
         flashSuccess('Muscle created');
         await load();
+        return created;
       } catch (e: any) {
         flashError(e?.message ?? 'Create failed');
         throw e;
