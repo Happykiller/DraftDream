@@ -28,7 +28,7 @@ export class EquipmentResolver {
   }
 
   @Mutation(() => EquipmentGql, { name: 'equipment_create', nullable: true })
-  @Auth(Role.ADMIN)
+  @Auth(Role.ADMIN, Role.COACH)
   async equipment_create(
     @Args('input') input: CreateEquipmentInput,
     @Context('req') req: any,
@@ -72,7 +72,7 @@ export class EquipmentResolver {
   }
 
   @Mutation(() => EquipmentGql, { name: 'equipment_update', nullable: true })
-  @Auth(Role.ADMIN)
+  @Auth(Role.ADMIN, Role.COACH)
   async equipment_update(
     @Args('input') input: UpdateEquipmentInput,
   ): Promise<EquipmentGql | null> {
@@ -86,7 +86,7 @@ export class EquipmentResolver {
   }
 
   @Mutation(() => Boolean, { name: 'equipment_delete' })
-  @Auth(Role.ADMIN)
+  @Auth(Role.ADMIN, Role.COACH)
   async equipment_delete(@Args('id', { type: () => ID }) id: string): Promise<boolean> {
     return inversify.deleteEquipmentUsecase.execute({ id });
   }

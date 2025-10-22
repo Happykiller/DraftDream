@@ -29,7 +29,7 @@ export class MuscleResolver {
   }
 
   @Mutation(() => MuscleGql, { name: 'muscle_create', nullable: true })
-  @Auth(Role.ADMIN)
+  @Auth(Role.ADMIN, Role.COACH)
   async muscle_create(
     @Args('input') input: CreateMuscleInput,
     @Context('req') req: any,
@@ -75,7 +75,7 @@ export class MuscleResolver {
   }
 
   @Mutation(() => MuscleGql, { name: 'muscle_update', nullable: true })
-  @Auth(Role.ADMIN)
+  @Auth(Role.ADMIN, Role.COACH)
   async muscle_update(@Args('input') input: UpdateMuscleInput): Promise<MuscleGql | null> {
     const updated = await inversify.updateMuscleUsecase.execute({
       id: input.id,
@@ -87,7 +87,7 @@ export class MuscleResolver {
   }
 
   @Mutation(() => Boolean, { name: 'muscle_delete' })
-  @Auth(Role.ADMIN)
+  @Auth(Role.ADMIN, Role.COACH)
   async muscle_delete(@Args('id', { type: () => ID }) id: string): Promise<boolean> {
     return inversify.deleteMuscleUsecase.execute({ id });
   }
