@@ -1,0 +1,608 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AddressGql {
+  name: String!
+  city: String!
+  code: String!
+  country: String!
+}
+
+type CompanyGql {
+  name: String!
+  address: AddressGql
+}
+
+type UserGql {
+  id: ID!
+  type: String!
+  first_name: String!
+  last_name: String!
+  email: String!
+  phone: String
+  address: AddressGql
+  company: CompanyGql
+  createdAt: DateTime
+  updatedAt: DateTime
+  is_active: Boolean!
+  createdBy: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type UserPageGql {
+  items: [UserGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
+type TagGql {
+  id: ID!
+  slug: String!
+  locale: String!
+  label: String!
+  visibility: TagVisibility!
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creator: UserGql
+}
+
+enum TagVisibility {
+  PRIVATE
+  PUBLIC
+}
+
+type TagListGql {
+  items: [TagGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
+type SessionGql {
+  access_token: String!
+}
+
+type System {
+  message: String!
+}
+
+type MuscleGql {
+  id: ID!
+  slug: String!
+  locale: String!
+  label: String!
+  visibility: MuscleVisibility!
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creator: UserGql
+}
+
+enum MuscleVisibility {
+  PRIVATE
+  PUBLIC
+}
+
+type MuscleListGql {
+  items: [MuscleGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
+type SessionExerciseSummaryGql {
+  id: ID!
+  label: String!
+}
+
+type SessionSportGql {
+  id: ID!
+  slug: String!
+  locale: String!
+  label: String!
+  durationMin: Int!
+  description: String
+  exerciseIds: [ID!]!
+  exercises: [SessionExerciseSummaryGql!]!
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creator: UserGql
+}
+
+type SessionListGql {
+  items: [SessionSportGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
+type ProgramSessionExerciseGql {
+  id: ID!
+  templateExerciseId: String
+  label: String!
+  description: String
+  instructions: String
+  series: String
+  repetitions: String
+  charge: String
+  restSeconds: Float
+  videoUrl: String
+  level: String
+}
+
+type ProgramSessionGql {
+  id: ID!
+  templateSessionId: String
+  slug: String
+  locale: String
+  label: String!
+  durationMin: Int!
+  description: String
+  exercises: [ProgramSessionExerciseGql!]!
+}
+
+type ProgramGql {
+  id: ID!
+  slug: String!
+  locale: String!
+  label: String!
+  duration: Int!
+  frequency: Int!
+  description: String
+  sessions: [ProgramSessionGql!]!
+  userId: String
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creator: UserGql
+  athlete: UserGql
+}
+
+type ProgramListGql {
+  items: [ProgramGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
+type CategoryGql {
+  id: ID!
+  slug: String!
+  locale: String!
+  label: String!
+  visibility: CategoryVisibility!
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creator: UserGql
+}
+
+enum CategoryVisibility {
+  PRIVATE
+  PUBLIC
+}
+
+type CategoryListGql {
+  items: [CategoryGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
+type EquipmentGql {
+  id: ID!
+  slug: String!
+  locale: String!
+  label: String!
+  visibility: EquipmentVisibility!
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creator: UserGql
+}
+
+enum EquipmentVisibility {
+  PRIVATE
+  PUBLIC
+}
+
+type EquipmentListGql {
+  items: [EquipmentGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
+type ExerciseGql {
+  id: ID!
+  slug: String!
+  locale: String!
+  label: String!
+  description: String
+  instructions: String
+  level: ExerciseLevel!
+  series: String!
+  repetitions: String!
+  charge: String
+  rest: Int
+  videoUrl: String
+  visibility: ExerciseVisibility!
+  categoryId: ID!
+  muscleIds: [ID!]!
+  equipmentIds: [ID!]
+  tagIds: [ID!]
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  category: CategoryGql
+  muscles: [MuscleGql!]!
+  equipment: [EquipmentGql!]
+  tags: [TagGql!]
+  creator: UserGql
+}
+
+enum ExerciseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum ExerciseVisibility {
+  PRIVATE
+  PUBLIC
+}
+
+type ExerciseListGql {
+  items: [ExerciseGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
+type Query {
+  tag_get(id: ID!): TagGql
+  tag_list(input: ListTagsInput): TagListGql!
+  me: UserGql!
+  user_list(input: ListUsersInput): UserPageGql!
+  version: System!
+  db_test: System!
+  muscle_get(input: GetMuscleInput!): MuscleGql
+  muscle_list(input: ListMusclesInput): MuscleListGql!
+  session_get(id: ID!): SessionSportGql
+  session_list(input: ListSessionsInput): SessionListGql!
+  program_get(id: ID!): ProgramGql
+  program_list(input: ListProgramsInput): ProgramListGql!
+  category_get(id: ID!): CategoryGql
+  category_list(input: ListCategoriesInput): CategoryListGql!
+  exercise_get(id: ID!): ExerciseGql
+  exercise_list(input: ListExercisesInput): ExerciseListGql!
+  equipment_get(id: ID!): EquipmentGql
+  equipment_list(input: ListEquipmentInput): EquipmentListGql!
+}
+
+input ListTagsInput {
+  q: String
+  locale: String
+  createdBy: String
+  visibility: TagVisibility
+  limit: Int
+  page: Int
+}
+
+input ListUsersInput {
+  q: String
+  type: String
+  companyName: String
+  is_active: Boolean
+  createdBy: String
+  page: Float
+  limit: Float
+}
+
+input GetMuscleInput {
+  id: String
+}
+
+input ListMusclesInput {
+  q: String
+  locale: String
+  createdBy: String
+  visibility: MuscleVisibility
+  limit: Int
+  page: Int
+}
+
+input ListSessionsInput {
+  q: String
+  locale: String
+  createdBy: String
+  limit: Int
+  page: Int
+}
+
+input ListProgramsInput {
+  q: String
+  locale: String
+  createdBy: String
+  userId: String
+  limit: Int
+  page: Int
+}
+
+input ListCategoriesInput {
+  q: String
+  locale: String
+  createdBy: String
+  visibility: CategoryVisibility
+  limit: Int
+  page: Int
+}
+
+input ListExercisesInput {
+  q: String
+  locale: String
+  createdBy: String
+  visibility: ExerciseVisibility
+  level: ExerciseLevel
+  categoryId: ID
+  limit: Int
+  page: Int
+}
+
+input ListEquipmentInput {
+  q: String
+  locale: String
+  createdBy: String
+  visibility: EquipmentVisibility
+  limit: Int
+  page: Int
+}
+
+type Mutation {
+  tag_create(input: CreateTagInput!): TagGql
+  tag_update(input: UpdateTagInput!): TagGql
+  tag_delete(id: ID!): Boolean!
+  auth(input: AuthInput!): SessionGql!
+  user_create(input: CreateUserInput!): UserGql!
+  user_update(input: UpdateUserInput!): UserGql!
+  muscle_create(input: CreateMuscleInput!): MuscleGql
+  muscle_update(input: UpdateMuscleInput!): MuscleGql
+  muscle_delete(id: ID!): Boolean!
+  session_create(input: CreateSessionInput!): SessionSportGql
+  session_update(input: UpdateSessionInput!): SessionSportGql
+  session_softDelete(id: ID!): Boolean!
+  session_delete(id: ID!): Boolean!
+  program_create(input: CreateProgramInput!): ProgramGql
+  program_update(input: UpdateProgramInput!): ProgramGql
+  program_softDelete(id: ID!): Boolean!
+  program_delete(id: ID!): Boolean!
+  category_create(input: CreateCategoryInput!): CategoryGql
+  category_update(input: UpdateCategoryInput!): CategoryGql
+  category_delete(id: ID!): Boolean!
+  exercise_create(input: CreateExerciseInput!): ExerciseGql
+  exercise_update(input: UpdateExerciseInput!): ExerciseGql
+  exercise_softDelete(id: ID!): Boolean!
+  exercise_delete(id: ID!): Boolean!
+  equipment_create(input: CreateEquipmentInput!): EquipmentGql
+  equipment_update(input: UpdateEquipmentInput!): EquipmentGql
+  equipment_delete(id: ID!): Boolean!
+}
+
+input CreateTagInput {
+  slug: String!
+  locale: String!
+  label: String!
+  visibility: TagVisibility!
+}
+
+input UpdateTagInput {
+  id: ID!
+  slug: String
+  locale: String
+  label: String
+  visibility: TagVisibility
+}
+
+input AuthInput {
+  email: String!
+  password: String!
+}
+
+input CreateUserInput {
+  type: String!
+  first_name: String!
+  last_name: String!
+  email: String!
+  phone: String
+  address: AddressInput
+  password: String!
+  confirm_password: String
+  company: CompanyInput
+  is_active: Boolean
+}
+
+input AddressInput {
+  name: String!
+  city: String!
+  code: String!
+  country: String!
+}
+
+input CompanyInput {
+  name: String!
+  address: AddressInput
+}
+
+input UpdateUserInput {
+  id: ID!
+  type: String
+  first_name: String
+  last_name: String
+  email: String
+  phone: String
+  address: AddressInput
+  company: CompanyInput
+  is_active: Boolean
+}
+
+input CreateMuscleInput {
+  slug: String!
+  locale: String!
+  label: String!
+  visibility: MuscleVisibility!
+}
+
+input UpdateMuscleInput {
+  id: ID!
+  slug: String
+  locale: String
+  label: String
+}
+
+input CreateSessionInput {
+  slug: String!
+  locale: String!
+  label: String!
+  durationMin: Int!
+  description: String
+  exerciseIds: [ID!]!
+}
+
+input UpdateSessionInput {
+  id: ID!
+  slug: String
+  locale: String
+  label: String
+  durationMin: Int
+  description: String
+  exerciseIds: [ID!]
+}
+
+input CreateProgramInput {
+  slug: String
+  locale: String!
+  label: String!
+  duration: Int!
+  frequency: Int!
+  description: String
+
+  """Deprecated: use sessions instead."""
+  sessionIds: [ID!]
+  sessions: [ProgramSessionInput!]
+  userId: String
+}
+
+input ProgramSessionInput {
+  id: String
+  templateSessionId: String
+  slug: String
+  locale: String
+  label: String!
+  durationMin: Int!
+  description: String
+  exercises: [ProgramSessionExerciseInput!]!
+}
+
+input ProgramSessionExerciseInput {
+  id: String
+  templateExerciseId: String
+  label: String!
+  description: String
+  instructions: String
+  series: String
+  repetitions: String
+  charge: String
+  restSeconds: Float
+  videoUrl: String
+  level: String
+}
+
+input UpdateProgramInput {
+  id: ID!
+  slug: String
+  locale: String
+  label: String
+  duration: Int
+  frequency: Int
+  description: String
+
+  """Deprecated: use sessions instead."""
+  sessionIds: [ID!]
+  sessions: [ProgramSessionInput!]
+  userId: String
+}
+
+input CreateCategoryInput {
+  slug: String!
+  locale: String!
+  label: String!
+  visibility: CategoryVisibility!
+}
+
+input UpdateCategoryInput {
+  id: ID!
+  slug: String
+  locale: String
+  label: String
+}
+
+input CreateExerciseInput {
+  slug: String!
+  locale: String!
+  label: String!
+  level: ExerciseLevel!
+  series: String!
+  repetitions: String!
+  description: String
+  instructions: String
+  charge: String
+  rest: Int
+  videoUrl: String
+  visibility: ExerciseVisibility!
+  categoryId: ID!
+  muscleIds: [ID!]!
+  equipmentIds: [ID!]
+  tagIds: [ID!]
+}
+
+input UpdateExerciseInput {
+  id: ID!
+  slug: String
+  locale: String
+  label: String
+  level: ExerciseLevel
+  series: String
+  repetitions: String
+  description: String
+  instructions: String
+  charge: String
+  rest: Int
+  videoUrl: String
+  visibility: ExerciseVisibility
+  categoryId: ID
+  muscleIds: [ID!]
+  equipmentIds: [ID!]
+  tagIds: [ID!]
+}
+
+input CreateEquipmentInput {
+  slug: String!
+  locale: String!
+  label: String!
+  visibility: EquipmentVisibility!
+}
+
+input UpdateEquipmentInput {
+  id: ID!
+  slug: String
+  locale: String
+  label: String
+}
