@@ -190,21 +190,27 @@ export function ProgramBuilderPanel({
   const debouncedStructureTitleDraft = useDebouncedValue(structureTitleDraft, 300);
   const debouncedStructureDescriptionDraft = useDebouncedValue(structureDescriptionDraft, 300);
 
+  const resolvedStructureTitle = React.useMemo(() => {
+    const candidate = program?.label?.trim();
+    return candidate && candidate.length > 0 ? candidate : builderCopy.structure.title;
+  }, [builderCopy.structure.title, program]);
+
+  const resolvedStructureDescription = React.useMemo(() => {
+    const base = (program?.description ?? '').trim();
+    const fallback = builderCopy.structure.header_description ?? '';
+    return base.length > 0 ? base : fallback;
+  }, [builderCopy.structure.header_description, program]);
+
   React.useEffect(() => {
     setIsEditingStructureTitle(false);
     setIsEditingStructureDescription(false);
   }, [program]);
 
   React.useEffect(() => {
-    if (isEditingStructureTitle) {
-      return;
-    }
-    const candidate = program?.label?.trim();
-    const nextTitle = candidate && candidate.length > 0 ? candidate : builderCopy.structure.title;
-    setStructureTitle(nextTitle);
-    setStructureTitleDraft(nextTitle);
-    updateProgramName(nextTitle);
-  }, [builderCopy.structure.title, isEditingStructureTitle, program, updateProgramName]);
+    setStructureTitle(resolvedStructureTitle);
+    setStructureTitleDraft(resolvedStructureTitle);
+    updateProgramName(resolvedStructureTitle);
+  }, [resolvedStructureTitle, updateProgramName]);
 
   React.useEffect(() => {
     if (!isEditingStructureTitle) {
@@ -222,28 +228,23 @@ export function ProgramBuilderPanel({
   ]);
 
   React.useEffect(() => {
-    if (isEditingStructureDescription) {
-      const trimmed = debouncedStructureDescriptionDraft.trim();
-      const fallback =
-        structureDescription ||
-        program?.description ||
-        builderCopy.structure.header_description ||
-        '';
-      updateProgramDescription(trimmed || fallback);
+    setStructureDescription(resolvedStructureDescription);
+    setStructureDescriptionDraft(resolvedStructureDescription);
+    updateProgramDescription(resolvedStructureDescription);
+  }, [resolvedStructureDescription, updateProgramDescription]);
+
+  React.useEffect(() => {
+    if (!isEditingStructureDescription) {
       return;
     }
-
-    const base = (program?.description ?? '').trim();
-    const fallback = builderCopy.structure.header_description ?? '';
-    const nextDescription = base.length > 0 ? base : fallback;
-    setStructureDescription(nextDescription);
-    setStructureDescriptionDraft(nextDescription);
-    updateProgramDescription(nextDescription);
+    const trimmed = debouncedStructureDescriptionDraft.trim();
+    const fallback =
+      structureDescription || builderCopy.structure.header_description || '';
+    updateProgramDescription(trimmed || fallback);
   }, [
     builderCopy.structure.header_description,
     debouncedStructureDescriptionDraft,
     isEditingStructureDescription,
-    program,
     structureDescription,
     updateProgramDescription,
   ]);
