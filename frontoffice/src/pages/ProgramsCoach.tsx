@@ -15,13 +15,14 @@ import { Add } from '@mui/icons-material';
 import { ProgramBuilderPanel, type BuilderCopy } from '@src/components/programs/ProgramBuilderPanel';
 import { ProgramCard } from '@src/components/programs/ProgramCard';
 
-import { usePrograms } from '@src/hooks/usePrograms';
+import { usePrograms, type Program } from '@src/hooks/usePrograms';
 
 export function ProgramsCoach(): React.JSX.Element {
   const { t } = useTranslation();
   const theme = useTheme();
 
   const [builderOpen, setBuilderOpen] = React.useState<boolean>(false);
+  const [editingProgram, setEditingProgram] = React.useState<Program | null>(null);
 
   const builderCopy = t('programs-coatch.builder', {
     returnObjects: true,
@@ -33,7 +34,7 @@ export function ProgramsCoach(): React.JSX.Element {
     q: '',
   });
 
-  const handleProgramCreated = React.useCallback(() => {
+  const handleProgramSaved = React.useCallback(() => {
     void reload();
   }, [reload]);
 
@@ -43,6 +44,21 @@ export function ProgramsCoach(): React.JSX.Element {
     },
     [remove],
   );
+
+  const handleOpenBuilderForCreate = React.useCallback(() => {
+    setEditingProgram(null);
+    setBuilderOpen(true);
+  }, []);
+
+  const handleEditProgram = React.useCallback((program: Program) => {
+    setEditingProgram(program);
+    setBuilderOpen(true);
+  }, []);
+
+  const handleCloseBuilder = React.useCallback(() => {
+    setBuilderOpen(false);
+    setEditingProgram(null);
+  }, []);
 
   const showPlaceholder = !builderOpen && !loading && programs.length === 0;
 
@@ -67,7 +83,7 @@ export function ProgramsCoach(): React.JSX.Element {
               variant="contained"
               color="primary"
               startIcon={<Add fontSize="small" />}
-              onClick={() => setBuilderOpen(true)}
+              onClick={handleOpenBuilderForCreate}
             >
               {t('programs-coatch.actions.open_builder')}
             </Button>
@@ -78,8 +94,10 @@ export function ProgramsCoach(): React.JSX.Element {
       {builderOpen ? (
         <ProgramBuilderPanel
           builderCopy={builderCopy}
-          onCancel={() => setBuilderOpen(false)}
-          onCreated={handleProgramCreated}
+          onCancel={handleCloseBuilder}
+          onCreated={handleProgramSaved}
+          onUpdated={handleProgramSaved}
+          program={editingProgram ?? undefined}
         />
       ) : (
         <Stack spacing={3}>
@@ -93,7 +111,11 @@ export function ProgramsCoach(): React.JSX.Element {
             <Grid container spacing={3}>
               {programs.map((program) => (
                 <Grid size={{ xs: 12, sm: 6, lg: 3 }} key={program.id}>
-                  <ProgramCard program={program} onDelete={handleDeleteProgram} />
+                  <ProgramCard
+                    program={program}
+                    onDelete={handleDeleteProgram}
+                    onEdit={handleEditProgram}
+                  />
                 </Grid>
               ))}
             </Grid>

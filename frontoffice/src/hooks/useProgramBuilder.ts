@@ -5,11 +5,12 @@ import { useSessions } from '@hooks/useSessions';
 import {
   useExercises,
   type Exercise,
+  type ExerciseLevel,
   type ExerciseVisibility,
 } from '@hooks/useExercises';
 import { useCategories } from '@hooks/useCategories';
 import { useUsers, type User } from '@src/hooks/useUsers';
-import { usePrograms } from '@src/hooks/usePrograms';
+import { usePrograms, type Program } from '@src/hooks/usePrograms';
 import { useFlashStore } from '@src/hooks/useFlashStore';
 import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
 import { slugify } from '@src/utils/slugify';
@@ -100,6 +101,7 @@ type UseProgramBuilderResult = {
   updateExercise: ReturnType<typeof useExercises>['update'];
   registerExercise: (exercise: Exercise) => void;
   getRawExerciseById: (exerciseId: string) => Exercise | undefined;
+  mode: 'create' | 'edit';
 };
 
 /**
@@ -109,10 +111,18 @@ type UseProgramBuilderResult = {
 export function useProgramBuilder(
   builderCopy: BuilderCopy,
   onCancel: () => void,
-  onCreated: () => void,
+  options?: {
+    onCreated?: () => void;
+    onUpdated?: () => void;
+    program?: Program;
+  },
 ): UseProgramBuilderResult {
   const { t, i18n } = useTranslation();
   const flashError = useFlashStore((state) => state.error);
+  const onCreated = options?.onCreated;
+  const onUpdated = options?.onUpdated;
+  const program = options?.program;
+  const mode: 'create' | 'edit' = program ? 'edit' : 'create';
 
   const [usersQ, setUsersQ] = React.useState('');
   const [selectedAthlete, setSelectedAthlete] = React.useState<User | null>(null);
@@ -140,8 +150,11 @@ export function useProgramBuilder(
   }, []);
 
   React.useEffect(() => {
+    if (mode === 'edit') {
+      return;
+    }
     setProgramDescription(builderCopy.structure.header_description);
-  }, [builderCopy.structure.header_description]);
+  }, [builderCopy.structure.header_description, mode]);
 
   const trimmedProgramName = React.useMemo(() => form.programName.trim(), [form.programName]);
   const parsedDuration = React.useMemo<number | null>(() => {
@@ -245,6 +258,20 @@ export function useProgramBuilder(
     [rawExerciseMap],
   );
 
+  const normalizeExerciseLevel = React.useCallback(
+    (level?: string | null): ExerciseLevel => {
+      const normalized = (level ?? '').toUpperCase();
+      if (normalized === 'INTERMEDIATE') {
+        return 'INTERMEDIATE';
+      }
+      if (normalized === 'ADVANCED') {
+        return 'ADVANCED';
+      }
+      return 'BEGINNER';
+    },
+    [],
+  );
+
   const { items: categoryItems, loading: categoriesLoading } = useCategories({
     page: 1,
     limit: 100,
@@ -257,7 +284,11 @@ export function useProgramBuilder(
     q: debouncedQ,
   });
 
-  const { create: createProgram } = usePrograms({ page: 1, limit: 50, q: '' });
+  const { create: createProgram, update: updateProgram } = usePrograms({
+    page: 1,
+    limit: 50,
+    q: '',
+  });
 
   const userLabel = React.useCallback((user: User | null) => {
     if (!user) {
@@ -439,6 +470,10 @@ export function useProgramBuilder(
     session: 0,
     exercise: 0,
   });
+  const usedIdsRef = React.useRef<{ session: Set<string>; exercise: Set<string> }>({
+    session: new Set(),
+    exercise: new Set(),
+  });
 
   React.useEffect(() => {
     if (!selectedAthlete && form.athlete) {
@@ -449,10 +484,21 @@ export function useProgramBuilder(
     }
   }, [users, selectedAthlete, form.athlete]);
 
-  const nextId = React.useCallback((type: 'session' | 'exercise') => {
-    idCountersRef.current[type] += 1;
-    return `${type}-${idCountersRef.current[type]}`;
-  }, []);
+  const nextId = React.useCallback(
+    (type: 'session' | 'exercise') => {
+      const used = usedIdsRef.current[type];
+      let counter = idCountersRef.current[type];
+      let candidate = '';
+      do {
+        counter += 1;
+        candidate = `${type}-${counter}`;
+      } while (used.has(candidate));
+      idCountersRef.current[type] = counter;
+      used.add(candidate);
+      return candidate;
+    },
+    [],
+  );
 
   const createSessionFromTemplate = React.useCallback(
     (template: SessionTemplate): ProgramSession => {
@@ -753,7 +799,10 @@ export function useProgramBuilder(
     setSessions([]);
     setForm({ ...INITIAL_FORM_STATE, programName: builderCopy.structure.title });
     setProgramDescription(builderCopy.structure.header_description);
-    idCountersRef.current = { session: 0, exercise: 0 };
+    idCountersRef.current.session = 0;
+    idCountersRef.current.exercise = 0;
+    usedIdsRef.current.session.clear();
+    usedIdsRef.current.exercise.clear();
     exerciseMapRef.current = new Map();
     setExerciseOverrides(() => new Map());
   }, [
@@ -762,87 +811,278 @@ export function useProgramBuilder(
     setExerciseOverrides,
   ]);
 
-  const handleSubmit = React.useCallback(async (event?: React.SyntheticEvent) => {
-    event?.preventDefault();
-    event?.stopPropagation();
+  const handleSubmit = React.useCallback(
+    async (event?: React.SyntheticEvent) => {
+      event?.preventDefault();
+      event?.stopPropagation();
 
-    const name = trimmedProgramName;
-    const duration = parsedDuration;
-    const frequency = parsedFrequency;
+      const name = trimmedProgramName;
+      const duration = parsedDuration;
+      const frequency = parsedFrequency;
 
-    if (!name || !duration || !frequency) {
-      flashError(
-        t('programs-coatch.builder.errors.missing_required_fields', {
-          defaultValue: 'Please fill required fields.',
-        }),
-      );
+      if (!name || !duration || !frequency) {
+        flashError(
+          t('programs-coatch.builder.errors.missing_required_fields', {
+            defaultValue: 'Please fill required fields.',
+          }),
+        );
+        return;
+      }
+
+      try {
+        const sessionSnapshots = sessions.map((session) => ({
+          id: session.id,
+          templateSessionId: session.sessionId,
+          label: session.label,
+          durationMin: session.duration,
+          description: session.description ? session.description : undefined,
+          exercises: session.exercises
+            .map((exercise) => {
+              const base = exerciseMap.get(exercise.exerciseId);
+              if (!base) {
+                return null;
+              }
+              return {
+                id: exercise.id,
+                templateExerciseId: exercise.exerciseId,
+                label: exercise.customLabel ?? base.label,
+                series: String(exercise.sets),
+                repetitions: exercise.reps,
+                restSeconds: parseRestSecondsValue(exercise.rest),
+                description:
+                  exercise.customDescription ?? base.description ?? undefined,
+                instructions: undefined,
+                charge: undefined,
+                videoUrl: undefined,
+                level: base.level,
+              };
+            })
+            .filter((exercise): exercise is NonNullable<typeof exercise> => Boolean(exercise)),
+        }));
+
+        if (mode === 'edit' && program) {
+          await updateProgram({
+            id: program.id,
+            slug: program.slug,
+            locale: program.locale,
+            label: name,
+            duration,
+            frequency,
+            description: programDescription.trim() || '',
+            sessionIds: sessions.map((session) => session.sessionId),
+            sessions: sessionSnapshots,
+            userId: form.athlete || null,
+          });
+          onUpdated?.();
+        } else {
+          await createProgram({
+            slug: slugify(name, String(Date.now()).slice(-5)),
+            locale: i18n.language,
+            label: name,
+            duration,
+            frequency,
+            description: programDescription.trim() || '',
+            sessionIds: sessions.map((session) => session.sessionId),
+            sessions: sessionSnapshots,
+            userId: form.athlete || null,
+          });
+          onCreated?.();
+        }
+
+        resetBuilder();
+        onCancel();
+      } catch (_error: unknown) {
+        flashError(t('common.unexpected_error'));
+      }
+    },
+    [
+      createProgram,
+      exerciseMap,
+      flashError,
+      form.athlete,
+      i18n.language,
+      mode,
+      onCancel,
+      onCreated,
+      onUpdated,
+      parsedDuration,
+      parsedFrequency,
+      program,
+      programDescription,
+      resetBuilder,
+      sessions,
+      t,
+      trimmedProgramName,
+      updateProgram,
+    ],
+  );
+
+  React.useEffect(() => {
+    if (program) {
+      return;
+    }
+    resetBuilder();
+  }, [program, resetBuilder]);
+
+  const programSignatureRef = React.useRef<string | null>(null);
+
+  React.useEffect(() => {
+    if (!program) {
+      programSignatureRef.current = null;
       return;
     }
 
-    try {
-      const sessionSnapshots = sessions.map((session) => ({
-        id: session.id,
-        templateSessionId: session.sessionId,
-        label: session.label,
-        durationMin: session.duration,
-        description: session.description ? session.description : undefined,
-        exercises: session.exercises
-          .map((exercise) => {
-            const base = exerciseMap.get(exercise.exerciseId);
-            if (!base) {
-              return null;
-            }
-            return {
-              id: exercise.id,
-              templateExerciseId: exercise.exerciseId,
-              label: exercise.customLabel ?? base.label,
-              series: String(exercise.sets),
-              repetitions: exercise.reps,
-              restSeconds: parseRestSecondsValue(exercise.rest),
-              description:
-                exercise.customDescription ?? base.description ?? undefined,
-              instructions: undefined,
-              charge: undefined,
-              videoUrl: undefined,
-              level: base.level,
-            };
-          })
-          .filter((exercise): exercise is NonNullable<typeof exercise> => Boolean(exercise)),
-      }));
+    const signature = `${program.id}|${program.updatedAt}`;
+    if (programSignatureRef.current === signature) {
+      return;
+    }
+    programSignatureRef.current = signature;
 
-      await createProgram({
-        slug: slugify(name, String(Date.now()).slice(-5)),
-        locale: i18n.language,
-        label: name,
-        duration,
-        frequency,
-        description: programDescription.trim() || '',
-        sessionIds: sessions.map((session) => session.sessionId),
-        sessions: sessionSnapshots,
-        userId: form.athlete || null,
+    setUsersQ('');
+    setSessionSearch('');
+    setExerciseSearch('');
+    setExerciseCategory('all');
+    setExerciseType('all');
+
+    setForm({
+      athlete: program.userId ?? '',
+      programName: program.label,
+      duration: program.duration != null ? String(program.duration) : '',
+      frequency: program.frequency != null ? String(program.frequency) : '',
+    });
+    setProgramDescription(program.description ?? '');
+
+    if (program.athlete) {
+      setSelectedAthlete({
+        id: program.athlete.id,
+        type: 'ATHLETE',
+        first_name: program.athlete.first_name ?? '',
+        last_name: program.athlete.last_name ?? '',
+        email: program.athlete.email,
+        phone: null,
+        address: null,
+        company: null,
+        createdAt: null,
+        updatedAt: null,
+        is_active: true,
+        createdBy: program.createdBy,
+      });
+    } else {
+      setSelectedAthlete(null);
+    }
+
+    exerciseMapRef.current = new Map();
+    usedIdsRef.current.session.clear();
+    usedIdsRef.current.exercise.clear();
+
+    const stubExercises = new Map<string, Exercise>();
+
+    const normalizedSessions = program.sessions.map((sessionItem) => {
+      const sessionId = sessionItem.id && sessionItem.id.length > 0 ? sessionItem.id : nextId('session');
+
+      const normalizedExercises = sessionItem.exercises.map((exerciseItem) => {
+        const builderExerciseId =
+          exerciseItem.id && exerciseItem.id.length > 0 ? exerciseItem.id : nextId('exercise');
+        const baseExerciseId =
+          exerciseItem.templateExerciseId && exerciseItem.templateExerciseId.length > 0
+            ? exerciseItem.templateExerciseId
+            : exerciseItem.id && exerciseItem.id.length > 0
+              ? exerciseItem.id
+              : builderExerciseId;
+
+        if (!stubExercises.has(baseExerciseId)) {
+          stubExercises.set(baseExerciseId, {
+            id: baseExerciseId,
+            slug: baseExerciseId,
+            locale: program.locale,
+            label: exerciseItem.label,
+            description: exerciseItem.description ?? null,
+            instructions: exerciseItem.instructions ?? null,
+            level: normalizeExerciseLevel(exerciseItem.level),
+            series: exerciseItem.series ?? '',
+            repetitions: exerciseItem.repetitions ?? '',
+            charge: exerciseItem.charge ?? null,
+            rest: exerciseItem.restSeconds ?? null,
+            videoUrl: exerciseItem.videoUrl ?? null,
+            visibility: 'PRIVATE',
+            categoryId: '',
+            createdBy: program.createdBy,
+            createdAt: program.createdAt,
+            updatedAt: program.updatedAt,
+            creator: program.creator
+              ? { id: program.creator.id, email: program.creator.email }
+              : undefined,
+            category: null,
+            muscles: [],
+            equipment: [],
+            tags: [],
+          });
+        }
+
+        return {
+          id: builderExerciseId,
+          exerciseId: baseExerciseId,
+          sets: parseSeriesCount(exerciseItem.series),
+          reps: exerciseItem.repetitions ?? '',
+          rest: exerciseItem.restSeconds != null ? `${exerciseItem.restSeconds}s` : '-',
+          customLabel: undefined,
+          customDescription: undefined,
+        } satisfies ProgramExercise;
       });
 
-      onCreated();
-      resetBuilder();
-      onCancel();
-    } catch (_error: unknown) {
-      flashError(t('common.unexpected_error'));
-    }
+      return {
+        id: sessionId,
+        sessionId: sessionItem.templateSessionId ?? sessionItem.id ?? sessionId,
+        label: sessionItem.label,
+        duration: sessionItem.durationMin,
+        description: sessionItem.description ?? '',
+        tags: [],
+        exercises: normalizedExercises,
+      } satisfies ProgramSession;
+    });
+
+    const sessionPattern = /^session-(\d+)$/;
+    const exercisePattern = /^exercise-(\d+)$/;
+    let maxSessionCounter = 0;
+    let maxExerciseCounter = 0;
+
+    normalizedSessions.forEach((sessionItem) => {
+      usedIdsRef.current.session.add(sessionItem.id);
+      const sessionMatch = sessionPattern.exec(sessionItem.id);
+      if (sessionMatch) {
+        maxSessionCounter = Math.max(maxSessionCounter, Number.parseInt(sessionMatch[1], 10));
+      }
+
+      sessionItem.exercises.forEach((exerciseItem) => {
+        usedIdsRef.current.exercise.add(exerciseItem.id);
+        const exerciseMatch = exercisePattern.exec(exerciseItem.id);
+        if (exerciseMatch) {
+          maxExerciseCounter = Math.max(
+            maxExerciseCounter,
+            Number.parseInt(exerciseMatch[1], 10),
+          );
+        }
+      });
+    });
+
+    idCountersRef.current.session = maxSessionCounter;
+    idCountersRef.current.exercise = maxExerciseCounter;
+
+    setSessions(normalizedSessions);
+    setExerciseOverrides(() => new Map(stubExercises));
   }, [
-    createProgram,
-    exerciseMap,
-    flashError,
-    parsedDuration,
-    parsedFrequency,
-    programDescription,
-    form.athlete,
-    trimmedProgramName,
-    i18n.language,
-    onCancel,
-    onCreated,
-    resetBuilder,
-    sessions,
-    t,
+    program,
+    nextId,
+    normalizeExerciseLevel,
+    setExerciseCategory,
+    setExerciseOverrides,
+    setExerciseSearch,
+    setExerciseType,
+    setForm,
+    setProgramDescription,
+    setSelectedAthlete,
+    setSessionSearch,
+    setUsersQ,
   ]);
 
   return {
@@ -897,5 +1137,6 @@ export function useProgramBuilder(
     updateExercise,
     registerExercise,
     getRawExerciseById,
+    mode,
   };
 }
