@@ -216,6 +216,11 @@
       "title": "Exercises",
       "search_placeholder": "Search exercises...",
       "create": "New Exercise",
+      "levels": {
+        "BEGINNER": "Beginner",
+        "INTERMEDIATE": "Intermediate",
+        "ADVANCED": "Advanced"
+      },
       "dialog": {
         "create_title": "New Exercise",
         "edit_title": "Edit Exercise"

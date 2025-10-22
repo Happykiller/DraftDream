@@ -26,6 +26,7 @@
       "warning": "Avertissement",
       "info": "Info",
       "custom": "Personnalisé",
+      "open": "Ouvrir",
       "run_task": "Lancer la tâche",
       "go_unknown": "Aller vers l'inconnu"
     },
@@ -215,6 +216,11 @@
       "title": "Exercices",
       "search_placeholder": "Rechercher des exercices...",
       "create": "Nouvel exercice",
+      "levels": {
+        "BEGINNER": "Débutant",
+        "INTERMEDIATE": "Intermédiaire",
+        "ADVANCED": "Avancé"
+      },
       "dialog": {
         "create_title": "Nouvel exercice",
         "edit_title": "Modifier l'exercice"

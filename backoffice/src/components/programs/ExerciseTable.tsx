@@ -55,15 +55,17 @@ export const ExerciseTable = React.memo(function ExerciseTable({
       filterable: false,
       renderCell: (params) =>
         params.row.videoUrl ? (
-          <Chip
-            size="small"
-            label={t('common.buttons.open')}
-            component="a"
-            href={params.row.videoUrl}
-            clickable
-            target="_blank"
-            rel="noreferrer"
-          />
+          <Tooltip title={params.row.videoUrl}>
+            <Chip
+              size="small"
+              label={t('common.buttons.open')}
+              component="a"
+              href={params.row.videoUrl}
+              clickable
+              target="_blank"
+              rel="noreferrer"
+            />
+          </Tooltip>
         ) : null,
     },
     {

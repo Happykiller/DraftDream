@@ -1,14 +1,27 @@
 // src/layouts/components/LayoutAppBar.tsx
-import { AppBar, Toolbar, Typography, IconButton, Stack, Box, useMediaQuery, Tooltip } from '@mui/material';
+import * as React from 'react';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Stack,
+  Box,
+  useMediaQuery,
+  Tooltip,
+} from '@mui/material';
 import { Menu as MenuIcon, Logout } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
+
+import { useUser } from '@hooks/useUser';
+
 import { RAIL_WIDTH, DRAWER_WIDTH } from '../tokens';
 
 /** Props strictly typed for clarity */
 export type LayoutAppBarProps = {
   pageTitle: string;
-  userName: string;
+  userName?: string;
   userRole?: string;
   onMenuClick: () => void;
   onLogout: () => void;
@@ -18,6 +31,29 @@ export function LayoutAppBar({ pageTitle, userName, userRole, onMenuClick, onLog
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation();
+  const { user, loading } = useUser();
+
+  const fallbackName = React.useMemo(() => userName?.trim() ?? '', [userName]);
+
+  const displayName = React.useMemo(() => {
+    const fallbackDisplay =
+      fallbackName.length > 0 ? fallbackName : t('header.unknown_user');
+
+    if (user) {
+      const first = user.first_name?.trim() ?? '';
+      const last = user.last_name?.trim() ?? '';
+      const combined = `${first} ${last}`.trim();
+      return combined.length > 0 ? combined : fallbackDisplay;
+    }
+
+    if (loading) {
+      return fallbackName.length > 0 ? fallbackName : t('header.loading_user');
+    }
+
+    return fallbackDisplay;
+  }, [fallbackName, loading, t, user]);
+
+  const displayRole = React.useMemo(() => user?.type ?? userRole ?? null, [user?.type, userRole]);
 
   return (
     <AppBar
@@ -29,7 +65,7 @@ export function LayoutAppBar({ pageTitle, userName, userRole, onMenuClick, onLog
         color: 'text.primary',
         borderBottom: '1px solid',
         borderColor: 'divider',
-                width: {
+        width: {
           sm: `calc(100% - ${RAIL_WIDTH}px)`,
           md: `calc(100% - ${DRAWER_WIDTH}px)`,
         },
@@ -59,16 +95,16 @@ export function LayoutAppBar({ pageTitle, userName, userRole, onMenuClick, onLog
         <Stack direction="row" spacing={1.5} alignItems="center">
           <Box sx={{ textAlign: 'right' }}>
             <Typography variant="body2" sx={{ lineHeight: 1 }}>
-              {userName}
+              {displayName}
             </Typography>
-            {userRole && (
+            {displayRole && (
               <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1 }}>
-                {userRole}
+                {displayRole}
               </Typography>
             )}
           </Box>
           <Tooltip title={t('header.logout')}>
-            <IconButton aria-label={t('header.logout')} onClick={onLogout}>
+            <IconButton aria-label="logout" onClick={onLogout}>
               <Logout />
             </IconButton>
           </Tooltip>

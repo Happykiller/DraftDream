@@ -9,6 +9,8 @@ export type ExerciseLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 
 export interface Creator { id: string; email: string; }
 
+export interface ExerciseLink { id: string; slug: string; label?: string | null; }
+
 export interface Exercise {
   id: string;
   slug: string;
@@ -27,6 +29,14 @@ export interface Exercise {
   createdAt: string;
   updatedAt: string;
   creator?: Creator | null;
+  categoryId: string;
+  muscleIds: string[];
+  equipmentIds?: string[] | null;
+  tagIds?: string[] | null;
+  category?: ExerciseLink | null;
+  muscles?: ExerciseLink[];
+  equipment?: ExerciseLink[];
+  tags?: ExerciseLink[];
 }
 
 type ExerciseListPayload = {
@@ -48,6 +58,11 @@ const LIST_Q = `
       items {
         id slug locale label description instructions level series repetitions
         charge rest videoUrl visibility createdBy createdAt updatedAt
+        categoryId muscleIds equipmentIds tagIds
+        category { id slug label }
+        muscles { id slug label }
+        equipment { id slug label }
+        tags { id slug label }
         creator { id email }
       }
       total page limit
@@ -60,6 +75,11 @@ const CREATE_M = `
     exercise_create(input: $input) {
       id slug locale label description instructions level series repetitions
       charge rest videoUrl visibility createdBy createdAt updatedAt
+      categoryId muscleIds equipmentIds tagIds
+      category { id slug label }
+      muscles { id slug label }
+      equipment { id slug label }
+      tags { id slug label }
       creator { id email }
     }
   }
@@ -70,6 +90,11 @@ const UPDATE_M = `
     exercise_update(input: $input) {
       id slug locale label description instructions level series repetitions
       charge rest videoUrl visibility createdBy createdAt updatedAt
+      categoryId muscleIds equipmentIds tagIds
+      category { id slug label }
+      muscles { id slug label }
+      equipment { id slug label }
+      tags { id slug label }
       creator { id email }
     }
   }

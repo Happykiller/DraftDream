@@ -83,10 +83,19 @@ export function ExerciseDialog({
   const isEdit = mode === 'edit';
   const { t } = useTranslation();
 
+  const toRef = (entity?: { id: string; slug: string; label?: string | null } | null): RefEntity | null => {
+    if (!entity) return null;
+    return { id: entity.id, slug: entity.slug, label: entity.label ?? entity.slug };
+  };
+
+  const toRefs = (entities?: Array<{ id: string; slug: string; label?: string | null }> | null): RefEntity[] => {
+    return entities?.map((item) => ({ id: item.id, slug: item.slug, label: item.label ?? item.slug })) ?? [];
+  };
+
   React.useEffect(() => {
     if (isEdit && initial) {
-      setValues((prev) => ({
-        ...prev,
+      setValues(() => ({
+        ...DEFAULTS,
         slug: initial.slug,
         locale: initial.locale,
         label: initial.label,
@@ -99,13 +108,13 @@ export function ExerciseDialog({
         rest: initial.rest ?? null,
         videoUrl: initial.videoUrl ?? '',
         visibility: initial.visibility,
-        category: null,
-        muscles: [],
-        equipment: [],
-        tags: [],
+        category: toRef(initial.category),
+        muscles: toRefs(initial.muscles),
+        equipment: toRefs(initial.equipment),
+        tags: toRefs(initial.tags),
       }));
     } else {
-      setValues(DEFAULTS);
+      setValues(() => ({ ...DEFAULTS }));
     }
   }, [isEdit, initial]);
 
