@@ -65,7 +65,9 @@ export type ProgramForm = {
 
 export type BuilderCopy = {
   title: string;
+  edit_title?: string;
   subtitle: string;
+  edit_subtitle?: string;
   config: {
     title: string;
     client_label: string;
@@ -132,6 +134,7 @@ export type BuilderCopy = {
   footer: {
     cancel: string;
     submit: string;
+    update?: string;
   };
   draft_label: string;
 };

@@ -38,7 +38,9 @@
     },
     "builder": {
       "title": "Program builder",
+      "edit_title": "Edit program",
       "subtitle": "Select sessions and exercises to craft a custom plan.",
+      "edit_subtitle": "Update the existing sessions and exercises.",
       "config": {
         "title": "Program configuration",
         "client_label": "Athlete",
@@ -163,7 +165,8 @@
       },
       "footer": {
         "cancel": "Cancel",
-        "submit": "Create the program"
+        "submit": "Create the program",
+        "update": "Save changes"
       },
       "errors": {
         "missing_required_fields": "Please fill required fields."

@@ -29,17 +29,22 @@ import type { Exercise } from '@hooks/useExercises';
 import type { User } from '@src/hooks/useUsers';
 import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
 import { useProgramBuilder } from '@src/hooks/useProgramBuilder';
+import type { Program } from '@src/hooks/usePrograms';
 
 interface ProgramBuilderPanelProps {
   builderCopy: BuilderCopy;
   onCancel: () => void;
-  onCreated: () => void;
+  onCreated?: () => void;
+  onUpdated?: () => void;
+  program?: Program;
 }
 
 export function ProgramBuilderPanel({
   builderCopy,
   onCancel,
   onCreated,
+  onUpdated,
+  program,
 }: ProgramBuilderPanelProps): React.JSX.Element {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -97,7 +102,40 @@ export function ProgramBuilderPanel({
     updateExercise,
     registerExercise,
     getRawExerciseById,
-  } = useProgramBuilder(builderCopy, onCancel, onCreated);
+    mode,
+  } = useProgramBuilder(builderCopy, onCancel, {
+    onCreated,
+    onUpdated,
+    program,
+  });
+
+  const isEditing = mode === 'edit';
+  const panelTitle = React.useMemo(
+    () =>
+      isEditing
+        ? builderCopy.edit_title ??
+          t('programs-coatch.builder.edit_title', { defaultValue: 'Edit program' })
+        : builderCopy.title,
+    [builderCopy.edit_title, builderCopy.title, isEditing, t],
+  );
+  const panelSubtitle = React.useMemo(
+    () =>
+      isEditing
+        ? builderCopy.edit_subtitle ??
+          t('programs-coatch.builder.edit_subtitle', {
+            defaultValue: 'Update the existing sessions and exercises.',
+          })
+        : builderCopy.subtitle,
+    [builderCopy.edit_subtitle, builderCopy.subtitle, isEditing, t],
+  );
+  const submitLabel = React.useMemo(
+    () =>
+      isEditing
+        ? builderCopy.footer.update ??
+          t('programs-coatch.builder.footer.update', { defaultValue: 'Save changes' })
+        : builderCopy.footer.submit,
+    [builderCopy.footer.submit, builderCopy.footer.update, isEditing, t],
+  );
 
   const interactiveSurfaceSx = React.useMemo(
     () => ({
@@ -132,31 +170,41 @@ export function ProgramBuilderPanel({
   const [isExerciseDialogOpen, setIsExerciseDialogOpen] = React.useState(false);
   const [exerciseBeingEdited, setExerciseBeingEdited] = React.useState<Exercise | null>(null);
 
-  const [structureTitle, setStructureTitle] = React.useState(builderCopy.structure.title);
-  const [structureTitleDraft, setStructureTitleDraft] = React.useState(builderCopy.structure.title);
-  const [structureDescription, setStructureDescription] = React.useState(
-    builderCopy.structure.header_description,
-  );
+  const [structureTitle, setStructureTitle] = React.useState(() => {
+    const candidate = program?.label?.trim();
+    return candidate && candidate.length > 0 ? candidate : builderCopy.structure.title;
+  });
+  const [structureTitleDraft, setStructureTitleDraft] = React.useState(structureTitle);
+  const [structureDescription, setStructureDescription] = React.useState(() => {
+    const base = (program?.description ?? '').trim();
+    const fallback = builderCopy.structure.header_description ?? '';
+    return base.length > 0 ? base : fallback;
+  });
   const [structureDescriptionDraft, setStructureDescriptionDraft] = React.useState(
-    builderCopy.structure.header_description,
+    structureDescription,
   );
   const [isEditingStructureTitle, setIsEditingStructureTitle] = React.useState(false);
   const [isEditingStructureDescription, setIsEditingStructureDescription] = React.useState(false);
   const structureTitleRef = React.useRef<HTMLInputElement | null>(null);
   const structureDescriptionRef = React.useRef<HTMLTextAreaElement | null>(null);
-  const prevStructureDescriptionRef = React.useRef(builderCopy.structure.header_description);
   const debouncedStructureTitleDraft = useDebouncedValue(structureTitleDraft, 300);
   const debouncedStructureDescriptionDraft = useDebouncedValue(structureDescriptionDraft, 300);
 
   React.useEffect(() => {
     setIsEditingStructureTitle(false);
-    setStructureTitle(builderCopy.structure.title);
-    setStructureTitleDraft(builderCopy.structure.title);
-  }, [builderCopy.structure.title]);
+    setIsEditingStructureDescription(false);
+  }, [program]);
 
   React.useEffect(() => {
-    updateProgramName(builderCopy.structure.title);
-  }, [builderCopy.structure.title, updateProgramName]);
+    if (isEditingStructureTitle) {
+      return;
+    }
+    const candidate = program?.label?.trim();
+    const nextTitle = candidate && candidate.length > 0 ? candidate : builderCopy.structure.title;
+    setStructureTitle(nextTitle);
+    setStructureTitleDraft(nextTitle);
+    updateProgramName(nextTitle);
+  }, [builderCopy.structure.title, isEditingStructureTitle, program, updateProgramName]);
 
   React.useEffect(() => {
     if (!isEditingStructureTitle) {
@@ -174,34 +222,29 @@ export function ProgramBuilderPanel({
   ]);
 
   React.useEffect(() => {
-    if (!isEditingStructureDescription) {
+    if (isEditingStructureDescription) {
+      const trimmed = debouncedStructureDescriptionDraft.trim();
+      const fallback =
+        structureDescription ||
+        program?.description ||
+        builderCopy.structure.header_description ||
+        '';
+      updateProgramDescription(trimmed || fallback);
       return;
     }
-    const trimmed = debouncedStructureDescriptionDraft.trim();
-    const fallback = structureDescription || builderCopy.structure.header_description;
-    updateProgramDescription(trimmed || fallback);
+
+    const base = (program?.description ?? '').trim();
+    const fallback = builderCopy.structure.header_description ?? '';
+    const nextDescription = base.length > 0 ? base : fallback;
+    setStructureDescription(nextDescription);
+    setStructureDescriptionDraft(nextDescription);
+    updateProgramDescription(nextDescription);
   }, [
     builderCopy.structure.header_description,
     debouncedStructureDescriptionDraft,
     isEditingStructureDescription,
+    program,
     structureDescription,
-    updateProgramDescription,
-  ]);
-
-  React.useEffect(() => {
-    const previous = prevStructureDescriptionRef.current;
-    const next = builderCopy.structure.header_description;
-    if (previous !== next) {
-      prevStructureDescriptionRef.current = next;
-      if (!isEditingStructureDescription) {
-        setStructureDescription(next);
-        setStructureDescriptionDraft(next);
-        updateProgramDescription(next);
-      }
-    }
-  }, [
-    builderCopy.structure.header_description,
-    isEditingStructureDescription,
     updateProgramDescription,
   ]);
 
@@ -478,28 +521,28 @@ export function ProgramBuilderPanel({
           <Stack direction="row" spacing={2} alignItems="center" sx={{ backgroundColor: alpha(theme.palette.success.main, 0.20), p: 1 }}>
             <Box
               aria-hidden
-              sx={{
-                width: 40,
-                height: 40,
-                borderRadius: 2,
-                bgcolor: 'success.main',
-                color: 'primary.contrastText',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0,
-              }}
-            >
-              <Add fontSize="large" />
-            </Box>
-            <Stack spacing={0.5}>
-              <Typography variant="h6" component="span" sx={{ fontWeight: 700 }}>
-                {builderCopy.title}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {builderCopy.subtitle}
-              </Typography>
-            </Stack>
+            sx={{
+              width: 40,
+              height: 40,
+              borderRadius: 2,
+              bgcolor: 'success.main',
+              color: 'primary.contrastText',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}
+          >
+            {isEditing ? <Edit fontSize="large" /> : <Add fontSize="large" />}
+          </Box>
+          <Stack spacing={0.5}>
+            <Typography variant="h6" component="span" sx={{ fontWeight: 700 }}>
+              {panelTitle}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {panelSubtitle}
+            </Typography>
+          </Stack>
           </Stack>
 
           <Divider />
@@ -932,7 +975,7 @@ export function ProgramBuilderPanel({
                 </Button>
               </span>
             </Tooltip>
-            <Tooltip title={builderCopy.footer.submit} arrow>
+            <Tooltip title={submitLabel} arrow>
               <span style={{ display: 'inline-flex' }}>
                 <Button
                   variant="contained"
@@ -941,7 +984,7 @@ export function ProgramBuilderPanel({
                   disabled={isSubmitDisabled}
                   color="success"
                 >
-                  {builderCopy.footer.submit}
+                  {submitLabel}
                 </Button>
               </span>
             </Tooltip>

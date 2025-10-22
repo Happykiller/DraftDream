@@ -38,7 +38,9 @@
     },
     "builder": {
       "title": "Créer un nouveau programme sportif",
+      "edit_title": "Modifier le programme",
       "subtitle": "Sélectionnez des séances et des exercices pour composer un programme sur mesure.",
+      "edit_subtitle": "Mettez à jour les séances et exercices existants.",
       "config": {
         "title": "Configuration du programme",
         "client_label": "Athlete",
@@ -165,7 +167,8 @@
       },
       "footer": {
         "cancel": "Annuler",
-        "submit": "Creer le programme"
+        "submit": "Creer le programme",
+        "update": "Enregistrer les modifications"
       },
       "errors": {
         "missing_required_fields": "Veuillez remplir les champs obligatoires."

@@ -28,6 +28,7 @@ import type { Program } from '@src/hooks/usePrograms';
 interface ProgramCardProps {
   program: Program;
   onDelete?: (programId: string) => void;
+  onEdit?: (program: Program) => void;
 }
 
 type ProgramDifficulty = 'beginner' | 'intermediate' | 'advanced';
@@ -83,7 +84,7 @@ function formatDate(value: string, locale: string): string {
   }
 }
 
-export function ProgramCard({ program, onDelete }: ProgramCardProps): React.JSX.Element {
+export function ProgramCard({ program, onDelete, onEdit }: ProgramCardProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
   const sessionsCount = program.sessions.length;
   const exercisesCount = program.sessions.reduce(
@@ -118,9 +119,14 @@ export function ProgramCard({ program, onDelete }: ProgramCardProps): React.JSX.
     (actionKey: ProgramAction['key']) => {
       if (actionKey === 'delete') {
         onDelete?.(program.id);
+        return;
+      }
+
+      if (actionKey === 'edit') {
+        onEdit?.(program);
       }
     },
-    [onDelete, program.id],
+    [onDelete, onEdit, program],
   );
 
   return (
