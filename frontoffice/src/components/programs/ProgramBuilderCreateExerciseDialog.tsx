@@ -679,13 +679,21 @@ export function ProgramBuilderCreateExerciseDialog({
                 loading={musclesLoading || creatingMuscle}
                 getOptionLabel={(option) => option.inputValue ?? option.label}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
-                renderOption={(props, option) => (
-                  <li {...props}>
-                    {option.isCreateOption && option.inputValue
+                renderOption={(props, option) => {
+                  const { key, ...optionProps } = props as typeof props & {
+                    key: React.Key;
+                  };
+                  const optionLabel =
+                    option.isCreateOption && option.inputValue
                       ? creationOptionCopy.muscle(option.inputValue)
-                      : option.label}
-                  </li>
-                )}
+                      : option.label;
+
+                  return (
+                    <li {...optionProps} key={(option.id as React.Key) ?? key}>
+                      {optionLabel}
+                    </li>
+                  );
+                }}
                 renderTags={(tagValue, getTagProps) =>
                   tagValue.map((option, index) => (
                     <Chip
@@ -785,13 +793,21 @@ export function ProgramBuilderCreateExerciseDialog({
                 loading={equipmentLoading || creatingEquipment}
                 getOptionLabel={(option) => option.inputValue ?? option.label}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
-                renderOption={(props, option) => (
-                  <li {...props}>
-                    {option.isCreateOption && option.inputValue
+                renderOption={(props, option) => {
+                  const { key, ...optionProps } = props as typeof props & {
+                    key: React.Key;
+                  };
+                  const optionLabel =
+                    option.isCreateOption && option.inputValue
                       ? creationOptionCopy.equipment(option.inputValue)
-                      : option.label}
-                  </li>
-                )}
+                      : option.label;
+
+                  return (
+                    <li {...optionProps} key={(option.id as React.Key) ?? key}>
+                      {optionLabel}
+                    </li>
+                  );
+                }}
                 renderTags={(tagValue, getTagProps) =>
                   tagValue.map((option, index) => (
                     <Chip
@@ -815,13 +831,21 @@ export function ProgramBuilderCreateExerciseDialog({
                 loading={tagsLoading || creatingTag}
                 getOptionLabel={(option) => option.inputValue ?? option.label}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
-                renderOption={(props, option) => (
-                  <li {...props}>
-                    {option.isCreateOption && option.inputValue
+                renderOption={(props, option) => {
+                  const { key, ...optionProps } = props as typeof props & {
+                    key: React.Key;
+                  };
+                  const optionLabel =
+                    option.isCreateOption && option.inputValue
                       ? creationOptionCopy.tag(option.inputValue)
-                      : option.label}
-                  </li>
-                )}
+                      : option.label;
+
+                  return (
+                    <li {...optionProps} key={(option.id as React.Key) ?? key}>
+                      {optionLabel}
+                    </li>
+                  );
+                }}
                 renderTags={(tagValue, getTagProps) =>
                   tagValue.map((option, index) => (
                     <Chip
