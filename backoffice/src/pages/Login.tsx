@@ -40,6 +40,7 @@ export function Login(): React.JSX.Element {
   const { execute: auth } = useAuthReq();
   const { execute: runTask } = useAsyncTask();
   const { t } = useTranslation();
+  const version = import.meta.env.VITE_APP_VERSION ?? '';
 
   // Local state
   const [formEntities, setFormEntities] = React.useState<{
@@ -136,91 +137,118 @@ export function Login(): React.JSX.Element {
     </Stack>
   );
 
+  const versionLabel = version
+    ? t('common.brand.version_label', { version })
+    : '';
+
   return (
     <Box
       // Full viewport background:
       // - mobile: theme default background (no black)
-      // - desktop: black background for focus
+      // - desktop: gradient background for focus
       sx={{
         minHeight: '100vh',
         bgcolor: isMobile ? 'background.default' : undefined,
         background: isMobile ? undefined : gradients.logo,
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
         p: { xs: 2, sm: 3 },
       }}
     >
-      {/* MOBILE LAYOUT (no card) */}
-      {isMobile ? (
-        <Container maxWidth="sm" component="section" role="form" aria-labelledby="login-title">
-          {/* Header */}
-          <Box textAlign="center" mb={2}>
-            {/* Logo */}
-            <Box
-              component="img"
-              src="/logo.png"
-              alt={t('common.brand.logo_alt')}
-              sx={{ width: 64, height: 64, mb: 1.25, objectFit: 'contain' }}
-            />
-            <Typography
-              id="login-title"
-              variant="h5"
-              sx={{ fontWeight: 800, letterSpacing: 0.5, lineHeight: 1.1 }}
-            >
-              {t('common.brand.full')}
-            </Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
-              <Trans>login.connect_space</Trans>
-            </Typography>
-          </Box>
+      <Box
+        sx={{
+          flexGrow: 1,
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        {/* MOBILE LAYOUT (no card) */}
+        {isMobile ? (
+          <Container maxWidth="sm" component="section" role="form" aria-labelledby="login-title">
+            {/* Header */}
+            <Box textAlign="center" mb={2}>
+              {/* Logo */}
+              <Box
+                component="img"
+                src="/logo.png"
+                alt={t('common.brand.logo_alt')}
+                sx={{ width: 64, height: 64, mb: 1.25, objectFit: 'contain' }}
+              />
+              <Typography
+                id="login-title"
+                variant="h5"
+                sx={{ fontWeight: 800, letterSpacing: 0.5, lineHeight: 1.1 }}
+              >
+                {t('common.brand.full')}
+              </Typography>
+              <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
+                <Trans>login.connect_space</Trans>
+              </Typography>
+            </Box>
 
-          {/* Form (full-width, no Paper) */}
-          <Box component="form" onSubmit={onSubmit} noValidate>
-            {FormContent}
-          </Box>
-        </Container>
-      ) : (
-        // DESKTOP/TABLET LAYOUT (card + black bg)
-        <Paper
-          elevation={8}
+            {/* Form (full-width, no Paper) */}
+            <Box component="form" onSubmit={onSubmit} noValidate>
+              {FormContent}
+            </Box>
+          </Container>
+        ) : (
+          // DESKTOP/TABLET LAYOUT (card + gradient bg)
+          <Paper
+            elevation={8}
+            sx={{
+              width: '100%',
+              maxWidth: 400,
+              borderRadius: 2.5,
+              px: { sm: 4 },
+              py: { sm: 4 },
+              boxShadow: '0 10px 30px rgba(0,0,0,0.24), 0 6px 10px rgba(0,0,0,0.18)',
+            }}
+            role="dialog"
+            aria-labelledby="login-title"
+          >
+            {/* Header */}
+            <Box textAlign="center" mb={2}>
+              <Box
+                component="img"
+                src="/logo.png"
+                alt={t('common.brand.logo_alt')}
+                sx={{ width: 80, height: 80, mb: 1.5, objectFit: 'contain' }}
+              />
+              <Typography
+                id="login-title"
+                variant="h4"
+                sx={{ fontWeight: 800, letterSpacing: 0.5, lineHeight: 1.1 }}
+              >
+                {t('common.brand.full')}
+              </Typography>
+              <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
+                <Trans>login.connect_space</Trans>
+              </Typography>
+            </Box>
+
+            {/* Form */}
+            <Box component="form" onSubmit={onSubmit} noValidate>
+              {FormContent}
+            </Box>
+          </Paper>
+        )}
+      </Box>
+
+      {versionLabel ? (
+        <Typography
+          variant="caption"
           sx={{
-            width: '100%',
-            maxWidth: 400,
-            borderRadius: 2.5,
-            px: { sm: 4 },
-            py: { sm: 4 },
-            boxShadow: '0 10px 30px rgba(0,0,0,0.24), 0 6px 10px rgba(0,0,0,0.18)',
+            mt: 3,
+            textAlign: 'center',
+            color: isMobile ? 'text.secondary' : 'rgba(255,255,255,0.72)',
           }}
-          role="dialog"
-          aria-labelledby="login-title"
         >
-          {/* Header */}
-          <Box textAlign="center" mb={2}>
-            <Box
-              component="img"
-              src="/logo.png"
-              alt={t('common.brand.logo_alt')}
-              sx={{ width: 80, height: 80, mb: 1.5, objectFit: 'contain' }}
-            />
-            <Typography
-              id="login-title"
-              variant="h4"
-              sx={{ fontWeight: 800, letterSpacing: 0.5, lineHeight: 1.1 }}
-            >
-              {t('common.brand.full')}
-            </Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
-              <Trans>login.connect_space</Trans>
-            </Typography>
-          </Box>
-
-          {/* Form */}
-          <Box component="form" onSubmit={onSubmit} noValidate>
-            {FormContent}
-          </Box>
-        </Paper>
-      )}
+          {versionLabel}
+        </Typography>
+      ) : null}
     </Box>
   );
 }
