@@ -64,7 +64,6 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
       variant="outlined"
       sx={{
         p: 1.5,
-        ...(canDelete ? { pb: 5 } : {}),
         borderRadius: 2,
         cursor: 'default',
         position: 'relative',
@@ -150,7 +149,7 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
             </Stack>
           ) : null}
           {isPublic ? (
-            <Tooltip title={tooltips.public_exercise} arrow>
+            <Tooltip title={tooltips.public_exercise} arrow placement="left">
               <Box
                 sx={{
                   position: 'absolute',
@@ -165,7 +164,7 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
               </Box>
             </Tooltip>
           ) : canDelete ? (
-            <Tooltip title={tooltips.delete_exercise} arrow>
+            <Tooltip title={tooltips.delete_exercise} arrow placement="left">
               <Box
                 sx={{
                   position: 'absolute',
@@ -188,7 +187,7 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
           ) : null}
         </Stack>
         <Stack spacing={0.5} alignItems="flex-end">
-          <Tooltip title={tooltips.add_exercise} arrow>
+          <Tooltip title={tooltips.add_exercise} arrow placement="left">
             <span style={{ display: 'inline-flex' }}>
               <IconButton
                 size="small"

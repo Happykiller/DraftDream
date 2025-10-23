@@ -283,7 +283,6 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
       variant="outlined"
       sx={{
         p: 1.5,
-        pb: 5,
         borderRadius: 2,
         cursor: 'default',
         position: 'relative',
@@ -330,7 +329,7 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
             {index + 1}.
           </Typography>
 
-          <Stack spacing={0.5}>
+          <Stack spacing={0.5} sx={{ pb: 1 }}>
             {isEditingLabel ? (
               <TextField
                 inputRef={inputRef}
