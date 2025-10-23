@@ -60,7 +60,7 @@ export function Sidebar({ items, currentPath, onSelectPath, onGoHome }: SidebarP
               transition: 'transform 150ms ease',
               '&:hover': { transform: 'scale(1.03)' },
               width: '100%',
-              justifyContent: { xs: 'center', md: 'flex-start' },
+              justifyContent: { xs: 'center', lg: 'flex-start' },
             }}
           >
             <Box
@@ -69,7 +69,7 @@ export function Sidebar({ items, currentPath, onSelectPath, onGoHome }: SidebarP
               alt={logoAlt}
               sx={{ width: 36, height: 36, borderRadius: 1.5, objectFit: 'contain' }}
             />
-            <Box sx={{ textAlign: 'left', display: { xs: 'none', md: 'block' } }}>
+            <Box sx={{ textAlign: 'left', display: { xs: 'none', lg: 'block' } }}>
               <Typography variant="subtitle1" sx={{ lineHeight: 1, fontWeight: 800 }}>
                 {appName}
               </Typography>
@@ -104,7 +104,7 @@ export function Sidebar({ items, currentPath, onSelectPath, onGoHome }: SidebarP
                       my: 0.5,
                       borderRadius: 2,
                       transition: 'transform 200ms ease, background-color 200ms ease',
-                      justifyContent: { xs: 'center', md: 'flex-start' },
+                      justifyContent: { xs: 'center', lg: 'flex-start' },
                       '&:hover': {
                         transform: 'scale(1.02)',
                         backgroundColor: 'rgba(255,255,255,0.06)',
@@ -121,7 +121,7 @@ export function Sidebar({ items, currentPath, onSelectPath, onGoHome }: SidebarP
                       },
                     }}
                   >
-                    <ListItemIcon sx={{ minWidth: { xs: 'auto', md: 40 } }}>
+                    <ListItemIcon sx={{ minWidth: { xs: 'auto', lg: 40 } }}>
                       <Box
                         className="NavIconShape"
                         aria-hidden
@@ -144,13 +144,13 @@ export function Sidebar({ items, currentPath, onSelectPath, onGoHome }: SidebarP
                     <ListItemText
                       primaryTypographyProps={{ variant: 'body1', fontWeight: 500 }}
                       primary={item.label}
-                      sx={{ display: { xs: 'none', md: 'block' } }}
+                      sx={{ display: { xs: 'none', lg: 'block' } }}
                     />
 
                     {selected && (
                       <Box
                         sx={{
-                          display: { xs: 'none', md: 'block' },
+                          display: { xs: 'none', lg: 'block' },
                           width: 8,
                           height: 8,
                           borderRadius: '50%',
@@ -180,10 +180,10 @@ export function Sidebar({ items, currentPath, onSelectPath, onGoHome }: SidebarP
             <Typography variant="caption" sx={{ opacity: 0.7, display: 'block' }}>
               {versionLabel}
             </Typography>
-            <Typography variant="caption" sx={{ opacity: 0.5, display: { xs: 'block', md: 'none' } }}>
+            <Typography variant="caption" sx={{ opacity: 0.5, display: { xs: 'block', lg: 'none' } }}>
               {yearShort}
             </Typography>
-            <Typography variant="caption" sx={{ opacity: 0.5, display: { xs: 'none', md: 'block' } }}>
+            <Typography variant="caption" sx={{ opacity: 0.5, display: { xs: 'none', lg: 'block' } }}>
               {yearFull}
             </Typography>
           </Box>
