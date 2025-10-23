@@ -50,6 +50,7 @@ type ProgramBuilderSessionItemProps = {
   ) => void;
   onMoveExerciseUp: (exerciseId: string) => void;
   onMoveExerciseDown: (exerciseId: string) => void;
+  onEditExercise?: (exerciseId: string) => void;
 };
 
 export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessionItem({
@@ -69,6 +70,7 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
   onExerciseDescriptionChange,
   onMoveExerciseUp,
   onMoveExerciseDown,
+  onEditExercise,
 }: ProgramBuilderSessionItemProps): React.JSX.Element {
   const theme = useTheme();
   const primaryMain = theme.palette.primary.main;
@@ -614,6 +616,7 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
                       session.exercises.length - 1,
                     )
                   }
+                  onEdit={onEditExercise}
                 />
               );
             })

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Box, Chip, IconButton, Paper, Stack, Tooltip, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { Add, Edit, Public } from '@mui/icons-material';
+import { Add, DeleteOutline, Edit, Public } from '@mui/icons-material';
 
 import type { BuilderCopy, ExerciseLibraryItem } from './programBuilderTypes';
 
@@ -11,6 +11,7 @@ type ProgramBuilderExerciseLibraryItemProps = {
   onAdd: (event: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
   onEdit?: (exerciseId: string) => void;
+  onDelete?: (exerciseId: string) => void;
 };
 
 export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuilderExerciseLibraryItem({
@@ -18,6 +19,7 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
   onAdd,
   disabled = false,
   onEdit,
+  onDelete,
 }: ProgramBuilderExerciseLibraryItemProps): React.JSX.Element {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -32,7 +34,9 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
     [t],
   );
   const isPublic = exercise.visibility === 'PUBLIC';
-  const canEdit = exercise.canEdit === true;
+  const canEdit = exercise.canEdit !== false;
+  const showEditAction = Boolean(onEdit) && canEdit;
+  const canDelete = canEdit && Boolean(onDelete);
 
   const handleAddClick = React.useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -47,6 +51,13 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
     }
     onEdit(exercise.id);
   }, [exercise.id, onEdit]);
+
+  const handleDeleteClick = React.useCallback(() => {
+    if (!onDelete) {
+      return;
+    }
+    onDelete(exercise.id);
+  }, [exercise.id, onDelete]);
 
   return (
     <Paper
@@ -66,13 +77,12 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
         <Stack spacing={1} flex={1}>
           <Stack spacing={0.25}>
             <Stack direction="row" spacing={0.5} alignItems="center">
-              {canEdit ? (
+              {showEditAction ? (
                 <Tooltip title={tooltips.edit_exercise} arrow>
                   <span style={{ display: 'inline-flex' }}>
                     <IconButton
                       size="small"
                       onClick={handleEditClick}
-                      disabled={!onEdit}
                       aria-label="edit-exercise-template"
                       sx={{
                         p: 0.25,
@@ -106,8 +116,8 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
             </Typography>
           </Stack>
           {exercise.muscles.length > 0 ||
-          exercise.tags.length > 0 ||
-          exercise.equipment.length > 0 ? (
+            exercise.tags.length > 0 ||
+            exercise.equipment.length > 0 ? (
             <Stack direction="row" spacing={0.5} flexWrap="wrap">
               {exercise.muscles.map((muscle) => (
                 <Tooltip
@@ -139,7 +149,7 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
             </Stack>
           ) : null}
           {isPublic ? (
-            <Tooltip title={tooltips.public_exercise} arrow>
+            <Tooltip title={tooltips.public_exercise} arrow placement="left">
               <Box
                 sx={{
                   position: 'absolute',
@@ -153,10 +163,31 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
                 <Public fontSize="small" aria-hidden />
               </Box>
             </Tooltip>
+          ) : canDelete ? (
+            <Tooltip title={tooltips.delete_exercise} arrow placement="left">
+              <Box
+                sx={{
+                  position: 'absolute',
+                  right: theme.spacing(1),
+                  bottom: theme.spacing(1),
+                  display: 'flex',
+                  alignItems: 'center',
+                  color: theme.palette.text.disabled,
+                }}
+              >
+                <IconButton
+                  size="small"
+                  onClick={handleDeleteClick}
+                  aria-label="delete-exercise-template"
+                >
+                  <DeleteOutline fontSize="small" />
+                </IconButton>
+              </Box>
+            </Tooltip>
           ) : null}
         </Stack>
         <Stack spacing={0.5} alignItems="flex-end">
-          <Tooltip title={tooltips.add_exercise} arrow>
+          <Tooltip title={tooltips.add_exercise} arrow placement="left">
             <span style={{ display: 'inline-flex' }}>
               <IconButton
                 size="small"

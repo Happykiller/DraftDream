@@ -35,6 +35,7 @@ type ProgramBuilderExerciseItemProps = {
   onDescriptionChange: (description: string) => void;
   onMoveUp: () => void;
   onMoveDown: () => void;
+  onEdit?: (exerciseId: string) => void;
 };
 
 export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExerciseItem({
@@ -47,6 +48,7 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
   onDescriptionChange,
   onMoveUp,
   onMoveDown,
+  onEdit,
 }: ProgramBuilderExerciseItemProps): React.JSX.Element {
   const theme = useTheme();
   const primaryMain = theme.palette.primary.main;
@@ -92,6 +94,8 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
       }),
     [t],
   );
+  const canEditExercise = exercise.canEdit !== false;
+  const showEditExerciseAction = Boolean(onEdit) && canEditExercise;
 
   React.useEffect(() => {
     if (!isEditingLabel) {
@@ -250,6 +254,13 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
     onRemove(exerciseItem.id);
   };
 
+  const handleEditClick = React.useCallback(() => {
+    if (!onEdit) {
+      return;
+    }
+    onEdit(exercise.id);
+  }, [exercise.id, onEdit]);
+
   const canMoveUp = index > 0;
   const canMoveDown = index < totalExercises - 1;
 
@@ -274,6 +285,7 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
         p: 1.5,
         borderRadius: 2,
         cursor: 'default',
+        position: 'relative',
         '&:hover': {
           borderColor: theme.palette.primary.main,
           boxShadow: theme.shadows[1],
@@ -317,7 +329,7 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
             {index + 1}.
           </Typography>
 
-          <Stack spacing={0.5}>
+          <Stack spacing={0.5} sx={{ pb: 1 }}>
             {isEditingLabel ? (
               <TextField
                 inputRef={inputRef}
@@ -402,51 +414,71 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
             {(exercise.muscles.length > 0 ||
               exercise.tags.length > 0 ||
               exercise.equipment.length > 0) && (
-              <Stack direction="row" spacing={0.5} flexWrap="wrap">
-                {exercise.muscles.map((muscle) => (
-                  <Tooltip
-                    key={`${exercise.id}-muscle-${muscle.id}`}
-                    title={tooltips.muscle_chip.replace('{{label}}', muscle.label)}
-                    arrow
-                  >
-                    <Chip label={muscle.label} size="small" color="primary" variant="filled" />
-                  </Tooltip>
-                ))}
-                {exercise.tags.map((tag) => (
-                  <Tooltip
-                    key={`${exercise.id}-tag-${tag.id}`}
-                    title={tooltips.tag_chip.replace('{{label}}', tag.label)}
-                    arrow
-                  >
-                    <Chip label={tag.label} size="small" color="secondary" variant="outlined" />
-                  </Tooltip>
-                ))}
-                {exercise.equipment.map((eq) => (
-                  <Tooltip
-                    key={`${exercise.id}-equipment-${eq.id}`}
-                    title={tooltips.equipment_chip.replace('{{label}}', eq.label)}
-                    arrow
-                  >
-                    <Chip label={eq.label} size="small" variant="outlined" />
-                  </Tooltip>
-                ))}
-              </Stack>
-            )}
+                <Stack direction="row" spacing={0.5} flexWrap="wrap">
+                  {exercise.muscles.map((muscle) => (
+                    <Tooltip
+                      key={`${exercise.id}-muscle-${muscle.id}`}
+                      title={tooltips.muscle_chip.replace('{{label}}', muscle.label)}
+                      arrow
+                    >
+                      <Chip label={muscle.label} size="small" color="primary" variant="filled" />
+                    </Tooltip>
+                  ))}
+                  {exercise.tags.map((tag) => (
+                    <Tooltip
+                      key={`${exercise.id}-tag-${tag.id}`}
+                      title={tooltips.tag_chip.replace('{{label}}', tag.label)}
+                      arrow
+                    >
+                      <Chip label={tag.label} size="small" color="secondary" variant="outlined" />
+                    </Tooltip>
+                  ))}
+                  {exercise.equipment.map((eq) => (
+                    <Tooltip
+                      key={`${exercise.id}-equipment-${eq.id}`}
+                      title={tooltips.equipment_chip.replace('{{label}}', eq.label)}
+                      arrow
+                    >
+                      <Chip label={eq.label} size="small" variant="outlined" />
+                    </Tooltip>
+                  ))}
+                </Stack>
+              )}
           </Stack>
         </Stack>
 
-        <Tooltip title={tooltips.delete_exercise} arrow>
+        <Tooltip title={tooltips.edit_exercise} arrow>
           <span style={{ display: 'inline-flex' }}>
             <IconButton
               size="small"
-              onClick={handleRemoveClick}
-              aria-label="delete-exercise"
+              onClick={handleEditClick}
+              aria-label="edit-exercise-template"
             >
-              <DeleteOutline fontSize="small" />
+              <Edit fontSize="small" />
             </IconButton>
           </span>
         </Tooltip>
+        <Box
+          sx={{
+            position: 'absolute',
+            right: theme.spacing(1.5),
+            bottom: theme.spacing(1.5),
+          }}
+        >
+          <Tooltip title={tooltips.delete_exercise} arrow>
+            <span style={{ display: 'inline-flex' }}>
+              <IconButton
+                size="small"
+                onClick={handleRemoveClick}
+                aria-label="delete-exercise"
+              >
+                <DeleteOutline fontSize="small" />
+              </IconButton>
+            </span>
+          </Tooltip>
+        </Box>
       </Stack>
+
     </Paper>
   );
 });
