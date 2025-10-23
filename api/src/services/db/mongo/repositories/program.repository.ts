@@ -64,21 +64,25 @@ export class BddServiceProgramMongo {
 
   /** Create all necessary indexes. */
   async ensureIndexes(db?: Db): Promise<void> {
-    const collection = db ? db.collection<ProgramDoc>('programs') : await this.col();
-    await collection.createIndexes([
-      {
-        key: { slug: 1, locale: 1 },
-        name: 'uniq_active_slug_locale',
-        unique: true,
-        partialFilterExpression: { deletedAt: { $exists: false } },
-      },
-      { key: { label: 1, createdBy: 1 }, name: 'by_label_createdBy' },
-      { key: { updatedAt: -1 }, name: 'by_updatedAt' },
-      { key: { deletedAt: 1 }, name: 'by_deletedAt' },
-      { key: { createdBy: 1 }, name: 'by_createdBy' },
-      { key: { userId: 1 }, name: 'by_userId' },
-      { key: { locale: 1 }, name: 'by_locale' },
-    ]);
+    try {
+      const collection = db ? db.collection<ProgramDoc>('programs') : await this.col();
+      await collection.createIndexes([
+        {
+          key: { slug: 1, locale: 1 },
+          name: 'uniq_active_slug_locale',
+          unique: true,
+          partialFilterExpression: { deletedAt: { $exists: false } },
+        },
+        { key: { label: 1, createdBy: 1 }, name: 'by_label_createdBy' },
+        { key: { updatedAt: -1 }, name: 'by_updatedAt' },
+        { key: { deletedAt: 1 }, name: 'by_deletedAt' },
+        { key: { createdBy: 1 }, name: 'by_createdBy' },
+        { key: { userId: 1 }, name: 'by_userId' },
+        { key: { locale: 1 }, name: 'by_locale' },
+      ]);
+    } catch (error) {
+      this.handleError('ensureIndexes', error);
+    }
   }
 
   /** Insert a new program. Returns null on duplicate slug/locale (active docs). */
@@ -101,20 +105,20 @@ export class BddServiceProgramMongo {
     try {
       const res = await (await this.col()).insertOne(doc as ProgramDoc);
       return this.toModel({ _id: res.insertedId, ...doc } as ProgramDoc);
-    } catch (e: any) {
-      if (e?.code === 11000) return null;
-      throw e;
+    } catch (error) {
+      if (this.isDuplicateError(error)) return null;
+      this.handleError('create', error);
     }
   }
 
   /** Get by id (includes deleted items). */
   async get(dto: GetProgramDto): Promise<Program | null> {
     try {
-      const _id = new ObjectId(dto.id);
+      const _id = this.toObjectId(dto.id);
       const doc = await (await this.col()).findOne({ _id });
       return doc ? this.toModel(doc) : null;
-    } catch {
-      return null;
+    } catch (error) {
+      this.handleError('get', error);
     }
   }
 
@@ -142,11 +146,15 @@ export class BddServiceProgramMongo {
     if (userId) filter.userId = this.toObjectId(userId);
     if (!includeArchived) filter.deletedAt = { $exists: false };
 
-    const collection = await this.col();
-    const cursor = collection.find(filter).sort(sort).skip((page - 1) * limit).limit(limit);
-    const [rows, total] = await Promise.all([cursor.toArray(), collection.countDocuments(filter)]);
+    try {
+      const collection = await this.col();
+      const cursor = collection.find(filter).sort(sort).skip((page - 1) * limit).limit(limit);
+      const [rows, total] = await Promise.all([cursor.toArray(), collection.countDocuments(filter)]);
 
-    return { items: rows.map(this.toModel), total, page, limit };
+      return { items: rows.map(this.toModel), total, page, limit };
+    } catch (error) {
+      this.handleError('list', error);
+    }
   }
 
   /** Partial update. Returns null on unique index conflict or if not found. */
@@ -170,21 +178,25 @@ export class BddServiceProgramMongo {
         { returnDocument: 'after' }
       );
       return res.value ? this.toModel(res.value as ProgramDoc) : null;
-    } catch (e: any) {
-      if (e?.code === 11000) return null;
-      throw e;
+    } catch (error) {
+      if (this.isDuplicateError(error)) return null;
+      this.handleError('update', error);
     }
   }
 
   /** Soft delete (idempotent): sets deletedAt if not already set. */
   async delete(id: string): Promise<boolean> {
-    const _id = this.toObjectId(id);
-    const now = new Date();
-    const res = await (await this.col()).updateOne(
-      { _id, deletedAt: { $exists: false } },
-      { $set: { deletedAt: now, updatedAt: now } }
-    );
-    return res.modifiedCount === 1;
+    try {
+      const _id = this.toObjectId(id);
+      const now = new Date();
+      const res = await (await this.col()).updateOne(
+        { _id, deletedAt: { $exists: false } },
+        { $set: { deletedAt: now, updatedAt: now } }
+      );
+      return res.modifiedCount === 1;
+    } catch (error) {
+      this.handleError('delete', error);
+    }
   }
 
   private toObjectId = (id: string): ObjectId => {
@@ -262,4 +274,14 @@ export class BddServiceProgramMongo {
     videoUrl: exercise.videoUrl,
     level: exercise.level,
   });
+
+  private isDuplicateError(error: unknown): boolean {
+    return typeof error === 'object' && error !== null && (error as { code?: number }).code === 11000;
+  }
+
+  private handleError(method: string, error: unknown): never {
+    const message = error instanceof Error ? error.message : String(error);
+    inversify.loggerService.error(`BddServiceProgramMongo#${method} => ${message}`);
+    throw error instanceof Error ? error : new Error(message);
+  }
 }

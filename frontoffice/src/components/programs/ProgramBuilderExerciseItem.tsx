@@ -440,6 +440,7 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
             <IconButton
               size="small"
               onClick={handleRemoveClick}
+              color="error"
               aria-label="delete-exercise"
             >
               <DeleteOutline fontSize="small" />

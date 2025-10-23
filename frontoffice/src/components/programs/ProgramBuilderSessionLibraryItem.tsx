@@ -77,6 +77,7 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
                 <IconButton
                   size="small"
                   onClick={handleAddClick}
+                  color="success"
                   aria-label="add-session-template"
                 >
                   <Add fontSize="small" />

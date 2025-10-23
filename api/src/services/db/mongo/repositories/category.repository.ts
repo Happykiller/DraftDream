@@ -24,11 +24,15 @@ export class BddServiceCategoryMongo {
   }
 
   async ensureIndexes(db?: Db): Promise<void> {
-    const collection = db ? db.collection<CategoryDoc>('categories') : await this.col();
-    await collection.createIndexes([
-      { key: { slug: 1, locale: 1 }, name: 'uniq_slug_locale', unique: true },
-      { key: { updatedAt: -1 }, name: 'by_updatedAt' },
-    ]);
+    try {
+      const collection = db ? db.collection<CategoryDoc>('categories') : await this.col();
+      await collection.createIndexes([
+        { key: { slug: 1, locale: 1 }, name: 'uniq_slug_locale', unique: true },
+        { key: { updatedAt: -1 }, name: 'by_updatedAt' },
+      ]);
+    } catch (error) {
+      this.handleError('ensureIndexes', error);
+    }
   }
 
   async create(dto: CreateCategoryDto): Promise<Category | null> {
@@ -46,19 +50,19 @@ export class BddServiceCategoryMongo {
     try {
       const res = await (await this.col()).insertOne(doc as CategoryDoc);
       return { id: res.insertedId.toHexString(), ...doc };
-    } catch (e: any) {
-      if (e?.code === 11000) return null;
-      throw e;
+    } catch (error) {
+      if (this.isDuplicateError(error)) return null;
+      this.handleError('create', error);
     }
   }
 
   async get(dto: GetCategoryDto): Promise<Category | null> {
     try {
-      const _id = new ObjectId(dto.id);
+      const _id = this.toObjectId(dto.id);
       const doc = await (await this.col()).findOne({ _id });
       return doc ? this.toModel(doc) : null;
-    } catch {
-      return null;
+    } catch (error) {
+      this.handleError('get', error);
     }
   }
 
@@ -78,11 +82,15 @@ export class BddServiceCategoryMongo {
       filter.visibility = visibility;
     }
 
-    const collection = await this.col();
-    const cursor = collection.find(filter).sort(sort).skip((page - 1) * limit).limit(limit);
-    const [rows, total] = await Promise.all([cursor.toArray(), collection.countDocuments(filter)]);
+    try {
+      const collection = await this.col();
+      const cursor = collection.find(filter).sort(sort).skip((page - 1) * limit).limit(limit);
+      const [rows, total] = await Promise.all([cursor.toArray(), collection.countDocuments(filter)]);
 
-    return { items: rows.map(this.toModel), total, page, limit };
+      return { items: rows.map(this.toModel), total, page, limit };
+    } catch (error) {
+      this.handleError('list', error);
+    }
   }
 
   async update(id: string, patch: UpdateCategoryDto): Promise<Category | null> {
@@ -97,16 +105,20 @@ export class BddServiceCategoryMongo {
         { _id }, { $set }, { returnDocument: 'after' }
       );
       return res.value ? this.toModel(res.value) : null;
-    } catch (e: any) {
-      if (e?.code === 11000) return null;
-      throw e;
+    } catch (error) {
+      if (this.isDuplicateError(error)) return null;
+      this.handleError('update', error);
     }
   }
 
   async delete(id: string): Promise<boolean> {
-    const _id = this.toObjectId(id);
-    const res = await (await this.col()).deleteOne({ _id });
-    return res.deletedCount === 1;
+    try {
+      const _id = this.toObjectId(id);
+      const res = await (await this.col()).deleteOne({ _id });
+      return res.deletedCount === 1;
+    } catch (error) {
+      this.handleError('delete', error);
+    }
   }
 
   private toObjectId(id: string): ObjectId {
@@ -124,4 +136,14 @@ export class BddServiceCategoryMongo {
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt,
   });
+
+  private isDuplicateError(error: unknown): boolean {
+    return typeof error === 'object' && error !== null && (error as { code?: number }).code === 11000;
+  }
+
+  private handleError(method: string, error: unknown): never {
+    const message = error instanceof Error ? error.message : String(error);
+    inversify.loggerService.error(`BddServiceCategoryMongo#${method} => ${message}`);
+    throw error instanceof Error ? error : new Error(message);
+  }
 }

@@ -44,19 +44,23 @@ export class BddServiceExerciseMongo {
 
   /** Create all necessary indexes. */
   async ensureIndexes(db?: Db): Promise<void> {
-    const collection = db ? db.collection<ExerciseDoc>('exercises') : await this.col();
-    await collection.createIndexes([
-      // Unicity for active (non-archived) documents
-      {
-        key: { slug: 1, locale: 1 },
-        name: 'uniq_active_slug_locale',
-        unique: true,
-      },
-      { key: { updatedAt: -1 }, name: 'by_updatedAt' },
-      { key: { createdBy: 1 }, name: 'by_createdBy' },
-      { key: { visibility: 1 }, name: 'by_visibility' },
-      { key: { level: 1 }, name: 'by_level' },
-    ]);
+    try {
+      const collection = db ? db.collection<ExerciseDoc>('exercises') : await this.col();
+      await collection.createIndexes([
+        // Unicity for active (non-archived) documents
+        {
+          key: { slug: 1, locale: 1 },
+          name: 'uniq_active_slug_locale',
+          unique: true,
+        },
+        { key: { updatedAt: -1 }, name: 'by_updatedAt' },
+        { key: { createdBy: 1 }, name: 'by_createdBy' },
+        { key: { visibility: 1 }, name: 'by_visibility' },
+        { key: { level: 1 }, name: 'by_level' },
+      ]);
+    } catch (error) {
+      this.handleError('ensureIndexes', error);
+    }
   }
 
   /** Insert a new exercise. Automatically resolves slug collisions. */
@@ -96,11 +100,11 @@ export class BddServiceExerciseMongo {
       try {
         const res = await collection.insertOne(doc as ExerciseDoc);
         return this.toModel({ _id: res.insertedId, ...doc } as ExerciseDoc);
-      } catch (e: any) {
-        if (e?.code === 11000) {
+      } catch (error) {
+        if (this.isDuplicateError(error)) {
           continue;
         }
-        throw e;
+        this.handleError('create', error);
       }
     }
 
@@ -110,11 +114,11 @@ export class BddServiceExerciseMongo {
   /** Get by id. */
   async get(dto: GetExerciseDto): Promise<Exercise | null> {
     try {
-      const _id = new ObjectId(dto.id);
+      const _id = this.toObjectId(dto.id);
       const doc = await (await this.col()).findOne({ _id });
       return doc ? this.toModel(doc) : null;
-    } catch {
-      return null;
+    } catch (error) {
+      this.handleError('get', error);
     }
   }
 
@@ -146,11 +150,15 @@ export class BddServiceExerciseMongo {
     if (categoryId) filter.category = this.toObjectId(categoryId);
     filter.deletedAt = undefined;
 
-    const collection = await this.col();
-    const cursor = collection.find(filter).sort(sort).skip((page - 1) * limit).limit(limit);
-    const [rows, total] = await Promise.all([cursor.toArray(), collection.countDocuments(filter)]);
+    try {
+      const collection = await this.col();
+      const cursor = collection.find(filter).sort(sort).skip((page - 1) * limit).limit(limit);
+      const [rows, total] = await Promise.all([cursor.toArray(), collection.countDocuments(filter)]);
 
-    return { items: rows.map(this.toModel), total, page, limit };
+      return { items: rows.map(this.toModel), total, page, limit };
+    } catch (error) {
+      this.handleError('list', error);
+    }
   }
 
   /**
@@ -191,21 +199,24 @@ export class BddServiceExerciseMongo {
       }
 
       return this.toModel(res);
-    } catch (e: any) {
-      inversify.loggerService.error(`BddServiceExerciseMongo#update => ${e?.message ?? e}`);
-      throw new Error(ERRORS.UPDATE_EXERCISE_MONGO);
+    } catch (error: any) {
+      this.handleError('update', error, ERRORS.UPDATE_EXERCISE_MONGO);
     }
   }
 
   /** Hard delete (use with caution). */
   async delete(id: string): Promise<boolean> {
-    const _id = this.toObjectId(id);
-    const now = new Date();
-    const res = await (await this.col()).updateOne(
-      { _id, deletedAt: { $exists: false } },
-      { $set: { deletedAt: now, updatedAt: now } }
-    );
-    return res.modifiedCount === 1;
+    try {
+      const _id = this.toObjectId(id);
+      const now = new Date();
+      const res = await (await this.col()).updateOne(
+        { _id, deletedAt: { $exists: false } },
+        { $set: { deletedAt: now, updatedAt: now } }
+      );
+      return res.modifiedCount === 1;
+    } catch (error) {
+      this.handleError('delete', error);
+    }
   }
 
   // ---- helpers ----
@@ -286,4 +297,17 @@ export class BddServiceExerciseMongo {
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt,
   });
+
+  private isDuplicateError(error: unknown): boolean {
+    return typeof error === 'object' && error !== null && (error as { code?: number }).code === 11000;
+  }
+
+  private handleError(method: string, error: unknown, overrideMessage?: string): never {
+    const message = error instanceof Error ? error.message : String(error);
+    inversify.loggerService.error(`BddServiceExerciseMongo#${method} => ${message}`);
+    if (overrideMessage) {
+      throw new Error(overrideMessage);
+    }
+    throw error instanceof Error ? error : new Error(message);
+  }
 }

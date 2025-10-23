@@ -1,25 +1,16 @@
 // src/pages/ProgramsCoach.tsx
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { alpha, useTheme } from '@mui/material/styles';
-import {
-  Button,
-  CircularProgress,
-  Grid,
-  Paper,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import { Add } from '@mui/icons-material';
 
 import { ProgramBuilderPanel, type BuilderCopy } from '@src/components/programs/ProgramBuilderPanel';
-import { ProgramCard } from '@src/components/programs/ProgramCard';
+import { ProgramList } from '@src/components/programs/ProgramList';
 
 import { usePrograms, type Program } from '@src/hooks/usePrograms';
 
 export function ProgramsCoach(): React.JSX.Element {
   const { t } = useTranslation();
-  const theme = useTheme();
 
   const [builderOpen, setBuilderOpen] = React.useState<boolean>(false);
   const [editingProgram, setEditingProgram] = React.useState<Program | null>(null);
@@ -60,8 +51,6 @@ export function ProgramsCoach(): React.JSX.Element {
     setEditingProgram(null);
   }, []);
 
-  const showPlaceholder = !builderOpen && !loading && programs.length === 0;
-
   return (
     <Stack spacing={2} sx={{ mt: 2 }}>
       <Stack
@@ -100,45 +89,14 @@ export function ProgramsCoach(): React.JSX.Element {
           program={editingProgram ?? undefined}
         />
       ) : (
-        <Stack spacing={3}>
-          {loading && (
-            <Stack alignItems="center" py={6}>
-              <CircularProgress color="primary" />
-            </Stack>
-          )}
-
-          {!loading && programs.length > 0 && (
-            <Grid container spacing={3}>
-              {programs.map((program) => (
-                <Grid size={{ xs: 12, sm: 6, lg: 3 }} key={program.id}>
-                  <ProgramCard
-                    program={program}
-                    onDelete={handleDeleteProgram}
-                    onEdit={handleEditProgram}
-                  />
-                </Grid>
-              ))}
-            </Grid>
-          )}
-
-          {showPlaceholder && (
-            <Paper
-              sx={{
-                borderRadius: 3,
-                p: { xs: 3, md: 5 },
-                textAlign: 'center',
-                bgcolor: alpha(theme.palette.primary.light, 0.08),
-              }}
-            >
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-                {t('programs-coatch.placeholder')}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {builderCopy.subtitle}
-              </Typography>
-            </Paper>
-          )}
-        </Stack>
+        <ProgramList
+          programs={programs}
+          loading={loading}
+          placeholderTitle={t('programs-coatch.placeholder')}
+          placeholderSubtitle={builderCopy.subtitle}
+          onDeleteProgram={handleDeleteProgram}
+          onEditProgram={handleEditProgram}
+        />
       )}
     </Stack>
   );

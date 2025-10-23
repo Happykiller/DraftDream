@@ -11,7 +11,6 @@ import {
   InputAdornment,
   Menu,
   MenuItem,
-  Paper,
   Stack,
   TextField,
   Tooltip,
@@ -507,21 +506,33 @@ export function ProgramBuilderPanel({
 
   return (
     <>
-      {/* Main Panel */}
-      <Paper
-        elevation={4}
+      <Stack
+        spacing={0}
         sx={{
-          borderRadius: 3,
+          width: '100%',
+          flexGrow: 1,
+          minHeight: { xs: '70vh', md: '75vh' },
           bgcolor: alpha(theme.palette.background.paper, 0.98),
+          borderRadius: 3,
+          border: (muiTheme) => `1px solid ${alpha(muiTheme.palette.common.black, 0.08)}`,
+          display: 'flex',
+          flexDirection: 'column',
           overflow: 'hidden',
-          mb: 4,
         }}
       >
-        <Stack>
-          {/* Header */}
-          <Stack direction="row" spacing={2} alignItems="center" sx={{ backgroundColor: alpha(theme.palette.success.main, 0.20), p: 1 }}>
-            <Box
-              aria-hidden
+        {/* Header */}
+        <Stack
+          direction="row"
+          spacing={2}
+          alignItems="center"
+          sx={{
+            px: { xs: 2, md: 3 },
+            py: { xs: 1.5, md: 2 },
+            backgroundColor: alpha(theme.palette.success.main, 0.16),
+          }}
+        >
+          <Box
+            aria-hidden
             sx={{
               width: 40,
               height: 40,
@@ -544,12 +555,21 @@ export function ProgramBuilderPanel({
               {panelSubtitle}
             </Typography>
           </Stack>
-          </Stack>
+        </Stack>
 
-          <Divider />
+        <Divider />
 
-          {/* Content Grid */}
-          <Grid container>
+        {/* Content Grid */}
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            overflowY: 'auto',
+            px: { xs: 1.5, md: 3 },
+            py: { xs: 2, md: 3 },
+          }}
+        >
+          <Grid container spacing={{ xs: 2, md: 3 }}>
             {/* Configuration Panel */}
             <Grid size={{ xs: 12, md: 3, lg: 3 }} sx={{ backgroundColor: '#f3f2f2e0', p: 1 }}>
               <Grid spacing={3}>
@@ -843,6 +863,7 @@ export function ProgramBuilderPanel({
                   <span style={{ display: 'flex', width: '100%' }}>
                     <Button
                       variant="contained"
+                      color="success"
                       size="small"
                       startIcon={<Add fontSize="small" />}
                       fullWidth
@@ -893,6 +914,7 @@ export function ProgramBuilderPanel({
 
                 <Button
                   variant="contained"
+                  color="success"
                   size="small"
                   startIcon={<Add fontSize="small" />}
                   fullWidth
@@ -967,31 +989,43 @@ export function ProgramBuilderPanel({
             </Grid>
           </Grid>
 
-          {/* Footer */}
-          <Stack direction="row" justifyContent="flex-end" spacing={2} sx={{ p: 2, backgroundColor: '#e0dcdce0' }}>
-            <Tooltip title={builderCopy.footer.cancel} arrow>
-              <span style={{ display: 'inline-flex' }}>
-                <Button variant="text" color="inherit" onClick={onCancel}>
-                  {builderCopy.footer.cancel}
-                </Button>
-              </span>
-            </Tooltip>
-            <Tooltip title={submitLabel} arrow>
-              <span style={{ display: 'inline-flex' }}>
-                <Button
-                  variant="contained"
-                  type="button"
-                  onClick={handleSubmit}
-                  disabled={isSubmitDisabled}
-                  color="success"
-                >
-                  {submitLabel}
-                </Button>
-              </span>
-            </Tooltip>
-          </Stack>
+        </Box>
+
+        <Divider />
+
+        {/* Footer */}
+        <Stack
+          direction="row"
+          justifyContent="flex-end"
+          spacing={2}
+          sx={{
+            px: { xs: 2, md: 3 },
+            py: { xs: 1.5, md: 2 },
+            backgroundColor: alpha(theme.palette.background.default, 0.8),
+          }}
+        >
+          <Tooltip title={builderCopy.footer.cancel} arrow>
+            <span style={{ display: 'inline-flex' }}>
+              <Button variant="text" color="inherit" onClick={onCancel}>
+                {builderCopy.footer.cancel}
+              </Button>
+            </span>
+          </Tooltip>
+          <Tooltip title={submitLabel} arrow>
+            <span style={{ display: 'inline-flex' }}>
+              <Button
+                variant="contained"
+                type="button"
+                onClick={handleSubmit}
+                disabled={isSubmitDisabled}
+                color="success"
+              >
+                {submitLabel}
+              </Button>
+            </span>
+          </Tooltip>
         </Stack>
-      </Paper>
+      </Stack>
 
       {/* Exercise Add Menu */}
       <Menu
