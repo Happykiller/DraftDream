@@ -513,17 +513,16 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
                   </Typography>
                 )}
               </Tooltip>
-          <Tooltip title={tooltips.delete_session} arrow>
-            <span style={{ display: 'inline-flex' }}>
-              <IconButton
-                size="small"
-                onClick={handleRemoveSession}
-                color="error"
-                aria-label="delete-session"
-              >
-                <DeleteOutline fontSize="small" />
-              </IconButton>
-            </span>
+              <Tooltip title={tooltips.delete_session} arrow>
+                <span style={{ display: 'inline-flex' }}>
+                  <IconButton
+                    size="small"
+                    onClick={handleRemoveSession}
+                    aria-label="delete-session"
+                  >
+                    <DeleteOutline fontSize="small" />
+                  </IconButton>
+                </span>
               </Tooltip>
             </Stack>
           </Stack>
