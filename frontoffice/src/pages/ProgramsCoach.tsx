@@ -1,8 +1,7 @@
 // src/pages/ProgramsCoach.tsx
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Stack } from '@mui/material';
-import { Add } from '@mui/icons-material';
+import { Stack } from '@mui/material';
 
 import { ProgramBuilderPanel, type BuilderCopy } from '@src/components/programs/ProgramBuilderPanel';
 import { ProgramList } from '@src/components/programs/ProgramList';
@@ -53,33 +52,6 @@ export function ProgramsCoach(): React.JSX.Element {
 
   return (
     <Stack spacing={2} sx={{ mt: 2 }}>
-      <Stack
-        direction={{ xs: 'column', md: 'row' }}
-        alignItems={{ xs: 'stretch', md: 'center' }}
-        justifyContent="flex-end"
-        spacing={2}
-      >
-        <Stack
-          direction="row"
-          spacing={1.5}
-          sx={{
-            width: '100%',
-            justifyContent: 'flex-end',
-          }}
-        >
-          {!builderOpen && (
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<Add fontSize="small" />}
-              onClick={handleOpenBuilderForCreate}
-            >
-              {t('programs-coatch.actions.open_builder')}
-            </Button>
-          )}
-        </Stack>
-      </Stack>
-
       {builderOpen ? (
         <ProgramBuilderPanel
           builderCopy={builderCopy}
@@ -94,6 +66,8 @@ export function ProgramsCoach(): React.JSX.Element {
           loading={loading}
           placeholderTitle={t('programs-coatch.placeholder')}
           placeholderSubtitle={builderCopy.subtitle}
+          openBuilderLabel={t('programs-coatch.actions.open_builder')}
+          onOpenBuilder={handleOpenBuilderForCreate}
           onDeleteProgram={handleDeleteProgram}
           onEditProgram={handleEditProgram}
         />

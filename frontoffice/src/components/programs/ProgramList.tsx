@@ -1,12 +1,14 @@
 import * as React from 'react';
 import { alpha, useTheme } from '@mui/material/styles';
 import {
+  Button,
   CircularProgress,
   Grid,
   Paper,
   Stack,
   Typography,
 } from '@mui/material';
+import { Add } from '@mui/icons-material';
 
 import { ProgramCard } from '@src/components/programs/ProgramCard';
 
@@ -17,6 +19,8 @@ interface ProgramListProps {
   loading: boolean;
   placeholderTitle: string;
   placeholderSubtitle: string;
+  openBuilderLabel: string;
+  onOpenBuilder: () => void;
   onDeleteProgram: (programId: string) => void;
   onEditProgram: (program: Program) => void;
 }
@@ -26,6 +30,8 @@ export function ProgramList({
   loading,
   placeholderTitle,
   placeholderSubtitle,
+  openBuilderLabel,
+  onOpenBuilder,
   onDeleteProgram,
   onEditProgram,
 }: ProgramListProps): React.JSX.Element {
@@ -34,6 +40,17 @@ export function ProgramList({
 
   return (
     <Stack spacing={3} sx={{ width: '100%' }}>
+      <Stack direction="row" justifyContent="flex-end" sx={{ width: '100%' }}>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<Add fontSize="small" />}
+          onClick={onOpenBuilder}
+        >
+          {openBuilderLabel}
+        </Button>
+      </Stack>
+
       {loading && (
         <Stack alignItems="center" py={6}>
           <CircularProgress color="primary" />
