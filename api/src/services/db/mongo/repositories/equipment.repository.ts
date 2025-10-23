@@ -26,11 +26,15 @@ export class BddServiceEquipmentMongo {
 
   // Ensure indexes
   async ensureIndexes(db?: Db): Promise<void> {
-    const collection = db ? db.collection<EquipmentDoc>('equipments') : await this.col();
-    await collection.createIndexes([
-      { key: { slug: 1, locale: 1 }, name: 'uniq_slug_locale', unique: true },
-      { key: { updatedAt: -1 }, name: 'by_updatedAt' },
-    ]);
+    try {
+      const collection = db ? db.collection<EquipmentDoc>('equipments') : await this.col();
+      await collection.createIndexes([
+        { key: { slug: 1, locale: 1 }, name: 'uniq_slug_locale', unique: true },
+        { key: { updatedAt: -1 }, name: 'by_updatedAt' },
+      ]);
+    } catch (error) {
+      this.handleError('ensureIndexes', error);
+    }
   }
 
   // Create
@@ -49,20 +53,20 @@ export class BddServiceEquipmentMongo {
     try {
       const res = await (await this.col()).insertOne(doc as EquipmentDoc);
       return { id: res.insertedId.toHexString(), ...doc };
-    } catch (e: any) {
-      if (e?.code === 11000) return null; // duplicate slug+locale
-      throw e;
+    } catch (error) {
+      if (this.isDuplicateError(error)) return null; // duplicate slug+locale
+      this.handleError('create', error);
     }
   }
 
   // Read one
   async get(dto: GetEquipmentDto): Promise<Equipment | null> {
     try {
-      const _id = new ObjectId(dto.id);
+      const _id = this.toObjectId(dto.id);
       const doc = await (await this.col()).findOne({ _id });
       return doc ? this.toModel(doc) : null;
-    } catch {
-      return null;
+    } catch (error) {
+      this.handleError('get', error);
     }
   }
 
@@ -83,11 +87,15 @@ export class BddServiceEquipmentMongo {
       filter.visibility = visibility;
     }
 
-    const collection = await this.col();
-    const cursor = collection.find(filter).sort(sort).skip((page - 1) * limit).limit(limit);
-    const [rows, total] = await Promise.all([cursor.toArray(), collection.countDocuments(filter)]);
+    try {
+      const collection = await this.col();
+      const cursor = collection.find(filter).sort(sort).skip((page - 1) * limit).limit(limit);
+      const [rows, total] = await Promise.all([cursor.toArray(), collection.countDocuments(filter)]);
 
-    return { items: rows.map(this.toModel), total, page, limit };
+      return { items: rows.map(this.toModel), total, page, limit };
+    } catch (error) {
+      this.handleError('listEquipments', error);
+    }
   }
 
   // Update
@@ -103,17 +111,21 @@ export class BddServiceEquipmentMongo {
         { _id }, { $set }, { returnDocument: 'after' }
       );
       return res.value ? this.toModel(res.value) : null;
-    } catch (e: any) {
-      if (e?.code === 11000) return null; // unique constraint
-      throw e;
+    } catch (error) {
+      if (this.isDuplicateError(error)) return null; // unique constraint
+      this.handleError('update', error);
     }
   }
 
   // Delete
   async delete(id: string): Promise<boolean> {
-    const _id = this.toObjectId(id);
-    const res = await (await this.col()).deleteOne({ _id });
-    return res.deletedCount === 1;
+    try {
+      const _id = this.toObjectId(id);
+      const res = await (await this.col()).deleteOne({ _id });
+      return res.deletedCount === 1;
+    } catch (error) {
+      this.handleError('delete', error);
+    }
   }
 
   // Utils
@@ -132,4 +144,14 @@ export class BddServiceEquipmentMongo {
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt,
   });
+
+  private isDuplicateError(error: unknown): boolean {
+    return typeof error === 'object' && error !== null && (error as { code?: number }).code === 11000;
+  }
+
+  private handleError(method: string, error: unknown): never {
+    const message = error instanceof Error ? error.message : String(error);
+    inversify.loggerService.error(`BddServiceEquipmentMongo#${method} => ${message}`);
+    throw error instanceof Error ? error : new Error(message);
+  }
 }

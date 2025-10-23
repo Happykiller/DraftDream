@@ -25,11 +25,15 @@ export class BddServiceMuscleMongo {
 
   // --- Optional: call this once at startup OR ship as a migration ---
   async ensureIndexes(db?: Db): Promise<void> {
-    const collection = db ? db.collection<MuscleDoc>('muscles') : await this.col();
-    await collection.createIndexes([
-      { key: { slug: 1, locale: 1 }, name: 'uniq_slug_locale', unique: true },
-      { key: { updatedAt: -1 }, name: 'by_updatedAt' },
-    ]);
+    try {
+      const collection = db ? db.collection<MuscleDoc>('muscles') : await this.col();
+      await collection.createIndexes([
+        { key: { slug: 1, locale: 1 }, name: 'uniq_slug_locale', unique: true },
+        { key: { updatedAt: -1 }, name: 'by_updatedAt' },
+      ]);
+    } catch (error) {
+      this.handleError('ensureIndexes', error);
+    }
   }
 
   // --- Create ---
@@ -51,23 +55,23 @@ export class BddServiceMuscleMongo {
         id: result.insertedId.toHexString(),
         ...doc,
       };
-    } catch (e: any) {
-      if (e?.code === 11000) {
+    } catch (error) {
+      if (this.isDuplicateError(error)) {
         // duplicate (slug, locale)
         return null;
       }
-      throw e;
+      this.handleError('create', error);
     }
   }
 
   // --- Read one by id ---
   async get(dto: GetMuscleDto): Promise<Muscle | null> {
     try {
-      const _id = new ObjectId(dto.id);
+      const _id = this.toObjectId(dto.id);
       const doc = await (await this.col()).findOne({ _id });
       return doc ? this.toModel(doc) : null;
-    } catch {
-      return null; // invalid ObjectId
+    } catch (error) {
+      this.handleError('get', error);
     }
   }
 
@@ -90,16 +94,20 @@ export class BddServiceMuscleMongo {
     if (locale) filter.locale = locale.toLowerCase().trim();
     if (createdBy) filter.createdBy = createdBy;
 
-    const collection = await this.col();
-    const cursor = collection.find(filter).sort(sort).skip((page - 1) * limit).limit(limit);
+    try {
+      const collection = await this.col();
+      const cursor = collection.find(filter).sort(sort).skip((page - 1) * limit).limit(limit);
 
-    const [rows, total] = await Promise.all([cursor.toArray(), collection.countDocuments(filter)]);
-    return {
-      items: rows.map(this.toModel),
-      total,
-      page,
-      limit,
-    };
+      const [rows, total] = await Promise.all([cursor.toArray(), collection.countDocuments(filter)]);
+      return {
+        items: rows.map(this.toModel),
+        total,
+        page,
+        limit,
+      };
+    } catch (error) {
+      this.handleError('listMuscles', error);
+    }
   }
 
   // --- Update (partial) ---
@@ -118,20 +126,24 @@ export class BddServiceMuscleMongo {
         { returnDocument: 'after' }
       );
       return res.value ? this.toModel(res.value) : null;
-    } catch (e: any) {
-      if (e?.code === 11000) {
+    } catch (error) {
+      if (this.isDuplicateError(error)) {
         // violating (slug, locale) unique
         return null;
       }
-      throw e;
+      this.handleError('update', error);
     }
   }
 
   // --- Delete (hard delete) ---
   async delete(id: string): Promise<boolean> {
-    const _id = this.toObjectId(id);
-    const res = await (await this.col()).deleteOne({ _id });
-    return res.deletedCount === 1;
+    try {
+      const _id = this.toObjectId(id);
+      const res = await (await this.col()).deleteOne({ _id });
+      return res.deletedCount === 1;
+    } catch (error) {
+      this.handleError('delete', error);
+    }
   }
 
   // --- Utils ---
@@ -154,4 +166,14 @@ export class BddServiceMuscleMongo {
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt,
   });
+
+  private isDuplicateError(error: unknown): boolean {
+    return typeof error === 'object' && error !== null && (error as { code?: number }).code === 11000;
+  }
+
+  private handleError(method: string, error: unknown): never {
+    const message = error instanceof Error ? error.message : String(error);
+    inversify.loggerService.error(`BddServiceMuscleMongo#${method} => ${message}`);
+    throw error instanceof Error ? error : new Error(message);
+  }
 }

@@ -31,18 +31,22 @@ export class BddServiceUserMongo {
 
   // --- Ensure indexes (call once at bootstrap OR via migration) ---
   async ensureIndexes(db?: Db): Promise<void> {
-    const collection = db ? db.collection<UserDoc>('users') : await this.col();
-    await collection.createIndexes([
-      { key: { email: 1 }, name: 'uniq_email', unique: true },
-      { key: { type: 1 }, name: 'by_type' },
-      { key: { last_name: 1, first_name: 1 }, name: 'by_name' },
-      { key: { 'company.name': 1 }, name: 'by_company_name', sparse: true },
-      { key: { createdAt: -1 }, name: 'by_createdAt' },
-      { key: { updatedAt: -1 }, name: 'by_updatedAt' },
-      // NEW
-      { key: { is_active: 1 }, name: 'by_is_active' },
-      { key: { createdBy: 1 }, name: 'by_createdBy', sparse: true },
-    ]);
+    try {
+      const collection = db ? db.collection<UserDoc>('users') : await this.col();
+      await collection.createIndexes([
+        { key: { email: 1 }, name: 'uniq_email', unique: true },
+        { key: { type: 1 }, name: 'by_type' },
+        { key: { last_name: 1, first_name: 1 }, name: 'by_name' },
+        { key: { 'company.name': 1 }, name: 'by_company_name', sparse: true },
+        { key: { createdAt: -1 }, name: 'by_createdAt' },
+        { key: { updatedAt: -1 }, name: 'by_updatedAt' },
+        // NEW
+        { key: { is_active: 1 }, name: 'by_is_active' },
+        { key: { createdBy: 1 }, name: 'by_createdBy', sparse: true },
+      ]);
+    } catch (error) {
+      this.handleError('ensureIndexes', error);
+    }
   }
 
   // --- Create ---
@@ -69,29 +73,37 @@ export class BddServiceUserMongo {
       const saved = await this.getUser({ id: res.insertedId.toHexString() }, { includePassword: false });
       if (!saved) throw new Error('Inserted but not found');
       return saved;
-    } catch (e: any) {
-      if (e?.code === 11000) {
+    } catch (error) {
+      if (this.isDuplicateError(error)) {
         const err = new Error('EMAIL_ALREADY_EXISTS');
-        (err as any).cause = e;
+        (err as any).cause = error;
         throw err;
       }
-      throw e;
+      this.handleError('createUser', error);
     }
   }
 
   // --- Read one by id ---
   async getUser(dto: GetUserDto, opts?: { includePassword?: boolean }): Promise<User | null> {
-    const _id = this.toObjectId(dto.id);
-    const projection = this.makeProjection(!!opts?.includePassword);
-    const doc = await (await this.col()).findOne({ _id }, { projection });
-    return doc ? this.toModel(doc, !!opts?.includePassword) : null;
+    try {
+      const _id = this.toObjectId(dto.id);
+      const projection = this.makeProjection(!!opts?.includePassword);
+      const doc = await (await this.col()).findOne({ _id }, { projection });
+      return doc ? this.toModel(doc, !!opts?.includePassword) : null;
+    } catch (error) {
+      this.handleError('getUser', error);
+    }
   }
 
   // --- Read one by email ---
   async getUserByEmail(email: string, opts?: { includePassword?: boolean }): Promise<User | null> {
-    const projection = this.makeProjection(!!opts?.includePassword);
-    const doc = await (await this.col()).findOne({ email: email.toLowerCase().trim() }, { projection });
-    return doc ? this.toModel(doc, !!opts?.includePassword) : null;
+    try {
+      const projection = this.makeProjection(!!opts?.includePassword);
+      const doc = await (await this.col()).findOne({ email: email.toLowerCase().trim() }, { projection });
+      return doc ? this.toModel(doc, !!opts?.includePassword) : null;
+    } catch (error) {
+      this.handleError('getUserByEmail', error);
+    }
   }
 
   // --- List with filters/pagination ---
@@ -123,23 +135,27 @@ export class BddServiceUserMongo {
     }
 
     const projection = this.makeProjection(includePassword);
-    const cursor = (await this.col())
-      .find(filter, { projection })
-      .sort(sort as Sort)
-      .skip((page - 1) * limit)
-      .limit(limit);
+    try {
+      const cursor = (await this.col())
+        .find(filter, { projection })
+        .sort(sort as Sort)
+        .skip((page - 1) * limit)
+        .limit(limit);
 
-    const [rows, total] = await Promise.all([
-      cursor.toArray(),
-      (await this.col()).countDocuments(filter),
-    ]);
+      const [rows, total] = await Promise.all([
+        cursor.toArray(),
+        (await this.col()).countDocuments(filter),
+      ]);
 
-    return {
-      items: rows.map((d) => this.toModel(d, includePassword)),
-      total,
-      page,
-      limit,
-    };
+      return {
+        items: rows.map((d) => this.toModel(d, includePassword)),
+        total,
+        page,
+        limit,
+      };
+    } catch (error) {
+      this.handleError('listUsers', error);
+    }
   }
 
   // --- Update (partial) ---
@@ -166,30 +182,38 @@ export class BddServiceUserMongo {
         { _id }, { $set }, { returnDocument: 'after', projection: this.makeProjection(false) }
       );
       return res.value ? this.toModel(res.value, false) : null;
-    } catch (e: any) {
-      if (e?.code === 11000) {
+    } catch (error) {
+      if (this.isDuplicateError(error)) {
         const err = new Error('EMAIL_ALREADY_EXISTS');
-        (err as any).cause = e;
+        (err as any).cause = error;
         throw err;
       }
-      throw e;
+      this.handleError('updateUser', error);
     }
   }
 
   // --- Update password (hash already prepared) ---
   async updatePassword(id: string, hashedPassword: string): Promise<boolean> {
-    const _id = this.toObjectId(id);
-    const res = await (await this.col()).updateOne(
-      { _id }, { $set: { password: hashedPassword, updatedAt: new Date() } }
-    );
-    return res.matchedCount === 1;
+    try {
+      const _id = this.toObjectId(id);
+      const res = await (await this.col()).updateOne(
+        { _id }, { $set: { password: hashedPassword, updatedAt: new Date() } }
+      );
+      return res.matchedCount === 1;
+    } catch (error) {
+      this.handleError('updatePassword', error);
+    }
   }
 
   // --- Delete ---
   async deleteUser(id: string): Promise<boolean> {
-    const _id = this.toObjectId(id);
-    const res = await (await this.col()).deleteOne({ _id });
-    return res.deletedCount === 1;
+    try {
+      const _id = this.toObjectId(id);
+      const res = await (await this.col()).deleteOne({ _id });
+      return res.deletedCount === 1;
+    } catch (error) {
+      this.handleError('deleteUser', error);
+    }
   }
 
   // --- Utils ---
@@ -222,5 +246,15 @@ export class BddServiceUserMongo {
       user.password = (doc as any).password as string;
     }
     return user;
+  }
+
+  private isDuplicateError(error: unknown): boolean {
+    return typeof error === 'object' && error !== null && (error as { code?: number }).code === 11000;
+  }
+
+  private handleError(method: string, error: unknown): never {
+    const message = error instanceof Error ? error.message : String(error);
+    inversify.loggerService.error(`BddServiceUserMongo#${method} => ${message}`);
+    throw error instanceof Error ? error : new Error(message);
   }
 }
