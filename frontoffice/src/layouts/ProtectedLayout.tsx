@@ -135,7 +135,6 @@ export function ProtectedLayout(): React.JSX.Element {
         tabIndex={-1}
         sx={{
           flexGrow: 1,
-          px: { xs: 1, sm: 2 },
           bgcolor: '#F9FAFB',
           minHeight: '100vh',
         }}

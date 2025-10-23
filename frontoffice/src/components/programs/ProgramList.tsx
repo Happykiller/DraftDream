@@ -39,7 +39,7 @@ export function ProgramList({
   const showPlaceholder = !loading && programs.length === 0;
 
   return (
-    <Stack spacing={3} sx={{ width: '100%' }}>
+    <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
       <Stack direction="row" justifyContent="flex-end" sx={{ width: '100%' }}>
         <Button
           variant="contained"

@@ -51,7 +51,7 @@ export function ProgramsCoach(): React.JSX.Element {
   }, []);
 
   return (
-    <Stack spacing={2} sx={{ mt: 2 }}>
+    <>
       {builderOpen ? (
         <ProgramBuilderPanel
           builderCopy={builderCopy}
@@ -72,6 +72,6 @@ export function ProgramsCoach(): React.JSX.Element {
           onEditProgram={handleEditProgram}
         />
       )}
-    </Stack>
+    </>
   );
 }

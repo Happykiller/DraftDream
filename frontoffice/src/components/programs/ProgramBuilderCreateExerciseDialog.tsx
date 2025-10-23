@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import Autocomplete, {
   createFilterOptions,
-  type FilterOptionsState,
 } from '@mui/material/Autocomplete';
 import {
   Box,
@@ -63,7 +62,7 @@ export function ProgramBuilderCreateExerciseDialog({
   onUpdated,
 }: ProgramBuilderCreateExerciseDialogProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
-    const theme = useTheme();
+  const theme = useTheme();
   const locale = i18n.language || 'fr';
   const collator = React.useMemo(
     () => new Intl.Collator(locale, { sensitivity: 'base' }),
@@ -123,7 +122,7 @@ export function ProgramBuilderCreateExerciseDialog({
   );
 
   const filterCreatableOptions = React.useCallback(
-    (options: CreatableOption[], params: FilterOptionsState<CreatableOption>) => {
+    (options: CreatableOption[], params: any) => {
       const filtered = creatableFilter(options, params);
       const trimmed = params.inputValue.trim();
       if (!trimmed) {
@@ -140,6 +139,7 @@ export function ProgramBuilderCreateExerciseDialog({
           inputValue: trimmed,
           label: trimmed,
           isCreateOption: true,
+          id: ''
         });
       }
       return filtered;
@@ -528,11 +528,11 @@ export function ProgramBuilderCreateExerciseDialog({
   });
   const submitLabel = submitting
     ? t(`${dialogNamespace}.actions.submitting`, {
-        defaultValue: isEditMode ? 'Saving...' : 'Creating...',
-      })
+      defaultValue: isEditMode ? 'Saving...' : 'Creating...',
+    })
     : t(`${dialogNamespace}.actions.submit`, {
-        defaultValue: isEditMode ? 'Save' : 'Create',
-      });
+      defaultValue: isEditMode ? 'Save' : 'Create',
+    });
 
   const fieldCopy = React.useMemo(
     () => ({
@@ -617,7 +617,7 @@ export function ProgramBuilderCreateExerciseDialog({
       maxWidth="md"
     >
       <Box component="form" onSubmit={handleSubmit} noValidate>
-        <DialogTitle sx={{backgroundColor: alpha(theme.palette.success.main, 0.20)}}>
+        <DialogTitle sx={{ backgroundColor: alpha(theme.palette.success.main, 0.20) }}>
           <Stack direction="row" spacing={2} alignItems="center">
             <Box
               aria-hidden
@@ -862,7 +862,7 @@ export function ProgramBuilderCreateExerciseDialog({
             </Stack>
           </Stack>
         </DialogContent>
-        <DialogActions  sx={{ backgroundColor: '#e0dcdce0' }}>
+        <DialogActions sx={{ backgroundColor: '#e0dcdce0' }}>
           <Button onClick={onClose} disabled={submitting} color="inherit">
             {cancelLabel}
           </Button>

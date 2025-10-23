@@ -74,7 +74,6 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
                       onClick={handleEditClick}
                       disabled={!onEdit}
                       aria-label="edit-exercise-template"
-                      color="success"
                       sx={{
                         p: 0.25,
                         borderRadius: 1,
@@ -163,7 +162,6 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
                 size="small"
                 onClick={handleAddClick}
                 disabled={disabled}
-                color="success"
                 aria-label="add-exercise-to-session"
               >
                 <Add fontSize="small" />
