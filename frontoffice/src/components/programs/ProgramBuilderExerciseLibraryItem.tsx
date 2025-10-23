@@ -34,7 +34,8 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
     [t],
   );
   const isPublic = exercise.visibility === 'PUBLIC';
-  const canEdit = exercise.canEdit === true;
+  const canEdit = exercise.canEdit !== false;
+  const showEditAction = Boolean(onEdit) && canEdit;
   const canDelete = canEdit && Boolean(onDelete);
 
   const handleAddClick = React.useCallback(
@@ -77,13 +78,12 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
         <Stack spacing={1} flex={1}>
           <Stack spacing={0.25}>
             <Stack direction="row" spacing={0.5} alignItems="center">
-              {canEdit ? (
+              {showEditAction ? (
                 <Tooltip title={tooltips.edit_exercise} arrow>
                   <span style={{ display: 'inline-flex' }}>
                     <IconButton
                       size="small"
                       onClick={handleEditClick}
-                      disabled={!onEdit}
                       aria-label="edit-exercise-template"
                       sx={{
                         p: 0.25,
@@ -186,7 +186,7 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
           sx={{
             position: 'absolute',
             left: theme.spacing(1.5),
-            bottom: theme.spacing(1),
+            bottom: theme.spacing(1.5),
           }}
         >
           <Tooltip title={tooltips.delete_exercise} arrow>

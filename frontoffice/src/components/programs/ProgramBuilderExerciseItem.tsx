@@ -94,7 +94,8 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
       }),
     [t],
   );
-  const canEditExercise = exercise.canEdit === true;
+  const canEditExercise = exercise.canEdit !== false;
+  const showEditExerciseAction = Boolean(onEdit) && canEditExercise;
 
   React.useEffect(() => {
     if (!isEditingLabel) {
@@ -447,13 +448,12 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
           </Stack>
         </Stack>
 
-        {canEditExercise ? (
+        {showEditExerciseAction ? (
           <Tooltip title={tooltips.edit_exercise} arrow>
             <span style={{ display: 'inline-flex' }}>
               <IconButton
                 size="small"
                 onClick={handleEditClick}
-                disabled={!onEdit}
                 aria-label="edit-exercise-template"
               >
                 <Edit fontSize="small" />
@@ -466,7 +466,7 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
         sx={{
           position: 'absolute',
           left: theme.spacing(1.5),
-          bottom: theme.spacing(1),
+          bottom: theme.spacing(1.5),
         }}
       >
         <Tooltip title={tooltips.delete_exercise} arrow>
