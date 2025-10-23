@@ -117,8 +117,8 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
             </Typography>
           </Stack>
           {exercise.muscles.length > 0 ||
-          exercise.tags.length > 0 ||
-          exercise.equipment.length > 0 ? (
+            exercise.tags.length > 0 ||
+            exercise.equipment.length > 0 ? (
             <Stack direction="row" spacing={0.5} flexWrap="wrap">
               {exercise.muscles.map((muscle) => (
                 <Tooltip
@@ -164,6 +164,27 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
                 <Public fontSize="small" aria-hidden />
               </Box>
             </Tooltip>
+          ) : canDelete ? (
+            <Tooltip title={tooltips.delete_exercise} arrow>
+              <Box
+                sx={{
+                  position: 'absolute',
+                  right: theme.spacing(1),
+                  bottom: theme.spacing(1),
+                  display: 'flex',
+                  alignItems: 'center',
+                  color: theme.palette.text.disabled,
+                }}
+              >
+                <IconButton
+                  size="small"
+                  onClick={handleDeleteClick}
+                  aria-label="delete-exercise-template"
+                >
+                  <DeleteOutline fontSize="small" />
+                </IconButton>
+              </Box>
+            </Tooltip>
           ) : null}
         </Stack>
         <Stack spacing={0.5} alignItems="flex-end">
@@ -181,27 +202,6 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
           </Tooltip>
         </Stack>
       </Stack>
-      {canDelete ? (
-        <Box
-          sx={{
-            position: 'absolute',
-            left: theme.spacing(1.5),
-            bottom: theme.spacing(1.5),
-          }}
-        >
-          <Tooltip title={tooltips.delete_exercise} arrow>
-            <span style={{ display: 'inline-flex' }}>
-              <IconButton
-                size="small"
-                onClick={handleDeleteClick}
-                aria-label="delete-exercise-template"
-              >
-                <DeleteOutline fontSize="small" />
-              </IconButton>
-            </span>
-          </Tooltip>
-        </Box>
-      ) : null}
     </Paper>
   );
 });

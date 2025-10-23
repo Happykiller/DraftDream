@@ -136,7 +136,7 @@ export class ExerciseResolver {
   }
 
   @Mutation(() => Boolean, { name: 'exercise_delete' })
-  @Auth(Role.ADMIN)
+  @Auth(Role.ADMIN, Role.COACH)
   async exercise_delete(@Args('id', { type: () => ID }) id: string): Promise<boolean> {
     return inversify.deleteExerciseUsecase.execute(id);
   }

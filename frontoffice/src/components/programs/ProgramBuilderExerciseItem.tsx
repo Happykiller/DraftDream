@@ -415,72 +415,71 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
             {(exercise.muscles.length > 0 ||
               exercise.tags.length > 0 ||
               exercise.equipment.length > 0) && (
-              <Stack direction="row" spacing={0.5} flexWrap="wrap">
-                {exercise.muscles.map((muscle) => (
-                  <Tooltip
-                    key={`${exercise.id}-muscle-${muscle.id}`}
-                    title={tooltips.muscle_chip.replace('{{label}}', muscle.label)}
-                    arrow
-                  >
-                    <Chip label={muscle.label} size="small" color="primary" variant="filled" />
-                  </Tooltip>
-                ))}
-                {exercise.tags.map((tag) => (
-                  <Tooltip
-                    key={`${exercise.id}-tag-${tag.id}`}
-                    title={tooltips.tag_chip.replace('{{label}}', tag.label)}
-                    arrow
-                  >
-                    <Chip label={tag.label} size="small" color="secondary" variant="outlined" />
-                  </Tooltip>
-                ))}
-                {exercise.equipment.map((eq) => (
-                  <Tooltip
-                    key={`${exercise.id}-equipment-${eq.id}`}
-                    title={tooltips.equipment_chip.replace('{{label}}', eq.label)}
-                    arrow
-                  >
-                    <Chip label={eq.label} size="small" variant="outlined" />
-                  </Tooltip>
-                ))}
-              </Stack>
-            )}
+                <Stack direction="row" spacing={0.5} flexWrap="wrap">
+                  {exercise.muscles.map((muscle) => (
+                    <Tooltip
+                      key={`${exercise.id}-muscle-${muscle.id}`}
+                      title={tooltips.muscle_chip.replace('{{label}}', muscle.label)}
+                      arrow
+                    >
+                      <Chip label={muscle.label} size="small" color="primary" variant="filled" />
+                    </Tooltip>
+                  ))}
+                  {exercise.tags.map((tag) => (
+                    <Tooltip
+                      key={`${exercise.id}-tag-${tag.id}`}
+                      title={tooltips.tag_chip.replace('{{label}}', tag.label)}
+                      arrow
+                    >
+                      <Chip label={tag.label} size="small" color="secondary" variant="outlined" />
+                    </Tooltip>
+                  ))}
+                  {exercise.equipment.map((eq) => (
+                    <Tooltip
+                      key={`${exercise.id}-equipment-${eq.id}`}
+                      title={tooltips.equipment_chip.replace('{{label}}', eq.label)}
+                      arrow
+                    >
+                      <Chip label={eq.label} size="small" variant="outlined" />
+                    </Tooltip>
+                  ))}
+                </Stack>
+              )}
           </Stack>
         </Stack>
 
-        {showEditExerciseAction ? (
-          <Tooltip title={tooltips.edit_exercise} arrow>
-            <span style={{ display: 'inline-flex' }}>
-              <IconButton
-                size="small"
-                onClick={handleEditClick}
-                aria-label="edit-exercise-template"
-              >
-                <Edit fontSize="small" />
-              </IconButton>
-            </span>
-          </Tooltip>
-        ) : null}
-      </Stack>
-      <Box
-        sx={{
-          position: 'absolute',
-          left: theme.spacing(1.5),
-          bottom: theme.spacing(1.5),
-        }}
-      >
-        <Tooltip title={tooltips.delete_exercise} arrow>
+        <Tooltip title={tooltips.edit_exercise} arrow>
           <span style={{ display: 'inline-flex' }}>
             <IconButton
               size="small"
-              onClick={handleRemoveClick}
-              aria-label="delete-exercise"
+              onClick={handleEditClick}
+              aria-label="edit-exercise-template"
             >
-              <DeleteOutline fontSize="small" />
+              <Edit fontSize="small" />
             </IconButton>
           </span>
         </Tooltip>
-      </Box>
+        <Box
+          sx={{
+            position: 'absolute',
+            right: theme.spacing(1.5),
+            bottom: theme.spacing(1.5),
+          }}
+        >
+          <Tooltip title={tooltips.delete_exercise} arrow>
+            <span style={{ display: 'inline-flex' }}>
+              <IconButton
+                size="small"
+                onClick={handleRemoveClick}
+                aria-label="delete-exercise"
+              >
+                <DeleteOutline fontSize="small" />
+              </IconButton>
+            </span>
+          </Tooltip>
+        </Box>
+      </Stack>
+
     </Paper>
   );
 });
