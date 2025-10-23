@@ -508,7 +508,16 @@ export function ProgramBuilderPanel({
   return (
     <>
       {/* Main Panel */}
-      <Stack>
+      <Stack
+        sx={{
+          minHeight: { xs: 'calc(100dvh - 56px)', sm: 'calc(100dvh - 64px)' },
+          maxHeight: { xs: 'calc(100dvh - 56px)', sm: 'calc(100dvh - 64px)' },
+          height: '100%',
+          flex: 1,
+          overflow: 'hidden',
+          backgroundColor: theme.palette.background.paper,
+        }}
+      >
         {/* Header */}
         <Stack direction="row" spacing={2} alignItems="center" sx={{ backgroundColor: alpha(theme.palette.success.main, 0.20), p: 1 }}>
           <Box
@@ -540,11 +549,143 @@ export function ProgramBuilderPanel({
         <Divider />
 
         {/* Content Grid */}
-        <Grid container>
-          {/* Configuration Panel */}
-          <Grid size={{ xs: 12, md: 3, lg: 3 }} sx={{ backgroundColor: '#f3f2f2e0', p: 1 }}>
-            <Grid spacing={3}>
-              <Grid
+        <Box sx={{ flexGrow: 1, overflow: 'auto', minHeight: 0 }}>
+          <Grid container sx={{ minWidth: 0, minHeight: '100%', alignContent: 'stretch', alignItems: 'stretch', gap: 0 }}>
+            {/* Configuration Panel */}
+            <Grid size={{ xs: 12, md: 3, lg: 3 }} sx={{ backgroundColor: '#f3f2f2e0', px: 1, py: 1, display: 'flex', flexDirection: 'column', minHeight: '100%', pb: 0 }}>
+              <Grid spacing={3}>
+                <Grid
+                  sx={{
+                    borderRadius: 2,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 2,
+                  }}
+                >
+                  <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                    {builderCopy.config.title}
+                  </Typography>
+
+                  <Autocomplete<User>
+                    options={users}
+                    value={selectedAthlete}
+                    loading={usersLoading}
+                    onChange={handleSelectAthlete}
+                    isOptionEqualToValue={(option, value) => option.id === value.id}
+                    getOptionLabel={userLabel}
+                    noOptionsText={t('common.field_incorrect')}
+                    onInputChange={(_event, value) => setUsersQ(value)}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label={builderCopy.config.client_label}
+                        placeholder={builderCopy.config.client_placeholder}
+                        size="small"
+                        InputProps={{
+                          ...params.InputProps,
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <Search fontSize="small" color="disabled" />
+                            </InputAdornment>
+                          ),
+                          endAdornment: (
+                            <>
+                              {usersLoading ? <CircularProgress size={18} /> : null}
+                              {params.InputProps.endAdornment}
+                            </>
+                          ),
+                        }}
+                        inputProps={{
+                          ...params.inputProps,
+                          'aria-label': 'Select athlete',
+                        }}
+                      />
+                    )}
+                    sx={{ backgroundColor: theme.palette.background.default }}
+                  />
+
+                  <Stack direction="row" spacing={1.5}>
+                    <TextField
+                      label={builderCopy.config.duration_label}
+                      size="small"
+                      fullWidth
+                      value={form.duration}
+                      onChange={handleFormChange('duration')}
+                      required
+                      inputProps={{ 'aria-required': true }}
+                      sx={{ backgroundColor: theme.palette.background.default }}
+                    />
+                    <TextField
+                      label={builderCopy.config.frequency_label}
+                      size="small"
+                      fullWidth
+                      value={form.frequency}
+                      onChange={handleFormChange('frequency')}
+                      required
+                      inputProps={{ 'aria-required': true }}
+                      sx={{ backgroundColor: theme.palette.background.default }}
+                    />
+                  </Stack>
+
+                  <Divider />
+
+                  {/* Session Templates Library */}
+                  <Stack spacing={1}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                      {builderCopy.templates_title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {builderCopy.templates_subtitle}
+                    </Typography>
+
+                    <TextField
+                      fullWidth
+                      size="small"
+                      placeholder={builderCopy.config.search_placeholder}
+                      value={sessionSearch}
+                      onChange={(event) => setSessionSearch(event.target.value)}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Search fontSize="small" color="disabled" />
+                          </InputAdornment>
+                        ),
+                      }}
+                      sx={{ backgroundColor: theme.palette.background.default }}
+                    />
+
+                    <Typography variant="caption" color="text.secondary">
+                      {sessionLimitHint}
+                    </Typography>
+
+                    <Stack spacing={1.5}>
+                      {sessionsLoading ? (
+                        <Box display="flex" justifyContent="center" py={2}>
+                          <CircularProgress size={24} />
+                        </Box>
+                      ) : sessionTemplates.length === 0 ? (
+                        <Typography variant="body2" color="text.secondary">
+                          {builderCopy.structure.empty}
+                        </Typography>
+                      ) : (
+                        sessionTemplates.map((template) => (
+                          <ProgramBuilderSessionLibraryItem
+                            key={template.id}
+                            template={template}
+                            builderCopy={builderCopy}
+                            onAdd={() => handleAddSessionFromTemplate(template.id)}
+                          />
+                        ))
+                      )}
+                    </Stack>
+                  </Stack>
+                </Grid>
+              </Grid>
+            </Grid>
+
+            {/* Structure Panel */}
+            <Grid size={{ xs: 12, md: 5, lg: 5 }} sx={{ px: 1, py: 1, display: 'flex', flexDirection: 'column', minHeight: '100%', pb: 0 }}>
+              <Box
                 sx={{
                   borderRadius: 2,
                   display: 'flex',
@@ -552,137 +693,6 @@ export function ProgramBuilderPanel({
                   gap: 2,
                 }}
               >
-                <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                  {builderCopy.config.title}
-                </Typography>
-
-                <Autocomplete<User>
-                  options={users}
-                  value={selectedAthlete}
-                  loading={usersLoading}
-                  onChange={handleSelectAthlete}
-                  isOptionEqualToValue={(option, value) => option.id === value.id}
-                  getOptionLabel={userLabel}
-                  noOptionsText={t('common.field_incorrect')}
-                  onInputChange={(_event, value) => setUsersQ(value)}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label={builderCopy.config.client_label}
-                      placeholder={builderCopy.config.client_placeholder}
-                      size="small"
-                      InputProps={{
-                        ...params.InputProps,
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <Search fontSize="small" color="disabled" />
-                          </InputAdornment>
-                        ),
-                        endAdornment: (
-                          <>
-                            {usersLoading ? <CircularProgress size={18} /> : null}
-                            {params.InputProps.endAdornment}
-                          </>
-                        ),
-                      }}
-                      inputProps={{
-                        ...params.inputProps,
-                        'aria-label': 'Select athlete',
-                      }}
-                    />
-                  )}
-                  sx={{ backgroundColor: theme.palette.background.default }}
-                />
-
-                <Stack direction="row" spacing={1.5}>
-                  <TextField
-                    label={builderCopy.config.duration_label}
-                    size="small"
-                    fullWidth
-                    value={form.duration}
-                    onChange={handleFormChange('duration')}
-                    required
-                    inputProps={{ 'aria-required': true }}
-                    sx={{ backgroundColor: theme.palette.background.default }}
-                  />
-                  <TextField
-                    label={builderCopy.config.frequency_label}
-                    size="small"
-                    fullWidth
-                    value={form.frequency}
-                    onChange={handleFormChange('frequency')}
-                    required
-                    inputProps={{ 'aria-required': true }}
-                    sx={{ backgroundColor: theme.palette.background.default }}
-                  />
-                </Stack>
-
-                <Divider />
-
-                {/* Session Templates Library */}
-                <Stack spacing={1}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                    {builderCopy.templates_title}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {builderCopy.templates_subtitle}
-                  </Typography>
-
-                  <TextField
-                    fullWidth
-                    size="small"
-                    placeholder={builderCopy.config.search_placeholder}
-                    value={sessionSearch}
-                    onChange={(event) => setSessionSearch(event.target.value)}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Search fontSize="small" color="disabled" />
-                        </InputAdornment>
-                      ),
-                    }}
-                    sx={{ backgroundColor: theme.palette.background.default }}
-                  />
-
-                  <Typography variant="caption" color="text.secondary">
-                    {sessionLimitHint}
-                  </Typography>
-
-                  <Stack spacing={1.5}>
-                    {sessionsLoading ? (
-                      <Box display="flex" justifyContent="center" py={2}>
-                        <CircularProgress size={24} />
-                      </Box>
-                    ) : sessionTemplates.length === 0 ? (
-                      <Typography variant="body2" color="text.secondary">
-                        {builderCopy.structure.empty}
-                      </Typography>
-                    ) : (
-                      sessionTemplates.map((template) => (
-                        <ProgramBuilderSessionLibraryItem
-                          key={template.id}
-                          template={template}
-                          builderCopy={builderCopy}
-                          onAdd={() => handleAddSessionFromTemplate(template.id)}
-                        />
-                      ))
-                    )}
-                  </Stack>
-                </Stack>
-              </Grid>
-            </Grid>
-          </Grid>
-
-          {/* Structure Panel */}
-          <Grid size={{ xs: 12, md: 5, lg: 5 }} sx={{ p: 1 }}>
-            <Box
-              sx={{
-                borderRadius: 2,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 2,
-              }}
-            >
               <Stack spacing={1.5}>
                 <Stack
                   direction="row"
@@ -846,13 +856,13 @@ export function ProgramBuilderPanel({
             </Box>
           </Grid>
 
-          {/* Exercise Library Panel */}
-          <Grid size={{ xs: 12, md: 4, lg: 4 }} sx={{ backgroundColor: '#f3f2f2e0', p: 1 }}>
-            <Box
-              sx={{
-                borderRadius: 2,
-                minHeight: 420,
-                display: 'flex',
+            {/* Exercise Library Panel */}
+            <Grid size={{ xs: 12, md: 4, lg: 4 }} sx={{ backgroundColor: '#f3f2f2e0', px: 1, py: 1, display: 'flex', flexDirection: 'column', minHeight: '100%', pb: 0 }}>
+              <Box
+                sx={{
+                  borderRadius: 2,
+                  minHeight: 420,
+                  display: 'flex',
                 flexDirection: 'column',
                 gap: 2,
               }}
@@ -957,6 +967,7 @@ export function ProgramBuilderPanel({
             </Box>
           </Grid>
         </Grid>
+      </Box>
 
         {/* Footer */}
         <Stack direction="row" justifyContent="flex-end" spacing={2} sx={{ p: 2, backgroundColor: '#e0dcdce0' }}>
