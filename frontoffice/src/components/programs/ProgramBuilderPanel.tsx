@@ -100,6 +100,7 @@ export function ProgramBuilderPanel({
     isSubmitDisabled,
     createExercise,
     updateExercise,
+    deleteExercise,
     registerExercise,
     getRawExerciseById,
     mode,
@@ -493,6 +494,13 @@ export function ProgramBuilderPanel({
     ],
   );
 
+  const handleExerciseDeleted = React.useCallback(
+    (exerciseId: string) => {
+      void deleteExercise(exerciseId);
+    },
+    [deleteExercise],
+  );
+
   const handleOpenEditExerciseDialog = React.useCallback(
     (exerciseId: string) => {
       const exercise = getRawExerciseById(exerciseId);
@@ -835,6 +843,7 @@ export function ProgramBuilderPanel({
                       onMoveExerciseDown={(exerciseId) =>
                         handleMoveExerciseDown(session.id, exerciseId)
                       }
+                      onEditExercise={handleOpenEditExerciseDialog}
                     />
                   ))
                 )}
@@ -960,6 +969,7 @@ export function ProgramBuilderPanel({
                         handleOpenExerciseMenu(exercise.id, event.currentTarget)
                       }
                       onEdit={handleOpenEditExerciseDialog}
+                      onDelete={handleExerciseDeleted}
                     />
                   ))
                 )}

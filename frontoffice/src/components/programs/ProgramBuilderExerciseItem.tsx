@@ -35,6 +35,7 @@ type ProgramBuilderExerciseItemProps = {
   onDescriptionChange: (description: string) => void;
   onMoveUp: () => void;
   onMoveDown: () => void;
+  onEdit?: (exerciseId: string) => void;
 };
 
 export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExerciseItem({
@@ -47,6 +48,7 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
   onDescriptionChange,
   onMoveUp,
   onMoveDown,
+  onEdit,
 }: ProgramBuilderExerciseItemProps): React.JSX.Element {
   const theme = useTheme();
   const primaryMain = theme.palette.primary.main;
@@ -92,6 +94,7 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
       }),
     [t],
   );
+  const canEditExercise = exercise.canEdit === true;
 
   React.useEffect(() => {
     if (!isEditingLabel) {
@@ -250,6 +253,13 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
     onRemove(exerciseItem.id);
   };
 
+  const handleEditClick = React.useCallback(() => {
+    if (!onEdit) {
+      return;
+    }
+    onEdit(exercise.id);
+  }, [exercise.id, onEdit]);
+
   const canMoveUp = index > 0;
   const canMoveDown = index < totalExercises - 1;
 
@@ -272,8 +282,10 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
       variant="outlined"
       sx={{
         p: 1.5,
+        pb: 5,
         borderRadius: 2,
         cursor: 'default',
+        position: 'relative',
         '&:hover': {
           borderColor: theme.palette.primary.main,
           boxShadow: theme.shadows[1],
@@ -435,6 +447,28 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
           </Stack>
         </Stack>
 
+        {canEditExercise ? (
+          <Tooltip title={tooltips.edit_exercise} arrow>
+            <span style={{ display: 'inline-flex' }}>
+              <IconButton
+                size="small"
+                onClick={handleEditClick}
+                disabled={!onEdit}
+                aria-label="edit-exercise-template"
+              >
+                <Edit fontSize="small" />
+              </IconButton>
+            </span>
+          </Tooltip>
+        ) : null}
+      </Stack>
+      <Box
+        sx={{
+          position: 'absolute',
+          left: theme.spacing(1.5),
+          bottom: theme.spacing(1),
+        }}
+      >
         <Tooltip title={tooltips.delete_exercise} arrow>
           <span style={{ display: 'inline-flex' }}>
             <IconButton
@@ -446,7 +480,7 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
             </IconButton>
           </span>
         </Tooltip>
-      </Stack>
+      </Box>
     </Paper>
   );
 });

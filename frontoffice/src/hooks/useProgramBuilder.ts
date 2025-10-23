@@ -200,6 +200,7 @@ export function useProgramBuilder(
     loading: exercisesLoading,
     create: createExercise,
     update: updateExercise,
+    remove: removeExercise,
   } = useExercises({
     page: 1,
     limit: 10,
@@ -220,6 +221,21 @@ export function useProgramBuilder(
       return next;
     });
   }, []);
+
+  const deleteExercise = React.useCallback(
+    async (exerciseId: string) => {
+      await removeExercise(exerciseId);
+      setExerciseOverrides((prev) => {
+        if (!prev.has(exerciseId)) {
+          return prev;
+        }
+        const next = new Map(prev);
+        next.delete(exerciseId);
+        return next;
+      });
+    },
+    [removeExercise],
+  );
 
   React.useEffect(() => {
     setExerciseOverrides((prev) => {
@@ -1135,6 +1151,7 @@ export function useProgramBuilder(
     isSubmitDisabled,
     createExercise,
     updateExercise,
+    deleteExercise,
     registerExercise,
     getRawExerciseById,
     mode,

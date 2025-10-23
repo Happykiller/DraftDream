@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Box, Chip, IconButton, Paper, Stack, Tooltip, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { Add, Edit, Public } from '@mui/icons-material';
+import { Add, DeleteOutline, Edit, Public } from '@mui/icons-material';
 
 import type { BuilderCopy, ExerciseLibraryItem } from './programBuilderTypes';
 
@@ -11,6 +11,7 @@ type ProgramBuilderExerciseLibraryItemProps = {
   onAdd: (event: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
   onEdit?: (exerciseId: string) => void;
+  onDelete?: (exerciseId: string) => void;
 };
 
 export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuilderExerciseLibraryItem({
@@ -18,6 +19,7 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
   onAdd,
   disabled = false,
   onEdit,
+  onDelete,
 }: ProgramBuilderExerciseLibraryItemProps): React.JSX.Element {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -33,6 +35,7 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
   );
   const isPublic = exercise.visibility === 'PUBLIC';
   const canEdit = exercise.canEdit === true;
+  const canDelete = canEdit && Boolean(onDelete);
 
   const handleAddClick = React.useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -48,11 +51,19 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
     onEdit(exercise.id);
   }, [exercise.id, onEdit]);
 
+  const handleDeleteClick = React.useCallback(() => {
+    if (!onDelete) {
+      return;
+    }
+    onDelete(exercise.id);
+  }, [exercise.id, onDelete]);
+
   return (
     <Paper
       variant="outlined"
       sx={{
         p: 1.5,
+        ...(canDelete ? { pb: 5 } : {}),
         borderRadius: 2,
         cursor: 'default',
         position: 'relative',
@@ -170,6 +181,27 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
           </Tooltip>
         </Stack>
       </Stack>
+      {canDelete ? (
+        <Box
+          sx={{
+            position: 'absolute',
+            left: theme.spacing(1.5),
+            bottom: theme.spacing(1),
+          }}
+        >
+          <Tooltip title={tooltips.delete_exercise} arrow>
+            <span style={{ display: 'inline-flex' }}>
+              <IconButton
+                size="small"
+                onClick={handleDeleteClick}
+                aria-label="delete-exercise-template"
+              >
+                <DeleteOutline fontSize="small" />
+              </IconButton>
+            </span>
+          </Tooltip>
+        </Box>
+      ) : null}
     </Paper>
   );
 });
