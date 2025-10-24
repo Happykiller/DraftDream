@@ -164,9 +164,7 @@ export function ProgramCloneDialog({
       return;
     }
 
-    const copySuffix = t('programs-coatch.list.clone_dialog.copy_suffix', {
-      defaultValue: '(Copy)',
-    });
+    const copySuffix = t('programs-coatch.list.clone_dialog.copy_suffix');
     const baseLabel = program.label?.trim() ?? '';
     const nextLabel = baseLabel.length > 0 ? `${baseLabel} ${copySuffix}`.trim() : copySuffix;
 
@@ -207,11 +205,7 @@ export function ProgramCloneDialog({
     const trimmedLabel = cloneLabel.trim();
     setCloneLabelError(null);
     if (!trimmedLabel) {
-      setCloneLabelError(
-        t('programs-coatch.list.clone_dialog.errors.missing_label', {
-          defaultValue: 'Please provide a program name.',
-        }),
-      );
+      setCloneLabelError(t('programs-coatch.list.clone_dialog.errors.missing_label'));
       return;
     }
 
@@ -226,9 +220,7 @@ export function ProgramCloneDialog({
       onClose();
     } catch (error: unknown) {
       setCloneError(
-        error instanceof Error
-          ? error.message
-          : t('common.unexpected_error', { defaultValue: 'Unexpected error.' }),
+        error instanceof Error ? error.message : t('common.unexpected_error'),
       );
     } finally {
       setCloneLoading(false);
@@ -244,42 +236,20 @@ export function ProgramCloneDialog({
     setAthleteQuery(value);
   }, []);
 
-  const cloneDialogTitle = t('programs-coatch.list.clone_dialog.title', {
-    defaultValue: 'Copy the program',
-  });
-  const cloneDialogDescription = t('programs-coatch.list.clone_dialog.description', {
-    defaultValue: 'Update the program name and athlete before duplicating.',
-  });
-  const cloneDialogNameLabel = t('programs-coatch.list.clone_dialog.fields.name', {
-    defaultValue: 'Program name',
-  });
+  const cloneDialogTitle = t('programs-coatch.list.clone_dialog.title');
+  const cloneDialogDescription = t('programs-coatch.list.clone_dialog.description');
+  const cloneDialogNameLabel = t('programs-coatch.list.clone_dialog.fields.name');
   const cloneDialogNamePlaceholder = t(
     'programs-coatch.list.clone_dialog.fields.name_placeholder',
-    {
-      defaultValue: 'Ex: Summer strength plan',
-    },
   );
-  const cloneDialogAthleteLabel = t('programs-coatch.list.clone_dialog.fields.athlete', {
-    defaultValue: 'Athlete',
-  });
+  const cloneDialogAthleteLabel = t('programs-coatch.list.clone_dialog.fields.athlete');
   const cloneDialogAthletePlaceholder = t(
     'programs-coatch.list.clone_dialog.fields.athlete_placeholder',
-    {
-      defaultValue: 'Select an athlete (optional)',
-    },
   );
-  const cloneDialogNoResults = t('programs-coatch.list.clone_dialog.no_results', {
-    defaultValue: 'No athlete found',
-  });
-  const cloneDialogCancel = t('programs-coatch.list.clone_dialog.actions.cancel', {
-    defaultValue: 'Cancel',
-  });
-  const cloneDialogSubmit = t('programs-coatch.list.clone_dialog.actions.submit', {
-    defaultValue: 'Copy',
-  });
-  const cloneDialogSubmitting = t('programs-coatch.list.clone_dialog.actions.submitting', {
-    defaultValue: 'Copying…',
-  });
+  const cloneDialogNoResults = t('programs-coatch.list.clone_dialog.no_results');
+  const cloneDialogCancel = t('programs-coatch.list.clone_dialog.actions.cancel');
+  const cloneDialogSubmit = t('programs-coatch.list.clone_dialog.actions.submit');
+  const cloneDialogSubmitting = t('programs-coatch.list.clone_dialog.actions.submitting');
 
   const handleFormSubmit = React.useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
@@ -313,6 +283,7 @@ export function ProgramCloneDialog({
       actions={dialogActions}
     >
       <Stack spacing={3}>
+        {/* General information */}
         {/* Program name */}
         <TextField
           autoFocus

@@ -66,3 +66,5 @@ This document captures how the `fitdesk-devops` agent should operate the DraftDr
 
 3. **Component templates**:
    - Always include and maintain the JSX marker comment ` {/* General information */}` within component templates.
+4. **Internationalization**:
+   - Do not rely on translation `defaultValue` fallbacks; keep localization dictionaries up to date for every supported language.

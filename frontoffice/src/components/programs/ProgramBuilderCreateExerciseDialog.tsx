@@ -48,7 +48,7 @@ export function ProgramBuilderCreateExerciseDialog({
   onUpdated,
 }: ProgramBuilderCreateExerciseDialogProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
-  const locale = i18n.language || 'fr';
+  const locale = i18n.resolvedLanguage ?? i18n.language;
   const collator = React.useMemo(
     () => new Intl.Collator(locale, { sensitivity: 'base' }),
     [locale],
@@ -335,21 +335,15 @@ export function ProgramBuilderCreateExerciseDialog({
     () => [
       {
         value: 'BEGINNER',
-        label: t('programs-coatch.builder.library.create_dialog.levels.beginner', {
-          defaultValue: 'Beginner',
-        }),
+        label: t('programs-coatch.builder.library.create_dialog.levels.beginner'),
       },
       {
         value: 'INTERMEDIATE',
-        label: t('programs-coatch.builder.library.create_dialog.levels.intermediate', {
-          defaultValue: 'Intermediate',
-        }),
+        label: t('programs-coatch.builder.library.create_dialog.levels.intermediate'),
       },
       {
         value: 'ADVANCED',
-        label: t('programs-coatch.builder.library.create_dialog.levels.advanced', {
-          defaultValue: 'Advanced',
-        }),
+        label: t('programs-coatch.builder.library.create_dialog.levels.advanced'),
       },
     ],
     [t],
@@ -513,67 +507,29 @@ export function ProgramBuilderCreateExerciseDialog({
     return tagOptions.filter((option) => map.has(option.id));
   }, [tagIds, tagOptions]);
 
-  const title = t(`${dialogNamespace}.title`, {
-    defaultValue: isEditMode ? 'Edit exercise template' : 'Create an exercise template',
-  });
-  const subtitle = t(`${dialogNamespace}.subtitle`, {
-    defaultValue: isEditMode
-      ? 'Update your reusable exercise.'
-      : 'Create a reusable exercise for your programs.',
-  });
+  const title = t(`${dialogNamespace}.title`);
+  const subtitle = t(`${dialogNamespace}.subtitle`);
 
-  const cancelLabel = t(`${dialogNamespace}.actions.cancel`, {
-    defaultValue: 'Cancel',
-  });
+  const cancelLabel = t(`${dialogNamespace}.actions.cancel`);
   const submitLabel = submitting
-    ? t(`${dialogNamespace}.actions.submitting`, {
-      defaultValue: isEditMode ? 'Saving...' : 'Creating...',
-    })
-    : t(`${dialogNamespace}.actions.submit`, {
-      defaultValue: isEditMode ? 'Save' : 'Create',
-    });
+    ? t(`${dialogNamespace}.actions.submitting`)
+    : t(`${dialogNamespace}.actions.submit`);
 
   const fieldCopy = React.useMemo(
     () => ({
-      label: t('programs-coatch.builder.library.create_dialog.fields.label', {
-        defaultValue: 'Exercise name',
-      }),
-      description: t('programs-coatch.builder.library.create_dialog.fields.description', {
-        defaultValue: 'Description (optional)',
-      }),
-      instructions: t('programs-coatch.builder.library.create_dialog.fields.instructions', {
-        defaultValue: 'Instructions (optional)',
-      }),
-      level: t('programs-coatch.builder.library.create_dialog.fields.level', {
-        defaultValue: 'Level',
-      }),
-      series: t('programs-coatch.builder.library.create_dialog.fields.series', {
-        defaultValue: 'Series',
-      }),
-      repetitions: t('programs-coatch.builder.library.create_dialog.fields.repetitions', {
-        defaultValue: 'Repetitions',
-      }),
-      rest: t('programs-coatch.builder.library.create_dialog.fields.rest', {
-        defaultValue: 'Rest (sec)',
-      }),
-      charge: t('programs-coatch.builder.library.create_dialog.fields.charge', {
-        defaultValue: 'Weight / Load (optional)',
-      }),
-      videoUrl: t('programs-coatch.builder.library.create_dialog.fields.video_url', {
-        defaultValue: 'Video URL (optional)',
-      }),
-      category: t('programs-coatch.builder.library.create_dialog.fields.category', {
-        defaultValue: 'Category',
-      }),
-      muscles: t('programs-coatch.builder.library.create_dialog.fields.muscles', {
-        defaultValue: 'Muscles',
-      }),
-      equipment: t('programs-coatch.builder.library.create_dialog.fields.equipment', {
-        defaultValue: 'Equipment (optional)',
-      }),
-      tags: t('programs-coatch.builder.library.create_dialog.fields.tags', {
-        defaultValue: 'Tags (optional)',
-      }),
+      label: t('programs-coatch.builder.library.create_dialog.fields.label'),
+      description: t('programs-coatch.builder.library.create_dialog.fields.description'),
+      instructions: t('programs-coatch.builder.library.create_dialog.fields.instructions'),
+      level: t('programs-coatch.builder.library.create_dialog.fields.level'),
+      series: t('programs-coatch.builder.library.create_dialog.fields.series'),
+      repetitions: t('programs-coatch.builder.library.create_dialog.fields.repetitions'),
+      rest: t('programs-coatch.builder.library.create_dialog.fields.rest'),
+      charge: t('programs-coatch.builder.library.create_dialog.fields.charge'),
+      videoUrl: t('programs-coatch.builder.library.create_dialog.fields.video_url'),
+      category: t('programs-coatch.builder.library.create_dialog.fields.category'),
+      muscles: t('programs-coatch.builder.library.create_dialog.fields.muscles'),
+      equipment: t('programs-coatch.builder.library.create_dialog.fields.equipment'),
+      tags: t('programs-coatch.builder.library.create_dialog.fields.tags'),
     }),
     [t],
   );
@@ -581,9 +537,7 @@ export function ProgramBuilderCreateExerciseDialog({
 
   const helperCopy = React.useMemo(
     () => ({
-      muscles: t('programs-coatch.builder.library.create_dialog.helper.muscles', {
-        defaultValue: 'Select at least one muscle.',
-      }),
+      muscles: t('programs-coatch.builder.library.create_dialog.helper.muscles'),
     }),
     [t],
   );
@@ -592,17 +546,14 @@ export function ProgramBuilderCreateExerciseDialog({
     () => ({
       muscle: (value: string) =>
         t('programs-coatch.builder.library.create_dialog.create_option.muscle', {
-          defaultValue: `Create muscle "${value}"`,
           label: value,
         }),
       equipment: (value: string) =>
         t('programs-coatch.builder.library.create_dialog.create_option.equipment', {
-          defaultValue: `Create equipment "${value}"`,
           label: value,
         }),
       tag: (value: string) =>
         t('programs-coatch.builder.library.create_dialog.create_option.tag', {
-          defaultValue: `Create tag "${value}"`,
           label: value,
         }),
     }),
