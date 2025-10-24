@@ -34,7 +34,7 @@ export class ExerciseGql {
   @Field(() => Int, { nullable: true }) rest?: number;
   @Field({ nullable: true }) videoUrl?: string;
   @Field(() => ExerciseVisibility) visibility!: ExerciseVisibility;
-  @Field(() => ID) categoryId!: string;
+  @Field(() => [ID]) categoryIds!: string[];
   @Field(() => [ID]) muscleIds!: string[];
   @Field(() => [ID], { nullable: true }) equipmentIds?: string[];
   @Field(() => [ID], { nullable: true }) tagIds?: string[];
@@ -47,8 +47,8 @@ export class ExerciseGql {
   @Field() updatedAt!: Date;
 
   // Relations (resolved lazily)
-  @Field(() => CategoryGql, { nullable: true })
-  category?: CategoryGql | null;
+  @Field(() => [CategoryGql])
+  categories?: CategoryGql[];
   @Field(() => [MuscleGql])
   muscles?: MuscleGql[];
   @Field(() => [EquipmentGql], { nullable: true })
@@ -73,7 +73,7 @@ export class CreateExerciseInput {
   @Field(() => Int, { nullable: true }) rest?: number;
   @Field({ nullable: true }) videoUrl?: string;
   @Field(() => ExerciseVisibility) visibility!: ExerciseVisibility;
-  @Field(() => ID) categoryId!: string;
+  @Field(() => [ID]) categoryIds!: string[];
   @Field(() => [ID]) muscleIds!: string[];
   @Field(() => [ID], { nullable: true }) equipmentIds?: string[];
   @Field(() => [ID], { nullable: true }) tagIds?: string[];
@@ -96,7 +96,7 @@ export class UpdateExerciseInput {
   @Field(() => ExerciseVisibility, { nullable: true }) visibility?: ExerciseVisibility;
 
   // Relations (replace whole sets)
-  @Field(() => ID, { nullable: true }) categoryId?: string;
+  @Field(() => [ID], { nullable: true }) categoryIds?: string[];
   @Field(() => [ID], { nullable: true }) muscleIds?: string[];
   @Field(() => [ID], { nullable: true }) equipmentIds?: string[];
   @Field(() => [ID], { nullable: true }) tagIds?: string[];
@@ -109,7 +109,7 @@ export class ListExercisesInput {
   @Field({ nullable: true }) createdBy?: string;
   @Field(() => ExerciseVisibility, { nullable: true }) visibility?: ExerciseVisibility;
   @Field(() => ExerciseLevelGql, { nullable: true }) level?: ExerciseLevelGql;
-  @Field(() => ID, { nullable: true }) categoryId?: string;
+  @Field(() => [ID], { nullable: true }) categoryIds?: string[];
   @Field(() => Int, { nullable: true }) limit?: number;
   @Field(() => Int, { nullable: true }) page?: number;
 }

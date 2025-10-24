@@ -14,7 +14,7 @@ type ExerciseSeed = {
   rest?: number;
   videoUrl?: string;
   visibility: 'private' | 'public';
-  categorySlug: string;
+  categorySlugs: string[];
   muscleSlugs: string[];
   equipmentSlugs?: string[];
 };
@@ -32,7 +32,7 @@ const EXERCISE_SEEDS: ExerciseSeed[] = [
     repetitions: '10-12',
     rest: 60,
     visibility: 'public',
-    categorySlug: 'haut-du-corps',
+    categorySlugs: ['haut-du-corps'],
     muscleSlugs: ['pectoraux', 'triceps', 'epaules'],
   },
   {
@@ -48,7 +48,7 @@ const EXERCISE_SEEDS: ExerciseSeed[] = [
     rest: 120,
     charge: 'Barre chargee',
     visibility: 'public',
-    categorySlug: 'bas-du-corps',
+    categorySlugs: ['bas-du-corps'],
     muscleSlugs: ['quadriceps', 'ischio-jambiers', 'fessiers'],
     equipmentSlugs: ['barre'],
   },
@@ -64,7 +64,7 @@ const EXERCISE_SEEDS: ExerciseSeed[] = [
     repetitions: '8-10',
     rest: 90,
     visibility: 'public',
-    categorySlug: 'full-body',
+    categorySlugs: ['full-body'],
     muscleSlugs: ['ischio-jambiers', 'fessiers', 'dos', 'dorsaux'],
     equipmentSlugs: ['kettlebell'],
   },
@@ -80,7 +80,7 @@ const EXERCISE_SEEDS: ExerciseSeed[] = [
     repetitions: '40-60s',
     rest: 60,
     visibility: 'public',
-    categorySlug: 'core',
+    categorySlugs: ['core'],
     muscleSlugs: ['abdominaux', 'obliques'],
   },
   {
@@ -95,7 +95,7 @@ const EXERCISE_SEEDS: ExerciseSeed[] = [
     repetitions: '12-15',
     rest: 75,
     visibility: 'public',
-    categorySlug: 'cardio',
+    categorySlugs: ['cardio'],
     muscleSlugs: ['cardio', 'pectoraux', 'quadriceps'],
   },
   {
@@ -110,7 +110,7 @@ const EXERCISE_SEEDS: ExerciseSeed[] = [
     repetitions: '10-12',
     rest: 75,
     visibility: 'public',
-    categorySlug: 'haut-du-corps',
+    categorySlugs: ['haut-du-corps'],
     muscleSlugs: ['dos', 'dorsaux', 'biceps'],
     equipmentSlugs: ['halteres'],
   },
@@ -184,7 +184,7 @@ const migration: Migration = {
 
     const now = new Date();
     const ops = EXERCISE_SEEDS.map((seed) => {
-      const categoryId = getId(categoriesBySlug, seed.categorySlug, 'category');
+      const categoryIds = seed.categorySlugs.map((slug) => getId(categoriesBySlug, slug, 'category'));
       const muscles = seed.muscleSlugs.map((slug) => getId(musclesBySlug, slug, 'muscle'));
       const equipmentIds = (seed.equipmentSlugs ?? []).map((slug) =>
         getId(equipmentsBySlug, slug, 'equipment')
@@ -198,7 +198,7 @@ const migration: Migration = {
         series: seed.series,
         repetitions: seed.repetitions,
         visibility: seed.visibility,
-        category: categoryId,
+        categories: categoryIds,
         muscles,
         equipment: equipmentIds,
         tags: [],

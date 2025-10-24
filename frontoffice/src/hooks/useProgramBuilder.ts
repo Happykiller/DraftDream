@@ -99,6 +99,7 @@ type UseProgramBuilderResult = {
   isSubmitDisabled: boolean;
   createExercise: ReturnType<typeof useExercises>['create'];
   updateExercise: ReturnType<typeof useExercises>['update'];
+  deleteExercise: (exerciseId: string) => Promise<void>;
   registerExercise: (exercise: Exercise) => void;
   getRawExerciseById: (exerciseId: string) => Exercise | undefined;
   mode: 'create' | 'edit';
@@ -206,7 +207,10 @@ export function useProgramBuilder(
     limit: 10,
     q: debouncedExerciseSearch,
     visibility: exerciseVisibilityFilter,
-    categoryId: exerciseCategoryFilter,
+    categoryIds:
+      exerciseCategoryFilter && exerciseCategoryFilter !== 'all'
+        ? [exerciseCategoryFilter]
+        : undefined,
     locale: i18n.language,
   });
 
@@ -377,15 +381,16 @@ export function useProgramBuilder(
           label: eq!.label ?? eq!.id,
         }));
 
-      const categoryLabel =
-        item.category?.label ?? categoryLabelById.get(item.categoryId) ?? '';
-
       return {
         id: item.id,
         label: item.label,
         level: item.level,
-        categoryId: item.categoryId,
-        categoryLabel,
+        categoryIds: Array.from(new Set(item.categoryIds ?? [])),
+        categoryLabels: Array.from(new Set((item.categoryIds ?? []).map((categoryId) => {
+          const category = item.categories?.find((candidate) => candidate?.id === categoryId);
+          const label = category?.label ?? categoryLabelById.get(categoryId) ?? categoryId;
+          return label;
+        }))),
         type: item.visibility,
         visibility: item.visibility,
         canEdit:
@@ -474,7 +479,7 @@ export function useProgramBuilder(
     if (exerciseCategory === 'all') {
       return exerciseLibrary;
     }
-    return exerciseLibrary.filter((exercise) => exercise.categoryId === exerciseCategory);
+    return exerciseLibrary.filter((exercise) => exercise.categoryIds.includes(exerciseCategory));
   }, [exerciseCategory, exerciseLibrary]);
 
   const summaryText = React.useMemo(
@@ -1021,14 +1026,14 @@ export function useProgramBuilder(
             rest: exerciseItem.restSeconds ?? null,
             videoUrl: exerciseItem.videoUrl ?? null,
             visibility: 'PRIVATE',
-            categoryId: '',
+            categoryIds: [],
             createdBy: program.createdBy,
             createdAt: program.createdAt,
             updatedAt: program.updatedAt,
             creator: program.creator
               ? { id: program.creator.id, email: program.creator.email }
               : undefined,
-            category: null,
+            categories: [],
             muscles: [],
             equipment: [],
             tags: [],

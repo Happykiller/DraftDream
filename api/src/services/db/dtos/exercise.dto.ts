@@ -15,7 +15,7 @@ export type CreateExerciseDto = {
   rest?: number;          // seconds
   videoUrl?: string;
   visibility: Visibility;
-  categoryId: string;
+  categoryIds: string[];
   muscleIds: string[];
   equipmentIds?: string[];
   tagIds?: string[];
@@ -31,7 +31,7 @@ export type ListExercisesDto = {
   createdBy?: string;
   visibility?: Visibility;
   level?: ExerciseLevel;
-  categoryId?: string;
+  categoryIds?: string[];
   includeArchived?: boolean; // default false
   limit?: number;            // default 20
   page?: number;             // default 1
@@ -53,7 +53,7 @@ export type UpdateExerciseDto = Partial<{
   visibility: Visibility;
 
   // Relations (replace whole sets)
-  categoryId: string;
+  categoryIds: string[];
   muscleIds: string[];
   equipmentIds: string[];
   tagIds: string[];

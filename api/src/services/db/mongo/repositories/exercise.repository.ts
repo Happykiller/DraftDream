@@ -26,7 +26,7 @@ type ExerciseDoc = {
   videoUrl?: string;
   visibility: 'private' | 'public';
 
-  category: ObjectId;
+  categories: ObjectId[];
   muscles: ObjectId[];
   equipment?: ObjectId[];
   tags?: ObjectId[];
@@ -57,6 +57,7 @@ export class BddServiceExerciseMongo {
         { key: { createdBy: 1 }, name: 'by_createdBy' },
         { key: { visibility: 1 }, name: 'by_visibility' },
         { key: { level: 1 }, name: 'by_level' },
+        { key: { categories: 1 }, name: 'by_categories' },
       ]);
     } catch (error) {
       this.handleError('ensureIndexes', error);
@@ -66,6 +67,11 @@ export class BddServiceExerciseMongo {
   /** Insert a new exercise. Automatically resolves slug collisions. */
   async create(dto: CreateExerciseDto): Promise<Exercise | null> {
     const now = new Date();
+
+    const normalizedCategoryIds = Array.from(new Set(dto.categoryIds ?? [])).map((id) => id.trim()).filter(Boolean);
+    if (!normalizedCategoryIds.length) {
+      throw new Error('At least one category is required to create an exercise');
+    }
 
     const baseDoc: Omit<ExerciseDoc, '_id' | 'slug'> = {
       locale: dto.locale.toLowerCase().trim(),
@@ -80,7 +86,7 @@ export class BddServiceExerciseMongo {
       videoUrl: dto.videoUrl,
       visibility: dto.visibility,
 
-      category: this.toObjectId(dto.categoryId),
+      categories: normalizedCategoryIds.map(this.toObjectId),
       muscles: (dto.muscleIds ?? []).map(this.toObjectId),
       equipment: dto.equipmentIds?.map(this.toObjectId),
       tags: dto.tagIds?.map(this.toObjectId),
@@ -130,7 +136,7 @@ export class BddServiceExerciseMongo {
       createdBy,
       visibility,
       level,
-      categoryId,
+      categoryIds,
       limit = 20,
       page = 1,
       sort = { updatedAt: -1 },
@@ -147,7 +153,12 @@ export class BddServiceExerciseMongo {
     if (createdBy) filter.createdBy = this.toObjectId(createdBy);
     if (visibility === 'public' || visibility === 'private') filter.visibility = visibility;
     if (level) filter.level = level;
-    if (categoryId) filter.category = this.toObjectId(categoryId);
+    const normalizedCategoryIds = Array.isArray(categoryIds)
+      ? Array.from(new Set(categoryIds)).map((id) => id.trim()).filter(Boolean)
+      : [];
+    if (normalizedCategoryIds.length) {
+      filter.categories = { $all: normalizedCategoryIds.map(this.toObjectId) };
+    }
     filter.deletedAt = undefined;
 
     try {
@@ -182,7 +193,15 @@ export class BddServiceExerciseMongo {
     if (patch.videoUrl !== undefined) $set.videoUrl = patch.videoUrl;
     if (patch.visibility !== undefined) $set.visibility = patch.visibility;
 
-    if (patch.categoryId !== undefined) $set.category = this.toObjectId(patch.categoryId);
+    if (patch.categoryIds !== undefined) {
+      const normalized = Array.isArray(patch.categoryIds)
+        ? Array.from(new Set(patch.categoryIds)).map((id) => id.trim()).filter(Boolean)
+        : [];
+      if (!normalized.length) {
+        throw new Error('categoryIds must contain at least one element');
+      }
+      $set.categories = normalized.map(this.toObjectId);
+    }
     if (patch.muscleIds !== undefined) $set.muscles = patch.muscleIds.map(this.toObjectId);
     if (patch.equipmentIds !== undefined) $set.equipment = patch.equipmentIds.map(this.toObjectId);
     if (patch.tagIds !== undefined) $set.tags = patch.tagIds.map(this.toObjectId);
@@ -270,12 +289,16 @@ export class BddServiceExerciseMongo {
     visibility: doc.visibility,
 
     // Relations are represented minimally; hydrate at service/usecase layer if needed.
-    category: {
-      id: doc.category.toHexString(),
-      slug: '', locale: doc.locale, label: '',
+    categories: (doc.categories ?? []).map((oid) => ({
+      id: oid.toHexString(),
+      slug: '',
+      locale: doc.locale,
+      label: '',
       visibility: 'private',
-      createdBy: '', createdAt: doc.createdAt, updatedAt: doc.updatedAt,
-    },
+      createdBy: '',
+      createdAt: doc.createdAt,
+      updatedAt: doc.updatedAt,
+    })),
     muscles: (doc.muscles ?? []).map((oid) => ({
       id: oid.toHexString(),
       slug: '', locale: doc.locale, label: '', visibility: 'private',

@@ -29,11 +29,11 @@ export interface Exercise {
   createdAt: string;
   updatedAt: string;
   creator?: Creator | null;
-  categoryId: string;
+  categoryIds: string[];
   muscleIds: string[];
   equipmentIds?: string[] | null;
   tagIds?: string[] | null;
-  category?: ExerciseLink | null;
+  categories?: ExerciseLink[];
   muscles?: ExerciseLink[];
   equipment?: ExerciseLink[];
   tags?: ExerciseLink[];
@@ -58,8 +58,8 @@ const LIST_Q = `
       items {
         id slug locale label description instructions level series repetitions
         charge rest videoUrl visibility createdBy createdAt updatedAt
-        categoryId muscleIds equipmentIds tagIds
-        category { id slug label }
+        categoryIds muscleIds equipmentIds tagIds
+        categories { id slug label }
         muscles { id slug label }
         equipment { id slug label }
         tags { id slug label }
@@ -75,8 +75,8 @@ const CREATE_M = `
     exercise_create(input: $input) {
       id slug locale label description instructions level series repetitions
       charge rest videoUrl visibility createdBy createdAt updatedAt
-      categoryId muscleIds equipmentIds tagIds
-      category { id slug label }
+      categoryIds muscleIds equipmentIds tagIds
+      categories { id slug label }
       muscles { id slug label }
       equipment { id slug label }
       tags { id slug label }
@@ -90,8 +90,8 @@ const UPDATE_M = `
     exercise_update(input: $input) {
       id slug locale label description instructions level series repetitions
       charge rest videoUrl visibility createdBy createdAt updatedAt
-      categoryId muscleIds equipmentIds tagIds
-      category { id slug label }
+      categoryIds muscleIds equipmentIds tagIds
+      categories { id slug label }
       muscles { id slug label }
       equipment { id slug label }
       tags { id slug label }
@@ -143,7 +143,7 @@ export function useExercises({ page, limit, q }: UseExercisesParams) {
       slug: string; locale: string; label: string; level: ExerciseLevel;
       series: string; repetitions: string; description?: string; instructions?: string;
       charge?: string; rest?: number; videoUrl?: string; visibility: ExerciseVisibility;
-      categoryId: string;                           // required
+      categoryIds: string[];                        // required
       muscleIds: string[];                          // required (non-empty)
       equipmentIds?: string[];
       tagIds?: string[];
@@ -169,7 +169,7 @@ export function useExercises({ page, limit, q }: UseExercisesParams) {
       slug?: string; locale?: string; label?: string; level?: ExerciseLevel;
       series?: string; repetitions?: string; description?: string; instructions?: string;
       charge?: string; rest?: number; videoUrl?: string; visibility?: ExerciseVisibility;
-      categoryId?: string | null;
+      categoryIds?: string[];
       muscleIds?: string[];
       equipmentIds?: string[];
       tagIds?: string[];

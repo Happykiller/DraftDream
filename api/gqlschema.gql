@@ -235,14 +235,14 @@ type ExerciseGql {
   rest: Int
   videoUrl: String
   visibility: ExerciseVisibility!
-  categoryId: ID!
+  categoryIds: [ID!]!
   muscleIds: [ID!]!
   equipmentIds: [ID!]
   tagIds: [ID!]
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!
-  category: CategoryGql
+  categories: [CategoryGql!]!
   muscles: [MuscleGql!]!
   equipment: [EquipmentGql!]
   tags: [TagGql!]
@@ -352,7 +352,7 @@ input ListExercisesInput {
   createdBy: String
   visibility: ExerciseVisibility
   level: ExerciseLevel
-  categoryId: ID
+  categoryIds: [ID!]
   limit: Int
   page: Int
 }
@@ -567,7 +567,7 @@ input CreateExerciseInput {
   rest: Int
   videoUrl: String
   visibility: ExerciseVisibility!
-  categoryId: ID!
+  categoryIds: [ID!]!
   muscleIds: [ID!]!
   equipmentIds: [ID!]
   tagIds: [ID!]
@@ -587,7 +587,7 @@ input UpdateExerciseInput {
   rest: Int
   videoUrl: String
   visibility: ExerciseVisibility
-  categoryId: ID
+  categoryIds: [ID!]
   muscleIds: [ID!]
   equipmentIds: [ID!]
   tagIds: [ID!]

@@ -16,7 +16,7 @@ export type ExerciseUsecaseModel = {
   videoUrl?: string;
   visibility: 'private' | 'public';
 
-  categoryId: string;
+  categoryIds: string[];
   muscleIds: string[];
   equipmentIds?: string[];
   tagIds?: string[];

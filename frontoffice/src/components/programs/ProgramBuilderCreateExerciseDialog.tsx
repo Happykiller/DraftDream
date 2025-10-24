@@ -155,7 +155,7 @@ export function ProgramBuilderCreateExerciseDialog({
   const [rest, setRest] = React.useState('');
   const [charge, setCharge] = React.useState('');
   const [videoUrl, setVideoUrl] = React.useState('');
-  const [categoryId, setCategoryId] = React.useState('');
+  const [categoryIds, setCategoryIds] = React.useState<string[]>([]);
   const [level, setLevel] = React.useState<ExerciseLevel>('BEGINNER');
   const [muscleIds, setMuscleIds] = React.useState<string[]>([]);
   const [equipmentIds, setEquipmentIds] = React.useState<string[]>([]);
@@ -299,7 +299,7 @@ export function ProgramBuilderCreateExerciseDialog({
     setRest('');
     setCharge('');
     setVideoUrl('');
-    setCategoryId('');
+    setCategoryIds([]);
     setLevel('BEGINNER');
     setMuscleIds([]);
     setEquipmentIds([]);
@@ -327,7 +327,7 @@ export function ProgramBuilderCreateExerciseDialog({
     setRest(exercise.rest != null ? String(exercise.rest) : '');
     setCharge(exercise.charge ?? '');
     setVideoUrl(exercise.videoUrl ?? '');
-    setCategoryId(exercise.categoryId ?? '');
+    setCategoryIds(exercise.categoryIds ?? []);
     setLevel(exercise.level);
     setMuscleIds(
       (exercise.muscles ?? [])
@@ -370,6 +370,11 @@ export function ProgramBuilderCreateExerciseDialog({
     [t],
   );
 
+  const normalizedCategoryIds = React.useMemo(
+    () => Array.from(new Set(categoryIds.map((id) => id.trim()).filter(Boolean))),
+    [categoryIds],
+  );
+
   const isSubmitDisabled =
     submitting ||
     creatingMuscle ||
@@ -378,7 +383,7 @@ export function ProgramBuilderCreateExerciseDialog({
     !label.trim() ||
     !series.trim() ||
     !repetitions.trim() ||
-    !categoryId ||
+    normalizedCategoryIds.length === 0 ||
     muscleIds.length === 0;
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -396,7 +401,7 @@ export function ProgramBuilderCreateExerciseDialog({
         const trimmedLabel = label.trim();
         const trimmedSeries = series.trim();
         const trimmedRepetitions = repetitions.trim();
-        const nextCategoryId = categoryId.trim();
+        const nextCategoryIds = [...normalizedCategoryIds];
         const payload: UpdateExerciseInput = {
           id: exercise.id,
           label: trimmedLabel,
@@ -407,6 +412,7 @@ export function ProgramBuilderCreateExerciseDialog({
           muscleIds,
           equipmentIds,
           tagIds,
+          categoryIds: nextCategoryIds,
         };
 
         if (exercise.locale) {
@@ -414,9 +420,6 @@ export function ProgramBuilderCreateExerciseDialog({
         }
         if (!exercise.locale && locale) {
           payload.locale = locale;
-        }
-        if (nextCategoryId) {
-          payload.categoryId = nextCategoryId;
         }
 
         const nextSlug = slugify(trimmedLabel);
@@ -450,7 +453,7 @@ export function ProgramBuilderCreateExerciseDialog({
           series: series.trim(),
           repetitions: repetitions.trim(),
           visibility: 'PRIVATE',
-          categoryId,
+          categoryIds: [...normalizedCategoryIds],
           muscleIds,
         };
 
@@ -495,9 +498,20 @@ export function ProgramBuilderCreateExerciseDialog({
     }
   };
 
-  const categoryValue = React.useMemo(() => {
-    return categoryOptionsByLocale.find((option) => option.id === categoryId) ?? null;
-  }, [categoryId, categoryOptionsByLocale]);
+  const fallbackCategoryLookup = React.useMemo(() => {
+    return new Map(
+      (exercise?.categories ?? [])
+        .filter((category): category is NonNullable<typeof category> => Boolean(category?.id))
+        .map((category) => [category.id, { id: category.id, label: category.label ?? category.id }]),
+    );
+  }, [exercise?.categories]);
+
+  const selectedCategories = React.useMemo(() => {
+    const lookup = new Map(categoryOptionsByLocale.map((option) => [option.id, option]));
+    return normalizedCategoryIds
+      .map((id) => lookup.get(id) ?? fallbackCategoryLookup.get(id))
+      .filter((option): option is ExerciseCategoryOption => Boolean(option));
+  }, [categoryOptionsByLocale, fallbackCategoryLookup, normalizedCategoryIds]);
 
   const selectedMuscles = React.useMemo<CreatableOption[]>(() => {
     const map = new Map(muscleIds.map((id) => [id, id]));
@@ -578,6 +592,7 @@ export function ProgramBuilderCreateExerciseDialog({
     }),
     [t],
   );
+  const categoryLabel = fieldCopy.category;
 
   const helperCopy = React.useMemo(
     () => ({
@@ -658,14 +673,15 @@ export function ProgramBuilderCreateExerciseDialog({
                 />
 
                 <Autocomplete
+                  multiple
                   fullWidth
                   options={categoryOptionsByLocale}
-                  value={categoryValue}
-                  onChange={(_event, option) => setCategoryId(option?.id ?? '')}
+                  value={selectedCategories}
+                  onChange={(_event, options) => setCategoryIds(options.map((option) => option.id))}
                   getOptionLabel={(option) => option.label}
                   isOptionEqualToValue={(option, value) => option.id === value.id}
                   renderInput={(params) => (
-                    <TextField {...params} required label={fieldCopy.category} />
+                    <TextField {...params} required label={categoryLabel} />
                   )}
                 />
               </Stack>

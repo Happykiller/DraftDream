@@ -23,7 +23,7 @@ export interface Exercise {
   visibility: 'private' | 'public';
 
   // Relations
-  category: Category;
+  categories: Category[];
   muscles: Muscle[];
   equipment?: Equipment[];
   tags?: Tag[];
