@@ -13,6 +13,7 @@ import { useMobileDrawer } from './hooks/useMobileDrawer';
 import { DRAWER_WIDTH, RAIL_WIDTH } from './tokens';
 import { isSelectedPath } from './navMatch';
 
+/** Primary application shell for authenticated users. */
 export function ProtectedLayout(): React.JSX.Element {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -66,6 +67,7 @@ export function ProtectedLayout(): React.JSX.Element {
 
   return (
     <Box sx={{ display: 'flex' }}>
+      {/* General information */}
       <CssBaseline />
 
       {/* AppBar – width compensation is applied on main container instead of AppBar for simplicity */}

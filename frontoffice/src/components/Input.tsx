@@ -38,6 +38,7 @@ interface InputProps extends Omit<TextFieldProps, 'onChange'> {
   }[];
 }
 
+/** Material UI text field enriched with validation and helper controls. */
 export const Input: React.FC<InputProps> = ({
   label,
   tooltip,
@@ -142,6 +143,7 @@ export const Input: React.FC<InputProps> = ({
 
   return (
     <>
+      {/* General information */}
       {/* Input field */}
       <TextField
         {...rest}

@@ -3,6 +3,7 @@ import * as React from 'react';
 import { Outlet } from 'react-router-dom';
 import Container from '@mui/material/Container';
 
+/** Minimal layout for unauthenticated routes (login, reset, etc.). */
 export function PublicLayout(): React.JSX.Element {
   return (
     <Container
@@ -13,6 +14,7 @@ export function PublicLayout(): React.JSX.Element {
       disableGutters
       sx={{ p: 0 }}
     >
+      {/* General information */}
       <Outlet />
     </Container>
   );

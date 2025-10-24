@@ -7,6 +7,7 @@ import { ProgramList } from '@src/components/programs/ProgramList';
 import { usePrograms, type Program } from '@src/hooks/usePrograms';
 import { slugify } from '@src/utils/slugify';
 
+/** Coach-facing program management dashboard. */
 export function ProgramsCoach(): React.JSX.Element {
   const { t, i18n } = useTranslation();
 
@@ -92,6 +93,7 @@ export function ProgramsCoach(): React.JSX.Element {
 
   return (
     <>
+      {/* General information */}
       {builderOpen ? (
         <ProgramBuilderPanel
           builderCopy={builderCopy}

@@ -6,6 +6,7 @@ import { withTitle } from '@src/routes/withTitle';
 import { PublicLayout } from '@layouts/PublicLayout';
 import { ProtectedLayout } from '@layouts/ProtectedLayout';
 
+/** Loader ensuring visitors are authenticated before entering private routes. */
 export async function requireAuthLoader() {
   const ok = session.getState().access_token !== null;
   if (!ok) {
@@ -14,6 +15,7 @@ export async function requireAuthLoader() {
   return null;
 }
 
+/** Central route configuration shared by the application. */
 export const router = createBrowserRouter([
   {
     element: <PublicLayout />,

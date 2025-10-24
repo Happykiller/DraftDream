@@ -16,6 +16,7 @@ import { FlashMessage } from '@components/layout/FlashMessage';
   ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
       <ThemeProvider theme={theme}>
+        {/* General information */}
         <CssBaseline />
         <FlashMessage />
         <LoaderOverlay />
