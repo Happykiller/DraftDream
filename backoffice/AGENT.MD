@@ -21,6 +21,7 @@
 - Leverage Material UI theming (`src/theme`) for styling consistency. Extend components through the theme overrides before using ad-hoc CSS.
 - Favor DataGrid (`@mui/x-data-grid`) for tabular data management. Configure column definitions in dedicated modules to keep components concise.
 - Observe path aliases from `tsconfig.app.json` (e.g., `@components/*`, `@services/*`) and keep imports in staircase order (external → internal).
+- Route every asynchronous workflow (GraphQL fetches, mutations, loaders, service calls) through `src/hooks/useAsyncTask.ts` so `useLoaderStore` fuels the global overlay. For example, the login form wraps its authentication mutation inside `useAsyncTask` to keep the overlay synchronized.
 
 ## Testing & Quality Gates
 - Run `npm run build` before pushing changes to ensure the TypeScript compiler and bundler succeed.

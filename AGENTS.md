@@ -68,3 +68,5 @@ This document captures how the `fitdesk-devops` agent should operate the DraftDr
    - Always include and maintain the JSX marker comment ` {/* General information */}` within component templates.
 4. **Internationalization**:
    - Do not rely on translation `defaultValue` fallbacks; keep localization dictionaries up to date for every supported language.
+5. **Async workflows**:
+   - Route every asynchronous workflow (GraphQL fetches, mutations, loaders, service calls) through `src/hooks/useAsyncTask.ts` so `useLoaderStore` fuels the global overlay. For example, the login form wraps its authentication mutation inside `useAsyncTask` to keep the overlay synchronized.
