@@ -19,6 +19,7 @@ const LoaderOverlay = () => {
         alignItems: 'center',
       }}
     >
+      {/* Loading spinner */}
       <CircularProgress size={60} />
     </Box>
   );

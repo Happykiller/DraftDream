@@ -632,6 +632,7 @@ export function ProgramBuilderCreateExerciseDialog({
       maxWidth="md"
     >
       <Box component="form" onSubmit={handleSubmit} noValidate>
+        {/* Dialog header */}
         <DialogTitle sx={{ backgroundColor: alpha(theme.palette.success.main, 0.20) }}>
           <Stack direction="row" spacing={2} alignItems="center">
             <Box
@@ -660,8 +661,10 @@ export function ProgramBuilderCreateExerciseDialog({
             </Stack>
           </Stack>
         </DialogTitle>
+        {/* Dialog body */}
         <DialogContent dividers>
           <Stack spacing={3}>
+            {/* General information */}
             <Stack spacing={2}>
               <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
                 <TextField
@@ -686,6 +689,7 @@ export function ProgramBuilderCreateExerciseDialog({
                 />
               </Stack>
 
+              {/* Muscle selector */}
               <Autocomplete
                 multiple
                 options={muscleOptions}
@@ -729,6 +733,7 @@ export function ProgramBuilderCreateExerciseDialog({
                 )}
               />
 
+              {/* Level and media */}
               <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
                 <TextField
                   select
@@ -751,6 +756,7 @@ export function ProgramBuilderCreateExerciseDialog({
                 />
               </Stack>
 
+              {/* Series and rest */}
               <Stack direction={{ xs: 'column', lg: 'row' }} spacing={2}>
                 <TextField
                   required
@@ -791,6 +797,7 @@ export function ProgramBuilderCreateExerciseDialog({
                 onChange={(event) => setDescription(event.target.value)}
               />
 
+              {/* Instructions */}
               <TextField
                 fullWidth
                 multiline
@@ -800,6 +807,7 @@ export function ProgramBuilderCreateExerciseDialog({
                 onChange={(event) => setInstructions(event.target.value)}
               />
 
+              {/* Equipment selector */}
               <Autocomplete
                 multiple
                 options={equipmentOptions}
@@ -838,6 +846,7 @@ export function ProgramBuilderCreateExerciseDialog({
                 )}
               />
 
+              {/* Tags selector */}
               <Autocomplete
                 multiple
                 options={tagOptions}
@@ -878,6 +887,7 @@ export function ProgramBuilderCreateExerciseDialog({
             </Stack>
           </Stack>
         </DialogContent>
+        {/* Dialog footer */}
         <DialogActions sx={{ backgroundColor: '#e0dcdce0' }}>
           <Button onClick={onClose} disabled={submitting} color="inherit">
             {cancelLabel}

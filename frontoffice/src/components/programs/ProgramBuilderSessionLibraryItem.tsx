@@ -49,6 +49,7 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
         },
       }}
     >
+      {/* Session template */}
       <Stack spacing={1.25}>
         <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
           <Stack spacing={0.5} flexGrow={1} minWidth={0}>
@@ -72,6 +73,7 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
               color="success"
               variant="outlined"
             />
+            {/* Add template */}
             <Tooltip title={builderCopy.library.tooltips.add_session_template} arrow>
               <span style={{ display: 'inline-flex' }}>
                 <IconButton
@@ -86,6 +88,7 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
           </Stack>
         </Stack>
 
+        {/* Session tags */}
         <Stack direction="row" spacing={0.5} flexWrap="wrap">
           {template.tags.map((tag) => (
             <Chip key={tag} label={tag} size="small" variant="outlined" />
@@ -97,6 +100,7 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
             {exercisesLabel}
           </Typography>
         ) : (
+          /* Exercise chips */
           <Stack direction="row" spacing={0.5} flexWrap="wrap">
             {template.exercises.map((exercise) => (
               <Chip

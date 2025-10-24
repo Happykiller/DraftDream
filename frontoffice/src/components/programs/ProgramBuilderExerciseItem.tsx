@@ -290,6 +290,7 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
         },
       }}
     >
+      {/* Exercise item */}
       <Stack
         direction="row"
         alignItems="flex-start"
@@ -298,6 +299,7 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
       >
         <Stack direction="row" spacing={1.5} alignItems="flex-start">
           <Stack spacing={0.5} alignItems="center" pt={0.25}>
+            {/* Reorder actions */}
             <Tooltip title={tooltips.move_exercise_up} arrow>
               <span style={{ display: 'inline-flex' }}>
                 <IconButton
@@ -412,39 +414,41 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
             {(exercise.muscles.length > 0 ||
               exercise.tags.length > 0 ||
               exercise.equipment.length > 0) && (
-                <Stack direction="row" spacing={0.5} flexWrap="wrap">
-                  {exercise.muscles.map((muscle) => (
-                    <Tooltip
-                      key={`${exercise.id}-muscle-${muscle.id}`}
-                      title={tooltips.muscle_chip.replace('{{label}}', muscle.label)}
-                      arrow
-                    >
-                      <Chip label={muscle.label} size="small" color="primary" variant="filled" />
-                    </Tooltip>
-                  ))}
-                  {exercise.tags.map((tag) => (
-                    <Tooltip
-                      key={`${exercise.id}-tag-${tag.id}`}
-                      title={tooltips.tag_chip.replace('{{label}}', tag.label)}
-                      arrow
-                    >
-                      <Chip label={tag.label} size="small" color="secondary" variant="outlined" />
-                    </Tooltip>
-                  ))}
-                  {exercise.equipment.map((eq) => (
-                    <Tooltip
-                      key={`${exercise.id}-equipment-${eq.id}`}
-                      title={tooltips.equipment_chip.replace('{{label}}', eq.label)}
-                      arrow
-                    >
-                      <Chip label={eq.label} size="small" variant="outlined" />
-                    </Tooltip>
-                  ))}
-                </Stack>
-              )}
+              <Stack direction="row" spacing={0.5} flexWrap="wrap">
+                {/* Attribute chips */}
+                {exercise.muscles.map((muscle) => (
+                  <Tooltip
+                    key={`${exercise.id}-muscle-${muscle.id}`}
+                    title={tooltips.muscle_chip.replace('{{label}}', muscle.label)}
+                    arrow
+                  >
+                    <Chip label={muscle.label} size="small" color="primary" variant="filled" />
+                  </Tooltip>
+                ))}
+                {exercise.tags.map((tag) => (
+                  <Tooltip
+                    key={`${exercise.id}-tag-${tag.id}`}
+                    title={tooltips.tag_chip.replace('{{label}}', tag.label)}
+                    arrow
+                  >
+                    <Chip label={tag.label} size="small" color="secondary" variant="outlined" />
+                  </Tooltip>
+                ))}
+                {exercise.equipment.map((eq) => (
+                  <Tooltip
+                    key={`${exercise.id}-equipment-${eq.id}`}
+                    title={tooltips.equipment_chip.replace('{{label}}', eq.label)}
+                    arrow
+                  >
+                    <Chip label={eq.label} size="small" variant="outlined" />
+                  </Tooltip>
+                ))}
+              </Stack>
+            )}
           </Stack>
         </Stack>
 
+        {/* Edit action */}
         <Tooltip title={tooltips.edit_exercise} arrow>
           <span style={{ display: 'inline-flex' }}>
             <IconButton
@@ -463,6 +467,7 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
             bottom: theme.spacing(1.5),
           }}
         >
+          {/* Remove action */}
           <Tooltip title={tooltips.delete_exercise} arrow>
             <span style={{ display: 'inline-flex' }}>
               <IconButton

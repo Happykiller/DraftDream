@@ -399,11 +399,13 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
         },
       }}
     >
+      {/* Session item */}
       <Stack spacing={1.5}>
         <Stack spacing={0.75}>
           <Stack direction="row" justifyContent="space-between" alignItems="center">
             <Stack direction="row" spacing={1.5} alignItems="center">
               <Stack spacing={0.5} alignItems="center">
+                {/* Session reorder actions */}
                 <Tooltip title={tooltips.move_session_up} arrow>
                   <span style={{ display: 'inline-flex' }}>
                     <IconButton
@@ -515,6 +517,7 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
                   </Typography>
                 )}
               </Tooltip>
+              {/* Delete session */}
               <Tooltip title={tooltips.delete_session} arrow>
                 <span style={{ display: 'inline-flex' }}>
                   <IconButton
@@ -528,6 +531,7 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
               </Tooltip>
             </Stack>
           </Stack>
+        {/* Session description */}
         {isEditingDescription ? (
           <TextField
             inputRef={descriptionInputRef}
@@ -576,12 +580,14 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
         )}
       </Stack>
 
+        {/* Session tags */}
         <Stack direction="row" spacing={0.5} flexWrap="wrap">
           {session.tags.map((tag) => (
             <Chip key={tag} label={tag} size="small" variant="outlined" />
           ))}
         </Stack>
 
+        {/* Exercises list */}
         <Stack spacing={1}>
           {session.exercises.length === 0 ? (
             <Typography variant="body2" color="text.secondary">

@@ -73,6 +73,7 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
         },
       }}
     >
+      {/* Exercise summary */}
       <Stack direction="row" spacing={1.5} alignItems="flex-start">
         <Stack spacing={1} flex={1}>
           <Stack spacing={0.25}>
@@ -98,12 +99,13 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
                 {exercise.label}
               </Typography>
             </Stack>
-            {exercise.categoryLabels.length ? (
-              <Typography variant="body2" color="text.secondary">
-                {exercise.categoryLabels.join(', ')}
-              </Typography>
-            ) : null}
+              {exercise.categoryLabels.length ? (
+                <Typography variant="body2" color="text.secondary">
+                  {exercise.categoryLabels.join(', ')}
+                </Typography>
+              ) : null}
           </Stack>
+          {/* Exercise metrics */}
           <Stack direction="row" spacing={1} flexWrap="wrap">
             <Typography variant="body2" color="text.secondary">
               {exercise.sets}{setsLabel}
@@ -118,6 +120,7 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
           {exercise.muscles.length > 0 ||
             exercise.tags.length > 0 ||
             exercise.equipment.length > 0 ? (
+            /* Exercise chips */
             <Stack direction="row" spacing={0.5} flexWrap="wrap">
               {exercise.muscles.map((muscle) => (
                 <Tooltip
@@ -149,6 +152,7 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
             </Stack>
           ) : null}
           {isPublic ? (
+            /* Public badge */
             <Tooltip title={tooltips.public_exercise} arrow placement="left">
               <Box
                 sx={{
@@ -164,6 +168,7 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
               </Box>
             </Tooltip>
           ) : canDelete ? (
+            /* Delete action */
             <Tooltip title={tooltips.delete_exercise} arrow placement="left">
               <Box
                 sx={{
@@ -187,6 +192,7 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
           ) : null}
         </Stack>
         <Stack spacing={0.5} alignItems="flex-end">
+          {/* Primary action */}
           <Tooltip title={tooltips.add_exercise} arrow placement="left">
             <span style={{ display: 'inline-flex' }}>
               <IconButton

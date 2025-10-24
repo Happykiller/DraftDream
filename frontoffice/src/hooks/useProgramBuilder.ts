@@ -196,6 +196,13 @@ export function useProgramBuilder(
     q: debouncedSessionSearch,
   });
 
+  const exerciseCategoryIdsFilter = React.useMemo<string[] | undefined>(() => {
+    if (!exerciseCategoryFilter) {
+      return undefined;
+    }
+    return [exerciseCategoryFilter];
+  }, [exerciseCategoryFilter]);
+
   const {
     items: exerciseItems,
     loading: exercisesLoading,
@@ -207,10 +214,7 @@ export function useProgramBuilder(
     limit: 10,
     q: debouncedExerciseSearch,
     visibility: exerciseVisibilityFilter,
-    categoryIds:
-      exerciseCategoryFilter && exerciseCategoryFilter !== 'all'
-        ? [exerciseCategoryFilter]
-        : undefined,
+    categoryIds: exerciseCategoryIdsFilter,
     locale: i18n.language,
   });
 
