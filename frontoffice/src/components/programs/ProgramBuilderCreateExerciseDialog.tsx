@@ -1,24 +1,10 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import Autocomplete, {
-  createFilterOptions,
-} from '@mui/material/Autocomplete';
-import {
-  Box,
-  Button,
-  Chip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  MenuItem,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
-import { alpha, useTheme } from '@mui/material/styles';
+import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
+import { Button, Chip, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import { Add, Edit } from '@mui/icons-material';
 
+import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
 import type {
   CreateExerciseInput,
   Exercise,
@@ -62,7 +48,6 @@ export function ProgramBuilderCreateExerciseDialog({
   onUpdated,
 }: ProgramBuilderCreateExerciseDialogProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
-  const theme = useTheme();
   const locale = i18n.language || 'fr';
   const collator = React.useMemo(
     () => new Intl.Collator(locale, { sensitivity: 'base' }),
@@ -624,285 +609,252 @@ export function ProgramBuilderCreateExerciseDialog({
     [t],
   );
 
+  const dialogActions = (
+    <>
+      <Button onClick={onClose} disabled={submitting} color="inherit">
+        {cancelLabel}
+      </Button>
+      <Button
+        type="submit"
+        variant="contained"
+        startIcon={isEditMode ? <Edit /> : <Add />}
+        disabled={isSubmitDisabled}
+        color="success"
+      >
+        {submitLabel}
+      </Button>
+    </>
+  );
+
   return (
-    <Dialog
+    <ProgramDialogLayout
       open={open}
       onClose={submitting ? undefined : onClose}
-      fullWidth
-      maxWidth="md"
+      icon={isEditMode ? <Edit fontSize="large" /> : <Add fontSize="large" />}
+      title={title}
+      description={subtitle}
+      dialogProps={{ maxWidth: 'md' }}
+      formComponent="form"
+      formProps={{ onSubmit: handleSubmit, noValidate: true }}
+      actions={dialogActions}
     >
-      <Box component="form" onSubmit={handleSubmit} noValidate>
-        {/* Dialog header */}
-        <DialogTitle sx={{ backgroundColor: alpha(theme.palette.success.main, 0.20) }}>
-          <Stack direction="row" spacing={2} alignItems="center">
-            <Box
-              aria-hidden
-              sx={{
-                width: 40,
-                height: 40,
-                borderRadius: 2,
-                bgcolor: 'success.main',
-                color: 'primary.contrastText',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0,
-              }}
+      <Stack spacing={3}>
+        {/* General information */}
+        <Stack spacing={2}>
+          <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+            <TextField
+              required
+              fullWidth
+              label={fieldCopy.label}
+              value={label}
+              onChange={(event) => setLabel(event.target.value)}
+            />
+
+            <Autocomplete
+              multiple
+              fullWidth
+              options={categoryOptionsByLocale}
+              value={selectedCategories}
+              onChange={(_event, options) => setCategoryIds(options.map((option) => option.id))}
+              getOptionLabel={(option) => option.label}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              renderInput={(params) => <TextField {...params} required label={categoryLabel} />}
+            />
+          </Stack>
+
+          {/* Muscle selector */}
+          <Autocomplete
+            multiple
+            options={muscleOptions}
+            value={selectedMuscles}
+            onChange={handleMusclesChange}
+            filterOptions={filterCreatableOptions}
+            loading={musclesLoading || creatingMuscle}
+            getOptionLabel={(option) => option.inputValue ?? option.label}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            renderOption={(props, option) => {
+              const { key, ...optionProps } = props as typeof props & {
+                key: React.Key;
+              };
+              const optionLabel =
+                option.isCreateOption && option.inputValue
+                  ? creationOptionCopy.muscle(option.inputValue)
+                  : option.label;
+
+              return (
+                <li {...optionProps} key={(option.id as React.Key) ?? key}>
+                  {optionLabel}
+                </li>
+              );
+            }}
+            renderTags={(tagValue, getTagProps) =>
+              tagValue.map((option, index) => (
+                <Chip
+                  {...getTagProps({ index })}
+                  key={option.id}
+                  label={option.label}
+                />
+              ))
+            }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                required
+                label={fieldCopy.muscles}
+                helperText={helperCopy.muscles}
+              />
+            )}
+          />
+
+          {/* Level and media */}
+          <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+            <TextField
+              select
+              fullWidth
+              label={fieldCopy.level}
+              value={level}
+              onChange={(event) => setLevel(event.target.value as ExerciseLevel)}
             >
-              {isEditMode ? <Edit fontSize="large" /> : <Add fontSize="large" />}
-            </Box>
-            <Stack spacing={0.5}>
-              <Typography variant="h6" component="span" sx={{ fontWeight: 700 }}>
-                {title}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {subtitle}
-              </Typography>
-            </Stack>
+              {levelOptions.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              fullWidth
+              label={fieldCopy.videoUrl}
+              value={videoUrl}
+              onChange={(event) => setVideoUrl(event.target.value)}
+            />
           </Stack>
-        </DialogTitle>
-        {/* Dialog body */}
-        <DialogContent dividers>
-          <Stack spacing={3}>
-            {/* General information */}
-            <Stack spacing={2}>
-              <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-                <TextField
-                  required
-                  fullWidth
-                  label={fieldCopy.label}
-                  value={label}
-                  onChange={(event) => setLabel(event.target.value)}
-                />
 
-                <Autocomplete
-                  multiple
-                  fullWidth
-                  options={categoryOptionsByLocale}
-                  value={selectedCategories}
-                  onChange={(_event, options) => setCategoryIds(options.map((option) => option.id))}
-                  getOptionLabel={(option) => option.label}
-                  isOptionEqualToValue={(option, value) => option.id === value.id}
-                  renderInput={(params) => (
-                    <TextField {...params} required label={categoryLabel} />
-                  )}
-                />
-              </Stack>
-
-              {/* Muscle selector */}
-              <Autocomplete
-                multiple
-                options={muscleOptions}
-                value={selectedMuscles}
-                onChange={handleMusclesChange}
-                filterOptions={filterCreatableOptions}
-                loading={musclesLoading || creatingMuscle}
-                getOptionLabel={(option) => option.inputValue ?? option.label}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                renderOption={(props, option) => {
-                  const { key, ...optionProps } = props as typeof props & {
-                    key: React.Key;
-                  };
-                  const optionLabel =
-                    option.isCreateOption && option.inputValue
-                      ? creationOptionCopy.muscle(option.inputValue)
-                      : option.label;
-
-                  return (
-                    <li {...optionProps} key={(option.id as React.Key) ?? key}>
-                      {optionLabel}
-                    </li>
-                  );
-                }}
-                renderTags={(tagValue, getTagProps) =>
-                  tagValue.map((option, index) => (
-                    <Chip
-                      {...getTagProps({ index })}
-                      key={option.id}
-                      label={option.label}
-                    />
-                  ))
-                }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    required
-                    label={fieldCopy.muscles}
-                    helperText={helperCopy.muscles}
-                  />
-                )}
-              />
-
-              {/* Level and media */}
-              <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-                <TextField
-                  select
-                  fullWidth
-                  label={fieldCopy.level}
-                  value={level}
-                  onChange={(event) => setLevel(event.target.value as ExerciseLevel)}
-                >
-                  {levelOptions.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-                <TextField
-                  fullWidth
-                  label={fieldCopy.videoUrl}
-                  value={videoUrl}
-                  onChange={(event) => setVideoUrl(event.target.value)}
-                />
-              </Stack>
-
-              {/* Series and rest */}
-              <Stack direction={{ xs: 'column', lg: 'row' }} spacing={2}>
-                <TextField
-                  required
-                  fullWidth
-                  label={fieldCopy.series}
-                  value={series}
-                  onChange={(event) => setSeries(event.target.value)}
-                />
-                <TextField
-                  required
-                  fullWidth
-                  label={fieldCopy.repetitions}
-                  value={repetitions}
-                  onChange={(event) => setRepetitions(event.target.value)}
-                />
-                <TextField
-                  fullWidth
-                  label={fieldCopy.charge}
-                  value={charge}
-                  onChange={(event) => setCharge(event.target.value)}
-                />
-                <TextField
-                  fullWidth
-                  label={fieldCopy.rest}
-                  type="number"
-                  value={rest}
-                  onChange={(event) => setRest(event.target.value)}
-                  inputProps={{ min: 0 }}
-                />
-              </Stack>
-
-              <TextField
-                fullWidth
-                multiline
-                minRows={3}
-                label={fieldCopy.description}
-                value={description}
-                onChange={(event) => setDescription(event.target.value)}
-              />
-
-              {/* Instructions */}
-              <TextField
-                fullWidth
-                multiline
-                minRows={3}
-                label={fieldCopy.instructions}
-                value={instructions}
-                onChange={(event) => setInstructions(event.target.value)}
-              />
-
-              {/* Equipment selector */}
-              <Autocomplete
-                multiple
-                options={equipmentOptions}
-                value={selectedEquipment}
-                onChange={handleEquipmentChange}
-                filterOptions={filterCreatableOptions}
-                loading={equipmentLoading || creatingEquipment}
-                getOptionLabel={(option) => option.inputValue ?? option.label}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                renderOption={(props, option) => {
-                  const { key, ...optionProps } = props as typeof props & {
-                    key: React.Key;
-                  };
-                  const optionLabel =
-                    option.isCreateOption && option.inputValue
-                      ? creationOptionCopy.equipment(option.inputValue)
-                      : option.label;
-
-                  return (
-                    <li {...optionProps} key={(option.id as React.Key) ?? key}>
-                      {optionLabel}
-                    </li>
-                  );
-                }}
-                renderTags={(tagValue, getTagProps) =>
-                  tagValue.map((option, index) => (
-                    <Chip
-                      {...getTagProps({ index })}
-                      key={option.id}
-                      label={option.label}
-                    />
-                  ))
-                }
-                renderInput={(params) => (
-                  <TextField {...params} label={fieldCopy.equipment} />
-                )}
-              />
-
-              {/* Tags selector */}
-              <Autocomplete
-                multiple
-                options={tagOptions}
-                value={selectedTags}
-                onChange={handleTagsChange}
-                filterOptions={filterCreatableOptions}
-                loading={tagsLoading || creatingTag}
-                getOptionLabel={(option) => option.inputValue ?? option.label}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                renderOption={(props, option) => {
-                  const { key, ...optionProps } = props as typeof props & {
-                    key: React.Key;
-                  };
-                  const optionLabel =
-                    option.isCreateOption && option.inputValue
-                      ? creationOptionCopy.tag(option.inputValue)
-                      : option.label;
-
-                  return (
-                    <li {...optionProps} key={(option.id as React.Key) ?? key}>
-                      {optionLabel}
-                    </li>
-                  );
-                }}
-                renderTags={(tagValue, getTagProps) =>
-                  tagValue.map((option, index) => (
-                    <Chip
-                      {...getTagProps({ index })}
-                      key={option.id}
-                      label={option.label}
-                    />
-                  ))
-                }
-                renderInput={(params) => (
-                  <TextField {...params} label={fieldCopy.tags} />
-                )}
-              />
-            </Stack>
+          {/* Series and rest */}
+          <Stack direction={{ xs: 'column', lg: 'row' }} spacing={2}>
+            <TextField
+              required
+              fullWidth
+              label={fieldCopy.series}
+              value={series}
+              onChange={(event) => setSeries(event.target.value)}
+            />
+            <TextField
+              required
+              fullWidth
+              label={fieldCopy.repetitions}
+              value={repetitions}
+              onChange={(event) => setRepetitions(event.target.value)}
+            />
+            <TextField
+              fullWidth
+              label={fieldCopy.charge}
+              value={charge}
+              onChange={(event) => setCharge(event.target.value)}
+            />
+            <TextField
+              fullWidth
+              label={fieldCopy.rest}
+              type="number"
+              value={rest}
+              onChange={(event) => setRest(event.target.value)}
+              inputProps={{ min: 0 }}
+            />
           </Stack>
-        </DialogContent>
-        {/* Dialog footer */}
-        <DialogActions sx={{ backgroundColor: '#e0dcdce0' }}>
-          <Button onClick={onClose} disabled={submitting} color="inherit">
-            {cancelLabel}
-          </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            startIcon={isEditMode ? <Edit /> : <Add />}
-            disabled={isSubmitDisabled}
-            color="success"
-          >
-            {submitLabel}
-          </Button>
-        </DialogActions>
-      </Box>
-    </Dialog>
+
+          <TextField
+            fullWidth
+            multiline
+            minRows={3}
+            label={fieldCopy.description}
+            value={description}
+            onChange={(event) => setDescription(event.target.value)}
+          />
+
+          {/* Instructions */}
+          <TextField
+            fullWidth
+            multiline
+            minRows={3}
+            label={fieldCopy.instructions}
+            value={instructions}
+            onChange={(event) => setInstructions(event.target.value)}
+          />
+
+          {/* Equipment selector */}
+          <Autocomplete
+            multiple
+            options={equipmentOptions}
+            value={selectedEquipment}
+            onChange={handleEquipmentChange}
+            filterOptions={filterCreatableOptions}
+            loading={equipmentLoading || creatingEquipment}
+            getOptionLabel={(option) => option.inputValue ?? option.label}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            renderOption={(props, option) => {
+              const { key, ...optionProps } = props as typeof props & {
+                key: React.Key;
+              };
+              const optionLabel =
+                option.isCreateOption && option.inputValue
+                  ? creationOptionCopy.equipment(option.inputValue)
+                  : option.label;
+
+              return (
+                <li {...optionProps} key={(option.id as React.Key) ?? key}>
+                  {optionLabel}
+                </li>
+              );
+            }}
+            renderTags={(tagValue, getTagProps) =>
+              tagValue.map((option, index) => (
+                <Chip
+                  {...getTagProps({ index })}
+                  key={option.id}
+                  label={option.label}
+                />
+              ))
+            }
+            renderInput={(params) => <TextField {...params} label={fieldCopy.equipment} />}
+          />
+
+          {/* Tags selector */}
+          <Autocomplete
+            multiple
+            options={tagOptions}
+            value={selectedTags}
+            onChange={handleTagsChange}
+            filterOptions={filterCreatableOptions}
+            loading={tagsLoading || creatingTag}
+            getOptionLabel={(option) => option.inputValue ?? option.label}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            renderOption={(props, option) => {
+              const { key, ...optionProps } = props as typeof props & {
+                key: React.Key;
+              };
+              const optionLabel =
+                option.isCreateOption && option.inputValue
+                  ? creationOptionCopy.tag(option.inputValue)
+                  : option.label;
+
+              return (
+                <li {...optionProps} key={(option.id as React.Key) ?? key}>
+                  {optionLabel}
+                </li>
+              );
+            }}
+            renderTags={(tagValue, getTagProps) =>
+              tagValue.map((option, index) => (
+                <Chip
+                  {...getTagProps({ index })}
+                  key={option.id}
+                  label={option.label}
+                />
+              ))
+            }
+            renderInput={(params) => <TextField {...params} label={fieldCopy.tags} />}
+          />
+        </Stack>
+      </Stack>
+    </ProgramDialogLayout>
   );
 }
