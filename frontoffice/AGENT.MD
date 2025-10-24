@@ -19,6 +19,7 @@
 - Keep business decisions inside hooks or dedicated services. Components should focus on rendering and delegating actions.
 - Extend translations in both `src/locales/en` and `src/locales/fr` simultaneously; missing keys must fail loudly rather than relying on defaults.
 - When adding API interactions, expose them as async functions within a domain-specific service (e.g., `src/services/graphql/<feature>.ts`) and call them from hooks/pages.
+- Route every asynchronous workflow (GraphQL fetches, mutations, loaders, service calls) through `src/hooks/useAsyncTask.ts` so `useLoaderStore` fuels the global overlay. For example, the login form wraps its authentication mutation inside `useAsyncTask` to keep the overlay synchronized.
 - Styling goes through the shared Material UI theme under `src/theme`. Override components via theme augmentation before resorting to inline styles.
 
 ## Testing & Quality Gates
