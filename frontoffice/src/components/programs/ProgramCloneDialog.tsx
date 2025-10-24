@@ -2,23 +2,18 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Autocomplete,
-  Box,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Stack,
   TextField,
   Typography,
 } from '@mui/material';
-import { alpha, useTheme } from '@mui/material/styles';
 import ContentCopy from '@mui/icons-material/ContentCopy';
 
 import inversify from '@src/commons/inversify';
 import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
 import type { Program, ProgramUser } from '@src/hooks/usePrograms';
 import { GraphqlServiceFetch } from '@src/services/graphql/graphql.service.fetch';
+import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
 
 interface AthleteOption {
   id: string;
@@ -73,7 +68,6 @@ export function ProgramCloneDialog({
   onSubmittingChange,
 }: ProgramCloneDialogProps): React.JSX.Element {
   const { t } = useTranslation();
-  const theme = useTheme();
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
   const [cloneLabel, setCloneLabel] = React.useState('');
   const [cloneError, setCloneError] = React.useState<string | null>(null);
@@ -170,9 +164,7 @@ export function ProgramCloneDialog({
       return;
     }
 
-    const copySuffix = t('programs-coatch.list.clone_dialog.copy_suffix', {
-      defaultValue: '(Copy)',
-    });
+    const copySuffix = t('programs-coatch.list.clone_dialog.copy_suffix');
     const baseLabel = program.label?.trim() ?? '';
     const nextLabel = baseLabel.length > 0 ? `${baseLabel} ${copySuffix}`.trim() : copySuffix;
 
@@ -213,11 +205,7 @@ export function ProgramCloneDialog({
     const trimmedLabel = cloneLabel.trim();
     setCloneLabelError(null);
     if (!trimmedLabel) {
-      setCloneLabelError(
-        t('programs-coatch.list.clone_dialog.errors.missing_label', {
-          defaultValue: 'Please provide a program name.',
-        }),
-      );
+      setCloneLabelError(t('programs-coatch.list.clone_dialog.errors.missing_label'));
       return;
     }
 
@@ -232,9 +220,7 @@ export function ProgramCloneDialog({
       onClose();
     } catch (error: unknown) {
       setCloneError(
-        error instanceof Error
-          ? error.message
-          : t('common.unexpected_error', { defaultValue: 'Unexpected error.' }),
+        error instanceof Error ? error.message : t('common.unexpected_error'),
       );
     } finally {
       setCloneLoading(false);
@@ -250,42 +236,20 @@ export function ProgramCloneDialog({
     setAthleteQuery(value);
   }, []);
 
-  const cloneDialogTitle = t('programs-coatch.list.clone_dialog.title', {
-    defaultValue: 'Copy the program',
-  });
-  const cloneDialogDescription = t('programs-coatch.list.clone_dialog.description', {
-    defaultValue: 'Update the program name and athlete before duplicating.',
-  });
-  const cloneDialogNameLabel = t('programs-coatch.list.clone_dialog.fields.name', {
-    defaultValue: 'Program name',
-  });
+  const cloneDialogTitle = t('programs-coatch.list.clone_dialog.title');
+  const cloneDialogDescription = t('programs-coatch.list.clone_dialog.description');
+  const cloneDialogNameLabel = t('programs-coatch.list.clone_dialog.fields.name');
   const cloneDialogNamePlaceholder = t(
     'programs-coatch.list.clone_dialog.fields.name_placeholder',
-    {
-      defaultValue: 'Ex: Summer strength plan',
-    },
   );
-  const cloneDialogAthleteLabel = t('programs-coatch.list.clone_dialog.fields.athlete', {
-    defaultValue: 'Athlete',
-  });
+  const cloneDialogAthleteLabel = t('programs-coatch.list.clone_dialog.fields.athlete');
   const cloneDialogAthletePlaceholder = t(
     'programs-coatch.list.clone_dialog.fields.athlete_placeholder',
-    {
-      defaultValue: 'Select an athlete (optional)',
-    },
   );
-  const cloneDialogNoResults = t('programs-coatch.list.clone_dialog.no_results', {
-    defaultValue: 'No athlete found',
-  });
-  const cloneDialogCancel = t('programs-coatch.list.clone_dialog.actions.cancel', {
-    defaultValue: 'Cancel',
-  });
-  const cloneDialogSubmit = t('programs-coatch.list.clone_dialog.actions.submit', {
-    defaultValue: 'Copy',
-  });
-  const cloneDialogSubmitting = t('programs-coatch.list.clone_dialog.actions.submitting', {
-    defaultValue: 'Copying…',
-  });
+  const cloneDialogNoResults = t('programs-coatch.list.clone_dialog.no_results');
+  const cloneDialogCancel = t('programs-coatch.list.clone_dialog.actions.cancel');
+  const cloneDialogSubmit = t('programs-coatch.list.clone_dialog.actions.submit');
+  const cloneDialogSubmitting = t('programs-coatch.list.clone_dialog.actions.submitting');
 
   const handleFormSubmit = React.useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
@@ -295,106 +259,80 @@ export function ProgramCloneDialog({
     [handleCloneSubmit],
   );
 
+  const dialogActions = (
+    <>
+      <Button onClick={handleDialogClose} disabled={cloneLoading} color="inherit">
+        {cloneDialogCancel}
+      </Button>
+      <Button type="submit" variant="contained" color="success" disabled={cloneLoading}>
+        {cloneLoading ? cloneDialogSubmitting : cloneDialogSubmit}
+      </Button>
+    </>
+  );
+
   return (
-    <Dialog open={open} onClose={handleDialogClose} fullWidth maxWidth="sm">
-      <Box component="form" onSubmit={handleFormSubmit} noValidate>
-        {/* Dialog header */}
-        <DialogTitle sx={{ backgroundColor: alpha(theme.palette.success.main, 0.2) }}>
-          <Stack direction="row" spacing={2} alignItems="center">
-            <Box
-              aria-hidden
-              sx={{
-                width: 40,
-                height: 40,
-                borderRadius: 2,
-                bgcolor: 'success.main',
-                color: 'primary.contrastText',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0,
-              }}
-            >
-              <ContentCopy fontSize="large" />
-            </Box>
-            <Stack spacing={0.5}>
-              <Typography variant="h6" component="span" sx={{ fontWeight: 700 }}>
-                {cloneDialogTitle}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {cloneDialogDescription}
-              </Typography>
-            </Stack>
-          </Stack>
-        </DialogTitle>
-        {/* Dialog body */}
-        <DialogContent dividers>
-          <Stack spacing={3}>
-            {/* Program name */}
+    <ProgramDialogLayout
+      open={open}
+      onClose={handleDialogClose}
+      icon={<ContentCopy fontSize="large" />}
+      title={cloneDialogTitle}
+      description={cloneDialogDescription}
+      dialogProps={{ maxWidth: 'sm' }}
+      formComponent="form"
+      formProps={{ onSubmit: handleFormSubmit, noValidate: true }}
+      actions={dialogActions}
+    >
+      <Stack spacing={3}>
+        {/* General information */}
+        {/* Program name */}
+        <TextField
+          autoFocus
+          fullWidth
+          label={cloneDialogNameLabel}
+          placeholder={cloneDialogNamePlaceholder}
+          value={cloneLabel}
+          onChange={(event) => {
+            setCloneLabel(event.target.value);
+            if (cloneLabelError) {
+              setCloneLabelError(null);
+            }
+          }}
+          error={Boolean(cloneLabelError)}
+          helperText={cloneLabelError ?? ' '}
+          disabled={cloneLoading}
+        />
+        {/* Athlete selection */}
+        <Autocomplete
+          options={mergedAthleteOptions}
+          value={selectedAthlete}
+          onChange={handleAthleteSelection}
+          inputValue={athleteInputValue}
+          onInputChange={handleAthleteInputChange}
+          loading={athletesLoading}
+          getOptionLabel={(option) => formatAthleteLabel(option)}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          clearOnBlur={false}
+          handleHomeEndKeys
+          noOptionsText={cloneDialogNoResults}
+          disabled={cloneLoading}
+          renderInput={(params) => (
             <TextField
-              autoFocus
-              fullWidth
-              label={cloneDialogNameLabel}
-              placeholder={cloneDialogNamePlaceholder}
-              value={cloneLabel}
-              onChange={(event) => {
-                setCloneLabel(event.target.value);
-                if (cloneLabelError) {
-                  setCloneLabelError(null);
-                }
+              {...params}
+              label={cloneDialogAthleteLabel}
+              placeholder={cloneDialogAthletePlaceholder}
+              InputProps={{
+                ...params.InputProps,
               }}
-              error={Boolean(cloneLabelError)}
-              helperText={cloneLabelError ?? ' '}
-              disabled={cloneLoading}
             />
-            {/* Athlete selection */}
-            <Autocomplete
-              options={mergedAthleteOptions}
-              value={selectedAthlete}
-              onChange={handleAthleteSelection}
-              inputValue={athleteInputValue}
-              onInputChange={handleAthleteInputChange}
-              loading={athletesLoading}
-              getOptionLabel={(option) => formatAthleteLabel(option)}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              clearOnBlur={false}
-              handleHomeEndKeys
-              noOptionsText={cloneDialogNoResults}
-              disabled={cloneLoading}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label={cloneDialogAthleteLabel}
-                  placeholder={cloneDialogAthletePlaceholder}
-                  InputProps={{
-                    ...params.InputProps,
-                  }}
-                />
-              )}
-            />
-            {/* Error message */}
-            {cloneError && (
-              <Typography variant="body2" color="error">
-                {cloneError}
-              </Typography>
-            )}
-          </Stack>
-        </DialogContent>
-        {/* Dialog footer */}
-        <DialogActions sx={{ backgroundColor: '#e0dcdce0' }}>
-          <Button onClick={handleDialogClose} disabled={cloneLoading} color="inherit">
-            {cloneDialogCancel}
-          </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            color="success"
-            disabled={cloneLoading}
-          >
-            {cloneLoading ? cloneDialogSubmitting : cloneDialogSubmit}
-          </Button>
-        </DialogActions>
-      </Box>
-    </Dialog>
+          )}
+        />
+        {/* Error message */}
+        {cloneError && (
+          <Typography variant="body2" color="error">
+            {cloneError}
+          </Typography>
+        )}
+      </Stack>
+    </ProgramDialogLayout>
   );
 }

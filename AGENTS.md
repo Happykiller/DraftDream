@@ -53,3 +53,18 @@ This document captures how the `fitdesk-devops` agent should operate the DraftDr
 - Keep `.codex` files ASCII to avoid encoding bugs.
 - Update `codex.tasks.yml` when workflows change.
 - Reflect new services or runbooks in both this document and `codex.agent.yml`.
+
+## Coding Guidelines
+1. **Import structure**:
+   - Use staircase-style formatting.
+   - Separate external libraries from internal modules.
+
+2. **Comments**:
+   - Write in English, clear and concise.
+   - Comment classes, functions, methods, and complex logic.
+   - Focus on readability and effectiveness.
+
+3. **Component templates**:
+   - Always include and maintain the JSX marker comment ` {/* General information */}` within component templates.
+4. **Internationalization**:
+   - Do not rely on translation `defaultValue` fallbacks; keep localization dictionaries up to date for every supported language.
