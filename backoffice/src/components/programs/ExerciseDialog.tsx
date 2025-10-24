@@ -31,7 +31,7 @@ export interface ExerciseDialogValues {
   rest?: number | null;
   videoUrl?: string;
   visibility: ExerciseVisibility;
-  category: RefEntity | null;
+  categories: RefEntity[];
   muscles: RefEntity[];
   equipment: RefEntity[];
   tags: RefEntity[];
@@ -62,7 +62,7 @@ const DEFAULTS: ExerciseDialogValues = {
   rest: null,
   videoUrl: '',
   visibility: 'PRIVATE',
-  category: null,
+  categories: [],
   muscles: [],
   equipment: [],
   tags: [],
@@ -82,11 +82,6 @@ export function ExerciseDialog({
   const [values, setValues] = React.useState<ExerciseDialogValues>(DEFAULTS);
   const isEdit = mode === 'edit';
   const { t } = useTranslation();
-
-  const toRef = (entity?: { id: string; slug: string; label?: string | null } | null): RefEntity | null => {
-    if (!entity) return null;
-    return { id: entity.id, slug: entity.slug, label: entity.label ?? entity.slug };
-  };
 
   const toRefs = (entities?: Array<{ id: string; slug: string; label?: string | null }> | null): RefEntity[] => {
     return entities?.map((item) => ({ id: item.id, slug: item.slug, label: item.label ?? item.slug })) ?? [];
@@ -108,7 +103,7 @@ export function ExerciseDialog({
         rest: initial.rest ?? null,
         videoUrl: initial.videoUrl ?? '',
         visibility: initial.visibility,
-        category: toRef(initial.category),
+        categories: toRefs(initial.categories),
         muscles: toRefs(initial.muscles),
         equipment: toRefs(initial.equipment),
         tags: toRefs(initial.tags),
@@ -128,10 +123,8 @@ export function ExerciseDialog({
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!isEdit) {
-      if (!values.category) return;
-      if (values.muscles.length === 0) return;
-    }
+    if (values.categories.length === 0) return;
+    if (!isEdit && values.muscles.length === 0) return;
     await onSubmit(values);
     onClose();
   };
@@ -279,10 +272,16 @@ export function ExerciseDialog({
 
           {/* Category anchors taxonomy, so we fail submission when it is missing. */}
           <Autocomplete
+            multiple
             options={categoryOptions}
             getOptionLabel={(option) => option.label || option.slug}
-            value={values.category}
-            onChange={(_, value) => setValues((prev) => ({ ...prev, category: value }))}
+            value={values.categories}
+            onChange={(_, value) => setValues((prev) => ({ ...prev, categories: value }))}
+            renderTags={(tagValue, getTagProps) =>
+              tagValue.map((option, index) => (
+                <Chip {...getTagProps({ index })} key={option.id} label={option.label || option.slug} />
+              ))
+            }
             renderInput={(params) => <TextField {...params} label={t('common.labels.category')} />}
           />
 

@@ -22,7 +22,7 @@ export type CreateExerciseInput = {
   rest?: number;
   videoUrl?: string;
   visibility: ExerciseVisibility;
-  categoryId: string;
+  categoryIds: string[];
   muscleIds: string[];
   equipmentIds?: string[];
   tagIds?: string[];
@@ -42,7 +42,7 @@ export type UpdateExerciseInput = {
   rest?: number | null;
   videoUrl?: string | null;
   visibility?: ExerciseVisibility;
-  categoryId?: string | null;
+  categoryIds?: string[];
   muscleIds?: string[];
   equipmentIds?: string[];
   tagIds?: string[];
@@ -64,12 +64,12 @@ export interface Exercise {
   rest?: number | null;
   videoUrl?: string | null;
   visibility: ExerciseVisibility;
-  categoryId: string;
+  categoryIds: string[];
   createdBy: string;
   createdAt: string;
   updatedAt: string;
   creator?: Creator | null;
-  category?: { id: string; label: string } | null;
+  categories?: { id: string; label: string }[];
   muscles?: { id: string; label: string }[];
   equipment?: { id: string; label: string }[];
   tags?: { id: string; label: string }[];
@@ -93,9 +93,9 @@ const LIST_Q = `
     exercise_list(input: $input) {
       items {
         id slug locale label description instructions level series repetitions
-        charge rest videoUrl visibility categoryId createdBy createdAt updatedAt
+        charge rest videoUrl visibility categoryIds createdBy createdAt updatedAt
         creator { id email }
-        category { id label }
+        categories { id label }
         muscles { id label }
         equipment { id label }
         tags { id label }
@@ -109,9 +109,9 @@ const CREATE_M = `
   mutation CreateExercise($input: CreateExerciseInput!) {
     exercise_create(input: $input) {
       id slug locale label description instructions level series repetitions
-      charge rest videoUrl visibility categoryId createdBy createdAt updatedAt
+      charge rest videoUrl visibility categoryIds createdBy createdAt updatedAt
       creator { id email }
-      category { id label }
+      categories { id label }
       muscles { id label }
       equipment { id label }
       tags { id label }
@@ -123,9 +123,9 @@ const UPDATE_M = `
   mutation UpdateExercise($input: UpdateExerciseInput!) {
     exercise_update(input: $input) {
       id slug locale label description instructions level series repetitions
-      charge rest videoUrl visibility categoryId createdBy createdAt updatedAt
+      charge rest videoUrl visibility categoryIds createdBy createdAt updatedAt
       creator { id email }
-      category { id label }
+      categories { id label }
       muscles { id label }
       equipment { id label }
       tags { id label }
@@ -143,7 +143,7 @@ export interface UseExercisesParams {
   q: string;
   visibility?: ExerciseVisibility;
   level?: ExerciseLevel;
-  categoryId?: string;
+  categoryIds?: string[];
   locale?: string;
   createdBy?: string;
 }
@@ -154,7 +154,7 @@ export function useExercises({
   q,
   visibility,
   level,
-  categoryId,
+  categoryIds,
   locale,
   createdBy,
 }: UseExercisesParams) {
@@ -179,7 +179,7 @@ export function useExercises({
             ...(trimmedQuery ? { q: trimmedQuery } : {}),
             ...(visibility ? { visibility } : {}),
             ...(level ? { level } : {}),
-            ...(categoryId ? { categoryId } : {}),
+            ...(categoryIds && categoryIds.length ? { categoryIds } : {}),
             ...(locale ? { locale } : {}),
             ...(createdBy ? { createdBy } : {}),
           },
@@ -194,7 +194,7 @@ export function useExercises({
     } finally {
       setLoading(false);
     }
-  }, [categoryId, createdBy, flashError, gql, level, limit, locale, page, q, visibility]);
+  }, [categoryIds, createdBy, flashError, gql, level, limit, locale, page, q, visibility]);
 
   React.useEffect(() => { void load(); }, [load]);
 

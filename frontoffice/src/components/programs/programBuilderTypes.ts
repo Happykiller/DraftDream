@@ -4,8 +4,8 @@ export type ExerciseLibraryItem = {
   id: string;
   label: string;
   level: string;
-  categoryId: string;
-  categoryLabel: string;
+  categoryIds: string[];
+  categoryLabels: string[];
   type: ExerciseVisibility;
   visibility: ExerciseVisibility;
   canEdit?: boolean;

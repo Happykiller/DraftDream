@@ -94,8 +94,6 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
       }),
     [t],
   );
-  const canEditExercise = exercise.canEdit !== false;
-  const showEditExerciseAction = Boolean(onEdit) && canEditExercise;
 
   React.useEffect(() => {
     if (!isEditingLabel) {

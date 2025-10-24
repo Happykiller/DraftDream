@@ -1,8 +1,6 @@
 // src/pages/ProgramsCoach.tsx
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Stack } from '@mui/material';
-
 import { ProgramBuilderPanel, type BuilderCopy } from '@src/components/programs/ProgramBuilderPanel';
 import { ProgramList } from '@src/components/programs/ProgramList';
 

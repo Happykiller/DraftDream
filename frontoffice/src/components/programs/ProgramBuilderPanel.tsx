@@ -11,7 +11,6 @@ import {
   InputAdornment,
   Menu,
   MenuItem,
-  Paper,
   Stack,
   TextField,
   Tooltip,
@@ -455,7 +454,7 @@ export function ProgramBuilderPanel({
   const handleExerciseCreated = React.useCallback(
     (exercise: Exercise) => {
       registerExercise(exercise);
-      if (exerciseCategory !== 'all' && exerciseCategory !== exercise.categoryId) {
+      if (exerciseCategory !== 'all' && !exercise.categoryIds.includes(exerciseCategory)) {
         setExerciseCategory('all');
       }
       if (exerciseType !== 'all' && exerciseType !== exercise.visibility) {
@@ -476,7 +475,7 @@ export function ProgramBuilderPanel({
   const handleExerciseUpdated = React.useCallback(
     (exercise: Exercise) => {
       registerExercise(exercise);
-      if (exerciseCategory !== 'all' && exerciseCategory !== exercise.categoryId) {
+      if (exerciseCategory !== 'all' && !exercise.categoryIds.includes(exerciseCategory)) {
         setExerciseCategory('all');
       }
       if (exerciseType !== 'all' && exerciseType !== exercise.visibility) {

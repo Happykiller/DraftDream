@@ -36,12 +36,14 @@ export class ExerciseResolver {
     return user ? mapUserUsecaseToGql(user) : null;
   }
 
-  @ResolveField(() => CategoryGql, { name: 'category', nullable: true })
-  async category(@Parent() exercise: ExerciseGql): Promise<CategoryGql | null> {
-    const categoryId = exercise.categoryId;
-    if (!categoryId) return null;
-    const category = await inversify.getCategoryUsecase.execute({ id: categoryId });
-    return category ? mapCategoryUsecaseToGql(category) : null;
+  @ResolveField(() => [CategoryGql], { name: 'categories' })
+  async categories(@Parent() exercise: ExerciseGql): Promise<CategoryGql[]> {
+    const ids = exercise.categoryIds ?? [];
+    if (ids.length === 0) return [];
+    const categories = await Promise.all(ids.map((id) => inversify.getCategoryUsecase.execute({ id })));
+    return categories
+      .filter((category): category is NonNullable<typeof category> => Boolean(category))
+      .map(mapCategoryUsecaseToGql);
   }
 
   @ResolveField(() => [MuscleGql], { name: 'muscles' })
@@ -96,7 +98,7 @@ export class ExerciseResolver {
       rest: input.rest,
       videoUrl: input.videoUrl,
       visibility: input.visibility,
-      categoryId: input.categoryId,
+      categoryIds: input.categoryIds,
       muscleIds: input.muscleIds,
       equipmentIds: input.equipmentIds,
       tagIds: input.tagIds,
@@ -121,7 +123,7 @@ export class ExerciseResolver {
       rest: input.rest,
       videoUrl: input.videoUrl,
       visibility: input.visibility,
-      categoryId: input.categoryId,
+      categoryIds: input.categoryIds,
       muscleIds: input.muscleIds,
       equipmentIds: input.equipmentIds,
       tagIds: input.tagIds,
@@ -158,7 +160,7 @@ export class ExerciseResolver {
       createdBy: input?.createdBy,
       visibility: input?.visibility,
       level: input?.level,
-      categoryId: input?.categoryId,
+      categoryIds: input?.categoryIds,
       limit: input?.limit,
       page: input?.page,
     });

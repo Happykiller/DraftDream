@@ -98,9 +98,9 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
                 {exercise.label}
               </Typography>
             </Stack>
-            {exercise.categoryLabel ? (
+            {exercise.categoryLabels.length ? (
               <Typography variant="body2" color="text.secondary">
-                {exercise.categoryLabel}
+                {exercise.categoryLabels.join(', ')}
               </Typography>
             ) : null}
           </Stack>
