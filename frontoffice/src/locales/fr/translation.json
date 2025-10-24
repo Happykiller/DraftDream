@@ -179,7 +179,8 @@
       "program_created": "Programme créé",
       "program_updated": "Programme mis à jour",
       "program_deleted": "Programme supprimé",
-      "program_delete_failed": "Impossible de supprimer le programme."
+      "program_delete_failed": "Impossible de supprimer le programme.",
+      "program_create_failed": "Impossible de créer le programme."
     },
     "list": {
       "created_by": "Créé par {{name}}",
@@ -213,7 +214,27 @@
         "delete": "Supprimer"
       },
       "created_on": "Créé le {{date}}",
-      "updated_on": "Modifié le {{date}}"
+      "updated_on": "Modifié le {{date}}",
+      "clone_dialog": {
+        "title": "Copier le programme",
+        "description": "Modifiez le nom du programme et l’athlète avant de le dupliquer.",
+        "fields": {
+          "name": "Nom du programme",
+          "name_placeholder": "Ex : Plan de renforcement été",
+          "athlete": "Athlète",
+          "athlete_placeholder": "Sélectionner un athlète (optionnel)"
+        },
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Copier",
+          "submitting": "Copie..."
+        },
+        "copy_suffix": "(Copie)",
+        "no_results": "Aucun athlète trouvé",
+        "errors": {
+          "missing_label": "Veuillez renseigner un nom de programme."
+        }
+      }
     }
   },
   "sandbox": {

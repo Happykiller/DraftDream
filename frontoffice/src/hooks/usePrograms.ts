@@ -214,12 +214,12 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
       sessionIds?: string[];
       sessions?: ProgramSession[];
       userId?: string | null;
-    }) => {
+    }): Promise<Program> => {
       try {
         const locale = (input.locale ?? i18n.language)?.trim() || i18n.language;
         const slug = input.slug?.trim();
 
-        const { errors } = await gql.send<CreateProgramPayload>({
+        const { data, errors } = await gql.send<CreateProgramPayload>({
           query: CREATE_M,
           operationName: 'CreateProgram',
           variables: {
@@ -251,12 +251,21 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
           },
         });
         if (errors?.length) throw new Error(errors[0].message);
+        const createdProgram = data?.program_create;
+        if (!createdProgram) {
+          throw new Error(
+            t('programs-coatch.notifications.program_create_failed', {
+              defaultValue: 'Unable to create the program.',
+            }),
+          );
+        }
         flashSuccess(
           t('programs-coatch.notifications.program_created', {
             defaultValue: 'Program created',
           }),
         );
         await load();
+        return createdProgram;
       } catch (e: any) {
         flashError(e?.message ?? 'Create failed');
         throw e;

@@ -23,6 +23,7 @@ interface ProgramListProps {
   onOpenBuilder: () => void;
   onDeleteProgram: (programId: string) => void;
   onEditProgram: (program: Program) => void;
+  onCloneProgram: (program: Program, payload: { label: string; athleteId: string | null }) => Promise<void>;
 }
 
 export function ProgramList({
@@ -34,12 +35,14 @@ export function ProgramList({
   onOpenBuilder,
   onDeleteProgram,
   onEditProgram,
+  onCloneProgram,
 }: ProgramListProps): React.JSX.Element {
   const theme = useTheme();
   const showPlaceholder = !loading && programs.length === 0;
 
   return (
     <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
+      {/* Toolbar */}
       <Stack direction="row" justifyContent="flex-end" sx={{ width: '100%' }}>
         <Button
           variant="contained"
@@ -51,12 +54,14 @@ export function ProgramList({
         </Button>
       </Stack>
 
+      {/* Loading state */}
       {loading && (
         <Stack alignItems="center" py={6}>
           <CircularProgress color="primary" />
         </Stack>
       )}
 
+      {/* Program grid */}
       {!loading && programs.length > 0 && (
         <Grid container spacing={3}>
           {programs.map((program) => (
@@ -65,12 +70,14 @@ export function ProgramList({
                 program={program}
                 onDelete={onDeleteProgram}
                 onEdit={onEditProgram}
+                onClone={(item, payload) => onCloneProgram(item, payload)}
               />
             </Grid>
           ))}
         </Grid>
       )}
 
+      {/* Empty state */}
       {showPlaceholder && (
         <Paper
           sx={{

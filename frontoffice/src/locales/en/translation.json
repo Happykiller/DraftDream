@@ -177,7 +177,8 @@
       "program_created": "Program created",
       "program_updated": "Program updated",
       "program_deleted": "Program deleted",
-      "program_delete_failed": "Unable to delete the program."
+      "program_delete_failed": "Unable to delete the program.",
+      "program_create_failed": "Unable to create the program."
     },
     "list": {
       "created_by": "Created by {{name}}",
@@ -211,7 +212,27 @@
         "delete": "Delete"
       },
       "created_on": "Created on {{date}}",
-      "updated_on": "Updated on {{date}}"
+      "updated_on": "Updated on {{date}}",
+      "clone_dialog": {
+        "title": "Copy the program",
+        "description": "Update the program name and athlete before duplicating it.",
+        "fields": {
+          "name": "Program name",
+          "name_placeholder": "Ex: Summer strength plan",
+          "athlete": "Athlete",
+          "athlete_placeholder": "Select an athlete (optional)"
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Copy",
+          "submitting": "Copying…"
+        },
+        "copy_suffix": "(Copy)",
+        "no_results": "No athlete found",
+        "errors": {
+          "missing_label": "Please provide a program name."
+        }
+      }
     }
   },
   "sandbox": {
