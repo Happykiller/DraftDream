@@ -9,6 +9,7 @@ import { Input } from '@src/components/Input';
 import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 
+/** Internal playground to validate reusable components and stores. */
 export function Sandbox(): React.JSX.Element {
   const navigate = useNavigate();
   const [email, setEmail] = React.useState({ value: '', valid: false });
@@ -29,6 +30,7 @@ export function Sandbox(): React.JSX.Element {
 
   return (
     <Grid container spacing={3} sx={{ mt: 2 }}>
+      {/* General information */}
       {/* Card 1 */}
       <Grid size={{ xs: 12, sm: 6, md: 4 }}>
         <Card variant="outlined" sx={{ height: '100%' }}>

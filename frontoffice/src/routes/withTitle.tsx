@@ -2,6 +2,7 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
+/** Wraps a component to automatically update the browser tab title. */
 export function withTitle<T extends object>(
   Component: React.ComponentType<T>,
   titleKey: string,

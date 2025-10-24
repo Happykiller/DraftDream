@@ -30,6 +30,7 @@ import { useFlashStore } from '@hooks/useFlashStore';
 
 type Entity = { value: string; valid: boolean };
 
+/** Authentication screen displayed to unauthenticated visitors. */
 export function Login(): React.JSX.Element {
   // Stores / services
   const theme = useTheme();
@@ -151,6 +152,7 @@ export function Login(): React.JSX.Element {
         p: { xs: 2, sm: 3 },
       }}
     >
+      {/* General information */}
       <Box
         sx={{
           flexGrow: 1,
