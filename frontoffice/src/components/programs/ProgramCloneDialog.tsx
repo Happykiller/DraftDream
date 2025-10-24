@@ -2,14 +2,18 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Autocomplete,
+  Box,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  Stack,
   TextField,
   Typography,
 } from '@mui/material';
+import { alpha, useTheme } from '@mui/material/styles';
+import ContentCopy from '@mui/icons-material/ContentCopy';
 
 import inversify from '@src/commons/inversify';
 import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
@@ -69,6 +73,7 @@ export function ProgramCloneDialog({
   onSubmittingChange,
 }: ProgramCloneDialogProps): React.JSX.Element {
   const { t } = useTranslation();
+  const theme = useTheme();
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
   const [cloneLabel, setCloneLabel] = React.useState('');
   const [cloneError, setCloneError] = React.useState<string | null>(null);
@@ -282,71 +287,114 @@ export function ProgramCloneDialog({
     defaultValue: 'Copying…',
   });
 
+  const handleFormSubmit = React.useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      void handleCloneSubmit();
+    },
+    [handleCloneSubmit],
+  );
+
   return (
     <Dialog open={open} onClose={handleDialogClose} fullWidth maxWidth="sm">
-      <DialogTitle>{cloneDialogTitle}</DialogTitle>
-      <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
-        {/* Description */}
-        <Typography variant="body2" color="text.secondary">
-          {cloneDialogDescription}
-        </Typography>
-        {/* Program name */}
-        <TextField
-          autoFocus
-          fullWidth
-          label={cloneDialogNameLabel}
-          placeholder={cloneDialogNamePlaceholder}
-          value={cloneLabel}
-          onChange={(event) => {
-            setCloneLabel(event.target.value);
-            if (cloneLabelError) {
-              setCloneLabelError(null);
-            }
-          }}
-          error={Boolean(cloneLabelError)}
-          helperText={cloneLabelError ?? ' '}
-          disabled={cloneLoading}
-        />
-        {/* Athlete selection */}
-        <Autocomplete
-          options={mergedAthleteOptions}
-          value={selectedAthlete}
-          onChange={handleAthleteSelection}
-          inputValue={athleteInputValue}
-          onInputChange={handleAthleteInputChange}
-          loading={athletesLoading}
-          getOptionLabel={(option) => formatAthleteLabel(option)}
-          isOptionEqualToValue={(option, value) => option.id === value.id}
-          clearOnBlur={false}
-          handleHomeEndKeys
-          noOptionsText={cloneDialogNoResults}
-          disabled={cloneLoading}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label={cloneDialogAthleteLabel}
-              placeholder={cloneDialogAthletePlaceholder}
-              InputProps={{
-                ...params.InputProps,
+      <Box component="form" onSubmit={handleFormSubmit} noValidate>
+        {/* Dialog header */}
+        <DialogTitle sx={{ backgroundColor: alpha(theme.palette.success.main, 0.2) }}>
+          <Stack direction="row" spacing={2} alignItems="center">
+            <Box
+              aria-hidden
+              sx={{
+                width: 40,
+                height: 40,
+                borderRadius: 2,
+                bgcolor: 'success.main',
+                color: 'primary.contrastText',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
               }}
+            >
+              <ContentCopy fontSize="large" />
+            </Box>
+            <Stack spacing={0.5}>
+              <Typography variant="h6" component="span" sx={{ fontWeight: 700 }}>
+                {cloneDialogTitle}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {cloneDialogDescription}
+              </Typography>
+            </Stack>
+          </Stack>
+        </DialogTitle>
+        {/* Dialog body */}
+        <DialogContent dividers>
+          <Stack spacing={3}>
+            {/* Program name */}
+            <TextField
+              autoFocus
+              fullWidth
+              label={cloneDialogNameLabel}
+              placeholder={cloneDialogNamePlaceholder}
+              value={cloneLabel}
+              onChange={(event) => {
+                setCloneLabel(event.target.value);
+                if (cloneLabelError) {
+                  setCloneLabelError(null);
+                }
+              }}
+              error={Boolean(cloneLabelError)}
+              helperText={cloneLabelError ?? ' '}
+              disabled={cloneLoading}
             />
-          )}
-        />
-        {/* Error message */}
-        {cloneError && (
-          <Typography variant="body2" color="error">
-            {cloneError}
-          </Typography>
-        )}
-      </DialogContent>
-      <DialogActions sx={{ px: 3, pb: 2 }}>
-        <Button onClick={handleDialogClose} disabled={cloneLoading}>
-          {cloneDialogCancel}
-        </Button>
-        <Button onClick={handleCloneSubmit} variant="contained" color="primary" disabled={cloneLoading}>
-          {cloneLoading ? cloneDialogSubmitting : cloneDialogSubmit}
-        </Button>
-      </DialogActions>
+            {/* Athlete selection */}
+            <Autocomplete
+              options={mergedAthleteOptions}
+              value={selectedAthlete}
+              onChange={handleAthleteSelection}
+              inputValue={athleteInputValue}
+              onInputChange={handleAthleteInputChange}
+              loading={athletesLoading}
+              getOptionLabel={(option) => formatAthleteLabel(option)}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              clearOnBlur={false}
+              handleHomeEndKeys
+              noOptionsText={cloneDialogNoResults}
+              disabled={cloneLoading}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label={cloneDialogAthleteLabel}
+                  placeholder={cloneDialogAthletePlaceholder}
+                  InputProps={{
+                    ...params.InputProps,
+                  }}
+                />
+              )}
+            />
+            {/* Error message */}
+            {cloneError && (
+              <Typography variant="body2" color="error">
+                {cloneError}
+              </Typography>
+            )}
+          </Stack>
+        </DialogContent>
+        {/* Dialog footer */}
+        <DialogActions sx={{ backgroundColor: '#e0dcdce0' }}>
+          <Button onClick={handleDialogClose} disabled={cloneLoading} color="inherit">
+            {cloneDialogCancel}
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            color="success"
+            disabled={cloneLoading}
+          >
+            {cloneLoading ? cloneDialogSubmitting : cloneDialogSubmit}
+          </Button>
+        </DialogActions>
+      </Box>
     </Dialog>
   );
 }
