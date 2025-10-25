@@ -106,11 +106,13 @@ export function ProgramDialog({
         description: initial.description ?? '',
         sessions: mergeSessionOptions(initial.sessions, sessionOptions),
         user: ((): ProgramUserOption | null => {
+          if (initial.athlete) {
+            const match = userOptions.find((user) => user.id === initial.athlete?.id);
+            return match ?? { ...initial.athlete };
+          }
           if (!initial.userId) return null;
-          const match = userOptions.find(u => u.id === initial.userId);
-          return (
-            match || { id: initial.userId, email: initial.userId }
-          );
+          const match = userOptions.find((user) => user.id === initial.userId);
+          return match ?? { id: initial.userId, email: initial.userId };
         })(),
       });
     } else {
@@ -241,7 +243,7 @@ export function ProgramDialog({
             )}
           />
 
-          {/* User assignment remains optional since some programs are templates. */}
+          {/* Athlete assignment remains optional since some programs are templates. */}
           <Autocomplete
             options={userOptions}
             value={values.user}
@@ -251,8 +253,8 @@ export function ProgramDialog({
             renderInput={(params) => (
               <TextField
                 {...params}
-                label={t('common.labels.user_optional')}
-                placeholder={t('common.placeholders.select_user')}
+                label={t('common.labels.athlete_optional')}
+                placeholder={t('common.placeholders.select_athlete')}
               />
             )}
           />

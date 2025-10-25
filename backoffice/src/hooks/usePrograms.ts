@@ -45,6 +45,7 @@ export interface Program {
   frequency: number;
   description?: string | null;
   userId?: string | null;
+  athlete?: ProgramCreator | null;
   createdBy: string;
   createdAt: string;
   updatedAt: string;
@@ -83,6 +84,7 @@ const LIST_Q = `
           }
         }
         userId
+        athlete { id email }
         createdBy
         createdAt
         updatedAt
@@ -112,6 +114,7 @@ const CREATE_M = `
         }
       }
       userId
+      athlete { id email }
       createdBy
       createdAt
       updatedAt
@@ -137,6 +140,7 @@ const UPDATE_M = `
         }
       }
       userId
+      athlete { id email }
       createdBy
       createdAt
       updatedAt
