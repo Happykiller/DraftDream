@@ -1,6 +1,8 @@
 // src/hooks/useSessions.ts
 import * as React from 'react';
 import inversify from '@src/commons/inversify';
+
+import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
@@ -81,6 +83,7 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
   const [items, setItems] = React.useState<Session[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
+  const { execute } = useAsyncTask();
   const flashError = useFlashStore((state) => state.error);
   const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
@@ -88,18 +91,20 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
-      const { data, errors } = await gql.send<SessionListPayload>({
-        query: LIST_Q,
-        operationName: 'ListSessions',
-        variables: {
-          input: {
-            page,
-            limit,
-            q: q || undefined,
-            locale: locale || undefined,
+      const { data, errors } = await execute(() =>
+        gql.send<SessionListPayload>({
+          query: LIST_Q,
+          operationName: 'ListSessions',
+          variables: {
+            input: {
+              page,
+              limit,
+              q: q || undefined,
+              locale: locale || undefined,
+            },
           },
-        },
-      });
+        }),
+      );
       if (errors?.length) throw new Error(errors[0].message);
       setItems(data?.session_list.items ?? []);
       setTotal(data?.session_list.total ?? 0);
@@ -108,7 +113,7 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
     } finally {
       setLoading(false);
     }
-  }, [page, limit, q, locale, gql, flashError]);
+  }, [page, limit, q, locale, execute, gql, flashError]);
 
   React.useEffect(() => {
     void load();
@@ -124,11 +129,13 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
       exerciseIds: string[];
     }) => {
       try {
-        const { errors } = await gql.send<CreateSessionPayload>({
-          query: CREATE_M,
-          operationName: 'CreateSession',
-          variables: { input },
-        });
+        const { errors } = await execute(() =>
+          gql.send<CreateSessionPayload>({
+            query: CREATE_M,
+            operationName: 'CreateSession',
+            variables: { input },
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Session created');
         await load();
@@ -137,7 +144,7 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
         throw e;
       }
     },
-    [gql, flashError, flashSuccess, load]
+    [execute, gql, flashError, flashSuccess, load]
   );
 
   const update = React.useCallback(
@@ -151,11 +158,13 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
       exerciseIds?: string[];
     }) => {
       try {
-        const { errors } = await gql.send<UpdateSessionPayload>({
-          query: UPDATE_M,
-          operationName: 'UpdateSession',
-          variables: { input },
-        });
+        const { errors } = await execute(() =>
+          gql.send<UpdateSessionPayload>({
+            query: UPDATE_M,
+            operationName: 'UpdateSession',
+            variables: { input },
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Session updated');
         await load();
@@ -164,17 +173,19 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
         throw e;
       }
     },
-    [gql, flashError, flashSuccess, load]
+    [execute, gql, flashError, flashSuccess, load]
   );
 
   const remove = React.useCallback(
     async (id: string) => {
       try {
-        const { errors } = await gql.send<DeleteSessionPayload>({
-          query: DELETE_M,
-          operationName: 'DeleteSession',
-          variables: { id },
-        });
+        const { errors } = await execute(() =>
+          gql.send<DeleteSessionPayload>({
+            query: DELETE_M,
+            operationName: 'DeleteSession',
+            variables: { id },
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Session deleted');
         await load();
@@ -183,7 +194,7 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
         throw e;
       }
     },
-    [gql, flashError, flashSuccess, load]
+    [execute, gql, flashError, flashSuccess, load]
   );
 
   return { items, total, loading, create, update, remove, reload: load };
