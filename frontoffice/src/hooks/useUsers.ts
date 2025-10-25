@@ -1,6 +1,7 @@
 //  src/hooks/useUsers.ts
 import * as React from 'react';
 import inversify from '@src/commons/inversify';
+import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
@@ -67,6 +68,7 @@ export function useUsers({ page, limit, q }: UseUsersParams) {
   const [items, setItems] = React.useState<User[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
+  const { execute } = useAsyncTask();
   const flashError = useFlashStore((state) => state.error);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
 
@@ -74,21 +76,26 @@ export function useUsers({ page, limit, q }: UseUsersParams) {
     async (vars: { page: number; limit: number; q?: string }) => {
       setLoading(true);
       try {
-        const { data, errors } = await gql.send<UsersListPayload>({
-          query: LIST_Q,
-          variables: { input: { page: vars.page, limit: vars.limit, q: vars.q || undefined } },
-          operationName: 'ListUsers',
-        });
+        const { data, errors } = await execute(() =>
+          gql.send<UsersListPayload>({
+            query: LIST_Q,
+            variables: {
+              input: { page: vars.page, limit: vars.limit, q: vars.q || undefined },
+            },
+            operationName: 'ListUsers',
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         setItems(data?.user_list.items ?? []);
         setTotal(data?.user_list.total ?? 0);
-      } catch (e: any) {
-        flashError(e?.message ?? 'Failed to load users');
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Failed to load users';
+        flashError(message);
       } finally {
         setLoading(false);
       }
     },
-    [gql, flashError]
+    [execute, gql, flashError]
   );
 
   const sig = `${page}|${limit}|${q || ''}`;

@@ -2,6 +2,7 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import inversify from '@src/commons/inversify';
+import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
@@ -169,6 +170,7 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
   const { t, i18n } = useTranslation();
+  const { execute } = useAsyncTask();
   const flashError = useFlashStore((state) => state.error);
   const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
@@ -176,28 +178,31 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
-      const { data, errors } = await gql.send<ProgramListPayload>({
-        query: LIST_Q,
-        operationName: 'ListPrograms',
-        variables: {
-          input: {
-            page,
-            limit,
-            q: q || undefined,
-            createdBy: createdBy || undefined,
-            userId: userId || undefined,
+      const { data, errors } = await execute(() =>
+        gql.send<ProgramListPayload>({
+          query: LIST_Q,
+          operationName: 'ListPrograms',
+          variables: {
+            input: {
+              page,
+              limit,
+              q: q || undefined,
+              createdBy: createdBy || undefined,
+              userId: userId || undefined,
+            },
           },
-        },
-      });
+        }),
+      );
       if (errors?.length) throw new Error(errors[0].message);
       setItems(data?.program_list.items ?? []);
       setTotal(data?.program_list.total ?? 0);
-    } catch (e: any) {
-      flashError(e?.message ?? 'Failed to load programs');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to load programs';
+      flashError(message);
     } finally {
       setLoading(false);
     }
-  }, [createdBy, flashError, gql, limit, page, q, userId]);
+  }, [createdBy, execute, flashError, gql, limit, page, q, userId]);
 
   React.useEffect(() => {
     void load();
@@ -219,37 +224,39 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
         const locale = (input.locale ?? i18n.language)?.trim() || i18n.language;
         const slug = input.slug?.trim();
 
-        const { data, errors } = await gql.send<CreateProgramPayload>({
-          query: CREATE_M,
-          operationName: 'CreateProgram',
-          variables: {
-            input: {
-              ...input,
-              slug: slug && slug.length ? slug : undefined,
-              locale,
-              sessionIds: input.sessionIds?.filter(Boolean),
-              sessions: input.sessions?.map((session) => ({
-                ...session,
-                templateSessionId: session.templateSessionId || undefined,
-                slug: session.slug || undefined,
-                locale: session.locale || undefined,
-                description: session.description ?? undefined,
-                exercises: session.exercises.map((exercise) => ({
-                  ...exercise,
-                  templateExerciseId: exercise.templateExerciseId || undefined,
-                  description: exercise.description ?? undefined,
-                  instructions: exercise.instructions ?? undefined,
-                  series: exercise.series ?? undefined,
-                  repetitions: exercise.repetitions ?? undefined,
-                  charge: exercise.charge ?? undefined,
-                  restSeconds: exercise.restSeconds ?? undefined,
-                  videoUrl: exercise.videoUrl ?? undefined,
-                  level: exercise.level ?? undefined,
+        const { data, errors } = await execute(() =>
+          gql.send<CreateProgramPayload>({
+            query: CREATE_M,
+            operationName: 'CreateProgram',
+            variables: {
+              input: {
+                ...input,
+                slug: slug && slug.length ? slug : undefined,
+                locale,
+                sessionIds: input.sessionIds?.filter(Boolean),
+                sessions: input.sessions?.map((session) => ({
+                  ...session,
+                  templateSessionId: session.templateSessionId || undefined,
+                  slug: session.slug || undefined,
+                  locale: session.locale || undefined,
+                  description: session.description ?? undefined,
+                  exercises: session.exercises.map((exercise) => ({
+                    ...exercise,
+                    templateExerciseId: exercise.templateExerciseId || undefined,
+                    description: exercise.description ?? undefined,
+                    instructions: exercise.instructions ?? undefined,
+                    series: exercise.series ?? undefined,
+                    repetitions: exercise.repetitions ?? undefined,
+                    charge: exercise.charge ?? undefined,
+                    restSeconds: exercise.restSeconds ?? undefined,
+                    videoUrl: exercise.videoUrl ?? undefined,
+                    level: exercise.level ?? undefined,
+                  })),
                 })),
-              })),
+              },
             },
-          },
-        });
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         const createdProgram = data?.program_create;
         if (!createdProgram) {
@@ -266,12 +273,13 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
         );
         await load();
         return createdProgram;
-      } catch (e: any) {
-        flashError(e?.message ?? 'Create failed');
-        throw e;
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Create failed';
+        flashError(message);
+        throw error;
       }
     },
-    [flashError, flashSuccess, gql, i18n.language, load, t]
+    [execute, flashError, flashSuccess, gql, i18n.language, load, t]
   );
 
   const update = React.useCallback(
@@ -291,38 +299,40 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
         const locale = (input.locale ?? i18n.language)?.trim() || i18n.language;
         const slug = input.slug?.trim();
 
-        const { errors } = await gql.send<UpdateProgramPayload>({
-          query: UPDATE_M,
-          operationName: 'UpdateProgram',
-          variables: {
-            input: {
-              ...input,
-              slug: slug && slug.length ? slug : undefined,
-              locale,
-              description: input.description ?? undefined,
-              sessionIds: input.sessionIds?.filter(Boolean),
-              sessions: input.sessions?.map((session) => ({
-                ...session,
-                templateSessionId: session.templateSessionId || undefined,
-                slug: session.slug || undefined,
-                locale: session.locale || undefined,
-                description: session.description ?? undefined,
-                exercises: session.exercises.map((exercise) => ({
-                  ...exercise,
-                  templateExerciseId: exercise.templateExerciseId || undefined,
-                  description: exercise.description ?? undefined,
-                  instructions: exercise.instructions ?? undefined,
-                  series: exercise.series ?? undefined,
-                  repetitions: exercise.repetitions ?? undefined,
-                  charge: exercise.charge ?? undefined,
-                  restSeconds: exercise.restSeconds ?? undefined,
-                  videoUrl: exercise.videoUrl ?? undefined,
-                  level: exercise.level ?? undefined,
+        const { errors } = await execute(() =>
+          gql.send<UpdateProgramPayload>({
+            query: UPDATE_M,
+            operationName: 'UpdateProgram',
+            variables: {
+              input: {
+                ...input,
+                slug: slug && slug.length ? slug : undefined,
+                locale,
+                description: input.description ?? undefined,
+                sessionIds: input.sessionIds?.filter(Boolean),
+                sessions: input.sessions?.map((session) => ({
+                  ...session,
+                  templateSessionId: session.templateSessionId || undefined,
+                  slug: session.slug || undefined,
+                  locale: session.locale || undefined,
+                  description: session.description ?? undefined,
+                  exercises: session.exercises.map((exercise) => ({
+                    ...exercise,
+                    templateExerciseId: exercise.templateExerciseId || undefined,
+                    description: exercise.description ?? undefined,
+                    instructions: exercise.instructions ?? undefined,
+                    series: exercise.series ?? undefined,
+                    repetitions: exercise.repetitions ?? undefined,
+                    charge: exercise.charge ?? undefined,
+                    restSeconds: exercise.restSeconds ?? undefined,
+                    videoUrl: exercise.videoUrl ?? undefined,
+                    level: exercise.level ?? undefined,
+                  })),
                 })),
-              })),
+              },
             },
-          },
-        });
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess(
           t('programs-coatch.notifications.program_updated', {
@@ -330,22 +340,25 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
           }),
         );
         await load();
-      } catch (e: any) {
-        flashError(e?.message ?? 'Update failed');
-        throw e;
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Update failed';
+        flashError(message);
+        throw error;
       }
     },
-    [flashError, flashSuccess, gql, i18n.language, load, t]
+    [execute, flashError, flashSuccess, gql, i18n.language, load, t]
   );
 
   const remove = React.useCallback(
     async (id: string) => {
       try {
-        const { data, errors } = await gql.send<DeleteProgramPayload>({
-          query: DELETE_M,
-          operationName: 'SoftDeleteProgram',
-          variables: { id },
-        });
+        const { data, errors } = await execute(() =>
+          gql.send<DeleteProgramPayload>({
+            query: DELETE_M,
+            operationName: 'SoftDeleteProgram',
+            variables: { id },
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         if (!data?.program_softDelete) {
           throw new Error(
@@ -360,12 +373,13 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
           }),
         );
         await load();
-      } catch (e: any) {
-        flashError(e?.message ?? 'Delete failed');
-        throw e;
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Delete failed';
+        flashError(message);
+        throw error;
       }
     },
-    [flashError, flashSuccess, gql, load, t]
+    [execute, flashError, flashSuccess, gql, load, t]
   );
 
   return { items, total, loading, create, update, remove, reload: load };

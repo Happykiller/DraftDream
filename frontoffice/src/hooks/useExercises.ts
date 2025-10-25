@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import inversify from '@src/commons/inversify';
+import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
@@ -162,6 +163,7 @@ export function useExercises({
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
   const { t } = useTranslation();
+  const { execute } = useAsyncTask();
   const flashError = useFlashStore((state) => state.error);
   const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
@@ -170,42 +172,48 @@ export function useExercises({
     setLoading(true);
     try {
       const trimmedQuery = q.trim();
-      const { data, errors } = await gql.send<ExerciseListPayload>({
-        query: LIST_Q,
-        variables: {
-          input: {
-            page,
-            limit,
-            ...(trimmedQuery ? { q: trimmedQuery } : {}),
-            ...(visibility ? { visibility } : {}),
-            ...(level ? { level } : {}),
-            ...(categoryIds && categoryIds.length ? { categoryIds } : {}),
-            ...(locale ? { locale } : {}),
-            ...(createdBy ? { createdBy } : {}),
+      const { data, errors } = await execute(() =>
+        gql.send<ExerciseListPayload>({
+          query: LIST_Q,
+          variables: {
+            input: {
+              page,
+              limit,
+              ...(trimmedQuery ? { q: trimmedQuery } : {}),
+              ...(visibility ? { visibility } : {}),
+              ...(level ? { level } : {}),
+              ...(categoryIds && categoryIds.length ? { categoryIds } : {}),
+              ...(locale ? { locale } : {}),
+              ...(createdBy ? { createdBy } : {}),
+            },
           },
-        },
-        operationName: 'ListExercises',
-      });
+          operationName: 'ListExercises',
+        }),
+      );
       if (errors?.length) throw new Error(errors[0].message);
       setItems(data?.exercise_list.items ?? []);
       setTotal(data?.exercise_list.total ?? 0);
-    } catch (e: any) {
-      flashError(e?.message ?? 'Failed to load exercises');
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : 'Failed to load exercises';
+      flashError(message);
     } finally {
       setLoading(false);
     }
-  }, [categoryIds, createdBy, flashError, gql, level, limit, locale, page, q, visibility]);
+  }, [categoryIds, createdBy, execute, flashError, gql, level, limit, locale, page, q, visibility]);
 
   React.useEffect(() => { void load(); }, [load]);
 
   const create = React.useCallback(
     async (input: CreateExerciseInput) => {
       try {
-        const { data, errors } = await gql.send<CreatePayload>({
-          query: CREATE_M,
-          variables: { input },
-          operationName: 'CreateExercise',
-        });
+        const { data, errors } = await execute(() =>
+          gql.send<CreatePayload>({
+            query: CREATE_M,
+            variables: { input },
+            operationName: 'CreateExercise',
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
 
         const created = data?.exercise_create ?? undefined;
@@ -235,27 +243,28 @@ export function useExercises({
         }
 
         return created;
-      } catch (e: any) {
-        flashError(
-          e?.message ??
-            t('programs-coatch.builder.library.create_dialog.flash.failure', {
-              defaultValue: 'Unable to create the exercise template.',
-            }),
-        );
-        throw e;
+      } catch (error: unknown) {
+        const fallback = t('programs-coatch.builder.library.create_dialog.flash.failure', {
+          defaultValue: 'Unable to create the exercise template.',
+        });
+        const message = error instanceof Error ? error.message : fallback;
+        flashError(message);
+        throw error;
       }
     },
-    [flashError, flashSuccess, gql, limit, t]
+    [execute, flashError, flashSuccess, gql, limit, t]
   );
 
   const update = React.useCallback(
     async (input: UpdateExerciseInput) => {
       try {
-        const { data, errors } = await gql.send<UpdatePayload>({
-          query: UPDATE_M,
-          variables: { input },
-          operationName: 'UpdateExercise',
-        });
+        const { data, errors } = await execute(() =>
+          gql.send<UpdatePayload>({
+            query: UPDATE_M,
+            variables: { input },
+            operationName: 'UpdateExercise',
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
 
         const updated = data?.exercise_update ?? undefined;
@@ -283,34 +292,38 @@ export function useExercises({
         });
 
         return updated;
-      } catch (e: any) {
-        flashError(
-          e?.message ??
-            t('programs-coatch.builder.library.edit_dialog.flash.failure', {
-              defaultValue: 'Unable to update the exercise template.',
-            }),
-        );
-        throw e;
+      } catch (error: unknown) {
+        const fallback = t('programs-coatch.builder.library.edit_dialog.flash.failure', {
+          defaultValue: 'Unable to update the exercise template.',
+        });
+        const message = error instanceof Error ? error.message : fallback;
+        flashError(message);
+        throw error;
       }
     },
-    [flashError, flashSuccess, gql, limit, t],
+    [execute, flashError, flashSuccess, gql, limit, t],
   );
 
   const remove = React.useCallback(
     async (id: string) => {
       try {
-        const { errors } = await gql.send<DeletePayload>({
-          query: DELETE_M, variables: { id }, operationName: 'DeleteExercise',
-        });
+        const { errors } = await execute(() =>
+          gql.send<DeletePayload>({
+            query: DELETE_M,
+            variables: { id },
+            operationName: 'DeleteExercise',
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Exercise deleted');
         await load();
-      } catch (e: any) {
-        flashError(e?.message ?? 'Delete failed');
-        throw e;
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Delete failed';
+        flashError(message);
+        throw error;
       }
     },
-    [flashError, flashSuccess, gql, load]
+    [execute, flashError, flashSuccess, gql, load]
   );
 
   return { items, total, loading, create, update, remove, reload: load };

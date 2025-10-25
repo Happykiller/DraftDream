@@ -1,6 +1,7 @@
 // src/hooks/useMuscles.ts
 import * as React from 'react';
 import inversify from '@src/commons/inversify';
+import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
@@ -71,6 +72,7 @@ export function useMuscles({ page, limit, q }: UseMusclesParams) {
   const [items, setItems] = React.useState<Muscle[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
+  const { execute } = useAsyncTask();
   const flashError = useFlashStore((state) => state.error);
   const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
@@ -78,20 +80,23 @@ export function useMuscles({ page, limit, q }: UseMusclesParams) {
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
-      const { data, errors } = await gql.send<MuscleListPayload>({
-        query: LIST_Q,
-        variables: { input: { page, limit, q: q || undefined } },
-        operationName: 'ListMuscles',
-      });
+      const { data, errors } = await execute(() =>
+        gql.send<MuscleListPayload>({
+          query: LIST_Q,
+          variables: { input: { page, limit, q: q || undefined } },
+          operationName: 'ListMuscles',
+        }),
+      );
       if (errors?.length) throw new Error(errors[0].message);
       setItems(data?.muscle_list.items ?? []);
       setTotal(data?.muscle_list.total ?? 0);
-    } catch (e: any) {
-      flashError(e?.message ?? 'Failed to load muscles');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to load muscles';
+      flashError(message);
     } finally {
       setLoading(false);
     }
-  }, [flashError, gql, limit, page, q]);
+  }, [execute, flashError, gql, limit, page, q]);
 
   React.useEffect(() => {
     void load();
@@ -105,23 +110,26 @@ export function useMuscles({ page, limit, q }: UseMusclesParams) {
       visibility: MuscleVisibility;
     }) => {
       try {
-        const { data, errors } = await gql.send<CreatePayload>({
-          query: CREATE_M,
-          variables: { input },
-          operationName: 'CreateMuscle',
-        });
+        const { data, errors } = await execute(() =>
+          gql.send<CreatePayload>({
+            query: CREATE_M,
+            variables: { input },
+            operationName: 'CreateMuscle',
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         const created = data?.muscle_create;
         if (!created) throw new Error('CreateMuscle returned no data');
         flashSuccess('Muscle created');
         await load();
         return created;
-      } catch (e: any) {
-        flashError(e?.message ?? 'Create failed');
-        throw e;
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Create failed';
+        flashError(message);
+        throw error;
       }
     },
-    [flashError, flashSuccess, gql, load]
+    [execute, flashError, flashSuccess, gql, load]
   );
 
   const update = React.useCallback(
@@ -133,39 +141,45 @@ export function useMuscles({ page, limit, q }: UseMusclesParams) {
       visibility?: MuscleVisibility;
     }) => {
       try {
-        const { errors } = await gql.send<UpdatePayload>({
-          query: UPDATE_M,
-          variables: { input },
-          operationName: 'UpdateMuscle',
-        });
+        const { errors } = await execute(() =>
+          gql.send<UpdatePayload>({
+            query: UPDATE_M,
+            variables: { input },
+            operationName: 'UpdateMuscle',
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Muscle updated');
         await load();
-      } catch (e: any) {
-        flashError(e?.message ?? 'Update failed');
-        throw e;
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Update failed';
+        flashError(message);
+        throw error;
       }
     },
-    [flashError, flashSuccess, gql, load]
+    [execute, flashError, flashSuccess, gql, load]
   );
 
   const remove = React.useCallback(
     async (id: string) => {
       try {
-        const { errors } = await gql.send<DeletePayload>({
-          query: DELETE_M,
-          variables: { id },
-          operationName: 'DeleteMuscle',
-        });
+        const { errors } = await execute(() =>
+          gql.send<DeletePayload>({
+            query: DELETE_M,
+            variables: { id },
+            operationName: 'DeleteMuscle',
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Muscle deleted');
         await load();
-      } catch (e: any) {
-        flashError(e?.message ?? 'Delete failed');
-        throw e;
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Delete failed';
+        flashError(message);
+        throw error;
       }
     },
-    [flashError, flashSuccess, gql, load]
+    [execute, flashError, flashSuccess, gql, load]
   );
 
   return { items, total, loading, create, update, remove, reload: load };

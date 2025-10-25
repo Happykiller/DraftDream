@@ -1,6 +1,7 @@
 // src/hooks/useEquipment.ts
 import * as React from 'react';
 import inversify from '@src/commons/inversify';
+import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
@@ -72,6 +73,7 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
   const [items, setItems] = React.useState<Equipment[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
+  const { execute } = useAsyncTask();
   const flashError = useFlashStore((state) => state.error);
   const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
@@ -79,20 +81,23 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
-      const { data, errors } = await gql.send<EquipmentListPayload>({
-        query: LIST_Q,
-        variables: { input: { page, limit, q: q || undefined } },
-        operationName: 'ListEquipment',
-      });
+      const { data, errors } = await execute(() =>
+        gql.send<EquipmentListPayload>({
+          query: LIST_Q,
+          variables: { input: { page, limit, q: q || undefined } },
+          operationName: 'ListEquipment',
+        }),
+      );
       if (errors?.length) throw new Error(errors[0].message);
       setItems(data?.equipment_list.items ?? []);
       setTotal(data?.equipment_list.total ?? 0);
-    } catch (e: any) {
-      flashError(e?.message ?? 'Failed to load equipment');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to load equipment';
+      flashError(message);
     } finally {
       setLoading(false);
     }
-  }, [flashError, gql, limit, page, q]);
+  }, [execute, flashError, gql, limit, page, q]);
 
   React.useEffect(() => { void load(); }, [load]);
 
@@ -104,23 +109,26 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
       visibility: EquipmentVisibility;
     }) => {
       try {
-        const { data, errors } = await gql.send<CreatePayload>({
-          query: CREATE_M,
-          variables: { input },
-          operationName: 'CreateEquipment',
-        });
+        const { data, errors } = await execute(() =>
+          gql.send<CreatePayload>({
+            query: CREATE_M,
+            variables: { input },
+            operationName: 'CreateEquipment',
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         const created = data?.equipment_create;
         if (!created) throw new Error('CreateEquipment returned no data');
         flashSuccess('Equipment created');
         await load();
         return created;
-      } catch (e: any) {
-        flashError(e?.message ?? 'Create failed');
-        throw e;
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Create failed';
+        flashError(message);
+        throw error;
       }
     },
-    [flashError, flashSuccess, gql, load]
+    [execute, flashError, flashSuccess, gql, load]
   );
 
   const update = React.useCallback(
@@ -132,39 +140,45 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
       visibility?: EquipmentVisibility;
     }) => {
       try {
-        const { errors } = await gql.send<UpdatePayload>({
-          query: UPDATE_M,
-          variables: { input },
-          operationName: 'UpdateEquipment',
-        });
+        const { errors } = await execute(() =>
+          gql.send<UpdatePayload>({
+            query: UPDATE_M,
+            variables: { input },
+            operationName: 'UpdateEquipment',
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Equipment updated');
         await load();
-      } catch (e: any) {
-        flashError(e?.message ?? 'Update failed');
-        throw e;
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Update failed';
+        flashError(message);
+        throw error;
       }
     },
-    [flashError, flashSuccess, gql, load]
+    [execute, flashError, flashSuccess, gql, load]
   );
 
   const remove = React.useCallback(
     async (id: string) => {
       try {
-        const { errors } = await gql.send<DeletePayload>({
-          query: DELETE_M,
-          variables: { id },
-          operationName: 'DeleteEquipment',
-        });
+        const { errors } = await execute(() =>
+          gql.send<DeletePayload>({
+            query: DELETE_M,
+            variables: { id },
+            operationName: 'DeleteEquipment',
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Equipment deleted');
         await load();
-      } catch (e: any) {
-        flashError(e?.message ?? 'Delete failed');
-        throw e;
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Delete failed';
+        flashError(message);
+        throw error;
       }
     },
-    [flashError, flashSuccess, gql, load]
+    [execute, flashError, flashSuccess, gql, load]
   );
 
   return { items, total, loading, create, update, remove, reload: load };

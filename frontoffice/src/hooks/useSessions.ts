@@ -1,6 +1,7 @@
 // src/hooks/useSessions.ts
 import * as React from 'react';
 import inversify from '@src/commons/inversify';
+import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
@@ -85,6 +86,7 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
   const [items, setItems] = React.useState<Session[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
+  const { execute } = useAsyncTask();
   const flashError = useFlashStore((state) => state.error);
   const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
@@ -92,27 +94,30 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
-      const { data, errors } = await gql.send<SessionListPayload>({
-        query: LIST_Q,
-        operationName: 'ListSessions',
-        variables: {
-          input: {
-            page,
-            limit,
-            q: q || undefined,
-            locale: locale || undefined,
+      const { data, errors } = await execute(() =>
+        gql.send<SessionListPayload>({
+          query: LIST_Q,
+          operationName: 'ListSessions',
+          variables: {
+            input: {
+              page,
+              limit,
+              q: q || undefined,
+              locale: locale || undefined,
+            },
           },
-        },
-      });
+        }),
+      );
       if (errors?.length) throw new Error(errors[0].message);
       setItems(data?.session_list.items ?? []);
       setTotal(data?.session_list.total ?? 0);
-    } catch (e: any) {
-      flashError(e?.message ?? 'Failed to load sessions');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to load sessions';
+      flashError(message);
     } finally {
       setLoading(false);
     }
-  }, [flashError, gql, limit, locale, page, q]);
+  }, [execute, flashError, gql, limit, locale, page, q]);
 
   React.useEffect(() => {
     void load();
@@ -128,20 +133,23 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
       exerciseIds: string[];
     }) => {
       try {
-        const { errors } = await gql.send<CreateSessionPayload>({
-          query: CREATE_M,
-          operationName: 'CreateSession',
-          variables: { input },
-        });
+        const { errors } = await execute(() =>
+          gql.send<CreateSessionPayload>({
+            query: CREATE_M,
+            operationName: 'CreateSession',
+            variables: { input },
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Session created');
         await load();
-      } catch (e: any) {
-        flashError(e?.message ?? 'Create failed');
-        throw e;
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Create failed';
+        flashError(message);
+        throw error;
       }
     },
-    [flashError, flashSuccess, gql, load]
+    [execute, flashError, flashSuccess, gql, load]
   );
 
   const update = React.useCallback(
@@ -155,39 +163,45 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
       exerciseIds?: string[];
     }) => {
       try {
-        const { errors } = await gql.send<UpdateSessionPayload>({
-          query: UPDATE_M,
-          operationName: 'UpdateSession',
-          variables: { input },
-        });
+        const { errors } = await execute(() =>
+          gql.send<UpdateSessionPayload>({
+            query: UPDATE_M,
+            operationName: 'UpdateSession',
+            variables: { input },
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Session updated');
         await load();
-      } catch (e: any) {
-        flashError(e?.message ?? 'Update failed');
-        throw e;
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Update failed';
+        flashError(message);
+        throw error;
       }
     },
-    [flashError, flashSuccess, gql, load]
+    [execute, flashError, flashSuccess, gql, load]
   );
 
   const remove = React.useCallback(
     async (id: string) => {
       try {
-        const { errors } = await gql.send<DeleteSessionPayload>({
-          query: DELETE_M,
-          operationName: 'DeleteSession',
-          variables: { id },
-        });
+        const { errors } = await execute(() =>
+          gql.send<DeleteSessionPayload>({
+            query: DELETE_M,
+            operationName: 'DeleteSession',
+            variables: { id },
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Session deleted');
         await load();
-      } catch (e: any) {
-        flashError(e?.message ?? 'Delete failed');
-        throw e;
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Delete failed';
+        flashError(message);
+        throw error;
       }
     },
-    [flashError, flashSuccess, gql, load]
+    [execute, flashError, flashSuccess, gql, load]
   );
 
   return { items, total, loading, create, update, remove, reload: load };
