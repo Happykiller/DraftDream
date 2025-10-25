@@ -168,7 +168,7 @@ export class ExerciseResolver {
   @Query(() => ExerciseListGql, { name: 'exercise_list' })
   @Auth(Role.ADMIN, Role.COACH)
   async exercise_list(
-    @Args('input', { nullable: true }) input: ListExercisesInput | undefined,
+    @Args('input', { type: () => ListExercisesInput, nullable: true }) input: ListExercisesInput | null,
     @Context('req') req: any,
   ): Promise<ExerciseListGql> {
     const session = this.extractSession(req);

@@ -166,7 +166,7 @@ export class ProgramResolver {
   @Query(() => ProgramListGql, { name: 'program_list' })
   @Auth(Role.ADMIN, Role.COACH, Role.ATHLETE)
   async program_list(
-    @Args('input', { nullable: true }) input: ListProgramsInput | undefined,
+    @Args('input', { type: () => ListProgramsInput, nullable: true }) input: ListProgramsInput | null,
     @Context('req') req: any,
   ): Promise<ProgramListGql> {
     const session = this.extractSession(req);
