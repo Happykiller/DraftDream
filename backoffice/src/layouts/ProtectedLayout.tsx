@@ -23,6 +23,7 @@ export function ProtectedLayout(): React.JSX.Element {
   // Session snapshot once per render (no live subscription => 0 regression)
   const snap = React.useMemo(() => session.getState(), []);
   const role = snap.role ?? 'guest';
+  const fallbackName = [snap.name_first, snap.name_last].filter(Boolean).join(' ').trim();
 
   const items = useNavItems(role);
   const { open: mobileOpen, toggle, close } = useMobileDrawer();
@@ -61,19 +62,20 @@ export function ProtectedLayout(): React.JSX.Element {
 
   return (
     <Box sx={{ display: 'flex' }}>
+      {/* General information */}
       <CssBaseline />
 
       {/* AppBar width compensation is applied on main container instead of AppBar for simplicity */}
       <LayoutAppBar
         pageTitle={pageTitle}
-        userName={`${snap.name_first} ${snap.name_last}`}
+        userName={fallbackName}
         userRole={snap.role ?? undefined}
         onMenuClick={toggle}
         onLogout={handleLogout}
       />
 
       {/* Side drawers */}
-      <Box component="nav" sx={{ width: { sm: RAIL_WIDTH, md: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}>
+      <Box component="nav" sx={{ width: { sm: RAIL_WIDTH, lg: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}>
         {/* Mobile temporary */}
         <Drawer
           variant="temporary"
@@ -104,7 +106,7 @@ export function ProtectedLayout(): React.JSX.Element {
           open
           PaperProps={{
             sx: {
-              width: { sm: RAIL_WIDTH, md: DRAWER_WIDTH },
+              width: { sm: RAIL_WIDTH, lg: DRAWER_WIDTH },
               bgcolor: 'grey.900',
               color: 'grey.100',
               backgroundImage: 'linear-gradient(180deg,#0f172a 0%, #111827 100%)',
@@ -130,7 +132,6 @@ export function ProtectedLayout(): React.JSX.Element {
         tabIndex={-1}
         sx={{
           flexGrow: 1,
-          px: { xs: 1, sm: 2 },
           bgcolor: '#F9FAFB',
           minHeight: '100vh',
         }}
