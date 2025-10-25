@@ -74,6 +74,21 @@ export const router = createBrowserRouter([
     ],
   },
   {
+    path: '/programs-athlete',
+    element: <ProtectedLayout />,
+    loader: requireAuthLoader,
+    children: [
+      {
+        // ProgramsAthlete
+        index: true,
+        lazy: async () => {
+          const mod = await import('@src/pages/ProgramsAthlete');
+          return { Component: withTitle(mod.ProgramsAthlete, 'programs-athlete.title') };
+        },
+      },
+    ],
+  },
+  {
     path: '/clients',
     element: <ProtectedLayout />,
     loader: requireAuthLoader,

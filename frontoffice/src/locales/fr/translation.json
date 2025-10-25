@@ -240,6 +240,15 @@
       }
     }
   },
+  "programs-athlete": {
+    "title": "Mes programmes",
+    "subtitle": "Consultez les plans d'entraînement partagés par votre coach.",
+    "empty_state": {
+      "title": "Aucun programme attribué",
+      "description": "Votre coach ne vous a pas encore partagé de programme.",
+      "helper": "Les nouveaux plans apparaîtront ici dès qu'ils seront disponibles."
+    }
+  },
   "sandbox": {
     "title": "Bac à sable",
     "input_card": {
