@@ -21,6 +21,7 @@ export type ListSessionsDto = {
   q?: string;
   locale?: string;
   createdBy?: string;
+  createdByIn?: string[];
   includeArchived?: boolean; // default false (exclude deleted items)
   limit?: number;            // default 20
   page?: number;             // default 1

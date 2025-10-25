@@ -20,8 +20,10 @@ export class GetProgramUsecase {
         typeof program.createdBy === 'string' ? program.createdBy : program.createdBy?.id;
       const isAdmin = session.role === 'ADMIN';
       const isCreator = creatorId === session.userId;
+      const isCoach = session.role === 'COACH';
+      const isPublic = isCoach ? await this.isPublicProgram(creatorId) : false;
 
-      if (!isAdmin && !isCreator) {
+      if (!isAdmin && !isCreator && !(isCoach && isPublic)) {
         throw new Error(ERRORS.GET_PROGRAM_FORBIDDEN);
       }
 
@@ -32,6 +34,22 @@ export class GetProgramUsecase {
       }
       this.inversify.loggerService.error(`GetProgramUsecase#execute => ${e?.message ?? e}`);
       throw new Error(ERRORS.GET_PROGRAM_USECASE);
+    }
+  }
+
+  private async isPublicProgram(creatorId?: string | null): Promise<boolean> {
+    if (!creatorId) {
+      return false;
+    }
+
+    try {
+      const user = await this.inversify.bddService.user.getUser({ id: creatorId });
+      return user?.type === 'admin';
+    } catch (error) {
+      this.inversify.loggerService.warn?.(
+        `GetProgramUsecase#isPublicProgram => ${error instanceof Error ? error.message : String(error)}`,
+      );
+      return false;
     }
   }
 }

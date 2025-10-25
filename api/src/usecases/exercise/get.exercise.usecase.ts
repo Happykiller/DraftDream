@@ -19,8 +19,10 @@ export class GetExerciseUsecase {
       const creatorId = typeof res.createdBy === 'string' ? res.createdBy : res.createdBy?.id;
       const isAdmin = session.role === 'ADMIN';
       const isCreator = creatorId === session.userId;
+      const isCoach = session.role === 'COACH';
+      const isPublic = res.visibility === 'public';
 
-      if (!isAdmin && !isCreator) {
+      if (!isAdmin && !isCreator && !(isCoach && isPublic)) {
         throw new Error(ERRORS.GET_EXERCISE_FORBIDDEN);
       }
 

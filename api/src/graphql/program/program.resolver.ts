@@ -227,7 +227,12 @@ export class ProgramResolver {
     if (!sessionIds || !sessionIds.length) return [];
 
     const sessions = await Promise.all(
-      sessionIds.map((id) => inversify.getSessionUsecase.execute({ id })),
+      sessionIds.map((id) =>
+        inversify.getSessionUsecase.execute({
+          id,
+          session: userSession,
+        }),
+      ),
     );
 
     const resolved: ProgramSessionSnapshotUsecaseDto[] = [];

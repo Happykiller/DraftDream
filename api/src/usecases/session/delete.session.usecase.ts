@@ -9,8 +9,26 @@ export class DeleteSessionUsecase {
   /** Soft delete (idempotent): true if newly deleted, false if already deleted or not found. */
   async execute(dto: DeleteSessionUsecaseDto): Promise<boolean> {
     try {
-      return await this.inversify.bddService.session.delete(dto.id);
+      const { session, id } = dto;
+      const existing = await this.inversify.bddService.session.get({ id });
+      if (!existing) {
+        return false;
+      }
+
+      const creatorId =
+        typeof existing.createdBy === 'string' ? existing.createdBy : existing.createdBy?.id;
+      const isAdmin = session.role === 'ADMIN';
+      const isCreator = creatorId === session.userId;
+
+      if (!isAdmin && !isCreator) {
+        throw new Error(ERRORS.DELETE_SESSION_FORBIDDEN);
+      }
+
+      return await this.inversify.bddService.session.delete(id);
     } catch (e: any) {
+      if (e?.message === ERRORS.DELETE_SESSION_FORBIDDEN) {
+        throw e;
+      }
       this.inversify.loggerService.error(`DeleteSessionUsecase#execute => ${e?.message ?? e}`);
       throw new Error(ERRORS.DELETE_SESSION_USECASE);
     }

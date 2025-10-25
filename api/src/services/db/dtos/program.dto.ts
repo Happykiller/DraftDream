@@ -44,6 +44,7 @@ export type ListProgramsDto = {
   q?: string;
   locale?: string;
   createdBy?: string;
+  createdByIn?: string[];
   /** Filter by assigned user id */
   userId?: string;
   includeArchived?: boolean; // default false (exclude deleted items)

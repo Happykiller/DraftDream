@@ -29,6 +29,8 @@ export type ListExercisesDto = {
   q?: string;
   locale?: string;
   createdBy?: string;
+  createdByIn?: string[];
+  includePublicVisibility?: boolean;
   visibility?: Visibility;
   level?: ExerciseLevel;
   categoryIds?: string[];

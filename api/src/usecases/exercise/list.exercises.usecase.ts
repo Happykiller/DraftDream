@@ -23,9 +23,44 @@ export class ListExercisesUsecase {
       }
 
       if (session.role === 'COACH') {
+        const { createdBy, visibility, ...rest } = payload;
+
+        if (createdBy) {
+          if (createdBy !== session.userId) {
+            throw new Error(ERRORS.LIST_EXERCISES_FORBIDDEN);
+          }
+          const res = await this.inversify.bddService.exercise.list({
+            ...rest,
+            createdBy: session.userId,
+            visibility,
+          });
+          return {
+            items: res.items.map(mapExerciseToUsecase),
+            total: res.total,
+            page: res.page,
+            limit: res.limit,
+          };
+        }
+
+        if (visibility === 'public') {
+          const res = await this.inversify.bddService.exercise.list({
+            ...rest,
+            visibility: 'public',
+          });
+          return {
+            items: res.items.map(mapExerciseToUsecase),
+            total: res.total,
+            page: res.page,
+            limit: res.limit,
+          };
+        }
+
+        const effectiveVisibility = visibility === 'private' ? 'private' : undefined;
         const res = await this.inversify.bddService.exercise.list({
-          ...payload,
-          createdBy: session.userId,
+          ...rest,
+          ...(effectiveVisibility ? { visibility: effectiveVisibility } : {}),
+          createdByIn: [session.userId],
+          includePublicVisibility: !effectiveVisibility,
         });
         return {
           items: res.items.map(mapExerciseToUsecase),

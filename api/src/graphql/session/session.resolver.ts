@@ -98,33 +98,50 @@ export class SessionResolver {
 
   @Mutation(() => Boolean, { name: 'session_softDelete' })
   @Auth(Role.ADMIN, Role.COACH)
-  async session_softDelete(@Args('id', { type: () => ID }) id: string): Promise<boolean> {
-    return inversify.deleteSessionUsecase.execute({ id });
+  async session_softDelete(
+    @Args('id', { type: () => ID }) id: string,
+    @Context('req') req: any,
+  ): Promise<boolean> {
+    const session = this.extractSession(req);
+    return inversify.deleteSessionUsecase.execute({ id, session });
   }
 
   @Mutation(() => Boolean, { name: 'session_delete' })
   @Auth(Role.ADMIN)
-  async session_delete(@Args('id', { type: () => ID }) id: string): Promise<boolean> {
-    return inversify.deleteSessionUsecase.execute({ id });
+  async session_delete(
+    @Args('id', { type: () => ID }) id: string,
+    @Context('req') req: any,
+  ): Promise<boolean> {
+    const session = this.extractSession(req);
+    return inversify.deleteSessionUsecase.execute({ id, session });
   }
 
   // ------- Queries -------
   @Query(() => SessionSportGql, { name: 'session_get', nullable: true })
   @Auth(Role.ADMIN, Role.COACH)
-  async session_get(@Args('id', { type: () => ID }) id: string): Promise<SessionSportGql | null> {
-    const found = await inversify.getSessionUsecase.execute({ id });
+  async session_get(
+    @Args('id', { type: () => ID }) id: string,
+    @Context('req') req: any,
+  ): Promise<SessionSportGql | null> {
+    const session = this.extractSession(req);
+    const found = await inversify.getSessionUsecase.execute({ id, session });
     return found ? mapSessionUsecaseToGql(found) : null;
   }
 
   @Query(() => SessionListGql, { name: 'session_list' })
   @Auth(Role.ADMIN, Role.COACH)
-  async session_list(@Args('input', { nullable: true }) input?: ListSessionsInput): Promise<SessionListGql> {
+  async session_list(
+    @Args('input', { nullable: true }) input: ListSessionsInput | null,
+    @Context('req') req: any,
+  ): Promise<SessionListGql> {
+    const session = this.extractSession(req);
     const res = await inversify.listSessionsUsecase.execute({
       q: input?.q,
       locale: input?.locale,
       createdBy: input?.createdBy,
       limit: input?.limit,
       page: input?.page,
+      session,
     });
     return {
       items: res.items.map(mapSessionUsecaseToGql),

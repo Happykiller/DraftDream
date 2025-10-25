@@ -127,6 +127,7 @@ export class BddServiceProgramMongo {
     const {
       q,
       createdBy,
+      createdByIn,
       userId,
       includeArchived = false,
       limit = 20,
@@ -142,7 +143,16 @@ export class BddServiceProgramMongo {
         { description: { $regex: new RegExp(q.trim(), 'i') } },
       ];
     }
+    const normalizedCreatedByIn = Array.isArray(createdByIn)
+      ? createdByIn.map((id) => id?.trim()).filter((id): id is string => Boolean(id))
+      : [];
+    if (createdBy && normalizedCreatedByIn.length) {
+      throw new Error('Cannot combine createdBy and createdByIn filters.');
+    }
     if (createdBy) filter.createdBy = this.toObjectId(createdBy);
+    if (!createdBy && normalizedCreatedByIn.length) {
+      filter.createdBy = { $in: normalizedCreatedByIn.map(this.toObjectId) };
+    }
     if (userId) filter.userId = this.toObjectId(userId);
     if (!includeArchived) filter.deletedAt = { $exists: false };
 
