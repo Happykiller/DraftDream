@@ -73,7 +73,7 @@ export function ProtectedLayout(): React.JSX.Element {
       />
 
       {/* Side drawers */}
-      <Box component="nav" sx={{ width: { sm: RAIL_WIDTH, md: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}>
+      <Box component="nav" sx={{ width: { sm: RAIL_WIDTH, lg: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}>
         {/* Mobile temporary */}
         <Drawer
           variant="temporary"
@@ -104,7 +104,7 @@ export function ProtectedLayout(): React.JSX.Element {
           open
           PaperProps={{
             sx: {
-              width: { sm: RAIL_WIDTH, md: DRAWER_WIDTH },
+              width: { sm: RAIL_WIDTH, lg: DRAWER_WIDTH },
               bgcolor: 'grey.900',
               color: 'grey.100',
               backgroundImage: 'linear-gradient(180deg,#0f172a 0%, #111827 100%)',
