@@ -19,12 +19,14 @@ export class GetProgramUsecase {
 
       const creatorId =
         typeof program.createdBy === 'string' ? program.createdBy : program.createdBy?.id;
+      const assigneeId = typeof program.userId === 'string' ? program.userId : undefined;
       const isAdmin = session.role === Role.ADMIN;
       const isCreator = creatorId === session.userId;
       const isCoach = session.role === Role.COACH;
       const isPublic = isCoach ? await this.isPublicProgram(creatorId) : false;
+      const isAssignedAthlete = session.role === Role.ATHLETE && assigneeId === session.userId;
 
-      if (!isAdmin && !isCreator && !(isCoach && isPublic)) {
+      if (!isAdmin && !isCreator && !(isCoach && isPublic) && !isAssignedAthlete) {
         throw new Error(ERRORS.GET_PROGRAM_FORBIDDEN);
       }
 

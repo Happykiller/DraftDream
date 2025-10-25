@@ -24,6 +24,7 @@ import {
 } from '@mui/icons-material';
 
 import type { Program } from '@src/hooks/usePrograms';
+import { session } from '@stores/session';
 
 import { ProgramCloneDialog } from './ProgramCloneDialog';
 
@@ -102,6 +103,7 @@ export function ProgramCard({
   onView,
 }: ProgramCardProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
+  const role = session((state) => state.role);
   const sessionsCount = program.sessions.length;
   const exercisesCount = program.sessions.reduce(
     (total, session) => total + session.exercises.length,
@@ -110,6 +112,7 @@ export function ProgramCard({
   const difficulty = deriveProgramDifficulty(program);
   const [isCloneDialogOpen, setIsCloneDialogOpen] = React.useState(false);
   const [isCloneSubmitting, setIsCloneSubmitting] = React.useState(false);
+  const isAthleteUser = role === 'athlete';
 
   const handleOpenCloneDialog = React.useCallback(() => {
     setIsCloneDialogOpen(true);
@@ -123,7 +126,7 @@ export function ProgramCard({
     setIsCloneSubmitting(submitting);
   }, []);
   const athleteLabel = React.useMemo(() => {
-    if (!program.athlete) {
+    if (isAthleteUser || !program.athlete) {
       return null;
     }
 
@@ -134,7 +137,7 @@ export function ProgramCard({
       .trim();
 
     return displayName || email;
-  }, [program.athlete]);
+  }, [isAthleteUser, program.athlete]);
 
   const createdOn = React.useMemo(
     () => formatDate(program.createdAt, i18n.language),
