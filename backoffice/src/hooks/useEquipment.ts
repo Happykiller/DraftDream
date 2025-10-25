@@ -1,6 +1,8 @@
 // src/hooks/useEquipment.ts
 import * as React from 'react';
 import inversify from '@src/commons/inversify';
+
+import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
@@ -99,6 +101,7 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
   const [items, setItems] = React.useState<Equipment[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
+  const { execute } = useAsyncTask();
   const flashError = useFlashStore((state) => state.error);
   const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
@@ -106,11 +109,13 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
-      const { data, errors } = await gql.send<EquipmentListPayload>({
-        query: LIST_Q,
-        variables: { input: { page, limit, q: q || undefined } },
-        operationName: 'ListEquipment',
-      });
+      const { data, errors } = await execute(() =>
+        gql.send<EquipmentListPayload>({
+          query: LIST_Q,
+          variables: { input: { page, limit, q: q || undefined } },
+          operationName: 'ListEquipment',
+        }),
+      );
       if (errors?.length) throw new Error(errors[0].message);
       setItems(data?.equipment_list.items ?? []);
       setTotal(data?.equipment_list.total ?? 0);
@@ -119,18 +124,20 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
     } finally {
       setLoading(false);
     }
-  }, [page, limit, q, gql, flashError]);
+  }, [page, limit, q, execute, gql, flashError]);
 
   React.useEffect(() => { void load(); }, [load]);
 
   const create = React.useCallback(
     async (input: { slug: string; label: string; locale: string; visibility: EquipmentVisibility }) => {
       try {
-        const { errors } = await gql.send<CreatePayload>({
-          query: CREATE_M,
-          variables: { input },
-          operationName: 'CreateEquipment',
-        });
+        const { errors } = await execute(() =>
+          gql.send<CreatePayload>({
+            query: CREATE_M,
+            variables: { input },
+            operationName: 'CreateEquipment',
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Equipment created');
         await load();
@@ -139,17 +146,19 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
         throw e;
       }
     },
-    [gql, flashError, flashSuccess, load]
+    [execute, gql, flashError, flashSuccess, load]
   );
 
   const update = React.useCallback(
     async (input: { id: string; slug?: string; label?: string; locale?: string }) => {
       try {
-        const { errors } = await gql.send<UpdatePayload>({
-          query: UPDATE_M,
-          variables: { input },
-          operationName: 'UpdateEquipment',
-        });
+        const { errors } = await execute(() =>
+          gql.send<UpdatePayload>({
+            query: UPDATE_M,
+            variables: { input },
+            operationName: 'UpdateEquipment',
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Equipment updated');
         await load();
@@ -158,17 +167,19 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
         throw e;
       }
     },
-    [gql, flashError, flashSuccess, load]
+    [execute, gql, flashError, flashSuccess, load]
   );
 
   const remove = React.useCallback(
     async (id: string) => {
       try {
-        const { errors } = await gql.send<DeletePayload>({
-          query: DELETE_M,
-          variables: { id },
-          operationName: 'DeleteEquipment',
-        });
+        const { errors } = await execute(() =>
+          gql.send<DeletePayload>({
+            query: DELETE_M,
+            variables: { id },
+            operationName: 'DeleteEquipment',
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Equipment deleted');
         await load();
@@ -177,7 +188,7 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
         throw e;
       }
     },
-    [gql, flashError, flashSuccess, load]
+    [execute, gql, flashError, flashSuccess, load]
   );
 
   return { items, total, loading, create, update, remove, reload: load };

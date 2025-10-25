@@ -1,6 +1,8 @@
 //  src/hooks/useUsers.ts
 import * as React from 'react';
 import inversify from '@src/commons/inversify';
+
+import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
@@ -94,6 +96,7 @@ export function useUsers({ page, limit, q }: UseUsersParams) {
   const [items, setItems] = React.useState<User[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
+  const { execute } = useAsyncTask();
   const flashError = useFlashStore((state) => state.error);
   const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
@@ -102,11 +105,19 @@ export function useUsers({ page, limit, q }: UseUsersParams) {
     async (vars: { page: number; limit: number; q?: string }) => {
       setLoading(true);
       try {
-        const { data, errors } = await gql.send<UsersListPayload>({
-          query: LIST_Q,
-          variables: { input: { page: vars.page, limit: vars.limit, q: vars.q || undefined } },
-          operationName: 'ListUsers',
-        });
+        const { data, errors } = await execute(() =>
+          gql.send<UsersListPayload>({
+            query: LIST_Q,
+            variables: {
+              input: {
+                page: vars.page,
+                limit: vars.limit,
+                q: vars.q || undefined,
+              },
+            },
+            operationName: 'ListUsers',
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         setItems(data?.user_list.items ?? []);
         setTotal(data?.user_list.total ?? 0);
@@ -116,7 +127,7 @@ export function useUsers({ page, limit, q }: UseUsersParams) {
         setLoading(false);
       }
     },
-    [gql, flashError]
+    [execute, gql, flashError]
   );
 
   const sig = `${page}|${limit}|${q || ''}`;
@@ -139,20 +150,23 @@ export function useUsers({ page, limit, q }: UseUsersParams) {
       address?: Address | null;
       company?: Company | null;
     }) => {
-      const { errors } = await gql.send<CreateUserPayload>({
-        query: CREATE_M,
-        variables: { input },
-        operationName: 'CreateUser',
-      });
-      if (errors?.length) {
-        const msg = errors[0].message;
-        flashError(msg || 'Create failed');
-        throw new Error(msg);
+      try {
+        const { errors } = await execute(() =>
+          gql.send<CreateUserPayload>({
+            query: CREATE_M,
+            variables: { input },
+            operationName: 'CreateUser',
+          }),
+        );
+        if (errors?.length) throw new Error(errors[0].message);
+        flashSuccess('User created');
+        await load({ page, limit, q });
+      } catch (e: any) {
+        flashError(e?.message ?? 'Create failed');
+        throw e;
       }
-      flashSuccess('User created');
-      await load({ page, limit, q });
     },
-    [gql, flashError, flashSuccess, load, page, limit, q]
+    [execute, gql, flashError, flashSuccess, load, page, limit, q]
   );
 
   const update = React.useCallback(
@@ -167,20 +181,23 @@ export function useUsers({ page, limit, q }: UseUsersParams) {
       address?: Address | null;
       company?: Company | null;
     }) => {
-      const { errors } = await gql.send<UpdateUserPayload>({
-        query: UPDATE_M,
-        variables: { input },
-        operationName: 'UpdateUser',
-      });
-      if (errors?.length) {
-        const msg = errors[0].message;
-        flashError(msg || 'Update failed');
-        throw new Error(msg);
+      try {
+        const { errors } = await execute(() =>
+          gql.send<UpdateUserPayload>({
+            query: UPDATE_M,
+            variables: { input },
+            operationName: 'UpdateUser',
+          }),
+        );
+        if (errors?.length) throw new Error(errors[0].message);
+        flashSuccess('User updated');
+        await load({ page, limit, q });
+      } catch (e: any) {
+        flashError(e?.message ?? 'Update failed');
+        throw e;
       }
-      flashSuccess('User updated');
-      await load({ page, limit, q });
     },
-    [gql, flashError, flashSuccess, load, page, limit, q]
+    [execute, gql, flashError, flashSuccess, load, page, limit, q]
   );
 
   return { items, total, loading, create, update, reload: () => load({ page, limit, q }) };

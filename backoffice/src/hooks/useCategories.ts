@@ -2,7 +2,9 @@
 import * as React from 'react';
 
 import inversify from '@src/commons/inversify';
-import { useFlashStore } from '@hooks/useFlashStore'; 
+
+import { useAsyncTask } from '@hooks/useAsyncTask';
+import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
 export type Visibility = 'PRIVATE' | 'PUBLIC';
@@ -99,6 +101,7 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
   const [items, setItems] = React.useState<Category[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
+  const { execute } = useAsyncTask();
   const flashError = useFlashStore((state) => state.error);
   const flashSuccess = useFlashStore((state) => state.success);
 
@@ -108,11 +111,13 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
-      const { data, errors } = await gql.send<CategoryListPayload>({
-        query: LIST_Q,
-        variables: { input: { page, limit, q: q || undefined } },
-        operationName: 'ListCategories',
-      });
+      const { data, errors } = await execute(() =>
+        gql.send<CategoryListPayload>({
+          query: LIST_Q,
+          variables: { input: { page, limit, q: q || undefined } },
+          operationName: 'ListCategories',
+        }),
+      );
       if (errors?.length) throw new Error(errors[0].message);
       setItems(data?.category_list.items ?? []);
       setTotal(data?.category_list.total ?? 0);
@@ -121,7 +126,7 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
     } finally {
       setLoading(false);
     }
-  }, [page, limit, q, gql, flashError]);
+  }, [page, limit, q, execute, gql, flashError]);
 
   React.useEffect(() => {
     void load();
@@ -130,11 +135,13 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
   const create = React.useCallback(
     async (input: { slug: string; label: string; locale: string; visibility: Visibility }) => {
       try {
-        const { errors } = await gql.send<CreateCategoryPayload>({
-          query: CREATE_M,
-          variables: { input },
-          operationName: 'CreateCategory',
-        });
+        const { errors } = await execute(() =>
+          gql.send<CreateCategoryPayload>({
+            query: CREATE_M,
+            variables: { input },
+            operationName: 'CreateCategory',
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Category created');
         await load();
@@ -143,17 +150,19 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
         throw e;
       }
     },
-    [gql, flashError, flashSuccess, load]
+    [execute, gql, flashError, flashSuccess, load]
   );
 
   const update = React.useCallback(
     async (input: { id: string; slug?: string; label?: string; locale?: string }) => {
       try {
-        const { errors } = await gql.send<UpdateCategoryPayload>({
-          query: UPDATE_M,
-          variables: { input },
-          operationName: 'UpdateCategory',
-        });
+        const { errors } = await execute(() =>
+          gql.send<UpdateCategoryPayload>({
+            query: UPDATE_M,
+            variables: { input },
+            operationName: 'UpdateCategory',
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Category updated');
         await load();
@@ -162,17 +171,19 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
         throw e;
       }
     },
-    [gql, flashError, flashSuccess, load]
+    [execute, gql, flashError, flashSuccess, load]
   );
 
   const remove = React.useCallback(
     async (id: string) => {
       try {
-        const { errors } = await gql.send<DeleteCategoryPayload>({
-          query: DELETE_M,
-          variables: { id },
-          operationName: 'DeleteCategory',
-        });
+        const { errors } = await execute(() =>
+          gql.send<DeleteCategoryPayload>({
+            query: DELETE_M,
+            variables: { id },
+            operationName: 'DeleteCategory',
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Category deleted');
         await load();
@@ -181,7 +192,7 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
         throw e;
       }
     },
-    [gql, flashError, flashSuccess, load]
+    [execute, gql, flashError, flashSuccess, load]
   );
 
   return { items, total, loading, create, update, remove, reload: load };

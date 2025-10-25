@@ -1,6 +1,8 @@
 // src/hooks/useExercises.ts
 import * as React from 'react';
 import inversify from '@src/commons/inversify';
+
+import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
@@ -114,6 +116,7 @@ export function useExercises({ page, limit, q }: UseExercisesParams) {
   const [items, setItems] = React.useState<Exercise[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
+  const { execute } = useAsyncTask();
   const flashError = useFlashStore((state) => state.error);
   const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
@@ -121,11 +124,13 @@ export function useExercises({ page, limit, q }: UseExercisesParams) {
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
-      const { data, errors } = await gql.send<ExerciseListPayload>({
-        query: LIST_Q,
-        variables: { input: { page, limit, q: q || undefined } },
-        operationName: 'ListExercises',
-      });
+      const { data, errors } = await execute(() =>
+        gql.send<ExerciseListPayload>({
+          query: LIST_Q,
+          variables: { input: { page, limit, q: q || undefined } },
+          operationName: 'ListExercises',
+        }),
+      );
       if (errors?.length) throw new Error(errors[0].message);
       setItems(data?.exercise_list.items ?? []);
       setTotal(data?.exercise_list.total ?? 0);
@@ -134,7 +139,7 @@ export function useExercises({ page, limit, q }: UseExercisesParams) {
     } finally {
       setLoading(false);
     }
-  }, [page, limit, q, gql, flashError]);
+  }, [page, limit, q, execute, gql, flashError]);
 
   React.useEffect(() => { void load(); }, [load]);
 
@@ -149,9 +154,13 @@ export function useExercises({ page, limit, q }: UseExercisesParams) {
       tagIds?: string[];
     }) => {
       try {
-        const { errors } = await gql.send<CreatePayload>({
-          query: CREATE_M, variables: { input }, operationName: 'CreateExercise',
-        });
+        const { errors } = await execute(() =>
+          gql.send<CreatePayload>({
+            query: CREATE_M,
+            variables: { input },
+            operationName: 'CreateExercise',
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Exercise created');
         await load();
@@ -160,7 +169,7 @@ export function useExercises({ page, limit, q }: UseExercisesParams) {
         throw e;
       }
     },
-    [gql, flashError, flashSuccess, load]
+    [execute, gql, flashError, flashSuccess, load]
   );
 
   const update = React.useCallback(
@@ -175,9 +184,13 @@ export function useExercises({ page, limit, q }: UseExercisesParams) {
       tagIds?: string[];
     }) => {
       try {
-        const { errors } = await gql.send<UpdatePayload>({
-          query: UPDATE_M, variables: { input }, operationName: 'UpdateExercise',
-        });
+        const { errors } = await execute(() =>
+          gql.send<UpdatePayload>({
+            query: UPDATE_M,
+            variables: { input },
+            operationName: 'UpdateExercise',
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Exercise updated');
         await load();
@@ -186,15 +199,19 @@ export function useExercises({ page, limit, q }: UseExercisesParams) {
         throw e;
       }
     },
-    [gql, flashError, flashSuccess, load]
+    [execute, gql, flashError, flashSuccess, load]
   );
 
   const remove = React.useCallback(
     async (id: string) => {
       try {
-        const { errors } = await gql.send<DeletePayload>({
-          query: DELETE_M, variables: { id }, operationName: 'DeleteExercise',
-        });
+        const { errors } = await execute(() =>
+          gql.send<DeletePayload>({
+            query: DELETE_M,
+            variables: { id },
+            operationName: 'DeleteExercise',
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Exercise deleted');
         await load();
@@ -203,7 +220,7 @@ export function useExercises({ page, limit, q }: UseExercisesParams) {
         throw e;
       }
     },
-    [gql, flashError, flashSuccess, load]
+    [execute, gql, flashError, flashSuccess, load]
   );
 
   return { items, total, loading, create, update, remove, reload: load };
