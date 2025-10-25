@@ -235,6 +235,15 @@
       }
     }
   },
+  "programs-athlete": {
+    "title": "My programs",
+    "subtitle": "Review the training plans shared by your coach.",
+    "empty_state": {
+      "title": "No program assigned yet",
+      "description": "Your coach has not shared a program with you yet.",
+      "helper": "New plans will be listed here as soon as they become available."
+    }
+  },
   "sandbox": {
     "title": "Sandbox",
     "input_card": {
