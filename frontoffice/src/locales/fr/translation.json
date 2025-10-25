@@ -29,6 +29,9 @@
     "title": "Clients",
     "placeholder": "Clients"
   },
+  "programs-athlete": {
+    "title": "Mes programmes"
+  },
   "programs-coatch": {
     "title": "Programmes",
     "placeholder": "Programmes d'entrainement",
