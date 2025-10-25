@@ -1,4 +1,5 @@
 // src\\graphql\\program\\program.resolver.ts
+import { UnauthorizedException } from '@nestjs/common';
 import { Args, Context, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { ObjectId } from 'mongodb';
 
@@ -17,7 +18,10 @@ import { UserGql } from '@graphql/user/user.gql.types';
 import { mapUserUsecaseToGql } from '@graphql/user/user.mapper';
 import inversify from '@src/inversify/investify';
 import { buildSlug, slugifyCandidate } from '@src/common/slug.util';
-import type { ProgramSessionSnapshotUsecaseDto } from '@usecases/program/program.usecase.dto';
+import type {
+  ProgramSessionSnapshotUsecaseDto,
+  UsecaseSession,
+} from '@usecases/program/program.usecase.dto';
 import type { ProgramUsecaseModel } from '@usecases/program/program.usecase.model';
 
 @Resolver(() => ProgramGql)
@@ -44,8 +48,9 @@ export class ProgramResolver {
     @Args('input') input: CreateProgramInput,
     @Context('req') req: any,
   ): Promise<ProgramGql | null> {
+    const session = this.extractSession(req);
     const slug = buildSlug({ slug: input.slug, label: input.label, fallback: 'program' });
-    const sessions = await this.resolveSessions(input.sessions, input.sessionIds, {
+    const sessions = await this.resolveSessions(session, input.sessions, input.sessionIds, {
       defaultLocale: input.locale,
     });
     const payload = {
@@ -57,7 +62,7 @@ export class ProgramResolver {
       description: input.description,
       sessions,
       userId: input.userId ?? undefined,
-      createdBy: req?.user?.id,
+      createdBy: session.userId,
     };
 
     const created = await inversify.createProgramUsecase.execute(payload);
@@ -66,7 +71,11 @@ export class ProgramResolver {
 
   @Mutation(() => ProgramGql, { name: 'program_update', nullable: true })
   @Auth(Role.ADMIN, Role.COACH)
-  async program_update(@Args('input') input: UpdateProgramInput): Promise<ProgramGql | null> {
+  async program_update(
+    @Args('input') input: UpdateProgramInput,
+    @Context('req') req: any,
+  ): Promise<ProgramGql | null> {
+    const session = this.extractSession(req);
     const updateDto: any = {
       locale: input.locale,
       label: input.label,
@@ -79,7 +88,10 @@ export class ProgramResolver {
     let cachedProgram: ProgramUsecaseModel | null | undefined;
     const getCurrentProgram = async (): Promise<ProgramUsecaseModel | null> => {
       if (cachedProgram === undefined) {
-        cachedProgram = await inversify.getProgramUsecase.execute({ id: input.id });
+        cachedProgram = await inversify.getProgramUsecase.execute({
+          id: input.id,
+          session,
+        });
       }
       return cachedProgram ?? null;
     };
@@ -102,7 +114,7 @@ export class ProgramResolver {
       const defaultLocale =
         this.normalizeLocaleValue(input.locale) ??
         this.normalizeLocaleValue((await getCurrentProgram())?.locale);
-      const sessions = await this.resolveSessions(input.sessions, undefined, {
+      const sessions = await this.resolveSessions(session, input.sessions, undefined, {
         defaultLocale,
       });
       updateDto.sessions = sessions;
@@ -110,7 +122,7 @@ export class ProgramResolver {
       const defaultLocale =
         this.normalizeLocaleValue(input.locale) ??
         this.normalizeLocaleValue((await getCurrentProgram())?.locale);
-      const sessions = await this.resolveSessions(undefined, input.sessionIds, {
+      const sessions = await this.resolveSessions(session, undefined, input.sessionIds, {
         defaultLocale,
       });
       updateDto.sessions = sessions;
@@ -122,26 +134,42 @@ export class ProgramResolver {
 
   @Mutation(() => Boolean, { name: 'program_softDelete' })
   @Auth(Role.ADMIN)
-  async program_softDelete(@Args('id', { type: () => ID }) id: string): Promise<boolean> {
-    return inversify.deleteProgramUsecase.execute({ id });
+  async program_softDelete(
+    @Args('id', { type: () => ID }) id: string,
+    @Context('req') req: any,
+  ): Promise<boolean> {
+    const session = this.extractSession(req);
+    return inversify.deleteProgramUsecase.execute({ id, session });
   }
 
   @Mutation(() => Boolean, { name: 'program_delete' })
   @Auth(Role.ADMIN, Role.COACH)
-  async program_delete(@Args('id', { type: () => ID }) id: string): Promise<boolean> {
-    return inversify.deleteProgramUsecase.execute({ id });
+  async program_delete(
+    @Args('id', { type: () => ID }) id: string,
+    @Context('req') req: any,
+  ): Promise<boolean> {
+    const session = this.extractSession(req);
+    return inversify.deleteProgramUsecase.execute({ id, session });
   }
 
   @Query(() => ProgramGql, { name: 'program_get', nullable: true })
   @Auth(Role.ADMIN, Role.COACH, Role.ATHLETE)
-  async program_get(@Args('id', { type: () => ID }) id: string): Promise<ProgramGql | null> {
-    const found = await inversify.getProgramUsecase.execute({ id });
+  async program_get(
+    @Args('id', { type: () => ID }) id: string,
+    @Context('req') req: any,
+  ): Promise<ProgramGql | null> {
+    const session = this.extractSession(req);
+    const found = await inversify.getProgramUsecase.execute({ id, session });
     return found ? mapProgramUsecaseToGql(found) : null;
   }
 
   @Query(() => ProgramListGql, { name: 'program_list' })
   @Auth(Role.ADMIN, Role.COACH, Role.ATHLETE)
-  async program_list(@Args('input', { nullable: true }) input?: ListProgramsInput): Promise<ProgramListGql> {
+  async program_list(
+    @Args('input', { nullable: true }) input: ListProgramsInput | undefined,
+    @Context('req') req: any,
+  ): Promise<ProgramListGql> {
+    const session = this.extractSession(req);
     const res = await inversify.listProgramsUsecase.execute({
       q: input?.q,
       locale: input?.locale,
@@ -149,6 +177,7 @@ export class ProgramResolver {
       userId: input?.userId,
       limit: input?.limit,
       page: input?.page,
+      session,
     });
     return {
       items: res.items.map(mapProgramUsecaseToGql),
@@ -163,6 +192,7 @@ export class ProgramResolver {
   }
 
   private async resolveSessions(
+    userSession: UsecaseSession,
     sessionsInput?: ProgramSessionInput[] | null,
     sessionIds?: string[] | null,
     options: { defaultLocale?: string | null } = {},
@@ -202,23 +232,26 @@ export class ProgramResolver {
 
     const resolved: ProgramSessionSnapshotUsecaseDto[] = [];
 
-    for (const session of sessions) {
-      if (!session) continue;
+    for (const sessionModel of sessions) {
+      if (!sessionModel) continue;
 
       const exercises = await Promise.all(
-        (session.exerciseIds ?? []).map((exerciseId) =>
-          inversify.getExerciseUsecase.execute({ id: exerciseId }),
+        (sessionModel.exerciseIds ?? []).map((exerciseId) =>
+          inversify.getExerciseUsecase.execute({
+            id: exerciseId,
+            session: userSession,
+          }),
         ),
       );
 
       resolved.push({
         id: this.generateId(),
-        templateSessionId: session.id,
-        slug: buildSlug({ slug: session.slug, label: session.label, fallback: 'session' }),
-        locale: this.normalizeLocaleValue(session.locale) ?? defaultLocale,
-        label: session.label,
-        durationMin: session.durationMin,
-        description: session.description ?? undefined,
+        templateSessionId: sessionModel.id,
+        slug: buildSlug({ slug: sessionModel.slug, label: sessionModel.label, fallback: 'session' }),
+        locale: this.normalizeLocaleValue(sessionModel.locale) ?? defaultLocale,
+        label: sessionModel.label,
+        durationMin: sessionModel.durationMin,
+        description: sessionModel.description ?? undefined,
         exercises: exercises
           .filter((exercise): exercise is NonNullable<typeof exercise> => Boolean(exercise))
           .map((exercise) => ({
@@ -238,6 +271,18 @@ export class ProgramResolver {
     }
 
     return resolved;
+  }
+
+  private extractSession(req: any): UsecaseSession {
+    const user = req?.user;
+    if (!user?.id || !user?.role) {
+      throw new UnauthorizedException('Missing authenticated user in request context.');
+    }
+
+    return {
+      userId: String(user.id),
+      role: user.role as UsecaseSession['role'],
+    };
   }
 
   private normalizeLocaleValue(locale?: string | null): string | undefined {

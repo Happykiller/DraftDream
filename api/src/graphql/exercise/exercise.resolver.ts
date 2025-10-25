@@ -1,6 +1,6 @@
 // src/graphql/exercise/exercise.resolver.ts
 // Comments in English.
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import { ConflictException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Args, Context, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 
 import { Role } from '@graphql/common/ROLE';
@@ -24,6 +24,7 @@ import { TagGql } from '@graphql/tag/tag.gql.types';
 import { mapTagUsecaseToGql } from '@graphql/tag/tag.mapper';
 import inversify from '@src/inversify/investify';
 import { mapExerciseUsecaseToGql } from '@graphql/exercise/exercise.mapper';
+import type { UsecaseSession } from '@usecases/program/program.usecase.dto';
 
 @Resolver(() => ExerciseGql)
 export class ExerciseResolver {
@@ -85,6 +86,7 @@ export class ExerciseResolver {
     @Args('input') input: CreateExerciseInput,
     @Context('req') req: any,
   ): Promise<ExerciseGql | null> {
+    const session = this.extractSession(req);
     const created = await inversify.createExerciseUsecase.execute({
       slug: input.slug,
       locale: input.locale,
@@ -102,7 +104,7 @@ export class ExerciseResolver {
       muscleIds: input.muscleIds,
       equipmentIds: input.equipmentIds,
       tagIds: input.tagIds,
-      createdBy: req?.user?.id,
+      createdBy: session.userId,
     });
     return created ? mapExerciseUsecaseToGql(created) : null; // null => slug déjà pris
   }
@@ -133,27 +135,43 @@ export class ExerciseResolver {
 
   @Mutation(() => Boolean, { name: 'exercise_softDelete' })
   @Auth(Role.ADMIN, Role.COACH)
-  async exercise_softDelete(@Args('id', { type: () => ID }) id: string): Promise<boolean> {
-    return inversify.deleteExerciseUsecase.execute(id);
+  async exercise_softDelete(
+    @Args('id', { type: () => ID }) id: string,
+    @Context('req') req: any,
+  ): Promise<boolean> {
+    const session = this.extractSession(req);
+    return inversify.deleteExerciseUsecase.execute({ id, session });
   }
 
   @Mutation(() => Boolean, { name: 'exercise_delete' })
   @Auth(Role.ADMIN)
-  async exercise_delete(@Args('id', { type: () => ID }) id: string): Promise<boolean> {
-    return inversify.deleteExerciseUsecase.execute(id);
+  async exercise_delete(
+    @Args('id', { type: () => ID }) id: string,
+    @Context('req') req: any,
+  ): Promise<boolean> {
+    const session = this.extractSession(req);
+    return inversify.deleteExerciseUsecase.execute({ id, session });
   }
 
   // ------- Queries -------
   @Query(() => ExerciseGql, { name: 'exercise_get', nullable: true })
   @Auth(Role.ADMIN, Role.COACH)
-  async exercise_get(@Args('id', { type: () => ID }) id: string): Promise<ExerciseGql | null> {
-    const found = await inversify.getExerciseUsecase.execute({ id });
+  async exercise_get(
+    @Args('id', { type: () => ID }) id: string,
+    @Context('req') req: any,
+  ): Promise<ExerciseGql | null> {
+    const session = this.extractSession(req);
+    const found = await inversify.getExerciseUsecase.execute({ id, session });
     return found ? mapExerciseUsecaseToGql(found) : null;
   }
 
   @Query(() => ExerciseListGql, { name: 'exercise_list' })
   @Auth(Role.ADMIN, Role.COACH)
-  async exercise_list(@Args('input', { nullable: true }) input?: ListExercisesInput): Promise<ExerciseListGql> {
+  async exercise_list(
+    @Args('input', { nullable: true }) input: ListExercisesInput | undefined,
+    @Context('req') req: any,
+  ): Promise<ExerciseListGql> {
+    const session = this.extractSession(req);
     const res = await inversify.listExercisesUsecase.execute({
       q: input?.q,
       locale: input?.locale,
@@ -163,12 +181,25 @@ export class ExerciseResolver {
       categoryIds: input?.categoryIds,
       limit: input?.limit,
       page: input?.page,
+      session,
     });
     return {
       items: res.items.map(mapExerciseUsecaseToGql),
       total: res.total,
       page: res.page,
       limit: res.limit,
+    };
+  }
+
+  private extractSession(req: any): UsecaseSession {
+    const user = req?.user;
+    if (!user?.id || !user?.role) {
+      throw new UnauthorizedException('Missing authenticated user in request context.');
+    }
+
+    return {
+      userId: String(user.id),
+      role: user.role as UsecaseSession['role'],
     };
   }
 }

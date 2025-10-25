@@ -10,9 +10,26 @@ export class GetProgramUsecase {
 
   async execute(dto: GetProgramUsecaseDto): Promise<ProgramUsecaseModel | null> {
     try {
-      const program = await this.inversify.bddService.program.get(dto);
-      return program ? mapProgramToUsecase(program) : null;
+      const { session, ...payload } = dto;
+      const program = await this.inversify.bddService.program.get(payload);
+      if (!program) {
+        return null;
+      }
+
+      const creatorId =
+        typeof program.createdBy === 'string' ? program.createdBy : program.createdBy?.id;
+      const isAdmin = session.role === 'ADMIN';
+      const isCreator = creatorId === session.userId;
+
+      if (!isAdmin && !isCreator) {
+        throw new Error(ERRORS.GET_PROGRAM_FORBIDDEN);
+      }
+
+      return mapProgramToUsecase(program);
     } catch (e: any) {
+      if (e?.message === ERRORS.GET_PROGRAM_FORBIDDEN) {
+        throw e;
+      }
       this.inversify.loggerService.error(`GetProgramUsecase#execute => ${e?.message ?? e}`);
       throw new Error(ERRORS.GET_PROGRAM_USECASE);
     }

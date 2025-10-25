@@ -8,8 +8,26 @@ export class DeleteProgramUsecase {
 
   async execute(dto: DeleteProgramUsecaseDto): Promise<boolean> {
     try {
-      return await this.inversify.bddService.program.delete(dto.id);
+      const { session, id } = dto;
+      const program = await this.inversify.bddService.program.get({ id });
+      if (!program) {
+        return false;
+      }
+
+      const creatorId =
+        typeof program.createdBy === 'string' ? program.createdBy : program.createdBy?.id;
+      const isAdmin = session.role === 'ADMIN';
+      const isCreator = creatorId === session.userId;
+
+      if (!isAdmin && !isCreator) {
+        throw new Error(ERRORS.DELETE_PROGRAM_FORBIDDEN);
+      }
+
+      return await this.inversify.bddService.program.delete(id);
     } catch (e: any) {
+      if (e?.message === ERRORS.DELETE_PROGRAM_FORBIDDEN) {
+        throw e;
+      }
       this.inversify.loggerService.error(`DeleteProgramUsecase#execute => ${e?.message ?? e}`);
       throw new Error(ERRORS.DELETE_PROGRAM_USECASE);
     }

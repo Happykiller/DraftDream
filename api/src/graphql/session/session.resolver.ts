@@ -1,4 +1,5 @@
 // src\graphql\session\session.resolver.ts
+import { UnauthorizedException } from '@nestjs/common';
 import { Args, Context, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { Role } from '@graphql/common/ROLE';
 import inversify from '@src/inversify/investify';
@@ -14,6 +15,7 @@ import {
 import { UserGql } from '@graphql/user/user.gql.types';
 import { mapUserUsecaseToGql } from '@graphql/user/user.mapper';
 import { mapSessionUsecaseToGql } from '@graphql/session/session.mapper';
+import type { UsecaseSession } from '@usecases/program/program.usecase.dto';
 
 @Resolver(() => SessionSportGql)
 export class SessionResolver {
@@ -29,7 +31,9 @@ export class SessionResolver {
   @ResolveField(() => [SessionExerciseSummaryGql], { name: 'exercises' })
   async exercises(
     @Parent() session: SessionSportGql,
+    @Context('req') req: any,
   ): Promise<SessionExerciseSummaryGql[]> {
+    const sessionContext = this.extractSession(req);
     const exerciseIds = session.exerciseIds ?? [];
     if (exerciseIds.length === 0) {
       return [];
@@ -38,7 +42,10 @@ export class SessionResolver {
     const uniqueIds = Array.from(new Set(exerciseIds));
     const fetched = await Promise.all(
       uniqueIds.map(async (exerciseId) => {
-        const exercise = await inversify.getExerciseUsecase.execute({ id: exerciseId });
+        const exercise = await inversify.getExerciseUsecase.execute({
+          id: exerciseId,
+          session: sessionContext,
+        });
         return exercise ? { id: exercise.id, label: exercise.label } : null;
       }),
     );
@@ -62,6 +69,7 @@ export class SessionResolver {
     @Args('input') input: CreateSessionInput,
     @Context('req') req: any,
   ): Promise<SessionSportGql | null> {
+    const session = this.extractSession(req);
     const created = await inversify.createSessionUsecase.execute({
       slug: input.slug,
       locale: input.locale,
@@ -69,7 +77,7 @@ export class SessionResolver {
       durationMin: input.durationMin,
       description: input.description,
       exerciseIds: input.exerciseIds,
-      createdBy: req?.user?.id,
+      createdBy: session.userId,
     });
     return created ? mapSessionUsecaseToGql(created) : null; // null => slug/locale déjà pris
   }
@@ -123,6 +131,18 @@ export class SessionResolver {
       total: res.total,
       page: res.page,
       limit: res.limit,
+    };
+  }
+
+  private extractSession(req: any): UsecaseSession {
+    const user = req?.user;
+    if (!user?.id || !user?.role) {
+      throw new UnauthorizedException('Missing authenticated user in request context.');
+    }
+
+    return {
+      userId: String(user.id),
+      role: user.role as UsecaseSession['role'],
     };
   }
 }

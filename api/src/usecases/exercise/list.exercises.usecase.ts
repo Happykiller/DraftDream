@@ -8,16 +8,38 @@ import type { ExerciseUsecaseModel } from '@usecases/exercise/exercise.usecase.m
 export class ListExercisesUsecase {
   constructor(private readonly inversify: Inversify) {}
 
-  async execute(dto: ListExercisesUsecaseDto = {}): Promise<{ items: ExerciseUsecaseModel[]; total: number; page: number; limit: number }> {
+  async execute(dto: ListExercisesUsecaseDto): Promise<{ items: ExerciseUsecaseModel[]; total: number; page: number; limit: number }> {
     try {
-      const res = await this.inversify.bddService.exercise.list(dto);
-      return {
-        items: res.items.map(mapExerciseToUsecase),
-        total: res.total,
-        page: res.page,
-        limit: res.limit,
-      };
+      const { session, ...payload } = dto;
+
+      if (session.role === 'ADMIN') {
+        const res = await this.inversify.bddService.exercise.list(payload);
+        return {
+          items: res.items.map(mapExerciseToUsecase),
+          total: res.total,
+          page: res.page,
+          limit: res.limit,
+        };
+      }
+
+      if (session.role === 'COACH') {
+        const res = await this.inversify.bddService.exercise.list({
+          ...payload,
+          createdBy: session.userId,
+        });
+        return {
+          items: res.items.map(mapExerciseToUsecase),
+          total: res.total,
+          page: res.page,
+          limit: res.limit,
+        };
+      }
+
+      throw new Error(ERRORS.LIST_EXERCISES_FORBIDDEN);
     } catch (e: any) {
+      if (e?.message === ERRORS.LIST_EXERCISES_FORBIDDEN) {
+        throw e;
+      }
       this.inversify.loggerService.error(`ListExercisesUsecase#execute => ${e?.message ?? e}`);
       throw new Error(ERRORS.LIST_EXERCISES_USECASE);
     }
