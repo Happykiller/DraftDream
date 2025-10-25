@@ -2,6 +2,7 @@
 import * as React from 'react';
 
 import inversify from '@src/commons/inversify';
+import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
@@ -72,6 +73,7 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
   const [items, setItems] = React.useState<Category[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
+  const { execute } = useAsyncTask();
   const flashError = useFlashStore((state) => state.error);
   const flashSuccess = useFlashStore((state) => state.success);
 
@@ -81,20 +83,23 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
-      const { data, errors } = await gql.send<CategoryListPayload>({
-        query: LIST_Q,
-        variables: { input: { page, limit, q: q || undefined } },
-        operationName: 'ListCategories',
-      });
+      const { data, errors } = await execute(() =>
+        gql.send<CategoryListPayload>({
+          query: LIST_Q,
+          variables: { input: { page, limit, q: q || undefined } },
+          operationName: 'ListCategories',
+        }),
+      );
       if (errors?.length) throw new Error(errors[0].message);
       setItems(data?.category_list.items ?? []);
       setTotal(data?.category_list.total ?? 0);
-    } catch (e: any) {
-      flashError(e?.message ?? 'Failed to load categories');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to load categories';
+      flashError(message);
     } finally {
       setLoading(false);
     }
-  }, [flashError, gql, limit, page, q]);
+  }, [execute, flashError, gql, limit, page, q]);
 
   React.useEffect(() => {
     void load();
@@ -108,58 +113,67 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
       visibility: Visibility;
     }) => {
       try {
-        const { errors } = await gql.send<CreateCategoryPayload>({
-          query: CREATE_M,
-          variables: { input },
-          operationName: 'CreateCategory',
-        });
+        const { errors } = await execute(() =>
+          gql.send<CreateCategoryPayload>({
+            query: CREATE_M,
+            variables: { input },
+            operationName: 'CreateCategory',
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Category created');
         await load();
-      } catch (e: any) {
-        flashError(e?.message ?? 'Create failed');
-        throw e;
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Create failed';
+        flashError(message);
+        throw error;
       }
     },
-    [flashError, flashSuccess, gql, load]
+    [execute, flashError, flashSuccess, gql, load]
   );
 
   const update = React.useCallback(
     async (input: { id: string; slug?: string; locale?: string; label?: string }) => {
       try {
-        const { errors } = await gql.send<UpdateCategoryPayload>({
-          query: UPDATE_M,
-          variables: { input },
-          operationName: 'UpdateCategory',
-        });
+        const { errors } = await execute(() =>
+          gql.send<UpdateCategoryPayload>({
+            query: UPDATE_M,
+            variables: { input },
+            operationName: 'UpdateCategory',
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Category updated');
         await load();
-      } catch (e: any) {
-        flashError(e?.message ?? 'Update failed');
-        throw e;
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Update failed';
+        flashError(message);
+        throw error;
       }
     },
-    [flashError, flashSuccess, gql, load]
+    [execute, flashError, flashSuccess, gql, load]
   );
 
   const remove = React.useCallback(
     async (id: string) => {
       try {
-        const { errors } = await gql.send<DeleteCategoryPayload>({
-          query: DELETE_M,
-          variables: { id },
-          operationName: 'DeleteCategory',
-        });
+        const { errors } = await execute(() =>
+          gql.send<DeleteCategoryPayload>({
+            query: DELETE_M,
+            variables: { id },
+            operationName: 'DeleteCategory',
+          }),
+        );
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Category deleted');
         await load();
-      } catch (e: any) {
-        flashError(e?.message ?? 'Delete failed');
-        throw e;
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Delete failed';
+        flashError(message);
+        throw error;
       }
     },
-    [flashError, flashSuccess, gql, load]
+    [execute, flashError, flashSuccess, gql, load]
   );
 
   return { items, total, loading, create, update, remove, reload: load };

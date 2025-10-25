@@ -1,21 +1,32 @@
 // src\hooks\useAsyncTask.ts
+import * as React from 'react';
+
 import { useLoaderStore } from '@stores/loader';
 
-export const useAsyncTask = () => {
-  const setLoading = useLoaderStore((s:any) => s.setLoading);
+type AsyncTask = <T>(task: () => Promise<T>) => Promise<T>;
 
-  const execute = async <T>(task: () => Promise<T>): Promise<T | null> => {
-    setLoading(true);
-    try {
-      const result = await task();
-      return result;
-    } catch (err) {
-      console.error('[AsyncTask] Error:', err);
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  };
+/**
+ * Wraps asynchronous operations to keep the global loader overlay in sync.
+ * Errors are re-thrown so the caller can surface them through flash messages
+ * or local state while the loader is reliably reset.
+ */
+export const useAsyncTask = () => {
+  const setLoading = useLoaderStore((state) => state.setLoading);
+
+  const execute = React.useCallback<AsyncTask>(
+    async (task) => {
+      setLoading(true);
+      try {
+        return await task();
+      } catch (error) {
+        console.error('[AsyncTask] Error:', error);
+        throw error;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setLoading],
+  );
 
   return { execute };
 };

@@ -2,6 +2,7 @@
 import * as React from 'react';
 
 import inversify from '@src/commons/inversify';
+import { useAsyncTask } from '@hooks/useAsyncTask';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 import { session } from '@stores/session';
 
@@ -52,6 +53,7 @@ export function useUser(options?: { skip?: boolean }): UseUserResult {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
+  const { execute } = useAsyncTask();
   const mountedRef = React.useRef(true);
   const initRef = React.useRef(false);
 
@@ -68,10 +70,12 @@ export function useUser(options?: { skip?: boolean }): UseUserResult {
       setError(null);
     });
     try {
-      const { data, errors } = await gql.send<MePayload>({
-        query: ME_QUERY,
-        operationName: 'Me',
-      });
+      const { data, errors } = await execute(() =>
+        gql.send<MePayload>({
+          query: ME_QUERY,
+          operationName: 'Me',
+        }),
+      );
       if (errors?.length) throw new Error(errors[0].message);
 
       const profile = data?.me ?? null;
@@ -97,7 +101,7 @@ export function useUser(options?: { skip?: boolean }): UseUserResult {
     } finally {
       runIfMounted(() => setLoading(false));
     }
-  }, [gql, runIfMounted]);
+  }, [execute, gql, runIfMounted]);
 
   React.useEffect(() => {
     if (skip) return;
