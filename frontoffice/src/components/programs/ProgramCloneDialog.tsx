@@ -131,7 +131,7 @@ export function ProgramCloneDialog({
               page: 1,
               limit: 25,
               q: search.trim() || undefined,
-              type: 'ATHLETE',
+              type: 'athlete',
             },
           },
         });
