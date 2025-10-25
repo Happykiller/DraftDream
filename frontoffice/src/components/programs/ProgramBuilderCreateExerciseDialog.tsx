@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
-import { Button, Chip, MenuItem, Stack, TextField, Typography } from '@mui/material';
+import { Button, Chip, MenuItem, Stack, TextField } from '@mui/material';
 import { Add, Edit } from '@mui/icons-material';
 
 import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';

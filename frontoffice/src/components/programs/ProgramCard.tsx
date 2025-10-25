@@ -29,9 +29,11 @@ import { ProgramCloneDialog } from './ProgramCloneDialog';
 
 interface ProgramCardProps {
   program: Program;
+  allowedActions?: ProgramActionKey[];
   onDelete?: (programId: string) => void;
   onEdit?: (program: Program) => void;
   onClone?: (program: Program, payload: { label: string; athleteId: string | null }) => Promise<void>;
+  onView?: (program: Program) => void;
 }
 
 type ProgramDifficulty = 'beginner' | 'intermediate' | 'advanced';
@@ -62,11 +64,15 @@ function deriveProgramDifficulty(program: Program): ProgramDifficulty | null {
   return difficulty[0] ?? null;
 }
 
+export type ProgramActionKey = 'view' | 'copy' | 'edit' | 'delete';
+
 type ProgramAction = {
-  key: 'view' | 'copy' | 'edit' | 'delete';
+  key: ProgramActionKey;
   color: 'primary' | 'secondary' | 'success' | 'error';
   Icon: typeof VisibilityOutlined;
 };
+
+const DEFAULT_ALLOWED_ACTIONS: ProgramActionKey[] = ['view', 'copy', 'edit', 'delete'];
 
 const PROGRAM_ACTIONS: ProgramAction[] = [
   { key: 'view', color: 'primary', Icon: VisibilityOutlined },
@@ -87,7 +93,14 @@ function formatDate(value: string, locale: string): string {
   }
 }
 
-export function ProgramCard({ program, onDelete, onEdit, onClone }: ProgramCardProps): React.JSX.Element {
+export function ProgramCard({
+  program,
+  allowedActions = DEFAULT_ALLOWED_ACTIONS,
+  onDelete,
+  onEdit,
+  onClone,
+  onView,
+}: ProgramCardProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
   const sessionsCount = program.sessions.length;
   const exercisesCount = program.sessions.reduce(
@@ -132,8 +145,18 @@ export function ProgramCard({ program, onDelete, onEdit, onClone }: ProgramCardP
     [i18n.language, program.updatedAt],
   );
 
+  const availableActions = React.useMemo(
+    () => PROGRAM_ACTIONS.filter((action) => allowedActions.includes(action.key)),
+    [allowedActions],
+  );
+
   const handleActionClick = React.useCallback(
     (actionKey: ProgramAction['key']) => {
+      if (actionKey === 'view') {
+        onView?.(program);
+        return;
+      }
+
       if (actionKey === 'delete') {
         onDelete?.(program.id);
         return;
@@ -148,7 +171,7 @@ export function ProgramCard({ program, onDelete, onEdit, onClone }: ProgramCardP
         onEdit?.(program);
       }
     },
-    [handleOpenCloneDialog, onDelete, onEdit, program],
+    [handleOpenCloneDialog, onDelete, onEdit, onView, program],
   );
 
   return (
@@ -214,8 +237,12 @@ export function ProgramCard({ program, onDelete, onEdit, onClone }: ProgramCardP
           </Stack>
           {/* Actions */}
           <Stack direction="row" spacing={0.5}>
-            {PROGRAM_ACTIONS.map(({ key, color, Icon }) => {
+            {availableActions.map(({ key, color, Icon }) => {
               const label = t(`programs-coatch.list.actions.${key}`);
+              const isDisabled =
+                (key === 'copy' && (isCloneSubmitting || !onClone)) ||
+                (key === 'delete' && !onDelete) ||
+                (key === 'edit' && !onEdit);
 
               return (
                 <Tooltip key={key} title={label}>
@@ -223,7 +250,7 @@ export function ProgramCard({ program, onDelete, onEdit, onClone }: ProgramCardP
                     size="small"
                     aria-label={label}
                     onClick={() => handleActionClick(key)}
-                    disabled={key === 'copy' && isCloneSubmitting}
+                    disabled={Boolean(isDisabled)}
                     sx={(theme) => ({
                       color: theme.palette.text.secondary,
                       transition: theme.transitions.create(['color', 'background-color'], {
@@ -358,13 +385,15 @@ export function ProgramCard({ program, onDelete, onEdit, onClone }: ProgramCardP
       </Paper>
 
       {/* Clone dialog */}
-      <ProgramCloneDialog
-        open={isCloneDialogOpen}
-        program={program}
-        onClose={handleCloseCloneDialog}
-        onClone={onClone}
-        onSubmittingChange={handleCloneSubmittingChange}
-      />
+      {allowedActions.includes('copy') && onClone && (
+        <ProgramCloneDialog
+          open={isCloneDialogOpen}
+          program={program}
+          onClose={handleCloseCloneDialog}
+          onClone={onClone}
+          onSubmittingChange={handleCloneSubmittingChange}
+        />
+      )}
     </>
   );
 }
