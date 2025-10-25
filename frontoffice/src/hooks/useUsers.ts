@@ -62,9 +62,10 @@ export interface UseUsersParams {
   page: number; // 1-based
   limit: number;
   q: string;
+  type?: string;
 }
 
-export function useUsers({ page, limit, q }: UseUsersParams) {
+export function useUsers({ page, limit, q, type }: UseUsersParams) {
   const [items, setItems] = React.useState<User[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
@@ -73,14 +74,22 @@ export function useUsers({ page, limit, q }: UseUsersParams) {
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
 
   const load = React.useCallback(
-    async (vars: { page: number; limit: number; q?: string }) => {
+    async (vars: { page: number; limit: number; q?: string; type?: string }) => {
       setLoading(true);
       try {
+        const trimmedQ = vars.q?.trim();
+        const trimmedType = vars.type?.trim();
+
         const { data, errors } = await execute(() =>
           gql.send<UsersListPayload>({
             query: LIST_Q,
             variables: {
-              input: { page: vars.page, limit: vars.limit, q: vars.q || undefined },
+              input: {
+                page: vars.page,
+                limit: vars.limit,
+                q: trimmedQ || undefined,
+                type: trimmedType || undefined,
+              },
             },
             operationName: 'ListUsers',
           }),
@@ -98,12 +107,17 @@ export function useUsers({ page, limit, q }: UseUsersParams) {
     [execute, gql, flashError]
   );
 
-  const sig = `${page}|${limit}|${q || ''}`;
+  const sig = `${page}|${limit}|${q || ''}|${type || ''}`;
   React.useEffect(() => {
     if (LAST_SIG.get(KEY) === sig) return;
     LAST_SIG.set(KEY, sig);
-    void load({ page, limit, q });
+    void load({ page, limit, q, type });
   }, [sig, load]);
 
-  return { items, total, loading, reload: () => load({ page, limit, q }) };
+  return {
+    items,
+    total,
+    loading,
+    reload: () => load({ page, limit, q, type }),
+  };
 }

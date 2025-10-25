@@ -306,6 +306,7 @@ export function useProgramBuilder(
     page: 1,
     limit: 100,
     q: debouncedQ,
+    type: 'athlete',
   });
 
   const { create: createProgram, update: updateProgram } = usePrograms({
