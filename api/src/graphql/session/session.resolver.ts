@@ -131,7 +131,7 @@ export class SessionResolver {
   @Query(() => SessionListGql, { name: 'session_list' })
   @Auth(Role.ADMIN, Role.COACH)
   async session_list(
-    @Args('input', { nullable: true }) input: ListSessionsInput | null,
+    @Args('input', { type: () => ListSessionsInput, nullable: true }) input: ListSessionsInput | null,
     @Context('req') req: any,
   ): Promise<SessionListGql> {
     const session = this.extractSession(req);
