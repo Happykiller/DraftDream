@@ -7,12 +7,11 @@ import {
   ProgramSessionSnapshotDto as ProgramSessionSnapshotServiceDto,
   UpdateProgramDto as UpdateProgramServiceDto,
 } from '@services/db/dtos/program.dto';
-
-export type UsecaseSessionRole = 'ADMIN' | 'COACH' | 'ATHLETE';
+import type { Role } from '@src/common/role.enum';
 
 export type UsecaseSession = {
   userId: string;
-  role: UsecaseSessionRole;
+  role: Role;
 };
 
 export type CreateProgramUsecaseDto = CreateProgramServiceDto;

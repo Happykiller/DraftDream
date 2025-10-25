@@ -1,5 +1,6 @@
 // src\usecases\session\list.sessions.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { mapSessionToUsecase } from '@usecases/session/session.mapper';
 import { ListSessionsUsecaseDto } from '@usecases/session/session.usecase.dto';
@@ -17,7 +18,7 @@ export class ListSessionsUsecase {
     try {
       const { session, ...payload } = dto;
 
-      if (session.role === 'ADMIN') {
+      if (session.role === Role.ADMIN) {
         const res = await this.inversify.bddService.session.list(payload);
         return {
           items: res.items.map(mapSessionToUsecase),
@@ -27,7 +28,7 @@ export class ListSessionsUsecase {
         };
       }
 
-      if (session.role === 'COACH') {
+      if (session.role === Role.COACH) {
         const { createdBy, ...rest } = payload;
         const allowedCreatorIds = await this.resolveAccessibleCreatorIds(session.userId);
 

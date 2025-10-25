@@ -1,5 +1,6 @@
 // src\usecases\session\delete.session.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { DeleteSessionUsecaseDto } from '@usecases/session/session.usecase.dto';
 
@@ -17,7 +18,7 @@ export class DeleteSessionUsecase {
 
       const creatorId =
         typeof existing.createdBy === 'string' ? existing.createdBy : existing.createdBy?.id;
-      const isAdmin = session.role === 'ADMIN';
+      const isAdmin = session.role === Role.ADMIN;
       const isCreator = creatorId === session.userId;
 
       if (!isAdmin && !isCreator) {

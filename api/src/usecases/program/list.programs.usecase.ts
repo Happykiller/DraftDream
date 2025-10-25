@@ -1,5 +1,6 @@
 // src\\usecases\\program\\list.programs.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { ListProgramsUsecaseDto } from '@usecases/program/program.usecase.dto';
 import { mapProgramToUsecase } from '@usecases/program/program.mapper';
@@ -17,7 +18,7 @@ export class ListProgramsUsecase {
     try {
       const { session, ...payload } = dto;
 
-      if (session.role === 'ADMIN') {
+      if (session.role === Role.ADMIN) {
         const res = await this.inversify.bddService.program.list(payload);
         return {
           items: res.items.map(mapProgramToUsecase),
@@ -27,7 +28,7 @@ export class ListProgramsUsecase {
         };
       }
 
-      if (session.role === 'COACH') {
+      if (session.role === Role.COACH) {
         const { createdBy, ...rest } = payload;
         const allowedCreatorIds = await this.resolveAccessibleCreatorIds(session.userId);
 

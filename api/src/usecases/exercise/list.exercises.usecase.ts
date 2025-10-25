@@ -1,5 +1,6 @@
 // src/usecases/exercise/list.exercises.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { mapExerciseToUsecase } from '@usecases/exercise/exercise.mapper';
 import { ListExercisesUsecaseDto } from '@usecases/exercise/exercise.usecase.dto';
@@ -12,7 +13,7 @@ export class ListExercisesUsecase {
     try {
       const { session, ...payload } = dto;
 
-      if (session.role === 'ADMIN') {
+      if (session.role === Role.ADMIN) {
         const res = await this.inversify.bddService.exercise.list(payload);
         return {
           items: res.items.map(mapExerciseToUsecase),
@@ -22,7 +23,7 @@ export class ListExercisesUsecase {
         };
       }
 
-      if (session.role === 'COACH') {
+      if (session.role === Role.COACH) {
         const { createdBy, visibility, ...rest } = payload;
 
         if (createdBy) {

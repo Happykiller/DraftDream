@@ -1,5 +1,6 @@
 // src\\usecases\\program\\delete.program.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { DeleteProgramUsecaseDto } from '@usecases/program/program.usecase.dto';
 
@@ -16,7 +17,7 @@ export class DeleteProgramUsecase {
 
       const creatorId =
         typeof program.createdBy === 'string' ? program.createdBy : program.createdBy?.id;
-      const isAdmin = session.role === 'ADMIN';
+      const isAdmin = session.role === Role.ADMIN;
       const isCreator = creatorId === session.userId;
 
       if (!isAdmin && !isCreator) {

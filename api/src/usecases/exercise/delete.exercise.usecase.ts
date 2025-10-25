@@ -1,5 +1,6 @@
 // src/usecases/exercise/delete.exercise.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { DeleteExerciseUsecaseDto } from '@usecases/exercise/exercise.usecase.dto';
 
@@ -16,7 +17,7 @@ export class DeleteExerciseUsecase {
 
       const creatorId =
         typeof exercise.createdBy === 'string' ? exercise.createdBy : exercise.createdBy?.id;
-      const isAdmin = session.role === 'ADMIN';
+      const isAdmin = session.role === Role.ADMIN;
       const isCreator = creatorId === session.userId;
 
       if (!isAdmin && !isCreator) {

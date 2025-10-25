@@ -1,5 +1,6 @@
 // src\\usecases\\program\\get.program.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { GetProgramUsecaseDto } from '@usecases/program/program.usecase.dto';
 import { mapProgramToUsecase } from '@usecases/program/program.mapper';
@@ -18,9 +19,9 @@ export class GetProgramUsecase {
 
       const creatorId =
         typeof program.createdBy === 'string' ? program.createdBy : program.createdBy?.id;
-      const isAdmin = session.role === 'ADMIN';
+      const isAdmin = session.role === Role.ADMIN;
       const isCreator = creatorId === session.userId;
-      const isCoach = session.role === 'COACH';
+      const isCoach = session.role === Role.COACH;
       const isPublic = isCoach ? await this.isPublicProgram(creatorId) : false;
 
       if (!isAdmin && !isCreator && !(isCoach && isPublic)) {

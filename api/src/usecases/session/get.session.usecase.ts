@@ -1,5 +1,6 @@
 // src\usecases\session\get.session.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { GetSessionUsecaseDto } from '@usecases/session/session.usecase.dto';
 import { mapSessionToUsecase } from '@usecases/session/session.mapper';
@@ -18,9 +19,9 @@ export class GetSessionUsecase {
       }
 
       const creatorId = typeof s.createdBy === 'string' ? s.createdBy : s.createdBy?.id;
-      const isAdmin = session.role === 'ADMIN';
+      const isAdmin = session.role === Role.ADMIN;
       const isCreator = creatorId === session.userId;
-      const isCoach = session.role === 'COACH';
+      const isCoach = session.role === Role.COACH;
       const isPublic = isCoach ? await this.isPublicTemplate(creatorId) : false;
 
       if (!isAdmin && !isCreator && !(isCoach && isPublic)) {

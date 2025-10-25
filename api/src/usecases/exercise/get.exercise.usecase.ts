@@ -1,5 +1,6 @@
 // src/usecases/exercise/get.exercise.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { mapExerciseToUsecase } from '@usecases/exercise/exercise.mapper';
 import { GetExerciseUsecaseDto } from '@usecases/exercise/exercise.usecase.dto';
@@ -17,9 +18,9 @@ export class GetExerciseUsecase {
       }
 
       const creatorId = typeof res.createdBy === 'string' ? res.createdBy : res.createdBy?.id;
-      const isAdmin = session.role === 'ADMIN';
+      const isAdmin = session.role === Role.ADMIN;
       const isCreator = creatorId === session.userId;
-      const isCoach = session.role === 'COACH';
+      const isCoach = session.role === Role.COACH;
       const isPublic = res.visibility === 'public';
 
       if (!isAdmin && !isCreator && !(isCoach && isPublic)) {
