@@ -53,7 +53,9 @@
       "address_code": "Code postal",
       "address_country": "Pays",
       "user": "Utilisateur",
+      "athlete": "Athlète",
       "user_optional": "Utilisateur (optionnel)",
+      "athlete_optional": "Athlète (optionnel)",
       "description": "Description",
       "duration_weeks": "Durée (semaines)",
       "duration_minutes": "Durée (min)",
@@ -96,6 +98,7 @@
       "select": "Sélectionner...",
       "select_sessions": "Sélectionner des séances",
       "select_user": "Sélectionner un utilisateur",
+      "select_athlete": "Sélectionner un athlète",
       "select_exercises": "Sélectionner des exercices",
       "enter_email": "Saisissez une adresse e-mail valide",
       "custom_flash": "Message personnalisé (bouton contour).",
@@ -141,6 +144,7 @@
     "table": {
       "sessions_linked": "{{count}} lié(s)",
       "filter_by_user": "Filtrer par utilisateur",
+      "filter_by_athlete": "Filtrer par athlète",
       "search_placeholder": "Rechercher des programmes..."
     },
     "dialog": {

@@ -65,11 +65,11 @@ export const ProgramTable = React.memo(function ProgramTable({
       valueFormatter: (value: any) => `${value}`,
     },
     {
-      field: 'userId',
-      headerName: t('common.labels.user'),
+      field: 'athlete',
+      headerName: t('common.labels.athlete'),
       flex: 1,
       minWidth: 160,
-      valueFormatter: (value: any) => value || '',
+      valueGetter: ({ row }) => row.athlete?.email ?? '',
     },
     {
       field: 'sessions',
@@ -160,8 +160,8 @@ export const ProgramTable = React.memo(function ProgramTable({
             renderInput={(params) => (
               <TextField
                 {...params}
-                placeholder={t('programs.table.filter_by_user')}
-                label={t('common.labels.user')}
+                placeholder={t('programs.table.filter_by_athlete')}
+                label={t('common.labels.athlete')}
               />
             )}
           />
