@@ -1,7 +1,7 @@
 // docs\user.http
 
 ### Create a user (GraphQL)
-POST {{host}}/graphql
+POST {{host}}
 Content-Type: application/json
 
 {
@@ -35,7 +35,7 @@ Content-Type: application/json
 
 
 ### Create a user (GraphQL)
-POST {{host}}/graphql
+POST {{host}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 

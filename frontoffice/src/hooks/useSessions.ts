@@ -71,7 +71,7 @@ const UPDATE_M = `
 
 const DELETE_M = `
   mutation DeleteSession($id: ID!) {
-    session_delete(id: $id)
+    session_softDelete(id: $id)
   }
 `;
 

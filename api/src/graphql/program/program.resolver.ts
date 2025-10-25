@@ -121,26 +121,26 @@ export class ProgramResolver {
   }
 
   @Mutation(() => Boolean, { name: 'program_softDelete' })
-  @Auth(Role.ADMIN, Role.COACH)
+  @Auth(Role.ADMIN)
   async program_softDelete(@Args('id', { type: () => ID }) id: string): Promise<boolean> {
     return inversify.deleteProgramUsecase.execute({ id });
   }
 
   @Mutation(() => Boolean, { name: 'program_delete' })
-  @Auth(Role.ADMIN)
+  @Auth(Role.ADMIN, Role.COACH)
   async program_delete(@Args('id', { type: () => ID }) id: string): Promise<boolean> {
     return inversify.deleteProgramUsecase.execute({ id });
   }
 
   @Query(() => ProgramGql, { name: 'program_get', nullable: true })
-  @Auth(Role.ADMIN, Role.COACH)
+  @Auth(Role.ADMIN, Role.COACH, Role.ATHLETE)
   async program_get(@Args('id', { type: () => ID }) id: string): Promise<ProgramGql | null> {
     const found = await inversify.getProgramUsecase.execute({ id });
     return found ? mapProgramUsecaseToGql(found) : null;
   }
 
   @Query(() => ProgramListGql, { name: 'program_list' })
-  @Auth(Role.ADMIN, Role.COACH)
+  @Auth(Role.ADMIN, Role.COACH, Role.ATHLETE)
   async program_list(@Args('input', { nullable: true }) input?: ListProgramsInput): Promise<ProgramListGql> {
     const res = await inversify.listProgramsUsecase.execute({
       q: input?.q,

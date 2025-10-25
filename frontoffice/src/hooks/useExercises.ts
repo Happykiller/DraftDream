@@ -135,7 +135,7 @@ const UPDATE_M = `
 `;
 
 const DELETE_M = `
-  mutation DeleteExercise($id: ID!) { exercise_delete(id: $id) }
+  mutation DeleteExercise($id: ID!) { exercise_softDelete(id: $id) }
 `;
 
 export interface UseExercisesParams {

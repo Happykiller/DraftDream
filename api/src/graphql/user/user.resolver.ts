@@ -42,7 +42,7 @@ export class UserResolver {
   }
 
   @Query(() => UserGql, { name: 'me' })
-  @Auth(Role.ADMIN, Role.COACH)
+  @Auth(Role.ADMIN, Role.COACH, Role.ATHLETE)
   async me(@Context('req') req: any): Promise<UserGql> {
     const user: UserUsecaseModel = await inversify.getUserUsecase.execute({ id: req?.user.id });
     return mapUserUsecaseToGql(user);
