@@ -60,6 +60,31 @@ export class ListProgramsUsecase {
         };
       }
 
+      if (session.role === Role.ATHLETE) {
+        // Athletes may only browse programs assigned directly to them.
+        const { createdBy, createdByIn, userId, ...rest } = payload;
+
+        if (createdBy || (Array.isArray(createdByIn) && createdByIn.length > 0)) {
+          throw new Error(ERRORS.LIST_PROGRAMS_FORBIDDEN);
+        }
+
+        if (userId && userId !== session.userId) {
+          throw new Error(ERRORS.LIST_PROGRAMS_FORBIDDEN);
+        }
+
+        const res = await this.inversify.bddService.program.list({
+          ...rest,
+          userId: session.userId,
+        });
+
+        return {
+          items: res.items.map(mapProgramToUsecase),
+          total: res.total,
+          page: res.page,
+          limit: res.limit,
+        };
+      }
+
       throw new Error(ERRORS.LIST_PROGRAMS_FORBIDDEN);
     } catch (e: any) {
       if (e?.message === ERRORS.LIST_PROGRAMS_FORBIDDEN) {
