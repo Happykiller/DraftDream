@@ -69,7 +69,7 @@ export const ProgramTable = React.memo(function ProgramTable({
       headerName: t('common.labels.athlete'),
       flex: 1,
       minWidth: 160,
-      valueGetter: ({ row }) => row.athlete?.email ?? '',
+      valueGetter: (params) => params?.row?.athlete?.email ?? '',
     },
     {
       field: 'sessions',
