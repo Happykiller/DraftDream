@@ -2,23 +2,24 @@
 import * as React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { useTheme } from '@mui/material/styles';
 import {
   Box,
   Button,
-  Stack,
-  Typography,
-  Paper,
-  useMediaQuery,
   Container,
+  MenuItem,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
 } from '@mui/material';
 import {
+  CheckCircleRounded,
   Done,
+  Info as InfoIcon,
+  Lock,
+  Person,
   Visibility,
   VisibilityOff,
-  Info as InfoIcon,
-  Person,
-  Lock,
 } from '@mui/icons-material';
 
 import { Input } from '@components/Input';
@@ -33,12 +34,11 @@ type Entity = { value: string; valid: boolean };
 /** Authentication screen displayed to unauthenticated visitors. */
 export function Login(): React.JSX.Element {
   // Stores / services
-  const theme = useTheme();
   const flash = useFlashStore();
   const navigate = useNavigate();
   const { execute: auth } = useAuthReq();
   const { execute: runTask } = useAsyncTask();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const version = import.meta.env.VITE_APP_VERSION ?? '';
 
   // Local state
@@ -49,7 +49,49 @@ export function Login(): React.JSX.Element {
     email: { value: '', valid: false },
     password: { value: '', valid: false },
   });
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [selectedLanguage, setSelectedLanguage] = React.useState(
+    () => (i18n.language ?? 'fr').split('-')[0],
+  );
+
+  React.useEffect(() => {
+    const handleLanguageChanged = (language: string) => {
+      setSelectedLanguage(language.split('-')[0]);
+    };
+
+    i18n.on('languageChanged', handleLanguageChanged);
+
+    return () => {
+      i18n.off('languageChanged', handleLanguageChanged);
+    };
+  }, [i18n]);
+
+  const languages = React.useMemo(
+    () => [
+      { code: 'fr', label: t('languages.fr') },
+      { code: 'en', label: t('languages.en') },
+    ],
+    [t],
+  );
+
+  const highlightItems = React.useMemo(
+    () => [
+      t('login.highlights.programs'),
+      t('login.highlights.followup'),
+      t('login.highlights.collaboration'),
+    ],
+    [t],
+  );
+
+  const handleLanguageChange = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const nextLanguage = event.target.value;
+
+      if (nextLanguage && nextLanguage !== i18n.language) {
+        void i18n.changeLanguage(nextLanguage);
+      }
+    },
+    [i18n],
+  );
 
   // Submit
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -74,9 +116,9 @@ export function Login(): React.JSX.Element {
 
   const canSubmit = formEntities.email.valid && formEntities.password.valid;
 
-  // Shared form content (desktop & mobile)
+  // Shared form content
   const FormContent = (
-    <Stack spacing={2.25}>
+    <Stack spacing={2.5}>
       {/* Email */}
       <Input
         label={<Trans>login.email</Trans>}
@@ -125,10 +167,12 @@ export function Login(): React.JSX.Element {
         disabled={!canSubmit}
         aria-disabled={!canSubmit}
         sx={{
+          minHeight: 48,
           textTransform: 'uppercase',
-          py: 1.2,
           fontWeight: 700,
-          letterSpacing: 0.6,
+          letterSpacing: 0.8,
+          borderRadius: 2,
+          boxShadow: '0 12px 24px rgba(59, 130, 246, 0.25)',
         }}
       >
         <Trans>login.button</Trans>
@@ -140,107 +184,216 @@ export function Login(): React.JSX.Element {
 
   return (
     <Box
-      // Full viewport background:
-      // - mobile: theme default background (no black)
-      // - desktop: black background for focus
       sx={{
         minHeight: '100vh',
-        bgcolor: isMobile ? 'background.default' : 'black',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
-        p: { xs: 2, sm: 3 },
+        bgcolor: { xs: 'background.default', md: '#05070f' },
+        backgroundImage: {
+          md: 'radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.18) 0%, transparent 55%), linear-gradient(140deg, #05070f 0%, #0b0f1c 50%, #090c18 100%)',
+        },
+        color: { md: 'rgba(255,255,255,0.9)' },
       }}
     >
-      {/* General information */}
-      <Box
+      <Container
+        component="main"
+        maxWidth="lg"
         sx={{
           flexGrow: 1,
-          width: '100%',
+          py: { xs: 8, md: 12 },
           display: 'flex',
-          alignItems: 'center',
+          flexDirection: 'column',
           justifyContent: 'center',
         }}
       >
-        {/* MOBILE LAYOUT (no card) */}
-        {isMobile ? (
-          <Container maxWidth="sm" component="section" role="form" aria-labelledby="login-title">
-            {/* Header */}
-            <Box textAlign="center" mb={2}>
-              {/* Logo */}
-              <Box
-                component="img"
-                src="/logo.png"
-                alt={t('app.logo_alt')}
-                sx={{ width: 64, height: 64, mb: 1.25, objectFit: 'contain' }}
-              />
-              <Typography
-                id="login-title"
-                variant="h5"
-                sx={{ fontWeight: 800, letterSpacing: 0.5, lineHeight: 1.1 }}
-              >
-                {t('app.name')}
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
-                <Trans>login.connect_space</Trans>
-              </Typography>
-            </Box>
+        {/* General information */}
+        <Stack spacing={{ xs: 6, md: 10 }}>
+          <Box display="flex" justifyContent={{ xs: 'center', md: 'flex-end' }}>
+            <TextField
+              select
+              size="small"
+              label={t('login.language_label')}
+              value={selectedLanguage}
+              onChange={handleLanguageChange}
+              helperText={t('login.language_placeholder')}
+              slotProps={{
+                select: {
+                  'aria-label': t('login.language_placeholder'),
+                },
+                inputLabel: {
+                  sx: { color: { md: 'rgba(255,255,255,0.82)' } },
+                },
+                formHelperText: {
+                  sx: {
+                    color: { xs: 'text.secondary', md: 'rgba(255,255,255,0.65)' },
+                    textAlign: { xs: 'left', md: 'right' },
+                    mt: 0.75,
+                    display: { xs: 'block', md: 'none' },
+                  },
+                },
+              }}
+              sx={{
+                minWidth: { xs: 200, md: 220 },
+                bgcolor: { xs: 'background.paper', md: 'rgba(10, 13, 23, 0.65)' },
+                borderRadius: 2,
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: { xs: 'divider', md: 'rgba(255,255,255,0.32)' },
+                },
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: { md: 'primary.light' },
+                },
+                '& .MuiOutlinedInput-input': {
+                  color: { md: 'rgba(255,255,255,0.92)' },
+                  fontWeight: 600,
+                },
+                '& .MuiSvgIcon-root': {
+                  color: { md: 'rgba(255,255,255,0.92)' },
+                },
+              }}
+            >
+              {languages.map((language) => (
+                <MenuItem key={language.code} value={language.code}>
+                  {language.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Box>
 
-            {/* Form (full-width, no Paper) */}
-            <Box component="form" onSubmit={onSubmit} noValidate>
-              {FormContent}
-            </Box>
-          </Container>
-        ) : (
-          // DESKTOP/TABLET LAYOUT (card + black bg)
-          <Paper
-            elevation={8}
-            sx={{
-              width: '100%',
-              maxWidth: 400,
-              borderRadius: 2.5,
-              px: { sm: 4 },
-              py: { sm: 4 },
-              boxShadow: '0 10px 30px rgba(0,0,0,0.24), 0 6px 10px rgba(0,0,0,0.18)',
-            }}
-            role="dialog"
-            aria-labelledby="login-title"
+          <Stack
+            direction={{ xs: 'column-reverse', md: 'row' }}
+            spacing={{ xs: 6, md: 12 }}
+            alignItems={{ xs: 'stretch', md: 'center' }}
           >
-            {/* Header */}
-            <Box textAlign="center" mb={2}>
-              <Box
-                component="img"
-                src="/logo.png"
-                alt={t('app.logo_alt')}
-                sx={{ width: 80, height: 80, mb: 1.5, objectFit: 'contain' }}
-              />
-              <Typography
-                id="login-title"
-                variant="h4"
-                sx={{ fontWeight: 800, letterSpacing: 0.5, lineHeight: 1.1 }}
-              >
-                {t('app.name')}
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
-                <Trans>login.connect_space</Trans>
-              </Typography>
-            </Box>
+            <Paper
+              component="section"
+              elevation={16}
+              role="form"
+              aria-labelledby="login-title"
+              sx={{
+                flexBasis: { xs: 'auto', md: 420 },
+                flexShrink: 0,
+                width: '100%',
+                maxWidth: 440,
+                mx: { xs: 'auto', md: 0 },
+                p: { xs: 3, sm: 4 },
+                borderRadius: 3,
+                boxShadow: '0 25px 40px rgba(5, 7, 15, 0.25)',
+                backgroundColor: 'background.paper',
+              }}
+            >
+              <Stack spacing={3}>
+                <Stack spacing={1.5} textAlign="center">
+                  <Box
+                    component="img"
+                    src="/logo.png"
+                    alt={t('app.logo_alt')}
+                    sx={{ width: 72, height: 72, mx: 'auto', objectFit: 'contain' }}
+                  />
+                  <Typography
+                    id="login-title"
+                    variant="h5"
+                    sx={{ fontWeight: 800, letterSpacing: 0.6, lineHeight: 1.1 }}
+                  >
+                    {t('app.name')}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    <Trans>login.connect_space</Trans>
+                  </Typography>
+                </Stack>
 
-            {/* Form */}
-            <Box component="form" onSubmit={onSubmit} noValidate>
-              {FormContent}
+                <Box component="form" onSubmit={onSubmit} noValidate>
+                  {FormContent}
+                </Box>
+              </Stack>
+            </Paper>
+
+            <Box
+              sx={{
+                flexGrow: 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: { xs: 'center', md: 'flex-start' },
+              }}
+            >
+              <Stack
+                spacing={3}
+                sx={{
+                  maxWidth: 460,
+                  textAlign: { xs: 'center', md: 'left' },
+                }}
+              >
+                <Typography
+                  variant="overline"
+                  sx={{
+                    letterSpacing: 2,
+                    fontWeight: 700,
+                    color: { xs: 'primary.main', md: 'primary.light' },
+                  }}
+                >
+                  {t('app.product')}
+                </Typography>
+                <Typography
+                  variant="h3"
+                  component="h1"
+                  sx={{
+                    fontWeight: 800,
+                    lineHeight: 1.08,
+                    fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+                  }}
+                >
+                  {t('login.hero.title')}
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: { xs: 'text.secondary', md: 'rgba(255,255,255,0.72)' },
+                    fontSize: { xs: '1rem', md: '1.05rem' },
+                  }}
+                >
+                  {t('login.hero.subtitle')}
+                </Typography>
+
+                <Stack spacing={1.5}>
+                  {highlightItems.map((item) => (
+                    <Stack
+                      key={item}
+                      direction="row"
+                      spacing={1.5}
+                      alignItems="center"
+                      justifyContent={{ xs: 'center', md: 'flex-start' }}
+                    >
+                      <CheckCircleRounded
+                        sx={{
+                          color: { xs: 'primary.main', md: '#7da2ff' },
+                          fontSize: 22,
+                          flexShrink: 0,
+                        }}
+                      />
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          color: { xs: 'text.primary', md: 'rgba(255,255,255,0.85)' },
+                          fontWeight: 500,
+                        }}
+                      >
+                        {item}
+                      </Typography>
+                    </Stack>
+                  ))}
+                </Stack>
+              </Stack>
             </Box>
-          </Paper>
-        )}
-      </Box>
+          </Stack>
+        </Stack>
+      </Container>
 
       {versionLabel ? (
         <Typography
           variant="caption"
           sx={{
-            mt: 3,
+            py: 4,
             textAlign: 'center',
-            color: isMobile ? 'text.secondary' : 'rgba(255,255,255,0.72)',
+            color: { xs: 'text.secondary', md: 'rgba(255,255,255,0.68)' },
           }}
         >
           {versionLabel}

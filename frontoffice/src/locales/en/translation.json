@@ -13,13 +13,28 @@
     "unexpected_error": "Unexpected error, please try again.",
     "loading": "Loading..."
   },
+  "languages": {
+    "fr": "French",
+    "en": "English"
+  },
   "login": {
     "title": "Login",
     "email": "Email address",
     "password": "Password",
     "connect_space": "Log in to your account",
     "success": "Successfully logged in: {{name}}!",
-    "button": "Sign in"
+    "button": "Sign in",
+    "language_label": "Language",
+    "language_placeholder": "Switch interface language",
+    "hero": {
+      "title": "Coach smarter, faster.",
+      "subtitle": "Centralise your programs, support your athletes, and stay aligned with your team."
+    },
+    "highlights": {
+      "programs": "Build bespoke programs in minutes",
+      "followup": "Monitor athlete progress in real time",
+      "collaboration": "Collaborate securely with your staff"
+    }
   },
   "home": {
     "title": "Dashboard",

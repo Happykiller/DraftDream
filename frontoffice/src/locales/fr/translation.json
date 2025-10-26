@@ -13,13 +13,28 @@
     "unexpected_error": "Erreur inattendue, veuillez réessayer.",
     "loading": "Chargement..."
   },
+  "languages": {
+    "fr": "Français",
+    "en": "Anglais"
+  },
   "login": {
     "title": "Connexion",
     "email": "Adresse e-mail",
     "password": "Mot de passe",
     "connect_space": "Connectez-vous à votre espace",
     "success": "Connexion réussie : {{name}} !",
-    "button": "Se connecter"
+    "button": "Se connecter",
+    "language_label": "Langue",
+    "language_placeholder": "Changer la langue de l'interface",
+    "hero": {
+      "title": "Coachez plus intelligemment, plus rapidement.",
+      "subtitle": "Centralisez vos programmes, accompagnez vos athlètes et restez aligné avec votre équipe."
+    },
+    "highlights": {
+      "programs": "Créez des programmes sur mesure en quelques minutes",
+      "followup": "Suivez la progression de vos athlètes en temps réel",
+      "collaboration": "Collaborez en toute sécurité avec votre équipe"
+    }
   },
   "home": {
     "title": "Tableau de bord",
