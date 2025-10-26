@@ -93,7 +93,7 @@
         "no_sessions_warning": "Create a session before adding exercises.",
         "sets_label": " sets",
         "reps_label": " reps",
-        "rest_label": "",
+        "rest_label": "Rest: ",
         "tooltips": {
           "add_exercise": "Add this exercise to the selected session",
           "edit_exercise": "Edit this exercise",

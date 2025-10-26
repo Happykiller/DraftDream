@@ -23,9 +23,9 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
 }: ProgramBuilderExerciseLibraryItemProps): React.JSX.Element {
   const theme = useTheme();
   const { t } = useTranslation();
-  const setsLabel = t('programs-coatch.builder.library.sets_label', { defaultValue: 'sets' });
-  const repsLabel = t('programs-coatch.builder.library.reps_label', { defaultValue: 'reps' });
-  const restLabel = t('programs-coatch.builder.library.rest_label', { defaultValue: 'rest' });
+  const setsLabel = t('programs-coatch.builder.library.sets_label');
+  const repsLabel = t('programs-coatch.builder.library.reps_label');
+  const restLabel = t('programs-coatch.builder.library.rest_label');
   const tooltips = React.useMemo(
     () =>
       t('programs-coatch.builder.library.tooltips', {

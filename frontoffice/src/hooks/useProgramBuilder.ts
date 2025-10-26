@@ -838,11 +838,7 @@ export function useProgramBuilder(
       const frequency = parsedFrequency;
 
       if (!name || !duration || !frequency) {
-        flashError(
-          t('programs-coatch.builder.errors.missing_required_fields', {
-            defaultValue: 'Please fill required fields.',
-          }),
-        );
+        flashError(t('programs-coatch.builder.errors.missing_required_fields'));
         return;
       }
 

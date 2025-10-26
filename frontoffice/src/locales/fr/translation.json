@@ -92,9 +92,9 @@
         "empty_state": "Aucun exercice ne correspond à vos filtres.",
         "button_create": "Creer un exercice",
         "subtitle": "Ajoutez un exercice à une séance pour l'intégrer.",
-        "sets_label": " series",
-        "reps_label": " reps",
-        "rest_label": "",
+        "sets_label": " séries",
+        "reps_label": " répétitions",
+        "rest_label": "Repos : ",
         "tooltips": {
           "add_exercise": "Ajouter cet exercice à la séance sélectionnée",
           "edit_exercise": "Modifier cet exercice",

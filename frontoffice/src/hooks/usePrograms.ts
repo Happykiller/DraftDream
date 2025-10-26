@@ -261,15 +261,11 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
         const createdProgram = data?.program_create;
         if (!createdProgram) {
           throw new Error(
-            t('programs-coatch.notifications.program_create_failed', {
-              defaultValue: 'Unable to create the program.',
-            }),
+            t('programs-coatch.notifications.program_create_failed'),
           );
         }
         flashSuccess(
-          t('programs-coatch.notifications.program_created', {
-            defaultValue: 'Program created',
-          }),
+          t('programs-coatch.notifications.program_created'),
         );
         await load();
         return createdProgram;
@@ -334,11 +330,7 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
           }),
         );
         if (errors?.length) throw new Error(errors[0].message);
-        flashSuccess(
-          t('programs-coatch.notifications.program_updated', {
-            defaultValue: 'Program updated',
-          }),
-        );
+        flashSuccess(t('programs-coatch.notifications.program_updated'));
         await load();
       } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Update failed';
@@ -362,15 +354,11 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
         if (errors?.length) throw new Error(errors[0].message);
         if (!data?.program_softDelete) {
           throw new Error(
-            t('programs-coatch.notifications.program_delete_failed', {
-              defaultValue: 'Failed to delete program',
-            }),
+            t('programs-coatch.notifications.program_delete_failed'),
           );
         }
         flashSuccess(
-          t('programs-coatch.notifications.program_deleted', {
-            defaultValue: 'Program deleted',
-          }),
+          t('programs-coatch.notifications.program_deleted'),
         );
         await load();
       } catch (error: unknown) {
