@@ -31,7 +31,9 @@ export function ProtectedLayout(): React.JSX.Element {
     () => items.find((item) => isSelectedPath(location.pathname, item.path)),
     [items, location.pathname]
   );
-  const pageTitle = current?.label ?? t('home.title');
+  const defaultTitle = t('home.title');
+  const profileTitle = t('profile.title');
+  const pageTitle = current?.label ?? (location.pathname === '/profile' ? profileTitle : defaultTitle);
 
   const handleSelectPath = React.useCallback(
     (path: string, external?: boolean) => {
@@ -55,6 +57,10 @@ export function ProtectedLayout(): React.JSX.Element {
     if (isMobile) close();
   }, [navigate, isMobile, close]);
 
+  const openProfile = React.useCallback(() => {
+    navigate('/profile');
+  }, [navigate]);
+
   React.useEffect(() => {
     document.title = `${pageTitle} - ${t('common.brand.full')}`;
   }, [pageTitle, t]);
@@ -70,6 +76,7 @@ export function ProtectedLayout(): React.JSX.Element {
         userRole={snap.role ?? undefined}
         onMenuClick={toggle}
         onLogout={handleLogout}
+        onProfileClick={openProfile}
       />
 
       {/* Side drawers */}

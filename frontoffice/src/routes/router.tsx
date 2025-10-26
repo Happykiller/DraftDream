@@ -41,6 +41,13 @@ export const router = createBrowserRouter([
           return { Component: withTitle(mod.Home, 'home.title') };
         },
       },
+      {
+        path: '/profile',
+        lazy: async () => {
+          const mod = await import('@src/pages/Profile');
+          return { Component: withTitle(mod.Profile, 'profile.title') };
+        },
+      },
     ],
   },
   {

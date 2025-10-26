@@ -39,7 +39,8 @@ export function ProtectedLayout(): React.JSX.Element {
   );
 
   const defaultTitle = t('home.title');
-  const pageTitle = current?.label ?? defaultTitle;
+  const profileTitle = t('profile.title');
+  const pageTitle = current?.label ?? (location.pathname === '/profile' ? profileTitle : defaultTitle);
   const fullTitle = t('app.title_template', { page: pageTitle });
 
   const handleSelectPath = React.useCallback(
@@ -64,6 +65,10 @@ export function ProtectedLayout(): React.JSX.Element {
     if (isMobile) close();
   }, [navigate, isMobile, close]);
 
+  const openProfile = React.useCallback(() => {
+    navigate('/profile');
+  }, [navigate]);
+
   React.useEffect(() => {
     // Keep browser tab title synced with current page title.
     document.title = fullTitle;
@@ -81,6 +86,7 @@ export function ProtectedLayout(): React.JSX.Element {
         userRole={snap.role ?? undefined}
         onMenuClick={toggle}
         onLogout={handleLogout}
+        onProfileClick={openProfile}
       />
 
       {/* Side drawers */}

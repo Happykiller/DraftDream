@@ -123,6 +123,21 @@
     "success": "Connexion réussie : {{name}} !",
     "button": "Se connecter"
   },
+  "profile": {
+    "title": "Profil",
+    "subtitle": "Informations de session actuellement mises en cache sur cet appareil.",
+    "session_card": {
+      "title": "Instantané de session",
+      "description": "Consultez les valeurs stockées dans votre session authentifiée.",
+      "fields": {
+        "full_name": "Nom complet",
+        "role": "Rôle",
+        "identifier": "Identifiant",
+        "access_token": "Jeton d'accès"
+      },
+      "empty": "Non renseigné"
+    }
+  },
   "home": {
     "title": "Tableau de bord"
   },
@@ -277,7 +292,8 @@
     "open_navigation": "Ouvrir la navigation"
   },
   "header": {
-    "logout": "Se déconnecter"
+    "logout": "Se déconnecter",
+    "open_profile": "Ouvrir le profil"
   },
   "users": {
     "title": "Utilisateurs",

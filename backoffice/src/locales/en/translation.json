@@ -123,6 +123,21 @@
     "success": "Successfully logged in: {{name}}!",
     "button": "Sign in"
   },
+  "profile": {
+    "title": "Profile",
+    "subtitle": "Session details currently cached on this device.",
+    "session_card": {
+      "title": "Session snapshot",
+      "description": "Review the values stored in your authenticated session.",
+      "fields": {
+        "full_name": "Full name",
+        "role": "Role",
+        "identifier": "Identifier",
+        "access_token": "Access token"
+      },
+      "empty": "Not provided"
+    }
+  },
   "home": {
     "title": "Dashboard"
   },
@@ -276,7 +291,8 @@
     "open_navigation": "Open navigation"
   },
   "header": {
-    "logout": "Log out"
+    "logout": "Log out",
+    "open_profile": "Open profile"
   },
   "users": {
     "title": "Users",

@@ -29,6 +29,21 @@
     "title": "Clients",
     "placeholder": "Clients"
   },
+  "profile": {
+    "title": "Profil",
+    "subtitle": "Informations de session disponibles pour l'application.",
+    "session_card": {
+      "title": "Instantané de session",
+      "description": "Ces champs reflètent les données actuellement stockées dans votre session locale.",
+      "fields": {
+        "full_name": "Nom complet",
+        "role": "Rôle",
+        "identifier": "Identifiant",
+        "access_token": "Jeton d'accès"
+      },
+      "empty": "Non renseigné"
+    }
+  },
   "programs-athlete": {
     "title": "Mes programmes"
   },
@@ -439,7 +454,8 @@
   "header": {
     "logout": "Se déconnecter",
     "loading_user": "Chargement du profil…",
-    "unknown_user": "Utilisateur inconnu"
+    "unknown_user": "Utilisateur inconnu",
+    "open_profile": "Ouvrir le profil"
   },
   "ERRORS": {
     "INVALID_CREDENTIALS": "Identifiants invalides."

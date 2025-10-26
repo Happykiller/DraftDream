@@ -29,6 +29,21 @@
     "title": "Clients",
     "placeholder": "Clients"
   },
+  "profile": {
+    "title": "Profile",
+    "subtitle": "Session details available to the application.",
+    "session_card": {
+      "title": "Session snapshot",
+      "description": "These fields reflect the data currently stored in your local session.",
+      "fields": {
+        "full_name": "Full name",
+        "role": "Role",
+        "identifier": "Identifier",
+        "access_token": "Access token"
+      },
+      "empty": "Not provided"
+    }
+  },
   "programs-athlete": {
     "title": "My programs"
   },
@@ -437,7 +452,8 @@
   "header": {
     "logout": "Log out",
     "loading_user": "Loading profile…",
-    "unknown_user": "Unknown user"
+    "unknown_user": "Unknown user",
+    "open_profile": "Open profile"
   },
   "ERRORS": {
     "INVALID_CREDENTIALS": "Invalid credentials."
