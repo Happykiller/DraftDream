@@ -1,8 +1,9 @@
 // src/pages/ProgramsAthlete.tsx
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ArrowBack } from '@mui/icons-material';
-import { Alert, Button, CircularProgress, Stack, Typography } from '@mui/material';
+import { ArrowBack, Visibility } from '@mui/icons-material';
+import { Alert, Box, Button, CircularProgress, Divider, Stack, Typography } from '@mui/material';
+import { alpha, useTheme } from '@mui/material/styles';
 import { type LoaderFunctionArgs, useLoaderData, useNavigate, useParams } from 'react-router-dom';
 
 import { ProgramList } from '@src/components/programs/ProgramList';
@@ -61,6 +62,7 @@ export function ProgramsAthlete(): React.JSX.Element {
   const { programId } = useParams<{ programId?: string }>();
   const loaderData = useLoaderData() as ProgramsAthleteLoaderData;
   const [activeTab, setActiveTab] = React.useState<ProgramViewTab>('overview');
+  const theme = useTheme();
 
   const initialError = React.useMemo(() => {
     if (!programId) {
@@ -150,62 +152,123 @@ export function ProgramsAthlete(): React.JSX.Element {
     setActiveTab('overview');
   }, [programId]);
 
-  const showList = !programId;
   const showDetail = Boolean(programId);
 
   return (
-    <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
+    <Stack sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
       {/* General information */}
-      <Stack spacing={1}>
-        <Typography variant="h4" sx={{ fontWeight: 600 }}>
-          {program ? program.label : t('programs-athlete.title')}
-        </Typography>
-        <Typography color="text.secondary">{programSubtitle}</Typography>
-      </Stack>
-
-      {showDetail && (
-        <Stack spacing={2.5}>
-          <Button
-            variant="text"
-            color="primary"
-            startIcon={<ArrowBack fontSize="small" />}
-            onClick={handleCloseProgram}
-            sx={{ alignSelf: 'flex-start' }}
+      {showDetail ? (
+        <Stack
+          sx={{
+            minHeight: { xs: 'calc(100dvh - 56px)', sm: 'calc(100dvh - 64px)' },
+            maxHeight: { xs: 'calc(100dvh - 56px)', sm: 'calc(100dvh - 64px)' },
+            height: '100%',
+            overflow: 'hidden',
+            borderRadius: { xs: 0, sm: 2 },
+            boxShadow: { sm: theme.shadows[2] },
+            backgroundColor: theme.palette.background.paper,
+          }}
+        >
+          <Stack
+            direction="row"
+            spacing={2}
+            alignItems="center"
+            sx={{
+              backgroundColor: alpha(theme.palette.primary.main, 0.12),
+              p: { xs: 1.5, sm: 2 },
+            }}
           >
-            {t('programs-athlete.actions.back_to_list')}
-          </Button>
-
-          {programLoading && (
-            <Stack alignItems="center" py={6}>
-              <CircularProgress color="primary" />
+            <Box
+              aria-hidden
+              sx={{
+                width: 40,
+                height: 40,
+                borderRadius: 2,
+                bgcolor: 'primary.main',
+                color: 'primary.contrastText',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}
+            >
+              <Visibility fontSize="medium" />
+            </Box>
+            <Stack spacing={0.5}>
+              <Typography variant="h6" component="span" sx={{ fontWeight: 700 }}>
+                {program ? program.label : t('programs-athlete.title')}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {programSubtitle}
+              </Typography>
             </Stack>
-          )}
+          </Stack>
 
-          {!programLoading && programError && (
-            <Alert severity="error">{programError}</Alert>
-          )}
+          <Divider />
 
-          {!programLoading && program && (
-            <ProgramViewContent
-              program={program}
-              activeTab={activeTab}
-              onTabChange={handleTabChange}
-              updatedOnLabel={programUpdatedOn}
-            />
-          )}
+          <Box sx={{ flexGrow: 1, overflow: 'auto', minHeight: 0 }}>
+            <Stack spacing={3} sx={{ p: { xs: 2, sm: 3 } }}>
+              {programLoading && (
+                <Stack alignItems="center" py={6}>
+                  <CircularProgress color="primary" />
+                </Stack>
+              )}
+
+              {!programLoading && programError && (
+                <Alert severity="error">{programError}</Alert>
+              )}
+
+              {!programLoading && program && (
+                <ProgramViewContent
+                  program={program}
+                  activeTab={activeTab}
+                  onTabChange={handleTabChange}
+                  updatedOnLabel={programUpdatedOn}
+                />
+              )}
+            </Stack>
+          </Box>
+
+          <Divider />
+
+          <Stack
+            direction="row"
+            justifyContent="flex-end"
+            sx={{
+              backgroundColor: alpha(theme.palette.primary.main, 0.08),
+              px: { xs: 2, sm: 3 },
+              py: { xs: 1.5, sm: 2 },
+            }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<ArrowBack fontSize="small" />}
+              onClick={handleCloseProgram}
+            >
+              {t('programs-athlete.actions.back_to_list')}
+            </Button>
+          </Stack>
         </Stack>
-      )}
+      ) : (
+        <Stack spacing={3}>
+          <Stack spacing={1}>
+            <Typography variant="h4" sx={{ fontWeight: 600 }}>
+              {t('programs-athlete.title')}
+            </Typography>
+            <Typography color="text.secondary">{programSubtitle}</Typography>
+          </Stack>
 
-      {showList && (
-        <ProgramList
-          programs={programs}
-          loading={listLoading}
-          placeholderTitle={emptyStateCopy.title}
-          placeholderSubtitle={emptyStateCopy.description}
-          placeholderHelper={emptyStateCopy.helper}
-          allowedActions={['view']}
-          onViewProgram={handleNavigateToProgram}
-        />
+          <ProgramList
+            programs={programs}
+            loading={listLoading}
+            placeholderTitle={emptyStateCopy.title}
+            placeholderSubtitle={emptyStateCopy.description}
+            placeholderHelper={emptyStateCopy.helper}
+            allowedActions={['view']}
+            onViewProgram={handleNavigateToProgram}
+          />
+        </Stack>
       )}
     </Stack>
   );
