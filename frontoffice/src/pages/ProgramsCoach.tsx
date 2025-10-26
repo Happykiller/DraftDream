@@ -1,7 +1,17 @@
 // src/pages/ProgramsCoach.tsx
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Button, CircularProgress, Stack, Typography } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Button,
+  CircularProgress,
+  Divider,
+  Stack,
+  Typography,
+} from '@mui/material';
+import { alpha, useTheme } from '@mui/material/styles';
+import { Visibility } from '@mui/icons-material';
 
 import { ProgramBuilderPanel, type BuilderCopy } from '@src/components/programs/ProgramBuilderPanel';
 import { ProgramList } from '@src/components/programs/ProgramList';
@@ -16,6 +26,7 @@ import { slugify } from '@src/utils/slugify';
 /** Coach-facing program management dashboard. */
 export function ProgramsCoach(): React.JSX.Element {
   const { t, i18n } = useTranslation();
+  const theme = useTheme();
 
   const [builderOpen, setBuilderOpen] = React.useState<boolean>(false);
   const [editingProgram, setEditingProgram] = React.useState<Program | null>(null);
@@ -177,43 +188,123 @@ export function ProgramsCoach(): React.JSX.Element {
     return (
       <>
         {/* General information */}
-        <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
+        <Stack
+          sx={{
+            minHeight: { xs: 'calc(100dvh - 56px)', sm: 'calc(100dvh - 64px)' },
+            maxHeight: { xs: 'calc(100dvh - 56px)', sm: 'calc(100dvh - 64px)' },
+            height: '100%',
+            flex: 1,
+            overflow: 'hidden',
+            backgroundColor: theme.palette.background.paper,
+          }}
+        >
+          {/* Header */}
+          <Stack
+            direction="row"
+            spacing={2}
+            alignItems="center"
+            sx={{
+              px: { xs: 2, sm: 3, md: 4 },
+              py: { xs: 2, sm: 2.5 },
+              backgroundColor: alpha(theme.palette.primary.main, 0.1),
+            }}
+          >
+            <Box
+              aria-hidden
+              sx={{
+                width: 40,
+                height: 40,
+                borderRadius: 2,
+                bgcolor: 'primary.main',
+                color: 'primary.contrastText',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                boxShadow: '0 10px 20px rgba(25, 118, 210, 0.24)',
+              }}
+            >
+              <Visibility fontSize="medium" />
+            </Box>
+            <Stack spacing={0.5} sx={{ minWidth: 0 }}>
+              <Typography
+                variant="h5"
+                sx={{ fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis' }}
+                noWrap
+              >
+                {detailedProgram ? detailedProgram.label : viewingProgram.label}
+              </Typography>
+              {viewingProgramSubtitle ? (
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  noWrap
+                  sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
+                >
+                  {viewingProgramSubtitle}
+                </Typography>
+              ) : null}
+            </Stack>
+          </Stack>
+
+          <Divider />
+
+          {/* Content */}
+          <Box sx={{ flexGrow: 1, overflow: 'auto', minHeight: 0 }}>
+            <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3, md: 3.5 } }}>
+              {detailLoading ? (
+                <Stack alignItems="center" justifyContent="center" py={6}>
+                  <CircularProgress color="primary" />
+                </Stack>
+              ) : (
+                <Stack spacing={3}>
+                  {detailError ? <Alert severity="error">{detailError}</Alert> : null}
+
+                  {detailedProgram ? (
+                    <ProgramViewContent
+                      program={detailedProgram}
+                      activeTab={viewingTab}
+                      onTabChange={handleViewingTabChange}
+                      updatedOnLabel={viewingProgramUpdatedOn}
+                      showUpdatedOnLabel={false}
+                    />
+                  ) : null}
+                </Stack>
+              )}
+            </Box>
+          </Box>
+
+          <Divider />
+
+          {/* Footer */}
           <Stack
             direction={{ xs: 'column', sm: 'row' }}
             spacing={2}
-            alignItems={{ xs: 'flex-start', sm: 'center' }}
+            alignItems={{ xs: 'stretch', sm: 'center' }}
             justifyContent="space-between"
+            sx={{
+              px: { xs: 2, sm: 3, md: 4 },
+              py: { xs: 2, sm: 2.5 },
+              backgroundColor: alpha(theme.palette.grey[500], 0.08),
+            }}
           >
-            <Stack spacing={0.5}>
-              <Typography variant="h4" sx={{ fontWeight: 600 }}>
-                {detailedProgram ? detailedProgram.label : viewingProgram.label}
+            {viewingProgramUpdatedOn ? (
+              <Typography variant="caption" color="text.secondary">
+                {viewingProgramUpdatedOn}
               </Typography>
-              {viewingProgramSubtitle && (
-                <Typography color="text.secondary">{viewingProgramSubtitle}</Typography>
-              )}
-            </Stack>
+            ) : (
+              <Box sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }} />
+            )}
 
-            <Button variant="contained" color="primary" onClick={handleCloseViewer}>
-              {t('programs-coatch.view.actions.close')}
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleCloseViewer}
+              sx={{ alignSelf: { xs: 'stretch', sm: 'center' } }}
+            >
+              {t('programs-coatch.view.actions.back_to_list')}
             </Button>
           </Stack>
-
-          {detailLoading && (
-            <Stack alignItems="center" py={6}>
-              <CircularProgress color="primary" />
-            </Stack>
-          )}
-
-          {!detailLoading && detailError && <Alert severity="error">{detailError}</Alert>}
-
-          {!detailLoading && detailedProgram && (
-            <ProgramViewContent
-              program={detailedProgram}
-              activeTab={viewingTab}
-              onTabChange={handleViewingTabChange}
-              updatedOnLabel={viewingProgramUpdatedOn}
-            />
-          )}
         </Stack>
       </>
     );

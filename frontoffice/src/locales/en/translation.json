@@ -410,7 +410,8 @@
         }
       },
       "actions": {
-        "close": "Close"
+        "close": "Close",
+        "back_to_list": "Back to programs"
       }
     }
   },

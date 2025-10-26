@@ -412,7 +412,8 @@
         }
       },
       "actions": {
-        "close": "Fermer"
+        "close": "Fermer",
+        "back_to_list": "Retour à la liste"
       }
     }
   },

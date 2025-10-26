@@ -34,6 +34,7 @@ interface ProgramViewContentProps {
   activeTab: ProgramViewTab;
   onTabChange: (tab: ProgramViewTab) => void;
   updatedOnLabel: string;
+  showUpdatedOnLabel?: boolean;
 }
 
 /**
@@ -44,6 +45,7 @@ export function ProgramViewContent({
   activeTab,
   onTabChange,
   updatedOnLabel,
+  showUpdatedOnLabel = true,
 }: ProgramViewContentProps): React.JSX.Element {
   const { t } = useTranslation();
 
@@ -490,11 +492,15 @@ export function ProgramViewContent({
         </Stack>
       )}
 
-      <Divider flexItem />
+      {showUpdatedOnLabel ? (
+        <>
+          <Divider flexItem />
 
-      <Typography variant="caption" color="text.secondary">
-        {updatedOnLabel}
-      </Typography>
+          <Typography variant="caption" color="text.secondary">
+            {updatedOnLabel}
+          </Typography>
+        </>
+      ) : null}
     </Stack>
   );
 }
