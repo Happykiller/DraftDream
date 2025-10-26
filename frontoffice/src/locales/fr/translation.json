@@ -198,8 +198,10 @@
         "intermediate": "Intermédiaire",
         "advanced": "Avancé"
       },
+      "duration_weeks": "{{count}} semaine",
       "duration_weeks_one": "{{count}} semaine",
       "duration_weeks_other": "{{count}} semaines",
+      "frequency_week": "{{count}} séance/semaine",
       "frequency_week_one": "{{count}} séance/semaine",
       "frequency_week_other": "{{count}} séances/semaine",
       "sessions_summary": "{{sessions}} séances • {{exercises}} exercices",
@@ -284,6 +286,57 @@
         "actions": {
           "close": "Fermer"
         }
+      }
+    },
+    "view": {
+      "dialog": {
+        "subtitle_with_athlete": "Programme pour {{athlete}} · Créé le {{date}}",
+        "subtitle_without_athlete": "Créé le {{date}}"
+      },
+      "tabs": {
+        "overview": "Vue d'ensemble",
+        "sessions": "Séances détaillées"
+      },
+      "sections": {
+        "overview": "Vue d'ensemble",
+        "information": "Informations du programme",
+        "stats": "Statistiques",
+        "description": "Description du programme"
+      },
+      "information": {
+        "duration": "Durée",
+        "frequency": "Fréquence",
+        "difficulty": "Niveau",
+        "athlete": "Athlète assigné",
+        "no_athlete": "Non assigné",
+        "no_difficulty": "Non défini"
+      },
+      "stats": {
+        "sessions": "Nombre de séances",
+        "sessions_value": "{{count}} séance",
+        "sessions_value_one": "{{count}} séance",
+        "sessions_value_other": "{{count}} séances",
+        "exercises": "Total exercices",
+        "exercises_value": "{{count}} exercice",
+        "exercises_value_one": "{{count}} exercice",
+        "exercises_value_other": "{{count}} exercices",
+        "total_duration": "Durée estimée",
+        "average_duration": "Durée moyenne par séance"
+      },
+      "durations": {
+        "not_available": "Non renseignée",
+        "hours_minutes": "{{hours}}h {{minutes}}min",
+        "hours": "{{count}} heure",
+        "hours_one": "{{count}} heure",
+        "hours_other": "{{count}} heures",
+        "minutes": "{{count}} minute",
+        "minutes_one": "{{count}} minute",
+        "minutes_other": "{{count}} minutes"
+      },
+      "session_duration": "Durée estimée : {{duration}} min",
+      "session_no_exercises": "Aucun exercice pour cette séance.",
+      "actions": {
+        "close": "Fermer"
       }
     }
   },
