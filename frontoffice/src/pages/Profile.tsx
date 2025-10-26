@@ -161,7 +161,7 @@ export function Profile(): React.JSX.Element {
       <Container maxWidth="lg">
         {/* General information */}
         <Grid container spacing={{ xs: 6, md: 8 }} alignItems="stretch">
-          <Grid item xs={12} md={5}>
+          <Grid size={{xs: 12, md: 5}}>
             <Stack spacing={4} sx={{ height: '100%' }}>
               <Stack spacing={2}>
                 <Typography variant="overline" color="primary">{t('profile.title')}</Typography>
@@ -219,7 +219,7 @@ export function Profile(): React.JSX.Element {
             </Stack>
           </Grid>
 
-          <Grid item xs={12} md={7}>
+          <Grid size={{xs: 12, md: 7}}>
             <Stack spacing={3} sx={{ height: '100%' }}>
               <Paper
                 elevation={0}
