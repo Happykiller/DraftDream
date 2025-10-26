@@ -24,9 +24,12 @@ import {
 } from '@mui/icons-material';
 
 import type { Program } from '@src/hooks/usePrograms';
+import { UserType } from '@src/commons/enums';
 import { session } from '@stores/session';
 
 import { ProgramCloneDialog } from './ProgramCloneDialog';
+import { ProgramViewDialog } from './ProgramViewDialog';
+import { deriveProgramDifficulty, formatProgramDate } from './programFormatting';
 
 interface ProgramCardProps {
   program: Program;
@@ -35,34 +38,6 @@ interface ProgramCardProps {
   onEdit?: (program: Program) => void;
   onClone?: (program: Program, payload: { label: string; athleteId: string | null }) => Promise<void>;
   onView?: (program: Program) => void;
-}
-
-type ProgramDifficulty = 'beginner' | 'intermediate' | 'advanced';
-
-const DIFFICULTY_PRIORITY: ProgramDifficulty[] = ['advanced', 'intermediate', 'beginner'];
-
-function normalizeDifficulty(level?: string | null): ProgramDifficulty | null {
-  if (!level) {
-    return null;
-  }
-
-  const normalized = level.toLowerCase();
-
-  if (normalized === 'beginner' || normalized === 'intermediate' || normalized === 'advanced') {
-    return normalized;
-  }
-
-  return null;
-}
-
-function deriveProgramDifficulty(program: Program): ProgramDifficulty | null {
-  const difficulty = program.sessions
-    .flatMap((session) => session.exercises)
-    .map((exercise) => normalizeDifficulty(exercise.level))
-    .filter((level): level is ProgramDifficulty => Boolean(level))
-    .sort((a, b) => DIFFICULTY_PRIORITY.indexOf(a) - DIFFICULTY_PRIORITY.indexOf(b));
-
-  return difficulty[0] ?? null;
 }
 
 export type ProgramActionKey = 'view' | 'copy' | 'edit' | 'delete';
@@ -82,18 +57,6 @@ const PROGRAM_ACTIONS: ProgramAction[] = [
   { key: 'delete', color: 'error', Icon: DeleteOutline },
 ];
 
-function formatDate(value: string, locale: string): string {
-  try {
-    return new Intl.DateTimeFormat(locale, {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    }).format(new Date(value));
-  } catch (_error) {
-    return value;
-  }
-}
-
 export function ProgramCard({
   program,
   allowedActions = DEFAULT_ALLOWED_ACTIONS,
@@ -112,7 +75,8 @@ export function ProgramCard({
   const difficulty = deriveProgramDifficulty(program);
   const [isCloneDialogOpen, setIsCloneDialogOpen] = React.useState(false);
   const [isCloneSubmitting, setIsCloneSubmitting] = React.useState(false);
-  const isAthleteUser = role === 'athlete';
+  const [isViewDialogOpen, setIsViewDialogOpen] = React.useState(false);
+  const isAthleteUser = role === UserType.Athlete;
 
   const handleOpenCloneDialog = React.useCallback(() => {
     setIsCloneDialogOpen(true);
@@ -124,6 +88,10 @@ export function ProgramCard({
 
   const handleCloneSubmittingChange = React.useCallback((submitting: boolean) => {
     setIsCloneSubmitting(submitting);
+  }, []);
+
+  const handleCloseViewDialog = React.useCallback(() => {
+    setIsViewDialogOpen(false);
   }, []);
   const athleteLabel = React.useMemo(() => {
     if (isAthleteUser || !program.athlete) {
@@ -140,11 +108,11 @@ export function ProgramCard({
   }, [isAthleteUser, program.athlete]);
 
   const createdOn = React.useMemo(
-    () => formatDate(program.createdAt, i18n.language),
+    () => formatProgramDate(program.createdAt, i18n.language),
     [i18n.language, program.createdAt],
   );
   const updatedOn = React.useMemo(
-    () => formatDate(program.updatedAt, i18n.language),
+    () => formatProgramDate(program.updatedAt, i18n.language),
     [i18n.language, program.updatedAt],
   );
 
@@ -156,6 +124,7 @@ export function ProgramCard({
   const handleActionClick = React.useCallback(
     (actionKey: ProgramAction['key']) => {
       if (actionKey === 'view') {
+        setIsViewDialogOpen(true);
         onView?.(program);
         return;
       }
@@ -396,6 +365,9 @@ export function ProgramCard({
           onClone={onClone}
           onSubmittingChange={handleCloneSubmittingChange}
         />
+      )}
+      {allowedActions.includes('view') && (
+        <ProgramViewDialog open={isViewDialogOpen} program={program} onClose={handleCloseViewDialog} />
       )}
     </>
   );

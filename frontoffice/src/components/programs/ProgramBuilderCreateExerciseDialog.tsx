@@ -5,6 +5,7 @@ import { Button, Chip, MenuItem, Stack, TextField } from '@mui/material';
 import { Add, Edit } from '@mui/icons-material';
 
 import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
+import { ExerciseLevel as ExerciseLevelEnum } from '@src/commons/enums';
 import type {
   CreateExerciseInput,
   Exercise,
@@ -141,7 +142,7 @@ export function ProgramBuilderCreateExerciseDialog({
   const [charge, setCharge] = React.useState('');
   const [videoUrl, setVideoUrl] = React.useState('');
   const [categoryIds, setCategoryIds] = React.useState<string[]>([]);
-  const [level, setLevel] = React.useState<ExerciseLevel>('BEGINNER');
+  const [level, setLevel] = React.useState<ExerciseLevel>(ExerciseLevelEnum.Beginner);
   const [muscleIds, setMuscleIds] = React.useState<string[]>([]);
   const [equipmentIds, setEquipmentIds] = React.useState<string[]>([]);
   const [tagIds, setTagIds] = React.useState<string[]>([]);
@@ -285,7 +286,7 @@ export function ProgramBuilderCreateExerciseDialog({
     setCharge('');
     setVideoUrl('');
     setCategoryIds([]);
-    setLevel('BEGINNER');
+    setLevel(ExerciseLevelEnum.Beginner);
     setMuscleIds([]);
     setEquipmentIds([]);
     setTagIds([]);
@@ -334,15 +335,15 @@ export function ProgramBuilderCreateExerciseDialog({
   const levelOptions = React.useMemo<{ value: ExerciseLevel; label: string }[]>(
     () => [
       {
-        value: 'BEGINNER',
+        value: ExerciseLevelEnum.Beginner,
         label: t('programs-coatch.builder.library.create_dialog.levels.beginner'),
       },
       {
-        value: 'INTERMEDIATE',
+        value: ExerciseLevelEnum.Intermediate,
         label: t('programs-coatch.builder.library.create_dialog.levels.intermediate'),
       },
       {
-        value: 'ADVANCED',
+        value: ExerciseLevelEnum.Advanced,
         label: t('programs-coatch.builder.library.create_dialog.levels.advanced'),
       },
     ],

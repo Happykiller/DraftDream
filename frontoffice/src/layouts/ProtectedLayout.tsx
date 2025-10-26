@@ -5,10 +5,11 @@ import { Box, CssBaseline, Drawer, Toolbar, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
+import { UserType } from '@src/commons/enums';
 import { session } from '@stores/session';
 import { LayoutAppBar } from './components/LayoutAppBar';
 import { Sidebar } from './components/Sidebar';
-import { useNavItems } from './hooks/useNavItems';
+import { useNavItems, type Role } from './hooks/useNavItems';
 import { useMobileDrawer } from './hooks/useMobileDrawer';
 import { DRAWER_WIDTH, RAIL_WIDTH } from './tokens';
 import { isSelectedPath } from './navMatch';
@@ -23,7 +24,10 @@ export function ProtectedLayout(): React.JSX.Element {
 
   // Session snapshot once per render (no live subscription => 0 regression)
   const snap = React.useMemo(() => session.getState(), []);
-  const role = snap.role ?? 'guest';
+  const role: Role =
+    snap.role && Object.values(UserType).includes(snap.role as (typeof UserType)[keyof typeof UserType])
+      ? (snap.role as Role)
+      : 'guest';
   const fallbackName = [snap.name_first, snap.name_last].filter(Boolean).join(' ').trim();
 
   const items = useNavItems(role);

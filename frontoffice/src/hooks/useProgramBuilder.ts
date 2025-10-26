@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { ExerciseLevel as ExerciseLevelEnum, UserType } from '@src/commons/enums';
 import { useSessions } from '@hooks/useSessions';
 import {
   useExercises,
@@ -285,13 +286,13 @@ export function useProgramBuilder(
   const normalizeExerciseLevel = React.useCallback(
     (level?: string | null): ExerciseLevel => {
       const normalized = (level ?? '').toUpperCase();
-      if (normalized === 'INTERMEDIATE') {
-        return 'INTERMEDIATE';
+      if (normalized === ExerciseLevelEnum.Intermediate) {
+        return ExerciseLevelEnum.Intermediate;
       }
-      if (normalized === 'ADVANCED') {
-        return 'ADVANCED';
+      if (normalized === ExerciseLevelEnum.Advanced) {
+        return ExerciseLevelEnum.Advanced;
       }
-      return 'BEGINNER';
+      return ExerciseLevelEnum.Beginner;
     },
     [],
   );
@@ -306,7 +307,7 @@ export function useProgramBuilder(
     page: 1,
     limit: 100,
     q: debouncedQ,
-    type: 'athlete',
+    type: UserType.Athlete,
   });
 
   const { create: createProgram, update: updateProgram } = usePrograms({
@@ -432,17 +433,13 @@ export function useProgramBuilder(
         value: 'PRIVATE',
         label:
           builderCopy.library.type_private ??
-          t('programs-coatch.builder.library.type_private', {
-            defaultValue: 'Private',
-          }),
+          t('programs-coatch.builder.library.type_private'),
       },
       {
         value: 'PUBLIC',
         label:
           builderCopy.library.type_public ??
-          t('programs-coatch.builder.library.type_public', {
-            defaultValue: 'Public',
-          }),
+          t('programs-coatch.builder.library.type_public'),
       },
     ],
     [
@@ -456,27 +453,21 @@ export function useProgramBuilder(
   const limitHint = React.useMemo(
     () =>
       builderCopy.library.limit_hint ??
-      t('programs-coatch.builder.library.limit_hint', {
-        defaultValue: 'Showing up to 10 exercises sorted alphabetically.',
-      }),
+      t('programs-coatch.builder.library.limit_hint'),
     [builderCopy.library.limit_hint, t],
   );
 
   const sessionLimitHint = React.useMemo(
     () =>
       builderCopy.templates_limit_hint ??
-      t('programs-coatch.builder.templates_limit_hint', {
-        defaultValue: 'Showing up to 10 sessions sorted alphabetically.',
-      }),
+      t('programs-coatch.builder.templates_limit_hint'),
     [builderCopy.templates_limit_hint, t],
   );
 
   const emptyExercisesMessage = React.useMemo(
     () =>
       builderCopy.library.empty_state ??
-      t('programs-coatch.builder.library.empty_state', {
-        defaultValue: 'No exercises match your filters.',
-      }),
+      t('programs-coatch.builder.library.empty_state'),
     [builderCopy.library.empty_state, t],
   );
 
@@ -981,7 +972,7 @@ export function useProgramBuilder(
     if (program.athlete) {
       setSelectedAthlete({
         id: program.athlete.id,
-        type: 'ATHLETE',
+        type: UserType.Athlete,
         first_name: program.athlete.first_name ?? '',
         last_name: program.athlete.last_name ?? '',
         email: program.athlete.email,

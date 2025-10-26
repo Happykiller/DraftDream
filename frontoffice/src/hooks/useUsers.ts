@@ -1,5 +1,7 @@
 //  src/hooks/useUsers.ts
 import * as React from 'react';
+
+import type { UserType } from '@src/commons/enums';
 import inversify from '@src/commons/inversify';
 import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
@@ -17,7 +19,7 @@ export interface Company {
 }
 export interface User {
   id: string;
-  type: string;
+  type: UserType;
   first_name: string;
   last_name: string;
   email: string;
@@ -62,7 +64,7 @@ export interface UseUsersParams {
   page: number; // 1-based
   limit: number;
   q: string;
-  type?: string;
+  type?: UserType;
 }
 
 export function useUsers({ page, limit, q, type }: UseUsersParams) {
@@ -74,7 +76,7 @@ export function useUsers({ page, limit, q, type }: UseUsersParams) {
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
 
   const load = React.useCallback(
-    async (vars: { page: number; limit: number; q?: string; type?: string }) => {
+    async (vars: { page: number; limit: number; q?: string; type?: UserType }) => {
       setLoading(true);
       try {
         const trimmedQ = vars.q?.trim();

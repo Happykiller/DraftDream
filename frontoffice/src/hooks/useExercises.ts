@@ -2,13 +2,14 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
+import type { ExerciseLevel as ExerciseLevelType } from '@src/commons/enums';
 import inversify from '@src/commons/inversify';
 import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
 export type ExerciseVisibility = 'PRIVATE' | 'PUBLIC';
-export type ExerciseLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
+export type ExerciseLevel = ExerciseLevelType;
 
 export type CreateExerciseInput = {
   slug: string;
