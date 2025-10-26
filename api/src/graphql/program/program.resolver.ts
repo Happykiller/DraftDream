@@ -133,7 +133,7 @@ export class ProgramResolver {
   }
 
   @Mutation(() => Boolean, { name: 'program_softDelete' })
-  @Auth(Role.ADMIN)
+  @Auth(Role.ADMIN, Role.COACH)
   async program_softDelete(
     @Args('id', { type: () => ID }) id: string,
     @Context('req') req: any,
@@ -143,7 +143,7 @@ export class ProgramResolver {
   }
 
   @Mutation(() => Boolean, { name: 'program_delete' })
-  @Auth(Role.ADMIN, Role.COACH)
+  @Auth(Role.ADMIN)
   async program_delete(
     @Args('id', { type: () => ID }) id: string,
     @Context('req') req: any,

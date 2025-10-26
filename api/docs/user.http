@@ -34,7 +34,7 @@ Content-Type: application/json
 }
 
 
-### Create a user (GraphQL)
+### who
 POST {{host}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
