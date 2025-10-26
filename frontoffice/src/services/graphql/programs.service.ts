@@ -36,9 +36,25 @@ const PROGRAM_GET_Q = `
           videoUrl
           level
           categoryIds
+          categories {
+            id
+            label
+          }
           muscleIds
+          muscles {
+            id
+            label
+          }
           equipmentIds
+          equipments {
+            id
+            label
+          }
           tagIds
+          tags {
+            id
+            label
+          }
         }
       }
       userId
