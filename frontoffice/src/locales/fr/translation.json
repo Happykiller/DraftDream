@@ -426,6 +426,10 @@
       "title": "Aucun programme attribué",
       "description": "Votre coach ne vous a pas encore partagé de programme.",
       "helper": "Les nouveaux plans apparaîtront ici dès qu'ils seront disponibles."
+    },
+    "errors": {
+      "not_found": "Ce programme n'est plus disponible.",
+      "load_failed": "Le chargement du programme a échoué. Veuillez réessayer."
     }
   },
   "sandbox": {
