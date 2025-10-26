@@ -90,7 +90,20 @@ export const router = createBrowserRouter([
         index: true,
         lazy: async () => {
           const mod = await import('@src/pages/ProgramsAthlete');
-          return { Component: withTitle(mod.ProgramsAthlete, 'programs-athlete.title') };
+          return {
+            Component: withTitle(mod.ProgramsAthlete, 'programs-athlete.title'),
+            loader: mod.programsAthleteLoader,
+          };
+        },
+      },
+      {
+        path: ':programId',
+        lazy: async () => {
+          const mod = await import('@src/pages/ProgramsAthlete');
+          return {
+            Component: withTitle(mod.ProgramsAthlete, 'programs-athlete.title'),
+            loader: mod.programsAthleteLoader,
+          };
         },
       },
     ],
