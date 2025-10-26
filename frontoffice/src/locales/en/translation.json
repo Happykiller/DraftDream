@@ -341,6 +341,9 @@
   "programs-athlete": {
     "title": "My programs",
     "subtitle": "Review the training plans shared by your coach.",
+    "actions": {
+      "back_to_list": "Back to programs"
+    },
     "empty_state": {
       "title": "No program assigned yet",
       "description": "Your coach has not shared a program with you yet.",

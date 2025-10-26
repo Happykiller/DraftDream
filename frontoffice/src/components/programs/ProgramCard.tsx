@@ -124,7 +124,10 @@ export function ProgramCard({
   const handleActionClick = React.useCallback(
     (actionKey: ProgramAction['key']) => {
       if (actionKey === 'view') {
-        setIsViewDialogOpen(true);
+        if (!onView) {
+          setIsViewDialogOpen(true);
+        }
+
         onView?.(program);
         return;
       }
@@ -366,7 +369,7 @@ export function ProgramCard({
           onSubmittingChange={handleCloneSubmittingChange}
         />
       )}
-      {allowedActions.includes('view') && (
+      {allowedActions.includes('view') && !onView && (
         <ProgramViewDialog open={isViewDialogOpen} program={program} onClose={handleCloseViewDialog} />
       )}
     </>

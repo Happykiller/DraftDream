@@ -343,6 +343,9 @@
   "programs-athlete": {
     "title": "Mes programmes",
     "subtitle": "Consultez les plans d'entraînement partagés par votre coach.",
+    "actions": {
+      "back_to_list": "Retour à la liste"
+    },
     "empty_state": {
       "title": "Aucun programme attribué",
       "description": "Votre coach ne vous a pas encore partagé de programme.",
