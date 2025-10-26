@@ -102,6 +102,20 @@ export function ProgramViewContent({
     [averageDurationMinutes, t],
   );
 
+  const resolvedProgramTitle = React.useMemo(() => {
+    const candidate = program.label?.trim();
+    return candidate && candidate.length > 0
+      ? candidate
+      : t('programs-coatch.builder.structure.title');
+  }, [program.label, t]);
+
+  const resolvedProgramDescription = React.useMemo(() => {
+    const candidate = program.description?.trim();
+    return candidate && candidate.length > 0
+      ? candidate
+      : t('programs-coatch.list.no_description');
+  }, [program.description, t]);
+
   const overviewInfoItems = React.useMemo<OverviewInfoItem[]>(
     () => [
       {
@@ -206,14 +220,46 @@ export function ProgramViewContent({
     >
       <Stack
         component="header"
-        spacing={1.5}
+        spacing={2}
         sx={{
           backgroundColor: alpha(theme.palette.success.main, 0.2),
           px: { xs: 1.5, sm: 2, md: 2.5 },
           py: { xs: 1.25, sm: 1.5, md: 2 },
+          flexShrink: 0,
         }}
       >
         {/* General information */}
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Box
+            aria-hidden
+            sx={{
+              width: 40,
+              height: 40,
+              borderRadius: 2,
+              bgcolor: 'success.main',
+              color: 'primary.contrastText',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}
+          >
+            <CalendarMonthOutlined fontSize="medium" />
+          </Box>
+          <Stack spacing={0.5} sx={{ minWidth: 0 }}>
+            <Typography variant="h6" component="span" sx={{ fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              {resolvedProgramTitle}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}
+            >
+              {resolvedProgramDescription}
+            </Typography>
+          </Stack>
+        </Stack>
+
         <Tabs
           value={activeTab}
           onChange={handleTabsChange}
@@ -235,7 +281,7 @@ export function ProgramViewContent({
               <ProgramOverviewTab
                 overviewInfoItems={overviewInfoItems}
                 statsItems={statsItems}
-                description={program.description?.trim() || t('programs-coatch.list.no_description')}
+                description={resolvedProgramDescription}
               />
             ) : (
               <ProgramSessionsTab sessions={program.sessions} />
@@ -256,6 +302,7 @@ export function ProgramViewContent({
           px: { xs: 1.5, sm: 2.5, md: 3.5 },
           py: { xs: 1.5, sm: 2 },
           backgroundColor: '#e0dcdce0',
+          flexShrink: 0,
         }}
       >
         {showUpdatedOnLabel ? (
