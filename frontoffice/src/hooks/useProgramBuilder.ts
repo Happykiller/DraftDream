@@ -856,6 +856,30 @@ export function useProgramBuilder(
               if (!base) {
                 return null;
               }
+              const categoryIds = Array.from(new Set(base.categoryIds ?? [])).filter(
+                (id): id is string => Boolean(id),
+              );
+              const muscleIds = Array.from(
+                new Set(
+                  (base.muscles ?? [])
+                    .map((item) => item.id)
+                    .filter((id): id is string => Boolean(id)),
+                ),
+              );
+              const equipmentIds = Array.from(
+                new Set(
+                  (base.equipment ?? [])
+                    .map((item) => item.id)
+                    .filter((id): id is string => Boolean(id)),
+                ),
+              );
+              const tagIds = Array.from(
+                new Set(
+                  (base.tags ?? [])
+                    .map((item) => item.id)
+                    .filter((id): id is string => Boolean(id)),
+                ),
+              );
               return {
                 id: exercise.id,
                 templateExerciseId: exercise.exerciseId,
@@ -869,6 +893,10 @@ export function useProgramBuilder(
                 charge: undefined,
                 videoUrl: undefined,
                 level: base.level,
+                categoryIds: categoryIds.length ? categoryIds : undefined,
+                muscleIds: muscleIds.length ? muscleIds : undefined,
+                equipmentIds: equipmentIds.length ? equipmentIds : undefined,
+                tagIds: tagIds.length ? tagIds : undefined,
               };
             })
             .filter((exercise): exercise is NonNullable<typeof exercise> => Boolean(exercise)),
@@ -1006,6 +1034,19 @@ export function useProgramBuilder(
               : builderExerciseId;
 
         if (!getRawExerciseById(baseExerciseId) && !placeholderExercises.has(baseExerciseId)) {
+          const categoryIds = Array.from(
+            new Set((exerciseItem.categoryIds ?? []).filter((id): id is string => Boolean(id))),
+          );
+          const muscleIds = Array.from(
+            new Set((exerciseItem.muscleIds ?? []).filter((id): id is string => Boolean(id))),
+          );
+          const equipmentIds = Array.from(
+            new Set((exerciseItem.equipmentIds ?? []).filter((id): id is string => Boolean(id))),
+          );
+          const tagIds = Array.from(
+            new Set((exerciseItem.tagIds ?? []).filter((id): id is string => Boolean(id))),
+          );
+
           placeholderExercises.set(baseExerciseId, {
             id: baseExerciseId,
             slug: baseExerciseId,
@@ -1020,17 +1061,17 @@ export function useProgramBuilder(
             rest: exerciseItem.restSeconds ?? null,
             videoUrl: exerciseItem.videoUrl ?? null,
             visibility: 'PRIVATE',
-            categoryIds: [],
+            categoryIds,
             createdBy: program.createdBy,
             createdAt: program.createdAt,
             updatedAt: program.updatedAt,
             creator: program.creator
               ? { id: program.creator.id, email: program.creator.email }
               : undefined,
-            categories: [],
-            muscles: [],
-            equipment: [],
-            tags: [],
+            categories: categoryIds.map((id) => ({ id, label: id })),
+            muscles: muscleIds.map((id) => ({ id, label: id })),
+            equipment: equipmentIds.map((id) => ({ id, label: id })),
+            tags: tagIds.map((id) => ({ id, label: id })),
           });
           missingExerciseIds.add(baseExerciseId);
         }

@@ -18,6 +18,10 @@ const mapExercise = (exercise: ProgramExerciseUsecaseModel): ProgramSessionExerc
   restSeconds: exercise.restSeconds,
   videoUrl: exercise.videoUrl,
   level: exercise.level,
+  categoryIds: exercise.categoryIds,
+  muscleIds: exercise.muscleIds,
+  equipmentIds: exercise.equipmentIds,
+  tagIds: exercise.tagIds,
 });
 
 const mapSession = (session: ProgramSessionUsecaseModel): ProgramSessionGql => ({

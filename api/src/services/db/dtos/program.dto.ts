@@ -11,6 +11,10 @@ export type ProgramExerciseSnapshotDto = {
   restSeconds?: number;
   videoUrl?: string;
   level?: string;
+  categoryIds?: string[];
+  muscleIds?: string[];
+  equipmentIds?: string[];
+  tagIds?: string[];
 };
 
 export type ProgramSessionSnapshotDto = {

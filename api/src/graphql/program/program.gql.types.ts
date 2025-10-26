@@ -16,6 +16,10 @@ export class ProgramSessionExerciseGql {
   @Field(() => Float, { nullable: true }) restSeconds?: number;
   @Field({ nullable: true }) videoUrl?: string;
   @Field({ nullable: true }) level?: string;
+  @Field(() => [ID], { nullable: true }) categoryIds?: string[];
+  @Field(() => [ID], { nullable: true }) muscleIds?: string[];
+  @Field(() => [ID], { nullable: true }) equipmentIds?: string[];
+  @Field(() => [ID], { nullable: true }) tagIds?: string[];
 }
 
 @ObjectType()
@@ -67,6 +71,10 @@ export class ProgramSessionExerciseInput {
   @Field(() => Float, { nullable: true }) restSeconds?: number;
   @Field({ nullable: true }) videoUrl?: string;
   @Field({ nullable: true }) level?: string;
+  @Field(() => [ID], { nullable: true }) categoryIds?: string[];
+  @Field(() => [ID], { nullable: true }) muscleIds?: string[];
+  @Field(() => [ID], { nullable: true }) equipmentIds?: string[];
+  @Field(() => [ID], { nullable: true }) tagIds?: string[];
 }
 
 @InputType()

@@ -136,6 +136,10 @@ type ProgramSessionExerciseGql {
   restSeconds: Float
   videoUrl: String
   level: String
+  categoryIds: [ID!]
+  muscleIds: [ID!]
+  equipmentIds: [ID!]
+  tagIds: [ID!]
 }
 
 type ProgramSessionGql {
@@ -523,6 +527,10 @@ input ProgramSessionExerciseInput {
   restSeconds: Float
   videoUrl: String
   level: String
+  categoryIds: [ID!]
+  muscleIds: [ID!]
+  equipmentIds: [ID!]
+  tagIds: [ID!]
 }
 
 input UpdateProgramInput {

@@ -220,6 +220,10 @@ export class ProgramResolver {
           restSeconds: exercise.restSeconds ?? undefined,
           videoUrl: exercise.videoUrl ?? undefined,
           level: exercise.level ?? undefined,
+          categoryIds: this.normalizeIdArray(exercise.categoryIds),
+          muscleIds: this.normalizeIdArray(exercise.muscleIds),
+          equipmentIds: this.normalizeIdArray(exercise.equipmentIds),
+          tagIds: this.normalizeIdArray(exercise.tagIds),
         })),
       }));
     }
@@ -266,12 +270,16 @@ export class ProgramResolver {
             description: exercise.description ?? undefined,
             instructions: exercise.instructions ?? undefined,
             series: exercise.series ?? undefined,
-            repetitions: exercise.repetitions ?? undefined,
-            charge: exercise.charge ?? undefined,
-            restSeconds: exercise.rest ?? undefined,
-            videoUrl: exercise.videoUrl ?? undefined,
-            level: exercise.level ?? undefined,
-          })),
+          repetitions: exercise.repetitions ?? undefined,
+          charge: exercise.charge ?? undefined,
+          restSeconds: exercise.rest ?? undefined,
+          videoUrl: exercise.videoUrl ?? undefined,
+          level: exercise.level ?? undefined,
+          categoryIds: this.normalizeIdArray(exercise.categoryIds),
+          muscleIds: this.normalizeIdArray(exercise.muscleIds),
+          equipmentIds: this.normalizeIdArray(exercise.equipmentIds),
+          tagIds: this.normalizeIdArray(exercise.tagIds),
+        })),
       });
     }
 
@@ -293,5 +301,13 @@ export class ProgramResolver {
   private normalizeLocaleValue(locale?: string | null): string | undefined {
     const normalized = locale?.trim().toLowerCase();
     return normalized || undefined;
+  }
+
+  private normalizeIdArray(values?: string[] | null): string[] | undefined {
+    if (!Array.isArray(values)) {
+      return undefined;
+    }
+    const normalized = Array.from(new Set(values.map((value) => value?.trim()).filter(Boolean))) as string[];
+    return normalized.length ? normalized : undefined;
   }
 }
