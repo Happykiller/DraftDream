@@ -11,6 +11,7 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { shallow } from 'zustand/shallow';
+import { useStoreWithEqualityFn } from 'zustand/traditional';
 
 import { session } from '@stores/session';
 
@@ -32,7 +33,8 @@ function ProfileField({ label, value }: { label: string; value: string }) {
 export function Profile(): React.JSX.Element {
   const { t } = useTranslation();
   // Subscribe with shallow equality to avoid redundant renders when the session remains unchanged.
-  const snapshot = session(
+  const snapshot = useStoreWithEqualityFn(
+    session,
     (state) => ({
       id: state.id,
       accessToken: state.access_token,
