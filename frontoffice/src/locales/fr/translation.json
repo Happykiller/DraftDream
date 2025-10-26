@@ -31,17 +31,11 @@
   },
   "profile": {
     "title": "Profil",
-    "subtitle": "Informations de session disponibles pour l'application.",
-    "session_card": {
-      "title": "Instantané de session",
-      "description": "Ces champs reflètent les données actuellement stockées dans votre session locale.",
-      "fields": {
-        "full_name": "Nom complet",
-        "role": "Rôle",
-        "identifier": "Identifiant",
-        "access_token": "Jeton d'accès"
-      },
-      "empty": "Non renseigné"
+    "subtitle": "Données de session locales actuellement exposées à l'application.",
+    "snapshot": {
+      "title": "Instantané du store de session",
+      "description": "Valeurs brutes issues de src/stores/session.ts.",
+      "empty": "Aucune donnée de session disponible"
     }
   },
   "programs-athlete": {

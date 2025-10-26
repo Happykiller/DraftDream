@@ -31,17 +31,11 @@
   },
   "profile": {
     "title": "Profile",
-    "subtitle": "Session details available to the application.",
-    "session_card": {
-      "title": "Session snapshot",
-      "description": "These fields reflect the data currently stored in your local session.",
-      "fields": {
-        "full_name": "Full name",
-        "role": "Role",
-        "identifier": "Identifier",
-        "access_token": "Access token"
-      },
-      "empty": "Not provided"
+    "subtitle": "Local session data currently exposed to the application.",
+    "snapshot": {
+      "title": "Session store snapshot",
+      "description": "Raw values pulled directly from src/stores/session.ts.",
+      "empty": "No session data available"
     }
   },
   "programs-athlete": {

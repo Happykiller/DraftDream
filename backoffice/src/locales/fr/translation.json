@@ -125,17 +125,11 @@
   },
   "profile": {
     "title": "Profil",
-    "subtitle": "Informations de session actuellement mises en cache sur cet appareil.",
-    "session_card": {
-      "title": "Instantané de session",
-      "description": "Consultez les valeurs stockées dans votre session authentifiée.",
-      "fields": {
-        "full_name": "Nom complet",
-        "role": "Rôle",
-        "identifier": "Identifiant",
-        "access_token": "Jeton d'accès"
-      },
-      "empty": "Non renseigné"
+    "subtitle": "Cache de session local actuellement chargé dans le backoffice.",
+    "snapshot": {
+      "title": "Instantané du store de session",
+      "description": "Payload brut issu de src/stores/session.ts.",
+      "empty": "Aucune donnée de session disponible"
     }
   },
   "home": {
