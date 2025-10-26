@@ -124,6 +124,54 @@ type SessionListGql {
   limit: Int!
 }
 
+type CategoryGql {
+  id: ID!
+  slug: String!
+  locale: String!
+  label: String!
+  visibility: CategoryVisibility!
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creator: UserGql
+}
+
+enum CategoryVisibility {
+  PRIVATE
+  PUBLIC
+}
+
+type CategoryListGql {
+  items: [CategoryGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
+type EquipmentGql {
+  id: ID!
+  slug: String!
+  locale: String!
+  label: String!
+  visibility: EquipmentVisibility!
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creator: UserGql
+}
+
+enum EquipmentVisibility {
+  PRIVATE
+  PUBLIC
+}
+
+type EquipmentListGql {
+  items: [EquipmentGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
 type ProgramSessionExerciseGql {
   id: ID!
   templateExerciseId: String
@@ -176,54 +224,6 @@ type ProgramGql {
 
 type ProgramListGql {
   items: [ProgramGql!]!
-  total: Int!
-  page: Int!
-  limit: Int!
-}
-
-type CategoryGql {
-  id: ID!
-  slug: String!
-  locale: String!
-  label: String!
-  visibility: CategoryVisibility!
-  createdBy: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  creator: UserGql
-}
-
-enum CategoryVisibility {
-  PRIVATE
-  PUBLIC
-}
-
-type CategoryListGql {
-  items: [CategoryGql!]!
-  total: Int!
-  page: Int!
-  limit: Int!
-}
-
-type EquipmentGql {
-  id: ID!
-  slug: String!
-  locale: String!
-  label: String!
-  visibility: EquipmentVisibility!
-  createdBy: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  creator: UserGql
-}
-
-enum EquipmentVisibility {
-  PRIVATE
-  PUBLIC
-}
-
-type EquipmentListGql {
-  items: [EquipmentGql!]!
   total: Int!
   page: Int!
   limit: Int!
