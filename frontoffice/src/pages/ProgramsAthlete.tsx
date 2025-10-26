@@ -200,9 +200,6 @@ export function ProgramsAthlete(): React.JSX.Element {
       ) : (
         <Stack spacing={3}>
           <Stack spacing={1}>
-            <Typography variant="h4" sx={{ fontWeight: 600 }}>
-              {t('programs-athlete.title')}
-            </Typography>
             <Typography color="text.secondary">{t('programs-athlete.subtitle')}</Typography>
           </Stack>
 

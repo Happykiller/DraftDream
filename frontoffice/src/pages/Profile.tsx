@@ -164,7 +164,6 @@ export function Profile(): React.JSX.Element {
           <Grid size={{xs: 12, md: 5}}>
             <Stack spacing={4} sx={{ height: '100%' }}>
               <Stack spacing={2}>
-                <Typography variant="overline" color="primary">{t('profile.title')}</Typography>
                 <Typography variant="h3" sx={{ fontWeight: 600 }}>
                   {t('profile.hero.title')}
                 </Typography>
