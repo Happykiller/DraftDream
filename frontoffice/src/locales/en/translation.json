@@ -333,6 +333,30 @@
       },
       "session_duration": "Approx. {{duration}} min",
       "session_no_exercises": "No exercises in this session.",
+      "sessions": {
+        "session_label": "Session {{index}}"
+      },
+      "exercises": {
+        "series": "Sets",
+        "repetitions": "Reps",
+        "rest": "Rest",
+        "charge": "Load",
+        "instructions": "Coaching cues",
+        "levels": {
+          "beginner": "Beginner",
+          "intermediate": "Intermediate",
+          "advanced": "Advanced"
+        },
+        "rest_duration": {
+          "minutes_seconds": "{{minutes}} min {{seconds}} s",
+          "minutes": "{{count}} min",
+          "minutes_one": "{{count}} min",
+          "minutes_other": "{{count}} min",
+          "seconds": "{{count}} s",
+          "seconds_one": "{{count}} s",
+          "seconds_other": "{{count}} s"
+        }
+      },
       "actions": {
         "close": "Close"
       }

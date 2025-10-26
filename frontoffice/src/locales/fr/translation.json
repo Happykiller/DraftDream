@@ -335,6 +335,30 @@
       },
       "session_duration": "Durée estimée : {{duration}} min",
       "session_no_exercises": "Aucun exercice pour cette séance.",
+      "sessions": {
+        "session_label": "Séance {{index}}"
+      },
+      "exercises": {
+        "series": "Séries",
+        "repetitions": "Répétitions",
+        "rest": "Repos",
+        "charge": "Charge",
+        "instructions": "Consignes",
+        "levels": {
+          "beginner": "Débutant",
+          "intermediate": "Intermédiaire",
+          "advanced": "Avancé"
+        },
+        "rest_duration": {
+          "minutes_seconds": "{{minutes}} min {{seconds}} s",
+          "minutes": "{{count}} min",
+          "minutes_one": "{{count}} min",
+          "minutes_other": "{{count}} min",
+          "seconds": "{{count}} s",
+          "seconds_one": "{{count}} s",
+          "seconds_other": "{{count}} s"
+        }
+      },
       "actions": {
         "close": "Fermer"
       }

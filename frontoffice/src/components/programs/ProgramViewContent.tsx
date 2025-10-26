@@ -4,6 +4,7 @@ import {
   Box,
   Chip,
   Divider,
+  Grid,
   Paper,
   Stack,
   Tab,
@@ -18,7 +19,7 @@ import {
   ScheduleOutlined,
 } from '@mui/icons-material';
 
-import type { Program, ProgramSession } from '@src/hooks/usePrograms';
+import type { Program, ProgramSession, ProgramSessionExercise } from '@src/hooks/usePrograms';
 
 import { deriveProgramDifficulty } from './programFormatting';
 import {
@@ -140,65 +141,237 @@ export function ProgramViewContent({
     [onTabChange],
   );
 
-  const renderSession = React.useCallback(
-    (session: ProgramSession) => (
-      <Paper
-        key={session.id}
-        variant="outlined"
-        sx={{
-          borderRadius: 2,
-          p: 2,
-          bgcolor: 'background.default',
-        }}
-      >
-        <Stack spacing={1.5}>
-          <Stack direction="row" justifyContent="space-between" alignItems="baseline">
-            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-              {session.label}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {t('programs-coatch.view.session_duration', { duration: session.durationMin })}
-            </Typography>
-          </Stack>
-          {session.description ? (
-            <Typography variant="body2" color="text.secondary">
-              {session.description}
-            </Typography>
-          ) : null}
-          <Divider flexItem />
-          {session.exercises.length > 0 ? (
-            <Stack spacing={1.25}>
-              {session.exercises.map((exercise) => (
-                <Box key={exercise.id}>
-                  <Stack direction="row" justifyContent="space-between" alignItems="baseline">
-                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                      {exercise.label}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {summarizeExerciseEffort(exercise)}
-                    </Typography>
-                  </Stack>
-                  {exercise.description ? (
-                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
-                      {exercise.description}
-                    </Typography>
-                  ) : null}
-                </Box>
-              ))}
-            </Stack>
-          ) : (
-            <Typography variant="body2" color="text.secondary">
-              {t('programs-coatch.view.session_no_exercises')}
-            </Typography>
-          )}
-        </Stack>
-      </Paper>
-    ),
+  const formatRestDuration = React.useCallback(
+    (restSeconds?: number | null) => {
+      if (!restSeconds || restSeconds <= 0) {
+        return null;
+      }
+
+      const minutes = Math.floor(restSeconds / 60);
+      const seconds = restSeconds % 60;
+
+      if (minutes > 0 && seconds > 0) {
+        return t('programs-coatch.view.exercises.rest_duration.minutes_seconds', { minutes, seconds });
+      }
+
+      if (minutes > 0) {
+        return t('programs-coatch.view.exercises.rest_duration.minutes', { count: minutes });
+      }
+
+      return t('programs-coatch.view.exercises.rest_duration.seconds', { count: seconds });
+    },
     [t],
+  );
+
+  const renderExerciseCard = React.useCallback(
+    (exercise: ProgramSessionExercise, exerciseIndex: number) => {
+      const metrics = [
+        {
+          key: 'series',
+          label: t('programs-coatch.view.exercises.series'),
+          value: exercise.series,
+        },
+        {
+          key: 'repetitions',
+          label: t('programs-coatch.view.exercises.repetitions'),
+          value: exercise.repetitions,
+        },
+        {
+          key: 'rest',
+          label: t('programs-coatch.view.exercises.rest'),
+          value: formatRestDuration(exercise.restSeconds),
+        },
+        {
+          key: 'charge',
+          label: t('programs-coatch.view.exercises.charge'),
+          value: exercise.charge,
+        },
+      ].filter((metric) => Boolean(metric.value && String(metric.value).trim().length > 0));
+
+      const levelKey = exercise.level?.toLowerCase();
+      const levelLabel = levelKey ? t(`programs-coatch.view.exercises.levels.${levelKey}`) : null;
+      const effortSummary = summarizeExerciseEffort(exercise);
+
+      return (
+        <Paper
+          sx={(theme) => ({
+            height: '100%',
+            borderRadius: 2,
+            p: 2.5,
+            position: 'relative',
+            overflow: 'hidden',
+            backgroundImage: `linear-gradient(180deg, ${alpha(theme.palette.primary.light, 0.08)} 0%, ${theme.palette.background.paper} 45%)`,
+            border: `1px solid ${alpha(theme.palette.primary.main, 0.12)}`,
+            boxShadow: '0 18px 36px rgba(15, 23, 42, 0.08)',
+            transition: 'transform 200ms ease, box-shadow 200ms ease',
+            display: 'flex',
+            '&:hover': {
+              transform: 'translateY(-6px)',
+              boxShadow: '0 24px 48px rgba(15, 23, 42, 0.16)',
+            },
+          })}
+        >
+          <Stack spacing={2} sx={{ flex: 1 }}>
+            <Stack direction="row" alignItems="flex-start" spacing={1.5}>
+              <Box
+                sx={(theme) => ({
+                  width: 40,
+                  height: 40,
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 700,
+                  color: theme.palette.common.white,
+                  backgroundImage: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.light})`,
+                  boxShadow: '0 8px 18px rgba(25, 118, 210, 0.28)',
+                })}
+              >
+                {exerciseIndex + 1}
+              </Box>
+              <Stack spacing={0.5} sx={{ flex: 1 }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                  {exercise.label}
+                </Typography>
+                {effortSummary ? (
+                  <Typography variant="body2" color="text.secondary">
+                    {effortSummary}
+                  </Typography>
+                ) : null}
+              </Stack>
+              {levelLabel ? (
+                <Chip
+                  size="small"
+                  label={levelLabel}
+                  sx={(theme) => ({
+                    bgcolor: alpha(theme.palette.secondary.main, 0.12),
+                    color: theme.palette.secondary.main,
+                    fontWeight: 600,
+                    textTransform: 'uppercase',
+                  })}
+                />
+              ) : null}
+            </Stack>
+
+            {exercise.description ? (
+              <Typography variant="body2" color="text.primary">
+                {exercise.description}
+              </Typography>
+            ) : null}
+
+            {exercise.instructions ? (
+              <Box
+                sx={(theme) => ({
+                  borderRadius: 2,
+                  p: 1.5,
+                  bgcolor: alpha(theme.palette.primary.main, 0.08),
+                  border: `1px solid ${alpha(theme.palette.primary.main, 0.16)}`,
+                })}
+              >
+                <Typography variant="caption" color="primary" sx={{ fontWeight: 700, textTransform: 'uppercase' }}>
+                  {t('programs-coatch.view.exercises.instructions')}
+                </Typography>
+                <Typography variant="body2" color="text.primary" sx={{ mt: 0.5 }}>
+                  {exercise.instructions}
+                </Typography>
+              </Box>
+            ) : null}
+
+            {metrics.length > 0 ? (
+              <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                {metrics.map((metric) => (
+                  <Chip
+                    key={metric.key}
+                    size="small"
+                    label={`${metric.label}: ${metric.value}`}
+                    sx={(theme) => ({
+                      bgcolor: alpha(theme.palette.grey[500], 0.12),
+                      color: theme.palette.text.primary,
+                      fontWeight: 500,
+                    })}
+                  />
+                ))}
+              </Stack>
+            ) : null}
+          </Stack>
+        </Paper>
+      );
+    },
+    [formatRestDuration, t],
+  );
+
+  const renderSession = React.useCallback(
+    (session: ProgramSession, sessionIndex: number) => {
+      const sessionDurationLabel = t('programs-coatch.view.session_duration', { duration: session.durationMin });
+      const exercisesCountLabel = t('programs-coatch.view.stats.exercises_value', {
+        count: session.exercises.length,
+      });
+
+      return (
+        <Paper
+          key={session.id}
+          variant="outlined"
+          sx={{
+            borderRadius: 2.5,
+            p: { xs: 2.5, md: 3 },
+            bgcolor: 'background.default',
+            borderColor: (theme) => alpha(theme.palette.divider, 0.4),
+          }}
+        >
+          <Stack spacing={2.5}>
+            <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" spacing={1.5}>
+              <Stack direction="row" spacing={1.5} alignItems="center">
+                <Chip
+                  label={t('programs-coatch.view.sessions.session_label', { index: sessionIndex + 1 })}
+                  color="primary"
+                  variant="outlined"
+                  sx={{ fontWeight: 600 }}
+                />
+                <Stack spacing={0.5}>
+                  <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                    {session.label}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {sessionDurationLabel} • {exercisesCountLabel}
+                  </Typography>
+                </Stack>
+              </Stack>
+              {session.description ? (
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ maxWidth: { md: '45%', lg: '40%' } }}
+                >
+                  {session.description}
+                </Typography>
+              ) : null}
+            </Stack>
+
+            <Divider flexItem />
+
+            {session.exercises.length > 0 ? (
+              <Grid container spacing={{ xs: 2, md: 2.5 }}>
+                {session.exercises.map((exercise, exerciseIndex) => (
+                  <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={exercise.id}>
+                    {renderExerciseCard(exercise, exerciseIndex)}
+                  </Grid>
+                ))}
+              </Grid>
+            ) : (
+              <Typography variant="body2" color="text.secondary">
+                {t('programs-coatch.view.session_no_exercises')}
+              </Typography>
+            )}
+          </Stack>
+        </Paper>
+      );
+    },
+    [renderExerciseCard, t],
   );
 
   return (
     <Stack spacing={3}>
+      {/* General information */}
       <Tabs
         value={activeTab}
         onChange={handleTabsChange}
@@ -307,7 +480,7 @@ export function ProgramViewContent({
       ) : (
         <Stack spacing={2.5}>
           {program.sessions.length > 0 ? (
-            program.sessions.map((session) => renderSession(session))
+            program.sessions.map((session, index) => renderSession(session, index))
           ) : (
             <Typography variant="body2" color="text.secondary">
               {t('programs-coatch.list.no_sessions')}
