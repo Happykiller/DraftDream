@@ -72,6 +72,7 @@ export function ProgramViewDialog({ open, program, onClose }: ProgramViewDialogP
         activeTab={activeTab}
         onTabChange={handleTabChange}
         updatedOnLabel={t('programs-coatch.list.updated_on', { date: updatedOn })}
+        useViewportHeight={false}
       />
     </ProgramDialogLayout>
   );

@@ -1,8 +1,7 @@
 // src/pages/ProgramsAthlete.tsx
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ArrowBack } from '@mui/icons-material';
-import { Alert, Button, CircularProgress, Stack, Typography } from '@mui/material';
+import { Alert, CircularProgress, Stack, Typography } from '@mui/material';
 import { type LoaderFunctionArgs, useLoaderData, useNavigate, useParams } from 'react-router-dom';
 
 import { ProgramList } from '@src/components/programs/ProgramList';
@@ -157,27 +156,11 @@ export function ProgramsAthlete(): React.JSX.Element {
       {/* General information */}
       {showDetail ? (
         <Stack spacing={3}>
-          <Stack
-            direction={{ xs: 'column', sm: 'row' }}
-            spacing={2}
-            alignItems={{ xs: 'flex-start', sm: 'center' }}
-            justifyContent="space-between"
-          >
-            <Stack spacing={0.5}>
-              <Typography variant="h4" sx={{ fontWeight: 600 }}>
-                {program ? program.label : t('programs-athlete.title')}
-              </Typography>
-              <Typography color="text.secondary">{programSubtitle}</Typography>
-            </Stack>
-
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<ArrowBack fontSize="small" />}
-              onClick={handleCloseProgram}
-            >
-              {t('programs-athlete.actions.back_to_list')}
-            </Button>
+          <Stack spacing={0.5}>
+            <Typography variant="h4" sx={{ fontWeight: 600 }}>
+              {program ? program.label : t('programs-athlete.title')}
+            </Typography>
+            <Typography color="text.secondary">{programSubtitle}</Typography>
           </Stack>
 
           {programLoading && (
@@ -194,6 +177,8 @@ export function ProgramsAthlete(): React.JSX.Element {
               activeTab={activeTab}
               onTabChange={handleTabChange}
               updatedOnLabel={programUpdatedOn}
+              onBack={handleCloseProgram}
+              backButtonLabel={t('programs-athlete.actions.back_to_list')}
             />
           )}
         </Stack>

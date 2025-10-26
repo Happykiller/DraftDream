@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Box,
+  Button,
   Chip,
   Divider,
   Grid,
@@ -11,8 +12,9 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
-import { alpha } from '@mui/material/styles';
+import { alpha, useTheme } from '@mui/material/styles';
 import {
+  ArrowBack,
   CalendarMonthOutlined,
   CenterFocusStrongOutlined,
   PersonOutline,
@@ -56,6 +58,9 @@ interface ProgramViewContentProps {
   onTabChange: (tab: ProgramViewTab) => void;
   updatedOnLabel: string;
   showUpdatedOnLabel?: boolean;
+  onBack?: () => void;
+  backButtonLabel?: string;
+  useViewportHeight?: boolean;
 }
 
 /**
@@ -67,8 +72,12 @@ export function ProgramViewContent({
   onTabChange,
   updatedOnLabel,
   showUpdatedOnLabel = true,
+  onBack,
+  backButtonLabel,
+  useViewportHeight = true,
 }: ProgramViewContentProps): React.JSX.Element {
   const { t } = useTranslation();
+  const theme = useTheme();
 
   const sessionsCount = program.sessions.length;
   const exercisesCount = program.sessions.reduce(
@@ -164,35 +173,111 @@ export function ProgramViewContent({
     [onTabChange],
   );
 
+  const defaultBackButtonLabel = React.useMemo(
+    () => t('programs-coatch.view.actions.back_to_list'),
+    [t],
+  );
+  const resolvedBackButtonLabel = backButtonLabel ?? defaultBackButtonLabel;
+
+  const viewportHeightSx = React.useMemo(
+    () =>
+      useViewportHeight
+        ? {
+            minHeight: { xs: 'calc(100dvh - 56px)', sm: 'calc(100dvh - 64px)' },
+            maxHeight: { xs: 'calc(100dvh - 56px)', sm: 'calc(100dvh - 64px)' },
+          }
+        : {
+            minHeight: 0,
+            maxHeight: '100%',
+          },
+    [useViewportHeight],
+  );
+
   return (
-    <Stack spacing={3}>
-      {/* General information */}
-      <Tabs
-        value={activeTab}
-        onChange={handleTabsChange}
-        variant="scrollable"
-        scrollButtons="auto"
-        allowScrollButtonsMobile
+    <Stack
+      sx={{
+        ...viewportHeightSx,
+        height: '100%',
+        width: '100%',
+        flex: 1,
+        overflow: 'hidden',
+        backgroundColor: theme.palette.background.paper,
+      }}
+    >
+      <Stack
+        component="header"
+        spacing={1.5}
+        sx={{
+          backgroundColor: alpha(theme.palette.success.main, 0.2),
+          px: { xs: 1.5, sm: 2, md: 2.5 },
+          py: { xs: 1.25, sm: 1.5, md: 2 },
+        }}
       >
-        <Tab value="overview" label={t('programs-coatch.view.tabs.overview')} />
-        <Tab value="sessions" label={t('programs-coatch.view.tabs.sessions')} />
-      </Tabs>
+        {/* General information */}
+        <Tabs
+          value={activeTab}
+          onChange={handleTabsChange}
+          variant="scrollable"
+          scrollButtons="auto"
+          allowScrollButtonsMobile
+        >
+          <Tab value="overview" label={t('programs-coatch.view.tabs.overview')} />
+          <Tab value="sessions" label={t('programs-coatch.view.tabs.sessions')} />
+        </Tabs>
+      </Stack>
 
-      {activeTab === 'overview' ? (
-        <ProgramOverviewTab
-          overviewInfoItems={overviewInfoItems}
-          statsItems={statsItems}
-          description={program.description?.trim() || t('programs-coatch.list.no_description')}
-        />
-      ) : (
-        <ProgramSessionsTab sessions={program.sessions} />
-      )}
+      <Divider />
 
-      <Divider flexItem />
+      <Box sx={{ flexGrow: 1, overflow: 'auto', minHeight: 0 }}>
+        <Box sx={{ px: { xs: 1.5, sm: 2.5, md: 3.5 }, py: { xs: 2, sm: 2.5, md: 3 } }}>
+          <Stack spacing={3}>
+            {activeTab === 'overview' ? (
+              <ProgramOverviewTab
+                overviewInfoItems={overviewInfoItems}
+                statsItems={statsItems}
+                description={program.description?.trim() || t('programs-coatch.list.no_description')}
+              />
+            ) : (
+              <ProgramSessionsTab sessions={program.sessions} />
+            )}
+          </Stack>
+        </Box>
+      </Box>
 
-      <Typography variant="caption" color="text.secondary">
-        {updatedOnLabel}
-      </Typography>
+      <Divider />
+
+      <Stack
+        component="footer"
+        direction={{ xs: 'column', sm: 'row' }}
+        spacing={2}
+        alignItems={{ xs: 'stretch', sm: 'center' }}
+        justifyContent="space-between"
+        sx={{
+          px: { xs: 1.5, sm: 2.5, md: 3.5 },
+          py: { xs: 1.5, sm: 2 },
+          backgroundColor: '#e0dcdce0',
+        }}
+      >
+        {showUpdatedOnLabel ? (
+          <Typography variant="caption" color="text.secondary">
+            {updatedOnLabel}
+          </Typography>
+        ) : (
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }} />
+        )}
+
+        {onBack ? (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={onBack}
+            startIcon={<ArrowBack fontSize="small" />}
+            sx={{ alignSelf: { xs: 'stretch', sm: 'center' } }}
+          >
+            {resolvedBackButtonLabel}
+          </Button>
+        ) : null}
+      </Stack>
     </Stack>
   );
 }

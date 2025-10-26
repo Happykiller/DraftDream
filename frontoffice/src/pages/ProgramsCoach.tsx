@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import {
   Alert,
   Box,
-  Button,
   CircularProgress,
   Divider,
   Stack,
@@ -250,61 +249,33 @@ export function ProgramsCoach(): React.JSX.Element {
           <Divider />
 
           {/* Content */}
-          <Box sx={{ flexGrow: 1, overflow: 'auto', minHeight: 0 }}>
-            <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3, md: 3.5 } }}>
+          <Box sx={{ flexGrow: 1, minHeight: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3, md: 3.5 }, flexGrow: 1, minHeight: 0 }}>
               {detailLoading ? (
                 <Stack alignItems="center" justifyContent="center" py={6}>
                   <CircularProgress color="primary" />
                 </Stack>
               ) : (
-                <Stack spacing={3}>
+                <Stack spacing={3} sx={{ flexGrow: 1, minHeight: 0, overflow: 'hidden' }}>
                   {detailError ? <Alert severity="error">{detailError}</Alert> : null}
 
                   {detailedProgram ? (
-                    <ProgramViewContent
-                      program={detailedProgram}
-                      activeTab={viewingTab}
-                      onTabChange={handleViewingTabChange}
-                      updatedOnLabel={viewingProgramUpdatedOn}
-                      showUpdatedOnLabel={false}
-                    />
+                    <Box sx={{ flexGrow: 1, minHeight: 0, display: 'flex' }}>
+                      <ProgramViewContent
+                        program={detailedProgram}
+                        activeTab={viewingTab}
+                        onTabChange={handleViewingTabChange}
+                        updatedOnLabel={viewingProgramUpdatedOn}
+                        onBack={handleCloseViewer}
+                        backButtonLabel={t('programs-coatch.view.actions.back_to_list')}
+                        useViewportHeight={false}
+                      />
+                    </Box>
                   ) : null}
                 </Stack>
               )}
             </Box>
           </Box>
-
-          <Divider />
-
-          {/* Footer */}
-          <Stack
-            direction={{ xs: 'column', sm: 'row' }}
-            spacing={2}
-            alignItems={{ xs: 'stretch', sm: 'center' }}
-            justifyContent="space-between"
-            sx={{
-              px: { xs: 2, sm: 3, md: 4 },
-              py: { xs: 2, sm: 2.5 },
-              backgroundColor: alpha(theme.palette.grey[500], 0.08),
-            }}
-          >
-            {viewingProgramUpdatedOn ? (
-              <Typography variant="caption" color="text.secondary">
-                {viewingProgramUpdatedOn}
-              </Typography>
-            ) : (
-              <Box sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }} />
-            )}
-
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleCloseViewer}
-              sx={{ alignSelf: { xs: 'stretch', sm: 'center' } }}
-            >
-              {t('programs-coatch.view.actions.back_to_list')}
-            </Button>
-          </Stack>
         </Stack>
       </>
     );
