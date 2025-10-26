@@ -27,10 +27,6 @@ export interface ProgramSessionExercise {
   restSeconds?: number | null;
   videoUrl?: string | null;
   level?: string | null;
-  categories?: { id: string; label: string }[];
-  muscles?: { id: string; label: string }[];
-  equipment?: { id: string; label: string }[];
-  tags?: { id: string; label: string }[];
 }
 
 export interface ProgramSession {
@@ -73,25 +69,6 @@ type ProgramListPayload = {
 type CreateProgramPayload = { program_create: Program };
 type UpdateProgramPayload = { program_update: Program };
 type DeleteProgramPayload = { program_softDelete: boolean };
-
-type ExerciseGetPayload = {
-  exercise_get: {
-    id: string;
-    label: string;
-    description?: string | null;
-    instructions?: string | null;
-    series: string;
-    repetitions: string;
-    charge?: string | null;
-    rest?: number | null;
-    videoUrl?: string | null;
-    level?: string | null;
-    categories: { id: string; label: string }[];
-    muscles: { id: string; label: string }[];
-    equipment?: { id: string; label: string }[];
-    tags?: { id: string; label: string }[];
-  } | null;
-};
 
 const LIST_Q = `
   query ListPrograms($input: ListProgramsInput) {
@@ -182,27 +159,6 @@ const DELETE_M = `
   }
 `;
 
-const EXERCISE_GET_Q = `
-  query GetExercise($id: ID!) {
-    exercise_get(id: $id) {
-      id
-      label
-      description
-      instructions
-      series
-      repetitions
-      charge
-      rest
-      videoUrl
-      level
-      categories { id label }
-      muscles { id label }
-      equipment { id label }
-      tags { id label }
-    }
-  }
-`;
-
 export interface UseProgramsParams {
   page: number; // 1-based
   limit: number;
@@ -220,124 +176,6 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
   const flashError = useFlashStore((state) => state.error);
   const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
-
-  type ExerciseMetadata = NonNullable<ExerciseGetPayload['exercise_get']>;
-
-  const exerciseMetadataCacheRef = React.useRef<Map<string, ExerciseMetadata | null>>(new Map());
-
-  /**
-   * Blends template exercise metadata into a program exercise without overriding explicit overrides.
-   */
-  const enrichExerciseWithMetadata = React.useCallback(
-    (exercise: ProgramSessionExercise): ProgramSessionExercise => {
-      const baseId = exercise.templateExerciseId ?? exercise.id;
-      const metadata = baseId ? exerciseMetadataCacheRef.current.get(baseId) ?? null : null;
-
-      if (!metadata) {
-        return {
-          ...exercise,
-          categories: exercise.categories ?? [],
-          muscles: exercise.muscles ?? [],
-          equipment: exercise.equipment ?? [],
-          tags: exercise.tags ?? [],
-        };
-      }
-
-      return {
-        ...exercise,
-        description: exercise.description ?? metadata.description ?? null,
-        instructions: exercise.instructions ?? metadata.instructions ?? null,
-        charge: exercise.charge ?? metadata.charge ?? null,
-        restSeconds:
-          exercise.restSeconds != null && Number.isFinite(exercise.restSeconds)
-            ? exercise.restSeconds
-            : metadata.rest ?? null,
-        videoUrl: exercise.videoUrl ?? metadata.videoUrl ?? null,
-        level: exercise.level ?? metadata.level ?? null,
-        series: exercise.series ?? metadata.series ?? '',
-        repetitions: exercise.repetitions ?? metadata.repetitions ?? '',
-        categories: metadata.categories ?? [],
-        muscles: metadata.muscles ?? [],
-        equipment: metadata.equipment ?? [],
-        tags: metadata.tags ?? [],
-      };
-    },
-    [],
-  );
-
-  /**
-   * Resolves and caches template exercise metadata for the provided identifiers.
-   */
-  const fetchMissingExerciseMetadata = React.useCallback(
-    async (exerciseIds: string[]) => {
-      const cache = exerciseMetadataCacheRef.current;
-      const missingIds = exerciseIds.filter((id) => id && !cache.has(id));
-
-      if (!missingIds.length) {
-        return cache;
-      }
-
-      await Promise.all(
-        missingIds.map(async (exerciseId) => {
-          try {
-            const { data, errors } = await gql.send<ExerciseGetPayload>({
-              query: EXERCISE_GET_Q,
-              operationName: 'GetExercise',
-              variables: { id: exerciseId },
-            });
-
-            if (errors?.length) {
-              throw new Error(errors[0].message);
-            }
-
-            cache.set(exerciseId, data?.exercise_get ?? null);
-          } catch (error) {
-            cache.set(exerciseId, null);
-            // eslint-disable-next-line no-console
-            console.warn(`Failed to load exercise metadata for ${exerciseId}`, error);
-          }
-        }),
-      );
-
-      return cache;
-    },
-    [gql],
-  );
-
-  /**
-   * Ensures every exercise in the provided programs exposes template metadata required by the UI.
-   */
-  const enrichProgramsWithMetadata = React.useCallback(
-    async (programs: Program[]): Promise<Program[]> => {
-      if (!programs.length) {
-        return programs;
-      }
-
-      const referencedExerciseIds = new Set<string>();
-
-      programs.forEach((program) => {
-        program.sessions.forEach((session) => {
-          session.exercises.forEach((exercise) => {
-            const baseId = exercise.templateExerciseId ?? exercise.id;
-            if (baseId) {
-              referencedExerciseIds.add(baseId);
-            }
-          });
-        });
-      });
-
-      await fetchMissingExerciseMetadata(Array.from(referencedExerciseIds));
-
-      return programs.map((program) => ({
-        ...program,
-        sessions: program.sessions.map((session) => ({
-          ...session,
-          exercises: session.exercises.map(enrichExerciseWithMetadata),
-        })),
-      }));
-    },
-    [enrichExerciseWithMetadata, fetchMissingExerciseMetadata],
-  );
 
   const load = React.useCallback(async () => {
     setLoading(true);
@@ -360,9 +198,7 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
         if (errors?.length) throw new Error(errors[0].message);
 
         const rawPrograms = data?.program_list.items ?? [];
-        const enrichedPrograms = await enrichProgramsWithMetadata(rawPrograms);
-
-        setItems(enrichedPrograms);
+        setItems(rawPrograms);
         setTotal(data?.program_list.total ?? 0);
       });
     } catch (error: unknown) {
@@ -371,7 +207,7 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
     } finally {
       setLoading(false);
     }
-  }, [createdBy, enrichProgramsWithMetadata, execute, flashError, gql, limit, page, q, userId]);
+  }, [createdBy, execute, flashError, gql, limit, page, q, userId]);
 
   React.useEffect(() => {
     void load();
@@ -437,10 +273,7 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
           t('programs-coatch.notifications.program_created'),
         );
         await load();
-        const [enrichedProgram] = await execute(() =>
-          enrichProgramsWithMetadata([createdProgram]),
-        );
-        return enrichedProgram;
+        return createdProgram;
       } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Create failed';
         flashError(message);
@@ -448,7 +281,6 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
       }
     },
     [
-      enrichProgramsWithMetadata,
       execute,
       flashError,
       flashSuccess,
