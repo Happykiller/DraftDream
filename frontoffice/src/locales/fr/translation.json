@@ -46,10 +46,34 @@
   },
   "profile": {
     "title": "Profil",
-    "subtitle": "Données de session locales actuellement exposées à l'application.",
+    "hero": {
+      "title": "Votre espace, vos informations.",
+      "subtitle": "Consultez les données enregistrées pour cette session et adaptez votre expérience en un clin d'œil.",
+      "highlights": {
+        "identity": "Vérifiez les informations partagées avec votre équipe d'encadrement.",
+        "security": "Contrôlez le jeton d'accès actuellement associé à cette session.",
+        "support": "Partagez cet instantané avec le support pour accélérer l'assistance."
+      }
+    },
+    "language": {
+      "label": "Langue",
+      "helper": "Le changement s'applique instantanément pour cette session."
+    },
+    "summary": {
+      "title": "Vue d'ensemble de la session",
+      "description": "Identifiants clés récupérés depuis le store de session.",
+      "fields": {
+        "name": "Nom complet",
+        "id": "Identifiant utilisateur",
+        "role": "Rôle",
+        "accessToken": "Jeton d'accès"
+      },
+      "emptyValue": "Non renseigné",
+      "empty": "Aucune donnée de session pour le moment. Connectez-vous pour afficher votre profil."
+    },
     "snapshot": {
-      "title": "Instantané du store de session",
-      "description": "Valeurs brutes issues de src/stores/session.ts.",
+      "title": "Payload brut de session",
+      "description": "Export JSON complet des valeurs stockées dans src/stores/session.ts.",
       "empty": "Aucune donnée de session disponible"
     }
   },

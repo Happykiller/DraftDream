@@ -46,10 +46,34 @@
   },
   "profile": {
     "title": "Profile",
-    "subtitle": "Local session data currently exposed to the application.",
+    "hero": {
+      "title": "Your account, your controls.",
+      "subtitle": "Review the data stored for your session and keep everything aligned with your needs.",
+      "highlights": {
+        "identity": "Verify the identity shared with your coaching team.",
+        "security": "Inspect the access token currently issued for this session.",
+        "support": "Share this snapshot with support to resolve issues faster."
+      }
+    },
+    "language": {
+      "label": "Language",
+      "helper": "Updates apply instantly for the current session."
+    },
+    "summary": {
+      "title": "Session overview",
+      "description": "Key identifiers retrieved from the session store.",
+      "fields": {
+        "name": "Full name",
+        "id": "User ID",
+        "role": "Role",
+        "accessToken": "Access token"
+      },
+      "emptyValue": "Not provided",
+      "empty": "No session data is available yet. Sign in to populate your profile."
+    },
     "snapshot": {
-      "title": "Session store snapshot",
-      "description": "Raw values pulled directly from src/stores/session.ts.",
+      "title": "Raw session payload",
+      "description": "Complete JSON export of the values stored in src/stores/session.ts.",
       "empty": "No session data available"
     }
   },
