@@ -210,6 +210,7 @@ export function useProgramBuilder(
     create: createExercise,
     update: updateExercise,
     remove: removeExercise,
+    getById: getExerciseById,
   } = useExercises({
     page: 1,
     limit: 10,
@@ -988,7 +989,8 @@ export function useProgramBuilder(
     usedIdsRef.current.session.clear();
     usedIdsRef.current.exercise.clear();
 
-    const stubExercises = new Map<string, Exercise>();
+    const placeholderExercises = new Map<string, Exercise>();
+    const missingExerciseIds = new Set<string>();
 
     const normalizedSessions = program.sessions.map((sessionItem) => {
       const sessionId = sessionItem.id && sessionItem.id.length > 0 ? sessionItem.id : nextId('session');
@@ -1003,8 +1005,8 @@ export function useProgramBuilder(
               ? exerciseItem.id
               : builderExerciseId;
 
-        if (!stubExercises.has(baseExerciseId)) {
-          stubExercises.set(baseExerciseId, {
+        if (!getRawExerciseById(baseExerciseId) && !placeholderExercises.has(baseExerciseId)) {
+          placeholderExercises.set(baseExerciseId, {
             id: baseExerciseId,
             slug: baseExerciseId,
             locale: program.locale,
@@ -1030,6 +1032,7 @@ export function useProgramBuilder(
             equipment: [],
             tags: [],
           });
+          missingExerciseIds.add(baseExerciseId);
         }
 
         return {
@@ -1082,11 +1085,66 @@ export function useProgramBuilder(
     idCountersRef.current.exercise = maxExerciseCounter;
 
     setSessions(normalizedSessions);
-    setExerciseOverrides(() => new Map(stubExercises));
+
+    if (placeholderExercises.size > 0) {
+      setExerciseOverrides((previous) => {
+        let mutated = false;
+        const next = new Map(previous);
+        placeholderExercises.forEach((exercise, exerciseId) => {
+          if (!next.has(exerciseId)) {
+            next.set(exerciseId, exercise);
+            mutated = true;
+          }
+        });
+        return mutated ? next : previous;
+      });
+    }
+
+    if (missingExerciseIds.size > 0) {
+      let cancelled = false;
+      const ids = Array.from(missingExerciseIds);
+      void (async () => {
+        const detailedExercises = await Promise.all(
+          ids.map(async (exerciseId) => {
+            try {
+              const exercise = await getExerciseById(exerciseId);
+              return exercise ?? null;
+            } catch (_error) {
+              return null;
+            }
+          }),
+        );
+
+        if (cancelled) {
+          return;
+        }
+
+        setExerciseOverrides((previous) => {
+          let mutated = false;
+          const next = new Map(previous);
+          detailedExercises.forEach((exercise) => {
+            if (!exercise) {
+              return;
+            }
+            next.set(exercise.id, exercise);
+            mutated = true;
+          });
+          return mutated ? next : previous;
+        });
+      })();
+
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    return undefined;
   }, [
     program,
     nextId,
     normalizeExerciseLevel,
+    getExerciseById,
+    getRawExerciseById,
     setExerciseCategory,
     setExerciseOverrides,
     setExerciseSearch,

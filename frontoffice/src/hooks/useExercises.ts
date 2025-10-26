@@ -89,6 +89,7 @@ type ExerciseListPayload = {
 type CreatePayload = { exercise_create: Exercise | null };
 type UpdatePayload = { exercise_update: Exercise };
 type DeletePayload = { exercise_delete: boolean };
+type GetPayload = { exercise_get: Exercise | null };
 
 const LIST_Q = `
   query ListExercises($input: ListExercisesInput) {
@@ -137,6 +138,35 @@ const UPDATE_M = `
 
 const DELETE_M = `
   mutation DeleteExercise($id: ID!) { exercise_softDelete(id: $id) }
+`;
+
+const GET_Q = `
+  query GetExercise($id: ID!) {
+    exercise_get(id: $id) {
+      id
+      slug
+      locale
+      label
+      description
+      instructions
+      level
+      series
+      repetitions
+      charge
+      rest
+      videoUrl
+      visibility
+      categoryIds
+      createdBy
+      createdAt
+      updatedAt
+      creator { id email }
+      categories { id label }
+      muscles { id label }
+      equipment { id label }
+      tags { id label }
+    }
+  }
 `;
 
 export interface UseExercisesParams {
@@ -204,6 +234,31 @@ export function useExercises({
   }, [categoryIds, createdBy, execute, flashError, gql, level, limit, locale, page, q, visibility]);
 
   React.useEffect(() => { void load(); }, [load]);
+
+  const getById = React.useCallback(
+    async (id: string): Promise<Exercise | null> => {
+      const trimmedId = id.trim();
+      if (!trimmedId) {
+        return null;
+      }
+      try {
+        const { data, errors } = await execute(() =>
+          gql.send<GetPayload>({
+            query: GET_Q,
+            variables: { id: trimmedId },
+            operationName: 'GetExercise',
+          }),
+        );
+        if (errors?.length) throw new Error(errors[0].message);
+        return data?.exercise_get ?? null;
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Failed to load exercise';
+        flashError(message);
+        throw error;
+      }
+    },
+    [execute, flashError, gql],
+  );
 
   const create = React.useCallback(
     async (input: CreateExerciseInput) => {
@@ -315,5 +370,5 @@ export function useExercises({
     [execute, flashError, flashSuccess, gql, load]
   );
 
-  return { items, total, loading, create, update, remove, reload: load };
+  return { items, total, loading, create, update, remove, reload: load, getById };
 }
