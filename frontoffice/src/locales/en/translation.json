@@ -424,6 +424,10 @@
       "title": "No program assigned yet",
       "description": "Your coach has not shared a program with you yet.",
       "helper": "New plans will be listed here as soon as they become available."
+    },
+    "errors": {
+      "not_found": "This program is no longer available.",
+      "load_failed": "We were unable to load this program. Please try again."
     }
   },
   "sandbox": {
