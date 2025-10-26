@@ -342,6 +342,10 @@
         "rest": "Rest",
         "charge": "Load",
         "instructions": "Coaching cues",
+        "categories": "Categories",
+        "muscles": "Muscles",
+        "equipment": "Equipment",
+        "tags": "Tags",
         "levels": {
           "beginner": "Beginner",
           "intermediate": "Intermediate",

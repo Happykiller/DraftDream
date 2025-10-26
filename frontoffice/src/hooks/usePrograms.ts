@@ -25,6 +25,10 @@ export interface ProgramSessionExercise {
   restSeconds?: number | null;
   videoUrl?: string | null;
   level?: string | null;
+  categories?: { id: string; label: string }[];
+  muscles?: { id: string; label: string }[];
+  equipment?: { id: string; label: string }[];
+  tags?: { id: string; label: string }[];
 }
 
 export interface ProgramSession {
@@ -83,6 +87,10 @@ const LIST_Q = `
           id templateSessionId slug locale label durationMin description
           exercises {
             id templateExerciseId label description instructions series repetitions charge restSeconds videoUrl level
+            categories { id label }
+            muscles { id label }
+            equipment { id label }
+            tags { id label }
           }
         }
         userId
@@ -113,6 +121,10 @@ const CREATE_M = `
         id templateSessionId slug locale label durationMin description
         exercises {
           id templateExerciseId label description instructions series repetitions charge restSeconds videoUrl level
+          categories { id label }
+          muscles { id label }
+          equipment { id label }
+          tags { id label }
         }
       }
       userId
@@ -139,6 +151,10 @@ const UPDATE_M = `
         id templateSessionId slug locale label durationMin description
         exercises {
           id templateExerciseId label description instructions series repetitions charge restSeconds videoUrl level
+          categories { id label }
+          muscles { id label }
+          equipment { id label }
+          tags { id label }
         }
       }
       userId

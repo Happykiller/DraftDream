@@ -9,6 +9,7 @@ import {
   Stack,
   Tab,
   Tabs,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
@@ -163,6 +164,46 @@ export function ProgramViewContent({
     [t],
   );
 
+  const renderAttributeGroup = React.useCallback(
+    (
+      label: string,
+      items: { id: string; label: string }[],
+      options: {
+        chipColor?: 'primary' | 'secondary' | 'success';
+        variant?: 'filled' | 'outlined';
+      } = {},
+    ) => {
+      if (!items.length) {
+        return null;
+      }
+
+      const chipColor = options.chipColor ?? 'primary';
+      const variant = options.variant ?? 'filled';
+
+      return (
+        <Stack spacing={0.75}>
+          <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, textTransform: 'uppercase' }}>
+            {label}
+          </Typography>
+          <Stack direction="row" spacing={0.5} useFlexGap flexWrap="wrap">
+            {items.map((item) => (
+              <Tooltip key={item.id} title={item.label} arrow>
+                <Chip
+                  label={item.label}
+                  size="small"
+                  color={chipColor}
+                  variant={variant}
+                  sx={{ fontWeight: 600 }}
+                />
+              </Tooltip>
+            ))}
+          </Stack>
+        </Stack>
+      );
+    },
+    [],
+  );
+
   const renderExerciseCard = React.useCallback(
     (exercise: ProgramSessionExercise, exerciseIndex: number) => {
       const metrics = [
@@ -191,6 +232,13 @@ export function ProgramViewContent({
       const levelKey = exercise.level?.toLowerCase();
       const levelLabel = levelKey ? t(`programs-coatch.view.exercises.levels.${levelKey}`) : null;
       const effortSummary = summarizeExerciseEffort(exercise);
+
+      const muscleGroups = exercise.muscles ?? [];
+      const categoryGroups = exercise.categories ?? [];
+      const equipmentItems = exercise.equipment ?? [];
+      const tagItems = exercise.tags ?? [];
+      const hasAttributeGroups =
+        muscleGroups.length > 0 || categoryGroups.length > 0 || equipmentItems.length > 0 || tagItems.length > 0;
 
       return (
         <Paper
@@ -293,11 +341,36 @@ export function ProgramViewContent({
                 ))}
               </Stack>
             ) : null}
+
+            {hasAttributeGroups ? (
+              <Stack spacing={1.25}>
+                {renderAttributeGroup(
+                  t('programs-coatch.view.exercises.categories'),
+                  categoryGroups,
+                  { chipColor: 'success', variant: 'outlined' },
+                )}
+                {renderAttributeGroup(
+                  t('programs-coatch.view.exercises.muscles'),
+                  muscleGroups,
+                  { chipColor: 'primary', variant: 'filled' },
+                )}
+                {renderAttributeGroup(
+                  t('programs-coatch.view.exercises.equipment'),
+                  equipmentItems,
+                  { chipColor: 'secondary', variant: 'outlined' },
+                )}
+                {renderAttributeGroup(
+                  t('programs-coatch.view.exercises.tags'),
+                  tagItems,
+                  { chipColor: 'secondary', variant: 'filled' },
+                )}
+              </Stack>
+            ) : null}
           </Stack>
         </Paper>
       );
     },
-    [formatRestDuration, t],
+    [formatRestDuration, renderAttributeGroup, t],
   );
 
   const renderSession = React.useCallback(
@@ -311,21 +384,22 @@ export function ProgramViewContent({
         <Paper
           key={session.id}
           variant="outlined"
-          sx={{
+          sx={(theme) => ({
             borderRadius: 2.5,
             p: { xs: 2.5, md: 3 },
-            bgcolor: 'background.default',
-            borderColor: (theme) => alpha(theme.palette.divider, 0.4),
-          }}
+            bgcolor: alpha(theme.palette.success.light, 0.12),
+            borderColor: alpha(theme.palette.success.main, 0.4),
+            boxShadow: '0 20px 40px rgba(22, 101, 52, 0.12)',
+          })}
         >
           <Stack spacing={2.5}>
             <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" spacing={1.5}>
               <Stack direction="row" spacing={1.5} alignItems="center">
                 <Chip
                   label={t('programs-coatch.view.sessions.session_label', { index: sessionIndex + 1 })}
-                  color="primary"
-                  variant="outlined"
-                  sx={{ fontWeight: 600 }}
+                  color="success"
+                  variant="filled"
+                  sx={{ fontWeight: 700 }}
                 />
                 <Stack spacing={0.5}>
                   <Typography variant="h6" sx={{ fontWeight: 700 }}>

@@ -344,6 +344,10 @@
         "rest": "Repos",
         "charge": "Charge",
         "instructions": "Consignes",
+        "categories": "Catégories",
+        "muscles": "Muscles",
+        "equipment": "Équipements",
+        "tags": "Tags",
         "levels": {
           "beginner": "Débutant",
           "intermediate": "Intermédiaire",
