@@ -10,6 +10,8 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
+import { shallow } from 'zustand/shallow';
+
 import { session } from '@stores/session';
 
 /** Display a single label/value row inside the profile details card. */
@@ -29,13 +31,17 @@ function ProfileField({ label, value }: { label: string; value: string }) {
 /** Profile page summarising the authenticated session snapshot. */
 export function Profile(): React.JSX.Element {
   const { t } = useTranslation();
-  const snapshot = session((state) => ({
-    id: state.id,
-    accessToken: state.access_token,
-    firstName: state.name_first,
-    lastName: state.name_last,
-    role: state.role,
-  }));
+  // Subscribe with shallow equality to avoid redundant renders when the session remains unchanged.
+  const snapshot = session(
+    (state) => ({
+      id: state.id,
+      accessToken: state.access_token,
+      firstName: state.name_first,
+      lastName: state.name_last,
+      role: state.role,
+    }),
+    shallow,
+  );
 
   const fullName = React.useMemo(() => {
     const first = snapshot.firstName?.trim() ?? '';
