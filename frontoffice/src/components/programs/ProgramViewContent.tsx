@@ -55,7 +55,6 @@ interface ProgramViewContentProps {
   activeTab: ProgramViewTab;
   onTabChange: (tab: ProgramViewTab) => void;
   updatedOnLabel: string;
-  showUpdatedOnLabel?: boolean;
 }
 
 /**
@@ -66,7 +65,6 @@ export function ProgramViewContent({
   activeTab,
   onTabChange,
   updatedOnLabel,
-  showUpdatedOnLabel = true,
 }: ProgramViewContentProps): React.JSX.Element {
   const { t } = useTranslation();
 

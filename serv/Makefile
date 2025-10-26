@@ -18,9 +18,3 @@ refresh-%:
 	docker load -i fitdesk_$*.tar
 	$(COMPOSE) up -d --no-deps --force-recreate $*
 	@echo "OK -> service $* relancé"
-
-# Utilitaires stack
-up:    ; $(COMPOSE) up -d
-down:  ; $(COMPOSE) down
-logs:  ; $(COMPOSE) logs -f --tail=200
-ps:    ; $(COMPOSE) ps

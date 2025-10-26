@@ -266,7 +266,6 @@ export function ProgramsCoach(): React.JSX.Element {
                       activeTab={viewingTab}
                       onTabChange={handleViewingTabChange}
                       updatedOnLabel={viewingProgramUpdatedOn}
-                      showUpdatedOnLabel={false}
                     />
                   ) : null}
                 </Stack>
