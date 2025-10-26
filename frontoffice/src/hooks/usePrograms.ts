@@ -15,6 +15,26 @@ export interface ProgramUser {
   last_name?: string | null;
 }
 
+export interface ProgramExerciseCategory {
+  id: string;
+  label: string;
+}
+
+export interface ProgramExerciseMuscle {
+  id: string;
+  label: string;
+}
+
+export interface ProgramExerciseEquipment {
+  id: string;
+  label: string;
+}
+
+export interface ProgramExerciseTag {
+  id: string;
+  label: string;
+}
+
 export interface ProgramSessionExercise {
   id: string;
   templateExerciseId?: string | null;
@@ -28,9 +48,13 @@ export interface ProgramSessionExercise {
   videoUrl?: string | null;
   level?: string | null;
   categoryIds?: string[] | null;
+  categories?: ProgramExerciseCategory[];
   muscleIds?: string[] | null;
+  muscles?: ProgramExerciseMuscle[];
   equipmentIds?: string[] | null;
+  equipments?: ProgramExerciseEquipment[] | null;
   tagIds?: string[] | null;
+  tags?: ProgramExerciseTag[] | null;
 }
 
 export interface ProgramSession {
@@ -86,10 +110,45 @@ const LIST_Q = `
         frequency
         description
         sessions {
-          id templateSessionId slug locale label durationMin description
+          id
+          templateSessionId
+          slug
+          locale
+          label
+          durationMin
+          description
           exercises {
-            id templateExerciseId label description instructions series repetitions charge restSeconds videoUrl level
-            categoryIds muscleIds equipmentIds tagIds
+            id
+            templateExerciseId
+            label
+            description
+            instructions
+            series
+            repetitions
+            charge
+            restSeconds
+            videoUrl
+            level
+            categoryIds
+            categories {
+              id
+              label
+            }
+            muscleIds
+            muscles {
+              id
+              label
+            }
+            equipmentIds
+            equipments {
+              id
+              label
+            }
+            tagIds
+            tags {
+              id
+              label
+            }
           }
         }
         userId
@@ -117,10 +176,45 @@ const CREATE_M = `
       frequency
       description
       sessions {
-        id templateSessionId slug locale label durationMin description
+        id
+        templateSessionId
+        slug
+        locale
+        label
+        durationMin
+        description
         exercises {
-          id templateExerciseId label description instructions series repetitions charge restSeconds videoUrl level
-          categoryIds muscleIds equipmentIds tagIds
+          id
+          templateExerciseId
+          label
+          description
+          instructions
+          series
+          repetitions
+          charge
+          restSeconds
+          videoUrl
+          level
+          categoryIds
+          categories {
+            id
+            label
+          }
+          muscleIds
+          muscles {
+            id
+            label
+          }
+          equipmentIds
+          equipments {
+            id
+            label
+          }
+          tagIds
+          tags {
+            id
+            label
+          }
         }
       }
       userId
@@ -144,10 +238,45 @@ const UPDATE_M = `
       frequency
       description
       sessions {
-        id templateSessionId slug locale label durationMin description
+        id
+        templateSessionId
+        slug
+        locale
+        label
+        durationMin
+        description
         exercises {
-          id templateExerciseId label description instructions series repetitions charge restSeconds videoUrl level
-          categoryIds muscleIds equipmentIds tagIds
+          id
+          templateExerciseId
+          label
+          description
+          instructions
+          series
+          repetitions
+          charge
+          restSeconds
+          videoUrl
+          level
+          categoryIds
+          categories {
+            id
+            label
+          }
+          muscleIds
+          muscles {
+            id
+            label
+          }
+          equipmentIds
+          equipments {
+            id
+            label
+          }
+          tagIds
+          tags {
+            id
+            label
+          }
         }
       }
       userId

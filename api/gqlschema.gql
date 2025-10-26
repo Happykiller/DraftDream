@@ -140,6 +140,10 @@ type ProgramSessionExerciseGql {
   muscleIds: [ID!]
   equipmentIds: [ID!]
   tagIds: [ID!]
+  categories: [CategoryGql!]!
+  muscles: [MuscleGql!]!
+  equipments: [EquipmentGql!]
+  tags: [TagGql!]
 }
 
 type ProgramSessionGql {
