@@ -3,3 +3,4 @@
 *.tar
 .showcase/node_modules
 .showcase/dist
+.vscode
