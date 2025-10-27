@@ -1,3 +1,5 @@
 .env
 .env.prod
 *.tar
+.showcase/node_modules
+.showcase/dist
