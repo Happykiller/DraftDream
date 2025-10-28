@@ -431,6 +431,13 @@
       "load_failed": "We were unable to load this program. Please try again."
     }
   },
+  "programs-details": {
+    "title": "Program details",
+    "errors": {
+      "not_found": "This program is no longer available.",
+      "load_failed": "We were unable to load this program. Please try again."
+    }
+  },
   "sandbox": {
     "title": "Sandbox",
     "input_card": {
