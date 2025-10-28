@@ -44,7 +44,7 @@ export function useProgram({
         const result = await execute(() => programGet({ programId: idToLoad }));
 
         if (!result) {
-          const message = t('programs-athlete.errors.not_found');
+          const message = t('programs-details.errors.not_found');
           setProgram(null);
           setError(message);
           return null;
@@ -54,7 +54,7 @@ export function useProgram({
         return result;
       } catch (caught: unknown) {
         console.error('[useProgram] Failed to load program', caught);
-        const message = t('programs-athlete.errors.load_failed');
+        const message = t('programs-details.errors.load_failed');
         setProgram(null);
         setError(message);
         return null;

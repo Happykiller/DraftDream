@@ -433,6 +433,13 @@
       "load_failed": "Le chargement du programme a échoué. Veuillez réessayer."
     }
   },
+  "programs-details": {
+    "title": "Détails du programme",
+    "errors": {
+      "not_found": "Ce programme n'est plus disponible.",
+      "load_failed": "Le chargement du programme a échoué. Veuillez réessayer."
+    }
+  },
   "sandbox": {
     "title": "Bac à sable",
     "input_card": {
