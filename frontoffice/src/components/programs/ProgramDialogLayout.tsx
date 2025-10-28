@@ -18,7 +18,7 @@ interface ProgramDialogLayoutProps {
   contentProps?: DialogContentProps;
   actionsProps?: DialogActionsProps;
   formComponent?: BoxProps['component'];
-  formProps?: Omit<BoxProps, 'component'>;
+  formProps?: Omit<Omit<BoxProps, 'component'>, 'onSubmit'> & React.ComponentPropsWithoutRef<'form'>;
 }
 
 /**

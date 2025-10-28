@@ -5,9 +5,12 @@ import {
   ListSessionsDto as ListSessionsServiceDto,
   UpdateSessionDto as UpdateSessionServiceDto,
 } from '@services/db/dtos/session.dto';
+import type { UsecaseSession } from '@usecases/program/program.usecase.dto';
 
 export type CreateSessionUsecaseDto = CreateSessionServiceDto;
-export type GetSessionUsecaseDto = GetSessionServiceDto;
-export type ListSessionsUsecaseDto = ListSessionsServiceDto;
+export type GetSessionRepositoryDto = GetSessionServiceDto;
+export type GetSessionUsecaseDto = GetSessionRepositoryDto & { session: UsecaseSession };
+export type ListSessionsRepositoryDto = ListSessionsServiceDto;
+export type ListSessionsUsecaseDto = ListSessionsRepositoryDto & { session: UsecaseSession };
 export type UpdateSessionUsecaseDto = UpdateSessionServiceDto;
-export type DeleteSessionUsecaseDto = { id: string };
+export type DeleteSessionUsecaseDto = { id: string; session: UsecaseSession };

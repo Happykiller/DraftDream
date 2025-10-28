@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { ExerciseLevel as ExerciseLevelEnum, UserType } from '@src/commons/enums';
 import { useSessions } from '@hooks/useSessions';
 import {
   useExercises,
@@ -209,6 +210,7 @@ export function useProgramBuilder(
     create: createExercise,
     update: updateExercise,
     remove: removeExercise,
+    getById: getExerciseById,
   } = useExercises({
     page: 1,
     limit: 10,
@@ -285,13 +287,13 @@ export function useProgramBuilder(
   const normalizeExerciseLevel = React.useCallback(
     (level?: string | null): ExerciseLevel => {
       const normalized = (level ?? '').toUpperCase();
-      if (normalized === 'INTERMEDIATE') {
-        return 'INTERMEDIATE';
+      if (normalized === ExerciseLevelEnum.Intermediate) {
+        return ExerciseLevelEnum.Intermediate;
       }
-      if (normalized === 'ADVANCED') {
-        return 'ADVANCED';
+      if (normalized === ExerciseLevelEnum.Advanced) {
+        return ExerciseLevelEnum.Advanced;
       }
-      return 'BEGINNER';
+      return ExerciseLevelEnum.Beginner;
     },
     [],
   );
@@ -306,6 +308,7 @@ export function useProgramBuilder(
     page: 1,
     limit: 100,
     q: debouncedQ,
+    type: UserType.Athlete,
   });
 
   const { create: createProgram, update: updateProgram } = usePrograms({
@@ -431,17 +434,13 @@ export function useProgramBuilder(
         value: 'PRIVATE',
         label:
           builderCopy.library.type_private ??
-          t('programs-coatch.builder.library.type_private', {
-            defaultValue: 'Private',
-          }),
+          t('programs-coatch.builder.library.type_private'),
       },
       {
         value: 'PUBLIC',
         label:
           builderCopy.library.type_public ??
-          t('programs-coatch.builder.library.type_public', {
-            defaultValue: 'Public',
-          }),
+          t('programs-coatch.builder.library.type_public'),
       },
     ],
     [
@@ -455,27 +454,21 @@ export function useProgramBuilder(
   const limitHint = React.useMemo(
     () =>
       builderCopy.library.limit_hint ??
-      t('programs-coatch.builder.library.limit_hint', {
-        defaultValue: 'Showing up to 10 exercises sorted alphabetically.',
-      }),
+      t('programs-coatch.builder.library.limit_hint'),
     [builderCopy.library.limit_hint, t],
   );
 
   const sessionLimitHint = React.useMemo(
     () =>
       builderCopy.templates_limit_hint ??
-      t('programs-coatch.builder.templates_limit_hint', {
-        defaultValue: 'Showing up to 10 sessions sorted alphabetically.',
-      }),
+      t('programs-coatch.builder.templates_limit_hint'),
     [builderCopy.templates_limit_hint, t],
   );
 
   const emptyExercisesMessage = React.useMemo(
     () =>
       builderCopy.library.empty_state ??
-      t('programs-coatch.builder.library.empty_state', {
-        defaultValue: 'No exercises match your filters.',
-      }),
+      t('programs-coatch.builder.library.empty_state'),
     [builderCopy.library.empty_state, t],
   );
 
@@ -846,11 +839,7 @@ export function useProgramBuilder(
       const frequency = parsedFrequency;
 
       if (!name || !duration || !frequency) {
-        flashError(
-          t('programs-coatch.builder.errors.missing_required_fields', {
-            defaultValue: 'Please fill required fields.',
-          }),
-        );
+        flashError(t('programs-coatch.builder.errors.missing_required_fields'));
         return;
       }
 
@@ -867,6 +856,30 @@ export function useProgramBuilder(
               if (!base) {
                 return null;
               }
+              const categoryIds = Array.from(new Set(base.categoryIds ?? [])).filter(
+                (id): id is string => Boolean(id),
+              );
+              const muscleIds = Array.from(
+                new Set(
+                  (base.muscles ?? [])
+                    .map((item) => item.id)
+                    .filter((id): id is string => Boolean(id)),
+                ),
+              );
+              const equipmentIds = Array.from(
+                new Set(
+                  (base.equipment ?? [])
+                    .map((item) => item.id)
+                    .filter((id): id is string => Boolean(id)),
+                ),
+              );
+              const tagIds = Array.from(
+                new Set(
+                  (base.tags ?? [])
+                    .map((item) => item.id)
+                    .filter((id): id is string => Boolean(id)),
+                ),
+              );
               return {
                 id: exercise.id,
                 templateExerciseId: exercise.exerciseId,
@@ -880,6 +893,10 @@ export function useProgramBuilder(
                 charge: undefined,
                 videoUrl: undefined,
                 level: base.level,
+                categoryIds: categoryIds.length ? categoryIds : undefined,
+                muscleIds: muscleIds.length ? muscleIds : undefined,
+                equipmentIds: equipmentIds.length ? equipmentIds : undefined,
+                tagIds: tagIds.length ? tagIds : undefined,
               };
             })
             .filter((exercise): exercise is NonNullable<typeof exercise> => Boolean(exercise)),
@@ -980,7 +997,7 @@ export function useProgramBuilder(
     if (program.athlete) {
       setSelectedAthlete({
         id: program.athlete.id,
-        type: 'ATHLETE',
+        type: UserType.Athlete,
         first_name: program.athlete.first_name ?? '',
         last_name: program.athlete.last_name ?? '',
         email: program.athlete.email,
@@ -1000,7 +1017,8 @@ export function useProgramBuilder(
     usedIdsRef.current.session.clear();
     usedIdsRef.current.exercise.clear();
 
-    const stubExercises = new Map<string, Exercise>();
+    const placeholderExercises = new Map<string, Exercise>();
+    const missingExerciseIds = new Set<string>();
 
     const normalizedSessions = program.sessions.map((sessionItem) => {
       const sessionId = sessionItem.id && sessionItem.id.length > 0 ? sessionItem.id : nextId('session');
@@ -1015,8 +1033,21 @@ export function useProgramBuilder(
               ? exerciseItem.id
               : builderExerciseId;
 
-        if (!stubExercises.has(baseExerciseId)) {
-          stubExercises.set(baseExerciseId, {
+        if (!getRawExerciseById(baseExerciseId) && !placeholderExercises.has(baseExerciseId)) {
+          const categoryIds = Array.from(
+            new Set((exerciseItem.categoryIds ?? []).filter((id): id is string => Boolean(id))),
+          );
+          const muscleIds = Array.from(
+            new Set((exerciseItem.muscleIds ?? []).filter((id): id is string => Boolean(id))),
+          );
+          const equipmentIds = Array.from(
+            new Set((exerciseItem.equipmentIds ?? []).filter((id): id is string => Boolean(id))),
+          );
+          const tagIds = Array.from(
+            new Set((exerciseItem.tagIds ?? []).filter((id): id is string => Boolean(id))),
+          );
+
+          placeholderExercises.set(baseExerciseId, {
             id: baseExerciseId,
             slug: baseExerciseId,
             locale: program.locale,
@@ -1030,18 +1061,19 @@ export function useProgramBuilder(
             rest: exerciseItem.restSeconds ?? null,
             videoUrl: exerciseItem.videoUrl ?? null,
             visibility: 'PRIVATE',
-            categoryIds: [],
+            categoryIds,
             createdBy: program.createdBy,
             createdAt: program.createdAt,
             updatedAt: program.updatedAt,
             creator: program.creator
               ? { id: program.creator.id, email: program.creator.email }
               : undefined,
-            categories: [],
-            muscles: [],
-            equipment: [],
-            tags: [],
+            categories: categoryIds.map((id) => ({ id, label: id })),
+            muscles: muscleIds.map((id) => ({ id, label: id })),
+            equipment: equipmentIds.map((id) => ({ id, label: id })),
+            tags: tagIds.map((id) => ({ id, label: id })),
           });
+          missingExerciseIds.add(baseExerciseId);
         }
 
         return {
@@ -1094,11 +1126,66 @@ export function useProgramBuilder(
     idCountersRef.current.exercise = maxExerciseCounter;
 
     setSessions(normalizedSessions);
-    setExerciseOverrides(() => new Map(stubExercises));
+
+    if (placeholderExercises.size > 0) {
+      setExerciseOverrides((previous) => {
+        let mutated = false;
+        const next = new Map(previous);
+        placeholderExercises.forEach((exercise, exerciseId) => {
+          if (!next.has(exerciseId)) {
+            next.set(exerciseId, exercise);
+            mutated = true;
+          }
+        });
+        return mutated ? next : previous;
+      });
+    }
+
+    if (missingExerciseIds.size > 0) {
+      let cancelled = false;
+      const ids = Array.from(missingExerciseIds);
+      void (async () => {
+        const detailedExercises = await Promise.all(
+          ids.map(async (exerciseId) => {
+            try {
+              const exercise = await getExerciseById(exerciseId);
+              return exercise ?? null;
+            } catch (_error) {
+              return null;
+            }
+          }),
+        );
+
+        if (cancelled) {
+          return;
+        }
+
+        setExerciseOverrides((previous) => {
+          let mutated = false;
+          const next = new Map(previous);
+          detailedExercises.forEach((exercise) => {
+            if (!exercise) {
+              return;
+            }
+            next.set(exercise.id, exercise);
+            mutated = true;
+          });
+          return mutated ? next : previous;
+        });
+      })();
+
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    return undefined;
   }, [
     program,
     nextId,
     normalizeExerciseLevel,
+    getExerciseById,
+    getRawExerciseById,
     setExerciseCategory,
     setExerciseOverrides,
     setExerciseSearch,

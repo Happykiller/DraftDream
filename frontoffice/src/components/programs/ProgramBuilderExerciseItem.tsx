@@ -88,10 +88,7 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
   const [descriptionDraft, setDescriptionDraft] = React.useState(displayDescription);
   const descriptionInputRef = React.useRef<HTMLTextAreaElement | null>(null);
   const descriptionPlaceholder = React.useMemo(
-    () =>
-      t('programs-coatch.builder.structure.exercise_description_placeholder', {
-        defaultValue: 'Exercise description (optional)...',
-      }),
+    () => t('programs-coatch.builder.structure.exercise_description_placeholder'),
     [t],
   );
 

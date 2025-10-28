@@ -10,6 +10,7 @@ import {
 import ContentCopy from '@mui/icons-material/ContentCopy';
 
 import inversify from '@src/commons/inversify';
+import { UserType } from '@src/commons/enums';
 import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
 import type { Program, ProgramUser } from '@src/hooks/usePrograms';
 import { GraphqlServiceFetch } from '@src/services/graphql/graphql.service.fetch';
@@ -131,6 +132,7 @@ export function ProgramCloneDialog({
               page: 1,
               limit: 25,
               q: search.trim() || undefined,
+              type: UserType.Athlete,
             },
           },
         });

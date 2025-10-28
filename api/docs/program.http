@@ -1,0 +1,116 @@
+# docs/program.http
+@locale = fr-FR
+@page = 1
+@limit = 10
+@userId = athlete-user-id
+@visibility = PUBLIC
+
+###
+# Program: create (1 session, 1 exercice référencé)
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query":
+    "mutation($input: CreateProgramInput!){ program_create(input:$input){ id slug locale label duration frequency description sessions{ id label durationMin exercises{ id label templateExerciseId } } createdBy createdAt updatedAt } }",
+  "variables": {
+    "input": {
+      "slug":"prog-strength-001",
+      "locale":"{{locale}}",
+      "label":"Force 4 semaines",
+      "duration":28,
+      "frequency":3,
+      "description":"Cycle force",
+      "sessions":[
+        {
+          "label":"Jour 1",
+          "durationMin":60,
+          "exercises":[
+            {
+              "label":"Front squat",
+              "series":"5x3",
+              "repetitions":"3",
+              "templateExerciseId":"REPLACE_EXERCISE_ID"
+            }
+          ]
+        }
+      ],
+      "userId":"{{userId}}"
+    }
+  }
+}
+
+###
+# Program: get by id
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query":
+    "query($id: ID!){ program_get(id:$id){ id slug locale label duration frequency description sessions{ id label durationMin exercises{ id label series repetitions templateExerciseId } } creator{ id email } athlete{ id email } createdAt updatedAt } }",
+  "variables": { "id":"REPLACE_PROGRAM_ID" }
+}
+
+###
+# Program: list (q, pagination, filtres)
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query":
+    "query($input: ListProgramsInput){ program_list(input:$input){ items{ id slug label duration frequency creator { id } } total page limit } }",
+  "variables": {
+    "input": {
+      //"q":"force",
+      "locale":"fr",
+      //"createdBy":"seed-user-id",
+      //"userId":"{{userId}}",
+      "page": {{page}},
+      "limit": {{limit}}
+    }
+  }
+}
+
+###
+# Program: update
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query":
+    "mutation($input: UpdateProgramInput!){ program_update(input:$input){ id slug locale label duration frequency description sessions{ id label durationMin } updatedAt } }",
+  "variables": {
+    "input": {
+      "id":"REPLACE_PROGRAM_ID",
+      "label":"Force 4 semaines - v2",
+      "description":"Cycle force mis à jour"
+      // Optionnel: "sessions":[{ "id":"REPLACE_SESSION_IN_PROGRAM_ID", "label":"Jour 1 - modifié", "durationMin":65 }]
+    }
+  }
+}
+
+###
+# Program: soft delete
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query":"mutation($id: ID!){ program_softDelete(id:$id) }",
+  "variables": { "id":"68fe2d35543c065aadc129c6" }
+}
+
+###
+# Program: hard delete
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query":"mutation($id: ID!){ program_delete(id:$id) }",
+  "variables": { "id":"REPLACE_PROGRAM_ID" }
+}

@@ -102,6 +102,7 @@ export class BddServiceSessionMongo {
       q,
       locale,
       createdBy,
+      createdByIn,
       includeArchived = false,
       limit = 20,
       page = 1,
@@ -117,7 +118,16 @@ export class BddServiceSessionMongo {
       ];
     }
     if (locale) filter.locale = locale.toLowerCase().trim();
+    const normalizedCreatedByIn = Array.isArray(createdByIn)
+      ? createdByIn.map((id) => id?.trim()).filter((id): id is string => Boolean(id))
+      : [];
+    if (createdBy && normalizedCreatedByIn.length) {
+      throw new Error('Cannot combine createdBy and createdByIn filters.');
+    }
     if (createdBy) filter.createdBy = this.toObjectId(createdBy);
+    if (!createdBy && normalizedCreatedByIn.length) {
+      filter.createdBy = { $in: normalizedCreatedByIn.map(this.toObjectId) };
+    }
     if (!includeArchived) filter.deletedAt = { $exists: false };
 
     try {

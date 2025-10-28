@@ -1,6 +1,8 @@
 // src/pages/ProgramsCoach.tsx
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+
 import { ProgramBuilderPanel, type BuilderCopy } from '@src/components/programs/ProgramBuilderPanel';
 import { ProgramList } from '@src/components/programs/ProgramList';
 
@@ -10,6 +12,7 @@ import { slugify } from '@src/utils/slugify';
 /** Coach-facing program management dashboard. */
 export function ProgramsCoach(): React.JSX.Element {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
 
   const [builderOpen, setBuilderOpen] = React.useState<boolean>(false);
   const [editingProgram, setEditingProgram] = React.useState<Program | null>(null);
@@ -44,6 +47,12 @@ export function ProgramsCoach(): React.JSX.Element {
     setEditingProgram(program);
     setBuilderOpen(true);
   }, []);
+
+  const handleViewProgram = React.useCallback((program: Program) => {
+    setBuilderOpen(false);
+    setEditingProgram(null);
+    navigate(`/programs-coach/${program.id}`);
+  }, [navigate]);
 
   const handleCloneProgram = React.useCallback(
     async (baseProgram: Program, payload: { label: string; athleteId: string | null }) => {
@@ -91,10 +100,10 @@ export function ProgramsCoach(): React.JSX.Element {
     setEditingProgram(null);
   }, []);
 
-  return (
-    <>
-      {/* General information */}
-      {builderOpen ? (
+  if (builderOpen) {
+    return (
+      <>
+        {/* General information */}
         <ProgramBuilderPanel
           builderCopy={builderCopy}
           onCancel={handleCloseBuilder}
@@ -102,19 +111,25 @@ export function ProgramsCoach(): React.JSX.Element {
           onUpdated={handleProgramSaved}
           program={editingProgram ?? undefined}
         />
-      ) : (
-        <ProgramList
-          programs={programs}
-          loading={loading}
-          placeholderTitle={t('programs-coatch.placeholder')}
-          placeholderSubtitle={builderCopy.subtitle}
-          openBuilderLabel={t('programs-coatch.actions.open_builder')}
-          onOpenBuilder={handleOpenBuilderForCreate}
-          onDeleteProgram={handleDeleteProgram}
-          onEditProgram={handleEditProgram}
-          onCloneProgram={handleCloneProgram}
-        />
-      )}
+      </>
+    );
+  }
+
+  return (
+    <>
+      {/* General information */}
+      <ProgramList
+        programs={programs}
+        loading={loading}
+        placeholderTitle={t('programs-coatch.placeholder')}
+        placeholderSubtitle={builderCopy.subtitle}
+        openBuilderLabel={t('programs-coatch.actions.open_builder')}
+        onOpenBuilder={handleOpenBuilderForCreate}
+        onDeleteProgram={handleDeleteProgram}
+        onEditProgram={handleEditProgram}
+        onCloneProgram={handleCloneProgram}
+        onViewProgram={handleViewProgram}
+      />
     </>
   );
 }

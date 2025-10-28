@@ -1,0 +1,115 @@
+# docs/exercise.http
+@locale = fr-FR
+@page = 1
+@limit = 10
+@createdBy = seed-user-id
+@visibility = PUBLIC
+
+#########################################################
+# EXERCISES
+#########################################################
+
+###
+# Exercise: create
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query":
+    "mutation($input: CreateExerciseInput!){ exercise_create(input:$input){ id slug locale label level visibility createdAt updatedAt } }",
+  "variables": {
+    "input": {
+      "slug":"front-squat",
+      "locale":"{{locale}}",
+      "label":"Front squat",
+      "level":"INTERMEDIATE",
+      "series":"5x5",
+      "repetitions":"5",
+      "description":"Mouvement de force complet",
+      "instructions":"Garde le dos droit, coudes hauts, descends à la parallèle.",
+      "rest":120,
+      "visibility":"{{visibility}}",
+      "categoryIds":["REPLACE_CATEGORY_ID"],
+      "muscleIds":["REPLACE_MUSCLE_ID"],
+      "equipmentIds":["REPLACE_EQUIPMENT_ID"],
+      "tagIds":[]
+    }
+  }
+}
+
+###
+# Exercise: get by id
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query":
+    "query($id: ID!){ exercise_get(id:$id){ id slug locale label level description instructions rest visibility createdAt updatedAt categories{ id label } muscles{ id label } equipment{ id label } tags{ id label } creator{ id email } } }",
+  "variables": { "id":"REPLACE_EXERCISE_ID" }
+}
+
+###
+# Exercise: list (q, pagination, filtres)
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query":
+    "query($input: ListExercisesInput){ exercise_list(input:$input){ items{ id slug label level visibility createdAt updatedAt } total page limit } }",
+  "variables": {
+    "input": {
+      //"q":"squat",
+      "locale":"fr",
+      "createdBy":"{{createdBy}}",
+      "visibility":"PUBLIC",
+      //"level":"INTERMEDIATE",
+      "page":{{page}},
+      "limit":{{limit}}
+    }
+  }
+}
+
+###
+# Exercise: update
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query":
+    "mutation($input: UpdateExerciseInput!){ exercise_update(input:$input){ id slug locale label level series repetitions visibility updatedAt } }",
+  "variables": {
+    "input": {
+      "id":"REPLACE_EXERCISE_ID",
+      "label":"Front squat (modifié)",
+      "series":"5x3",
+      "repetitions":"3",
+      "instructions":"Ajoute une pause en bas du mouvement"
+    }
+  }
+}
+
+###
+# Exercise: soft delete
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "mutation($id: ID!){ exercise_softDelete(id:$id) }",
+  "variables": { "id": "REPLACE_EXERCISE_ID" }
+}
+
+###
+# Exercise: hard delete
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "mutation($id: ID!){ exercise_delete(id:$id) }",
+  "variables": { "id": "REPLACE_EXERCISE_ID" }
+}

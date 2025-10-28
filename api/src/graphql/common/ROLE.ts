@@ -1,10 +1,8 @@
-// src/common/ROLE.ts
+// src/graphql/common/ROLE.ts
 import { registerEnumType } from '@nestjs/graphql';
 
-export enum Role {
-  ADMIN = 'ADMIN',
-  COACH = 'COACH',
-  ATHLETE = 'ATHLETE',
-}
+import { Role } from '@src/common/role.enum';
 
-registerEnumType(Role, { name: 'Role' }); // <-- pour GraphQL code-first
+registerEnumType(Role, { name: 'Role' });
+
+export { Role };

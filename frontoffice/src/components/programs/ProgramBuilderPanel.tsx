@@ -113,26 +113,21 @@ export function ProgramBuilderPanel({
   const panelTitle = React.useMemo(
     () =>
       isEditing
-        ? builderCopy.edit_title ??
-        t('programs-coatch.builder.edit_title', { defaultValue: 'Edit program' })
+        ? builderCopy.edit_title ?? t('programs-coatch.builder.edit_title')
         : builderCopy.title,
     [builderCopy.edit_title, builderCopy.title, isEditing, t],
   );
   const panelSubtitle = React.useMemo(
     () =>
       isEditing
-        ? builderCopy.edit_subtitle ??
-        t('programs-coatch.builder.edit_subtitle', {
-          defaultValue: 'Update the existing sessions and exercises.',
-        })
+        ? builderCopy.edit_subtitle ?? t('programs-coatch.builder.edit_subtitle')
         : builderCopy.subtitle,
     [builderCopy.edit_subtitle, builderCopy.subtitle, isEditing, t],
   );
   const submitLabel = React.useMemo(
     () =>
       isEditing
-        ? builderCopy.footer.update ??
-        t('programs-coatch.builder.footer.update', { defaultValue: 'Save changes' })
+        ? builderCopy.footer.update ?? t('programs-coatch.builder.footer.update')
         : builderCopy.footer.submit,
     [builderCopy.footer.submit, builderCopy.footer.update, isEditing, t],
   );
@@ -157,10 +152,7 @@ export function ProgramBuilderPanel({
 
   void _summaryText;
 
-  const addExerciseFallbackLabel = t(
-    'programs-coatch.builder.library.no_sessions_warning',
-    { defaultValue: 'Create a session before adding exercises.' },
-  );
+  const addExerciseFallbackLabel = t('programs-coatch.builder.library.no_sessions_warning');
 
   const [exerciseMenuAnchor, setExerciseMenuAnchor] = React.useState<{
     anchor: HTMLElement;

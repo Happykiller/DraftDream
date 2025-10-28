@@ -53,7 +53,9 @@
       "address_code": "Code postal",
       "address_country": "Pays",
       "user": "Utilisateur",
+      "athlete": "Athlète",
       "user_optional": "Utilisateur (optionnel)",
+      "athlete_optional": "Athlète (optionnel)",
       "description": "Description",
       "duration_weeks": "Durée (semaines)",
       "duration_minutes": "Durée (min)",
@@ -96,6 +98,7 @@
       "select": "Sélectionner...",
       "select_sessions": "Sélectionner des séances",
       "select_user": "Sélectionner un utilisateur",
+      "select_athlete": "Sélectionner un athlète",
       "select_exercises": "Sélectionner des exercices",
       "enter_email": "Saisissez une adresse e-mail valide",
       "custom_flash": "Message personnalisé (bouton contour).",
@@ -112,6 +115,10 @@
       "are_you_sure": "Êtes-vous sûr ?"
     }
   },
+  "languages": {
+    "fr": "Français",
+    "en": "Anglais"
+  },
   "login": {
     "title": "Connexion",
     "email": "Adresse e-mail",
@@ -119,6 +126,39 @@
     "connect_space": "Connectez-vous à votre espace",
     "success": "Connexion réussie : {{name}} !",
     "button": "Se connecter"
+  },
+  "profile": {
+    "title": "Profil",
+    "hero": {
+      "title": "Votre espace, vos informations.",
+      "subtitle": "Consultez les données enregistrées pour cette session et adaptez votre expérience en un clin d'œil.",
+      "highlights": {
+        "identity": "Vérifiez les informations partagées avec votre équipe d'encadrement.",
+        "security": "Contrôlez le jeton d'accès actuellement associé à cette session.",
+        "support": "Partagez cet instantané avec le support pour accélérer l'assistance."
+      }
+    },
+    "language": {
+      "label": "Langue",
+      "helper": "Le changement s'applique instantanément pour cette session."
+    },
+    "summary": {
+      "title": "Vue d'ensemble de la session",
+      "description": "Identifiants clés récupérés depuis le store de session.",
+      "fields": {
+        "name": "Nom complet",
+        "id": "Identifiant utilisateur",
+        "role": "Rôle",
+        "accessToken": "Jeton d'accès"
+      },
+      "emptyValue": "Non renseigné",
+      "empty": "Aucune donnée de session pour le moment. Connectez-vous pour afficher votre profil."
+    },
+    "snapshot": {
+      "title": "Payload brut de session",
+      "description": "Export JSON complet des valeurs stockées dans src/stores/session.ts.",
+      "empty": "Aucune donnée de session disponible"
+    }
   },
   "home": {
     "title": "Tableau de bord"
@@ -141,6 +181,7 @@
     "table": {
       "sessions_linked": "{{count}} lié(s)",
       "filter_by_user": "Filtrer par utilisateur",
+      "filter_by_athlete": "Filtrer par athlète",
       "search_placeholder": "Rechercher des programmes..."
     },
     "dialog": {
@@ -273,7 +314,8 @@
     "open_navigation": "Ouvrir la navigation"
   },
   "header": {
-    "logout": "Se déconnecter"
+    "logout": "Se déconnecter",
+    "open_profile": "Ouvrir le profil"
   },
   "users": {
     "title": "Utilisateurs",

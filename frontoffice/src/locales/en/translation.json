@@ -13,13 +13,28 @@
     "unexpected_error": "Unexpected error, please try again.",
     "loading": "Loading..."
   },
+  "languages": {
+    "fr": "French",
+    "en": "English"
+  },
   "login": {
     "title": "Login",
     "email": "Email address",
     "password": "Password",
     "connect_space": "Log in to your account",
     "success": "Successfully logged in: {{name}}!",
-    "button": "Sign in"
+    "button": "Sign in",
+    "language_label": "Language",
+    "language_placeholder": "Switch interface language",
+    "hero": {
+      "title": "Coach smarter, faster.",
+      "subtitle": "Centralise your programs, support your athletes, and stay aligned with your team."
+    },
+    "highlights": {
+      "programs": "Build bespoke programs in minutes",
+      "followup": "Monitor athlete progress in real time",
+      "collaboration": "Collaborate securely with your staff"
+    }
   },
   "home": {
     "title": "Dashboard",
@@ -28,6 +43,42 @@
   "clients": {
     "title": "Clients",
     "placeholder": "Clients"
+  },
+  "profile": {
+    "title": "Profile",
+    "hero": {
+      "title": "Your account, your controls.",
+      "subtitle": "Review the data stored for your session and keep everything aligned with your needs.",
+      "highlights": {
+        "identity": "Verify the identity shared with your coaching team.",
+        "security": "Inspect the access token currently issued for this session.",
+        "support": "Share this snapshot with support to resolve issues faster."
+      }
+    },
+    "language": {
+      "label": "Language",
+      "helper": "Updates apply instantly for the current session."
+    },
+    "summary": {
+      "title": "Session overview",
+      "description": "Key identifiers retrieved from the session store.",
+      "fields": {
+        "name": "Full name",
+        "id": "User ID",
+        "role": "Role",
+        "accessToken": "Access token"
+      },
+      "emptyValue": "Not provided",
+      "empty": "No session data is available yet. Sign in to populate your profile."
+    },
+    "snapshot": {
+      "title": "Raw session payload",
+      "description": "Complete JSON export of the values stored in src/stores/session.ts.",
+      "empty": "No session data available"
+    }
+  },
+  "programs-athlete": {
+    "title": "My programs"
   },
   "programs-coatch": {
     "title": "Programs",
@@ -90,7 +141,7 @@
         "no_sessions_warning": "Create a session before adding exercises.",
         "sets_label": " sets",
         "reps_label": " reps",
-        "rest_label": "",
+        "rest_label": "Rest: ",
         "tooltips": {
           "add_exercise": "Add this exercise to the selected session",
           "edit_exercise": "Edit this exercise",
@@ -193,8 +244,10 @@
         "intermediate": "Intermediate",
         "advanced": "Advanced"
       },
+      "duration_weeks": "{{count}} week",
       "duration_weeks_one": "{{count}} week",
       "duration_weeks_other": "{{count}} weeks",
+      "frequency_week": "{{count}} session/week",
       "frequency_week_one": "{{count}} session/week",
       "frequency_week_other": "{{count}} sessions/week",
       "sessions_summary": "{{sessions}} sessions • {{exercises}} exercises",
@@ -232,7 +285,157 @@
         "errors": {
           "missing_label": "Please provide a program name."
         }
+      },
+      "view": {
+        "dialog": {
+          "subtitle_with_athlete": "Program for {{athlete}} · Created on {{date}}",
+          "subtitle_without_athlete": "Created on {{date}}"
+        },
+        "tabs": {
+          "overview": "Overview",
+          "sessions": "Detailed sessions"
+        },
+        "sections": {
+          "overview": "Overview",
+          "information": "Program information",
+          "stats": "Statistics",
+          "description": "Program description"
+        },
+        "information": {
+          "duration": "Duration",
+          "frequency": "Frequency",
+          "difficulty": "Level",
+          "athlete": "Assigned athlete",
+          "no_athlete": "Not assigned",
+          "no_difficulty": "Not set"
+        },
+        "stats": {
+          "sessions": "Number of sessions",
+          "sessions_value_one": "{{count}} session",
+          "sessions_value_other": "{{count}} sessions",
+          "exercises": "Total exercises",
+          "exercises_value_one": "{{count}} exercise",
+          "exercises_value_other": "{{count}} exercises",
+          "total_duration": "Estimated duration",
+          "average_duration": "Average session duration"
+        },
+        "durations": {
+          "not_available": "Not available",
+          "hours_minutes": "{{hours}}h {{minutes}}min",
+          "hours_one": "{{count}} hour",
+          "hours_other": "{{count}} hours",
+          "minutes_one": "{{count}} minute",
+          "minutes_other": "{{count}} minutes"
+        },
+        "session_duration": "Approx. {{duration}} min",
+        "session_no_exercises": "No exercises in this session.",
+        "actions": {
+          "close": "Close"
+        }
       }
+    },
+    "view": {
+      "dialog": {
+        "subtitle_with_athlete": "Program for {{athlete}} · Created on {{date}}",
+        "subtitle_without_athlete": "Created on {{date}}"
+      },
+      "tabs": {
+        "overview": "Overview",
+        "sessions": "Detailed sessions"
+      },
+      "sections": {
+        "overview": "Overview",
+        "information": "Program information",
+        "stats": "Statistics",
+        "description": "Program description"
+      },
+      "information": {
+        "duration": "Duration",
+        "frequency": "Frequency",
+        "difficulty": "Level",
+        "athlete": "Assigned athlete",
+        "no_athlete": "Not assigned",
+        "no_difficulty": "Not set"
+      },
+      "stats": {
+        "sessions": "Number of sessions",
+        "sessions_value": "{{count}} session",
+        "sessions_value_one": "{{count}} session",
+        "sessions_value_other": "{{count}} sessions",
+        "exercises": "Total exercises",
+        "exercises_value": "{{count}} exercise",
+        "exercises_value_one": "{{count}} exercise",
+        "exercises_value_other": "{{count}} exercises",
+        "total_duration": "Estimated duration",
+        "average_duration": "Average session duration"
+      },
+      "durations": {
+        "not_available": "Not available",
+        "hours_minutes": "{{hours}}h {{minutes}}min",
+        "hours": "{{count}} hour",
+        "hours_one": "{{count}} hour",
+        "hours_other": "{{count}} hours",
+        "minutes": "{{count}} minute",
+        "minutes_one": "{{count}} minute",
+        "minutes_other": "{{count}} minutes"
+      },
+      "session_duration": "Approx. {{duration}} min",
+      "session_no_exercises": "No exercises in this session.",
+      "sessions": {
+        "session_label": "Session {{index}}"
+      },
+      "exercises": {
+        "series": "Sets",
+        "repetitions": "Reps",
+        "rest": "Rest",
+        "charge": "Load",
+        "instructions": "Coaching cues",
+        "categories": "Categories",
+        "muscles": "Muscles",
+        "equipment": "Equipment",
+        "tags": "Tags",
+        "levels": {
+          "beginner": "Beginner",
+          "intermediate": "Intermediate",
+          "advanced": "Advanced"
+        },
+        "rest_duration": {
+          "minutes_seconds": "{{minutes}} min {{seconds}} s",
+          "minutes": "{{count}} min",
+          "minutes_one": "{{count}} min",
+          "minutes_other": "{{count}} min",
+          "seconds": "{{count}} s",
+          "seconds_one": "{{count}} s",
+          "seconds_other": "{{count}} s"
+        }
+      },
+      "actions": {
+        "close": "Close",
+        "back_to_list": "Back to programs"
+      }
+    }
+  },
+  "programs-athlete": {
+    "title": "My programs",
+    "subtitle": "Review the training plans shared by your coach.",
+    "actions": {
+      "back_to_list": "Back to programs"
+    },
+    "empty_state": {
+      "title": "No program assigned yet",
+      "description": "Your coach has not shared a program with you yet.",
+      "helper": "New plans will be listed here as soon as they become available."
+    },
+    "errors": {
+      "not_found": "This program is no longer available.",
+      "load_failed": "We were unable to load this program. Please try again."
+    }
+  },
+  "programs-details": {
+    "title": "Program details",
+    "errors": {
+      "not_found": "This program is no longer available.",
+      "load_failed": "We were unable to load this program. Please try again."
     }
   },
   "sandbox": {
@@ -294,7 +497,8 @@
   "header": {
     "logout": "Log out",
     "loading_user": "Loading profile…",
-    "unknown_user": "Unknown user"
+    "unknown_user": "Unknown user",
+    "open_profile": "Open profile"
   },
   "ERRORS": {
     "INVALID_CREDENTIALS": "Invalid credentials."

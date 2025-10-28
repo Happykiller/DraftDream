@@ -5,10 +5,11 @@ import { Box, CssBaseline, Drawer, Toolbar, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
+import { UserType } from '@src/commons/enums';
 import { session } from '@stores/session';
 import { LayoutAppBar } from './components/LayoutAppBar';
 import { Sidebar } from './components/Sidebar';
-import { useNavItems } from './hooks/useNavItems';
+import { useNavItems, type Role } from './hooks/useNavItems';
 import { useMobileDrawer } from './hooks/useMobileDrawer';
 import { DRAWER_WIDTH, RAIL_WIDTH } from './tokens';
 import { isSelectedPath } from './navMatch';
@@ -23,7 +24,10 @@ export function ProtectedLayout(): React.JSX.Element {
 
   // Session snapshot once per render (no live subscription => 0 regression)
   const snap = React.useMemo(() => session.getState(), []);
-  const role = snap.role ?? 'guest';
+  const role: Role =
+    snap.role && Object.values(UserType).includes(snap.role as (typeof UserType)[keyof typeof UserType])
+      ? (snap.role as Role)
+      : 'guest';
   const fallbackName = [snap.name_first, snap.name_last].filter(Boolean).join(' ').trim();
 
   const items = useNavItems(role);
@@ -35,7 +39,8 @@ export function ProtectedLayout(): React.JSX.Element {
   );
 
   const defaultTitle = t('home.title');
-  const pageTitle = current?.label ?? defaultTitle;
+  const profileTitle = t('profile.title');
+  const pageTitle = current?.label ?? (location.pathname === '/profile' ? profileTitle : defaultTitle);
   const fullTitle = t('app.title_template', { page: pageTitle });
 
   const handleSelectPath = React.useCallback(
@@ -60,6 +65,10 @@ export function ProtectedLayout(): React.JSX.Element {
     if (isMobile) close();
   }, [navigate, isMobile, close]);
 
+  const openProfile = React.useCallback(() => {
+    navigate('/profile');
+  }, [navigate]);
+
   React.useEffect(() => {
     // Keep browser tab title synced with current page title.
     document.title = fullTitle;
@@ -77,6 +86,7 @@ export function ProtectedLayout(): React.JSX.Element {
         userRole={snap.role ?? undefined}
         onMenuClick={toggle}
         onLogout={handleLogout}
+        onProfileClick={openProfile}
       />
 
       {/* Side drawers */}

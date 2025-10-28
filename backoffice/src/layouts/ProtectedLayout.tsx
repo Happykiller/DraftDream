@@ -31,7 +31,9 @@ export function ProtectedLayout(): React.JSX.Element {
     () => items.find((item) => isSelectedPath(location.pathname, item.path)),
     [items, location.pathname]
   );
-  const pageTitle = current?.label ?? t('home.title');
+  const defaultTitle = t('home.title');
+  const profileTitle = t('profile.title');
+  const pageTitle = current?.label ?? (location.pathname === '/profile' ? profileTitle : defaultTitle);
 
   const handleSelectPath = React.useCallback(
     (path: string, external?: boolean) => {
@@ -55,6 +57,10 @@ export function ProtectedLayout(): React.JSX.Element {
     if (isMobile) close();
   }, [navigate, isMobile, close]);
 
+  const openProfile = React.useCallback(() => {
+    navigate('/profile');
+  }, [navigate]);
+
   React.useEffect(() => {
     document.title = `${pageTitle} - ${t('common.brand.full')}`;
   }, [pageTitle, t]);
@@ -70,10 +76,11 @@ export function ProtectedLayout(): React.JSX.Element {
         userRole={snap.role ?? undefined}
         onMenuClick={toggle}
         onLogout={handleLogout}
+        onProfileClick={openProfile}
       />
 
       {/* Side drawers */}
-      <Box component="nav" sx={{ width: { sm: RAIL_WIDTH, md: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}>
+      <Box component="nav" sx={{ width: { sm: RAIL_WIDTH, lg: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}>
         {/* Mobile temporary */}
         <Drawer
           variant="temporary"
@@ -104,7 +111,7 @@ export function ProtectedLayout(): React.JSX.Element {
           open
           PaperProps={{
             sx: {
-              width: { sm: RAIL_WIDTH, md: DRAWER_WIDTH },
+              width: { sm: RAIL_WIDTH, lg: DRAWER_WIDTH },
               bgcolor: 'grey.900',
               color: 'grey.100',
               backgroundImage: 'linear-gradient(180deg,#0f172a 0%, #111827 100%)',

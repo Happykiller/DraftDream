@@ -2,13 +2,14 @@
 import * as React from 'react';
 import {
   AppBar,
-  Toolbar,
-  Typography,
+  Box,
+  ButtonBase,
   IconButton,
   Stack,
-  Box,
-  useMediaQuery,
+  Toolbar,
   Tooltip,
+  Typography,
+  useMediaQuery,
 } from '@mui/material';
 import { Menu as MenuIcon, Logout } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
@@ -25,9 +26,17 @@ export type LayoutAppBarProps = {
   userRole?: string;
   onMenuClick: () => void;
   onLogout: () => void;
+  onProfileClick: () => void;
 };
 
-export function LayoutAppBar({ pageTitle, userName, userRole, onMenuClick, onLogout }: LayoutAppBarProps) {
+export function LayoutAppBar({
+  pageTitle,
+  userName,
+  userRole,
+  onMenuClick,
+  onLogout,
+  onProfileClick,
+}: LayoutAppBarProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation();
@@ -93,16 +102,30 @@ export function LayoutAppBar({ pageTitle, userName, userRole, onMenuClick, onLog
         </Typography>
 
         <Stack direction="row" spacing={1.5} alignItems="center">
-          <Box sx={{ textAlign: 'right' }}>
-            <Typography variant="body2" sx={{ lineHeight: 1 }}>
-              {displayName}
-            </Typography>
-            {displayRole && (
-              <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1 }}>
-                {displayRole}
-              </Typography>
-            )}
-          </Box>
+          <Tooltip title={t('header.open_profile')}>
+            <ButtonBase
+              onClick={onProfileClick}
+              sx={{
+                textAlign: 'right',
+                borderRadius: 1,
+                px: 1,
+                py: 0.5,
+                '&:hover': { bgcolor: 'action.hover' },
+              }}
+              aria-label={t('header.open_profile')}
+            >
+              <Box sx={{ textAlign: 'right' }}>
+                <Typography variant="body2" sx={{ lineHeight: 1 }}>
+                  {displayName}
+                </Typography>
+                {displayRole && (
+                  <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1 }}>
+                    {displayRole}
+                  </Typography>
+                )}
+              </Box>
+            </ButtonBase>
+          </Tooltip>
           <Tooltip title={t('header.logout')}>
             <IconButton aria-label="logout" onClick={onLogout}>
               <Logout />

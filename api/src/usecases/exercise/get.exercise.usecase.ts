@@ -1,5 +1,6 @@
 // src/usecases/exercise/get.exercise.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { mapExerciseToUsecase } from '@usecases/exercise/exercise.mapper';
 import { GetExerciseUsecaseDto } from '@usecases/exercise/exercise.usecase.dto';
@@ -10,9 +11,27 @@ export class GetExerciseUsecase {
 
   async execute(dto: GetExerciseUsecaseDto): Promise<ExerciseUsecaseModel | null> {
     try {
-      const res = await this.inversify.bddService.exercise.get(dto);
-      return res ? mapExerciseToUsecase(res) : null;
+      const { session, ...payload } = dto;
+      const res = await this.inversify.bddService.exercise.get(payload);
+      if (!res) {
+        return null;
+      }
+
+      const creatorId = typeof res.createdBy === 'string' ? res.createdBy : res.createdBy?.id;
+      const isAdmin = session.role === Role.ADMIN;
+      const isCreator = creatorId === session.userId;
+      const isCoach = session.role === Role.COACH;
+      const isPublic = res.visibility === 'public';
+
+      if (!isAdmin && !isCreator && !(isCoach && isPublic)) {
+        throw new Error(ERRORS.GET_EXERCISE_FORBIDDEN);
+      }
+
+      return mapExerciseToUsecase(res);
     } catch (e: any) {
+      if (e?.message === ERRORS.GET_EXERCISE_FORBIDDEN) {
+        throw e;
+      }
       this.inversify.loggerService.error(`GetExerciseUsecase#execute => ${e?.message ?? e}`);
       throw new Error(ERRORS.GET_EXERCISE_USECASE);
     }

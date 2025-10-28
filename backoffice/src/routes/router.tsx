@@ -59,6 +59,13 @@ export const router = createBrowserRouter([
         },
       },
       {
+        path: '/profile',
+        lazy: async () => {
+          const mod = await import('@src/pages/Profile');
+          return { Component: mod.Profile };
+        },
+      },
+      {
         path: '/programs',
         lazy: async () => {
           const mod = await import('@src/pages/Programs');

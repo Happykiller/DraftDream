@@ -11,6 +11,10 @@ export type ProgramExerciseSnapshotDto = {
   restSeconds?: number;
   videoUrl?: string;
   level?: string;
+  categoryIds?: string[];
+  muscleIds?: string[];
+  equipmentIds?: string[];
+  tagIds?: string[];
 };
 
 export type ProgramSessionSnapshotDto = {
@@ -44,6 +48,7 @@ export type ListProgramsDto = {
   q?: string;
   locale?: string;
   createdBy?: string;
+  createdByIn?: string[];
   /** Filter by assigned user id */
   userId?: string;
   includeArchived?: boolean; // default false (exclude deleted items)

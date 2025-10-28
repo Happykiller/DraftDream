@@ -124,55 +124,6 @@ type SessionListGql {
   limit: Int!
 }
 
-type ProgramSessionExerciseGql {
-  id: ID!
-  templateExerciseId: String
-  label: String!
-  description: String
-  instructions: String
-  series: String
-  repetitions: String
-  charge: String
-  restSeconds: Float
-  videoUrl: String
-  level: String
-}
-
-type ProgramSessionGql {
-  id: ID!
-  templateSessionId: String
-  slug: String
-  locale: String
-  label: String!
-  durationMin: Int!
-  description: String
-  exercises: [ProgramSessionExerciseGql!]!
-}
-
-type ProgramGql {
-  id: ID!
-  slug: String!
-  locale: String!
-  label: String!
-  duration: Int!
-  frequency: Int!
-  description: String
-  sessions: [ProgramSessionGql!]!
-  userId: String
-  createdBy: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  creator: UserGql
-  athlete: UserGql
-}
-
-type ProgramListGql {
-  items: [ProgramGql!]!
-  total: Int!
-  page: Int!
-  limit: Int!
-}
-
 type CategoryGql {
   id: ID!
   slug: String!
@@ -216,6 +167,63 @@ enum EquipmentVisibility {
 
 type EquipmentListGql {
   items: [EquipmentGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
+type ProgramSessionExerciseGql {
+  id: ID!
+  templateExerciseId: String
+  label: String!
+  description: String
+  instructions: String
+  series: String
+  repetitions: String
+  charge: String
+  restSeconds: Float
+  videoUrl: String
+  level: String
+  categoryIds: [ID!]
+  muscleIds: [ID!]
+  equipmentIds: [ID!]
+  tagIds: [ID!]
+  categories: [CategoryGql!]!
+  muscles: [MuscleGql!]!
+  equipments: [EquipmentGql!]
+  tags: [TagGql!]
+}
+
+type ProgramSessionGql {
+  id: ID!
+  templateSessionId: String
+  slug: String
+  locale: String
+  label: String!
+  durationMin: Int!
+  description: String
+  exercises: [ProgramSessionExerciseGql!]!
+}
+
+type ProgramGql {
+  id: ID!
+  slug: String!
+  locale: String!
+  label: String!
+  duration: Int!
+  frequency: Int!
+  description: String
+  sessions: [ProgramSessionGql!]!
+  userId: String
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creator: UserGql
+  athlete: UserGql
+}
+
+type ProgramListGql {
+  items: [ProgramGql!]!
   total: Int!
   page: Int!
   limit: Int!
@@ -523,6 +531,10 @@ input ProgramSessionExerciseInput {
   restSeconds: Float
   videoUrl: String
   level: String
+  categoryIds: [ID!]
+  muscleIds: [ID!]
+  equipmentIds: [ID!]
+  tagIds: [ID!]
 }
 
 input UpdateProgramInput {

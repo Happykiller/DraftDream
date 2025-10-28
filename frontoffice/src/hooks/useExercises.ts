@@ -2,13 +2,14 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
+import type { ExerciseLevel as ExerciseLevelType } from '@src/commons/enums';
 import inversify from '@src/commons/inversify';
 import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
 export type ExerciseVisibility = 'PRIVATE' | 'PUBLIC';
-export type ExerciseLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
+export type ExerciseLevel = ExerciseLevelType;
 
 export type CreateExerciseInput = {
   slug: string;
@@ -88,6 +89,7 @@ type ExerciseListPayload = {
 type CreatePayload = { exercise_create: Exercise | null };
 type UpdatePayload = { exercise_update: Exercise };
 type DeletePayload = { exercise_delete: boolean };
+type GetPayload = { exercise_get: Exercise | null };
 
 const LIST_Q = `
   query ListExercises($input: ListExercisesInput) {
@@ -135,7 +137,36 @@ const UPDATE_M = `
 `;
 
 const DELETE_M = `
-  mutation DeleteExercise($id: ID!) { exercise_delete(id: $id) }
+  mutation DeleteExercise($id: ID!) { exercise_softDelete(id: $id) }
+`;
+
+const GET_Q = `
+  query GetExercise($id: ID!) {
+    exercise_get(id: $id) {
+      id
+      slug
+      locale
+      label
+      description
+      instructions
+      level
+      series
+      repetitions
+      charge
+      rest
+      videoUrl
+      visibility
+      categoryIds
+      createdBy
+      createdAt
+      updatedAt
+      creator { id email }
+      categories { id label }
+      muscles { id label }
+      equipment { id label }
+      tags { id label }
+    }
+  }
 `;
 
 export interface UseExercisesParams {
@@ -204,6 +235,31 @@ export function useExercises({
 
   React.useEffect(() => { void load(); }, [load]);
 
+  const getById = React.useCallback(
+    async (id: string): Promise<Exercise | null> => {
+      const trimmedId = id.trim();
+      if (!trimmedId) {
+        return null;
+      }
+      try {
+        const { data, errors } = await execute(() =>
+          gql.send<GetPayload>({
+            query: GET_Q,
+            variables: { id: trimmedId },
+            operationName: 'GetExercise',
+          }),
+        );
+        if (errors?.length) throw new Error(errors[0].message);
+        return data?.exercise_get ?? null;
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Failed to load exercise';
+        flashError(message);
+        throw error;
+      }
+    },
+    [execute, flashError, gql],
+  );
+
   const create = React.useCallback(
     async (input: CreateExerciseInput) => {
       try {
@@ -219,17 +275,13 @@ export function useExercises({
         const created = data?.exercise_create ?? undefined;
         if (!created) {
           flashError(
-            t('programs-coatch.builder.library.create_dialog.flash.failure', {
-              defaultValue: 'Unable to create the exercise template.',
-            }),
+            t('programs-coatch.builder.library.create_dialog.flash.failure'),
           );
           return undefined;
         }
 
         flashSuccess(
-          t('programs-coatch.builder.library.create_dialog.flash.success', {
-            defaultValue: 'Exercise template created successfully.',
-          }),
+          t('programs-coatch.builder.library.create_dialog.flash.success'),
         );
 
         let existed = false;
@@ -244,9 +296,7 @@ export function useExercises({
 
         return created;
       } catch (error: unknown) {
-        const fallback = t('programs-coatch.builder.library.create_dialog.flash.failure', {
-          defaultValue: 'Unable to create the exercise template.',
-        });
+        const fallback = t('programs-coatch.builder.library.create_dialog.flash.failure');
         const message = error instanceof Error ? error.message : fallback;
         flashError(message);
         throw error;
@@ -270,17 +320,13 @@ export function useExercises({
         const updated = data?.exercise_update ?? undefined;
         if (!updated) {
           flashError(
-            t('programs-coatch.builder.library.edit_dialog.flash.failure', {
-              defaultValue: 'Unable to update the exercise template.',
-            }),
+            t('programs-coatch.builder.library.edit_dialog.flash.failure'),
           );
           return undefined;
         }
 
         flashSuccess(
-          t('programs-coatch.builder.library.edit_dialog.flash.success', {
-            defaultValue: 'Exercise template updated successfully.',
-          }),
+          t('programs-coatch.builder.library.edit_dialog.flash.success'),
         );
 
         setItems((previous) => {
@@ -293,9 +339,7 @@ export function useExercises({
 
         return updated;
       } catch (error: unknown) {
-        const fallback = t('programs-coatch.builder.library.edit_dialog.flash.failure', {
-          defaultValue: 'Unable to update the exercise template.',
-        });
+        const fallback = t('programs-coatch.builder.library.edit_dialog.flash.failure');
         const message = error instanceof Error ? error.message : fallback;
         flashError(message);
         throw error;
@@ -326,5 +370,5 @@ export function useExercises({
     [execute, flashError, flashSuccess, gql, load]
   );
 
-  return { items, total, loading, create, update, remove, reload: load };
+  return { items, total, loading, create, update, remove, reload: load, getById };
 }

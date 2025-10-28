@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { Add } from '@mui/icons-material';
 
-import { ProgramCard } from '@src/components/programs/ProgramCard';
+import { ProgramCard, type ProgramActionKey } from '@src/components/programs/ProgramCard';
 
 import type { Program } from '@src/hooks/usePrograms';
 
@@ -19,11 +19,14 @@ interface ProgramListProps {
   loading: boolean;
   placeholderTitle: string;
   placeholderSubtitle: string;
-  openBuilderLabel: string;
-  onOpenBuilder: () => void;
-  onDeleteProgram: (programId: string) => void;
-  onEditProgram: (program: Program) => void;
-  onCloneProgram: (program: Program, payload: { label: string; athleteId: string | null }) => Promise<void>;
+  placeholderHelper?: string;
+  openBuilderLabel?: string;
+  onOpenBuilder?: () => void;
+  onDeleteProgram?: (programId: string) => void;
+  onEditProgram?: (program: Program) => void;
+  onCloneProgram?: (program: Program, payload: { label: string; athleteId: string | null }) => Promise<void>;
+  onViewProgram?: (program: Program) => void;
+  allowedActions?: ProgramActionKey[];
 }
 
 export function ProgramList({
@@ -31,28 +34,35 @@ export function ProgramList({
   loading,
   placeholderTitle,
   placeholderSubtitle,
+  placeholderHelper,
   openBuilderLabel,
   onOpenBuilder,
   onDeleteProgram,
   onEditProgram,
   onCloneProgram,
+  onViewProgram,
+  allowedActions,
 }: ProgramListProps): React.JSX.Element {
   const theme = useTheme();
   const showPlaceholder = !loading && programs.length === 0;
+  const showToolbarButton = Boolean(openBuilderLabel && onOpenBuilder);
+  const actionKeys = allowedActions ?? ['view', 'copy', 'edit', 'delete'];
 
   return (
     <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
       {/* Toolbar */}
-      <Stack direction="row" justifyContent="flex-end" sx={{ width: '100%' }}>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<Add fontSize="small" />}
-          onClick={onOpenBuilder}
-        >
-          {openBuilderLabel}
-        </Button>
-      </Stack>
+      {showToolbarButton && (
+        <Stack direction="row" justifyContent="flex-end" sx={{ width: '100%' }}>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<Add fontSize="small" />}
+            onClick={onOpenBuilder}
+          >
+            {openBuilderLabel}
+          </Button>
+        </Stack>
+      )}
 
       {/* Loading state */}
       {loading && (
@@ -68,9 +78,11 @@ export function ProgramList({
             <Grid size={{ xs: 12, sm: 6, lg: 3 }} key={program.id}>
               <ProgramCard
                 program={program}
+                allowedActions={actionKeys}
                 onDelete={onDeleteProgram}
                 onEdit={onEditProgram}
-                onClone={(item, payload) => onCloneProgram(item, payload)}
+                onClone={onCloneProgram}
+                onView={onViewProgram}
               />
             </Grid>
           ))}
@@ -93,6 +105,11 @@ export function ProgramList({
           <Typography variant="body2" color="text.secondary">
             {placeholderSubtitle}
           </Typography>
+          {placeholderHelper && (
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+              {placeholderHelper}
+            </Typography>
+          )}
         </Paper>
       )}
     </Stack>

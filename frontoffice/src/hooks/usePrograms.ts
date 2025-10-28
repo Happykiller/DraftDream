@@ -1,7 +1,9 @@
 // src/hooks/usePrograms.ts
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
+
 import inversify from '@src/commons/inversify';
+
 import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
@@ -11,6 +13,26 @@ export interface ProgramUser {
   email: string;
   first_name?: string | null;
   last_name?: string | null;
+}
+
+export interface ProgramExerciseCategory {
+  id: string;
+  label: string;
+}
+
+export interface ProgramExerciseMuscle {
+  id: string;
+  label: string;
+}
+
+export interface ProgramExerciseEquipment {
+  id: string;
+  label: string;
+}
+
+export interface ProgramExerciseTag {
+  id: string;
+  label: string;
 }
 
 export interface ProgramSessionExercise {
@@ -25,6 +47,14 @@ export interface ProgramSessionExercise {
   restSeconds?: number | null;
   videoUrl?: string | null;
   level?: string | null;
+  categoryIds?: string[] | null;
+  categories?: ProgramExerciseCategory[];
+  muscleIds?: string[] | null;
+  muscles?: ProgramExerciseMuscle[];
+  equipmentIds?: string[] | null;
+  equipments?: ProgramExerciseEquipment[] | null;
+  tagIds?: string[] | null;
+  tags?: ProgramExerciseTag[] | null;
 }
 
 export interface ProgramSession {
@@ -80,9 +110,45 @@ const LIST_Q = `
         frequency
         description
         sessions {
-          id templateSessionId slug locale label durationMin description
+          id
+          templateSessionId
+          slug
+          locale
+          label
+          durationMin
+          description
           exercises {
-            id templateExerciseId label description instructions series repetitions charge restSeconds videoUrl level
+            id
+            templateExerciseId
+            label
+            description
+            instructions
+            series
+            repetitions
+            charge
+            restSeconds
+            videoUrl
+            level
+            categoryIds
+            categories {
+              id
+              label
+            }
+            muscleIds
+            muscles {
+              id
+              label
+            }
+            equipmentIds
+            equipments {
+              id
+              label
+            }
+            tagIds
+            tags {
+              id
+              label
+            }
           }
         }
         userId
@@ -110,9 +176,45 @@ const CREATE_M = `
       frequency
       description
       sessions {
-        id templateSessionId slug locale label durationMin description
+        id
+        templateSessionId
+        slug
+        locale
+        label
+        durationMin
+        description
         exercises {
-          id templateExerciseId label description instructions series repetitions charge restSeconds videoUrl level
+          id
+          templateExerciseId
+          label
+          description
+          instructions
+          series
+          repetitions
+          charge
+          restSeconds
+          videoUrl
+          level
+          categoryIds
+          categories {
+            id
+            label
+          }
+          muscleIds
+          muscles {
+            id
+            label
+          }
+          equipmentIds
+          equipments {
+            id
+            label
+          }
+          tagIds
+          tags {
+            id
+            label
+          }
         }
       }
       userId
@@ -136,9 +238,45 @@ const UPDATE_M = `
       frequency
       description
       sessions {
-        id templateSessionId slug locale label durationMin description
+        id
+        templateSessionId
+        slug
+        locale
+        label
+        durationMin
+        description
         exercises {
-          id templateExerciseId label description instructions series repetitions charge restSeconds videoUrl level
+          id
+          templateExerciseId
+          label
+          description
+          instructions
+          series
+          repetitions
+          charge
+          restSeconds
+          videoUrl
+          level
+          categoryIds
+          categories {
+            id
+            label
+          }
+          muscleIds
+          muscles {
+            id
+            label
+          }
+          equipmentIds
+          equipments {
+            id
+            label
+          }
+          tagIds
+          tags {
+            id
+            label
+          }
         }
       }
       userId
@@ -178,24 +316,27 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
-      const { data, errors } = await execute(() =>
-        gql.send<ProgramListPayload>({
+      await execute(async () => {
+        const trimmedQuery = q.trim();
+        const { data, errors } = await gql.send<ProgramListPayload>({
           query: LIST_Q,
           operationName: 'ListPrograms',
           variables: {
             input: {
               page,
               limit,
-              q: q || undefined,
-              createdBy: createdBy || undefined,
-              userId: userId || undefined,
+              ...(trimmedQuery ? { q: trimmedQuery } : {}),
+              ...(createdBy ? { createdBy } : {}),
+              ...(userId ? { userId } : {}),
             },
           },
-        }),
-      );
-      if (errors?.length) throw new Error(errors[0].message);
-      setItems(data?.program_list.items ?? []);
-      setTotal(data?.program_list.total ?? 0);
+        });
+        if (errors?.length) throw new Error(errors[0].message);
+
+        const rawPrograms = data?.program_list.items ?? [];
+        setItems(rawPrograms);
+        setTotal(data?.program_list.total ?? 0);
+      });
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Failed to load programs';
       flashError(message);
@@ -261,15 +402,11 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
         const createdProgram = data?.program_create;
         if (!createdProgram) {
           throw new Error(
-            t('programs-coatch.notifications.program_create_failed', {
-              defaultValue: 'Unable to create the program.',
-            }),
+            t('programs-coatch.notifications.program_create_failed'),
           );
         }
         flashSuccess(
-          t('programs-coatch.notifications.program_created', {
-            defaultValue: 'Program created',
-          }),
+          t('programs-coatch.notifications.program_created'),
         );
         await load();
         return createdProgram;
@@ -279,7 +416,15 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
         throw error;
       }
     },
-    [execute, flashError, flashSuccess, gql, i18n.language, load, t]
+    [
+      execute,
+      flashError,
+      flashSuccess,
+      gql,
+      i18n.language,
+      load,
+      t,
+    ],
   );
 
   const update = React.useCallback(
@@ -334,11 +479,7 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
           }),
         );
         if (errors?.length) throw new Error(errors[0].message);
-        flashSuccess(
-          t('programs-coatch.notifications.program_updated', {
-            defaultValue: 'Program updated',
-          }),
-        );
+        flashSuccess(t('programs-coatch.notifications.program_updated'));
         await load();
       } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Update failed';
@@ -362,15 +503,11 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
         if (errors?.length) throw new Error(errors[0].message);
         if (!data?.program_softDelete) {
           throw new Error(
-            t('programs-coatch.notifications.program_delete_failed', {
-              defaultValue: 'Failed to delete program',
-            }),
+            t('programs-coatch.notifications.program_delete_failed'),
           );
         }
         flashSuccess(
-          t('programs-coatch.notifications.program_deleted', {
-            defaultValue: 'Program deleted',
-          }),
+          t('programs-coatch.notifications.program_deleted'),
         );
         await load();
       } catch (error: unknown) {

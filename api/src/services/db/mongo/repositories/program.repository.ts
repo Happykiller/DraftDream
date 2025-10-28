@@ -28,6 +28,10 @@ type ProgramExerciseDoc = {
   restSeconds?: number;
   videoUrl?: string;
   level?: string;
+  categoryIds?: string[];
+  muscleIds?: string[];
+  equipmentIds?: string[];
+  tagIds?: string[];
 };
 
 type ProgramSessionDoc = {
@@ -127,6 +131,7 @@ export class BddServiceProgramMongo {
     const {
       q,
       createdBy,
+      createdByIn,
       userId,
       includeArchived = false,
       limit = 20,
@@ -142,7 +147,16 @@ export class BddServiceProgramMongo {
         { description: { $regex: new RegExp(q.trim(), 'i') } },
       ];
     }
+    const normalizedCreatedByIn = Array.isArray(createdByIn)
+      ? createdByIn.map((id) => id?.trim()).filter((id): id is string => Boolean(id))
+      : [];
+    if (createdBy && normalizedCreatedByIn.length) {
+      throw new Error('Cannot combine createdBy and createdByIn filters.');
+    }
     if (createdBy) filter.createdBy = this.toObjectId(createdBy);
+    if (!createdBy && normalizedCreatedByIn.length) {
+      filter.createdBy = { $in: normalizedCreatedByIn.map(this.toObjectId) };
+    }
     if (userId) filter.userId = this.toObjectId(userId);
     if (!includeArchived) filter.deletedAt = { $exists: false };
 
@@ -230,6 +244,10 @@ export class BddServiceProgramMongo {
     restSeconds: exercise.restSeconds,
     videoUrl: exercise.videoUrl,
     level: exercise.level,
+    categoryIds: this.normalizeIdArray(exercise.categoryIds),
+    muscleIds: this.normalizeIdArray(exercise.muscleIds),
+    equipmentIds: this.normalizeIdArray(exercise.equipmentIds),
+    tagIds: this.normalizeIdArray(exercise.tagIds),
   });
 
   private toModel = (doc: ProgramDoc): Program => {
@@ -273,6 +291,10 @@ export class BddServiceProgramMongo {
     restSeconds: exercise.restSeconds,
     videoUrl: exercise.videoUrl,
     level: exercise.level,
+    categoryIds: this.normalizeIdArray(exercise.categoryIds),
+    muscleIds: this.normalizeIdArray(exercise.muscleIds),
+    equipmentIds: this.normalizeIdArray(exercise.equipmentIds),
+    tagIds: this.normalizeIdArray(exercise.tagIds),
   });
 
   private isDuplicateError(error: unknown): boolean {
@@ -283,5 +305,13 @@ export class BddServiceProgramMongo {
     const message = error instanceof Error ? error.message : String(error);
     inversify.loggerService.error(`BddServiceProgramMongo#${method} => ${message}`);
     throw error instanceof Error ? error : new Error(message);
+  }
+
+  private normalizeIdArray(ids?: string[] | null): string[] | undefined {
+    if (!Array.isArray(ids)) {
+      return undefined;
+    }
+    const normalized = Array.from(new Set(ids.map((id) => id?.trim()).filter(Boolean))) as string[];
+    return normalized.length ? normalized : undefined;
   }
 }

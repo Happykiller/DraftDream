@@ -134,6 +134,8 @@ export class BddServiceExerciseMongo {
       q,
       locale,
       createdBy,
+      createdByIn,
+      includePublicVisibility,
       visibility,
       level,
       categoryIds,
@@ -143,15 +145,49 @@ export class BddServiceExerciseMongo {
     } = params;
 
     const filter: Record<string, any> = {};
+    const andConditions: Record<string, any>[] = [];
+
     if (q && q.trim()) {
-      filter.$or = [
-        { slug: { $regex: new RegExp(q.trim(), 'i') } },
-        { label: { $regex: new RegExp(q.trim(), 'i') } },
-      ];
+      const search = q.trim();
+      andConditions.push({
+        $or: [
+          { slug: { $regex: new RegExp(search, 'i') } },
+          { label: { $regex: new RegExp(search, 'i') } },
+          { description: { $regex: new RegExp(search, 'i') } },
+        ],
+      });
     }
+
     if (locale) filter.locale = locale.toLowerCase().trim();
-    if (createdBy) filter.createdBy = this.toObjectId(createdBy);
-    if (visibility === 'public' || visibility === 'private') filter.visibility = visibility;
+
+    const normalizedCreatedByIn = Array.isArray(createdByIn)
+      ? createdByIn.map((id) => id?.trim()).filter((id): id is string => Boolean(id))
+      : [];
+    if (createdBy && normalizedCreatedByIn.length) {
+      throw new Error('Cannot combine createdBy and createdByIn filters.');
+    }
+
+    const ownershipConditions: Record<string, any>[] = [];
+    if (createdBy) {
+      ownershipConditions.push({ createdBy: this.toObjectId(createdBy) });
+    } else if (normalizedCreatedByIn.length) {
+      ownershipConditions.push({ createdBy: { $in: normalizedCreatedByIn.map(this.toObjectId) } });
+    }
+
+    if (visibility === 'public' || visibility === 'private') {
+      filter.visibility = visibility;
+    } else if (includePublicVisibility) {
+      ownershipConditions.push({ visibility: 'public' });
+    }
+
+    if (ownershipConditions.length) {
+      andConditions.push({ $or: ownershipConditions });
+    }
+
+    if (andConditions.length) {
+      filter.$and = andConditions;
+    }
+
     if (level) filter.level = level;
     const normalizedCategoryIds = Array.isArray(categoryIds)
       ? Array.from(new Set(categoryIds)).map((id) => id.trim()).filter(Boolean)

@@ -31,3 +31,24 @@
 - Environment variables are read via `src/config/env.ts`. Add new keys there and document them in the README; never access `import.meta.env` directly in components.
 - Respect the shared coding conventions from the repository root (English comments, staircase imports, JSX marker comment).
 - Avoid direct `fetch` usage—always route network calls through the GraphQL service to keep error handling centralized.
+
+## Coding Guidelines
+1. **Import structure**:
+   - Use staircase-style formatting.
+   - Separate external libraries from internal modules.
+2. **Comments**:
+   - Write in English, clear and concise.
+   - Comment classes, functions, methods, and complex logic.
+   - Focus on readability and effectiveness.
+3. **Component templates**:
+   - Always include and maintain the JSX marker comment ` {/* General information */}` within component templates.
+4. **Internationalization**:
+   - Do not rely on translation `defaultValue` fallbacks; keep localization dictionaries up to date for every supported language.
+5. **Async workflows**:
+   - Route every asynchronous workflow (GraphQL fetches, mutations, loaders, service calls) through `src/hooks/useAsyncTask.ts` so `useLoaderStore` fuels the global overlay. For example, the login form wraps its authentication mutation inside `useAsyncTask` to keep the overlay synchronized.
+Add this compact section near the end of your **Coding Guidelines** block:
+6. **MUI Grid syntax (v6+)**
+   Use the new prop `size` instead of `item` and `xs`/`md`.
+   **Deprecated:** `<Grid item xs={12} md={5}>`
+   **Correct:** `<Grid size={{ xs: 12, md: 5 }}>`
+   Keep `container` for parent grids, and use `spacing`, `rowSpacing`, or `columnSpacing` as usual.

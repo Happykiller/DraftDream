@@ -41,6 +41,13 @@ export const router = createBrowserRouter([
           return { Component: withTitle(mod.Home, 'home.title') };
         },
       },
+      {
+        path: '/profile',
+        lazy: async () => {
+          const mod = await import('@src/pages/Profile');
+          return { Component: withTitle(mod.Profile, 'profile.title') };
+        },
+      },
     ],
   },
   {
@@ -69,6 +76,41 @@ export const router = createBrowserRouter([
         lazy: async () => {
           const mod = await import('@src/pages/ProgramsCoach');
           return { Component: withTitle(mod.ProgramsCoach, 'programs-coatch.title') };
+        },
+      },
+      {
+        path: ':programId',
+        lazy: async () => {
+          const mod = await import('@src/pages/ProgramDetails');
+          return {
+            Component: withTitle(mod.ProgramDetails, 'programs-details.title'),
+            loader: mod.programDetailsLoader,
+          };
+        },
+      },
+    ],
+  },
+  {
+    path: '/programs-athlete',
+    element: <ProtectedLayout />,
+    loader: requireAuthLoader,
+    children: [
+      {
+        // ProgramsAthlete
+        index: true,
+        lazy: async () => {
+          const mod = await import('@src/pages/ProgramsAthlete');
+          return { Component: withTitle(mod.ProgramsAthlete, 'programs-athlete.title') };
+        },
+      },
+      {
+        path: ':programId',
+        lazy: async () => {
+          const mod = await import('@src/pages/ProgramDetails');
+          return {
+            Component: withTitle(mod.ProgramDetails, 'programs-details.title'),
+            loader: mod.programDetailsLoader,
+          };
         },
       },
     ],

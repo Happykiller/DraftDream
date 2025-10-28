@@ -80,11 +80,26 @@ export function useUser(options?: { skip?: boolean }): UseUserResult {
 
       const profile = data?.me ?? null;
       if (profile) {
-        session.setState({
-          id: profile.id,
-          name_first: profile.first_name,
-          name_last: profile.last_name,
-          role: profile.type,
+        // Avoid store churn when the profile payload matches the persisted session.
+        session.setState((previous) => {
+          const next = {
+            id: profile.id,
+            name_first: profile.first_name,
+            name_last: profile.last_name,
+            role: profile.type,
+          } as const;
+
+          const unchanged =
+            previous.id === next.id &&
+            previous.name_first === next.name_first &&
+            previous.name_last === next.name_last &&
+            previous.role === next.role;
+
+          if (unchanged) {
+            return previous;
+          }
+
+          return { ...previous, ...next };
         });
       }
 

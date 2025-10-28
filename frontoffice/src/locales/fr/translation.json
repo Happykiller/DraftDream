@@ -13,13 +13,28 @@
     "unexpected_error": "Erreur inattendue, veuillez réessayer.",
     "loading": "Chargement..."
   },
+  "languages": {
+    "fr": "Français",
+    "en": "Anglais"
+  },
   "login": {
     "title": "Connexion",
     "email": "Adresse e-mail",
     "password": "Mot de passe",
     "connect_space": "Connectez-vous à votre espace",
     "success": "Connexion réussie : {{name}} !",
-    "button": "Se connecter"
+    "button": "Se connecter",
+    "language_label": "Langue",
+    "language_placeholder": "Changer la langue de l'interface",
+    "hero": {
+      "title": "Coachez plus intelligemment, plus rapidement.",
+      "subtitle": "Centralisez vos programmes, accompagnez vos athlètes et restez aligné avec votre équipe."
+    },
+    "highlights": {
+      "programs": "Créez des programmes sur mesure en quelques minutes",
+      "followup": "Suivez la progression de vos athlètes en temps réel",
+      "collaboration": "Collaborez en toute sécurité avec votre équipe"
+    }
   },
   "home": {
     "title": "Tableau de bord",
@@ -28,6 +43,42 @@
   "clients": {
     "title": "Clients",
     "placeholder": "Clients"
+  },
+  "profile": {
+    "title": "Profil",
+    "hero": {
+      "title": "Votre espace, vos informations.",
+      "subtitle": "Consultez les données enregistrées pour cette session et adaptez votre expérience en un clin d'œil.",
+      "highlights": {
+        "identity": "Vérifiez les informations partagées avec votre équipe d'encadrement.",
+        "security": "Contrôlez le jeton d'accès actuellement associé à cette session.",
+        "support": "Partagez cet instantané avec le support pour accélérer l'assistance."
+      }
+    },
+    "language": {
+      "label": "Langue",
+      "helper": "Le changement s'applique instantanément pour cette session."
+    },
+    "summary": {
+      "title": "Vue d'ensemble de la session",
+      "description": "Identifiants clés récupérés depuis le store de session.",
+      "fields": {
+        "name": "Nom complet",
+        "id": "Identifiant utilisateur",
+        "role": "Rôle",
+        "accessToken": "Jeton d'accès"
+      },
+      "emptyValue": "Non renseigné",
+      "empty": "Aucune donnée de session pour le moment. Connectez-vous pour afficher votre profil."
+    },
+    "snapshot": {
+      "title": "Payload brut de session",
+      "description": "Export JSON complet des valeurs stockées dans src/stores/session.ts.",
+      "empty": "Aucune donnée de session disponible"
+    }
+  },
+  "programs-athlete": {
+    "title": "Mes programmes"
   },
   "programs-coatch": {
     "title": "Programmes",
@@ -89,9 +140,9 @@
         "empty_state": "Aucun exercice ne correspond à vos filtres.",
         "button_create": "Creer un exercice",
         "subtitle": "Ajoutez un exercice à une séance pour l'intégrer.",
-        "sets_label": " series",
-        "reps_label": " reps",
-        "rest_label": "",
+        "sets_label": " séries",
+        "reps_label": " répétitions",
+        "rest_label": "Repos : ",
         "tooltips": {
           "add_exercise": "Ajouter cet exercice à la séance sélectionnée",
           "edit_exercise": "Modifier cet exercice",
@@ -195,8 +246,10 @@
         "intermediate": "Intermédiaire",
         "advanced": "Avancé"
       },
+      "duration_weeks": "{{count}} semaine",
       "duration_weeks_one": "{{count}} semaine",
       "duration_weeks_other": "{{count}} semaines",
+      "frequency_week": "{{count}} séance/semaine",
       "frequency_week_one": "{{count}} séance/semaine",
       "frequency_week_other": "{{count}} séances/semaine",
       "sessions_summary": "{{sessions}} séances • {{exercises}} exercices",
@@ -234,7 +287,157 @@
         "errors": {
           "missing_label": "Veuillez renseigner un nom de programme."
         }
+      },
+      "view": {
+        "dialog": {
+          "subtitle_with_athlete": "Programme pour {{athlete}} · Créé le {{date}}",
+          "subtitle_without_athlete": "Créé le {{date}}"
+        },
+        "tabs": {
+          "overview": "Vue d'ensemble",
+          "sessions": "Séances détaillées"
+        },
+        "sections": {
+          "overview": "Vue d'ensemble",
+          "information": "Informations du programme",
+          "stats": "Statistiques",
+          "description": "Description du programme"
+        },
+        "information": {
+          "duration": "Durée",
+          "frequency": "Fréquence",
+          "difficulty": "Niveau",
+          "athlete": "Athlète assigné",
+          "no_athlete": "Non assigné",
+          "no_difficulty": "Non défini"
+        },
+        "stats": {
+          "sessions": "Nombre de séances",
+          "sessions_value_one": "{{count}} séance",
+          "sessions_value_other": "{{count}} séances",
+          "exercises": "Total exercices",
+          "exercises_value_one": "{{count}} exercice",
+          "exercises_value_other": "{{count}} exercices",
+          "total_duration": "Durée estimée",
+          "average_duration": "Durée moyenne par séance"
+        },
+        "durations": {
+          "not_available": "Non renseignée",
+          "hours_minutes": "{{hours}}h {{minutes}}min",
+          "hours_one": "{{count}} heure",
+          "hours_other": "{{count}} heures",
+          "minutes_one": "{{count}} minute",
+          "minutes_other": "{{count}} minutes"
+        },
+        "session_duration": "Durée estimée : {{duration}} min",
+        "session_no_exercises": "Aucun exercice pour cette séance.",
+        "actions": {
+          "close": "Fermer"
+        }
       }
+    },
+    "view": {
+      "dialog": {
+        "subtitle_with_athlete": "Programme pour {{athlete}} · Créé le {{date}}",
+        "subtitle_without_athlete": "Créé le {{date}}"
+      },
+      "tabs": {
+        "overview": "Vue d'ensemble",
+        "sessions": "Séances détaillées"
+      },
+      "sections": {
+        "overview": "Vue d'ensemble",
+        "information": "Informations du programme",
+        "stats": "Statistiques",
+        "description": "Description du programme"
+      },
+      "information": {
+        "duration": "Durée",
+        "frequency": "Fréquence",
+        "difficulty": "Niveau",
+        "athlete": "Athlète assigné",
+        "no_athlete": "Non assigné",
+        "no_difficulty": "Non défini"
+      },
+      "stats": {
+        "sessions": "Nombre de séances",
+        "sessions_value": "{{count}} séance",
+        "sessions_value_one": "{{count}} séance",
+        "sessions_value_other": "{{count}} séances",
+        "exercises": "Total exercices",
+        "exercises_value": "{{count}} exercice",
+        "exercises_value_one": "{{count}} exercice",
+        "exercises_value_other": "{{count}} exercices",
+        "total_duration": "Durée estimée",
+        "average_duration": "Durée moyenne par séance"
+      },
+      "durations": {
+        "not_available": "Non renseignée",
+        "hours_minutes": "{{hours}}h {{minutes}}min",
+        "hours": "{{count}} heure",
+        "hours_one": "{{count}} heure",
+        "hours_other": "{{count}} heures",
+        "minutes": "{{count}} minute",
+        "minutes_one": "{{count}} minute",
+        "minutes_other": "{{count}} minutes"
+      },
+      "session_duration": "Durée estimée : {{duration}} min",
+      "session_no_exercises": "Aucun exercice pour cette séance.",
+      "sessions": {
+        "session_label": "Séance {{index}}"
+      },
+      "exercises": {
+        "series": "Séries",
+        "repetitions": "Répétitions",
+        "rest": "Repos",
+        "charge": "Charge",
+        "instructions": "Consignes",
+        "categories": "Catégories",
+        "muscles": "Muscles",
+        "equipment": "Équipements",
+        "tags": "Tags",
+        "levels": {
+          "beginner": "Débutant",
+          "intermediate": "Intermédiaire",
+          "advanced": "Avancé"
+        },
+        "rest_duration": {
+          "minutes_seconds": "{{minutes}} min {{seconds}} s",
+          "minutes": "{{count}} min",
+          "minutes_one": "{{count}} min",
+          "minutes_other": "{{count}} min",
+          "seconds": "{{count}} s",
+          "seconds_one": "{{count}} s",
+          "seconds_other": "{{count}} s"
+        }
+      },
+      "actions": {
+        "close": "Fermer",
+        "back_to_list": "Retour à la liste"
+      }
+    }
+  },
+  "programs-athlete": {
+    "title": "Mes programmes",
+    "subtitle": "Consultez les plans d'entraînement partagés par votre coach.",
+    "actions": {
+      "back_to_list": "Retour à la liste"
+    },
+    "empty_state": {
+      "title": "Aucun programme attribué",
+      "description": "Votre coach ne vous a pas encore partagé de programme.",
+      "helper": "Les nouveaux plans apparaîtront ici dès qu'ils seront disponibles."
+    },
+    "errors": {
+      "not_found": "Ce programme n'est plus disponible.",
+      "load_failed": "Le chargement du programme a échoué. Veuillez réessayer."
+    }
+  },
+  "programs-details": {
+    "title": "Détails du programme",
+    "errors": {
+      "not_found": "Ce programme n'est plus disponible.",
+      "load_failed": "Le chargement du programme a échoué. Veuillez réessayer."
     }
   },
   "sandbox": {
@@ -296,7 +499,8 @@
   "header": {
     "logout": "Se déconnecter",
     "loading_user": "Chargement du profil…",
-    "unknown_user": "Utilisateur inconnu"
+    "unknown_user": "Utilisateur inconnu",
+    "open_profile": "Ouvrir le profil"
   },
   "ERRORS": {
     "INVALID_CREDENTIALS": "Identifiants invalides."

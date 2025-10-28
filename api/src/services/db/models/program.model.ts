@@ -16,6 +16,10 @@ export interface ProgramExerciseSnapshot {
   restSeconds?: number;
   videoUrl?: string;
   level?: string;
+  categoryIds?: string[];
+  muscleIds?: string[];
+  equipmentIds?: string[];
+  tagIds?: string[];
 }
 
 export interface ProgramSessionSnapshot {

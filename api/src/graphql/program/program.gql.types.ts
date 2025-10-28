@@ -1,6 +1,17 @@
 // src\\graphql\\program\\program.gql.types.ts
-import { Field, Float, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
+import {
+  Field,
+  Float,
+  ID,
+  InputType,
+  Int,
+  ObjectType,
+} from '@nestjs/graphql';
 
+import { CategoryGql } from '@graphql/category/category.gql.types';
+import { EquipmentGql } from '@graphql/equipment/equipment.gql.types';
+import { MuscleGql } from '@graphql/muscle/muscle.gql.types';
+import { TagGql } from '@graphql/tag/tag.gql.types';
 import { UserGql } from '@graphql/user/user.gql.types';
 
 @ObjectType()
@@ -16,6 +27,19 @@ export class ProgramSessionExerciseGql {
   @Field(() => Float, { nullable: true }) restSeconds?: number;
   @Field({ nullable: true }) videoUrl?: string;
   @Field({ nullable: true }) level?: string;
+  @Field(() => [ID], { nullable: true }) categoryIds?: string[];
+  @Field(() => [ID], { nullable: true }) muscleIds?: string[];
+  @Field(() => [ID], { nullable: true }) equipmentIds?: string[];
+  @Field(() => [ID], { nullable: true }) tagIds?: string[];
+
+  @Field(() => [CategoryGql])
+  categories?: CategoryGql[];
+  @Field(() => [MuscleGql])
+  muscles?: MuscleGql[];
+  @Field(() => [EquipmentGql], { nullable: true })
+  equipments?: EquipmentGql[] | null;
+  @Field(() => [TagGql], { nullable: true })
+  tags?: TagGql[] | null;
 }
 
 @ObjectType()
@@ -67,6 +91,10 @@ export class ProgramSessionExerciseInput {
   @Field(() => Float, { nullable: true }) restSeconds?: number;
   @Field({ nullable: true }) videoUrl?: string;
   @Field({ nullable: true }) level?: string;
+  @Field(() => [ID], { nullable: true }) categoryIds?: string[];
+  @Field(() => [ID], { nullable: true }) muscleIds?: string[];
+  @Field(() => [ID], { nullable: true }) equipmentIds?: string[];
+  @Field(() => [ID], { nullable: true }) tagIds?: string[];
 }
 
 @InputType()

@@ -53,7 +53,9 @@
       "address_code": "Postal code",
       "address_country": "Country",
       "user": "User",
+      "athlete": "Athlete",
       "user_optional": "User (optional)",
+      "athlete_optional": "Athlete (optional)",
       "description": "Description",
       "duration_weeks": "Duration (weeks)",
       "duration_minutes": "Duration (min)",
@@ -96,6 +98,7 @@
       "select": "Select...",
       "select_sessions": "Select sessions",
       "select_user": "Select a user",
+      "select_athlete": "Select an athlete",
       "select_exercises": "Select exercises",
       "enter_email": "Enter a valid email address",
       "custom_flash": "Custom message (outlined button).",
@@ -112,6 +115,10 @@
       "are_you_sure": "Are you sure?"
     }
   },
+  "languages": {
+    "fr": "French",
+    "en": "English"
+  },
   "login": {
     "title": "Login",
     "email": "Email address",
@@ -119,6 +126,39 @@
     "connect_space": "Log in to your account",
     "success": "Successfully logged in: {{name}}!",
     "button": "Sign in"
+  },
+  "profile": {
+    "title": "Profile",
+    "hero": {
+      "title": "Your account, your controls.",
+      "subtitle": "Review the data stored for your session and keep everything aligned with your needs.",
+      "highlights": {
+        "identity": "Verify the identity shared with your coaching team.",
+        "security": "Inspect the access token currently issued for this session.",
+        "support": "Share this snapshot with support to resolve issues faster."
+      }
+    },
+    "language": {
+      "label": "Language",
+      "helper": "Updates apply instantly for the current session."
+    },
+    "summary": {
+      "title": "Session overview",
+      "description": "Key identifiers retrieved from the session store.",
+      "fields": {
+        "name": "Full name",
+        "id": "User ID",
+        "role": "Role",
+        "accessToken": "Access token"
+      },
+      "emptyValue": "Not provided",
+      "empty": "No session data is available yet. Sign in to populate your profile."
+    },
+    "snapshot": {
+      "title": "Raw session payload",
+      "description": "Complete JSON export of the values stored in src/stores/session.ts.",
+      "empty": "No session data available"
+    }
   },
   "home": {
     "title": "Dashboard"
@@ -141,6 +181,7 @@
     "table": {
       "sessions_linked": "{{count}} linked",
       "filter_by_user": "Filter by user",
+      "filter_by_athlete": "Filter by athlete",
       "search_placeholder": "Search programs..."
     },
     "dialog": {
@@ -272,7 +313,8 @@
     "open_navigation": "Open navigation"
   },
   "header": {
-    "logout": "Log out"
+    "logout": "Log out",
+    "open_profile": "Open profile"
   },
   "users": {
     "title": "Users",

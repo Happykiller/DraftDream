@@ -1,5 +1,5 @@
-// docs\auth.http
 ### auth
+# @name auth
 POST {{host}}
 Content-Type: application/json
 
@@ -11,4 +11,17 @@ Content-Type: application/json
       "password": "{{password}}"
     }
   }
+}
+
+### set auth token
+
+@authToken = {{auth.response.body.data.auth.access_token}}
+
+### who
+POST {{host}}
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "query": "query Me { me { id type first_name last_name email phone createdAt updatedAt } }"
 }
