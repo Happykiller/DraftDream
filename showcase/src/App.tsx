@@ -1,8 +1,8 @@
 import { Box } from '@mui/material';
 import { Route, Routes } from 'react-router-dom';
 
-import ChangelogPage from './pages/ChangelogPage.tsx';
 import LandingPage from './pages/LandingPage.tsx';
+import ReleaseNotesPage from './pages/ReleaseNotesPage.tsx';
 
 const App = (): JSX.Element => {
   return (
@@ -10,7 +10,7 @@ const App = (): JSX.Element => {
       {/* General information */}
       <Routes>
         <Route element={<LandingPage />} path="/" />
-        <Route element={<ChangelogPage />} path="/changelog" />
+        <Route element={<ReleaseNotesPage />} path="/changelog" />
       </Routes>
     </Box>
   );

@@ -6,6 +6,7 @@ import { createRoot } from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
 
 import App from './App.tsx';
+import { I18nProvider } from './i18n/I18nProvider.tsx';
 import theme from './theme/index.ts';
 
 const container = document.getElementById('root');
@@ -16,11 +17,13 @@ if (!container) {
 
 createRoot(container).render(
   <StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <HashRouter>
-        <App />
-      </HashRouter>
-    </ThemeProvider>
+    <I18nProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <HashRouter>
+          <App />
+        </HashRouter>
+      </ThemeProvider>
+    </I18nProvider>
   </StrictMode>
 );
