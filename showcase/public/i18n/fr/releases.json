@@ -1,0 +1,45 @@
+{
+  "releases": [
+    {
+      "date": "2025-10-27",
+      "global": [
+        "[FEAT] Role-aware navigation and access across apps.",
+        "[FEAT] Athlete programs: list and detail views wired to snapshots and aggregated exercise metadata.",
+        "[FEAT] Profile pages for athletes and coaches in front and back offices.",
+        "[FEAT] Login page refreshed with a language switcher.",
+        "[FIX] Visibility rules enforced for athlete programs and public training resources.",
+        "[FIX] GraphQL argument metadata and list resolvers corrected."
+      ],
+      "notes": "",
+      "projects": {
+        "/api": [
+          "Increase minor version to prepare the next API release.",
+          "Add rate limiting safeguards for public endpoints to mitigate abuse.",
+          "Expand player draft analytics export to include advanced metrics.",
+          "Harden authentication workflow with refresh token rotation support.",
+          "Improve observability by centralizing audit logging streams.",
+          "Update dependency stack to align with shared service baselines."
+        ],
+        "/backoffice": [
+          "Increase minor version to prepare the next backoffice release.",
+          "Add audit log export capabilities to the administration panel.",
+          "Refresh dashboard analytics caches hourly to reduce stale insights.",
+          "Harden the password reset flow with token throttling safeguards.",
+          "Update the dependency matrix to align with API services v0.6.0."
+        ],
+        "/frontoffice": [
+          "Increase minor version to prepare the next frontoffice release.",
+          "Refresh global navigation structure with clearer entry points for home, programs, and user tools.",
+          "Add contextual breadcrumbs to improve navigation between program overviews and detail pages.",
+          "Expand programs catalog with featured tracks and advanced filtering options for participants.",
+          "Improve program enrollment flow with inline validation and clearer eligibility messaging.",
+          "Redesign profile dashboard to surface completion progress and upcoming milestones.",
+          "Harden login session handling to reduce idle timeouts and improve remember-me reliability.",
+          "Synchronize English and French translation bundles for the navigation, programs, and profile flows."
+        ]
+      },
+      "title": "Release 0.3.0",
+      "version": "0.3.0"
+    }
+  ]
+}
