@@ -1,4 +1,11 @@
-import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useMemo,
+  useState
+} from 'react';
 
 export type Language = 'en' | 'fr';
 
@@ -100,8 +107,38 @@ const applyVariables = (template: string, variables?: Record<string, string>): s
 
 export const supportedLanguages: readonly Language[] = ['en', 'fr'];
 
+/**
+ * Picks the best supported language based on the browser preferences.
+ */
+const resolveInitialLanguage = (): Language => {
+  const normalizeLanguage = (candidate?: string): Language | undefined => {
+    if (!candidate) {
+      return undefined;
+    }
+
+    const [languageCode] = candidate.split('-');
+    const normalized = languageCode?.toLowerCase();
+
+    return supportedLanguages.find((supportedLanguage) => supportedLanguage === normalized);
+  };
+
+  if (typeof navigator === 'undefined') {
+    return 'en';
+  }
+
+  const fromPreferences = navigator.languages
+    ?.map((preferredLanguage) => normalizeLanguage(preferredLanguage))
+    .find((language): language is Language => Boolean(language));
+
+  if (fromPreferences) {
+    return fromPreferences;
+  }
+
+  return normalizeLanguage(navigator.language) ?? 'en';
+};
+
 export const I18nProvider = ({ children }: I18nProviderProps): JSX.Element => {
-  const [language, setLanguage] = useState<Language>('en');
+  const [language, setLanguage] = useState<Language>(() => resolveInitialLanguage());
 
   const translate = useCallback<TranslateFunction>(
     (key, variables) => {
