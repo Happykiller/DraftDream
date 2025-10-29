@@ -3,39 +3,39 @@
     {
       "date": "2025-10-27",
       "global": [
-        "[NOUVEAUTÉ] Navigation et accès désormais adaptés à chaque rôle sur l'ensemble des applications.",
-        "[NOUVEAUTÉ] Programmes athlètes enrichis avec listes, fiches détaillées et indicateurs issus des instantanés.",
-        "[NOUVEAUTÉ] Profils athlètes et coachs harmonisés entre les interfaces front et back office.",
-        "[NOUVEAUTÉ] Page de connexion réinventée avec un sélecteur de langue accessible dès l'accueil.",
-        "[CORRECTION] Règles de visibilité consolidées pour les programmes athlètes et les ressources d'entraînement publiques.",
-        "[CORRECTION] Métadonnées des arguments GraphQL et résolutions de listes ajustées pour garantir des retours cohérents."
+        "[NOUVEAUTÉ] Navigation et accès ajustés pour chaque rôle sur l'ensemble des applications.",
+        "[NOUVEAUTÉ] Programmes athlètes enrichis de listes, fiches détaillées et indicateurs d'instantanés.",
+        "[NOUVEAUTÉ] Profils athlètes et coachs harmonisés entre front et back office.",
+        "[NOUVEAUTÉ] Page de connexion repensée avec un sélecteur de langue dès l'accueil.",
+        "[CORRECTION] Règles de visibilité consolidées pour les programmes athlètes et les ressources publiques.",
+        "[CORRECTION] Métadonnées GraphQL et résolutions de listes ajustées pour des réponses cohérentes."
       ],
       "notes": "",
       "projects": {
         "/api": [
-          "Montée de version mineure en préparation du prochain jalon API.",
-          "Ajout de garde-fous de limitation de débit sur les points d'accès publics afin de prévenir les abus.",
-          "Extension de l'export analytique du repêchage pour intégrer des métriques avancées.",
-          "Renforcement de l'authentification avec rotation des jetons de rafraîchissement.",
-          "Centralisation des flux de journalisation d'audit pour une observabilité uniforme.",
-          "Mise à niveau des dépendances pour rester aligné avec la base de services partagée."
+          "Version mineure relevée en vue du prochain jalon.",
+          "Limitation de débit renforcée sur les points d'accès publics.",
+          "Export analytique du repêchage enrichi de métriques avancées.",
+          "Rotation des jetons de rafraîchissement pour sécuriser l'authentification.",
+          "Flux de journalisation d'audit centralisés pour une lecture unifiée.",
+          "Dépendances mises à niveau et alignées sur la base de services commune."
         ],
         "/backoffice": [
-          "Montée de version mineure en vue du prochain déploiement backoffice.",
-          "Ajout de l'export du journal d'audit directement depuis le panneau d'administration.",
-          "Actualisation horaire des caches analytiques du tableau de bord pour limiter les données obsolètes.",
-          "Durcissement du parcours de réinitialisation de mot de passe grâce à un contrôle de la fréquence des jetons.",
-          "Mise à jour de la matrice de dépendances pour s'aligner sur les services API en v0.6.0."
+          "Version mineure alignée sur le prochain déploiement.",
+          "Export du journal d'audit disponible depuis le panneau d'administration.",
+          "Caches analytiques du tableau de bord régénérés chaque heure.",
+          "Réinitialisation de mot de passe sécurisée par un contrôle de fréquence.",
+          "Matrice de dépendances synchronisée avec l'API en v0.6.0."
         ],
         "/frontoffice": [
-          "Montée de version mineure en préparation du prochain cycle frontoffice.",
-          "Réorganisation de la navigation globale avec des points d'entrée clarifiés pour l'accueil, les programmes et les outils utilisateurs.",
-          "Ajout de fils d'Ariane contextuels pour fluidifier la circulation entre vues d'ensemble et fiches programme.",
-          "Catalogue de programmes enrichi avec des parcours mis en avant et des filtres avancés pour les participants.",
-          "Parcours d'inscription aux programmes retravaillé avec validations instantanées et messages d'éligibilité explicites.",
-          "Tableau de bord de profil repensé pour mettre en avant la progression et les jalons à venir.",
-          "Gestion de session renforcée pour réduire les expirations intempestives et fiabiliser le mode souvenir.",
-          "Synchronisation des traductions françaises et anglaises pour les parcours de navigation, programmes et profils."
+          "Version mineure prête pour le prochain cycle.",
+          "Navigation globale clarifiée entre accueil, programmes et outils.",
+          "Fils d'Ariane contextuels pour relier vues d'ensemble et fiches.",
+          "Catalogue de programmes valorisé par des parcours phares et des filtres avancés.",
+          "Parcours d'inscription fluidifié avec validations instantanées et messages d'éligibilité.",
+          "Tableau de bord de profil recentré sur la progression et les jalons à venir.",
+          "Gestion de session renforcée pour limiter les expirations inattendues et fiabiliser le mode souvenir.",
+          "Traductions françaises et anglaises harmonisées sur la navigation, les programmes et les profils."
         ]
       },
       "title": "Release 0.3.0",
