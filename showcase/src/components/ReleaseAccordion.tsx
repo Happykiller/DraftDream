@@ -5,7 +5,6 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
-  Chip,
   Divider,
   Stack,
   Typography
@@ -32,7 +31,7 @@ type ReleaseAccordionItemProps = {
   readonly release: ReleaseEntry;
 };
 
-type ProjectAccordionProps = {
+type ProjectSectionsProps = {
   readonly labels: ReleaseAccordionProps['labels'];
   readonly projects: ReleaseEntry['projects'];
 };
@@ -87,109 +86,90 @@ const ChevronIcon = ({ expanded }: { readonly expanded: boolean }): JSX.Element 
   );
 };
 
-const badgeColor = (tag: string | null): 'default' | 'info' | 'success' | 'warning' => {
-  if (!tag) {
-    return 'default';
-  }
-
-  const normalizedTag = tag.toUpperCase();
-
-  if (normalizedTag === 'FEAT') {
-    return 'success';
-  }
-
-  if (normalizedTag === 'FIX') {
-    return 'info';
-  }
-
-  return 'warning';
-};
-
 const SummaryList = ({ entries }: { readonly entries: string[] }): JSX.Element => {
   const parsedEntries = useMemo(() => entries.map(parseEntry), [entries]);
 
   return (
-    <Stack component="ul" spacing={1.25} sx={{ listStyle: 'none', m: 0, p: 0 }}>
+    <Stack
+      component="ul"
+      spacing={1.5}
+      sx={{
+        listStyle: 'none',
+        m: 0,
+        p: 0
+      }}
+    >
       {/* General information */}
       {parsedEntries.map((entry, index) => (
         <Box
           component="li"
           key={`${entry.description}-${index.toString()}`}
           sx={{
-            alignItems: 'flex-start',
-            display: 'flex',
-            gap: 1.5
+            alignItems: 'start',
+            columnGap: 1.5,
+            display: 'grid',
+            gridTemplateColumns: 'auto 1fr'
           }}
         >
-          {entry.tag ? (
-            <Chip color={badgeColor(entry.tag)} label={entry.tag} size="small" sx={{ fontWeight: 600 }} />
-          ) : null}
-          <Typography color="text.secondary" variant="body2">
-            {entry.description}
-          </Typography>
+          <Box
+            component="span"
+            sx={{
+              alignItems: 'center',
+              display: 'inline-flex',
+              height: '100%'
+            }}
+          >
+            <Box
+              component="span"
+              sx={{
+                backgroundColor: 'divider',
+                borderRadius: '50%',
+                display: 'inline-flex',
+                height: 6,
+                width: 6
+              }}
+            />
+          </Box>
+          <Stack spacing={0.5}>
+            {entry.tag ? (
+              <Typography
+                color="text.secondary"
+                sx={{ fontSize: 12, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase' }}
+                variant="caption"
+              >
+                {entry.tag}
+              </Typography>
+            ) : null}
+            <Typography color="text.secondary" variant="body2">
+              {entry.description}
+            </Typography>
+          </Stack>
         </Box>
       ))}
     </Stack>
   );
 };
 
-const ProjectAccordion = ({ labels, projects }: ProjectAccordionProps): JSX.Element => {
-  const [expandedProjects, setExpandedProjects] = useState<Record<string, boolean>>({});
-
-  const handleProjectChange = (projectKey: string) => (_event: SyntheticEvent, expanded: boolean): void => {
-    setExpandedProjects((current) => ({
-      ...current,
-      [projectKey]: expanded
-    }));
-  };
-
+const ProjectSections = ({ labels, projects }: ProjectSectionsProps): JSX.Element => {
   return (
-    <Stack spacing={1.5}>
+    <Stack component="dl" spacing={3} sx={{ m: 0 }}>
       {/* General information */}
-      {Object.entries(projects).map(([projectKey, entries]) => {
-        const expanded = Boolean(expandedProjects[projectKey]);
-
-        return (
-          <Accordion
-            disableGutters
-            expanded={expanded}
-            key={projectKey}
-            onChange={handleProjectChange(projectKey)}
-            square={false}
-            TransitionProps={{ timeout: animationDuration }}
-            sx={{
-              backgroundColor: 'transparent',
-              border: '1px solid',
-              borderColor: 'divider',
-              borderRadius: 2,
-              boxShadow: 'none',
-              '&:before': {
-                display: 'none'
-              }
-            }}
-          >
-            <AccordionSummary expandIcon={<ChevronIcon expanded={expanded} />} sx={{ px: 2, py: 1.5 }}>
-              <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
-                <Typography fontWeight={600} variant="body1">
-                  {projectKey}
-                </Typography>
-                <Typography color="text.secondary" variant="caption">
-                  {labels.scope}
-                </Typography>
-              </Stack>
-            </AccordionSummary>
-            <AccordionDetails sx={{ pt: 0, px: 2, pb: 2 }}>
-              {entries.length > 0 ? (
-                <SummaryList entries={entries} />
-              ) : (
-                <Typography color="text.secondary" variant="body2">
-                  {labels.emptyScope}
-                </Typography>
-              )}
-            </AccordionDetails>
-          </Accordion>
-        );
-      })}
+      {Object.entries(projects).map(([projectKey, entries]) => (
+        <Box component="div" key={projectKey}>
+          <Typography component="dt" fontWeight={600} sx={{ mb: 1, textTransform: 'uppercase' }} variant="caption">
+            {projectKey}
+          </Typography>
+          <Box component="dd" sx={{ m: 0 }}>
+            {entries.length > 0 ? (
+              <SummaryList entries={entries} />
+            ) : (
+              <Typography color="text.secondary" variant="body2">
+                {labels.emptyScope}
+              </Typography>
+            )}
+          </Box>
+        </Box>
+      ))}
     </Stack>
   );
 };
@@ -210,23 +190,36 @@ const ReleaseAccordionItem = ({
       square={false}
       TransitionProps={{ timeout: animationDuration }}
       sx={{
-        backgroundColor: 'background.paper',
-        border: '1px solid',
+        backgroundColor: 'transparent',
         borderColor: 'divider',
-        borderRadius: 3,
-        boxShadow: '0px 10px 30px rgba(15, 23, 42, 0.08)',
-        overflow: 'hidden',
+        borderRadius: 0,
+        borderTop: '1px solid',
+        boxShadow: 'none',
+        margin: 0,
+        overflow: 'visible',
+        '&:last-of-type': {
+          borderBottom: '1px solid'
+        },
         '&:before': {
           display: 'none'
         }
       }}
     >
-      <AccordionSummary expandIcon={<ChevronIcon expanded={expanded} />} sx={{ px: { xs: 2, md: 3 }, py: { xs: 1.5, md: 2 } }}>
+      <AccordionSummary
+        expandIcon={<ChevronIcon expanded={expanded} />}
+        sx={{
+          px: { xs: 1.5, md: 2 },
+          py: { xs: 2, md: 2.5 },
+          '& .MuiAccordionSummary-content': {
+            margin: 0
+          }
+        }}
+      >
         <Stack spacing={0.75} sx={{ width: '100%' }}>
-          <Typography color="primary.main" fontWeight={600} variant="overline">
+          <Typography color="text.secondary" fontWeight={500} variant="overline">
             {release.version}
           </Typography>
-          <Typography fontWeight={600} variant="h5">
+          <Typography fontWeight={600} sx={{ fontSize: { xs: '1.5rem', md: '1.75rem' } }}>
             {release.title}
           </Typography>
           <Typography color="text.secondary" variant="body2">
@@ -234,20 +227,20 @@ const ReleaseAccordionItem = ({
           </Typography>
         </Stack>
       </AccordionSummary>
-      <AccordionDetails sx={{ px: { xs: 2, md: 3 }, pb: { xs: 3, md: 4 }, pt: { xs: 0, md: 0.5 } }}>
-        <Stack spacing={3}>
+      <AccordionDetails sx={{ px: { xs: 1.5, md: 2 }, pb: { xs: 4, md: 5 }, pt: 0 }}>
+        <Stack spacing={3.5}>
           <Box>
             <Typography color="text.primary" fontWeight={600} sx={{ mb: 1.5 }} variant="subtitle1">
               {labels.global}
             </Typography>
             <SummaryList entries={release.global} />
           </Box>
-          <Divider />
+          <Divider sx={{ borderColor: 'divider', opacity: 0.4 }} />
           <Box>
             <Typography color="text.primary" fontWeight={600} sx={{ mb: 1.5 }} variant="subtitle1">
               {labels.scope}
             </Typography>
-            <ProjectAccordion labels={labels} projects={release.projects} />
+            <ProjectSections labels={labels} projects={release.projects} />
           </Box>
           {release.notes ? (
             <Box>
@@ -273,7 +266,7 @@ const ReleaseAccordion = ({ getReleaseDateLabel, labels, releases }: ReleaseAcco
   };
 
   return (
-    <Stack spacing={2.5}>
+    <Stack spacing={0}>
       {/* General information */}
       {releases.map((release) => (
         <ReleaseAccordionItem
