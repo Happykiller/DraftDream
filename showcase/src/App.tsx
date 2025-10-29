@@ -1,8 +1,8 @@
 import { Box } from '@mui/material';
 import { Route, Routes } from 'react-router-dom';
 
-import LandingPage from './pages/LandingPage.tsx';
-import ReleaseNotesPage from './pages/ReleaseNotesPage.tsx';
+import LandingPage from './pages/LandingPage';
+import ReleaseNotesPage from './pages/ReleaseNotesPage';
 
 const App = (): JSX.Element => {
   return (

@@ -14,8 +14,8 @@ import {
   Typography
 } from '@mui/material';
 
-import ReleaseAccordion from '../components/ReleaseAccordion.tsx';
-import { supportedLanguages, useI18n, type Language } from '../i18n/I18nProvider.tsx';
+import ReleaseAccordion from '../components/ReleaseAccordion';
+import { supportedLanguages, useI18n, type Language } from '../i18n/I18nProvider';
 import type { ReleaseDataset, ReleaseEntry } from '../types/releases.ts';
 
 type LoadingState = 'idle' | 'loading' | 'success' | 'error';
@@ -149,9 +149,6 @@ const ReleaseNotesPage = (): JSX.Element => {
         <Stack spacing={6}>
           <Stack spacing={3} sx={{ textAlign: 'center' }}>
             <Stack spacing={1}>
-              <Typography color="primary.main" fontWeight={600} variant="overline">
-                {t('releaseNotes.subtitle')}
-              </Typography>
               <Typography sx={{ fontSize: { xs: '2.25rem', md: '3rem' }, fontWeight: 700 }}>
                 {t('releaseNotes.title')}
               </Typography>

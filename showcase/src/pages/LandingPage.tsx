@@ -13,9 +13,6 @@ const LandingPage = (): JSX.Element => {
       {/* General information */}
       <Stack spacing={6}>
         <Stack spacing={2}>
-          <Typography color="primary.main" variant="overline">
-            FitDesk
-          </Typography>
           <Typography variant="h1">
             Flexible workspaces that adapt to your team&apos;s rhythm
           </Typography>
@@ -27,9 +24,6 @@ const LandingPage = (): JSX.Element => {
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
           <Button color="primary" onClick={handleNavigate} size="large" variant="contained">
             Explore the changelog
-          </Button>
-          <Button color="secondary" href="https://fitdesk.example.com" size="large" variant="outlined">
-            Learn more
           </Button>
         </Stack>
       </Stack>
