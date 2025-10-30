@@ -43,6 +43,11 @@ import { DeleteExerciseUsecase } from '@usecases/exercise/delete.exercise.usecas
 import { UpdateCategoryUsecase } from '@usecases/category/update.category.usecase';
 import { CreateCategoryUsecase } from '@usecases/category/create.category.usecase';
 import { DeleteCategoryUsecase } from '@usecases/category/delete.category.usecase';
+import { GetMealTypeUsecase } from '@usecases/meal-type/get.meal-type.usecase';
+import { ListMealTypesUsecase } from '@usecases/meal-type/list.meal-type.usecase';
+import { CreateMealTypeUsecase } from '@usecases/meal-type/create.meal-type.usecase';
+import { UpdateMealTypeUsecase } from '@usecases/meal-type/update.meal-type.usecase';
+import { DeleteMealTypeUsecase } from '@usecases/meal-type/delete.meal-type.usecase';
 import { CreateExerciseUsecase } from '@usecases/exercise/create.exercise.usecase';
 import { UpdateExerciseUsecase } from '@usecases/exercise/update.exercise.usecase';
 import { CreateEquipmentUsecase } from '@usecases/equipment/create.equipment.usecase';
@@ -90,6 +95,11 @@ export class Inversify {
   createCategoryUsecase: CreateCategoryUsecase;
   listCategoriesUsecase: ListCategoriesUsecase;
   deleteCategoryUsecase: DeleteCategoryUsecase;
+  getMealTypeUsecase: GetMealTypeUsecase;
+  listMealTypesUsecase: ListMealTypesUsecase;
+  createMealTypeUsecase: CreateMealTypeUsecase;
+  updateMealTypeUsecase: UpdateMealTypeUsecase;
+  deleteMealTypeUsecase: DeleteMealTypeUsecase;
   createExerciseUsecase: CreateExerciseUsecase;
   deleteExerciseUsecase: DeleteExerciseUsecase;
   updateExerciseUsecase: UpdateExerciseUsecase;
@@ -127,6 +137,12 @@ export class Inversify {
     this.listCategoriesUsecase = new ListCategoriesUsecase(this);
     this.updateCategoryUsecase = new UpdateCategoryUsecase(this);
     this.deleteCategoryUsecase = new DeleteCategoryUsecase(this);
+    // usecases meal type
+    this.createMealTypeUsecase = new CreateMealTypeUsecase(this);
+    this.getMealTypeUsecase = new GetMealTypeUsecase(this);
+    this.listMealTypesUsecase = new ListMealTypesUsecase(this);
+    this.updateMealTypeUsecase = new UpdateMealTypeUsecase(this);
+    this.deleteMealTypeUsecase = new DeleteMealTypeUsecase(this);
     // usecases equipment
     this.createEquipmentUsecase = new CreateEquipmentUsecase(this);
     this.getEquipmentUsecase = new GetEquipmentUsecase(this);

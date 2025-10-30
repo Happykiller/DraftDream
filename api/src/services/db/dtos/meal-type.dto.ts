@@ -1,0 +1,26 @@
+// src/services/db/dtos/meal-type.dto.ts
+/** Document payload used when inserting a meal type. */
+export type CreateMealTypeDto = {
+  slug: string;
+  locale: string;
+  label: string;
+  visibility: 'private' | 'public';
+  createdBy: string;
+};
+
+/** Fields accepted when updating a meal type document. */
+export type UpdateMealTypeDto = Partial<Pick<CreateMealTypeDto, 'slug' | 'locale' | 'label'>>;
+
+/** Identifier wrapper used to fetch a meal type. */
+export type GetMealTypeDto = { id: string };
+
+/** Query parameters used to list meal types. */
+export type ListMealTypesDto = {
+  q?: string;
+  locale?: string;
+  createdBy?: string;
+  visibility?: 'private' | 'public';
+  limit?: number;                 // default 20
+  page?: number;                  // default 1
+  sort?: Record<string, 1 | -1>;  // e.g. { updatedAt: -1 }
+};
