@@ -1,0 +1,88 @@
+// docs\\meal-type.http
+@locale = fr-FR
+@createdBy = seed-user-id
+@label = Petit déjeuner
+@page = 1
+@limit = 10
+
+### (Optional) Auth to get a token
+POST {{host}}/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation($input: AuthInput!){ auth(input:$input){ access_token } }",
+  "variables": {
+    "input": { "email": "alex.martin@example.com", "password": "SuperSecret123!" }
+  }
+}
+
+### Create meal type
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "mutation($input: CreateMealTypeInput!){ mealType_create(input:$input){ id slug locale label visibility createdBy createdAt updatedAt } }",
+  "variables": {
+    "input": {
+      "slug": "petit-dejeuner",
+      "locale": "{{locale}}",
+      "label": "{{label}}",
+      "visibility": "PUBLIC"
+    }
+  }
+}
+
+### Get meal type by id
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "query($id: ID!){ mealType_get(id:$id){ id slug locale label visibility createdAt updatedAt creator { id email } } }",
+  "variables": { "id": "REPLACE_WITH_ID" }
+}
+
+### List meal types (q, pagination, filters)
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "query($input: ListMealTypesInput){ mealType_list(input:$input){ items{ id slug locale label visibility createdAt updatedAt creator { id email } } total page limit } }",
+  "variables": {
+    "input": {
+      //"q": "coll",
+      "locale": "fr",
+      "createdBy": "{{createdBy}}",
+      "visibility": "PUBLIC",
+      "page": {{page}},
+      "limit": {{limit}}
+    }
+  }
+}
+
+### Update meal type
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "mutation($input: UpdateMealTypeInput!){ mealType_update(input:$input){ id slug locale label visibility createdAt updatedAt creator { id email } } }",
+  "variables": {
+    "input": {
+      "id": "REPLACE_WITH_ID",
+      "label": "Petit déjeuner modifié"
+    }
+  }
+}
+
+### Delete meal type
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "mutation($id: ID!){ mealType_delete(id:$id) }",
+  "variables": { "id": "REPLACE_WITH_ID" }
+}
