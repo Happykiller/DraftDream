@@ -146,12 +146,14 @@ export class BddServiceMealTypeMongo {
     if (patch.label !== undefined) $set.label = patch.label.trim();
 
     try {
-      const res: any = await (await this.col()).findOneAndUpdate(
-        { _id },
-        { $set },
-        { returnDocument: 'after' },
-      );
-      return res.value ? this.toModel(res.value) : null;
+      const collection = await this.col();
+      const res = await collection.updateOne({ _id }, { $set });
+      if (!res.matchedCount) {
+        return null;
+      }
+
+      const doc = await collection.findOne({ _id });
+      return doc ? this.toModel(doc) : null;
     } catch (error) {
       if (this.isDuplicateError(error)) return null;
       this.handleError('update', error);
