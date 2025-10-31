@@ -299,6 +299,37 @@ type MealTypeListGql {
   limit: Int!
 }
 
+type MealGql {
+  id: ID!
+  slug: String!
+  locale: String!
+  label: String!
+  typeId: ID!
+  foods: String!
+  calories: Int!
+  proteinGrams: Int!
+  carbGrams: Int!
+  fatGrams: Int!
+  visibility: MealVisibility!
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creator: UserGql
+  type: MealTypeGql
+}
+
+enum MealVisibility {
+  PRIVATE
+  PUBLIC
+}
+
+type MealListGql {
+  items: [MealGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
 type Query {
   tag_get(id: ID!): TagGql
   tag_list(input: ListTagsInput): TagListGql!
@@ -320,6 +351,8 @@ type Query {
   equipment_list(input: ListEquipmentInput): EquipmentListGql!
   mealType_get(id: ID!): MealTypeGql
   mealType_list(input: ListMealTypesInput): MealTypeListGql!
+  meal_get(id: ID!): MealGql
+  meal_list(input: ListMealsInput): MealListGql!
 }
 
 input ListTagsInput {
@@ -409,6 +442,16 @@ input ListMealTypesInput {
   page: Int
 }
 
+input ListMealsInput {
+  q: String
+  locale: String
+  typeId: ID
+  createdBy: String
+  visibility: MealVisibility
+  limit: Int
+  page: Int
+}
+
 type Mutation {
   tag_create(input: CreateTagInput!): TagGql
   tag_update(input: UpdateTagInput!): TagGql
@@ -440,6 +483,9 @@ type Mutation {
   mealType_create(input: CreateMealTypeInput!): MealTypeGql
   mealType_update(input: UpdateMealTypeInput!): MealTypeGql
   mealType_delete(id: ID!): Boolean!
+  meal_create(input: CreateMealInput!): MealGql
+  meal_update(input: UpdateMealInput!): MealGql
+  meal_delete(id: ID!): Boolean!
 }
 
 input CreateTagInput {
@@ -669,4 +715,31 @@ input UpdateMealTypeInput {
   slug: String
   locale: String
   label: String
+}
+
+input CreateMealInput {
+  slug: String!
+  locale: String!
+  label: String!
+  typeId: ID!
+  foods: String!
+  calories: Int!
+  proteinGrams: Int!
+  carbGrams: Int!
+  fatGrams: Int!
+  visibility: MealVisibility!
+}
+
+input UpdateMealInput {
+  id: ID!
+  slug: String
+  locale: String
+  label: String
+  typeId: ID
+  foods: String
+  calories: Int
+  proteinGrams: Int
+  carbGrams: Int
+  fatGrams: Int
+  visibility: MealVisibility
 }

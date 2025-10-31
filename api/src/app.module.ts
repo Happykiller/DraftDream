@@ -15,6 +15,7 @@ import { ExerciseModule } from '@graphql/exercise/exercise.module';
 import { CategoryModule } from '@graphql/category/category.module';
 import { EquipmentModule } from '@graphql/equipment/equipment.module';
 import { MealTypeModule } from '@graphql/meal-type/meal-type.module';
+import { MealModule } from '@graphql/meal/meal.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { MealTypeModule } from '@graphql/meal-type/meal-type.module';
     ExerciseModule,
     EquipmentModule,
     MealTypeModule,
+    MealModule,
     GraphQLModule.forRoot<MercuriusDriverConfig>({
       driver: MercuriusDriver,
       autoSchemaFile: 'gqlschema.gql',
