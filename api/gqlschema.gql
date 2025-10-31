@@ -275,6 +275,30 @@ type ExerciseListGql {
   limit: Int!
 }
 
+type MealTypeGql {
+  id: ID!
+  slug: String!
+  locale: String!
+  label: String!
+  visibility: MealTypeVisibility!
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creator: UserGql
+}
+
+enum MealTypeVisibility {
+  PRIVATE
+  PUBLIC
+}
+
+type MealTypeListGql {
+  items: [MealTypeGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
 type Query {
   tag_get(id: ID!): TagGql
   tag_list(input: ListTagsInput): TagListGql!
@@ -294,6 +318,8 @@ type Query {
   exercise_list(input: ListExercisesInput): ExerciseListGql!
   equipment_get(id: ID!): EquipmentGql
   equipment_list(input: ListEquipmentInput): EquipmentListGql!
+  mealType_get(id: ID!): MealTypeGql
+  mealType_list(input: ListMealTypesInput): MealTypeListGql!
 }
 
 input ListTagsInput {
@@ -374,6 +400,15 @@ input ListEquipmentInput {
   page: Int
 }
 
+input ListMealTypesInput {
+  q: String
+  locale: String
+  createdBy: String
+  visibility: MealTypeVisibility
+  limit: Int
+  page: Int
+}
+
 type Mutation {
   tag_create(input: CreateTagInput!): TagGql
   tag_update(input: UpdateTagInput!): TagGql
@@ -402,6 +437,9 @@ type Mutation {
   equipment_create(input: CreateEquipmentInput!): EquipmentGql
   equipment_update(input: UpdateEquipmentInput!): EquipmentGql
   equipment_delete(id: ID!): Boolean!
+  mealType_create(input: CreateMealTypeInput!): MealTypeGql
+  mealType_update(input: UpdateMealTypeInput!): MealTypeGql
+  mealType_delete(id: ID!): Boolean!
 }
 
 input CreateTagInput {
@@ -613,6 +651,20 @@ input CreateEquipmentInput {
 }
 
 input UpdateEquipmentInput {
+  id: ID!
+  slug: String
+  locale: String
+  label: String
+}
+
+input CreateMealTypeInput {
+  slug: String!
+  locale: String!
+  label: String!
+  visibility: MealTypeVisibility!
+}
+
+input UpdateMealTypeInput {
   id: ID!
   slug: String
   locale: String

@@ -6,7 +6,7 @@
 @limit = 10
 
 ### (Optional) Auth to get a token
-POST {{host}}/graphql
+POST {{host}}
 Content-Type: application/json
 
 {
@@ -17,7 +17,7 @@ Content-Type: application/json
 }
 
 ### Create meal type
-POST {{host}}/graphql
+POST {{host}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -34,17 +34,17 @@ Content-Type: application/json
 }
 
 ### Get meal type by id
-POST {{host}}/graphql
+POST {{host}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
   "query": "query($id: ID!){ mealType_get(id:$id){ id slug locale label visibility createdAt updatedAt creator { id email } } }",
-  "variables": { "id": "REPLACE_WITH_ID" }
+  "variables": { "id": "6904fb1bb51bedba650fb51d" }
 }
 
 ### List meal types (q, pagination, filters)
-POST {{host}}/graphql
+POST {{host}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -63,7 +63,7 @@ Content-Type: application/json
 }
 
 ### Update meal type
-POST {{host}}/graphql
+POST {{host}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -71,18 +71,18 @@ Content-Type: application/json
   "query": "mutation($input: UpdateMealTypeInput!){ mealType_update(input:$input){ id slug locale label visibility createdAt updatedAt creator { id email } } }",
   "variables": {
     "input": {
-      "id": "REPLACE_WITH_ID",
+      "id": "6904fb1bb51bedba650fb51d",
       "label": "Petit déjeuner modifié"
     }
   }
 }
 
 ### Delete meal type
-POST {{host}}/graphql
+POST {{host}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
   "query": "mutation($id: ID!){ mealType_delete(id:$id) }",
-  "variables": { "id": "REPLACE_WITH_ID" }
+  "variables": { "id": "6904fb1bb51bedba650fb51d" }
 }
