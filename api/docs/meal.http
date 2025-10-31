@@ -1,5 +1,5 @@
 // docs\\meal.http
-@locale = fr-FR
+@locale = fr
 @mealTypeId = seed-meal-type-id
 @createdBy = seed-user-id
 @label = Pancake protéiné
@@ -62,8 +62,6 @@ Content-Type: application/json
     "input": {
       //"q": "pancake",
       "locale": "fr",
-      "typeId": "{{mealTypeId}}",
-      "createdBy": "{{createdBy}}",
       "visibility": "PUBLIC",
       "page": {{page}},
       "limit": {{limit}}
