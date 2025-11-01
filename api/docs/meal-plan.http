@@ -1,0 +1,183 @@
+# docs/meal-plan.http
+@locale = fr-FR
+@label = Plan énergie 4 semaines
+@description = Plan nutritionnel équilibré pour accompagner un cycle de force.
+@calories = 2600
+@proteinGrams = 180
+@carbGrams = 300
+@fatGrams = 70
+@mealDayId = seed-meal-day-energie
+@mealTypeBreakfastId = seed-meal-type-breakfast
+@mealTypeLunchId = seed-meal-type-lunch
+@page = 1
+@limit = 10
+@userId = athlete-user-id
+
+###
+# (Optional) Authentification pour récupérer un token
+POST {{host}}/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation($input: AuthInput!){ auth(input:$input){ access_token } }",
+  "variables": {
+    "input": { "email": "alex.martin@example.com", "password": "SuperSecret123!" }
+  }
+}
+
+###
+# MealPlan: création (avec duplication d'une journée existante)
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query":
+    "mutation($input: CreateMealPlanInput!){ mealPlan_create(input:$input){ id slug locale label description calories proteinGrams carbGrams fatGrams days{ id label meals{ id label foods calories proteinGrams carbGrams fatGrams type{ id label } } } userId createdBy createdAt updatedAt } }",
+  "variables": {
+    "input": {
+      "slug": "plan-energie-4s",
+      "locale": "{{locale}}",
+      "label": "{{label}}",
+      "description": "{{description}}",
+      "calories": {{calories}},
+      "proteinGrams": {{proteinGrams}},
+      "carbGrams": {{carbGrams}},
+      "fatGrams": {{fatGrams}},
+      "dayIds": ["{{mealDayId}}"],
+      "userId": "{{userId}}"
+    }
+  }
+}
+
+###
+# MealPlan: création avec jours/repas en ligne
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query":
+    "mutation($input: CreateMealPlanInput!){ mealPlan_create(input:$input){ id slug locale label calories proteinGrams carbGrams fatGrams days{ id label meals{ id label } } userId createdAt } }",
+  "variables": {
+    "input": {
+      "slug": "plan-energie-inline",
+      "locale": "{{locale}}",
+      "label": "{{label}}",
+      "calories": {{calories}},
+      "proteinGrams": {{proteinGrams}},
+      "carbGrams": {{carbGrams}},
+      "fatGrams": {{fatGrams}},
+      "days": [
+        {
+          "label": "Jour 1",
+          "description": "Préparation à l'entraînement lourd",
+          "meals": [
+            {
+              "label": "Petit déjeuner énergie",
+              "description": "Avoine, fruits rouges et yaourt grec.",
+              "foods": "Flocons d'avoine, fruits rouges, yaourt grec",
+              "calories": 650,
+              "proteinGrams": 35,
+              "carbGrams": 85,
+              "fatGrams": 18,
+              "type": {
+                "templateMealTypeId": "{{mealTypeBreakfastId}}",
+                "label": "Petit déjeuner"
+              }
+            },
+            {
+              "label": "Déjeuner énergie",
+              "description": "Poulet, riz complet et légumes verts.",
+              "foods": "Poulet grillé, riz complet, brocoli",
+              "calories": 750,
+              "proteinGrams": 55,
+              "carbGrams": 90,
+              "fatGrams": 20,
+              "type": {
+                "templateMealTypeId": "{{mealTypeLunchId}}",
+                "label": "Déjeuner"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+
+###
+# MealPlan: récupération par identifiant
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query":
+    "query($id: ID!){ mealPlan_get(id:$id){ id slug locale label description calories proteinGrams carbGrams fatGrams days{ id label description meals{ id label foods type{ label } } } creator{ id email } athlete{ id email } createdAt updatedAt } }",
+  "variables": { "id": "REPLACE_MEAL_PLAN_ID" }
+}
+
+###
+# MealPlan: liste (recherche, pagination, filtres)
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query":
+    "query($input: ListMealPlansInput){ mealPlan_list(input:$input){ items{ id slug label locale userId createdBy } total page limit } }",
+  "variables": {
+    "input": {
+      //"q": "energie",
+      "locale": "fr",
+      //"createdBy": "seed-user-id",
+      //"userId": "{{userId}}",
+      "page": {{page}},
+      "limit": {{limit}}
+    }
+  }
+}
+
+###
+# MealPlan: mise à jour
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query":
+    "mutation($input: UpdateMealPlanInput!){ mealPlan_update(input:$input){ id slug locale label description calories proteinGrams carbGrams fatGrams days{ id label } updatedAt } }",
+  "variables": {
+    "input": {
+      "id": "REPLACE_MEAL_PLAN_ID",
+      "label": "Plan énergie 4 semaines - ajusté",
+      "description": "Plan ajusté après feedback de l'athlète",
+      "calories": 2550,
+      "proteinGrams": 185,
+      "dayIds": ["{{mealDayId}}"]
+    }
+  }
+}
+
+###
+# MealPlan: suppression logique
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "mutation($id: ID!){ mealPlan_softDelete(id:$id) }",
+  "variables": { "id": "REPLACE_MEAL_PLAN_ID" }
+}
+
+###
+# MealPlan: suppression définitive
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "mutation($id: ID!){ mealPlan_delete(id:$id) }",
+  "variables": { "id": "REPLACE_MEAL_PLAN_ID" }
+}
