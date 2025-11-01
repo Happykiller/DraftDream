@@ -6,7 +6,8 @@
   "main": "dist/src/main",
   "scripts": {
     "build": "nest build",
-    "test": "node ./node_modules/jest/bin/jest.js",
+    "pretest": "npm ci --include=dev --ignore-scripts",
+    "test": "jest",
     "start": "nest start",
     "start:dev": "cross-env NODE_ENV=dev nest start --watch",
     "start:prod": "node ."
