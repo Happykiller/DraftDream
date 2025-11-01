@@ -77,7 +77,7 @@ describe('AuthUsecase', () => {
       email: persistedUser.email,
       type: 'access',
     });
-    expect(result).toEqual<SessionUsecaseModel>({ access_token: 'jwt-token' });
+    expect(result).toEqual({ access_token: 'jwt-token' });
     expect(loggerMock.error).not.toHaveBeenCalled();
   });
 

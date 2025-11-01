@@ -6,13 +6,13 @@
   "main": "dist/src/main",
   "scripts": {
     "build": "nest build",
-    "test": "jest",
+    "test": "node ./node_modules/jest/bin/jest.js",
     "start": "nest start",
     "start:dev": "cross-env NODE_ENV=dev nest start --watch",
     "start:prod": "node ."
   },
   "keywords": [],
-  "author": "",
+  "author": "fabrice.rosito@gmail.com",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
