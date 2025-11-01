@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, it } from '@jest/globals';
-import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
 import { Inversify } from '@src/inversify/investify';
@@ -8,16 +7,17 @@ import { BddServiceCategoryMongo } from '@services/db/mongo/repositories/categor
 import { CreateCategoryUsecase } from '@usecases/category/create.category.usecase';
 import { CreateCategoryUsecaseDto } from '@usecases/category/category.usecase.dto';
 import { CategoryUsecaseModel } from '@usecases/category/category.usecase.model';
+import { asMock, createMockFn } from '@src/test-utils/mock-helpers';
 
 interface LoggerMock {
   error: (message: string) => void;
 }
 
 describe('CreateCategoryUsecase', () => {
-  let inversifyMock: MockProxy<Inversify>;
-  let bddServiceMock: MockProxy<BddServiceMongo>;
-  let categoryRepositoryMock: MockProxy<BddServiceCategoryMongo>;
-  let loggerMock: MockProxy<LoggerMock>;
+  let inversifyMock: Inversify;
+  let bddServiceMock: BddServiceMongo;
+  let categoryRepositoryMock: BddServiceCategoryMongo;
+  let loggerMock: LoggerMock;
   let usecase: CreateCategoryUsecase;
 
   const dto: CreateCategoryUsecaseDto = {
@@ -41,15 +41,22 @@ describe('CreateCategoryUsecase', () => {
   };
 
   beforeEach(() => {
-    inversifyMock = mock<Inversify>();
-    bddServiceMock = mock<BddServiceMongo>();
-    categoryRepositoryMock = mock<BddServiceCategoryMongo>();
-    loggerMock = mock<LoggerMock>();
+    categoryRepositoryMock = {
+      create: createMockFn(),
+    } as unknown as BddServiceCategoryMongo;
 
-    (bddServiceMock as unknown as { category: BddServiceCategoryMongo }).category =
-      categoryRepositoryMock;
-    inversifyMock.bddService = bddServiceMock as unknown as BddServiceMongo;
-    inversifyMock.loggerService = loggerMock;
+    bddServiceMock = {
+      category: categoryRepositoryMock,
+    } as unknown as BddServiceMongo;
+
+    loggerMock = {
+      error: createMockFn(),
+    };
+
+    inversifyMock = {
+      bddService: bddServiceMock,
+      loggerService: loggerMock,
+    } as unknown as Inversify;
 
     usecase = new CreateCategoryUsecase(inversifyMock);
   });
@@ -59,22 +66,24 @@ describe('CreateCategoryUsecase', () => {
   });
 
   it('should create a category through the repository', async () => {
-    categoryRepositoryMock.create.mockResolvedValue(category);
+    asMock(categoryRepositoryMock.create).mockResolvedValue(category);
 
     const result = await usecase.execute(dto);
 
-    expect(categoryRepositoryMock.create).toHaveBeenCalledWith({
-      slug: dto.slug,
-      locale: dto.locale,
-      label: dto.label,
-      visibility: dto.visibility,
-      createdBy: dto.createdBy,
-    });
+    expect(asMock(categoryRepositoryMock.create).mock.calls[0]).toEqual([
+      {
+        slug: dto.slug,
+        locale: dto.locale,
+        label: dto.label,
+        visibility: dto.visibility,
+        createdBy: dto.createdBy,
+      },
+    ]);
     expect(result).toEqual(category);
   });
 
   it('should return null when the repository returns null', async () => {
-    categoryRepositoryMock.create.mockResolvedValue(null);
+    asMock(categoryRepositoryMock.create).mockResolvedValue(null);
 
     const result = await usecase.execute(dto);
 
@@ -83,11 +92,11 @@ describe('CreateCategoryUsecase', () => {
 
   it('should log and throw a domain error when creation fails', async () => {
     const failure = new Error('database failure');
-    categoryRepositoryMock.create.mockRejectedValue(failure);
+    asMock(categoryRepositoryMock.create).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.CREATE_CATEGORY_USECASE);
-    expect(loggerMock.error).toHaveBeenCalledWith(
+    expect(asMock(loggerMock.error).mock.calls[0]).toEqual([
       `CreateCategoryUsecase#execute => ${failure.message}`,
-    );
+    ]);
   });
 });

@@ -1,7 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "types": ["node"],
+    "types": ["node", "jest"],
     "noEmit": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"]
