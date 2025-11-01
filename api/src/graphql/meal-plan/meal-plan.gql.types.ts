@@ -127,7 +127,7 @@ export class MealPlanGql {
   @Field(() => [MealPlanDaySnapshotGql])
   days!: MealPlanDaySnapshotGql[];
 
-  @Field(() => String, { nullable: true })
+  @Field(() => ID, { nullable: true })
   userId?: string | null;
 
   @Field(() => String)

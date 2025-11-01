@@ -66,7 +66,8 @@ export class ProgramGql {
   /** Snapshot definition available directly from the program document. */
   @Field(() => [ProgramSessionGql]) sessions!: ProgramSessionGql[];
 
-  @Field({ nullable: true }) userId?: string;
+  @Field(() => ID, { nullable: true })
+  userId?: string;
   @Field() createdBy!: string;
   @Field() createdAt!: Date;
   @Field() updatedAt!: Date;
@@ -121,7 +122,8 @@ export class CreateProgramInput {
   sessionIds?: string[];
   @Field(() => [ProgramSessionInput], { nullable: true }) sessions?: ProgramSessionInput[];
   /** Optional assigned user id */
-  @Field({ nullable: true }) userId?: string | null;
+  @Field(() => ID, { nullable: true })
+  userId?: string | null;
 }
 
 @InputType()
@@ -139,7 +141,8 @@ export class UpdateProgramInput {
   /** Replace the complete snapshot definition. */
   @Field(() => [ProgramSessionInput], { nullable: true }) sessions?: ProgramSessionInput[];
   /** Set/replace the assigned user id */
-  @Field({ nullable: true }) userId?: string | null;
+  @Field(() => ID, { nullable: true })
+  userId?: string | null;
 }
 
 @InputType()
@@ -147,7 +150,8 @@ export class ListProgramsInput {
   @Field({ nullable: true }) q?: string;
   @Field({ nullable: true }) locale?: string;
   @Field({ nullable: true }) createdBy?: string;
-  @Field({ nullable: true }) userId?: string;
+  @Field(() => ID, { nullable: true })
+  userId?: string;
   @Field(() => Int, { nullable: true }) limit?: number;
   @Field(() => Int, { nullable: true }) page?: number;
 }

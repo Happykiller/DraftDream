@@ -214,7 +214,7 @@ type ProgramGql {
   frequency: Int!
   description: String
   sessions: [ProgramSessionGql!]!
-  userId: String
+  userId: ID
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -402,7 +402,7 @@ type MealPlanGql {
   carbGrams: Int!
   fatGrams: Int!
   days: [MealPlanDaySnapshotGql!]!
-  userId: String
+  userId: ID
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -490,7 +490,7 @@ input ListProgramsInput {
   q: String
   locale: String
   createdBy: String
-  userId: String
+  userId: ID
   limit: Int
   page: Int
 }
@@ -705,7 +705,7 @@ input CreateProgramInput {
   """Deprecated: use sessions instead."""
   sessionIds: [ID!]
   sessions: [ProgramSessionInput!]
-  userId: String
+  userId: ID
 }
 
 input ProgramSessionInput {
@@ -749,7 +749,7 @@ input UpdateProgramInput {
   """Deprecated: use sessions instead."""
   sessionIds: [ID!]
   sessions: [ProgramSessionInput!]
-  userId: String
+  userId: ID
 }
 
 input CreateCategoryInput {
