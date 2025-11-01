@@ -38,7 +38,7 @@ export type CreateProgramDto = {
   /** Snapshot of sessions attached to the program. */
   sessions: ProgramSessionSnapshotDto[];
   /** Optional assigned user id */
-  userId?: string;
+  userId?: string | null;
   createdBy: string;
 };
 
@@ -67,5 +67,5 @@ export type UpdateProgramDto = Partial<{
   /** Replace the whole snapshot definition. */
   sessions: ProgramSessionSnapshotDto[];
   /** Set/replace the assigned user id */
-  userId: string;
+  userId: string | null;
 }>;

@@ -175,6 +175,7 @@ export class BddServiceProgramMongo {
   async update(id: string, patch: UpdateProgramDto): Promise<Program | null> {
     const _id = this.toObjectId(id);
     const $set: Partial<ProgramDoc> = { updatedAt: new Date() };
+    const $unset: Record<string, ''> = {};
 
     if (patch.slug !== undefined) $set.slug = patch.slug.toLowerCase().trim();
     if (patch.locale !== undefined) $set.locale = patch.locale.toLowerCase().trim();
@@ -183,12 +184,23 @@ export class BddServiceProgramMongo {
     if (patch.frequency !== undefined) $set.frequency = Math.trunc(patch.frequency);
     if (patch.description !== undefined) $set.description = patch.description;
     if (patch.sessions !== undefined) $set.sessions = patch.sessions.map(this.toSessionDoc);
-    if (patch.userId !== undefined) $set.userId = this.toObjectId(patch.userId);
+    if (patch.userId !== undefined) {
+      if (patch.userId === null) {
+        $unset.userId = '';
+      } else {
+        $set.userId = this.toObjectId(patch.userId);
+      }
+    }
 
     try {
+      const updateDoc: Record<string, any> = { $set };
+      if (Object.keys($unset).length > 0) {
+        updateDoc.$unset = $unset;
+      }
+
       const res: any = await (await this.col()).findOneAndUpdate(
         { _id },
-        { $set },
+        updateDoc,
         { returnDocument: 'after' }
       );
       return res.value ? this.toModel(res.value as ProgramDoc) : null;

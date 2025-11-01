@@ -121,7 +121,7 @@ export class CreateProgramInput {
   sessionIds?: string[];
   @Field(() => [ProgramSessionInput], { nullable: true }) sessions?: ProgramSessionInput[];
   /** Optional assigned user id */
-  @Field({ nullable: true }) userId?: string;
+  @Field({ nullable: true }) userId?: string | null;
 }
 
 @InputType()
@@ -139,7 +139,7 @@ export class UpdateProgramInput {
   /** Replace the complete snapshot definition. */
   @Field(() => [ProgramSessionInput], { nullable: true }) sessions?: ProgramSessionInput[];
   /** Set/replace the assigned user id */
-  @Field({ nullable: true }) userId?: string;
+  @Field({ nullable: true }) userId?: string | null;
 }
 
 @InputType()

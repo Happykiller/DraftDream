@@ -204,6 +204,7 @@ export class BddServiceMealPlanMongo {
   async update(id: string, patch: UpdateMealPlanDto): Promise<MealPlan | null> {
     const _id = this.toObjectId(id);
     const $set: Partial<MealPlanDoc> = { updatedAt: new Date() };
+    const $unset: Record<string, ''> = {};
 
     if (patch.slug !== undefined) $set.slug = patch.slug.toLowerCase().trim();
     if (patch.locale !== undefined) $set.locale = patch.locale.toLowerCase().trim();
@@ -214,12 +215,23 @@ export class BddServiceMealPlanMongo {
     if (patch.carbGrams !== undefined) $set.carbGrams = Math.round(patch.carbGrams);
     if (patch.fatGrams !== undefined) $set.fatGrams = Math.round(patch.fatGrams);
     if (patch.days !== undefined) $set.days = patch.days.map(this.toDayDoc);
-    if (patch.userId !== undefined) $set.userId = this.toObjectId(patch.userId);
+    if (patch.userId !== undefined) {
+      if (patch.userId === null) {
+        $unset.userId = '';
+      } else {
+        $set.userId = this.toObjectId(patch.userId);
+      }
+    }
 
     try {
+      const updateDoc: Record<string, any> = { $set };
+      if (Object.keys($unset).length > 0) {
+        updateDoc.$unset = $unset;
+      }
+
       const res: any = await (await this.col()).findOneAndUpdate(
         { _id },
-        { $set },
+        updateDoc,
         { returnDocument: 'after' }
       );
       return res.value ? this.toModel(res.value as MealPlanDoc) : null;

@@ -44,7 +44,7 @@ export type CreateMealPlanDto = {
   carbGrams: number;
   fatGrams: number;
   days: MealPlanDaySnapshotDto[];
-  userId?: string;
+  userId?: string | null;
   createdBy: string;
 };
 
@@ -72,5 +72,5 @@ export type UpdateMealPlanDto = Partial<{
   carbGrams: number;
   fatGrams: number;
   days: MealPlanDaySnapshotDto[];
-  userId: string;
+  userId: string | null;
 }>;

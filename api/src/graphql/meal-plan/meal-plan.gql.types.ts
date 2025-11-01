@@ -232,8 +232,8 @@ export class MealPlanDayInput {
 
 @InputType()
 export class CreateMealPlanInput {
-  @Field(() => String)
-  slug!: string;
+  @Field(() => String, { nullable: true })
+  slug?: string | null;
 
   @Field(() => String)
   locale!: string;
@@ -263,7 +263,7 @@ export class CreateMealPlanInput {
   dayIds?: string[];
 
   @Field(() => ID, { nullable: true })
-  userId?: string;
+  userId?: string | null;
 }
 
 @InputType()
@@ -302,7 +302,7 @@ export class UpdateMealPlanInput {
   dayIds?: string[];
 
   @Field(() => ID, { nullable: true })
-  userId?: string;
+  userId?: string | null;
 }
 
 @InputType()

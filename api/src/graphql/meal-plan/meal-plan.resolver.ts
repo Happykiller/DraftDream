@@ -68,7 +68,7 @@ export class MealPlanResolver {
       carbGrams: input.carbGrams,
       fatGrams: input.fatGrams,
       days,
-      userId: input.userId ?? undefined,
+      userId: input.userId === undefined ? undefined : input.userId,
       createdBy: session.userId,
     };
 
@@ -91,7 +91,7 @@ export class MealPlanResolver {
       proteinGrams: input.proteinGrams,
       carbGrams: input.carbGrams,
       fatGrams: input.fatGrams,
-      userId: input.userId ?? undefined,
+      userId: input.userId === undefined ? undefined : input.userId,
     };
 
     let cachedMealPlan: MealPlanUsecaseModel | null | undefined;

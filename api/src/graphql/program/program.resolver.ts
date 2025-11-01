@@ -61,7 +61,7 @@ export class ProgramResolver {
       frequency: input.frequency,
       description: input.description,
       sessions,
-      userId: input.userId ?? undefined,
+      userId: input.userId === undefined ? undefined : input.userId,
       createdBy: session.userId,
     };
 
@@ -82,7 +82,7 @@ export class ProgramResolver {
       duration: input.duration,
       frequency: input.frequency,
       description: input.description ?? undefined,
-      userId: input.userId ?? undefined,
+      userId: input.userId === undefined ? undefined : input.userId,
     };
 
     let cachedProgram: ProgramUsecaseModel | null | undefined;

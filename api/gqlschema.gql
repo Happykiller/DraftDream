@@ -880,7 +880,7 @@ input UpdateMealInput {
 }
 
 input CreateMealPlanInput {
-  slug: String!
+  slug: String
   locale: String!
   label: String!
   description: String
