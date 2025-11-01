@@ -1,5 +1,19 @@
 declare namespace jest {
-  type Mock<T = unknown, Y extends any[] = any> = (...args: Y) => T;
+  type ResolvedValue<T> = T extends Promise<infer U> ? U : T;
+
+  interface Mock<T = unknown, Y extends any[] = any> {
+    (...args: Y): T;
+    mockClear(): this;
+    mockReset(): this;
+    mockReturnValue(value: T): this;
+    mockReturnValueOnce(value: T): this;
+    mockImplementation(fn: (...args: Y) => T): this;
+    mockImplementationOnce(fn: (...args: Y) => T): this;
+    mockResolvedValue(value: ResolvedValue<T>): this;
+    mockResolvedValueOnce(value: ResolvedValue<T>): this;
+    mockRejectedValue(error: unknown): this;
+    mockRejectedValueOnce(error: unknown): this;
+  }
 }
 
 declare module 'jest' {

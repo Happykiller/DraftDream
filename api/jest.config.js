@@ -5,6 +5,7 @@ const config = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   roots: ['<rootDir>/src'],
+  testMatch: ['**/__tests__/**/*.spec.ts'],
   moduleFileExtensions: ['ts', 'js', 'json'],
   clearMocks: true,
   moduleNameMapper: {
@@ -13,10 +14,13 @@ const config = {
     '^@usecases/(.*)$': '<rootDir>/src/usecases/$1',
     '^@services/(.*)$': '<rootDir>/src/services/$1',
   },
-  globals: {
-    'ts-jest': {
-      tsconfig: '<rootDir>/tsconfig.test.json',
-    },
+  transform: {
+    '^.+\\.ts$': [
+      'ts-jest',
+      {
+        tsconfig: '<rootDir>/tsconfig.test.json',
+      },
+    ],
   },
 };
 
