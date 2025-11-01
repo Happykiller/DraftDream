@@ -127,7 +127,8 @@ export class MealDayResolver {
   @Query(() => MealDayListGql, { name: 'mealDay_list' })
   @Auth(Role.ADMIN, Role.COACH)
   async mealDay_list(
-    @Args('input', { nullable: true }) input: ListMealDaysInput | null,
+    @Args('input', { type: () => ListMealDaysInput, nullable: true })
+    input: ListMealDaysInput | null = null,
     @Context('req') req: any,
   ): Promise<MealDayListGql> {
     const session = this.extractSession(req);
