@@ -71,6 +71,7 @@ describe('CreateMuscleUsecase', () => {
       createdBy: dto.createdBy,
     });
     expect(result).toEqual(muscle);
+    expect(result).not.toBe(muscle);
   });
 
   it('should return null when the repository returns null', async () => {
