@@ -1,6 +1,7 @@
 // src/graphql/meal-plan/meal-plan.gql.types.ts
 import {
   Field,
+  GraphQLISODateTime,
   ID,
   InputType,
   Int,
@@ -18,13 +19,13 @@ export class MealPlanMealTypeSnapshotGql {
   @Field(() => ID, { nullable: true })
   templateMealTypeId?: string | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   slug?: string | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   locale?: string | null;
 
-  @Field()
+  @Field(() => String)
   label!: string;
 
   @Field(() => MealTypeVisibility, { nullable: true })
@@ -39,19 +40,19 @@ export class MealPlanMealSnapshotGql {
   @Field(() => ID, { nullable: true })
   templateMealId?: string | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   slug?: string | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   locale?: string | null;
 
-  @Field()
+  @Field(() => String)
   label!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   description?: string | null;
 
-  @Field()
+  @Field(() => String)
   foods!: string;
 
   @Field(() => Int)
@@ -78,16 +79,16 @@ export class MealPlanDaySnapshotGql {
   @Field(() => ID, { nullable: true })
   templateMealDayId?: string | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   slug?: string | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   locale?: string | null;
 
-  @Field()
+  @Field(() => String)
   label!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   description?: string | null;
 
   @Field(() => [MealPlanMealSnapshotGql])
@@ -99,16 +100,16 @@ export class MealPlanGql {
   @Field(() => ID)
   id!: string;
 
-  @Field()
+  @Field(() => String)
   slug!: string;
 
-  @Field()
+  @Field(() => String)
   locale!: string;
 
-  @Field()
+  @Field(() => String)
   label!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   description?: string | null;
 
   @Field(() => Int)
@@ -126,16 +127,16 @@ export class MealPlanGql {
   @Field(() => [MealPlanDaySnapshotGql])
   days!: MealPlanDaySnapshotGql[];
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   userId?: string | null;
 
-  @Field()
+  @Field(() => String)
   createdBy!: string;
 
-  @Field()
+  @Field(() => GraphQLISODateTime)
   createdAt!: Date;
 
-  @Field()
+  @Field(() => GraphQLISODateTime)
   updatedAt!: Date;
 
   @Field(() => UserGql, { nullable: true })
@@ -153,13 +154,13 @@ export class MealPlanMealTypeInput {
   @Field(() => ID, { nullable: true })
   templateMealTypeId?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   slug?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   locale?: string;
 
-  @Field()
+  @Field(() => String)
   label!: string;
 
   @Field(() => MealTypeVisibility, { nullable: true })
@@ -174,19 +175,19 @@ export class MealPlanMealInput {
   @Field(() => ID, { nullable: true })
   templateMealId?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   slug?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   locale?: string;
 
-  @Field()
+  @Field(() => String)
   label!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   description?: string;
 
-  @Field()
+  @Field(() => String)
   foods!: string;
 
   @Field(() => Int)
@@ -213,16 +214,16 @@ export class MealPlanDayInput {
   @Field(() => ID, { nullable: true })
   templateMealDayId?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   slug?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   locale?: string;
 
-  @Field()
+  @Field(() => String)
   label!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   description?: string;
 
   @Field(() => [MealPlanMealInput])
@@ -231,16 +232,16 @@ export class MealPlanDayInput {
 
 @InputType()
 export class CreateMealPlanInput {
-  @Field()
+  @Field(() => String)
   slug!: string;
 
-  @Field()
+  @Field(() => String)
   locale!: string;
 
-  @Field()
+  @Field(() => String)
   label!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   description?: string;
 
   @Field(() => Int)
@@ -270,16 +271,16 @@ export class UpdateMealPlanInput {
   @Field(() => ID)
   id!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   slug?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   locale?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   label?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   description?: string;
 
   @Field(() => Int, { nullable: true })
@@ -306,10 +307,10 @@ export class UpdateMealPlanInput {
 
 @InputType()
 export class ListMealPlansInput {
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   q?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   locale?: string;
 
   @Field(() => ID, { nullable: true })
