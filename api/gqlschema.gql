@@ -357,6 +357,66 @@ type MealDayListGql {
   limit: Int!
 }
 
+type MealPlanMealTypeSnapshotGql {
+  id: ID
+  templateMealTypeId: ID
+  slug: String
+  locale: String
+  label: String!
+  visibility: MealTypeVisibility
+}
+
+type MealPlanMealSnapshotGql {
+  id: ID!
+  templateMealId: ID
+  slug: String
+  locale: String
+  label: String!
+  description: String
+  foods: String!
+  calories: Int!
+  proteinGrams: Int!
+  carbGrams: Int!
+  fatGrams: Int!
+  type: MealPlanMealTypeSnapshotGql!
+}
+
+type MealPlanDaySnapshotGql {
+  id: ID!
+  templateMealDayId: ID
+  slug: String
+  locale: String
+  label: String!
+  description: String
+  meals: [MealPlanMealSnapshotGql!]!
+}
+
+type MealPlanGql {
+  id: ID!
+  slug: String!
+  locale: String!
+  label: String!
+  description: String
+  calories: Int!
+  proteinGrams: Int!
+  carbGrams: Int!
+  fatGrams: Int!
+  days: [MealPlanDaySnapshotGql!]!
+  userId: String
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creator: UserGql
+  athlete: UserGql
+}
+
+type MealPlanListGql {
+  items: [MealPlanGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
 type Query {
   tag_get(id: ID!): TagGql
   tag_list(input: ListTagsInput): TagListGql!
@@ -382,6 +442,8 @@ type Query {
   mealDay_list(input: ListMealDaysInput): MealDayListGql!
   meal_get(id: ID!): MealGql
   meal_list(input: ListMealsInput): MealListGql!
+  mealPlan_get(id: ID!): MealPlanGql
+  mealPlan_list(input: ListMealPlansInput): MealPlanListGql!
 }
 
 input ListTagsInput {
@@ -490,6 +552,78 @@ input ListMealsInput {
   page: Int
 }
 
+input MealPlanMealTypeInput {
+  id: ID
+  templateMealTypeId: ID
+  slug: String
+  locale: String
+  label: String!
+  visibility: MealTypeVisibility
+}
+
+input MealPlanMealInput {
+  id: ID
+  templateMealId: ID
+  slug: String
+  locale: String
+  label: String!
+  description: String
+  foods: String!
+  calories: Int!
+  proteinGrams: Int!
+  carbGrams: Int!
+  fatGrams: Int!
+  type: MealPlanMealTypeInput!
+}
+
+input MealPlanDayInput {
+  id: ID
+  templateMealDayId: ID
+  slug: String
+  locale: String
+  label: String!
+  description: String
+  meals: [MealPlanMealInput!]!
+}
+
+input CreateMealPlanInput {
+  slug: String!
+  locale: String!
+  label: String!
+  description: String
+  calories: Int!
+  proteinGrams: Int!
+  carbGrams: Int!
+  fatGrams: Int!
+  days: [MealPlanDayInput!]
+  dayIds: [ID!]
+  userId: ID
+}
+
+input UpdateMealPlanInput {
+  id: ID!
+  slug: String
+  locale: String
+  label: String
+  description: String
+  calories: Int
+  proteinGrams: Int
+  carbGrams: Int
+  fatGrams: Int
+  days: [MealPlanDayInput!]
+  dayIds: [ID!]
+  userId: ID
+}
+
+input ListMealPlansInput {
+  q: String
+  locale: String
+  createdBy: ID
+  userId: ID
+  limit: Int
+  page: Int
+}
+
 type Mutation {
   tag_create(input: CreateTagInput!): TagGql
   tag_update(input: UpdateTagInput!): TagGql
@@ -527,6 +661,10 @@ type Mutation {
   meal_create(input: CreateMealInput!): MealGql
   meal_update(input: UpdateMealInput!): MealGql
   meal_delete(id: ID!): Boolean!
+  mealPlan_create(input: CreateMealPlanInput!): MealPlanGql
+  mealPlan_update(input: UpdateMealPlanInput!): MealPlanGql
+  mealPlan_softDelete(id: ID!): Boolean!
+  mealPlan_delete(id: ID!): Boolean!
 }
 
 input CreateTagInput {

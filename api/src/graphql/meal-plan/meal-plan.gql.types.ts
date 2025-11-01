@@ -1,0 +1,341 @@
+// src/graphql/meal-plan/meal-plan.gql.types.ts
+import {
+  Field,
+  ID,
+  InputType,
+  Int,
+  ObjectType,
+} from '@nestjs/graphql';
+
+import { MealTypeVisibility } from '@graphql/meal-type/meal-type.gql.types';
+import { UserGql } from '@graphql/user/user.gql.types';
+
+@ObjectType()
+export class MealPlanMealTypeSnapshotGql {
+  @Field(() => ID, { nullable: true })
+  id?: string | null;
+
+  @Field(() => ID, { nullable: true })
+  templateMealTypeId?: string | null;
+
+  @Field({ nullable: true })
+  slug?: string | null;
+
+  @Field({ nullable: true })
+  locale?: string | null;
+
+  @Field()
+  label!: string;
+
+  @Field(() => MealTypeVisibility, { nullable: true })
+  visibility?: MealTypeVisibility | null;
+}
+
+@ObjectType()
+export class MealPlanMealSnapshotGql {
+  @Field(() => ID)
+  id!: string;
+
+  @Field(() => ID, { nullable: true })
+  templateMealId?: string | null;
+
+  @Field({ nullable: true })
+  slug?: string | null;
+
+  @Field({ nullable: true })
+  locale?: string | null;
+
+  @Field()
+  label!: string;
+
+  @Field({ nullable: true })
+  description?: string | null;
+
+  @Field()
+  foods!: string;
+
+  @Field(() => Int)
+  calories!: number;
+
+  @Field(() => Int)
+  proteinGrams!: number;
+
+  @Field(() => Int)
+  carbGrams!: number;
+
+  @Field(() => Int)
+  fatGrams!: number;
+
+  @Field(() => MealPlanMealTypeSnapshotGql)
+  type!: MealPlanMealTypeSnapshotGql;
+}
+
+@ObjectType()
+export class MealPlanDaySnapshotGql {
+  @Field(() => ID)
+  id!: string;
+
+  @Field(() => ID, { nullable: true })
+  templateMealDayId?: string | null;
+
+  @Field({ nullable: true })
+  slug?: string | null;
+
+  @Field({ nullable: true })
+  locale?: string | null;
+
+  @Field()
+  label!: string;
+
+  @Field({ nullable: true })
+  description?: string | null;
+
+  @Field(() => [MealPlanMealSnapshotGql])
+  meals!: MealPlanMealSnapshotGql[];
+}
+
+@ObjectType()
+export class MealPlanGql {
+  @Field(() => ID)
+  id!: string;
+
+  @Field()
+  slug!: string;
+
+  @Field()
+  locale!: string;
+
+  @Field()
+  label!: string;
+
+  @Field({ nullable: true })
+  description?: string | null;
+
+  @Field(() => Int)
+  calories!: number;
+
+  @Field(() => Int)
+  proteinGrams!: number;
+
+  @Field(() => Int)
+  carbGrams!: number;
+
+  @Field(() => Int)
+  fatGrams!: number;
+
+  @Field(() => [MealPlanDaySnapshotGql])
+  days!: MealPlanDaySnapshotGql[];
+
+  @Field({ nullable: true })
+  userId?: string | null;
+
+  @Field()
+  createdBy!: string;
+
+  @Field()
+  createdAt!: Date;
+
+  @Field()
+  updatedAt!: Date;
+
+  @Field(() => UserGql, { nullable: true })
+  creator?: UserGql | null;
+
+  @Field(() => UserGql, { nullable: true })
+  athlete?: UserGql | null;
+}
+
+@InputType()
+export class MealPlanMealTypeInput {
+  @Field(() => ID, { nullable: true })
+  id?: string;
+
+  @Field(() => ID, { nullable: true })
+  templateMealTypeId?: string;
+
+  @Field({ nullable: true })
+  slug?: string;
+
+  @Field({ nullable: true })
+  locale?: string;
+
+  @Field()
+  label!: string;
+
+  @Field(() => MealTypeVisibility, { nullable: true })
+  visibility?: MealTypeVisibility;
+}
+
+@InputType()
+export class MealPlanMealInput {
+  @Field(() => ID, { nullable: true })
+  id?: string;
+
+  @Field(() => ID, { nullable: true })
+  templateMealId?: string;
+
+  @Field({ nullable: true })
+  slug?: string;
+
+  @Field({ nullable: true })
+  locale?: string;
+
+  @Field()
+  label!: string;
+
+  @Field({ nullable: true })
+  description?: string;
+
+  @Field()
+  foods!: string;
+
+  @Field(() => Int)
+  calories!: number;
+
+  @Field(() => Int)
+  proteinGrams!: number;
+
+  @Field(() => Int)
+  carbGrams!: number;
+
+  @Field(() => Int)
+  fatGrams!: number;
+
+  @Field(() => MealPlanMealTypeInput)
+  type!: MealPlanMealTypeInput;
+}
+
+@InputType()
+export class MealPlanDayInput {
+  @Field(() => ID, { nullable: true })
+  id?: string;
+
+  @Field(() => ID, { nullable: true })
+  templateMealDayId?: string;
+
+  @Field({ nullable: true })
+  slug?: string;
+
+  @Field({ nullable: true })
+  locale?: string;
+
+  @Field()
+  label!: string;
+
+  @Field({ nullable: true })
+  description?: string;
+
+  @Field(() => [MealPlanMealInput])
+  meals!: MealPlanMealInput[];
+}
+
+@InputType()
+export class CreateMealPlanInput {
+  @Field()
+  slug!: string;
+
+  @Field()
+  locale!: string;
+
+  @Field()
+  label!: string;
+
+  @Field({ nullable: true })
+  description?: string;
+
+  @Field(() => Int)
+  calories!: number;
+
+  @Field(() => Int)
+  proteinGrams!: number;
+
+  @Field(() => Int)
+  carbGrams!: number;
+
+  @Field(() => Int)
+  fatGrams!: number;
+
+  @Field(() => [MealPlanDayInput], { nullable: true })
+  days?: MealPlanDayInput[];
+
+  @Field(() => [ID], { nullable: true })
+  dayIds?: string[];
+
+  @Field(() => ID, { nullable: true })
+  userId?: string;
+}
+
+@InputType()
+export class UpdateMealPlanInput {
+  @Field(() => ID)
+  id!: string;
+
+  @Field({ nullable: true })
+  slug?: string;
+
+  @Field({ nullable: true })
+  locale?: string;
+
+  @Field({ nullable: true })
+  label?: string;
+
+  @Field({ nullable: true })
+  description?: string;
+
+  @Field(() => Int, { nullable: true })
+  calories?: number;
+
+  @Field(() => Int, { nullable: true })
+  proteinGrams?: number;
+
+  @Field(() => Int, { nullable: true })
+  carbGrams?: number;
+
+  @Field(() => Int, { nullable: true })
+  fatGrams?: number;
+
+  @Field(() => [MealPlanDayInput], { nullable: true })
+  days?: MealPlanDayInput[];
+
+  @Field(() => [ID], { nullable: true })
+  dayIds?: string[];
+
+  @Field(() => ID, { nullable: true })
+  userId?: string;
+}
+
+@InputType()
+export class ListMealPlansInput {
+  @Field({ nullable: true })
+  q?: string;
+
+  @Field({ nullable: true })
+  locale?: string;
+
+  @Field(() => ID, { nullable: true })
+  createdBy?: string;
+
+  @Field(() => ID, { nullable: true })
+  userId?: string;
+
+  @Field(() => Int, { nullable: true })
+  limit?: number;
+
+  @Field(() => Int, { nullable: true })
+  page?: number;
+}
+
+@ObjectType()
+export class MealPlanListGql {
+  @Field(() => [MealPlanGql])
+  items!: MealPlanGql[];
+
+  @Field(() => Int)
+  total!: number;
+
+  @Field(() => Int)
+  page!: number;
+
+  @Field(() => Int)
+  limit!: number;
+}

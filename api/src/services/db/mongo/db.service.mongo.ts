@@ -12,6 +12,7 @@ import { BddServiceExerciseMongo } from '@services/db/mongo/repositories/exercis
 import { BddServiceEquipmentMongo } from '@services/db/mongo/repositories/equipment.repository';
 import { BddServiceMealMongo } from '@services/db/mongo/repositories/meal.repository';
 import { BddServiceMealDayMongo } from '@services/db/mongo/repositories/meal-day.repository';
+import { BddServiceMealPlanMongo } from '@services/db/mongo/repositories/meal-plan.repository';
 
 type InfraDeps = { inversify: any; config: any };
 
@@ -27,6 +28,7 @@ export class BddServiceMongo {
   readonly mealType: BddServiceMealTypeMongo;
   readonly mealDay: BddServiceMealDayMongo;
   readonly meal: BddServiceMealMongo;
+  readonly mealPlan: BddServiceMealPlanMongo;
   readonly exercise: BddServiceExerciseMongo;
   readonly equipment: BddServiceEquipmentMongo;
 
@@ -40,6 +42,7 @@ export class BddServiceMongo {
     this.mealType = new BddServiceMealTypeMongo();
     this.mealDay = new BddServiceMealDayMongo();
     this.meal = new BddServiceMealMongo();
+    this.mealPlan = new BddServiceMealPlanMongo();
     this.exercise = new BddServiceExerciseMongo();
     this.test = new BddServiceTestMongo(inversify);
     this.equipment = new BddServiceEquipmentMongo();
