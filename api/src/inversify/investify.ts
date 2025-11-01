@@ -58,6 +58,11 @@ import { GetMealUsecase } from '@usecases/meal/get.meal.usecase';
 import { ListMealsUsecase } from '@usecases/meal/list.meal.usecase';
 import { UpdateMealUsecase } from '@usecases/meal/update.meal.usecase';
 import { DeleteMealUsecase } from '@usecases/meal/delete.meal.usecase';
+import { CreateMealDayUsecase } from '@usecases/meal-day/create.meal-day.usecase';
+import { GetMealDayUsecase } from '@usecases/meal-day/get.meal-day.usecase';
+import { ListMealDaysUsecase } from '@usecases/meal-day/list.meal-days.usecase';
+import { UpdateMealDayUsecase } from '@usecases/meal-day/update.meal-day.usecase';
+import { DeleteMealDayUsecase } from '@usecases/meal-day/delete.meal-day.usecase';
 
 export class Inversify {
   mongo: Db;
@@ -116,6 +121,11 @@ export class Inversify {
   listMealsUsecase: ListMealsUsecase;
   updateMealUsecase: UpdateMealUsecase;
   deleteMealUsecase: DeleteMealUsecase;
+  createMealDayUsecase: CreateMealDayUsecase;
+  getMealDayUsecase: GetMealDayUsecase;
+  listMealDaysUsecase: ListMealDaysUsecase;
+  updateMealDayUsecase: UpdateMealDayUsecase;
+  deleteMealDayUsecase: DeleteMealDayUsecase;
   
 
   constructor() {
@@ -159,6 +169,12 @@ export class Inversify {
     this.listMealsUsecase = new ListMealsUsecase(this);
     this.updateMealUsecase = new UpdateMealUsecase(this);
     this.deleteMealUsecase = new DeleteMealUsecase(this);
+    // usecases meal day
+    this.createMealDayUsecase = new CreateMealDayUsecase(this);
+    this.getMealDayUsecase = new GetMealDayUsecase(this);
+    this.listMealDaysUsecase = new ListMealDaysUsecase(this);
+    this.updateMealDayUsecase = new UpdateMealDayUsecase(this);
+    this.deleteMealDayUsecase = new DeleteMealDayUsecase(this);
     // usecases equipment
     this.createEquipmentUsecase = new CreateEquipmentUsecase(this);
     this.getEquipmentUsecase = new GetEquipmentUsecase(this);

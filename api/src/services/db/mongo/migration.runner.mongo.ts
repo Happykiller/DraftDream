@@ -26,6 +26,7 @@ export class MongoMigrationRunner {
     const sessions: Migration = require('./migrations/0006_seeds_session').default;
     const mealTypes: Migration = require('./migrations/0007_seeds_meal_type').default;
     const meals: Migration = require('./migrations/0008_create_meal').default;
+    const mealDays: Migration = require('./migrations/0009_create_meal_day').default;
     return [
       admin,
       muscles,
@@ -35,6 +36,7 @@ export class MongoMigrationRunner {
       sessions,
       mealTypes,
       meals,
+      mealDays,
     ];
   }
 

@@ -1,0 +1,94 @@
+// docs\\meal-day.http
+@locale = fr
+@label = Journée énergie
+@description = Journée riche en glucides pour les séances longues.
+@mealId1 = seed-meal-breakfast
+@mealId2 = seed-meal-lunch
+@mealId3 = seed-meal-snack
+@page = 1
+@limit = 10
+
+### (Optional) Auth to get a token
+POST {{host}}
+Content-Type: application/json
+
+{
+  "query": "mutation($input: AuthInput!){ auth(input:$input){ access_token } }",
+  "variables": {
+    "input": { "email": "alex.martin@example.com", "password": "SuperSecret123!" }
+  }
+}
+
+### Create meal day
+POST {{host}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "mutation($input: CreateMealDayInput!){ mealDay_create(input:$input){ id slug locale label description mealIds visibility createdBy createdAt updatedAt } }",
+  "variables": {
+    "input": {
+      "slug": "journee-energie",
+      "locale": "{{locale}}",
+      "label": "{{label}}",
+      "description": "{{description}}",
+      "mealIds": ["{{mealId1}}", "{{mealId2}}", "{{mealId3}}"],
+      "visibility": "PUBLIC"
+    }
+  }
+}
+
+### Get meal day by id
+POST {{host}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "query($id: ID!){ mealDay_get(id:$id){ id slug locale label description mealIds visibility createdAt updatedAt creator{ id email } meals{ id label visibility } } }",
+  "variables": { "id": "replace-meal-day-id" }
+}
+
+### List meal days (filters and pagination)
+POST {{host}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "query($input: ListMealDaysInput){ mealDay_list(input:$input){ items{ id slug locale label description mealIds visibility createdAt updatedAt } total page limit } }",
+  "variables": {
+    "input": {
+      //"q": "energie",
+      "locale": "fr",
+      "visibility": "PUBLIC",
+      "page": {{page}},
+      "limit": {{limit}}
+    }
+  }
+}
+
+### Update meal day
+POST {{host}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "mutation($input: UpdateMealDayInput!){ mealDay_update(input:$input){ id slug locale label description mealIds visibility updatedAt } }",
+  "variables": {
+    "input": {
+      "id": "replace-meal-day-id",
+      "label": "Journée énergie - ajustée",
+      "mealIds": ["{{mealId1}}", "{{mealId3}}"]
+    }
+  }
+}
+
+### Delete meal day
+POST {{host}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "mutation($id: ID!){ mealDay_delete(id:$id) }",
+  "variables": { "id": "replace-meal-day-id" }
+}
+
