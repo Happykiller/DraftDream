@@ -552,69 +552,6 @@ input ListMealsInput {
   page: Int
 }
 
-input MealPlanMealTypeInput {
-  id: ID
-  templateMealTypeId: ID
-  slug: String
-  locale: String
-  label: String!
-  visibility: MealTypeVisibility
-}
-
-input MealPlanMealInput {
-  id: ID
-  templateMealId: ID
-  slug: String
-  locale: String
-  label: String!
-  description: String
-  foods: String!
-  calories: Int!
-  proteinGrams: Int!
-  carbGrams: Int!
-  fatGrams: Int!
-  type: MealPlanMealTypeInput!
-}
-
-input MealPlanDayInput {
-  id: ID
-  templateMealDayId: ID
-  slug: String
-  locale: String
-  label: String!
-  description: String
-  meals: [MealPlanMealInput!]!
-}
-
-input CreateMealPlanInput {
-  slug: String!
-  locale: String!
-  label: String!
-  description: String
-  calories: Int!
-  proteinGrams: Int!
-  carbGrams: Int!
-  fatGrams: Int!
-  days: [MealPlanDayInput!]
-  dayIds: [ID!]
-  userId: ID
-}
-
-input UpdateMealPlanInput {
-  id: ID!
-  slug: String
-  locale: String
-  label: String
-  description: String
-  calories: Int
-  proteinGrams: Int
-  carbGrams: Int
-  fatGrams: Int
-  days: [MealPlanDayInput!]
-  dayIds: [ID!]
-  userId: ID
-}
-
 input ListMealPlansInput {
   q: String
   locale: String
@@ -940,4 +877,67 @@ input UpdateMealInput {
   carbGrams: Int
   fatGrams: Int
   visibility: MealVisibility
+}
+
+input CreateMealPlanInput {
+  slug: String!
+  locale: String!
+  label: String!
+  description: String
+  calories: Int!
+  proteinGrams: Int!
+  carbGrams: Int!
+  fatGrams: Int!
+  days: [MealPlanDayInput!]
+  dayIds: [ID!]
+  userId: ID
+}
+
+input MealPlanDayInput {
+  id: ID
+  templateMealDayId: ID
+  slug: String
+  locale: String
+  label: String!
+  description: String
+  meals: [MealPlanMealInput!]!
+}
+
+input MealPlanMealInput {
+  id: ID
+  templateMealId: ID
+  slug: String
+  locale: String
+  label: String!
+  description: String
+  foods: String!
+  calories: Int!
+  proteinGrams: Int!
+  carbGrams: Int!
+  fatGrams: Int!
+  type: MealPlanMealTypeInput!
+}
+
+input MealPlanMealTypeInput {
+  id: ID
+  templateMealTypeId: ID
+  slug: String
+  locale: String
+  label: String!
+  visibility: MealTypeVisibility
+}
+
+input UpdateMealPlanInput {
+  id: ID!
+  slug: String
+  locale: String
+  label: String
+  description: String
+  calories: Int
+  proteinGrams: Int
+  carbGrams: Int
+  fatGrams: Int
+  days: [MealPlanDayInput!]
+  dayIds: [ID!]
+  userId: ID
 }

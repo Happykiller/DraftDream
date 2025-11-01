@@ -1,5 +1,5 @@
 # docs/meal-plan.http
-@locale = fr-FR
+@locale = fr
 @label = Plan énergie 4 semaines
 @description = Plan nutritionnel équilibré pour accompagner un cycle de force.
 @calories = 2600
@@ -15,7 +15,7 @@
 
 ###
 # (Optional) Authentification pour récupérer un token
-POST {{host}}/graphql
+POST {{host}}
 Content-Type: application/json
 
 {
@@ -27,7 +27,7 @@ Content-Type: application/json
 
 ###
 # MealPlan: création (avec duplication d'une journée existante)
-POST {{host}}/graphql
+POST {{host}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -52,7 +52,7 @@ Content-Type: application/json
 
 ###
 # MealPlan: création avec jours/repas en ligne
-POST {{host}}/graphql
+POST {{host}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -108,7 +108,7 @@ Content-Type: application/json
 
 ###
 # MealPlan: récupération par identifiant
-POST {{host}}/graphql
+POST {{host}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -120,7 +120,7 @@ Content-Type: application/json
 
 ###
 # MealPlan: liste (recherche, pagination, filtres)
-POST {{host}}/graphql
+POST {{host}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -141,7 +141,7 @@ Content-Type: application/json
 
 ###
 # MealPlan: mise à jour
-POST {{host}}/graphql
+POST {{host}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -162,7 +162,7 @@ Content-Type: application/json
 
 ###
 # MealPlan: suppression logique
-POST {{host}}/graphql
+POST {{host}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -173,7 +173,7 @@ Content-Type: application/json
 
 ###
 # MealPlan: suppression définitive
-POST {{host}}/graphql
+POST {{host}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
