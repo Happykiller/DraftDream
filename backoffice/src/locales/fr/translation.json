@@ -72,10 +72,15 @@
       "charge": "Charge",
       "rest_seconds": "Repos (sec)",
       "video_url": "URL vidéo",
-      "instructions": "Instructions",
-      "category": "Catégorie",
-      "equipment_optional": "Équipement (optionnel)",
-      "tags_optional": "Tags (optionnel)"
+    "instructions": "Instructions",
+    "category": "Catégorie",
+    "equipment_optional": "Équipement (optionnel)",
+    "tags_optional": "Tags (optionnel)",
+    "foods": "Aliments",
+    "calories": "Calories",
+    "protein_grams": "Protéines (g)",
+    "carb_grams": "Glucides (g)",
+    "fat_grams": "Lipides (g)"
     },
     "status": {
       "active": "Actif",
@@ -92,6 +97,7 @@
       "search_tags": "Rechercher des tags...",
       "search_equipment": "Rechercher de l'équipement...",
       "search_muscles": "Rechercher des muscles...",
+      "search_meal_types": "Rechercher des types de repas...",
       "search_sessions": "Rechercher des séances...",
       "search_exercises": "Rechercher des exercices...",
       "search_users": "Rechercher des utilisateurs...",
@@ -269,6 +275,38 @@
       },
       "confirm": {
         "delete_title": "Supprimer l'exercice"
+      }
+    }
+  },
+  "meals": {
+    "title": "Nutrition",
+    "tabs": {
+      "meals": "Repas",
+      "mealTypes": "Types de repas",
+      "aria_label": "Sections nutrition"
+    },
+    "meals": {
+      "title": "Repas",
+      "search_placeholder": "Rechercher des repas...",
+      "create": "Nouveau repas",
+      "dialog": {
+        "create_title": "Nouveau repas",
+        "edit_title": "Modifier le repas"
+      },
+      "confirm": {
+        "delete_title": "Supprimer le repas"
+      }
+    },
+    "mealTypes": {
+      "title": "Types de repas",
+      "search_placeholder": "Rechercher des types de repas...",
+      "create": "Nouveau type de repas",
+      "dialog": {
+        "create_title": "Nouveau type de repas",
+        "edit_title": "Modifier le type de repas"
+      },
+      "confirm": {
+        "delete_title": "Supprimer le type de repas"
       }
     }
   },

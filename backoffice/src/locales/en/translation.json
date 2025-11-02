@@ -72,10 +72,15 @@
       "charge": "Load",
       "rest_seconds": "Rest (sec)",
       "video_url": "Video URL",
-      "instructions": "Instructions",
-      "category": "Category",
-      "equipment_optional": "Equipment (optional)",
-      "tags_optional": "Tags (optional)"
+    "instructions": "Instructions",
+    "category": "Category",
+    "equipment_optional": "Equipment (optional)",
+    "tags_optional": "Tags (optional)",
+    "foods": "Foods",
+    "calories": "Calories",
+    "protein_grams": "Protein (g)",
+    "carb_grams": "Carbs (g)",
+    "fat_grams": "Fat (g)"
     },
     "status": {
       "active": "Active",
@@ -92,6 +97,7 @@
       "search_tags": "Search tags...",
       "search_equipment": "Search equipment...",
       "search_muscles": "Search muscles...",
+      "search_meal_types": "Search meal types...",
       "search_sessions": "Search sessions...",
       "search_exercises": "Search exercises...",
       "search_users": "Search users...",
@@ -269,6 +275,38 @@
       },
       "confirm": {
         "delete_title": "Delete exercise"
+      }
+    }
+  },
+  "meals": {
+    "title": "Nutrition",
+    "tabs": {
+      "meals": "Meals",
+      "mealTypes": "Meal types",
+      "aria_label": "Nutrition sections"
+    },
+    "meals": {
+      "title": "Meals",
+      "search_placeholder": "Search meals...",
+      "create": "New meal",
+      "dialog": {
+        "create_title": "New meal",
+        "edit_title": "Edit meal"
+      },
+      "confirm": {
+        "delete_title": "Delete meal"
+      }
+    },
+    "mealTypes": {
+      "title": "Meal types",
+      "search_placeholder": "Search meal types...",
+      "create": "New meal type",
+      "dialog": {
+        "create_title": "New meal type",
+        "edit_title": "Edit meal type"
+      },
+      "confirm": {
+        "delete_title": "Delete meal type"
       }
     }
   },

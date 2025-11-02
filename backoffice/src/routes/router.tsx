@@ -73,6 +73,13 @@ export const router = createBrowserRouter([
         },
       },
       {
+        path: '/meals',
+        lazy: async () => {
+          const mod = await import('@src/pages/Meals');
+          return { Component: mod.Meals };
+        },
+      },
+      {
         path: '/sandbox',
         // 👇 IMPORTANT: enfant index pour /sandbox
         children: [
