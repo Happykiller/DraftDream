@@ -92,6 +92,7 @@
       "search_tags": "Search tags...",
       "search_equipment": "Search equipment...",
       "search_muscles": "Search muscles...",
+      "search_meal_types": "Search meal types...",
       "search_sessions": "Search sessions...",
       "search_exercises": "Search exercises...",
       "search_users": "Search users...",
@@ -269,6 +270,25 @@
       },
       "confirm": {
         "delete_title": "Delete exercise"
+      }
+    }
+  },
+  "meals": {
+    "title": "Nutrition",
+    "tabs": {
+      "mealTypes": "Meal types",
+      "aria_label": "Nutrition sections"
+    },
+    "mealTypes": {
+      "title": "Meal types",
+      "search_placeholder": "Search meal types...",
+      "create": "New meal type",
+      "dialog": {
+        "create_title": "New meal type",
+        "edit_title": "Edit meal type"
+      },
+      "confirm": {
+        "delete_title": "Delete meal type"
       }
     }
   },
