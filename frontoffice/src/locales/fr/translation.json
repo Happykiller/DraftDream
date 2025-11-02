@@ -279,8 +279,10 @@
         },
         "actions": {
           "cancel": "Annuler",
-          "submit": "Copier",
-          "submitting": "Copie..."
+          "copy": "Copier",
+          "copying": "Copie en cours…",
+          "copy_and_open": "Copier et ouvrir",
+          "copying_and_opening": "Copie et ouverture en cours…"
         },
         "copy_suffix": "(Copie)",
         "no_results": "Aucun athlète trouvé",

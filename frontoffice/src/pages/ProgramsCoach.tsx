@@ -55,7 +55,10 @@ export function ProgramsCoach(): React.JSX.Element {
   }, [navigate]);
 
   const handleCloneProgram = React.useCallback(
-    async (baseProgram: Program, payload: { label: string; athleteId: string | null }) => {
+    async (
+      baseProgram: Program,
+      payload: { label: string; athleteId: string | null; openBuilder: boolean },
+    ) => {
       const sessionSnapshots = baseProgram.sessions.map((session) => ({
         id: session.id,
         templateSessionId: session.templateSessionId ?? undefined,
@@ -89,8 +92,14 @@ export function ProgramsCoach(): React.JSX.Element {
         userId: payload.athleteId,
       });
 
-      setEditingProgram(cloned);
-      setBuilderOpen(true);
+      if (payload.openBuilder) {
+        setEditingProgram(cloned);
+        setBuilderOpen(true);
+        return;
+      }
+
+      setEditingProgram(null);
+      setBuilderOpen(false);
     },
     [create, i18n.language],
   );

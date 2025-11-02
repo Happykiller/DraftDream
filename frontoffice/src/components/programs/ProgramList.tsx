@@ -24,7 +24,10 @@ interface ProgramListProps {
   onOpenBuilder?: () => void;
   onDeleteProgram?: (programId: string) => void;
   onEditProgram?: (program: Program) => void;
-  onCloneProgram?: (program: Program, payload: { label: string; athleteId: string | null }) => Promise<void>;
+  onCloneProgram?: (
+    program: Program,
+    payload: { label: string; athleteId: string | null; openBuilder: boolean },
+  ) => Promise<void>;
   onViewProgram?: (program: Program) => void;
   allowedActions?: ProgramActionKey[];
 }

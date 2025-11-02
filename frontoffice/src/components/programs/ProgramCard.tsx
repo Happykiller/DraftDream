@@ -36,7 +36,10 @@ interface ProgramCardProps {
   allowedActions?: ProgramActionKey[];
   onDelete?: (programId: string) => void;
   onEdit?: (program: Program) => void;
-  onClone?: (program: Program, payload: { label: string; athleteId: string | null }) => Promise<void>;
+  onClone?: (
+    program: Program,
+    payload: { label: string; athleteId: string | null; openBuilder: boolean },
+  ) => Promise<void>;
   onView?: (program: Program) => void;
 }
 

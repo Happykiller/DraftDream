@@ -29,11 +29,16 @@ interface AthleteListPayload {
   };
 }
 
+type CloneAction = 'copy' | 'copy_and_open';
+
 export interface ProgramCloneDialogProps {
   open: boolean;
   program: Program;
   onClose: () => void;
-  onClone?: (program: Program, payload: { label: string; athleteId: string | null }) => Promise<void>;
+  onClone?: (
+    program: Program,
+    payload: { label: string; athleteId: string | null; openBuilder: boolean },
+  ) => Promise<void>;
   onSubmittingChange?: (submitting: boolean) => void;
 }
 
@@ -74,6 +79,7 @@ export function ProgramCloneDialog({
   const [cloneError, setCloneError] = React.useState<string | null>(null);
   const [cloneLabelError, setCloneLabelError] = React.useState<string | null>(null);
   const [cloneLoading, setCloneLoading] = React.useState(false);
+  const [activeCloneAction, setActiveCloneAction] = React.useState<CloneAction | null>(null);
   const [selectedAthlete, setSelectedAthlete] = React.useState<AthleteOption | null>(null);
   const [athleteInputValue, setAthleteInputValue] = React.useState('');
   const [rawAthleteOptions, setRawAthleteOptions] = React.useState<AthleteOption[]>([]);
@@ -158,6 +164,7 @@ export function ProgramCloneDialog({
       setCloneLoading(false);
       setCloneError(null);
       setCloneLabelError(null);
+      setActiveCloneAction(null);
       setSelectedAthlete(null);
       setAthleteInputValue('');
       setAthleteQuery('');
@@ -198,36 +205,46 @@ export function ProgramCloneDialog({
     onClose();
   }, [cloneLoading, onClose]);
 
-  const handleCloneSubmit = React.useCallback(async () => {
-    if (!onClone) {
-      onClose();
-      return;
-    }
+  const handleCloneSubmit = React.useCallback(
+    async (openBuilder: boolean) => {
+      if (cloneLoading) {
+        return;
+      }
 
-    const trimmedLabel = cloneLabel.trim();
-    setCloneLabelError(null);
-    if (!trimmedLabel) {
-      setCloneLabelError(t('programs-coatch.list.clone_dialog.errors.missing_label'));
-      return;
-    }
+      if (!onClone) {
+        onClose();
+        return;
+      }
 
-    setCloneLoading(true);
-    try {
-      setCloneError(null);
+      const trimmedLabel = cloneLabel.trim();
       setCloneLabelError(null);
-      await onClone(program, {
-        label: trimmedLabel,
-        athleteId: selectedAthlete?.id ?? null,
-      });
-      onClose();
-    } catch (error: unknown) {
-      setCloneError(
-        error instanceof Error ? error.message : t('common.unexpected_error'),
-      );
-    } finally {
-      setCloneLoading(false);
-    }
-  }, [onClone, program, selectedAthlete, cloneLabel, t, onClose]);
+      if (!trimmedLabel) {
+        setCloneLabelError(t('programs-coatch.list.clone_dialog.errors.missing_label'));
+        return;
+      }
+
+      setActiveCloneAction(openBuilder ? 'copy_and_open' : 'copy');
+      setCloneLoading(true);
+      try {
+        setCloneError(null);
+        setCloneLabelError(null);
+        await onClone(program, {
+          label: trimmedLabel,
+          athleteId: selectedAthlete?.id ?? null,
+          openBuilder,
+        });
+        onClose();
+      } catch (error: unknown) {
+        setCloneError(
+          error instanceof Error ? error.message : t('common.unexpected_error'),
+        );
+      } finally {
+        setActiveCloneAction(null);
+        setCloneLoading(false);
+      }
+    },
+    [cloneLoading, onClone, program, selectedAthlete, cloneLabel, t, onClose],
+  );
 
   const handleAthleteSelection = React.useCallback((_: unknown, option: AthleteOption | null) => {
     setSelectedAthlete(option);
@@ -250,13 +267,17 @@ export function ProgramCloneDialog({
   );
   const cloneDialogNoResults = t('programs-coatch.list.clone_dialog.no_results');
   const cloneDialogCancel = t('programs-coatch.list.clone_dialog.actions.cancel');
-  const cloneDialogSubmit = t('programs-coatch.list.clone_dialog.actions.submit');
-  const cloneDialogSubmitting = t('programs-coatch.list.clone_dialog.actions.submitting');
+  const cloneDialogCopy = t('programs-coatch.list.clone_dialog.actions.copy');
+  const cloneDialogCopyAndOpen = t('programs-coatch.list.clone_dialog.actions.copy_and_open');
+  const cloneDialogCopying = t('programs-coatch.list.clone_dialog.actions.copying');
+  const cloneDialogCopyingAndOpen = t(
+    'programs-coatch.list.clone_dialog.actions.copying_and_opening',
+  );
 
   const handleFormSubmit = React.useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      void handleCloneSubmit();
+      void handleCloneSubmit(false);
     },
     [handleCloneSubmit],
   );
@@ -267,7 +288,20 @@ export function ProgramCloneDialog({
         {cloneDialogCancel}
       </Button>
       <Button type="submit" variant="contained" color="success" disabled={cloneLoading}>
-        {cloneLoading ? cloneDialogSubmitting : cloneDialogSubmit}
+        {cloneLoading && activeCloneAction === 'copy' ? cloneDialogCopying : cloneDialogCopy}
+      </Button>
+      <Button
+        type="button"
+        variant="contained"
+        color="primary"
+        disabled={cloneLoading}
+        onClick={() => {
+          void handleCloneSubmit(true);
+        }}
+      >
+        {cloneLoading && activeCloneAction === 'copy_and_open'
+          ? cloneDialogCopyingAndOpen
+          : cloneDialogCopyAndOpen}
       </Button>
     </>
   );
