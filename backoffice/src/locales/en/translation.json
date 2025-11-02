@@ -74,9 +74,10 @@
       "video_url": "Video URL",
     "instructions": "Instructions",
     "category": "Category",
-    "equipment_optional": "Equipment (optional)",
-    "tags_optional": "Tags (optional)",
-    "foods": "Foods",
+      "equipment_optional": "Equipment (optional)",
+      "tags_optional": "Tags (optional)",
+      "meals": "Meals",
+      "foods": "Foods",
     "calories": "Calories",
     "protein_grams": "Protein (g)",
     "carb_grams": "Carbs (g)",
@@ -282,6 +283,7 @@
     "title": "Nutrition",
     "tabs": {
       "meals": "Meals",
+      "mealDays": "Meal days",
       "mealTypes": "Meal types",
       "aria_label": "Nutrition sections"
     },
@@ -295,6 +297,29 @@
       },
       "confirm": {
         "delete_title": "Delete meal"
+      }
+    },
+    "mealDays": {
+      "title": "Meal days",
+      "search_placeholder": "Search meal days...",
+      "create": "New meal day",
+      "columns": {
+        "count": "Meals count",
+        "meals": "Ordered meals"
+      },
+      "table": {
+        "empty_meals": "No meals linked"
+      },
+      "dialog": {
+        "create_title": "New meal day",
+        "edit_title": "Edit meal day",
+        "add_meal": "Add meal",
+        "refresh_meals": "Refresh meals",
+        "empty_list": "No meals selected yet.",
+        "search_placeholder": "Search meals..."
+      },
+      "confirm": {
+        "delete_title": "Delete meal day"
       }
     },
     "mealTypes": {

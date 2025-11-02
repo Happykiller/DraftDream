@@ -74,9 +74,10 @@
       "video_url": "URL vidéo",
     "instructions": "Instructions",
     "category": "Catégorie",
-    "equipment_optional": "Équipement (optionnel)",
-    "tags_optional": "Tags (optionnel)",
-    "foods": "Aliments",
+      "equipment_optional": "Équipement (optionnel)",
+      "tags_optional": "Tags (optionnel)",
+      "meals": "Repas",
+      "foods": "Aliments",
     "calories": "Calories",
     "protein_grams": "Protéines (g)",
     "carb_grams": "Glucides (g)",
@@ -282,6 +283,7 @@
     "title": "Nutrition",
     "tabs": {
       "meals": "Repas",
+      "mealDays": "Journées de repas",
       "mealTypes": "Types de repas",
       "aria_label": "Sections nutrition"
     },
@@ -295,6 +297,29 @@
       },
       "confirm": {
         "delete_title": "Supprimer le repas"
+      }
+    },
+    "mealDays": {
+      "title": "Journées de repas",
+      "search_placeholder": "Rechercher des journées de repas...",
+      "create": "Nouvelle journée de repas",
+      "columns": {
+        "count": "Nombre de repas",
+        "meals": "Repas ordonnés"
+      },
+      "table": {
+        "empty_meals": "Aucun repas associé"
+      },
+      "dialog": {
+        "create_title": "Nouvelle journée de repas",
+        "edit_title": "Modifier la journée de repas",
+        "add_meal": "Ajouter un repas",
+        "refresh_meals": "Rafraîchir les repas",
+        "empty_list": "Aucun repas sélectionné pour le moment.",
+        "search_placeholder": "Rechercher des repas..."
+      },
+      "confirm": {
+        "delete_title": "Supprimer la journée de repas"
       }
     },
     "mealTypes": {
