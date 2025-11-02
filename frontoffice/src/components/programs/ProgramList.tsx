@@ -22,7 +22,7 @@ interface ProgramListProps {
   placeholderHelper?: string;
   openBuilderLabel?: string;
   onOpenBuilder?: () => void;
-  onDeleteProgram?: (programId: string) => void;
+  onDeleteProgram?: (programId: string) => Promise<void> | void;
   onEditProgram?: (program: Program) => void;
   onCloneProgram?: (
     program: Program,

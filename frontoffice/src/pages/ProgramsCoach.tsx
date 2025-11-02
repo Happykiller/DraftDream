@@ -32,8 +32,8 @@ export function ProgramsCoach(): React.JSX.Element {
   }, [reload]);
 
   const handleDeleteProgram = React.useCallback(
-    (programId: string) => {
-      void remove(programId);
+    async (programId: string) => {
+      await remove(programId);
     },
     [remove],
   );

@@ -266,6 +266,16 @@
       },
       "created_on": "Created on {{date}}",
       "updated_on": "Updated on {{date}}",
+      "delete_dialog": {
+        "title": "Delete the program",
+        "description": "Are you sure you want to delete “{{label}}”?",
+        "helper": "The program will move to the recycle bin and can be restored later if needed.",
+        "actions": {
+          "cancel": "Cancel",
+          "confirm": "Delete",
+          "confirming": "Deleting…"
+        }
+      },
       "clone_dialog": {
         "title": "Copy the program",
         "description": "Update the program name and athlete before duplicating it.",

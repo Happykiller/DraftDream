@@ -28,13 +28,14 @@ import { UserType } from '@src/commons/enums';
 import { session } from '@stores/session';
 
 import { ProgramCloneDialog } from './ProgramCloneDialog';
+import { ProgramDeleteDialog } from './ProgramDeleteDialog';
 import { ProgramViewDialog } from './ProgramViewDialog';
 import { deriveProgramDifficulty, formatProgramDate } from './programFormatting';
 
 interface ProgramCardProps {
   program: Program;
   allowedActions?: ProgramActionKey[];
-  onDelete?: (programId: string) => void;
+  onDelete?: (programId: string) => Promise<void> | void;
   onEdit?: (program: Program) => void;
   onClone?: (
     program: Program,
@@ -78,6 +79,8 @@ export function ProgramCard({
   const difficulty = deriveProgramDifficulty(program);
   const [isCloneDialogOpen, setIsCloneDialogOpen] = React.useState(false);
   const [isCloneSubmitting, setIsCloneSubmitting] = React.useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
+  const [isDeleteSubmitting, setIsDeleteSubmitting] = React.useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = React.useState(false);
   const isAthleteUser = role === UserType.Athlete;
 
@@ -92,6 +95,42 @@ export function ProgramCard({
   const handleCloneSubmittingChange = React.useCallback((submitting: boolean) => {
     setIsCloneSubmitting(submitting);
   }, []);
+
+  const handleOpenDeleteDialog = React.useCallback(() => {
+    setIsDeleteDialogOpen(true);
+  }, []);
+
+  const handleCloseDeleteDialog = React.useCallback<NonNullable<React.ComponentProps<
+    typeof ProgramDeleteDialog
+  >['onClose']>>(
+    (_, reason) => {
+      if (isDeleteSubmitting && reason) {
+        return;
+      }
+
+      if (!isDeleteSubmitting) {
+        setIsDeleteDialogOpen(false);
+      }
+    },
+    [isDeleteSubmitting],
+  );
+
+  const handleConfirmDelete = React.useCallback(async () => {
+    if (!onDelete) {
+      return;
+    }
+
+    setIsDeleteSubmitting(true);
+
+    try {
+      await onDelete(program.id);
+      setIsDeleteDialogOpen(false);
+    } catch (error) {
+      // Surface errors through the flash store while keeping the dialog open.
+    } finally {
+      setIsDeleteSubmitting(false);
+    }
+  }, [onDelete, program.id]);
 
   const handleCloseViewDialog = React.useCallback(() => {
     setIsViewDialogOpen(false);
@@ -136,7 +175,9 @@ export function ProgramCard({
       }
 
       if (actionKey === 'delete') {
-        onDelete?.(program.id);
+        if (onDelete) {
+          handleOpenDeleteDialog();
+        }
         return;
       }
 
@@ -149,7 +190,7 @@ export function ProgramCard({
         onEdit?.(program);
       }
     },
-    [handleOpenCloneDialog, onDelete, onEdit, onView, program],
+    [handleOpenCloneDialog, handleOpenDeleteDialog, onDelete, onEdit, onView, program],
   );
 
   return (
@@ -219,7 +260,7 @@ export function ProgramCard({
               const label = t(`programs-coatch.list.actions.${key}`);
               const isDisabled =
                 (key === 'copy' && (isCloneSubmitting || !onClone)) ||
-                (key === 'delete' && !onDelete) ||
+                (key === 'delete' && (!onDelete || isDeleteSubmitting)) ||
                 (key === 'edit' && !onEdit);
 
               return (
@@ -370,6 +411,15 @@ export function ProgramCard({
           onClose={handleCloseCloneDialog}
           onClone={onClone}
           onSubmittingChange={handleCloneSubmittingChange}
+        />
+      )}
+      {allowedActions.includes('delete') && onDelete && (
+        <ProgramDeleteDialog
+          open={isDeleteDialogOpen}
+          programLabel={program.label}
+          loading={isDeleteSubmitting}
+          onClose={handleCloseDeleteDialog}
+          onConfirm={handleConfirmDelete}
         />
       )}
       {allowedActions.includes('view') && !onView && (
