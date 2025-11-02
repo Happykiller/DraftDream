@@ -1,6 +1,8 @@
 {
   "releases": [
     {
+      "version": "0.3.0",
+      "title": "Release note : 0.3.0",
       "date": "2025-10-27",
       "global": [
         "[FEAT] Role-aware navigation and access across apps.",
@@ -37,9 +39,7 @@
           "Harden login session handling to reduce idle timeouts and improve remember-me reliability.",
           "Synchronize English and French translation bundles for the navigation, programs, and profile flows."
         ]
-      },
-      "title": "Release 0.3.0",
-      "version": "0.3.0"
+      }
     }
   ]
 }

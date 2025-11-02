@@ -1,5 +1,7 @@
 # Changelog
 
+## [0.6.0] - 2025-11-02
+
 ## [0.5.0] - 2025-10-25
 - Increase minor version to prepare the next frontoffice release.
 - Refresh global navigation structure with clearer entry points for home, programs, and user tools.

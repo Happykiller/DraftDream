@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.4.0] - 2025-11-02
+- todo
+
 ## [0.3.0] - 2025-10-27
 - [FEAT] Role-aware navigation and access across apps.
 - [FEAT] Athlete programs: list and detail views wired to snapshots and aggregated exercise metadata.

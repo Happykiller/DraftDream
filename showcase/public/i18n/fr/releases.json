@@ -1,6 +1,8 @@
 {
   "releases": [
     {
+      "version": "0.3.0",
+      "title": "Note de mise à jour : 0.3.0",
       "date": "2025-10-27",
       "global": [
         "[NOUVEAUTÉ] Navigation et accès désormais adaptés à chaque rôle sur l'ensemble des applications.",
@@ -37,9 +39,7 @@
           "Gestion de session renforcée pour réduire les expirations intempestives et fiabiliser le mode souvenir.",
           "Synchronisation des traductions françaises et anglaises pour les parcours de navigation, programmes et profils."
         ]
-      },
-      "title": "Release 0.3.0",
-      "version": "0.3.0"
+      }
     }
   ]
 }
