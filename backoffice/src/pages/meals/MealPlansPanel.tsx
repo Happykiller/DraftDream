@@ -69,7 +69,6 @@ function toMealDayOption(items: ReturnType<typeof useMealDays>['items']): MealPl
       proteinGrams: meal.proteinGrams ?? 0,
       carbGrams: meal.carbGrams ?? 0,
       fatGrams: meal.fatGrams ?? 0,
-      description: meal.description ?? null,
       type: meal.type
         ? {
             id: meal.type.id ?? undefined,

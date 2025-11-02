@@ -73,7 +73,7 @@ function ensureMealOptions(
 
   const ids = snapshots?.map((meal) => meal.id) ?? fallbackIds ?? [];
 
-  ids.forEach((mealId, index) => {
+  ids.forEach((mealId) => {
     if (base.has(mealId)) {
       resolved.push(base.get(mealId)!);
       return;
