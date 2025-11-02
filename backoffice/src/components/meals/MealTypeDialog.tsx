@@ -48,7 +48,10 @@ export function MealTypeDialog({ open, mode, initial, onClose, onSubmit }: MealT
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setValues((prev) => ({ ...prev, [name]: value }));
+    setValues((prev) => ({
+      ...prev,
+      [name]: name === 'visibility' ? (value as MealTypeVisibility) : value,
+    }));
   };
 
   const submit = async (event: React.FormEvent) => {
@@ -99,20 +102,18 @@ export function MealTypeDialog({ open, mode, initial, onClose, onSubmit }: MealT
             ))}
           </TextField>
 
-          {!isEdit && (
-            <TextField
-              select
-              label={t('common.labels.visibility')}
-              name="visibility"
-              value={values.visibility}
-              onChange={onChange}
-              required
-              fullWidth
-            >
-              <MenuItem value="PRIVATE">{t('common.visibility.private')}</MenuItem>
-              <MenuItem value="PUBLIC">{t('common.visibility.public')}</MenuItem>
-            </TextField>
-          )}
+          <TextField
+            select
+            label={t('common.labels.visibility')}
+            name="visibility"
+            value={values.visibility}
+            onChange={onChange}
+            required
+            fullWidth
+          >
+            <MenuItem value="PRIVATE">{t('common.visibility.private')}</MenuItem>
+            <MenuItem value="PUBLIC">{t('common.visibility.public')}</MenuItem>
+          </TextField>
 
           <DialogActions sx={{ px: 0 }}>
             <Button onClick={onClose} color="inherit">

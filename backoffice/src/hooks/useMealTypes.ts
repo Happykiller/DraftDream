@@ -163,7 +163,13 @@ export function useMealTypes({ page, limit, q }: UseMealTypesParams) {
   );
 
   const update = React.useCallback(
-    async (input: { id: string; slug?: string; label?: string; locale?: string }) => {
+    async (input: {
+      id: string;
+      slug?: string;
+      label?: string;
+      locale?: string;
+      visibility?: MealTypeVisibility;
+    }) => {
       try {
         const { errors } = await execute(() =>
           gql.send<UpdateMealTypePayload>({

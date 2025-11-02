@@ -63,7 +63,13 @@ export function MealTypesPanel(): React.JSX.Element {
         onClose={() => setEditId(null)}
         onSubmit={(values) =>
           editId
-            ? update({ id: editId, slug: values.slug, label: values.label, locale: values.locale })
+            ? update({
+                id: editId,
+                slug: values.slug,
+                label: values.label,
+                locale: values.locale,
+                visibility: values.visibility,
+              })
             : undefined
         }
       />
