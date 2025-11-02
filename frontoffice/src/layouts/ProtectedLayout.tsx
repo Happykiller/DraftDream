@@ -1,18 +1,18 @@
 // src/layouts/ProtectedLayout.tsx
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '@mui/material/styles';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Box, CssBaseline, Drawer, Toolbar, useMediaQuery } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'react-i18next';
 
-import { UserType } from '@src/commons/enums';
 import { session } from '@stores/session';
-import { LayoutAppBar } from './components/LayoutAppBar';
-import { Sidebar } from './components/Sidebar';
-import { useNavItems, type Role } from './hooks/useNavItems';
-import { useMobileDrawer } from './hooks/useMobileDrawer';
-import { DRAWER_WIDTH, RAIL_WIDTH } from './tokens';
-import { isSelectedPath } from './navMatch';
+import { UserType } from '@src/commons/enums';
+import { isSelectedPath } from '@layouts/navMatch';
+import { Sidebar } from '@layouts/components/Sidebar';
+import { DRAWER_WIDTH, RAIL_WIDTH } from '@layouts/tokens';
+import { LayoutAppBar } from '@layouts/components/LayoutAppBar';
+import { useMobileDrawer } from '@layouts/hooks/useMobileDrawer';
+import { useNavItems, type Role } from '@layouts/hooks/useNavItems';
 
 /** Primary application shell for authenticated users. */
 export function ProtectedLayout(): React.JSX.Element {
