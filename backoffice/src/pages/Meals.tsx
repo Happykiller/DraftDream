@@ -4,12 +4,13 @@ import { Stack, Tab, Tabs } from '@mui/material';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
+import { MealsPanel } from '@pages/meals/MealsPanel';
 import { MealTypesPanel } from '@pages/meals/MealTypesPanel';
 
 export function Meals(): React.JSX.Element {
   const { t } = useTranslation();
   const [params, setParams] = useSearchParams();
-  const tab = (params.get('tab') || 'meal-types') as string;
+  const tab = (params.get('tab') || 'meals') as string;
 
   const setTab = (val: string) =>
     setParams(
@@ -31,9 +32,11 @@ export function Meals(): React.JSX.Element {
         variant="scrollable"
         scrollButtons="auto"
       >
+        <Tab value="meals" label={t('meals.tabs.meals')} />
         <Tab value="meal-types" label={t('meals.tabs.mealTypes')} />
       </Tabs>
 
+      {tab === 'meals' && <MealsPanel />}
       {tab === 'meal-types' && <MealTypesPanel />}
     </Stack>
   );

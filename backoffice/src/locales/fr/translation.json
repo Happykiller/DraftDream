@@ -72,10 +72,15 @@
       "charge": "Charge",
       "rest_seconds": "Repos (sec)",
       "video_url": "URL vidéo",
-      "instructions": "Instructions",
-      "category": "Catégorie",
-      "equipment_optional": "Équipement (optionnel)",
-      "tags_optional": "Tags (optionnel)"
+    "instructions": "Instructions",
+    "category": "Catégorie",
+    "equipment_optional": "Équipement (optionnel)",
+    "tags_optional": "Tags (optionnel)",
+    "foods": "Aliments",
+    "calories": "Calories",
+    "protein_grams": "Protéines (g)",
+    "carb_grams": "Glucides (g)",
+    "fat_grams": "Lipides (g)"
     },
     "status": {
       "active": "Actif",
@@ -276,8 +281,21 @@
   "meals": {
     "title": "Nutrition",
     "tabs": {
+      "meals": "Repas",
       "mealTypes": "Types de repas",
       "aria_label": "Sections nutrition"
+    },
+    "meals": {
+      "title": "Repas",
+      "search_placeholder": "Rechercher des repas...",
+      "create": "Nouveau repas",
+      "dialog": {
+        "create_title": "Nouveau repas",
+        "edit_title": "Modifier le repas"
+      },
+      "confirm": {
+        "delete_title": "Supprimer le repas"
+      }
     },
     "mealTypes": {
       "title": "Types de repas",
