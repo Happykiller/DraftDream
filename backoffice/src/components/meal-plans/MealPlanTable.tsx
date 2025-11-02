@@ -48,7 +48,7 @@ export function MealPlanTable(props: MealPlanTableProps): React.JSX.Element {
         field: 'dayCount',
         headerName: t('meals.mealPlans.columns.day_count'),
         width: 140,
-        valueGetter: ({ row }) => row.days.length,
+        renderCell: ({ row }) => row.days.length,
       },
       {
         field: 'calories',
@@ -74,7 +74,7 @@ export function MealPlanTable(props: MealPlanTableProps): React.JSX.Element {
         field: 'athlete',
         headerName: t('common.labels.user'),
         flex: 1,
-        valueGetter: ({ row }) => row.athlete?.email || row.userId || t('common.messages.no_value'),
+        renderCell: ({ row }) => row.athlete?.email || row.userId || t('common.messages.no_value'),
       },
       {
         field: 'createdAt',
