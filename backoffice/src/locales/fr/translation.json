@@ -283,9 +283,44 @@
     "title": "Nutrition",
     "tabs": {
       "meals": "Repas",
+      "mealPlans": "Plans nutrition",
       "mealDays": "Journées de repas",
       "mealTypes": "Types de repas",
       "aria_label": "Sections nutrition"
+    },
+    "mealPlans": {
+      "title": "Plans nutrition",
+      "search_placeholder": "Rechercher des plans...",
+      "create": "Nouveau plan nutritionnel",
+      "columns": {
+        "day_count": "Journées",
+        "calories": "Calories",
+        "protein": "Protéines",
+        "carb": "Glucides",
+        "fat": "Lipides"
+      },
+      "fields": {
+        "calories": "Calories totales",
+        "protein": "Protéines totales (g)",
+        "carb": "Glucides totaux (g)",
+        "fat": "Lipides totaux (g)",
+        "user": "Utilisateur assigné"
+      },
+      "dialog": {
+        "create_title": "Nouveau plan nutritionnel",
+        "edit_title": "Modifier le plan nutritionnel",
+        "day_placeholder": "Sélectionner une journée de repas à cloner",
+        "add_day": "Ajouter une journée",
+        "add_blank_day": "Ajouter une journée vide",
+        "empty_days": "Aucune journée ajoutée pour le moment.",
+        "day_label": "Libellé de la journée",
+        "meal_placeholder": "Sélectionner un repas à ajouter",
+        "add_meal": "Ajouter un repas",
+        "macros": "P {{protein}}g / G {{carb}}g / L {{fat}}g"
+      },
+      "confirm": {
+        "delete_title": "Supprimer le plan nutritionnel"
+      }
     },
     "meals": {
       "title": "Repas",

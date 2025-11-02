@@ -5,6 +5,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { MealDaysPanel } from '@pages/meals/MealDaysPanel';
+import { MealPlansPanel } from '@pages/meals/MealPlansPanel';
 import { MealsPanel } from '@pages/meals/MealsPanel';
 import { MealTypesPanel } from '@pages/meals/MealTypesPanel';
 
@@ -33,11 +34,13 @@ export function Meals(): React.JSX.Element {
         variant="scrollable"
         scrollButtons="auto"
       >
+        <Tab value="meal-plans" label={t('meals.tabs.mealPlans')} />
         <Tab value="meal-days" label={t('meals.tabs.mealDays')} />
         <Tab value="meals" label={t('meals.tabs.meals')} />
         <Tab value="meal-types" label={t('meals.tabs.mealTypes')} />
       </Tabs>
 
+      {tab === 'meal-plans' && <MealPlansPanel />}
       {tab === 'meals' && <MealsPanel />}
       {tab === 'meal-days' && <MealDaysPanel />}
       {tab === 'meal-types' && <MealTypesPanel />}

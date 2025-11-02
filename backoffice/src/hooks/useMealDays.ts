@@ -17,6 +17,18 @@ export interface MealDayMealSnapshot {
   label: string;
   locale: string;
   visibility: MealVisibility;
+  foods?: string;
+  calories?: number;
+  proteinGrams?: number;
+  carbGrams?: number;
+  fatGrams?: number;
+  type?: {
+    id?: string | null;
+    slug?: string | null;
+    label: string;
+    locale?: string | null;
+    visibility?: MealVisibility | null;
+  } | null;
 }
 
 export interface MealDay {
@@ -65,7 +77,19 @@ const LIST_QUERY = `
         label
         description
         mealIds
-        meals { id slug label locale visibility }
+        meals {
+          id
+          slug
+          label
+          locale
+          visibility
+          foods
+          calories
+          proteinGrams
+          carbGrams
+          fatGrams
+          type { id slug label locale visibility }
+        }
         visibility
         createdBy
         createdAt
@@ -88,7 +112,19 @@ const CREATE_MUTATION = `
       label
       description
       mealIds
-      meals { id slug label locale visibility }
+      meals {
+        id
+        slug
+        label
+        locale
+        visibility
+        foods
+        calories
+        proteinGrams
+        carbGrams
+        fatGrams
+        type { id slug label locale visibility }
+      }
       visibility
       createdBy
       createdAt
@@ -107,7 +143,19 @@ const UPDATE_MUTATION = `
       label
       description
       mealIds
-      meals { id slug label locale visibility }
+      meals {
+        id
+        slug
+        label
+        locale
+        visibility
+        foods
+        calories
+        proteinGrams
+        carbGrams
+        fatGrams
+        type { id slug label locale visibility }
+      }
       visibility
       createdBy
       createdAt

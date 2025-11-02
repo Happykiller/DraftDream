@@ -283,9 +283,44 @@
     "title": "Nutrition",
     "tabs": {
       "meals": "Meals",
+      "mealPlans": "Meal plans",
       "mealDays": "Meal days",
       "mealTypes": "Meal types",
       "aria_label": "Nutrition sections"
+    },
+    "mealPlans": {
+      "title": "Meal plans",
+      "search_placeholder": "Search meal plans...",
+      "create": "New meal plan",
+      "columns": {
+        "day_count": "Days",
+        "calories": "Calories",
+        "protein": "Protein",
+        "carb": "Carbs",
+        "fat": "Fat"
+      },
+      "fields": {
+        "calories": "Total calories",
+        "protein": "Total protein (g)",
+        "carb": "Total carbs (g)",
+        "fat": "Total fat (g)",
+        "user": "Assigned user"
+      },
+      "dialog": {
+        "create_title": "New meal plan",
+        "edit_title": "Edit meal plan",
+        "day_placeholder": "Select a meal day to clone",
+        "add_day": "Add meal day",
+        "add_blank_day": "Add empty day",
+        "empty_days": "No day added yet.",
+        "day_label": "Day label",
+        "meal_placeholder": "Select a meal to add",
+        "add_meal": "Add meal",
+        "macros": "P {{protein}}g / C {{carb}}g / F {{fat}}g"
+      },
+      "confirm": {
+        "delete_title": "Delete meal plan"
+      }
     },
     "meals": {
       "title": "Meals",
