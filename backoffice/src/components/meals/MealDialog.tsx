@@ -1,5 +1,4 @@
 // src/components/meals/MealDialog.tsx
-// Comment in English: Dialog used to create or edit meals with nutritional information.
 import * as React from 'react';
 import {
   Button,
@@ -132,7 +131,7 @@ export function MealDialog({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} aria-labelledby="meal-dialog-title">
+    <Dialog open={open} onClose={onClose} aria-labelledby="meal-dialog-title" fullWidth maxWidth="md">
       <DialogTitle id="meal-dialog-title">
         {isEdit ? t('meals.meals.dialog.edit_title') : t('meals.meals.dialog.create_title')}
       </DialogTitle>

@@ -1,5 +1,4 @@
 // src/components/meals/MealTable.tsx
-// Comment in English: Data grid displaying meals with nutritional values and actions.
 import * as React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -9,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { Meal } from '@hooks/useMeals';
 import { useDateFormatter } from '@hooks/useDateFormatter';
+import type { MealType } from '@src/hooks/useMealTypes';
 
 export interface MealTableProps {
   rows: Meal[];
@@ -17,6 +17,7 @@ export interface MealTableProps {
   limit: number;
   q: string;
   loading: boolean;
+  mealTypes: MealType[];
   onCreate: () => void;
   onEdit: (row: Meal) => void;
   onDelete: (row: Meal) => void;
@@ -33,6 +34,7 @@ export function MealTable(props: MealTableProps): React.JSX.Element {
     limit,
     q,
     loading,
+    mealTypes,
     onCreate,
     onEdit,
     onDelete,
@@ -43,15 +45,17 @@ export function MealTable(props: MealTableProps): React.JSX.Element {
   const { t } = useTranslation();
   const formatDate = useDateFormatter();
 
-  const columns = React.useMemo<GridColDef<Meal>[]>(
-    () => [
+  const columns = React.useMemo<GridColDef<Meal>[]>(() => {
+    return [
       { field: 'slug', headerName: t('common.labels.slug'), flex: 1 },
       { field: 'label', headerName: t('common.labels.label'), flex: 1 },
       { field: 'locale', headerName: t('common.labels.locale'), width: 120 },
       {
         field: 'type',
         headerName: t('common.labels.type'),
-        valueGetter: (params: any) => params?.row?.type?.label ?? '',
+        valueGetter: (params: any) => {
+          return params.label ?? '';
+        },
         flex: 1,
       },
       { field: 'calories', headerName: t('common.labels.calories'), width: 120 },
@@ -97,9 +101,8 @@ export function MealTable(props: MealTableProps): React.JSX.Element {
           </Stack>
         ),
       },
-    ],
-    [formatDate, onDelete, onEdit, t],
-  );
+    ];
+  }, [formatDate, mealTypes, onDelete, onEdit, t]);
 
   return (
     <Box sx={{ width: '100%' }}>

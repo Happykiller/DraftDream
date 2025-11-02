@@ -39,6 +39,7 @@ export function MealsPanel(): React.JSX.Element {
         limit={limit}
         q={searchInput}
         loading={loading}
+        mealTypes={mealTypes}
         onCreate={() => setOpenCreate(true)}
         onEdit={(row) => setEditId(row.id)}
         onDelete={(row) => setDeleteId(row.id)}
@@ -79,18 +80,18 @@ export function MealsPanel(): React.JSX.Element {
         onSubmit={(values) =>
           editId
             ? update({
-                id: editId,
-                slug: values.slug,
-                label: values.label,
-                locale: values.locale,
-                typeId: values.typeId,
-                foods: values.foods,
-                calories: values.calories,
-                proteinGrams: values.proteinGrams,
-                carbGrams: values.carbGrams,
-                fatGrams: values.fatGrams,
-                visibility: values.visibility,
-              })
+              id: editId,
+              slug: values.slug,
+              label: values.label,
+              locale: values.locale,
+              typeId: values.typeId,
+              foods: values.foods,
+              calories: values.calories,
+              proteinGrams: values.proteinGrams,
+              carbGrams: values.carbGrams,
+              fatGrams: values.fatGrams,
+              visibility: values.visibility,
+            })
             : Promise.resolve()
         }
       />

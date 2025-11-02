@@ -37,7 +37,6 @@ export interface Meal {
   createdAt: string;
   updatedAt: string;
   creator?: MealCreator | null;
-  type?: MealTypeSummary | null;
 }
 
 type MealListPayload = {
@@ -62,6 +61,7 @@ const LIST_QUERY = `
         locale
         label
         typeId
+        type { id label locale }
         foods
         calories
         proteinGrams
@@ -72,7 +72,6 @@ const LIST_QUERY = `
         createdAt
         updatedAt
         creator { id email }
-        type { id label locale }
       }
       total
       page
@@ -99,7 +98,6 @@ const CREATE_MUTATION = `
       createdAt
       updatedAt
       creator { id email }
-      type { id label locale }
     }
   }
 `;
@@ -122,7 +120,6 @@ const UPDATE_MUTATION = `
       createdAt
       updatedAt
       creator { id email }
-      type { id label locale }
     }
   }
 `;

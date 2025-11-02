@@ -1,4 +1,5 @@
 // src/routes/router.tsx
+import * as React from 'react';
 import { Box, CircularProgress } from '@mui/material';
 import { createBrowserRouter, redirect } from 'react-router-dom';
 
