@@ -33,8 +33,8 @@ export function Meals(): React.JSX.Element {
         variant="scrollable"
         scrollButtons="auto"
       >
-        <Tab value="meals" label={t('meals.tabs.meals')} />
         <Tab value="meal-days" label={t('meals.tabs.mealDays')} />
+        <Tab value="meals" label={t('meals.tabs.meals')} />
         <Tab value="meal-types" label={t('meals.tabs.mealTypes')} />
       </Tabs>
 

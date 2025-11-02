@@ -1,10 +1,10 @@
 // src/components/meals/MealDayTable.tsx
 import * as React from 'react';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import { Box, Button, IconButton, Stack, TextField, Tooltip, Typography } from '@mui/material';
-import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { useTranslation } from 'react-i18next';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { DataGrid, type GridColDef } from '@mui/x-data-grid';
+import { Box, Button, IconButton, Stack, TextField, Tooltip, Typography } from '@mui/material';
 
 import type { MealDay } from '@hooks/useMealDays';
 import { useDateFormatter } from '@hooks/useDateFormatter';
@@ -37,7 +37,6 @@ export function MealDayTable(props: MealDayTableProps): React.JSX.Element {
       {
         field: 'description',
         headerName: t('common.labels.description'),
-        flex: 1.5,
         renderCell: (params) => (
           <Typography variant="body2" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {params.value || t('common.messages.no_value')}
@@ -48,36 +47,17 @@ export function MealDayTable(props: MealDayTableProps): React.JSX.Element {
         field: 'mealCount',
         headerName: t('meals.mealDays.columns.count'),
         width: 140,
-        valueGetter: (params) => params.row.mealIds?.length ?? 0,
-      },
-      {
-        field: 'meals',
-        headerName: t('meals.mealDays.columns.meals'),
-        flex: 1.5,
-        sortable: false,
-        filterable: false,
         renderCell: (params) => {
-          const meals = params.row.meals ?? [];
-          if (!meals.length) {
-            return <Typography variant="body2" color="text.secondary">{t('meals.mealDays.table.empty_meals')}</Typography>;
-          }
-
-          return (
-            <Stack spacing={0.25} sx={{ maxHeight: 120, overflowY: 'auto', pr: 0.5 }}>
-              {meals.map((meal, index) => (
-                <Typography key={`${meal.id}-${index}`} variant="body2">
-                  {`${index + 1}. ${meal.label || meal.slug}`}
-                </Typography>
-              ))}
-            </Stack>
-          );
+          return params.row.meals ? params.row.meals.length : 0;
         },
       },
       { field: 'visibility', headerName: t('common.labels.visibility'), width: 140 },
       {
         field: 'creator',
         headerName: t('common.labels.creator'),
-        valueGetter: (params) => params.row.creator?.email ?? '',
+        valueGetter: (creator :any) => {
+          return creator?.email || t('common.messages.unknown');
+        },
         flex: 1,
       },
       {
