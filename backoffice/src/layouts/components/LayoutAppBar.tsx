@@ -76,11 +76,11 @@ export function LayoutAppBar({
         borderColor: 'divider',
         width: {
           sm: `calc(100% - ${RAIL_WIDTH}px)`,
-          md: `calc(100% - ${DRAWER_WIDTH}px)`,
+          lg: `calc(100% - ${DRAWER_WIDTH}px)`,
         },
         ml: {
           sm: `${RAIL_WIDTH}px`,
-          md: `${DRAWER_WIDTH}px`,
+          lg: `${DRAWER_WIDTH}px`,
         },
       }}
     >
