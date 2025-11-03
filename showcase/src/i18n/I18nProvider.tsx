@@ -28,12 +28,12 @@ type I18nProviderProps = {
 const translations: TranslationResources = {
   en: {
     releaseNotes: {
-      description: 'Follow the evolution of FitDesk and its components through each release.',
+      description: 'Review FitDesk releases in the language detected from your browser with a streamlined layout for every milestone.',
       documentTitle: 'Release Notes | FitDesk',
       empty: 'No release notes are available yet.',
       emptyScope: 'No updates recorded for this scope yet.',
       error: 'An error occurred while loading the release notes. Please try again later.',
-      footer: 'FitDesk Platform — shipping clarity across every release.',
+      footer: 'FitDesk Platform — multilingual release notes delivered clearly.',
       globalLabel: 'Global',
       languageLabel: 'Language',
       loading: 'Loading release notes…',
@@ -47,12 +47,12 @@ const translations: TranslationResources = {
   },
   fr: {
     releaseNotes: {
-      description: 'Suivez l\'évolution de FitDesk et de ses composants à chaque version.',
+      description: 'Consultez les versions de FitDesk dans la langue détectée automatiquement, avec une mise en page épurée pour chaque jalon.',
       documentTitle: 'Notes de version | FitDesk',
       empty: 'Aucune note de version n\'est disponible pour le moment.',
       emptyScope: 'Aucune mise à jour disponible pour ce périmètre pour l\'instant.',
       error: 'Une erreur est survenue lors du chargement des notes de version. Merci de réessayer plus tard.',
-      footer: 'Plateforme FitDesk — une vision claire de chaque mise à jour.',
+      footer: 'Plateforme FitDesk — des notes de version multilingues et claires.',
       globalLabel: 'Global',
       languageLabel: 'Langue',
       loading: 'Chargement des notes de version…',
