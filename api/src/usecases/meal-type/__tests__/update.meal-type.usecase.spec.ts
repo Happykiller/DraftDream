@@ -25,6 +25,7 @@ describe('UpdateMealTypeUsecase', () => {
     slug: 'post-workout',
     locale: 'en-US',
     label: 'Post workout',
+    visibility: 'public',
   };
 
   const updatedMealType: MealTypeUsecaseModel = {
@@ -65,6 +66,7 @@ describe('UpdateMealTypeUsecase', () => {
       slug: dto.slug,
       locale: dto.locale,
       label: dto.label,
+      visibility: dto.visibility,
     });
     expect(result).toEqual(updatedMealType);
     expect(result).not.toBe(updatedMealType);

@@ -831,6 +831,7 @@ input UpdateMealTypeInput {
   slug: String
   locale: String
   label: String
+  visibility: MealTypeVisibility
 }
 
 input CreateMealDayInput {

@@ -9,7 +9,9 @@ export type CreateMealTypeDto = {
 };
 
 /** Fields accepted when updating a meal type document. */
-export type UpdateMealTypeDto = Partial<Pick<CreateMealTypeDto, 'slug' | 'locale' | 'label'>>;
+export type UpdateMealTypeDto = Partial<
+  Pick<CreateMealTypeDto, 'slug' | 'locale' | 'label' | 'visibility'>
+>;
 
 /** Identifier wrapper used to fetch a meal type. */
 export type GetMealTypeDto = { id: string };
