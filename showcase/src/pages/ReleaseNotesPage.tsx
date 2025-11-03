@@ -152,9 +152,6 @@ const ReleaseNotesPage = (): JSX.Element => {
               <Typography sx={{ fontSize: { xs: '2.25rem', md: '3rem' }, fontWeight: 700 }}>
                 {t('releaseNotes.title')}
               </Typography>
-              <Typography color="text.secondary" sx={{ maxWidth: 640, mx: 'auto' }} variant="body1">
-                {t('releaseNotes.description')}
-              </Typography>
             </Stack>
             <Stack alignItems="center" direction="row" justifyContent="center" spacing={2}>
               <FormControl size="small" sx={{ minWidth: 180 }}>
@@ -178,11 +175,6 @@ const ReleaseNotesPage = (): JSX.Element => {
           {renderContent()}
         </Stack>
       </Container>
-      <Box component="footer" sx={{ pb: 6 }}>
-        <Typography color="text.disabled" textAlign="center" variant="caption">
-          {t('releaseNotes.footer')}
-        </Typography>
-      </Box>
     </Box>
   );
 };

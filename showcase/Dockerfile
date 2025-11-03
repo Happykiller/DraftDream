@@ -9,7 +9,7 @@ RUN npm ci
 
 # Copy the remaining project files and build the release dataset and bundle.
 COPY . .
-RUN npm run build:releases && npm run build
+RUN npm run build
 
 # Stage 2: serve the pre-built assets with nginx.
 FROM nginx:1.27-alpine
