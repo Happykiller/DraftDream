@@ -27,6 +27,14 @@ type I18nProviderProps = {
 
 const translations: TranslationResources = {
   en: {
+    landing: {
+      hero: {
+        cta: 'Explore the changelog',
+        subtitle:
+          'An all-in-one solution combining ergonomic workspaces, smart scheduling, and wellbeing insights.',
+        title: 'The future showcase for your hybrid teams'
+      }
+    },
     releaseNotes: {
       description: 'Review FitDesk releases in the language detected from your browser with a streamlined layout for every milestone.',
       documentTitle: 'Release Notes | FitDesk',
@@ -46,6 +54,14 @@ const translations: TranslationResources = {
     }
   },
   fr: {
+    landing: {
+      hero: {
+        cta: 'Explorer le changelog',
+        subtitle:
+          'Une solution tout-en-un mêlant espaces ergonomiques, planification intelligente et insights bien-être.',
+        title: 'La future vitrine des équipes hybrides'
+      }
+    },
     releaseNotes: {
       description: 'Consultez les versions de FitDesk dans la langue détectée automatiquement, avec une mise en page épurée pour chaque jalon.',
       documentTitle: 'Notes de version | FitDesk',
