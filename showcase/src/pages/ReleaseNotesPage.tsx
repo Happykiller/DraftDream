@@ -3,19 +3,16 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Alert,
   Box,
+  Button,
   CircularProgress,
   Container,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
   Stack,
   Typography
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 import ReleaseAccordion from '../components/ReleaseAccordion';
-import { supportedLanguages, useI18n, type Language } from '../i18n/I18nProvider';
+import { useI18n, type Language } from '../i18n/I18nProvider';
 import type { ReleaseDataset, ReleaseEntry } from '../types/releases.ts';
 
 type LoadingState = 'idle' | 'loading' | 'success' | 'error';
@@ -28,9 +25,14 @@ const datasetPathForLanguage = (language: Language): string => {
 };
 
 const ReleaseNotesPage = (): JSX.Element => {
-  const { language, setLanguage, t } = useI18n();
+  const navigate = useNavigate();
+  const { language, t } = useI18n();
   const [status, setStatus] = useState<LoadingState>('idle');
   const [releases, setReleases] = useState<ReleaseEntry[]>([]);
+
+  const handleBackToHome = useCallback(() => {
+    navigate('/');
+  }, [navigate]);
 
   const formatReleaseDate = useCallback(
     (isoDate: string) => {
@@ -97,11 +99,6 @@ const ReleaseNotesPage = (): JSX.Element => {
     document.title = t('releaseNotes.documentTitle');
   }, [language, t]);
 
-  const handleLanguageChange = (event: SelectChangeEvent<string>): void => {
-    const nextLanguage = event.target.value as Language;
-    setLanguage(nextLanguage);
-  };
-
   const pageLabels = useMemo(
     () => ({
       emptyScope: t('releaseNotes.emptyScope'),
@@ -147,29 +144,16 @@ const ReleaseNotesPage = (): JSX.Element => {
       <Container maxWidth="lg" sx={{ py: { xs: 8, md: 12 } }}>
         {/* General information */}
         <Stack spacing={6}>
+          <Stack direction="row" justifyContent="flex-start">
+            <Button color="primary" onClick={handleBackToHome} variant="outlined">
+              {t('releaseNotes.backToHome')}
+            </Button>
+          </Stack>
           <Stack spacing={3} sx={{ textAlign: 'center' }}>
             <Stack spacing={1}>
               <Typography sx={{ fontSize: { xs: '2.25rem', md: '3rem' }, fontWeight: 700 }}>
                 {t('releaseNotes.title')}
               </Typography>
-            </Stack>
-            <Stack alignItems="center" direction="row" justifyContent="center" spacing={2}>
-              <FormControl size="small" sx={{ minWidth: 180 }}>
-                <InputLabel id="release-notes-language-label">{t('releaseNotes.languageLabel')}</InputLabel>
-                <Select
-                  id="release-notes-language"
-                  label={t('releaseNotes.languageLabel')}
-                  labelId="release-notes-language-label"
-                  onChange={handleLanguageChange}
-                  value={language}
-                >
-                  {supportedLanguages.map((supportedLanguage) => (
-                    <MenuItem key={supportedLanguage} value={supportedLanguage}>
-                      {supportedLanguage.toUpperCase()}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
             </Stack>
           </Stack>
           {renderContent()}

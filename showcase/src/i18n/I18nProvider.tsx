@@ -36,6 +36,7 @@ const translations: TranslationResources = {
       }
     },
     releaseNotes: {
+      backToHome: 'Back to home',
       description: 'Review FitDesk releases in the language detected from your browser with a streamlined layout for every milestone.',
       documentTitle: 'Release Notes | FitDesk',
       empty: 'No release notes are available yet.',
@@ -43,7 +44,6 @@ const translations: TranslationResources = {
       error: 'An error occurred while loading the release notes. Please try again later.',
       footer: 'FitDesk Platform — multilingual release notes delivered clearly.',
       globalLabel: 'Global',
-      languageLabel: 'Language',
       loading: 'Loading release notes…',
       notesLabel: 'Notes',
       projectLabel: 'Project',
@@ -63,6 +63,7 @@ const translations: TranslationResources = {
       }
     },
     releaseNotes: {
+      backToHome: "Retour à l'accueil",
       description: 'Consultez les versions de FitDesk dans la langue détectée automatiquement, avec une mise en page épurée pour chaque jalon.',
       documentTitle: 'Notes de version | FitDesk',
       empty: 'Aucune note de version n\'est disponible pour le moment.',
@@ -70,7 +71,6 @@ const translations: TranslationResources = {
       error: 'Une erreur est survenue lors du chargement des notes de version. Merci de réessayer plus tard.',
       footer: 'Plateforme FitDesk — des notes de version multilingues et claires.',
       globalLabel: 'Global',
-      languageLabel: 'Langue',
       loading: 'Chargement des notes de version…',
       notesLabel: 'Notes',
       projectLabel: 'Projet',
