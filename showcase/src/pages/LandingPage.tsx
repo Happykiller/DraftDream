@@ -1,8 +1,11 @@
 import { Button, Container, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
+import { useI18n } from '../i18n/I18nProvider';
+
 const LandingPage = (): JSX.Element => {
   const navigate = useNavigate();
+  const { t } = useI18n();
 
   const handleNavigate = (): void => {
     navigate('/changelog');
@@ -13,17 +16,14 @@ const LandingPage = (): JSX.Element => {
       {/* General information */}
       <Stack spacing={6}>
         <Stack spacing={2}>
-          <Typography variant="h1">
-            Flexible workspaces that adapt to your team&apos;s rhythm
-          </Typography>
+          <Typography variant="h1">{t('landing.hero.title')}</Typography>
           <Typography color="text.secondary" variant="h5">
-            FitDesk blends ergonomic desks, smart scheduling, and data-driven wellness to
-            help distributed teams stay energised and connected.
+            {t('landing.hero.subtitle')}
           </Typography>
         </Stack>
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
           <Button color="primary" onClick={handleNavigate} size="large" variant="contained">
-            Explore the changelog
+            {t('landing.hero.cta')}
           </Button>
         </Stack>
       </Stack>
