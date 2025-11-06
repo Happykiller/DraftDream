@@ -11,7 +11,11 @@ import {
 } from '@hooks/useExercises';
 import { useCategories } from '@hooks/useCategories';
 import { useUsers, type User } from '@src/hooks/useUsers';
-import { usePrograms, type Program } from '@src/hooks/usePrograms';
+import {
+  usePrograms,
+  type Program,
+  type ProgramSessionExercise as ProgramSnapshotExercise,
+} from '@src/hooks/usePrograms';
 import { useFlashStore } from '@src/hooks/useFlashStore';
 import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
 import { slugify } from '@src/utils/slugify';
@@ -39,6 +43,44 @@ const INITIAL_FORM_STATE: ProgramForm = {
   duration: '',
   frequency: '',
 };
+
+function hasNonEmptyText(value?: string | null): boolean {
+  return Boolean(value && value.trim().length > 0);
+}
+
+function hasAnyLabeledItems(
+  items?: ReadonlyArray<{ id?: string | null; label?: string | null }> | null,
+): boolean {
+  if (!items?.length) {
+    return false;
+  }
+
+  return items.some((item) => Boolean(item?.label && item.label.trim().length > 0));
+}
+
+/**
+ * Determines whether a program exercise snapshot lacks metadata and should be hydrated.
+ */
+function shouldHydrateExerciseDetails(exercise: ProgramSnapshotExercise): boolean {
+  if (!hasNonEmptyText(exercise.label)) {
+    return true;
+  }
+
+  const hasMetadata =
+    hasNonEmptyText(exercise.description) ||
+    hasNonEmptyText(exercise.instructions) ||
+    hasNonEmptyText(exercise.series) ||
+    hasNonEmptyText(exercise.repetitions) ||
+    hasNonEmptyText(exercise.charge) ||
+    hasNonEmptyText(exercise.videoUrl) ||
+    exercise.restSeconds != null ||
+    hasAnyLabeledItems(exercise.categories) ||
+    hasAnyLabeledItems(exercise.muscles) ||
+    hasAnyLabeledItems(exercise.equipments) ||
+    hasAnyLabeledItems(exercise.tags);
+
+  return !hasMetadata;
+}
 
 type UseProgramBuilderResult = {
   form: ProgramForm;
@@ -1452,7 +1494,9 @@ export function useProgramBuilder(
             equipment: equipmentIds.map((id) => ({ id, label: id })),
             tags: tagIds.map((id) => ({ id, label: id })),
           });
-          missingExerciseIds.add(baseExerciseId);
+          if (shouldHydrateExerciseDetails(exerciseItem)) {
+            missingExerciseIds.add(baseExerciseId);
+          }
         }
 
         const fallbackExercise =
