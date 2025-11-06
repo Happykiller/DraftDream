@@ -532,6 +532,16 @@ export function ProgramBuilderPanel({
           ...patch,
         };
 
+        if ('customDescription' in patch) {
+          const trimmedDescription = patch.customDescription?.trim() ?? '';
+          nextExerciseItem.customDescription = trimmedDescription ? trimmedDescription : undefined;
+        }
+
+        if ('customLabel' in patch) {
+          const trimmedLabel = patch.customLabel?.trim() ?? '';
+          nextExerciseItem.customLabel = trimmedLabel ? trimmedLabel : undefined;
+        }
+
         return {
           sessionId: current.sessionId,
           exerciseItem: nextExerciseItem,
