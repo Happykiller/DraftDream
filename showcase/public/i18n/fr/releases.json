@@ -1,6 +1,41 @@
 {
   "releases": [
     {
+      "version": "0.4.0",
+      "title": "Note de mise à jour : 0.4.0",
+      "date": "2025-10-15",
+      "global": [
+        "[NOUVEAUTÉ] Suite Nutrition : ajout d'une gestion complète des repas, journées et plans nutritionnels.",
+        "[AMÉLIORATION] Expérience unifiée : traductions améliorées, interface harmonisée, navigation plus fluide.",
+        "[FIABILITÉ] Fiabilité accrue : large couverture de tests unitaires sur tous les domaines clés.",
+        "[DESIGN] Design cohérent : interfaces épurées, hiérarchie visuelle renforcée et meilleure lisibilité."
+      ],
+      "notes": "FitDesk 0.4.0 marque une étape importante : l'intégration complète de la nutrition dans l'écosystème, une expérience utilisateur unifiée et une base technique renforcée.",
+      "projects": {
+        "/api": [
+          "Ajout des entités repas, type de repas, journée de repas et plan nutritionnel avec un CRUD complet.",
+          "Ajustements du schéma GraphQL (métadonnées, relations nullables, retours unifiés) pour soutenir la nutrition.",
+          "Ajout massif de tests unitaires sur les cas d'usage utilisateur, session, programme, exercice, catégorie, repas, muscle et plan.",
+          "Amélioration de la configuration Jest pour garantir des exécutions de tests fiables."
+        ],
+        "/backoffice": [
+          "Nouveau module Gestion nutritionnelle avec onglets types de repas, journées et plans.",
+          "Possibilité de modifier la visibilité des types de repas pour contrôler l'exposition côté athlète.",
+          "Ajustement de la largeur et de la structure de la barre de navigation pour accueillir la nutrition.",
+          "Expérience plus fluide pour créer, modifier et suivre les données nutritionnelles."
+        ],
+        "/frontoffice": [
+          "Ajout d'un outil de clonage de programme pour gagner du temps lors de la duplication.",
+          "Fenêtre de confirmation de suppression avant la suppression d'un programme.",
+          "Divers ajustements visuels et ergonomiques pour une cohérence accrue côté athlète."
+        ],
+        "/showcase": [
+          "Détection automatique de la langue du navigateur dès l'arrivée sur la vitrine.",
+          "Traduction et mise en page de la page des notes de version simplifiées."
+        ]
+      }
+    },
+    {
       "version": "0.3.0",
       "title": "Note de mise à jour : 0.3.0",
       "date": "2025-10-27",

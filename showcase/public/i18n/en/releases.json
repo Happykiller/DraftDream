@@ -1,6 +1,41 @@
 {
   "releases": [
     {
+      "version": "0.4.0",
+      "title": "Release note : 0.4.0",
+      "date": "2025-10-15",
+      "global": [
+        "[FEAT] Nutrition Suite: New end-to-end meal and plan management across apps.",
+        "[IMPROVEMENT] Unified Experience: Improved translations, interface alignment, and navigation.",
+        "[QUALITY] Testing & Reliability: Extensive unit coverage ensuring stable delivery.",
+        "[DESIGN] Design Cohesion: Consistent structure and smoother interactions across showcase, backoffice, and frontoffice."
+      ],
+      "notes": "FitDesk 0.4.0 marks the transition toward a complete nutrition and training integration, reinforcing stability and clarity across the ecosystem.",
+      "projects": {
+        "/api": [
+          "Meal, meal type, meal day, and meal plan CRUD endpoints enable full nutrition coverage.",
+          "GraphQL schema refinements align metadata, nullable relations, and mutation payloads for nutrition management.",
+          "Unit tests now cover user, session, program, exercise, category, meal, muscle, and plan use cases.",
+          "Jest configuration tuned to deliver reliable local and CI executions."
+        ],
+        "/backoffice": [
+          "New Nutrition Management area with tabs for meal types, meal days, and meal plans.",
+          "Visibility toggles for meal types give coaches precise control over athlete access.",
+          "Navigation rail width and structure adjusted for clarity alongside nutrition modules.",
+          "Nutrition forms and editors refined for faster creation, updates, and monitoring."
+        ],
+        "/frontoffice": [
+          "Added program cloning workflow to duplicate programs in a few clicks.",
+          "Introduced delete confirmation dialog to secure program removals.",
+          "Applied visual and ergonomic polish for a cohesive athlete-facing interface."
+        ],
+        "/showcase": [
+          "Browser language detection bootstraps the public showcase with the right locale.",
+          "Release notes page translated and restyled for a simplified presentation."
+        ]
+      }
+    },
+    {
       "version": "0.3.0",
       "title": "Release note : 0.3.0",
       "date": "2025-10-27",

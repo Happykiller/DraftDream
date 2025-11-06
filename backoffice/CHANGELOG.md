@@ -13,3 +13,9 @@
 ## [0.5.0] - 2025-10-25
 - Initialize change tracking for the backoffice.
 
+## [0.4.0] - 2025-10-15
+- Launch the Nutrition Management hub with dedicated tabs for meal types, meal days, and meal plans.
+- Allow coaches to toggle meal type visibility and fine-tune how nutrition resources surface to athletes.
+- Resize and restructure the navigation rail to improve readability and alignment with the new modules.
+- Streamline nutrition forms and editors to simplify creation, updates, and monitoring workflows.
+

@@ -30,6 +30,7 @@ export interface UpdateMealTypeUsecaseDto {
   slug?: string;
   locale?: string;
   label?: string;
+  visibility?: 'private' | 'public';
 }
 
 /** Identifies a meal type to delete. */

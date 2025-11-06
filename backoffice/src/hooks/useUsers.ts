@@ -43,10 +43,6 @@ type UsersListPayload = {
 type CreateUserPayload = { user_create: User };
 type UpdateUserPayload = { user_update: User };
 
-// --- StrictMode dedupe cache ---
-const LAST_SIG = new Map<string, string>();
-const KEY = 'users';
-
 const LIST_Q = `
   query ListUsers($input: ListUsersInput) {
     user_list(input: $input) {
@@ -130,10 +126,13 @@ export function useUsers({ page, limit, q }: UseUsersParams) {
     [execute, gql, flashError]
   );
 
+  const lastSigRef = React.useRef<string | null>(null);
   const sig = `${page}|${limit}|${q || ''}`;
+
+  // Comment in English: Avoid duplicate fetches in StrictMode without blocking new mounts.
   React.useEffect(() => {
-    if (LAST_SIG.get(KEY) === sig) return;
-    LAST_SIG.set(KEY, sig);
+    if (lastSigRef.current === sig) return;
+    lastSigRef.current = sig;
     void load({ page, limit, q });
   }, [sig, load]);
 

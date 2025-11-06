@@ -144,6 +144,7 @@ export class BddServiceMealTypeMongo {
     if (patch.slug !== undefined) $set.slug = patch.slug.toLowerCase().trim();
     if (patch.locale !== undefined) $set.locale = patch.locale.toLowerCase().trim();
     if (patch.label !== undefined) $set.label = patch.label.trim();
+    if (patch.visibility !== undefined) $set.visibility = patch.visibility;
 
     try {
       const collection = await this.col();

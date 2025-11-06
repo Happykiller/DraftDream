@@ -78,6 +78,9 @@ export class UpdateMealTypeInput {
 
   @Field({ nullable: true })
   label?: string;
+
+  @Field(() => MealTypeVisibility, { nullable: true })
+  visibility?: MealTypeVisibility;
 }
 
 @InputType()
