@@ -519,41 +519,11 @@ export function ProgramBuilderPanel({
           backgroundColor: theme.palette.background.paper,
         }}
       >
-        {/* Header */}
-        <Stack direction="row" spacing={2} alignItems="center" sx={{ backgroundColor: alpha(theme.palette.success.main, 0.20), p: 1 }}>
-          <Box
-            aria-hidden
-            sx={{
-              width: 40,
-              height: 40,
-              borderRadius: 2,
-              bgcolor: 'success.main',
-              color: 'primary.contrastText',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-            }}
-          >
-            {isEditing ? <Edit fontSize="large" /> : <Add fontSize="large" />}
-          </Box>
-          <Stack spacing={0.5}>
-            <Typography variant="h6" component="span" sx={{ fontWeight: 700 }}>
-              {panelTitle}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {panelSubtitle}
-            </Typography>
-          </Stack>
-        </Stack>
-
-        <Divider />
-
-        {/* Content Grid */}
         <Box
           sx={{
             flexGrow: 1,
-            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
             px: { xs: 2, md: 3 },
             py: { xs: 2, md: 3 },
           }}
@@ -561,25 +531,67 @@ export function ProgramBuilderPanel({
           <Card
             variant="outlined"
             sx={{
-              height: '100%',
               display: 'flex',
               flexDirection: 'column',
+              flex: 1,
               overflow: 'hidden',
             }}
           >
+            {/* General information */}
+            <Box
+              component="header"
+              sx={{ backgroundColor: alpha(theme.palette.success.main, 0.2), p: 1 }}
+            >
+              <Stack direction="row" spacing={2} alignItems="center">
+                <Box
+                  aria-hidden
+                  sx={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 2,
+                    bgcolor: 'success.main',
+                    color: 'primary.contrastText',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  {isEditing ? <Edit fontSize="large" /> : <Add fontSize="large" />}
+                </Box>
+                <Stack spacing={0.5}>
+                  <Typography variant="h6" component="span" sx={{ fontWeight: 700 }}>
+                    {panelTitle}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {panelSubtitle}
+                  </Typography>
+                </Stack>
+              </Stack>
+            </Box>
+
+            <Divider />
+
             <CardContent
               sx={{
                 flexGrow: 1,
                 display: 'flex',
                 flexDirection: 'column',
-                p: { xs: 2, md: 3 },
-                overflow: 'hidden',
+                p: 0,
                 '&:last-child': {
-                  pb: { xs: 2, md: 3 },
+                  pb: 0,
                 },
               }}
             >
-              <Box sx={{ flexGrow: 1, overflow: 'auto', minHeight: 0 }}>
+              <Box
+                sx={{
+                  flexGrow: 1,
+                  overflow: 'auto',
+                  minHeight: 0,
+                  px: { xs: 2, md: 3 },
+                  py: { xs: 2, md: 3 },
+                }}
+              >
                 <Grid container sx={{ minWidth: 0, minHeight: '100%', alignContent: 'stretch', alignItems: 'stretch', gap: 0 }}>
             {/* Configuration Panel */}
             <Grid size={{ xs: 12, md: 3, lg: 3 }} sx={{ backgroundColor: '#f3f2f2e0', px: 1, py: 1, display: 'flex', flexDirection: 'column', minHeight: '100%', pb: 0 }}>
@@ -1001,32 +1013,35 @@ export function ProgramBuilderPanel({
                 </Grid>
               </Box>
             </CardContent>
+
+            <Divider />
+
+            <Box component="footer" sx={{ p: 2, backgroundColor: '#e0dcdce0' }}>
+              <Stack direction="row" justifyContent="flex-end" spacing={2}>
+                <Tooltip title={builderCopy.footer.cancel} arrow>
+                  <span style={{ display: 'inline-flex' }}>
+                    <Button variant="text" color="inherit" onClick={onCancel}>
+                      {builderCopy.footer.cancel}
+                    </Button>
+                  </span>
+                </Tooltip>
+                <Tooltip title={submitLabel} arrow>
+                  <span style={{ display: 'inline-flex' }}>
+                    <Button
+                      variant="contained"
+                      type="button"
+                      onClick={handleSubmit}
+                      disabled={isSubmitDisabled}
+                      color="success"
+                    >
+                      {submitLabel}
+                    </Button>
+                  </span>
+                </Tooltip>
+              </Stack>
+            </Box>
           </Card>
         </Box>
-
-        {/* Footer */}
-        <Stack direction="row" justifyContent="flex-end" spacing={2} sx={{ p: 2, backgroundColor: '#e0dcdce0' }}>
-          <Tooltip title={builderCopy.footer.cancel} arrow>
-            <span style={{ display: 'inline-flex' }}>
-              <Button variant="text" color="inherit" onClick={onCancel}>
-                {builderCopy.footer.cancel}
-              </Button>
-            </span>
-          </Tooltip>
-          <Tooltip title={submitLabel} arrow>
-            <span style={{ display: 'inline-flex' }}>
-              <Button
-                variant="contained"
-                type="button"
-                onClick={handleSubmit}
-                disabled={isSubmitDisabled}
-                color="success"
-              >
-                {submitLabel}
-              </Button>
-            </span>
-          </Tooltip>
-        </Stack>
       </Stack>
 
       {/* Exercise Add Menu */}
