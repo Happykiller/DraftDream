@@ -223,9 +223,6 @@ const ReleaseAccordionItem = ({
     >
       <AccordionSummary expandIcon={<ChevronIcon expanded={expanded} />} sx={{ px: { xs: 2, md: 3 }, py: { xs: 1.5, md: 2 } }}>
         <Stack spacing={0.75} sx={{ width: '100%' }}>
-          <Typography color="primary.main" fontWeight={600} variant="overline">
-            {release.version}
-          </Typography>
           <Typography fontWeight={600} variant="h5">
             {release.title}
           </Typography>

@@ -43,11 +43,31 @@ import { DeleteExerciseUsecase } from '@usecases/exercise/delete.exercise.usecas
 import { UpdateCategoryUsecase } from '@usecases/category/update.category.usecase';
 import { CreateCategoryUsecase } from '@usecases/category/create.category.usecase';
 import { DeleteCategoryUsecase } from '@usecases/category/delete.category.usecase';
+import { GetMealTypeUsecase } from '@usecases/meal-type/get.meal-type.usecase';
+import { ListMealTypesUsecase } from '@usecases/meal-type/list.meal-type.usecase';
+import { CreateMealTypeUsecase } from '@usecases/meal-type/create.meal-type.usecase';
+import { UpdateMealTypeUsecase } from '@usecases/meal-type/update.meal-type.usecase';
+import { DeleteMealTypeUsecase } from '@usecases/meal-type/delete.meal-type.usecase';
 import { CreateExerciseUsecase } from '@usecases/exercise/create.exercise.usecase';
 import { UpdateExerciseUsecase } from '@usecases/exercise/update.exercise.usecase';
 import { CreateEquipmentUsecase } from '@usecases/equipment/create.equipment.usecase';
 import { UpdateEquipmentUsecase } from '@usecases/equipment/update.equipment.usecase';
 import { DeleteEquipmentUsecase } from '@usecases/equipment/delete.equipment.usecase';
+import { CreateMealUsecase } from '@usecases/meal/create.meal.usecase';
+import { GetMealUsecase } from '@usecases/meal/get.meal.usecase';
+import { ListMealsUsecase } from '@usecases/meal/list.meal.usecase';
+import { UpdateMealUsecase } from '@usecases/meal/update.meal.usecase';
+import { DeleteMealUsecase } from '@usecases/meal/delete.meal.usecase';
+import { CreateMealDayUsecase } from '@usecases/meal-day/create.meal-day.usecase';
+import { GetMealDayUsecase } from '@usecases/meal-day/get.meal-day.usecase';
+import { ListMealDaysUsecase } from '@usecases/meal-day/list.meal-days.usecase';
+import { UpdateMealDayUsecase } from '@usecases/meal-day/update.meal-day.usecase';
+import { DeleteMealDayUsecase } from '@usecases/meal-day/delete.meal-day.usecase';
+import { GetMealPlanUsecase } from '@usecases/meal-plan/get.meal-plan.usecase';
+import { ListMealPlansUsecase } from '@usecases/meal-plan/list.meal-plans.usecase';
+import { CreateMealPlanUsecase } from '@usecases/meal-plan/create.meal-plan.usecase';
+import { UpdateMealPlanUsecase } from '@usecases/meal-plan/update.meal-plan.usecase';
+import { DeleteMealPlanUsecase } from '@usecases/meal-plan/delete.meal-plan.usecase';
 
 export class Inversify {
   mongo: Db;
@@ -90,12 +110,32 @@ export class Inversify {
   createCategoryUsecase: CreateCategoryUsecase;
   listCategoriesUsecase: ListCategoriesUsecase;
   deleteCategoryUsecase: DeleteCategoryUsecase;
+  getMealTypeUsecase: GetMealTypeUsecase;
+  listMealTypesUsecase: ListMealTypesUsecase;
+  createMealTypeUsecase: CreateMealTypeUsecase;
+  updateMealTypeUsecase: UpdateMealTypeUsecase;
+  deleteMealTypeUsecase: DeleteMealTypeUsecase;
   createExerciseUsecase: CreateExerciseUsecase;
   deleteExerciseUsecase: DeleteExerciseUsecase;
   updateExerciseUsecase: UpdateExerciseUsecase;
   createEquipmentUsecase: CreateEquipmentUsecase;
   updateEquipmentUsecase: UpdateEquipmentUsecase;
   deleteEquipmentUsecase: DeleteEquipmentUsecase;
+  createMealUsecase: CreateMealUsecase;
+  getMealUsecase: GetMealUsecase;
+  listMealsUsecase: ListMealsUsecase;
+  updateMealUsecase: UpdateMealUsecase;
+  deleteMealUsecase: DeleteMealUsecase;
+  createMealDayUsecase: CreateMealDayUsecase;
+  getMealDayUsecase: GetMealDayUsecase;
+  listMealDaysUsecase: ListMealDaysUsecase;
+  updateMealDayUsecase: UpdateMealDayUsecase;
+  deleteMealDayUsecase: DeleteMealDayUsecase;
+  createMealPlanUsecase: CreateMealPlanUsecase;
+  getMealPlanUsecase: GetMealPlanUsecase;
+  listMealPlansUsecase: ListMealPlansUsecase;
+  updateMealPlanUsecase: UpdateMealPlanUsecase;
+  deleteMealPlanUsecase: DeleteMealPlanUsecase;
   
 
   constructor() {
@@ -127,6 +167,30 @@ export class Inversify {
     this.listCategoriesUsecase = new ListCategoriesUsecase(this);
     this.updateCategoryUsecase = new UpdateCategoryUsecase(this);
     this.deleteCategoryUsecase = new DeleteCategoryUsecase(this);
+    // usecases meal type
+    this.createMealTypeUsecase = new CreateMealTypeUsecase(this);
+    this.getMealTypeUsecase = new GetMealTypeUsecase(this);
+    this.listMealTypesUsecase = new ListMealTypesUsecase(this);
+    this.updateMealTypeUsecase = new UpdateMealTypeUsecase(this);
+    this.deleteMealTypeUsecase = new DeleteMealTypeUsecase(this);
+    // usecases meal
+    this.createMealUsecase = new CreateMealUsecase(this);
+    this.getMealUsecase = new GetMealUsecase(this);
+    this.listMealsUsecase = new ListMealsUsecase(this);
+    this.updateMealUsecase = new UpdateMealUsecase(this);
+    this.deleteMealUsecase = new DeleteMealUsecase(this);
+    // usecases meal day
+    this.createMealDayUsecase = new CreateMealDayUsecase(this);
+    this.getMealDayUsecase = new GetMealDayUsecase(this);
+    this.listMealDaysUsecase = new ListMealDaysUsecase(this);
+    this.updateMealDayUsecase = new UpdateMealDayUsecase(this);
+    this.deleteMealDayUsecase = new DeleteMealDayUsecase(this);
+    // usecases meal plan
+    this.createMealPlanUsecase = new CreateMealPlanUsecase(this);
+    this.getMealPlanUsecase = new GetMealPlanUsecase(this);
+    this.listMealPlansUsecase = new ListMealPlansUsecase(this);
+    this.updateMealPlanUsecase = new UpdateMealPlanUsecase(this);
+    this.deleteMealPlanUsecase = new DeleteMealPlanUsecase(this);
     // usecases equipment
     this.createEquipmentUsecase = new CreateEquipmentUsecase(this);
     this.getEquipmentUsecase = new GetEquipmentUsecase(this);

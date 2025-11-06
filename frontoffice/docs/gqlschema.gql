@@ -124,59 +124,6 @@ type SessionListGql {
   limit: Int!
 }
 
-type ProgramSessionExerciseGql {
-  id: ID!
-  templateExerciseId: String
-  label: String!
-  description: String
-  instructions: String
-  series: String
-  repetitions: String
-  charge: String
-  restSeconds: Float
-  videoUrl: String
-  level: String
-  categoryIds: [ID!]
-  muscleIds: [ID!]
-  equipmentIds: [ID!]
-  tagIds: [ID!]
-}
-
-type ProgramSessionGql {
-  id: ID!
-  templateSessionId: String
-  slug: String
-  locale: String
-  label: String!
-  durationMin: Int!
-  description: String
-  exercises: [ProgramSessionExerciseGql!]!
-}
-
-type ProgramGql {
-  id: ID!
-  slug: String!
-  locale: String!
-  label: String!
-  duration: Int!
-  frequency: Int!
-  description: String
-  sessions: [ProgramSessionGql!]!
-  userId: String
-  createdBy: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  creator: UserGql
-  athlete: UserGql
-}
-
-type ProgramListGql {
-  items: [ProgramGql!]!
-  total: Int!
-  page: Int!
-  limit: Int!
-}
-
 type CategoryGql {
   id: ID!
   slug: String!
@@ -220,6 +167,63 @@ enum EquipmentVisibility {
 
 type EquipmentListGql {
   items: [EquipmentGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
+type ProgramSessionExerciseGql {
+  id: ID!
+  templateExerciseId: String
+  label: String!
+  description: String
+  instructions: String
+  series: String
+  repetitions: String
+  charge: String
+  restSeconds: Float
+  videoUrl: String
+  level: String
+  categoryIds: [ID!]
+  muscleIds: [ID!]
+  equipmentIds: [ID!]
+  tagIds: [ID!]
+  categories: [CategoryGql!]!
+  muscles: [MuscleGql!]!
+  equipments: [EquipmentGql!]
+  tags: [TagGql!]
+}
+
+type ProgramSessionGql {
+  id: ID!
+  templateSessionId: String
+  slug: String
+  locale: String
+  label: String!
+  durationMin: Int!
+  description: String
+  exercises: [ProgramSessionExerciseGql!]!
+}
+
+type ProgramGql {
+  id: ID!
+  slug: String!
+  locale: String!
+  label: String!
+  duration: Int!
+  frequency: Int!
+  description: String
+  sessions: [ProgramSessionGql!]!
+  userId: ID
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creator: UserGql
+  athlete: UserGql
+}
+
+type ProgramListGql {
+  items: [ProgramGql!]!
   total: Int!
   page: Int!
   limit: Int!
@@ -271,6 +275,148 @@ type ExerciseListGql {
   limit: Int!
 }
 
+type MealTypeGql {
+  id: ID!
+  slug: String!
+  locale: String!
+  label: String!
+  visibility: MealTypeVisibility!
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creator: UserGql
+}
+
+enum MealTypeVisibility {
+  PRIVATE
+  PUBLIC
+}
+
+type MealTypeListGql {
+  items: [MealTypeGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
+type MealGql {
+  id: ID!
+  slug: String!
+  locale: String!
+  label: String!
+  typeId: ID!
+  foods: String!
+  calories: Int!
+  proteinGrams: Int!
+  carbGrams: Int!
+  fatGrams: Int!
+  visibility: MealVisibility!
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creator: UserGql
+  type: MealTypeGql
+}
+
+enum MealVisibility {
+  PRIVATE
+  PUBLIC
+}
+
+type MealListGql {
+  items: [MealGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
+type MealDayGql {
+  id: ID!
+  slug: String!
+  locale: String!
+  label: String!
+  description: String
+  mealIds: [ID!]!
+  visibility: MealDayVisibility!
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creator: UserGql
+  meals: [MealGql!]
+}
+
+enum MealDayVisibility {
+  PRIVATE
+  PUBLIC
+}
+
+type MealDayListGql {
+  items: [MealDayGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
+type MealPlanMealTypeSnapshotGql {
+  id: ID
+  templateMealTypeId: ID
+  slug: String
+  locale: String
+  label: String!
+  visibility: MealTypeVisibility
+}
+
+type MealPlanMealSnapshotGql {
+  id: ID!
+  templateMealId: ID
+  slug: String
+  locale: String
+  label: String!
+  description: String
+  foods: String!
+  calories: Int!
+  proteinGrams: Int!
+  carbGrams: Int!
+  fatGrams: Int!
+  type: MealPlanMealTypeSnapshotGql!
+}
+
+type MealPlanDaySnapshotGql {
+  id: ID!
+  templateMealDayId: ID
+  slug: String
+  locale: String
+  label: String!
+  description: String
+  meals: [MealPlanMealSnapshotGql!]!
+}
+
+type MealPlanGql {
+  id: ID!
+  slug: String!
+  locale: String!
+  label: String!
+  description: String
+  calories: Int!
+  proteinGrams: Int!
+  carbGrams: Int!
+  fatGrams: Int!
+  days: [MealPlanDaySnapshotGql!]!
+  userId: ID
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creator: UserGql
+  athlete: UserGql
+}
+
+type MealPlanListGql {
+  items: [MealPlanGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
 type Query {
   tag_get(id: ID!): TagGql
   tag_list(input: ListTagsInput): TagListGql!
@@ -290,6 +436,14 @@ type Query {
   exercise_list(input: ListExercisesInput): ExerciseListGql!
   equipment_get(id: ID!): EquipmentGql
   equipment_list(input: ListEquipmentInput): EquipmentListGql!
+  mealType_get(id: ID!): MealTypeGql
+  mealType_list(input: ListMealTypesInput): MealTypeListGql!
+  mealDay_get(id: ID!): MealDayGql
+  mealDay_list(input: ListMealDaysInput): MealDayListGql!
+  meal_get(id: ID!): MealGql
+  meal_list(input: ListMealsInput): MealListGql!
+  mealPlan_get(id: ID!): MealPlanGql
+  mealPlan_list(input: ListMealPlansInput): MealPlanListGql!
 }
 
 input ListTagsInput {
@@ -336,7 +490,7 @@ input ListProgramsInput {
   q: String
   locale: String
   createdBy: String
-  userId: String
+  userId: ID
   limit: Int
   page: Int
 }
@@ -370,6 +524,43 @@ input ListEquipmentInput {
   page: Int
 }
 
+input ListMealTypesInput {
+  q: String
+  locale: String
+  createdBy: String
+  visibility: MealTypeVisibility
+  limit: Int
+  page: Int
+}
+
+input ListMealDaysInput {
+  q: String
+  locale: String
+  visibility: MealDayVisibility
+  createdBy: String
+  limit: Int
+  page: Int
+}
+
+input ListMealsInput {
+  q: String
+  locale: String
+  typeId: ID
+  createdBy: String
+  visibility: MealVisibility
+  limit: Int
+  page: Int
+}
+
+input ListMealPlansInput {
+  q: String
+  locale: String
+  createdBy: ID
+  userId: ID
+  limit: Int
+  page: Int
+}
+
 type Mutation {
   tag_create(input: CreateTagInput!): TagGql
   tag_update(input: UpdateTagInput!): TagGql
@@ -398,6 +589,19 @@ type Mutation {
   equipment_create(input: CreateEquipmentInput!): EquipmentGql
   equipment_update(input: UpdateEquipmentInput!): EquipmentGql
   equipment_delete(id: ID!): Boolean!
+  mealType_create(input: CreateMealTypeInput!): MealTypeGql
+  mealType_update(input: UpdateMealTypeInput!): MealTypeGql
+  mealType_delete(id: ID!): Boolean!
+  mealDay_create(input: CreateMealDayInput!): MealDayGql
+  mealDay_update(input: UpdateMealDayInput!): MealDayGql
+  mealDay_delete(id: ID!): Boolean!
+  meal_create(input: CreateMealInput!): MealGql
+  meal_update(input: UpdateMealInput!): MealGql
+  meal_delete(id: ID!): Boolean!
+  mealPlan_create(input: CreateMealPlanInput!): MealPlanGql
+  mealPlan_update(input: UpdateMealPlanInput!): MealPlanGql
+  mealPlan_softDelete(id: ID!): Boolean!
+  mealPlan_delete(id: ID!): Boolean!
 }
 
 input CreateTagInput {
@@ -501,7 +705,7 @@ input CreateProgramInput {
   """Deprecated: use sessions instead."""
   sessionIds: [ID!]
   sessions: [ProgramSessionInput!]
-  userId: String
+  userId: ID
 }
 
 input ProgramSessionInput {
@@ -545,7 +749,7 @@ input UpdateProgramInput {
   """Deprecated: use sessions instead."""
   sessionIds: [ID!]
   sessions: [ProgramSessionInput!]
-  userId: String
+  userId: ID
 }
 
 input CreateCategoryInput {
@@ -613,4 +817,128 @@ input UpdateEquipmentInput {
   slug: String
   locale: String
   label: String
+}
+
+input CreateMealTypeInput {
+  slug: String!
+  locale: String!
+  label: String!
+  visibility: MealTypeVisibility!
+}
+
+input UpdateMealTypeInput {
+  id: ID!
+  slug: String
+  locale: String
+  label: String
+  visibility: MealTypeVisibility
+}
+
+input CreateMealDayInput {
+  slug: String!
+  locale: String!
+  label: String!
+  description: String
+  mealIds: [ID!]!
+  visibility: MealDayVisibility!
+}
+
+input UpdateMealDayInput {
+  id: ID!
+  slug: String
+  locale: String
+  label: String
+  description: String
+  mealIds: [ID!]
+  visibility: MealDayVisibility
+}
+
+input CreateMealInput {
+  slug: String!
+  locale: String!
+  label: String!
+  typeId: ID!
+  foods: String!
+  calories: Int!
+  proteinGrams: Int!
+  carbGrams: Int!
+  fatGrams: Int!
+  visibility: MealVisibility!
+}
+
+input UpdateMealInput {
+  id: ID!
+  slug: String
+  locale: String
+  label: String
+  typeId: ID
+  foods: String
+  calories: Int
+  proteinGrams: Int
+  carbGrams: Int
+  fatGrams: Int
+  visibility: MealVisibility
+}
+
+input CreateMealPlanInput {
+  slug: String
+  locale: String!
+  label: String!
+  description: String
+  calories: Int!
+  proteinGrams: Int!
+  carbGrams: Int!
+  fatGrams: Int!
+  days: [MealPlanDayInput!]
+  dayIds: [ID!]
+  userId: ID
+}
+
+input MealPlanDayInput {
+  id: ID
+  templateMealDayId: ID
+  slug: String
+  locale: String
+  label: String!
+  description: String
+  meals: [MealPlanMealInput!]!
+}
+
+input MealPlanMealInput {
+  id: ID
+  templateMealId: ID
+  slug: String
+  locale: String
+  label: String!
+  description: String
+  foods: String!
+  calories: Int!
+  proteinGrams: Int!
+  carbGrams: Int!
+  fatGrams: Int!
+  type: MealPlanMealTypeInput!
+}
+
+input MealPlanMealTypeInput {
+  id: ID
+  templateMealTypeId: ID
+  slug: String
+  locale: String
+  label: String!
+  visibility: MealTypeVisibility
+}
+
+input UpdateMealPlanInput {
+  id: ID!
+  slug: String
+  locale: String
+  label: String
+  description: String
+  calories: Int
+  proteinGrams: Int
+  carbGrams: Int
+  fatGrams: Int
+  days: [MealPlanDayInput!]
+  dayIds: [ID!]
+  userId: ID
 }

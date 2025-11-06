@@ -1,4 +1,5 @@
 // src/routes/router.tsx
+import * as React from 'react';
 import { Box, CircularProgress } from '@mui/material';
 import { createBrowserRouter, redirect } from 'react-router-dom';
 
@@ -70,6 +71,13 @@ export const router = createBrowserRouter([
         lazy: async () => {
           const mod = await import('@src/pages/Programs');
           return { Component: mod.Programs };
+        },
+      },
+      {
+        path: '/meals',
+        lazy: async () => {
+          const mod = await import('@src/pages/Meals');
+          return { Component: mod.Meals };
         },
       },
       {

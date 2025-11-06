@@ -72,10 +72,16 @@
       "charge": "Charge",
       "rest_seconds": "Repos (sec)",
       "video_url": "URL vidéo",
-      "instructions": "Instructions",
-      "category": "Catégorie",
+    "instructions": "Instructions",
+    "category": "Catégorie",
       "equipment_optional": "Équipement (optionnel)",
-      "tags_optional": "Tags (optionnel)"
+      "tags_optional": "Tags (optionnel)",
+      "meals": "Repas",
+      "foods": "Aliments",
+    "calories": "Calories",
+    "protein_grams": "Protéines (g)",
+    "carb_grams": "Glucides (g)",
+    "fat_grams": "Lipides (g)"
     },
     "status": {
       "active": "Actif",
@@ -92,6 +98,7 @@
       "search_tags": "Rechercher des tags...",
       "search_equipment": "Rechercher de l'équipement...",
       "search_muscles": "Rechercher des muscles...",
+      "search_meal_types": "Rechercher des types de repas...",
       "search_sessions": "Rechercher des séances...",
       "search_exercises": "Rechercher des exercices...",
       "search_users": "Rechercher des utilisateurs...",
@@ -269,6 +276,97 @@
       },
       "confirm": {
         "delete_title": "Supprimer l'exercice"
+      }
+    }
+  },
+  "meals": {
+    "title": "Nutrition",
+    "tabs": {
+      "meals": "Repas",
+      "mealPlans": "Plans nutrition",
+      "mealDays": "Journées de repas",
+      "mealTypes": "Types de repas",
+      "aria_label": "Sections nutrition"
+    },
+    "mealPlans": {
+      "title": "Plans nutrition",
+      "search_placeholder": "Rechercher des plans...",
+      "create": "Nouveau plan nutritionnel",
+      "columns": {
+        "day_count": "Journées",
+        "calories": "Calories",
+        "protein": "Protéines",
+        "carb": "Glucides",
+        "fat": "Lipides"
+      },
+      "fields": {
+        "calories": "Calories totales",
+        "protein": "Protéines totales (g)",
+        "carb": "Glucides totaux (g)",
+        "fat": "Lipides totaux (g)",
+        "user": "Utilisateur assigné"
+      },
+      "dialog": {
+        "create_title": "Nouveau plan nutritionnel",
+        "edit_title": "Modifier le plan nutritionnel",
+        "day_placeholder": "Sélectionner une journée de repas à cloner",
+        "add_day": "Ajouter une journée",
+        "add_blank_day": "Ajouter une journée vide",
+        "empty_days": "Aucune journée ajoutée pour le moment.",
+        "day_label": "Libellé de la journée",
+        "meal_placeholder": "Sélectionner un repas à ajouter",
+        "add_meal": "Ajouter un repas",
+        "macros": "P {{protein}}g / G {{carb}}g / L {{fat}}g"
+      },
+      "confirm": {
+        "delete_title": "Supprimer le plan nutritionnel"
+      }
+    },
+    "meals": {
+      "title": "Repas",
+      "search_placeholder": "Rechercher des repas...",
+      "create": "Nouveau repas",
+      "dialog": {
+        "create_title": "Nouveau repas",
+        "edit_title": "Modifier le repas"
+      },
+      "confirm": {
+        "delete_title": "Supprimer le repas"
+      }
+    },
+    "mealDays": {
+      "title": "Journées de repas",
+      "search_placeholder": "Rechercher des journées de repas...",
+      "create": "Nouvelle journée de repas",
+      "columns": {
+        "count": "Nombre de repas",
+        "meals": "Repas ordonnés"
+      },
+      "table": {
+        "empty_meals": "Aucun repas associé"
+      },
+      "dialog": {
+        "create_title": "Nouvelle journée de repas",
+        "edit_title": "Modifier la journée de repas",
+        "add_meal": "Ajouter un repas",
+        "refresh_meals": "Rafraîchir les repas",
+        "empty_list": "Aucun repas sélectionné pour le moment.",
+        "search_placeholder": "Rechercher des repas..."
+      },
+      "confirm": {
+        "delete_title": "Supprimer la journée de repas"
+      }
+    },
+    "mealTypes": {
+      "title": "Types de repas",
+      "search_placeholder": "Rechercher des types de repas...",
+      "create": "Nouveau type de repas",
+      "dialog": {
+        "create_title": "Nouveau type de repas",
+        "edit_title": "Modifier le type de repas"
+      },
+      "confirm": {
+        "delete_title": "Supprimer le type de repas"
       }
     }
   },

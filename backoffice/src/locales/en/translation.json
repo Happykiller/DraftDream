@@ -72,10 +72,16 @@
       "charge": "Load",
       "rest_seconds": "Rest (sec)",
       "video_url": "Video URL",
-      "instructions": "Instructions",
-      "category": "Category",
+    "instructions": "Instructions",
+    "category": "Category",
       "equipment_optional": "Equipment (optional)",
-      "tags_optional": "Tags (optional)"
+      "tags_optional": "Tags (optional)",
+      "meals": "Meals",
+      "foods": "Foods",
+    "calories": "Calories",
+    "protein_grams": "Protein (g)",
+    "carb_grams": "Carbs (g)",
+    "fat_grams": "Fat (g)"
     },
     "status": {
       "active": "Active",
@@ -92,6 +98,7 @@
       "search_tags": "Search tags...",
       "search_equipment": "Search equipment...",
       "search_muscles": "Search muscles...",
+      "search_meal_types": "Search meal types...",
       "search_sessions": "Search sessions...",
       "search_exercises": "Search exercises...",
       "search_users": "Search users...",
@@ -269,6 +276,97 @@
       },
       "confirm": {
         "delete_title": "Delete exercise"
+      }
+    }
+  },
+  "meals": {
+    "title": "Nutrition",
+    "tabs": {
+      "meals": "Meals",
+      "mealPlans": "Meal plans",
+      "mealDays": "Meal days",
+      "mealTypes": "Meal types",
+      "aria_label": "Nutrition sections"
+    },
+    "mealPlans": {
+      "title": "Meal plans",
+      "search_placeholder": "Search meal plans...",
+      "create": "New meal plan",
+      "columns": {
+        "day_count": "Days",
+        "calories": "Calories",
+        "protein": "Protein",
+        "carb": "Carbs",
+        "fat": "Fat"
+      },
+      "fields": {
+        "calories": "Total calories",
+        "protein": "Total protein (g)",
+        "carb": "Total carbs (g)",
+        "fat": "Total fat (g)",
+        "user": "Assigned user"
+      },
+      "dialog": {
+        "create_title": "New meal plan",
+        "edit_title": "Edit meal plan",
+        "day_placeholder": "Select a meal day to clone",
+        "add_day": "Add meal day",
+        "add_blank_day": "Add empty day",
+        "empty_days": "No day added yet.",
+        "day_label": "Day label",
+        "meal_placeholder": "Select a meal to add",
+        "add_meal": "Add meal",
+        "macros": "P {{protein}}g / C {{carb}}g / F {{fat}}g"
+      },
+      "confirm": {
+        "delete_title": "Delete meal plan"
+      }
+    },
+    "meals": {
+      "title": "Meals",
+      "search_placeholder": "Search meals...",
+      "create": "New meal",
+      "dialog": {
+        "create_title": "New meal",
+        "edit_title": "Edit meal"
+      },
+      "confirm": {
+        "delete_title": "Delete meal"
+      }
+    },
+    "mealDays": {
+      "title": "Meal days",
+      "search_placeholder": "Search meal days...",
+      "create": "New meal day",
+      "columns": {
+        "count": "Meals count",
+        "meals": "Ordered meals"
+      },
+      "table": {
+        "empty_meals": "No meals linked"
+      },
+      "dialog": {
+        "create_title": "New meal day",
+        "edit_title": "Edit meal day",
+        "add_meal": "Add meal",
+        "refresh_meals": "Refresh meals",
+        "empty_list": "No meals selected yet.",
+        "search_placeholder": "Search meals..."
+      },
+      "confirm": {
+        "delete_title": "Delete meal day"
+      }
+    },
+    "mealTypes": {
+      "title": "Meal types",
+      "search_placeholder": "Search meal types...",
+      "create": "New meal type",
+      "dialog": {
+        "create_title": "New meal type",
+        "edit_title": "Edit meal type"
+      },
+      "confirm": {
+        "delete_title": "Delete meal type"
       }
     }
   },

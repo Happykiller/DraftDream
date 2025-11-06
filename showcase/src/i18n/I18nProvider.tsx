@@ -1,4 +1,11 @@
-import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useMemo,
+  useState
+} from 'react';
 
 export type Language = 'en' | 'fr';
 
@@ -20,15 +27,23 @@ type I18nProviderProps = {
 
 const translations: TranslationResources = {
   en: {
+    landing: {
+      hero: {
+        cta: 'Explore the changelog',
+        subtitle:
+          'An all-in-one solution combining ergonomic workspaces, smart scheduling, and wellbeing insights.',
+        title: 'The future showcase for your hybrid teams'
+      }
+    },
     releaseNotes: {
-      description: 'Follow the evolution of FitDesk and its components through each release.',
+      backToHome: 'Back to home',
+      description: 'Review FitDesk releases in the language detected from your browser with a streamlined layout for every milestone.',
       documentTitle: 'Release Notes | FitDesk',
       empty: 'No release notes are available yet.',
       emptyScope: 'No updates recorded for this scope yet.',
       error: 'An error occurred while loading the release notes. Please try again later.',
-      footer: 'FitDesk Platform — shipping clarity across every release.',
+      footer: 'FitDesk Platform — multilingual release notes delivered clearly.',
       globalLabel: 'Global',
-      languageLabel: 'Language',
       loading: 'Loading release notes…',
       notesLabel: 'Notes',
       projectLabel: 'Project',
@@ -39,15 +54,23 @@ const translations: TranslationResources = {
     }
   },
   fr: {
+    landing: {
+      hero: {
+        cta: 'Explorer le changelog',
+        subtitle:
+          'Une solution tout-en-un mêlant espaces ergonomiques, planification intelligente et insights bien-être.',
+        title: 'La future vitrine des équipes hybrides'
+      }
+    },
     releaseNotes: {
-      description: 'Suivez l\'évolution de FitDesk et de ses composants à chaque version.',
+      backToHome: "Retour à l'accueil",
+      description: 'Consultez les versions de FitDesk dans la langue détectée automatiquement, avec une mise en page épurée pour chaque jalon.',
       documentTitle: 'Notes de version | FitDesk',
       empty: 'Aucune note de version n\'est disponible pour le moment.',
       emptyScope: 'Aucune mise à jour disponible pour ce périmètre pour l\'instant.',
       error: 'Une erreur est survenue lors du chargement des notes de version. Merci de réessayer plus tard.',
-      footer: 'Plateforme FitDesk — une vision claire de chaque mise à jour.',
+      footer: 'Plateforme FitDesk — des notes de version multilingues et claires.',
       globalLabel: 'Global',
-      languageLabel: 'Langue',
       loading: 'Chargement des notes de version…',
       notesLabel: 'Notes',
       projectLabel: 'Projet',
@@ -100,8 +123,38 @@ const applyVariables = (template: string, variables?: Record<string, string>): s
 
 export const supportedLanguages: readonly Language[] = ['en', 'fr'];
 
+/**
+ * Picks the best supported language based on the browser preferences.
+ */
+const resolveInitialLanguage = (): Language => {
+  const normalizeLanguage = (candidate?: string): Language | undefined => {
+    if (!candidate) {
+      return undefined;
+    }
+
+    const [languageCode] = candidate.split('-');
+    const normalized = languageCode?.toLowerCase();
+
+    return supportedLanguages.find((supportedLanguage) => supportedLanguage === normalized);
+  };
+
+  if (typeof navigator === 'undefined') {
+    return 'en';
+  }
+
+  const fromPreferences = navigator.languages
+    ?.map((preferredLanguage) => normalizeLanguage(preferredLanguage))
+    .find((language): language is Language => Boolean(language));
+
+  if (fromPreferences) {
+    return fromPreferences;
+  }
+
+  return normalizeLanguage(navigator.language) ?? 'en';
+};
+
 export const I18nProvider = ({ children }: I18nProviderProps): JSX.Element => {
-  const [language, setLanguage] = useState<Language>('en');
+  const [language, setLanguage] = useState<Language>(() => resolveInitialLanguage());
 
   const translate = useCallback<TranslateFunction>(
     (key, variables) => {

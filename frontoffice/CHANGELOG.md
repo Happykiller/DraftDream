@@ -1,5 +1,7 @@
 # Changelog
 
+## [0.6.0] - 2025-11-02
+
 ## [0.5.0] - 2025-10-25
 - Increase minor version to prepare the next frontoffice release.
 - Refresh global navigation structure with clearer entry points for home, programs, and user tools.
@@ -10,6 +12,8 @@
 - Harden login session handling to reduce idle timeouts and improve remember-me reliability.
 - Synchronize English and French translation bundles for the navigation, programs, and profile flows.
 
-## [0.4.0] - 2025-10-25
-- Initialize change tracking for the frontoffice.
+## [0.4.0] - 2025-10-15
+- Add a program cloning tool so coaches can duplicate training tracks in seconds.
+- Introduce a delete confirmation dialog to prevent accidental program removals.
+- Apply interface refinements that align typography, spacing, and navigation for a cohesive athlete experience.
 

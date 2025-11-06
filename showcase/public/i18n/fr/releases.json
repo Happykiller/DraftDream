@@ -1,45 +1,80 @@
 {
   "releases": [
     {
+      "version": "0.4.0",
+      "title": "Note de mise à jour : 0.4.0",
+      "date": "2025-10-15",
+      "global": [
+        "[NOUVEAUTÉ] Suite Nutrition : ajout d'une gestion complète des repas, journées et plans nutritionnels.",
+        "[AMÉLIORATION] Expérience unifiée : traductions améliorées, interface harmonisée, navigation plus fluide.",
+        "[FIABILITÉ] Fiabilité accrue : large couverture de tests unitaires sur tous les domaines clés.",
+        "[DESIGN] Design cohérent : interfaces épurées, hiérarchie visuelle renforcée et meilleure lisibilité."
+      ],
+      "notes": "FitDesk 0.4.0 marque une étape importante : l'intégration complète de la nutrition dans l'écosystème, une expérience utilisateur unifiée et une base technique renforcée.",
+      "projects": {
+        "/api": [
+          "Ajout des entités repas, type de repas, journée de repas et plan nutritionnel avec un CRUD complet.",
+          "Ajustements du schéma GraphQL (métadonnées, relations nullables, retours unifiés) pour soutenir la nutrition.",
+          "Ajout massif de tests unitaires sur les cas d'usage utilisateur, session, programme, exercice, catégorie, repas, muscle et plan.",
+          "Amélioration de la configuration Jest pour garantir des exécutions de tests fiables."
+        ],
+        "/backoffice": [
+          "Nouveau module Gestion nutritionnelle avec onglets types de repas, journées et plans.",
+          "Possibilité de modifier la visibilité des types de repas pour contrôler l'exposition côté athlète.",
+          "Ajustement de la largeur et de la structure de la barre de navigation pour accueillir la nutrition.",
+          "Expérience plus fluide pour créer, modifier et suivre les données nutritionnelles."
+        ],
+        "/frontoffice": [
+          "Ajout d'un outil de clonage de programme pour gagner du temps lors de la duplication.",
+          "Fenêtre de confirmation de suppression avant la suppression d'un programme.",
+          "Divers ajustements visuels et ergonomiques pour une cohérence accrue côté athlète."
+        ],
+        "/showcase": [
+          "Détection automatique de la langue du navigateur dès l'arrivée sur la vitrine.",
+          "Traduction et mise en page de la page des notes de version simplifiées."
+        ]
+      }
+    },
+    {
+      "version": "0.3.0",
+      "title": "Note de mise à jour : 0.3.0",
       "date": "2025-10-27",
       "global": [
-        "[FEAT] Role-aware navigation and access across apps.",
-        "[FEAT] Athlete programs: list and detail views wired to snapshots and aggregated exercise metadata.",
-        "[FEAT] Profile pages for athletes and coaches in front and back offices.",
-        "[FEAT] Login page refreshed with a language switcher.",
-        "[FIX] Visibility rules enforced for athlete programs and public training resources.",
-        "[FIX] GraphQL argument metadata and list resolvers corrected."
+        "[NOUVEAUTÉ] Navigation et accès désormais adaptés à chaque rôle sur l'ensemble des applications.",
+        "[NOUVEAUTÉ] Programmes athlètes enrichis avec listes, fiches détaillées et indicateurs issus des instantanés.",
+        "[NOUVEAUTÉ] Profils athlètes et coachs harmonisés entre les interfaces front et back office.",
+        "[NOUVEAUTÉ] Page de connexion réinventée avec un sélecteur de langue accessible dès l'accueil.",
+        "[CORRECTION] Règles de visibilité consolidées pour les programmes athlètes et les ressources d'entraînement publiques.",
+        "[CORRECTION] Métadonnées des arguments GraphQL et résolutions de listes ajustées pour garantir des retours cohérents."
       ],
       "notes": "",
       "projects": {
         "/api": [
-          "Increase minor version to prepare the next API release.",
-          "Add rate limiting safeguards for public endpoints to mitigate abuse.",
-          "Expand player draft analytics export to include advanced metrics.",
-          "Harden authentication workflow with refresh token rotation support.",
-          "Improve observability by centralizing audit logging streams.",
-          "Update dependency stack to align with shared service baselines."
+          "Montée de version mineure en préparation du prochain jalon API.",
+          "Ajout de garde-fous de limitation de débit sur les points d'accès publics afin de prévenir les abus.",
+          "Extension de l'export analytique du repêchage pour intégrer des métriques avancées.",
+          "Renforcement de l'authentification avec rotation des jetons de rafraîchissement.",
+          "Centralisation des flux de journalisation d'audit pour une observabilité uniforme.",
+          "Mise à niveau des dépendances pour rester aligné avec la base de services partagée."
         ],
         "/backoffice": [
-          "Increase minor version to prepare the next backoffice release.",
-          "Add audit log export capabilities to the administration panel.",
-          "Refresh dashboard analytics caches hourly to reduce stale insights.",
-          "Harden the password reset flow with token throttling safeguards.",
-          "Update the dependency matrix to align with API services v0.6.0."
+          "Montée de version mineure en vue du prochain déploiement backoffice.",
+          "Ajout de l'export du journal d'audit directement depuis le panneau d'administration.",
+          "Actualisation horaire des caches analytiques du tableau de bord pour limiter les données obsolètes.",
+          "Durcissement du parcours de réinitialisation de mot de passe grâce à un contrôle de la fréquence des jetons.",
+          "Mise à jour de la matrice de dépendances pour s'aligner sur les services API en v0.6.0."
         ],
         "/frontoffice": [
-          "Increase minor version to prepare the next frontoffice release.",
-          "Refresh global navigation structure with clearer entry points for home, programs, and user tools.",
-          "Add contextual breadcrumbs to improve navigation between program overviews and detail pages.",
-          "Expand programs catalog with featured tracks and advanced filtering options for participants.",
-          "Improve program enrollment flow with inline validation and clearer eligibility messaging.",
-          "Redesign profile dashboard to surface completion progress and upcoming milestones.",
-          "Harden login session handling to reduce idle timeouts and improve remember-me reliability.",
-          "Synchronize English and French translation bundles for the navigation, programs, and profile flows."
+          "Montée de version mineure en préparation du prochain cycle frontoffice.",
+          "Réorganisation de la navigation globale avec des points d'entrée clarifiés pour l'accueil, les programmes et les outils utilisateurs.",
+          "Ajout de fils d'Ariane contextuels pour fluidifier la circulation entre vues d'ensemble et fiches programme.",
+          "Catalogue de programmes enrichi avec des parcours mis en avant et des filtres avancés pour les participants.",
+          "Parcours d'inscription aux programmes retravaillé avec validations instantanées et messages d'éligibilité explicites.",
+          "Tableau de bord de profil repensé pour mettre en avant la progression et les jalons à venir.",
+          "Gestion de session renforcée pour réduire les expirations intempestives et fiabiliser le mode souvenir.",
+          "Synchronisation des traductions françaises et anglaises pour les parcours de navigation, programmes et profils."
         ]
-      },
-      "title": "Release 0.3.0",
-      "version": "0.3.0"
+      }
     }
   ]
 }

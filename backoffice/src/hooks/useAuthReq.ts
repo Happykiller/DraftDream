@@ -8,7 +8,7 @@ export const useAuthReq = () => {
     email: string;
     password: string;
   }): Promise<{
-    message: CODES,
+    message: keyof typeof CODES,
     data?: {
       access_token: string;
       id: string;
@@ -43,7 +43,6 @@ export const useAuthReq = () => {
       );
 
       // 3) Role check
-      // Comment in English: Only "admin" role is allowed to proceed.
       if (who.data.me.type !== 'admin') {
         // reset session and return a deterministic forbidden error
         session.getState().reset();
