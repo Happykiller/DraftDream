@@ -879,79 +879,83 @@ export function ProgramBuilderPanel({
                           </Typography>
                         </Stack>
 
-                        <Stack
-                          spacing={1.5}
-                          sx={{
-                            border:
-                              sessionCount === 0
-                                ? `1px dashed ${alpha(theme.palette.text.primary, 0.2)}`
-                                : 'none',
-                            borderRadius: 2,
-                            p: sessions.length === 0 ? 2 : 0,
-                            minHeight: sessions.length === 0 ? 'auto' : 280,
-                            bgcolor:
-                              sessions.length === 0
-                                ? alpha(theme.palette.background.default, 0.4)
-                                : 'transparent',
-                            flexGrow: sessions.length === 0 ? 0 : 1,
-                          }}
-                        >
-                          {sessions.length === 0 ? (
-                            <Stack
-                              spacing={1}
-                              alignItems="center"
-                              justifyContent="center"
-                              sx={{ minHeight: 220, width: '100%' }}
-                            >
-                              <Typography variant="body2" color="text.secondary" textAlign="center">
-                                {builderCopy.structure.empty}
-                              </Typography>
-                            </Stack>
-                          ) : (
-                            sessions.map((session, index) => (
-                              <ProgramBuilderSessionItem
-                                key={session.id}
-                                session={session}
-                                index={index}
-                                totalSessions={sessions.length}
-                                builderCopy={builderCopy}
-                                onLabelChange={handleSessionLabelChange}
-                                onDescriptionChange={handleSessionDescriptionChange}
-                                onDurationChange={handleSessionDurationChange}
-                                onRemoveSession={() => handleRemoveSession(session.id)}
-                                onRemoveExercise={(exerciseId) =>
-                                  handleRemoveExercise(session.id, exerciseId)
-                                }
-                                onMoveUp={() => handleMoveSessionUp(session.id)}
-                                onMoveDown={() => handleMoveSessionDown(session.id)}
-                                getExerciseById={(exerciseId) => exerciseMap.get(exerciseId)}
-                                onExerciseLabelChange={handleExerciseLabelChange}
-                                onExerciseDescriptionChange={handleExerciseDescriptionChange}
-                                onMoveExerciseUp={(exerciseId) =>
-                                  handleMoveExerciseUp(session.id, exerciseId)
-                                }
-                                onMoveExerciseDown={(exerciseId) =>
-                                  handleMoveExerciseDown(session.id, exerciseId)
-                                }
-                                onEditExercise={handleOpenEditExerciseDialog}
-                              />
-                            ))
-                          )}
-                        </Stack>
+                        <Stack spacing={1.5} sx={{ width: '100%' }}>
+                          <Box
+                            sx={{
+                              border:
+                                sessionCount === 0
+                                  ? `1px dashed ${alpha(theme.palette.text.primary, 0.2)}`
+                                  : 'none',
+                              borderRadius: 2,
+                              p: sessionCount === 0 ? 2 : 0,
+                              bgcolor:
+                                sessionCount === 0
+                                  ? alpha(theme.palette.background.default, 0.4)
+                                  : 'transparent',
+                              width: '100%',
+                              display: 'flex',
+                              flexDirection: 'column',
+                            }}
+                          >
+                            {sessionCount === 0 ? (
+                              <Stack
+                                spacing={1}
+                                alignItems="center"
+                                justifyContent="center"
+                                sx={{ minHeight: 220, width: '100%' }}
+                              >
+                                <Typography variant="body2" color="text.secondary" textAlign="center">
+                                  {builderCopy.structure.empty}
+                                </Typography>
+                              </Stack>
+                            ) : (
+                              <Stack spacing={1.5} sx={{ width: '100%' }}>
+                                {sessions.map((session, index) => (
+                                  <ProgramBuilderSessionItem
+                                    key={session.id}
+                                    session={session}
+                                    index={index}
+                                    totalSessions={sessions.length}
+                                    builderCopy={builderCopy}
+                                    onLabelChange={handleSessionLabelChange}
+                                    onDescriptionChange={handleSessionDescriptionChange}
+                                    onDurationChange={handleSessionDurationChange}
+                                    onRemoveSession={() => handleRemoveSession(session.id)}
+                                    onRemoveExercise={(exerciseId) =>
+                                      handleRemoveExercise(session.id, exerciseId)
+                                    }
+                                    onMoveUp={() => handleMoveSessionUp(session.id)}
+                                    onMoveDown={() => handleMoveSessionDown(session.id)}
+                                    getExerciseById={(exerciseId) => exerciseMap.get(exerciseId)}
+                                    onExerciseLabelChange={handleExerciseLabelChange}
+                                    onExerciseDescriptionChange={handleExerciseDescriptionChange}
+                                    onMoveExerciseUp={(exerciseId) =>
+                                      handleMoveExerciseUp(session.id, exerciseId)
+                                    }
+                                    onMoveExerciseDown={(exerciseId) =>
+                                      handleMoveExerciseDown(session.id, exerciseId)
+                                    }
+                                    onEditExercise={handleOpenEditExerciseDialog}
+                                  />
+                                ))}
+                              </Stack>
+                            )}
+                          </Box>
 
-                        <Tooltip title={builderCopy.library.tooltips.add_empty_session} arrow>
-                          <span style={{ display: 'flex', width: '100%' }}>
-                            <Button
-                              variant="contained"
-                              size="small"
-                              startIcon={<Add fontSize="small" />}
-                              fullWidth
-                              onClick={handleCreateEmptySession}
-                            >
-                              {builderCopy.config.button_create}
-                            </Button>
-                          </span>
-                        </Tooltip>
+                          <Tooltip title={builderCopy.library.tooltips.add_empty_session} arrow>
+                            <span style={{ display: 'flex', width: '100%' }}>
+                              <Button
+                                variant="contained"
+                                size="small"
+                                startIcon={<Add fontSize="small" />}
+                                fullWidth
+                                onClick={handleCreateEmptySession}
+                              >
+                                {builderCopy.config.button_create}
+                              </Button>
+                            </span>
+                          </Tooltip>
+                        </Stack>
                       </CardContent>
                     </Card>
                   </Grid>
