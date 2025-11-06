@@ -214,6 +214,22 @@
           }
         }
       },
+      "program_exercise_dialog": {
+        "title": "Edit exercise in session",
+        "subtitle": "Adjust the details specific to this program.",
+        "fields": {
+          "sets": "Sets",
+          "reps": "Repetitions",
+          "rest": "Rest (sec)",
+          "notes": "Notes (optional)",
+          "notes_placeholder": "Add notes for this exercise (optional)..."
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Save",
+          "submitting": "Saving..."
+        }
+      },
       "footer": {
         "cancel": "Cancel",
         "submit": "Create the program",

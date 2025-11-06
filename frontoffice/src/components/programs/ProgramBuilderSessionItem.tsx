@@ -21,6 +21,7 @@ import {
 import type {
   BuilderCopy,
   ExerciseLibraryItem,
+  ProgramExercise,
   ProgramSession,
 } from './programBuilderTypes';
 import { ProgramBuilderExerciseItem } from './ProgramBuilderExerciseItem';
@@ -50,7 +51,11 @@ type ProgramBuilderSessionItemProps = {
   ) => void;
   onMoveExerciseUp: (exerciseId: string) => void;
   onMoveExerciseDown: (exerciseId: string) => void;
-  onEditExercise?: (exerciseId: string) => void;
+  onEditExercise?: (
+    sessionId: string,
+    exerciseItem: ProgramExercise,
+    exercise: ExerciseLibraryItem,
+  ) => void;
 };
 
 export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessionItem({
@@ -622,7 +627,11 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
                       session.exercises.length - 1,
                     )
                   }
-                  onEdit={onEditExercise}
+                  onEdit={
+                    onEditExercise
+                      ? () => onEditExercise(session.id, exerciseItem, exercise)
+                      : undefined
+                  }
                 />
               );
             })

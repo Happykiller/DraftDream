@@ -19,9 +19,11 @@ import { session } from '@stores/session';
 
 import type {
   BuilderCopy,
-  ExerciseLibraryItem,
   ExerciseCategoryOption,
+  ExerciseLibraryItem,
   ExerciseTypeOption,
+  ProgramExercise,
+  ProgramExercisePatch,
   ProgramForm,
   ProgramSession,
   SessionTemplate,
@@ -30,8 +32,6 @@ import {
   parseRestSecondsValue,
   parseSeriesCount,
 } from '@src/components/programs/programBuilderUtils';
-
-import type { ProgramExercise } from '@src/components/programs/programBuilderTypes';
 
 const INITIAL_FORM_STATE: ProgramForm = {
   athlete: '',
@@ -89,6 +89,11 @@ type UseProgramBuilderResult = {
     sessionId: string,
     exerciseId: string,
     description: string,
+  ) => void;
+  handleUpdateProgramExercise: (
+    sessionId: string,
+    exerciseId: string,
+    patch: ProgramExercisePatch,
   ) => void;
   handleAddExerciseToSession: (sessionId: string, exerciseId: string, position?: number) => void;
   handleMoveSessionUp: (sessionId: string) => void;
@@ -735,6 +740,53 @@ export function useProgramBuilder(
     [],
   );
 
+  const handleUpdateProgramExercise = React.useCallback(
+    (sessionId: string, exerciseId: string, patch: ProgramExercisePatch) => {
+      setSessions((prev) =>
+        prev.map((session) => {
+          if (session.id !== sessionId) {
+            return session;
+          }
+
+          const exercises = session.exercises.map((exercise) => {
+            if (exercise.id !== exerciseId) {
+              return exercise;
+            }
+
+            const nextExercise: ProgramExercise = { ...exercise };
+
+            if ('sets' in patch && typeof patch.sets === 'number' && Number.isFinite(patch.sets)) {
+              nextExercise.sets = Math.max(1, Math.trunc(patch.sets));
+            }
+
+            if ('reps' in patch && typeof patch.reps === 'string') {
+              nextExercise.reps = patch.reps;
+            }
+
+            if ('rest' in patch && typeof patch.rest === 'string') {
+              nextExercise.rest = patch.rest;
+            }
+
+            if ('customDescription' in patch) {
+              const trimmed = patch.customDescription?.trim() ?? '';
+              nextExercise.customDescription = trimmed ? trimmed : undefined;
+            }
+
+            if ('customLabel' in patch) {
+              const trimmedLabel = patch.customLabel?.trim() ?? '';
+              nextExercise.customLabel = trimmedLabel ? trimmedLabel : undefined;
+            }
+
+            return nextExercise;
+          });
+
+          return { ...session, exercises };
+        }),
+      );
+    },
+    [],
+  );
+
   const handleMoveSessionUp = React.useCallback((sessionId: string) => {
     setSessions((prev) => {
       const index = prev.findIndex((session) => session.id === sessionId);
@@ -1237,6 +1289,7 @@ export function useProgramBuilder(
     handleSessionDurationChange,
     handleExerciseLabelChange,
     handleExerciseDescriptionChange,
+    handleUpdateProgramExercise,
     handleAddExerciseToSession,
     handleMoveSessionUp,
     handleMoveSessionDown,

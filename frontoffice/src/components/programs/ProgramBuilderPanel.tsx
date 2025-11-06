@@ -24,7 +24,13 @@ import { ProgramBuilderSessionItem } from './ProgramBuilderSessionItem';
 import { ProgramBuilderSessionLibraryItem } from './ProgramBuilderSessionLibraryItem';
 import { ProgramBuilderExerciseLibraryItem } from './ProgramBuilderExerciseLibraryItem';
 import { ProgramBuilderCreateExerciseDialog } from './ProgramBuilderCreateExerciseDialog';
-import type { BuilderCopy } from './programBuilderTypes';
+import { ProgramBuilderEditProgramExerciseDialog } from './ProgramBuilderEditProgramExerciseDialog';
+import type {
+  BuilderCopy,
+  ExerciseLibraryItem,
+  ProgramExercise,
+  ProgramExercisePatch,
+} from './programBuilderTypes';
 
 import type { Exercise } from '@hooks/useExercises';
 import type { User } from '@src/hooks/useUsers';
@@ -91,6 +97,7 @@ export function ProgramBuilderPanel({
     handleSessionDurationChange,
     handleExerciseLabelChange,
     handleExerciseDescriptionChange,
+    handleUpdateProgramExercise,
     handleAddExerciseToSession,
     handleMoveSessionUp,
     handleMoveSessionDown,
@@ -163,6 +170,12 @@ export function ProgramBuilderPanel({
 
   const [isExerciseDialogOpen, setIsExerciseDialogOpen] = React.useState(false);
   const [exerciseBeingEdited, setExerciseBeingEdited] = React.useState<Exercise | null>(null);
+
+  const [programExerciseDialog, setProgramExerciseDialog] = React.useState<{
+    sessionId: string;
+    exerciseItem: ProgramExercise;
+    exercise: ExerciseLibraryItem;
+  } | null>(null);
 
   const [structureTitle, setStructureTitle] = React.useState(() => {
     const candidate = program?.label?.trim();
@@ -494,7 +507,31 @@ export function ProgramBuilderPanel({
     [deleteExercise],
   );
 
-  const handleOpenEditExerciseDialog = React.useCallback(
+  const handleOpenProgramExerciseDialog = React.useCallback(
+    (sessionId: string, exerciseItem: ProgramExercise, exercise: ExerciseLibraryItem) => {
+      setProgramExerciseDialog({ sessionId, exerciseItem, exercise });
+    },
+    [],
+  );
+
+  const handleCloseProgramExerciseDialog = React.useCallback(() => {
+    setProgramExerciseDialog(null);
+  }, []);
+
+  const handleProgramExerciseDialogSubmit = React.useCallback(
+    (patch: ProgramExercisePatch) => {
+      setProgramExerciseDialog((current) => {
+        if (!current) {
+          return current;
+        }
+        handleUpdateProgramExercise(current.sessionId, current.exerciseItem.id, patch);
+        return null;
+      });
+    },
+    [handleUpdateProgramExercise],
+  );
+
+  const handleOpenLibraryExerciseDialog = React.useCallback(
     (exerciseId: string) => {
       const exercise = getRawExerciseById(exerciseId);
       if (!exercise) {
@@ -936,7 +973,7 @@ export function ProgramBuilderPanel({
                                     onMoveExerciseDown={(exerciseId) =>
                                       handleMoveExerciseDown(session.id, exerciseId)
                                     }
-                                    onEditExercise={handleOpenEditExerciseDialog}
+                                    onEditExercise={handleOpenProgramExerciseDialog}
                                   />
                                 ))}
                               </Stack>
@@ -1076,7 +1113,7 @@ export function ProgramBuilderPanel({
                                 onAdd={(event) =>
                                   handleOpenExerciseMenu(exercise.id, event.currentTarget)
                                 }
-                                onEdit={handleOpenEditExerciseDialog}
+                                onEdit={handleOpenLibraryExerciseDialog}
                                 onDelete={handleExerciseDeleted}
                               />
                             ))
@@ -1137,6 +1174,15 @@ export function ProgramBuilderPanel({
           ))
         )}
       </Menu>
+
+      {/* Program exercise dialog */}
+      <ProgramBuilderEditProgramExerciseDialog
+        open={Boolean(programExerciseDialog)}
+        exerciseItem={programExerciseDialog?.exerciseItem ?? null}
+        exercise={programExerciseDialog?.exercise ?? null}
+        onClose={handleCloseProgramExerciseDialog}
+        onSubmit={handleProgramExerciseDialogSubmit}
+      />
 
       {/* Exercise Create/Edit Dialog */}
       <ProgramBuilderCreateExerciseDialog

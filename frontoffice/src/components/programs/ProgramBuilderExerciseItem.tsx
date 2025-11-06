@@ -35,7 +35,7 @@ type ProgramBuilderExerciseItemProps = {
   onDescriptionChange: (description: string) => void;
   onMoveUp: () => void;
   onMoveDown: () => void;
-  onEdit?: (exerciseId: string) => void;
+  onEdit?: () => void;
 };
 
 export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExerciseItem({
@@ -253,8 +253,8 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
     if (!onEdit) {
       return;
     }
-    onEdit(exercise.id);
-  }, [exercise.id, onEdit]);
+    onEdit();
+  }, [onEdit]);
 
   const canMoveUp = index > 0;
   const canMoveDown = index < totalExercises - 1;

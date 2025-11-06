@@ -216,6 +216,22 @@
         },
         "no_sessions_warning": "Creez une seance avant d'ajouter des exercices."
       },
+      "program_exercise_dialog": {
+        "title": "Modifier l'exercice dans la séance",
+        "subtitle": "Ajustez les détails propres à ce programme.",
+        "fields": {
+          "sets": "Séries",
+          "reps": "Répétitions",
+          "rest": "Repos (sec)",
+          "notes": "Notes (optionnel)",
+          "notes_placeholder": "Ajoutez des notes pour cet exercice (optionnel)..."
+        },
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Enregistrer",
+          "submitting": "Enregistrement..."
+        }
+      },
       "footer": {
         "cancel": "Annuler",
         "submit": "Creer le programme",

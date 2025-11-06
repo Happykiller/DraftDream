@@ -46,6 +46,10 @@ export type ProgramExercise = {
   customDescription?: string;
 };
 
+export type ProgramExercisePatch = Partial<
+  Pick<ProgramExercise, 'sets' | 'reps' | 'rest' | 'customDescription' | 'customLabel'>
+>;
+
 export type ProgramSession = {
   id: string;
   sessionId: string;
