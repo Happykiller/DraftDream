@@ -13,7 +13,7 @@ export type GetExerciseRepositoryDto = GetExerciseServiceDto;
 export type GetExerciseUsecaseDto = GetExerciseRepositoryDto & { session: UsecaseSession };
 export type ListExercisesRepositoryDto = ListExercisesServiceDto;
 export type ListExercisesUsecaseDto = ListExercisesRepositoryDto & { session: UsecaseSession };
-export type UpdateExerciseUsecaseDto = UpdateExerciseServiceDto;
+export type UpdateExerciseUsecaseDto = UpdateExerciseServiceDto & { session: UsecaseSession };
 
 export type ArchiveExerciseUsecaseDto = { id: string };
 export type UnarchiveExerciseUsecaseDto = { id: string };
