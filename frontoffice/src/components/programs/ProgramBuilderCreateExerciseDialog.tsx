@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
-import { Button, Chip, MenuItem, Stack, TextField } from '@mui/material';
+import { Button, Chip, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import { Add, Edit } from '@mui/icons-material';
 
 import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
@@ -15,7 +15,12 @@ import type {
 import { useMuscles } from '@hooks/useMuscles';
 import { useEquipment } from '@hooks/useEquipment';
 import { useTags } from '@hooks/useTags';
-import type { ExerciseCategoryOption } from '@components/programs/programBuilderTypes';
+import type {
+  ExerciseCategoryOption,
+  ProgramExercise,
+  ProgramExercisePatch,
+} from '@components/programs/programBuilderTypes';
+import { parseSeriesCount } from '@components/programs/programBuilderUtils';
 import { slugify } from '@src/utils/slugify';
 
 type Option = { id: string; label: string };
@@ -35,6 +40,10 @@ type ProgramBuilderCreateExerciseDialogProps = {
   onClose: () => void;
   onCreated?: (exercise: Exercise) => void;
   onUpdated?: (exercise: Exercise) => void;
+  programExerciseContext?: {
+    exerciseItem: ProgramExercise;
+    onSubmit: (patch: ProgramExercisePatch) => Promise<void> | void;
+  } | null;
 };
 
 export function ProgramBuilderCreateExerciseDialog({
@@ -47,6 +56,7 @@ export function ProgramBuilderCreateExerciseDialog({
   onClose,
   onCreated,
   onUpdated,
+  programExerciseContext = null,
 }: ProgramBuilderCreateExerciseDialogProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
   const locale = i18n.resolvedLanguage ?? i18n.language;
@@ -150,6 +160,10 @@ export function ProgramBuilderCreateExerciseDialog({
   const [creatingEquipment, setCreatingEquipment] = React.useState(false);
   const [creatingTag, setCreatingTag] = React.useState(false);
   const [submitting, setSubmitting] = React.useState(false);
+  const [programSets, setProgramSets] = React.useState('');
+  const [programReps, setProgramReps] = React.useState('');
+  const [programRest, setProgramRest] = React.useState('');
+  const [programNotes, setProgramNotes] = React.useState('');
   const previousExerciseIdRef = React.useRef<string | null>(null);
 
   const handleCreatableSelection = React.useCallback(
@@ -332,6 +346,25 @@ export function ProgramBuilderCreateExerciseDialog({
     );
   }, [exercise, isEditMode, open]);
 
+  React.useEffect(() => {
+    if (!open) {
+      return;
+    }
+    if (!programExerciseContext) {
+      setProgramSets('');
+      setProgramReps('');
+      setProgramRest('');
+      setProgramNotes('');
+      return;
+    }
+
+    const { exerciseItem } = programExerciseContext;
+    setProgramSets(String(exerciseItem.sets));
+    setProgramReps(exerciseItem.reps);
+    setProgramRest(exerciseItem.rest);
+    setProgramNotes(exerciseItem.customDescription ?? '');
+  }, [open, programExerciseContext]);
+
   const levelOptions = React.useMemo<{ value: ExerciseLevel; label: string }[]>(
     () => [
       {
@@ -421,6 +454,23 @@ export function ProgramBuilderCreateExerciseDialog({
 
         const updated = await updateExercise(payload);
         if (updated) {
+          if (programExerciseContext) {
+            const { exerciseItem, onSubmit } = programExerciseContext;
+            const parsedSets = parseSeriesCount(programSets);
+            const nextSets = Number.isFinite(parsedSets) && parsedSets
+              ? Math.max(1, Math.trunc(parsedSets))
+              : exerciseItem.sets;
+            const trimmedReps = programReps.trim();
+            const trimmedRest = programRest.trim();
+            const trimmedNotes = programNotes.trim();
+            const patch: ProgramExercisePatch = {
+              sets: nextSets,
+              reps: trimmedReps || exerciseItem.reps,
+              rest: trimmedRest || exerciseItem.rest,
+              customDescription: trimmedNotes ? trimmedNotes : undefined,
+            };
+            await onSubmit(patch);
+          }
           onUpdated?.(updated);
           onClose();
         }
@@ -515,6 +565,27 @@ export function ProgramBuilderCreateExerciseDialog({
   const submitLabel = submitting
     ? t(`${dialogNamespace}.actions.submitting`)
     : t(`${dialogNamespace}.actions.submit`);
+
+  type ProgramExerciseDialogCopy = {
+    title: string;
+    subtitle?: string;
+    fields: {
+      sets: string;
+      reps: string;
+      rest: string;
+      notes: string;
+      notes_placeholder: string;
+    };
+  };
+
+  const programExerciseCopy = React.useMemo<ProgramExerciseDialogCopy | null>(() => {
+    if (!programExerciseContext) {
+      return null;
+    }
+    return t('programs-coatch.builder.program_exercise_dialog', {
+      returnObjects: true,
+    }) as ProgramExerciseDialogCopy;
+  }, [programExerciseContext, t]);
 
   const fieldCopy = React.useMemo(
     () => ({
@@ -806,6 +877,52 @@ export function ProgramBuilderCreateExerciseDialog({
             renderInput={(params) => <TextField {...params} label={fieldCopy.tags} />}
           />
         </Stack>
+
+        {programExerciseCopy ? (
+          <Stack spacing={2}>
+            <Stack spacing={0.5}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                {programExerciseCopy.title}
+              </Typography>
+              {programExerciseCopy.subtitle ? (
+                <Typography variant="body2" color="text.secondary">
+                  {programExerciseCopy.subtitle}
+                </Typography>
+              ) : null}
+            </Stack>
+
+            <Stack direction={{ xs: 'column', lg: 'row' }} spacing={2}>
+              <TextField
+                fullWidth
+                label={programExerciseCopy.fields.sets}
+                value={programSets}
+                onChange={(event) => setProgramSets(event.target.value)}
+              />
+              <TextField
+                fullWidth
+                label={programExerciseCopy.fields.reps}
+                value={programReps}
+                onChange={(event) => setProgramReps(event.target.value)}
+              />
+              <TextField
+                fullWidth
+                label={programExerciseCopy.fields.rest}
+                value={programRest}
+                onChange={(event) => setProgramRest(event.target.value)}
+              />
+            </Stack>
+
+            <TextField
+              fullWidth
+              multiline
+              minRows={3}
+              label={programExerciseCopy.fields.notes}
+              placeholder={programExerciseCopy.fields.notes_placeholder}
+              value={programNotes}
+              onChange={(event) => setProgramNotes(event.target.value)}
+            />
+          </Stack>
+        ) : null}
       </Stack>
     </ProgramDialogLayout>
   );

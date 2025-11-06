@@ -51,11 +51,7 @@ type ProgramBuilderSessionItemProps = {
   ) => void;
   onMoveExerciseUp: (exerciseId: string) => void;
   onMoveExerciseDown: (exerciseId: string) => void;
-  onEditExercise?: (
-    sessionId: string,
-    exerciseItem: ProgramExercise,
-    exercise: ExerciseLibraryItem,
-  ) => void;
+  onEditExercise?: (sessionId: string, exerciseItem: ProgramExercise) => void;
 };
 
 export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessionItem({
@@ -628,9 +624,9 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
                     )
                   }
                   onEdit={
-                    onEditExercise
-                      ? () => onEditExercise(session.id, exerciseItem, exercise)
-                      : undefined
+                  onEditExercise
+                    ? () => onEditExercise(session.id, exerciseItem)
+                    : undefined
                   }
                 />
               );
