@@ -888,16 +888,21 @@ export function ProgramBuilderPanel({
                                 : 'none',
                             borderRadius: 2,
                             p: sessions.length === 0 ? 2 : 0,
-                            minHeight: 280,
+                            minHeight: sessions.length === 0 ? 'auto' : 280,
                             bgcolor:
                               sessions.length === 0
                                 ? alpha(theme.palette.background.default, 0.4)
                                 : 'transparent',
-                            flexGrow: 1,
+                            flexGrow: sessions.length === 0 ? 0 : 1,
                           }}
                         >
                           {sessions.length === 0 ? (
-                            <Stack spacing={1} alignItems="center" justifyContent="center" flexGrow={1}>
+                            <Stack
+                              spacing={1}
+                              alignItems="center"
+                              justifyContent="center"
+                              sx={{ minHeight: 220, width: '100%' }}
+                            >
                               <Typography variant="body2" color="text.secondary" textAlign="center">
                                 {builderCopy.structure.empty}
                               </Typography>
