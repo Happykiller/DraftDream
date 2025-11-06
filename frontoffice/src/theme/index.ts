@@ -1,11 +1,22 @@
 // src/theme/index.ts
 import { type PaletteMode, type Theme, type ThemeOptions, createTheme } from '@mui/material/styles';
 
+declare module '@mui/material/styles' {
+  interface Palette {
+    backgroundColor: string;
+  }
+
+  interface PaletteOptions {
+    backgroundColor?: string;
+  }
+}
+
 const baseThemeOptions: ThemeOptions = {
   palette: {
     primary: {
       main: '#1976d2',
     },
+    backgroundColor: '#F9FAFB',
   },
 };
 
