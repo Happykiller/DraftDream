@@ -270,14 +270,28 @@ export function useProgramBuilder(
   const [exerciseOverrides, setExerciseOverrides] = React.useState<
     Map<string, Exercise>
   >(() => new Map());
+  const [exerciseSnapshots, setExerciseSnapshots] = React.useState<
+    Map<string, Exercise>
+  >(() => new Map());
 
-  const registerExercise = React.useCallback((exercise: Exercise) => {
-    setExerciseOverrides((prev) => {
-      const next = new Map(prev);
-      next.set(exercise.id, exercise);
-      return next;
-    });
-  }, []);
+  const registerExercise = React.useCallback(
+    (exercise: Exercise) => {
+      setExerciseOverrides((prev) => {
+        const next = new Map(prev);
+        next.set(exercise.id, exercise);
+        return next;
+      });
+      setExerciseSnapshots((prev) => {
+        if (!prev.has(exercise.id)) {
+          return prev;
+        }
+        const next = new Map(prev);
+        next.delete(exercise.id);
+        return next;
+      });
+    },
+    [setExerciseOverrides, setExerciseSnapshots],
+  );
 
   const deleteExercise = React.useCallback(
     async (exerciseId: string) => {
@@ -290,8 +304,16 @@ export function useProgramBuilder(
         next.delete(exerciseId);
         return next;
       });
+      setExerciseSnapshots((prev) => {
+        if (!prev.has(exerciseId)) {
+          return prev;
+        }
+        const next = new Map(prev);
+        next.delete(exerciseId);
+        return next;
+      });
     },
-    [removeExercise],
+    [removeExercise, setExerciseOverrides, setExerciseSnapshots],
   );
 
   React.useEffect(() => {
@@ -321,10 +343,18 @@ export function useProgramBuilder(
     return Array.from(merged.values());
   }, [exerciseItems, exerciseOverrides]);
 
-  const rawExerciseMap = React.useMemo(
-    () => new Map(combinedExercises.map((exercise) => [exercise.id, exercise])),
-    [combinedExercises],
-  );
+  const rawExerciseMap = React.useMemo(() => {
+    const merged = new Map<string, Exercise>();
+    combinedExercises.forEach((exercise) => {
+      merged.set(exercise.id, exercise);
+    });
+    exerciseSnapshots.forEach((exercise, exerciseId) => {
+      if (!merged.has(exerciseId)) {
+        merged.set(exerciseId, exercise);
+      }
+    });
+    return merged;
+  }, [combinedExercises, exerciseSnapshots]);
 
   const getRawExerciseById = React.useCallback(
     (exerciseId: string) => rawExerciseMap.get(exerciseId),
@@ -1254,10 +1284,12 @@ export function useProgramBuilder(
     usedIdsRef.current.exercise.clear();
     exerciseMapRef.current = new Map();
     setExerciseOverrides(() => new Map());
+    setExerciseSnapshots(() => new Map());
   }, [
     builderCopy.structure.header_description,
     builderCopy.structure.title,
     setExerciseOverrides,
+    setExerciseSnapshots,
   ]);
 
   const handleSubmit = React.useCallback(
@@ -1436,7 +1468,7 @@ export function useProgramBuilder(
     usedIdsRef.current.session.clear();
     usedIdsRef.current.exercise.clear();
 
-    const placeholderExercises = new Map<string, Exercise>();
+    const snapshotExercises = new Map<string, Exercise>();
     const missingExerciseIds = new Set<string>();
 
     const normalizedSessions = program.sessions.map((sessionItem) => {
@@ -1454,7 +1486,7 @@ export function useProgramBuilder(
 
         const baseExercise = getRawExerciseById(baseExerciseId);
 
-        if (!baseExercise && !placeholderExercises.has(baseExerciseId)) {
+        if (!baseExercise && !snapshotExercises.has(baseExerciseId)) {
           const categoryIds = Array.from(
             new Set((exerciseItem.categoryIds ?? []).filter((id): id is string => Boolean(id))),
           );
@@ -1468,7 +1500,7 @@ export function useProgramBuilder(
             new Set((exerciseItem.tagIds ?? []).filter((id): id is string => Boolean(id))),
           );
 
-          placeholderExercises.set(baseExerciseId, {
+          snapshotExercises.set(baseExerciseId, {
             id: baseExerciseId,
             slug: baseExerciseId,
             locale: program.locale,
@@ -1500,7 +1532,7 @@ export function useProgramBuilder(
         }
 
         const fallbackExercise =
-          baseExercise ?? placeholderExercises.get(baseExerciseId) ?? getRawExerciseById(baseExerciseId);
+          baseExercise ?? snapshotExercises.get(baseExerciseId) ?? getRawExerciseById(baseExerciseId);
 
         const resolveLabeledItems = (
           primary:
@@ -1631,19 +1663,7 @@ export function useProgramBuilder(
 
     setSessions(normalizedSessions);
 
-    if (placeholderExercises.size > 0) {
-      setExerciseOverrides((previous) => {
-        let mutated = false;
-        const next = new Map(previous);
-        placeholderExercises.forEach((exercise, exerciseId) => {
-          if (!next.has(exerciseId)) {
-            next.set(exerciseId, exercise);
-            mutated = true;
-          }
-        });
-        return mutated ? next : previous;
-      });
-    }
+    setExerciseSnapshots(() => snapshotExercises);
 
     if (missingExerciseIds.size > 0) {
       let cancelled = false;
@@ -1664,7 +1684,7 @@ export function useProgramBuilder(
           return;
         }
 
-        setExerciseOverrides((previous) => {
+        setExerciseSnapshots((previous) => {
           let mutated = false;
           const next = new Map(previous);
           detailedExercises.forEach((exercise) => {
@@ -1691,7 +1711,7 @@ export function useProgramBuilder(
     getExerciseById,
     getRawExerciseById,
     setExerciseCategory,
-    setExerciseOverrides,
+    setExerciseSnapshots,
     setExerciseSearch,
     setExerciseType,
     setForm,
