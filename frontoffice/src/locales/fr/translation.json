@@ -202,11 +202,11 @@
           }
         },
         "edit_dialog": {
-          "title": "Modifier le template d'exercice",
+          "title": "Modifier l'exercice",
           "subtitle": "Mettez à jour votre exercice réutilisable.",
           "flash": {
-            "success": "Template d'exercice mis à jour avec succès.",
-            "failure": "Impossible de mettre à jour le template d'exercice."
+            "success": "L'exercice mis à jour avec succès.",
+            "failure": "Impossible de mettre à jour l'exercice."
           },
           "actions": {
             "cancel": "Annuler",
