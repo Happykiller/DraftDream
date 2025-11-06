@@ -30,12 +30,6 @@ export class UpdateExerciseUsecase {
       const res = await this.inversify.bddService.exercise.update(id, patch);
       return mapExerciseToUsecase(res);
     } catch (e: any) {
-      if (
-        e?.message === ERRORS.UPDATE_EXERCISE_FORBIDDEN ||
-        e?.message === ERRORS.EXERCISE_UPDATE_NOT_FOUND
-      ) {
-        throw e;
-      }
       this.inversify.loggerService.error(`UpdateExerciseUsecase#execute => ${e?.message ?? e}`);
       throw normalizeError(e, ERRORS.UPDATE_EXERCISE_USECASE);
     }

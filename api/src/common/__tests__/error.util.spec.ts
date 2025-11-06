@@ -1,5 +1,6 @@
 // src/common/__tests__/error.util.spec.ts
 import { ERRORS } from '@src/common/ERROR';
+import { describe, expect, it } from '@jest/globals';
 import { normalizeError } from '@src/common/error.util';
 
 describe('normalizeError', () => {
