@@ -516,7 +516,7 @@ export function ProgramBuilderPanel({
           height: '100%',
           flex: 1,
           overflow: 'hidden',
-          backgroundColor: theme.palette.background.paper,
+          bgcolor: theme.palette.backgroundColor,
         }}
       >
         <Box
@@ -536,6 +536,7 @@ export function ProgramBuilderPanel({
               flexDirection: 'column',
               flex: 1,
               minHeight: 0,
+              bgcolor: theme.palette.backgroundColor,
             }}
           >
             {/* General information */}
