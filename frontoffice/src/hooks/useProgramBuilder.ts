@@ -523,68 +523,6 @@ export function useProgramBuilder(
     [],
   );
 
-  const createSessionFromTemplate = React.useCallback(
-    (template: SessionTemplate): ProgramSession => {
-      const exercises = template.exercises
-        .map((exerciseRef) => {
-          const overrides: Partial<Omit<ProgramExercise, 'id' | 'exerciseId'>> = {};
-
-          if (exerciseRef.label && exerciseRef.label.trim()) {
-            overrides.label = exerciseRef.label;
-          }
-
-          if (exerciseRef.sets != null) {
-            overrides.sets = exerciseRef.sets;
-            overrides.series = String(exerciseRef.sets);
-          }
-
-          if (exerciseRef.reps) {
-            overrides.repetitions = exerciseRef.reps;
-            overrides.reps = exerciseRef.reps;
-          }
-
-          if (exerciseRef.rest != null) {
-            overrides.rest = exerciseRef.rest;
-            const parsedRest = parseRestSecondsValue(exerciseRef.rest);
-            overrides.restSeconds = parsedRest ?? null;
-          }
-
-          const programExercise = composeProgramExercise(
-            nextId('exercise'),
-            exerciseRef.exerciseId,
-            overrides,
-          );
-
-          return programExercise;
-        })
-        .filter((exercise): exercise is ProgramExercise => exercise !== null);
-
-      return {
-        id: nextId('session'),
-        sessionId: template.id,
-        label: template.label,
-        duration: template.duration,
-        description: template.description,
-        tags: template.tags,
-        exercises,
-      } satisfies ProgramSession;
-    },
-    [composeProgramExercise, nextId],
-  );
-
-  const createEmptySession = React.useCallback((): ProgramSession => {
-    const id = nextId('session');
-    return {
-      id,
-      sessionId: id,
-      label: builderCopy.structure.custom_session_label,
-      duration: 0,
-      description: '',
-      tags: [],
-      exercises: [],
-    };
-  }, [builderCopy.structure.custom_session_label, nextId]);
-
   const handleSelectAthlete = React.useCallback((_event: unknown, value: User | null) => {
     setSelectedAthlete(value);
     setForm((prev) => ({ ...prev, athlete: value?.id ?? '' }));
@@ -606,32 +544,6 @@ export function useProgramBuilder(
   const updateProgramDescription = React.useCallback((value: string) => {
     setProgramDescription(value);
   }, []);
-
-  const handleAddSessionFromTemplate = React.useCallback(
-    (templateId: string, position?: number) => {
-      const template = sessionTemplates.find((item) => item.id === templateId);
-      if (!template) {
-        return;
-      }
-
-      const session = createSessionFromTemplate(template);
-      setSessions((prev) => {
-        const insertAt =
-          position != null ? Math.min(Math.max(position, 0), prev.length) : prev.length;
-        const next = [...prev];
-        next.splice(insertAt, 0, session);
-        return next;
-      });
-    },
-    [createSessionFromTemplate, sessionTemplates],
-  );
-
-  const handleCreateEmptySession = React.useCallback(() => {
-    const emptySession = createEmptySession();
-    setSessions((prev) => {
-      return [...prev, emptySession];
-    });
-  }, [createEmptySession]);
 
   const composeProgramExercise = React.useCallback(
     (
@@ -884,6 +796,94 @@ export function useProgramBuilder(
       normalizeExerciseLevel,
     ],
   );
+
+  const createSessionFromTemplate = React.useCallback(
+    (template: SessionTemplate): ProgramSession => {
+      const exercises = template.exercises
+        .map((exerciseRef) => {
+          const overrides: Partial<Omit<ProgramExercise, 'id' | 'exerciseId'>> = {};
+
+          if (exerciseRef.label && exerciseRef.label.trim()) {
+            overrides.label = exerciseRef.label;
+          }
+
+          if (exerciseRef.sets != null) {
+            overrides.sets = exerciseRef.sets;
+            overrides.series = String(exerciseRef.sets);
+          }
+
+          if (exerciseRef.reps) {
+            overrides.repetitions = exerciseRef.reps;
+            overrides.reps = exerciseRef.reps;
+          }
+
+          if (exerciseRef.rest != null) {
+            overrides.rest = exerciseRef.rest;
+            const parsedRest = parseRestSecondsValue(exerciseRef.rest);
+            overrides.restSeconds = parsedRest ?? null;
+          }
+
+          const programExercise = composeProgramExercise(
+            nextId('exercise'),
+            exerciseRef.exerciseId,
+            overrides,
+          );
+
+          return programExercise;
+        })
+        .filter((exercise): exercise is ProgramExercise => exercise !== null);
+
+      return {
+        id: nextId('session'),
+        sessionId: template.id,
+        label: template.label,
+        duration: template.duration,
+        description: template.description,
+        tags: template.tags,
+        exercises,
+      } satisfies ProgramSession;
+    },
+    [composeProgramExercise, nextId],
+  );
+
+  const createEmptySession = React.useCallback((): ProgramSession => {
+    const id = nextId('session');
+    return {
+      id,
+      sessionId: id,
+      label: builderCopy.structure.custom_session_label,
+      duration: 0,
+      description: '',
+      tags: [],
+      exercises: [],
+    };
+  }, [builderCopy.structure.custom_session_label, nextId]);
+
+  const handleAddSessionFromTemplate = React.useCallback(
+    (templateId: string, position?: number) => {
+      const template = sessionTemplates.find((item) => item.id === templateId);
+      if (!template) {
+        return;
+      }
+
+      const session = createSessionFromTemplate(template);
+      setSessions((prev) => {
+        const insertAt =
+          position != null ? Math.min(Math.max(position, 0), prev.length) : prev.length;
+        const next = [...prev];
+        next.splice(insertAt, 0, session);
+        return next;
+      });
+    },
+    [createSessionFromTemplate, sessionTemplates],
+  );
+
+  const handleCreateEmptySession = React.useCallback(() => {
+    const emptySession = createEmptySession();
+    setSessions((prev) => {
+      return [...prev, emptySession];
+    });
+  }, [createEmptySession]);
 
   const handleAddExerciseToSession = React.useCallback(
     (sessionId: string, exerciseId: string, position?: number) => {
