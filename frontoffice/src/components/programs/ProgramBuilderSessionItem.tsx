@@ -596,10 +596,7 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
             </Typography>
           ) : (
             session.exercises.map((exerciseItem, exerciseIndex) => {
-              const exercise = getExerciseById(exerciseItem.exerciseId);
-              if (!exercise) {
-                return null;
-              }
+              const exercise = getExerciseById(exerciseItem.exerciseId) ?? null;
 
               return (
                 <ProgramBuilderExerciseItem

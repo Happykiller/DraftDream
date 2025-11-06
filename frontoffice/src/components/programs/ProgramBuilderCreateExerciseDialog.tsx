@@ -66,8 +66,7 @@ export function ProgramBuilderCreateExerciseDialog({
   );
   const isProgramExerciseEdit = Boolean(programExerciseContext);
   const isEditMode = mode === 'edit';
-  const isLibraryEditMode = isEditMode && !isProgramExerciseEdit;
-  const dialogNamespace = isLibraryEditMode
+  const dialogNamespace = isEditMode
     ? 'programs-coatch.builder.library.edit_dialog'
     : 'programs-coatch.builder.library.create_dialog';
 
@@ -162,10 +161,6 @@ export function ProgramBuilderCreateExerciseDialog({
   const [creatingEquipment, setCreatingEquipment] = React.useState(false);
   const [creatingTag, setCreatingTag] = React.useState(false);
   const [submitting, setSubmitting] = React.useState(false);
-  const [programSets, setProgramSets] = React.useState('');
-  const [programReps, setProgramReps] = React.useState('');
-  const [programRest, setProgramRest] = React.useState('');
-  const [programNotes, setProgramNotes] = React.useState('');
   const previousExerciseIdRef = React.useRef<string | null>(null);
 
   const handleCreatableSelection = React.useCallback(
@@ -314,21 +309,50 @@ export function ProgramBuilderCreateExerciseDialog({
   }, [open]);
 
   React.useEffect(() => {
-    if (!open || !isEditMode || !exercise) {
+    if (!open) {
       return;
     }
-    if (previousExerciseIdRef.current === exercise.id) {
-      if (isProgramExerciseEdit) {
-        setLabel(
-          programExerciseContext?.exerciseItem.customLabel ?? exercise.label ?? '',
-        );
-      }
+
+    const programExercise = programExerciseContext?.exerciseItem;
+    const key = isProgramExerciseEdit
+      ? programExercise?.id ?? null
+      : exercise && isEditMode
+        ? exercise.id
+        : null;
+
+    if (!key) {
       return;
     }
-    previousExerciseIdRef.current = exercise.id;
-    const nextLabel =
-      programExerciseContext?.exerciseItem.customLabel ?? exercise.label ?? '';
-    setLabel(nextLabel);
+
+    if (previousExerciseIdRef.current === key) {
+      return;
+    }
+    previousExerciseIdRef.current = key;
+
+    if (isProgramExerciseEdit && programExercise) {
+      setLabel(programExercise.label ?? '');
+      setDescription(programExercise.description ?? '');
+      setInstructions(programExercise.instructions ?? '');
+      setSeries(programExercise.series ?? '');
+      setRepetitions(programExercise.repetitions ?? '');
+      setRest(
+        programExercise.restSeconds != null ? String(programExercise.restSeconds) : '',
+      );
+      setCharge(programExercise.charge ?? '');
+      setVideoUrl(programExercise.videoUrl ?? '');
+      setCategoryIds(programExercise.categoryIds ?? []);
+      setLevel(programExercise.level);
+      setMuscleIds([...programExercise.muscleIds]);
+      setEquipmentIds([...programExercise.equipmentIds]);
+      setTagIds([...programExercise.tagIds]);
+      return;
+    }
+
+    if (!isEditMode || !exercise) {
+      return;
+    }
+
+    setLabel(exercise.label ?? '');
     setDescription(exercise.description ?? '');
     setInstructions(exercise.instructions ?? '');
     setSeries(exercise.series ?? '');
@@ -358,27 +382,8 @@ export function ProgramBuilderCreateExerciseDialog({
     isEditMode,
     isProgramExerciseEdit,
     open,
-    programExerciseContext?.exerciseItem.customLabel,
+    programExerciseContext?.exerciseItem,
   ]);
-
-  React.useEffect(() => {
-    if (!open) {
-      return;
-    }
-    if (!programExerciseContext) {
-      setProgramSets('');
-      setProgramReps('');
-      setProgramRest('');
-      setProgramNotes('');
-      return;
-    }
-
-    const { exerciseItem } = programExerciseContext;
-    setProgramSets(String(exerciseItem.sets));
-    setProgramReps(exerciseItem.reps);
-    setProgramRest(exerciseItem.rest);
-    setProgramNotes(exerciseItem.customDescription ?? '');
-  }, [open, programExerciseContext]);
 
   const levelOptions = React.useMemo<{ value: ExerciseLevel; label: string }[]>(
     () => [
@@ -403,17 +408,16 @@ export function ProgramBuilderCreateExerciseDialog({
     [categoryIds],
   );
 
-  const isSubmitDisabled = isProgramExerciseEdit
-    ? submitting
-    : submitting ||
-      creatingMuscle ||
-      creatingEquipment ||
-      creatingTag ||
-      !label.trim() ||
-      !series.trim() ||
-      !repetitions.trim() ||
-      normalizedCategoryIds.length === 0 ||
-      muscleIds.length === 0;
+  const isSubmitDisabled =
+    submitting ||
+    creatingMuscle ||
+    creatingEquipment ||
+    creatingTag ||
+    !label.trim() ||
+    !series.trim() ||
+    !repetitions.trim() ||
+    normalizedCategoryIds.length === 0 ||
+    muscleIds.length === 0;
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -422,30 +426,91 @@ export function ProgramBuilderCreateExerciseDialog({
     }
     if (isProgramExerciseEdit && programExerciseContext) {
       const { exerciseItem, onSubmit } = programExerciseContext;
-      const parsedSets = parseSeriesCount(programSets);
+      const trimmedLabel = label.trim();
+      const trimmedDescription = description.trim();
+      const trimmedInstructions = instructions.trim();
+      const trimmedSeries = series.trim();
+      const trimmedRepetitions = repetitions.trim();
+      const trimmedCharge = charge.trim();
+      const trimmedVideoUrl = videoUrl.trim();
+      const restInput = rest.trim();
+      const parsedRest = restInput ? Number.parseInt(restInput, 10) : Number.NaN;
+      const restSeconds = Number.isNaN(parsedRest) || parsedRest < 0 ? null : parsedRest;
+      const restLabel = restSeconds != null ? `${Math.max(0, Math.trunc(restSeconds))}s` : '-';
+      const parsedSets = parseSeriesCount(trimmedSeries);
       const nextSets =
         Number.isFinite(parsedSets) && parsedSets
           ? Math.max(1, Math.trunc(parsedSets))
           : exerciseItem.sets;
-      const trimmedReps = programReps.trim();
-      const trimmedRest = programRest.trim();
-      const trimmedNotes = programNotes.trim();
-      const patch: ProgramExercisePatch = {
-        sets: nextSets,
-        reps: trimmedReps || exerciseItem.reps,
-        rest: trimmedRest || exerciseItem.rest,
-        customDescription: trimmedNotes ? trimmedNotes : '',
+
+      const resolveCategoryLabels = (ids: string[]) => {
+        return ids.map((id) => {
+          const option = categoryOptionsByLocale.find((candidate) => candidate.id === id);
+          if (option) {
+            return option.label;
+          }
+          const existingIndex = exerciseItem.categoryIds.indexOf(id);
+          if (existingIndex >= 0 && exerciseItem.categoryLabels[existingIndex]) {
+            return exerciseItem.categoryLabels[existingIndex];
+          }
+          return id;
+        });
       };
 
-      if (exercise) {
-        const baseLabel = (exercise.label ?? '').trim();
-        const trimmedLabel = label.trim();
-        if (trimmedLabel !== baseLabel) {
-          patch.customLabel = trimmedLabel;
-        } else if (exerciseItem.customLabel) {
-          patch.customLabel = '';
-        }
-      }
+      const resolveLabeledValues = (
+        ids: string[],
+        options: CreatableOption[],
+        fallback: { id: string; label: string }[],
+      ) => {
+        const dedup = new Map<string, string>();
+        ids.forEach((id) => {
+          if (!id) {
+            return;
+          }
+          const option = options.find((item) => item.id === id);
+          const fallbackItem = fallback.find((item) => item.id === id);
+          const label = option?.label ?? fallbackItem?.label ?? id;
+          if (!dedup.has(id)) {
+            dedup.set(id, label);
+          }
+        });
+        return Array.from(dedup.entries()).map(([valueId, valueLabel]) => ({
+          id: valueId,
+          label: valueLabel,
+        }));
+      };
+
+      const nextCategoryLabels = resolveCategoryLabels(normalizedCategoryIds);
+      const nextMuscles = resolveLabeledValues(muscleIds, muscleOptions, exerciseItem.muscles);
+      const nextEquipment = resolveLabeledValues(
+        equipmentIds,
+        equipmentOptions,
+        exerciseItem.equipment,
+      );
+      const nextTags = resolveLabeledValues(tagIds, tagOptions, exerciseItem.tags);
+
+      const patch: ProgramExercisePatch = {
+        label: trimmedLabel,
+        description: trimmedDescription,
+        instructions: trimmedInstructions,
+        level,
+        series: trimmedSeries,
+        repetitions: trimmedRepetitions,
+        charge: trimmedCharge,
+        restSeconds,
+        rest: restLabel,
+        videoUrl: trimmedVideoUrl,
+        categoryIds: [...normalizedCategoryIds],
+        categoryLabels: nextCategoryLabels,
+        muscleIds: [...muscleIds],
+        muscles: nextMuscles,
+        equipmentIds: [...equipmentIds],
+        equipment: nextEquipment,
+        tagIds: [...tagIds],
+        tags: nextTags,
+        sets: nextSets,
+        reps: trimmedRepetitions,
+      };
 
       await onSubmit(patch);
       onClose();
@@ -596,27 +661,6 @@ export function ProgramBuilderCreateExerciseDialog({
     ? t(`${dialogNamespace}.actions.submitting`)
     : t(`${dialogNamespace}.actions.submit`);
 
-  type ProgramExerciseDialogCopy = {
-    title: string;
-    subtitle?: string;
-    fields: {
-      sets: string;
-      reps: string;
-      rest: string;
-      notes: string;
-      notes_placeholder: string;
-    };
-  };
-
-  const programExerciseCopy = React.useMemo<ProgramExerciseDialogCopy | null>(() => {
-    if (!programExerciseContext) {
-      return null;
-    }
-    return t('programs-coatch.builder.program_exercise_dialog', {
-      returnObjects: true,
-    }) as ProgramExerciseDialogCopy;
-  }, [programExerciseContext, t]);
-
   const fieldCopy = React.useMemo(
     () => ({
       label: t('programs-coatch.builder.library.create_dialog.fields.label'),
@@ -701,7 +745,6 @@ export function ProgramBuilderCreateExerciseDialog({
               label={fieldCopy.label}
               value={label}
               onChange={(event) => setLabel(event.target.value)}
-              disabled={isProgramExerciseEdit}
             />
 
             <Autocomplete
@@ -717,10 +760,8 @@ export function ProgramBuilderCreateExerciseDialog({
                   {...params}
                   required
                   label={categoryLabel}
-                  disabled={isProgramExerciseEdit}
                 />
               )}
-              disabled={isProgramExerciseEdit}
             />
           </Stack>
 
@@ -764,10 +805,8 @@ export function ProgramBuilderCreateExerciseDialog({
                 required
                 label={fieldCopy.muscles}
                 helperText={helperCopy.muscles}
-                disabled={isProgramExerciseEdit}
               />
             )}
-            disabled={isProgramExerciseEdit}
           />
 
           {/* Level and media */}
@@ -778,7 +817,6 @@ export function ProgramBuilderCreateExerciseDialog({
               label={fieldCopy.level}
               value={level}
               onChange={(event) => setLevel(event.target.value as ExerciseLevel)}
-              disabled={isProgramExerciseEdit}
             >
               {levelOptions.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
@@ -791,7 +829,6 @@ export function ProgramBuilderCreateExerciseDialog({
               label={fieldCopy.videoUrl}
               value={videoUrl}
               onChange={(event) => setVideoUrl(event.target.value)}
-              disabled={isProgramExerciseEdit}
             />
           </Stack>
 
@@ -803,7 +840,6 @@ export function ProgramBuilderCreateExerciseDialog({
               label={fieldCopy.series}
               value={series}
               onChange={(event) => setSeries(event.target.value)}
-              disabled={isProgramExerciseEdit}
             />
             <TextField
               required
@@ -811,14 +847,12 @@ export function ProgramBuilderCreateExerciseDialog({
               label={fieldCopy.repetitions}
               value={repetitions}
               onChange={(event) => setRepetitions(event.target.value)}
-              disabled={isProgramExerciseEdit}
             />
             <TextField
               fullWidth
               label={fieldCopy.charge}
               value={charge}
               onChange={(event) => setCharge(event.target.value)}
-              disabled={isProgramExerciseEdit}
             />
             <TextField
               fullWidth
@@ -827,7 +861,6 @@ export function ProgramBuilderCreateExerciseDialog({
               value={rest}
               onChange={(event) => setRest(event.target.value)}
               inputProps={{ min: 0 }}
-              disabled={isProgramExerciseEdit}
             />
           </Stack>
 
@@ -838,7 +871,6 @@ export function ProgramBuilderCreateExerciseDialog({
             label={fieldCopy.description}
             value={description}
             onChange={(event) => setDescription(event.target.value)}
-            disabled={isProgramExerciseEdit}
           />
 
           {/* Instructions */}
@@ -849,7 +881,6 @@ export function ProgramBuilderCreateExerciseDialog({
             label={fieldCopy.instructions}
             value={instructions}
             onChange={(event) => setInstructions(event.target.value)}
-            disabled={isProgramExerciseEdit}
           />
 
           {/* Equipment selector */}
@@ -890,10 +921,8 @@ export function ProgramBuilderCreateExerciseDialog({
               <TextField
                 {...params}
                 label={fieldCopy.equipment}
-                disabled={isProgramExerciseEdit}
               />
             )}
-            disabled={isProgramExerciseEdit}
           />
 
           {/* Tags selector */}
@@ -934,58 +963,11 @@ export function ProgramBuilderCreateExerciseDialog({
               <TextField
                 {...params}
                 label={fieldCopy.tags}
-                disabled={isProgramExerciseEdit}
               />
             )}
-            disabled={isProgramExerciseEdit}
           />
         </Stack>
 
-        {programExerciseCopy ? (
-          <Stack spacing={2}>
-            <Stack spacing={0.5}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                {programExerciseCopy.title}
-              </Typography>
-              {programExerciseCopy.subtitle ? (
-                <Typography variant="body2" color="text.secondary">
-                  {programExerciseCopy.subtitle}
-                </Typography>
-              ) : null}
-            </Stack>
-
-            <Stack direction={{ xs: 'column', lg: 'row' }} spacing={2}>
-              <TextField
-                fullWidth
-                label={programExerciseCopy.fields.sets}
-                value={programSets}
-                onChange={(event) => setProgramSets(event.target.value)}
-              />
-              <TextField
-                fullWidth
-                label={programExerciseCopy.fields.reps}
-                value={programReps}
-                onChange={(event) => setProgramReps(event.target.value)}
-              />
-              <TextField
-                fullWidth
-                label={programExerciseCopy.fields.rest}
-                value={programRest}
-                onChange={(event) => setProgramRest(event.target.value)}
-              />
-            </Stack>
-
-            <TextField
-              fullWidth
-              multiline
-              minRows={3}
-              label={programExerciseCopy.fields.notes}
-              placeholder={programExerciseCopy.fields.notes_placeholder}
-              value={programNotes}
-              onChange={(event) => setProgramNotes(event.target.value)}
-            />
-          </Stack>
-        ) : null}
       </Stack>
     </ProgramDialogLayout>
   );

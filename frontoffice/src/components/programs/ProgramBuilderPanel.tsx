@@ -30,6 +30,7 @@ import type {
   ProgramExercise,
   ProgramExercisePatch,
 } from './programBuilderTypes';
+import { parseSeriesCount } from './programBuilderUtils';
 
 import type { Exercise } from '@hooks/useExercises';
 import type { User } from '@src/hooks/useUsers';
@@ -527,19 +528,125 @@ export function ProgramBuilderPanel({
         }
 
         handleUpdateProgramExercise(current.sessionId, current.exerciseItem.id, patch);
-        const nextExerciseItem: ProgramExercise = {
-          ...current.exerciseItem,
-          ...patch,
-        };
+        const nextExerciseItem: ProgramExercise = { ...current.exerciseItem };
 
-        if ('customDescription' in patch) {
-          const trimmedDescription = patch.customDescription?.trim() ?? '';
-          nextExerciseItem.customDescription = trimmedDescription ? trimmedDescription : undefined;
+        if (Object.prototype.hasOwnProperty.call(patch, 'label') && patch.label !== undefined) {
+          nextExerciseItem.label = patch.label;
         }
 
-        if ('customLabel' in patch) {
-          const trimmedLabel = patch.customLabel?.trim() ?? '';
-          nextExerciseItem.customLabel = trimmedLabel ? trimmedLabel : undefined;
+        if (
+          Object.prototype.hasOwnProperty.call(patch, 'description') &&
+          patch.description !== undefined
+        ) {
+          nextExerciseItem.description = patch.description;
+        }
+
+        if (
+          Object.prototype.hasOwnProperty.call(patch, 'instructions') &&
+          patch.instructions !== undefined
+        ) {
+          nextExerciseItem.instructions = patch.instructions;
+        }
+
+        if (Object.prototype.hasOwnProperty.call(patch, 'level') && patch.level) {
+          nextExerciseItem.level = patch.level;
+        }
+
+        if (Object.prototype.hasOwnProperty.call(patch, 'series') && patch.series !== undefined) {
+          nextExerciseItem.series = patch.series;
+          const parsed = parseSeriesCount(patch.series);
+          if (Number.isFinite(parsed) && parsed) {
+            nextExerciseItem.sets = Math.max(1, Math.trunc(parsed));
+          }
+        }
+
+        if (
+          Object.prototype.hasOwnProperty.call(patch, 'repetitions') &&
+          patch.repetitions !== undefined
+        ) {
+          nextExerciseItem.repetitions = patch.repetitions;
+          nextExerciseItem.reps = patch.repetitions;
+        }
+
+        if (Object.prototype.hasOwnProperty.call(patch, 'sets') && patch.sets !== undefined) {
+          const parsedSets = Number.isFinite(patch.sets) ? Math.trunc(Number(patch.sets)) : NaN;
+          if (!Number.isNaN(parsedSets) && parsedSets > 0) {
+            nextExerciseItem.sets = parsedSets;
+          }
+        }
+
+        if (Object.prototype.hasOwnProperty.call(patch, 'reps') && patch.reps !== undefined) {
+          nextExerciseItem.reps = patch.reps;
+        }
+
+        if (Object.prototype.hasOwnProperty.call(patch, 'charge') && patch.charge !== undefined) {
+          nextExerciseItem.charge = patch.charge;
+        }
+
+        if (
+          Object.prototype.hasOwnProperty.call(patch, 'restSeconds') &&
+          patch.restSeconds !== undefined
+        ) {
+          nextExerciseItem.restSeconds = patch.restSeconds;
+          nextExerciseItem.rest =
+            patch.restSeconds != null && Number.isFinite(patch.restSeconds)
+              ? `${Math.max(0, Math.trunc(patch.restSeconds))}s`
+              : '-';
+        }
+
+        if (Object.prototype.hasOwnProperty.call(patch, 'rest') && patch.rest !== undefined) {
+          nextExerciseItem.rest = patch.rest;
+        }
+
+        if (
+          Object.prototype.hasOwnProperty.call(patch, 'videoUrl') &&
+          patch.videoUrl !== undefined
+        ) {
+          nextExerciseItem.videoUrl = patch.videoUrl;
+        }
+
+        if (
+          Object.prototype.hasOwnProperty.call(patch, 'categoryIds') &&
+          patch.categoryIds
+        ) {
+          nextExerciseItem.categoryIds = [...patch.categoryIds];
+        }
+
+        if (
+          Object.prototype.hasOwnProperty.call(patch, 'categoryLabels') &&
+          patch.categoryLabels
+        ) {
+          nextExerciseItem.categoryLabels = [...patch.categoryLabels];
+        }
+
+        if (
+          Object.prototype.hasOwnProperty.call(patch, 'muscleIds') &&
+          patch.muscleIds
+        ) {
+          nextExerciseItem.muscleIds = [...patch.muscleIds];
+        }
+
+        if (Object.prototype.hasOwnProperty.call(patch, 'muscles') && patch.muscles) {
+          nextExerciseItem.muscles = patch.muscles.map((item) => ({ ...item }));
+        }
+
+        if (
+          Object.prototype.hasOwnProperty.call(patch, 'equipmentIds') &&
+          patch.equipmentIds
+        ) {
+          nextExerciseItem.equipmentIds = [...patch.equipmentIds];
+        }
+
+        if (Object.prototype.hasOwnProperty.call(patch, 'equipment') && patch.equipment) {
+          nextExerciseItem.equipment = patch.equipment.map((item) => ({ ...item }));
+        }
+
+        if (Object.prototype.hasOwnProperty.call(patch, 'tagIds') && patch.tagIds) {
+          nextExerciseItem.tagIds = [...patch.tagIds];
+        }
+
+        if (Object.prototype.hasOwnProperty.call(patch, 'tags') && patch.tags) {
+          nextExerciseItem.tags = patch.tags.map((item) => ({ ...item }));
         }
 
         return {

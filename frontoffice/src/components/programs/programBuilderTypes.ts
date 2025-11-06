@@ -1,4 +1,7 @@
-import type { ExerciseVisibility } from '@hooks/useExercises';
+import type {
+  ExerciseLevel,
+  ExerciseVisibility,
+} from '@hooks/useExercises';
 
 export type ExerciseLibraryItem = {
   id: string;
@@ -39,15 +42,30 @@ export type SessionTemplate = {
 export type ProgramExercise = {
   id: string;
   exerciseId: string;
+  label: string;
+  description: string;
+  instructions: string;
+  level: ExerciseLevel;
+  series: string;
+  repetitions: string;
+  charge: string;
+  restSeconds: number | null;
+  rest: string;
+  videoUrl: string;
+  categoryIds: string[];
+  categoryLabels: string[];
+  muscleIds: string[];
+  muscles: { id: string; label: string }[];
+  equipmentIds: string[];
+  equipment: { id: string; label: string }[];
+  tagIds: string[];
+  tags: { id: string; label: string }[];
   sets: number;
   reps: string;
-  rest: string;
-  customLabel?: string;
-  customDescription?: string;
 };
 
 export type ProgramExercisePatch = Partial<
-  Pick<ProgramExercise, 'sets' | 'reps' | 'rest' | 'customDescription' | 'customLabel'>
+  Omit<ProgramExercise, 'id' | 'exerciseId'>
 >;
 
 export type ProgramSession = {

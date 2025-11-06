@@ -527,20 +527,34 @@ export function useProgramBuilder(
     (template: SessionTemplate): ProgramSession => {
       const exercises = template.exercises
         .map((exerciseRef) => {
-          const base = exerciseMap.get(exerciseRef.exerciseId);
-          if (!base) {
-            return null;
+          const overrides: Partial<Omit<ProgramExercise, 'id' | 'exerciseId'>> = {};
+
+          if (exerciseRef.label && exerciseRef.label.trim()) {
+            overrides.label = exerciseRef.label;
           }
 
-          const programExercise: ProgramExercise = {
-            id: nextId('exercise'),
-            exerciseId: base.id,
-            sets: exerciseRef.sets ?? base.sets,
-            reps: exerciseRef.reps ?? base.reps,
-            rest: exerciseRef.rest ?? base.rest,
-            customLabel: undefined,
-            customDescription: undefined,
-          };
+          if (exerciseRef.sets != null) {
+            overrides.sets = exerciseRef.sets;
+            overrides.series = String(exerciseRef.sets);
+          }
+
+          if (exerciseRef.reps) {
+            overrides.repetitions = exerciseRef.reps;
+            overrides.reps = exerciseRef.reps;
+          }
+
+          if (exerciseRef.rest != null) {
+            overrides.rest = exerciseRef.rest;
+            const parsedRest = parseRestSecondsValue(exerciseRef.rest);
+            overrides.restSeconds = parsedRest ?? null;
+          }
+
+          const programExercise = composeProgramExercise(
+            nextId('exercise'),
+            exerciseRef.exerciseId,
+            overrides,
+          );
+
           return programExercise;
         })
         .filter((exercise): exercise is ProgramExercise => exercise !== null);
@@ -555,7 +569,7 @@ export function useProgramBuilder(
         exercises,
       } satisfies ProgramSession;
     },
-    [exerciseMap, nextId],
+    [composeProgramExercise, nextId],
   );
 
   const createEmptySession = React.useCallback((): ProgramSession => {
@@ -619,10 +633,263 @@ export function useProgramBuilder(
     });
   }, [createEmptySession]);
 
+  const composeProgramExercise = React.useCallback(
+    (
+      builderExerciseId: string,
+      exerciseId: string,
+      overrides?: Partial<Omit<ProgramExercise, 'id' | 'exerciseId'>>,
+    ): ProgramExercise | null => {
+      const rawExercise = getRawExerciseById(exerciseId);
+      const libraryExercise = exerciseMap.get(exerciseId);
+      if (!rawExercise && !libraryExercise) {
+        return null;
+      }
+
+      const source = rawExercise ?? libraryExercise!;
+      const seriesValue =
+        'series' in source && typeof source.series === 'string' && source.series.trim()
+          ? source.series
+          : rawExercise?.series ?? String(libraryExercise?.sets ?? 1);
+      const repetitionsValue =
+        'repetitions' in source && typeof source.repetitions === 'string'
+          ? source.repetitions
+          : rawExercise?.repetitions ?? libraryExercise?.reps ?? '';
+      const parsedSets = parseSeriesCount(seriesValue);
+      const baseSets = Number.isFinite(parsedSets) && parsedSets ? Math.max(1, Math.trunc(parsedSets)) : 1;
+      const normalizedRestSeconds =
+        'rest' in source && typeof source.rest === 'number'
+          ? source.rest ?? null
+          : rawExercise?.rest ?? parseRestSecondsValue(libraryExercise?.rest ?? null);
+      const restLabel =
+        normalizedRestSeconds != null
+          ? `${Math.max(0, Math.trunc(normalizedRestSeconds))}s`
+          : libraryExercise?.rest ?? '-';
+      const normalizedLevel = normalizeExerciseLevel(
+        'level' in source ? source.level : libraryExercise?.level,
+      );
+      const baseCategoryIds = Array.from(
+        new Set(
+          (
+            ('categoryIds' in source ? source.categoryIds : libraryExercise?.categoryIds) ?? []
+          ).filter((id): id is string => Boolean(id)),
+        ),
+      );
+      const categoryLabels = baseCategoryIds.map((categoryId) => {
+        const rawLabel = rawExercise?.categories?.find((item) => item?.id === categoryId)?.label;
+        if (rawLabel) {
+          return rawLabel;
+        }
+        if (libraryExercise) {
+          const index = libraryExercise.categoryIds.indexOf(categoryId);
+          if (index >= 0 && libraryExercise.categoryLabels[index]) {
+            return libraryExercise.categoryLabels[index];
+          }
+        }
+        return categoryLabelById.get(categoryId) ?? categoryId;
+      });
+
+      const normalizeLabeledItems = (
+        items:
+          | ({ id?: string | null; label?: string | null } | null | undefined)[]
+          | undefined,
+      ) => {
+        const dedup = new Map<string, string>();
+        for (const item of items ?? []) {
+          if (!item?.id) {
+            continue;
+          }
+          const label = (item.label ?? item.id).trim();
+          if (!dedup.has(item.id)) {
+            dedup.set(item.id, label.length > 0 ? label : item.id);
+          }
+        }
+        return Array.from(dedup.entries()).map(([id, label]) => ({ id, label }));
+      };
+
+      const muscles = normalizeLabeledItems(
+        'muscles' in source ? source.muscles : libraryExercise?.muscles,
+      );
+      const muscleIds = muscles.map((item) => item.id);
+      const equipment = normalizeLabeledItems(
+        'equipment' in source ? source.equipment : libraryExercise?.equipment,
+      );
+      const equipmentIds = equipment.map((item) => item.id);
+      const tags = normalizeLabeledItems('tags' in source ? source.tags : libraryExercise?.tags);
+      const tagIds = tags.map((item) => item.id);
+
+      const descriptionValue =
+        ('description' in source ? source.description : libraryExercise?.description) ?? '';
+      const instructionsValue = ('instructions' in source ? source.instructions : null) ?? '';
+      const chargeValue = ('charge' in source ? source.charge : null) ?? '';
+      const videoUrlValue = ('videoUrl' in source ? source.videoUrl : null) ?? '';
+
+      const baseExercise: ProgramExercise = {
+        id: builderExerciseId,
+        exerciseId,
+        label: ('label' in source ? source.label : libraryExercise?.label) ?? '',
+        description: descriptionValue ?? '',
+        instructions: instructionsValue ?? '',
+        level: normalizedLevel,
+        series: seriesValue ?? '',
+        repetitions: repetitionsValue ?? '',
+        charge: chargeValue ?? '',
+        restSeconds: normalizedRestSeconds ?? null,
+        rest: restLabel,
+        videoUrl: videoUrlValue ?? '',
+        categoryIds: baseCategoryIds,
+        categoryLabels,
+        muscleIds,
+        muscles,
+        equipmentIds,
+        equipment,
+        tagIds,
+        tags,
+        sets: baseSets,
+        reps: repetitionsValue ?? '',
+      };
+
+      if (!overrides) {
+        return baseExercise;
+      }
+
+      const nextExercise: ProgramExercise = { ...baseExercise };
+
+      if (Object.prototype.hasOwnProperty.call(overrides, 'label') && overrides.label !== undefined) {
+        nextExercise.label = overrides.label;
+      }
+
+      if (
+        Object.prototype.hasOwnProperty.call(overrides, 'description') &&
+        overrides.description !== undefined
+      ) {
+        nextExercise.description = overrides.description;
+      }
+
+      if (
+        Object.prototype.hasOwnProperty.call(overrides, 'instructions') &&
+        overrides.instructions !== undefined
+      ) {
+        nextExercise.instructions = overrides.instructions;
+      }
+
+      if (Object.prototype.hasOwnProperty.call(overrides, 'level') && overrides.level) {
+        nextExercise.level = overrides.level;
+      }
+
+      if (Object.prototype.hasOwnProperty.call(overrides, 'series') && overrides.series !== undefined) {
+        nextExercise.series = overrides.series;
+        const parsed = parseSeriesCount(overrides.series);
+        if (Number.isFinite(parsed) && parsed) {
+          nextExercise.sets = Math.max(1, Math.trunc(parsed));
+        }
+      }
+
+      if (
+        Object.prototype.hasOwnProperty.call(overrides, 'repetitions') &&
+        overrides.repetitions !== undefined
+      ) {
+        nextExercise.repetitions = overrides.repetitions;
+        nextExercise.reps = overrides.repetitions;
+      }
+
+      if (Object.prototype.hasOwnProperty.call(overrides, 'sets') && overrides.sets !== undefined) {
+        const parsed = Number.isFinite(overrides.sets)
+          ? Math.trunc(Number(overrides.sets))
+          : Number.NaN;
+        if (!Number.isNaN(parsed) && parsed > 0) {
+          nextExercise.sets = parsed;
+        }
+      }
+
+      if (Object.prototype.hasOwnProperty.call(overrides, 'reps') && overrides.reps !== undefined) {
+        nextExercise.reps = overrides.reps;
+      }
+
+      if (Object.prototype.hasOwnProperty.call(overrides, 'charge') && overrides.charge !== undefined) {
+        nextExercise.charge = overrides.charge;
+      }
+
+      if (
+        Object.prototype.hasOwnProperty.call(overrides, 'restSeconds') &&
+        overrides.restSeconds !== undefined
+      ) {
+        nextExercise.restSeconds = overrides.restSeconds;
+        nextExercise.rest =
+          overrides.restSeconds != null && Number.isFinite(overrides.restSeconds)
+            ? `${Math.max(0, Math.trunc(overrides.restSeconds))}s`
+            : '-';
+      }
+
+      if (Object.prototype.hasOwnProperty.call(overrides, 'rest') && overrides.rest !== undefined) {
+        nextExercise.rest = overrides.rest;
+      }
+
+      if (
+        Object.prototype.hasOwnProperty.call(overrides, 'videoUrl') &&
+        overrides.videoUrl !== undefined
+      ) {
+        nextExercise.videoUrl = overrides.videoUrl;
+      }
+
+      if (
+        Object.prototype.hasOwnProperty.call(overrides, 'categoryIds') &&
+        overrides.categoryIds
+      ) {
+        nextExercise.categoryIds = [...overrides.categoryIds];
+      }
+
+      if (
+        Object.prototype.hasOwnProperty.call(overrides, 'categoryLabels') &&
+        overrides.categoryLabels
+      ) {
+        nextExercise.categoryLabels = [...overrides.categoryLabels];
+      }
+
+      if (
+        Object.prototype.hasOwnProperty.call(overrides, 'muscleIds') &&
+        overrides.muscleIds
+      ) {
+        nextExercise.muscleIds = [...overrides.muscleIds];
+      }
+
+      if (Object.prototype.hasOwnProperty.call(overrides, 'muscles') && overrides.muscles) {
+        nextExercise.muscles = overrides.muscles.map((item) => ({ ...item }));
+      }
+
+      if (
+        Object.prototype.hasOwnProperty.call(overrides, 'equipmentIds') &&
+        overrides.equipmentIds
+      ) {
+        nextExercise.equipmentIds = [...overrides.equipmentIds];
+      }
+
+      if (Object.prototype.hasOwnProperty.call(overrides, 'equipment') && overrides.equipment) {
+        nextExercise.equipment = overrides.equipment.map((item) => ({ ...item }));
+      }
+
+      if (Object.prototype.hasOwnProperty.call(overrides, 'tagIds') && overrides.tagIds) {
+        nextExercise.tagIds = [...overrides.tagIds];
+      }
+
+      if (Object.prototype.hasOwnProperty.call(overrides, 'tags') && overrides.tags) {
+        nextExercise.tags = overrides.tags.map((item) => ({ ...item }));
+      }
+
+      return nextExercise;
+    },
+    [
+      categoryLabelById,
+      exerciseMap,
+      getRawExerciseById,
+      normalizeExerciseLevel,
+    ],
+  );
+
   const handleAddExerciseToSession = React.useCallback(
     (sessionId: string, exerciseId: string, position?: number) => {
-      const exercise = exerciseMap.get(exerciseId);
-      if (!exercise) {
+      const builderExerciseId = nextId('exercise');
+      const programExercise = composeProgramExercise(builderExerciseId, exerciseId);
+      if (!programExercise) {
         return;
       }
 
@@ -635,15 +902,6 @@ export function useProgramBuilder(
           const exercises = [...session.exercises];
           const insertAt =
             position != null ? Math.min(Math.max(position, 0), exercises.length) : exercises.length;
-          const programExercise: ProgramExercise = {
-            id: nextId('exercise'),
-            exerciseId: exercise.id,
-            sets: exercise.sets,
-            reps: exercise.reps,
-            rest: exercise.rest,
-            customLabel: undefined,
-            customDescription: undefined,
-          };
           exercises.splice(insertAt, 0, programExercise);
 
           return {
@@ -653,7 +911,7 @@ export function useProgramBuilder(
         }),
       );
     },
-    [exerciseMap, nextId],
+    [composeProgramExercise, nextId],
   );
 
   const handleRemoveSession = React.useCallback((sessionId: string) => {
@@ -704,10 +962,9 @@ export function useProgramBuilder(
             return session;
           }
 
+          const trimmed = label.trim();
           const exercises = session.exercises.map((exercise) =>
-            exercise.id === exerciseId
-              ? { ...exercise, customLabel: label || undefined }
-              : exercise,
+            exercise.id === exerciseId ? { ...exercise, label: trimmed || exercise.label } : exercise,
           );
           return { ...session, exercises };
         }),
@@ -725,12 +982,7 @@ export function useProgramBuilder(
           }
 
           const exercises = session.exercises.map((exercise) =>
-            exercise.id === exerciseId
-              ? {
-                  ...exercise,
-                  customDescription: description.trim() ? description.trim() : undefined,
-                }
-              : exercise,
+            exercise.id === exerciseId ? { ...exercise, description } : exercise,
           );
 
           return { ...session, exercises };
@@ -755,26 +1007,111 @@ export function useProgramBuilder(
 
             const nextExercise: ProgramExercise = { ...exercise };
 
-            if ('sets' in patch && typeof patch.sets === 'number' && Number.isFinite(patch.sets)) {
-              nextExercise.sets = Math.max(1, Math.trunc(patch.sets));
+            if (Object.prototype.hasOwnProperty.call(patch, 'label') && patch.label !== undefined) {
+              nextExercise.label = patch.label;
             }
 
-            if ('reps' in patch && typeof patch.reps === 'string') {
+            if (
+              Object.prototype.hasOwnProperty.call(patch, 'description') &&
+              patch.description !== undefined
+            ) {
+              nextExercise.description = patch.description;
+            }
+
+            if (
+              Object.prototype.hasOwnProperty.call(patch, 'instructions') &&
+              patch.instructions !== undefined
+            ) {
+              nextExercise.instructions = patch.instructions;
+            }
+
+            if (Object.prototype.hasOwnProperty.call(patch, 'level') && patch.level) {
+              nextExercise.level = patch.level;
+            }
+
+            if (Object.prototype.hasOwnProperty.call(patch, 'series') && patch.series !== undefined) {
+              nextExercise.series = patch.series;
+              const parsed = parseSeriesCount(patch.series);
+              if (Number.isFinite(parsed) && parsed) {
+                nextExercise.sets = Math.max(1, Math.trunc(parsed));
+              }
+            }
+
+            if (
+              Object.prototype.hasOwnProperty.call(patch, 'repetitions') &&
+              patch.repetitions !== undefined
+            ) {
+              nextExercise.repetitions = patch.repetitions;
+              nextExercise.reps = patch.repetitions;
+            }
+
+            if (Object.prototype.hasOwnProperty.call(patch, 'sets') && patch.sets !== undefined) {
+              const parsedSets = Number.isFinite(patch.sets) ? Math.trunc(Number(patch.sets)) : NaN;
+              if (!Number.isNaN(parsedSets) && parsedSets > 0) {
+                nextExercise.sets = parsedSets;
+              }
+            }
+
+            if (Object.prototype.hasOwnProperty.call(patch, 'reps') && patch.reps !== undefined) {
               nextExercise.reps = patch.reps;
             }
 
-            if ('rest' in patch && typeof patch.rest === 'string') {
+            if (Object.prototype.hasOwnProperty.call(patch, 'charge') && patch.charge !== undefined) {
+              nextExercise.charge = patch.charge;
+            }
+
+            if (
+              Object.prototype.hasOwnProperty.call(patch, 'restSeconds') &&
+              patch.restSeconds !== undefined
+            ) {
+              nextExercise.restSeconds = patch.restSeconds;
+              nextExercise.rest =
+                patch.restSeconds != null && Number.isFinite(patch.restSeconds)
+                  ? `${Math.max(0, Math.trunc(patch.restSeconds))}s`
+                  : '-';
+            }
+
+            if (Object.prototype.hasOwnProperty.call(patch, 'rest') && patch.rest !== undefined) {
               nextExercise.rest = patch.rest;
             }
 
-            if ('customDescription' in patch) {
-              const trimmed = patch.customDescription?.trim() ?? '';
-              nextExercise.customDescription = trimmed ? trimmed : undefined;
+            if (Object.prototype.hasOwnProperty.call(patch, 'videoUrl') && patch.videoUrl !== undefined) {
+              nextExercise.videoUrl = patch.videoUrl;
             }
 
-            if ('customLabel' in patch) {
-              const trimmedLabel = patch.customLabel?.trim() ?? '';
-              nextExercise.customLabel = trimmedLabel ? trimmedLabel : undefined;
+            if (Object.prototype.hasOwnProperty.call(patch, 'categoryIds') && patch.categoryIds) {
+              nextExercise.categoryIds = [...patch.categoryIds];
+            }
+
+            if (
+              Object.prototype.hasOwnProperty.call(patch, 'categoryLabels') &&
+              patch.categoryLabels
+            ) {
+              nextExercise.categoryLabels = [...patch.categoryLabels];
+            }
+
+            if (Object.prototype.hasOwnProperty.call(patch, 'muscleIds') && patch.muscleIds) {
+              nextExercise.muscleIds = [...patch.muscleIds];
+            }
+
+            if (Object.prototype.hasOwnProperty.call(patch, 'muscles') && patch.muscles) {
+              nextExercise.muscles = patch.muscles.map((item) => ({ ...item }));
+            }
+
+            if (Object.prototype.hasOwnProperty.call(patch, 'equipmentIds') && patch.equipmentIds) {
+              nextExercise.equipmentIds = [...patch.equipmentIds];
+            }
+
+            if (Object.prototype.hasOwnProperty.call(patch, 'equipment') && patch.equipment) {
+              nextExercise.equipment = patch.equipment.map((item) => ({ ...item }));
+            }
+
+            if (Object.prototype.hasOwnProperty.call(patch, 'tagIds') && patch.tagIds) {
+              nextExercise.tagIds = [...patch.tagIds];
+            }
+
+            if (Object.prototype.hasOwnProperty.call(patch, 'tags') && patch.tags) {
+              nextExercise.tags = patch.tags.map((item) => ({ ...item }));
             }
 
             return nextExercise;
@@ -902,56 +1239,45 @@ export function useProgramBuilder(
           label: session.label,
           durationMin: session.duration,
           description: session.description ? session.description : undefined,
-          exercises: session.exercises
-            .map((exercise) => {
-              const base = exerciseMap.get(exercise.exerciseId);
-              if (!base) {
-                return null;
-              }
-              const categoryIds = Array.from(new Set(base.categoryIds ?? [])).filter(
-                (id): id is string => Boolean(id),
-              );
-              const muscleIds = Array.from(
-                new Set(
-                  (base.muscles ?? [])
-                    .map((item) => item.id)
-                    .filter((id): id is string => Boolean(id)),
-                ),
-              );
-              const equipmentIds = Array.from(
-                new Set(
-                  (base.equipment ?? [])
-                    .map((item) => item.id)
-                    .filter((id): id is string => Boolean(id)),
-                ),
-              );
-              const tagIds = Array.from(
-                new Set(
-                  (base.tags ?? [])
-                    .map((item) => item.id)
-                    .filter((id): id is string => Boolean(id)),
-                ),
-              );
-              return {
-                id: exercise.id,
-                templateExerciseId: exercise.exerciseId,
-                label: exercise.customLabel ?? base.label,
-                series: String(exercise.sets),
-                repetitions: exercise.reps,
-                restSeconds: parseRestSecondsValue(exercise.rest),
-                description:
-                  exercise.customDescription ?? base.description ?? undefined,
-                instructions: undefined,
-                charge: undefined,
-                videoUrl: undefined,
-                level: base.level,
-                categoryIds: categoryIds.length ? categoryIds : undefined,
-                muscleIds: muscleIds.length ? muscleIds : undefined,
-                equipmentIds: equipmentIds.length ? equipmentIds : undefined,
-                tagIds: tagIds.length ? tagIds : undefined,
-              };
-            })
-            .filter((exercise): exercise is NonNullable<typeof exercise> => Boolean(exercise)),
+          exercises: session.exercises.map((exercise) => {
+            const normalizedCategoryIds = Array.from(
+              new Set(exercise.categoryIds.filter((id) => Boolean(id))),
+            );
+            const normalizedMuscleIds = Array.from(
+              new Set(exercise.muscleIds.filter((id) => Boolean(id))),
+            );
+            const normalizedEquipmentIds = Array.from(
+              new Set(exercise.equipmentIds.filter((id) => Boolean(id))),
+            );
+            const normalizedTagIds = Array.from(
+              new Set(exercise.tagIds.filter((id) => Boolean(id))),
+            );
+            const restSeconds =
+              exercise.restSeconds != null
+                ? exercise.restSeconds
+                : parseRestSecondsValue(exercise.rest);
+            const trimmedSeries = exercise.series.trim();
+
+            return {
+              id: exercise.id,
+              templateExerciseId: exercise.exerciseId,
+              label: exercise.label,
+              series: trimmedSeries || String(exercise.sets),
+              repetitions: exercise.repetitions,
+              restSeconds,
+              description: exercise.description ? exercise.description : undefined,
+              instructions: exercise.instructions ? exercise.instructions : undefined,
+              charge: exercise.charge ? exercise.charge : undefined,
+              videoUrl: exercise.videoUrl ? exercise.videoUrl : undefined,
+              level: exercise.level,
+              categoryIds: normalizedCategoryIds.length ? normalizedCategoryIds : undefined,
+              muscleIds: normalizedMuscleIds.length ? normalizedMuscleIds : undefined,
+              equipmentIds: normalizedEquipmentIds.length
+                ? normalizedEquipmentIds
+                : undefined,
+              tagIds: normalizedTagIds.length ? normalizedTagIds : undefined,
+            };
+          }),
         }));
 
         if (mode === 'edit' && program) {
@@ -991,7 +1317,6 @@ export function useProgramBuilder(
     },
     [
       createProgram,
-      exerciseMap,
       flashError,
       form.athlete,
       i18n.language,
@@ -1085,7 +1410,9 @@ export function useProgramBuilder(
               ? exerciseItem.id
               : builderExerciseId;
 
-        if (!getRawExerciseById(baseExerciseId) && !placeholderExercises.has(baseExerciseId)) {
+        const baseExercise = getRawExerciseById(baseExerciseId);
+
+        if (!baseExercise && !placeholderExercises.has(baseExerciseId)) {
           const categoryIds = Array.from(
             new Set((exerciseItem.categoryIds ?? []).filter((id): id is string => Boolean(id))),
           );
@@ -1128,14 +1455,95 @@ export function useProgramBuilder(
           missingExerciseIds.add(baseExerciseId);
         }
 
+        const fallbackExercise =
+          baseExercise ?? placeholderExercises.get(baseExerciseId) ?? getRawExerciseById(baseExerciseId);
+
+        const resolveLabeledItems = (
+          primary:
+            | ({ id?: string | null; label?: string | null } | null | undefined)[]
+            | undefined,
+          secondary:
+            | ({ id?: string | null; label?: string | null } | null | undefined)[]
+            | undefined,
+        ) => {
+          const dedup = new Map<string, string>();
+          for (const item of [...(primary ?? []), ...(secondary ?? [])]) {
+            if (!item?.id) {
+              continue;
+            }
+            const label = (item.label ?? item.id).trim();
+            if (!dedup.has(item.id)) {
+              dedup.set(item.id, label.length > 0 ? label : item.id);
+            }
+          }
+          return Array.from(dedup.entries()).map(([id, label]) => ({ id, label }));
+        };
+
+        const categoryIds = Array.from(
+          new Set(
+            (
+              (exerciseItem.categoryIds as string[] | undefined) ??
+              (fallbackExercise?.categoryIds ?? [])
+            ).filter((id): id is string => Boolean(id)),
+          ),
+        );
+        const categoryLabels = categoryIds.map((categoryId) => {
+          const fromSession = exerciseItem.categories?.find((category) => category?.id === categoryId)?.label;
+          if (fromSession) {
+            return fromSession;
+          }
+          const fromFallback = fallbackExercise?.categories?.find((category) => category?.id === categoryId)?.label;
+          if (fromFallback) {
+            return fromFallback;
+          }
+          return categoryLabelById.get(categoryId) ?? categoryId;
+        });
+
+        const muscles = resolveLabeledItems(exerciseItem.muscles, fallbackExercise?.muscles);
+        const equipment = resolveLabeledItems(exerciseItem.equipments, fallbackExercise?.equipment);
+        const tags = resolveLabeledItems(exerciseItem.tags, fallbackExercise?.tags);
+
+        const descriptionValue =
+          exerciseItem.description ?? fallbackExercise?.description ?? '';
+        const instructionsValue =
+          exerciseItem.instructions ?? fallbackExercise?.instructions ?? '';
+        const levelValue = normalizeExerciseLevel(exerciseItem.level ?? fallbackExercise?.level);
+        const seriesValue = exerciseItem.series ?? fallbackExercise?.series ?? '';
+        const repetitionsValue = exerciseItem.repetitions ?? fallbackExercise?.repetitions ?? '';
+        const chargeValue = exerciseItem.charge ?? fallbackExercise?.charge ?? '';
+        const restSecondsValue =
+          exerciseItem.restSeconds ?? fallbackExercise?.rest ?? null;
+        const restLabel =
+          restSecondsValue != null && Number.isFinite(restSecondsValue)
+            ? `${Math.max(0, Math.trunc(restSecondsValue))}s`
+            : '-';
+        const videoUrlValue = exerciseItem.videoUrl ?? fallbackExercise?.videoUrl ?? '';
+        const parsedSets = parseSeriesCount(seriesValue ?? '');
+        const sets = Number.isFinite(parsedSets) && parsedSets ? Math.max(1, Math.trunc(parsedSets)) : 1;
+
         return {
           id: builderExerciseId,
           exerciseId: baseExerciseId,
-          sets: parseSeriesCount(exerciseItem.series),
-          reps: exerciseItem.repetitions ?? '',
-          rest: exerciseItem.restSeconds != null ? `${exerciseItem.restSeconds}s` : '-',
-          customLabel: undefined,
-          customDescription: undefined,
+          label: exerciseItem.label ?? fallbackExercise?.label ?? baseExerciseId,
+          description: descriptionValue ?? '',
+          instructions: instructionsValue ?? '',
+          level: levelValue,
+          series: seriesValue ?? '',
+          repetitions: repetitionsValue ?? '',
+          charge: chargeValue ?? '',
+          restSeconds: restSecondsValue ?? null,
+          rest: restLabel,
+          videoUrl: videoUrlValue ?? '',
+          categoryIds,
+          categoryLabels,
+          muscleIds: muscles.map((item) => item.id),
+          muscles,
+          equipmentIds: equipment.map((item) => item.id),
+          equipment,
+          tagIds: tags.map((item) => item.id),
+          tags,
+          sets,
+          reps: repetitionsValue ?? '',
         } satisfies ProgramExercise;
       });
 
