@@ -5,6 +5,8 @@ import {
   Autocomplete,
   Box,
   Button,
+  Card,
+  CardContent,
   CircularProgress,
   Divider,
   Grid,
@@ -548,8 +550,37 @@ export function ProgramBuilderPanel({
         <Divider />
 
         {/* Content Grid */}
-        <Box sx={{ flexGrow: 1, overflow: 'auto', minHeight: 0 }}>
-          <Grid container sx={{ minWidth: 0, minHeight: '100%', alignContent: 'stretch', alignItems: 'stretch', gap: 0 }}>
+        <Box
+          sx={{
+            flexGrow: 1,
+            overflow: 'hidden',
+            px: { xs: 2, md: 3 },
+            py: { xs: 2, md: 3 },
+          }}
+        >
+          <Card
+            variant="outlined"
+            sx={{
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              overflow: 'hidden',
+            }}
+          >
+            <CardContent
+              sx={{
+                flexGrow: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                p: { xs: 2, md: 3 },
+                overflow: 'hidden',
+                '&:last-child': {
+                  pb: { xs: 2, md: 3 },
+                },
+              }}
+            >
+              <Box sx={{ flexGrow: 1, overflow: 'auto', minHeight: 0 }}>
+                <Grid container sx={{ minWidth: 0, minHeight: '100%', alignContent: 'stretch', alignItems: 'stretch', gap: 0 }}>
             {/* Configuration Panel */}
             <Grid size={{ xs: 12, md: 3, lg: 3 }} sx={{ backgroundColor: '#f3f2f2e0', px: 1, py: 1, display: 'flex', flexDirection: 'column', minHeight: '100%', pb: 0 }}>
               <Grid spacing={3}>
@@ -967,8 +998,11 @@ export function ProgramBuilderPanel({
               </Stack>
             </Box>
           </Grid>
-        </Grid>
-      </Box>
+                </Grid>
+              </Box>
+            </CardContent>
+          </Card>
+        </Box>
 
         {/* Footer */}
         <Stack direction="row" justifyContent="flex-end" spacing={2} sx={{ p: 2, backgroundColor: '#e0dcdce0' }}>
