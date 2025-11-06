@@ -615,18 +615,21 @@ export function ProgramBuilderPanel({
                       flexDirection: 'column',
                       px: 1,
                       py: 1,
-                      backgroundColor: '#f3f2f2e0',
+                      gap: 2,
                       minHeight: '100%',
                     }}
                   >
-                    <Stack
-                      spacing={3}
-                      sx={{
-                        flexGrow: 1,
-                        borderRadius: 2,
-                      }}
-                    >
-                      <Stack spacing={2}>
+                    <Card variant="outlined" sx={{ flexShrink: 0 }}>
+                      <CardContent
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 2,
+                          '&:last-child': {
+                            pb: 2,
+                          },
+                        }}
+                      >
                         <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                           {builderCopy.config.title}
                         </Typography>
@@ -691,12 +694,22 @@ export function ProgramBuilderPanel({
                             sx={{ backgroundColor: theme.palette.background.default }}
                           />
                         </Stack>
-                      </Stack>
+                      </CardContent>
+                    </Card>
 
-                      <Divider />
-
-                      {/* Session Templates Library */}
-                      <Stack spacing={1}>
+                    <Card variant="outlined" sx={{ flexGrow: 1, display: 'flex' }}>
+                      <CardContent
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 1,
+                          flexGrow: 1,
+                          '&:last-child': {
+                            pb: 2,
+                          },
+                        }}
+                      >
+                        {/* Session Templates Library */}
                         <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                           {builderCopy.templates_title}
                         </Typography>
@@ -724,7 +737,7 @@ export function ProgramBuilderPanel({
                           {sessionLimitHint}
                         </Typography>
 
-                        <Stack spacing={1.5}>
+                        <Stack spacing={1.5} sx={{ flexGrow: 1 }}>
                           {sessionsLoading ? (
                             <Box display="flex" justifyContent="center" py={2}>
                               <CircularProgress size={24} />
@@ -744,8 +757,8 @@ export function ProgramBuilderPanel({
                             ))
                           )}
                         </Stack>
-                      </Stack>
-                    </Stack>
+                      </CardContent>
+                    </Card>
                   </Grid>
 
                   {/* Structure Panel */}
@@ -759,167 +772,183 @@ export function ProgramBuilderPanel({
                       minHeight: '100%',
                     }}
                   >
-                    <Stack spacing={1.5} sx={{ borderRadius: 2, flexGrow: 1 }}>
-                      <Stack
-                        direction="row"
-                        alignItems="flex-start"
-                        justifyContent="space-between"
-                        spacing={2}
-                      >
-                        <Stack spacing={0.75} flexGrow={1} minWidth={0}>
-                          {isEditingStructureTitle ? (
-                            <TextField
-                              inputRef={structureTitleRef}
-                              value={structureTitleDraft}
-                              onChange={(event) => setStructureTitleDraft(event.target.value)}
-                              onBlur={handleStructureTitleBlur}
-                              onKeyDown={handleStructureTitleInputKeyDown}
-                              size="small"
-                              variant="standard"
-                              inputProps={{ 'aria-label': 'structure-title' }}
-                              fullWidth
-                            />
-                          ) : (
-                            <Typography
-                              variant="h6"
-                              component="h2"
-                              sx={{
-                                fontWeight: 700,
-                                ...interactiveSurfaceSx,
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: 0.5,
-                                width: 'fit-content',
-                              }}
-                              onClick={handleStructureTitleClick}
-                              onKeyDown={handleStructureTitleDisplayKeyDown}
-                              tabIndex={0}
-                              role="button"
-                            >
-                              <Edit fontSize="inherit" color="disabled" />
-                              {structureTitle}
-                            </Typography>
-                          )}
-                          {isEditingStructureDescription ? (
-                            <TextField
-                              inputRef={structureDescriptionRef}
-                              value={structureDescriptionDraft}
-                              onChange={(event) => setStructureDescriptionDraft(event.target.value)}
-                              onBlur={handleStructureDescriptionBlur}
-                              onKeyDown={handleStructureDescriptionInputKeyDown}
-                              size="small"
-                              variant="standard"
-                              multiline
-                              minRows={1}
-                              inputProps={{ 'aria-label': 'structure-description' }}
-                              fullWidth
-                            />
-                          ) : (
-                            <Typography
-                              variant="body2"
-                              color="text.secondary"
-                              sx={{
-                                ...interactiveSurfaceSx,
-                                display: 'inline-flex',
-                                alignItems: 'flex-start',
-                                gap: 0.5,
-                                maxWidth: '100%',
-                              }}
-                              onClick={handleStructureDescriptionClick}
-                              onKeyDown={handleStructureDescriptionDisplayKeyDown}
-                              tabIndex={0}
-                              role="button"
-                            >
-                              <Edit fontSize="inherit" color="disabled" />
-                              <Box
-                                component="span"
-                                sx={{
-                                  whiteSpace: 'pre-wrap',
-                                  fontStyle: structureDescription ? 'normal' : 'italic',
-                                }}
-                              >
-                                {structureDescription}
-                              </Box>
-                            </Typography>
-                          )}
-                        </Stack>
-                        <Typography
-                          variant="subtitle2"
-                          color="text.secondary"
-                          sx={{ whiteSpace: 'nowrap', ml: 2 }}
-                        >
-                          {sessionCountLabel} · {exerciseCountLabel}
-                        </Typography>
-                      </Stack>
-
-                      <Stack
-                        spacing={1.5}
+                    <Card
+                      variant="outlined"
+                      sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}
+                    >
+                      <CardContent
                         sx={{
-                          border:
-                            sessionCount === 0
-                              ? `1px dashed ${alpha(theme.palette.text.primary, 0.2)}`
-                              : 'none',
-                          borderRadius: 2,
-                          p: sessions.length === 0 ? 2 : 0,
-                          minHeight: 280,
-                          bgcolor:
-                            sessions.length === 0
-                              ? alpha(theme.palette.background.default, 0.4)
-                              : 'transparent',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 1.5,
+                          flexGrow: 1,
+                          '&:last-child': {
+                            pb: 2,
+                          },
                         }}
                       >
-                        {sessions.length === 0 ? (
-                          <Stack spacing={1} alignItems="center" justifyContent="center" flexGrow={1}>
-                            <Typography variant="body2" color="text.secondary" textAlign="center">
-                              {builderCopy.structure.empty}
-                            </Typography>
+                        <Stack
+                          direction="row"
+                          alignItems="flex-start"
+                          justifyContent="space-between"
+                          spacing={2}
+                        >
+                          <Stack spacing={0.75} flexGrow={1} minWidth={0}>
+                            {isEditingStructureTitle ? (
+                              <TextField
+                                inputRef={structureTitleRef}
+                                value={structureTitleDraft}
+                                onChange={(event) => setStructureTitleDraft(event.target.value)}
+                                onBlur={handleStructureTitleBlur}
+                                onKeyDown={handleStructureTitleInputKeyDown}
+                                size="small"
+                                variant="standard"
+                                inputProps={{ 'aria-label': 'structure-title' }}
+                                fullWidth
+                              />
+                            ) : (
+                              <Typography
+                                variant="h6"
+                                component="h2"
+                                sx={{
+                                  fontWeight: 700,
+                                  ...interactiveSurfaceSx,
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: 0.5,
+                                  width: 'fit-content',
+                                }}
+                                onClick={handleStructureTitleClick}
+                                onKeyDown={handleStructureTitleDisplayKeyDown}
+                                tabIndex={0}
+                                role="button"
+                              >
+                                <Edit fontSize="inherit" color="disabled" />
+                                {structureTitle}
+                              </Typography>
+                            )}
+                            {isEditingStructureDescription ? (
+                              <TextField
+                                inputRef={structureDescriptionRef}
+                                value={structureDescriptionDraft}
+                                onChange={(event) => setStructureDescriptionDraft(event.target.value)}
+                                onBlur={handleStructureDescriptionBlur}
+                                onKeyDown={handleStructureDescriptionInputKeyDown}
+                                size="small"
+                                variant="standard"
+                                multiline
+                                minRows={1}
+                                inputProps={{ 'aria-label': 'structure-description' }}
+                                fullWidth
+                              />
+                            ) : (
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{
+                                  ...interactiveSurfaceSx,
+                                  display: 'inline-flex',
+                                  alignItems: 'flex-start',
+                                  gap: 0.5,
+                                  maxWidth: '100%',
+                                }}
+                                onClick={handleStructureDescriptionClick}
+                                onKeyDown={handleStructureDescriptionDisplayKeyDown}
+                                tabIndex={0}
+                                role="button"
+                              >
+                                <Edit fontSize="inherit" color="disabled" />
+                                <Box
+                                  component="span"
+                                  sx={{
+                                    whiteSpace: 'pre-wrap',
+                                    fontStyle: structureDescription ? 'normal' : 'italic',
+                                  }}
+                                >
+                                  {structureDescription}
+                                </Box>
+                              </Typography>
+                            )}
                           </Stack>
-                        ) : (
-                          sessions.map((session, index) => (
-                            <ProgramBuilderSessionItem
-                              key={session.id}
-                              session={session}
-                              index={index}
-                              totalSessions={sessions.length}
-                              builderCopy={builderCopy}
-                              onLabelChange={handleSessionLabelChange}
-                              onDescriptionChange={handleSessionDescriptionChange}
-                              onDurationChange={handleSessionDurationChange}
-                              onRemoveSession={() => handleRemoveSession(session.id)}
-                              onRemoveExercise={(exerciseId) =>
-                                handleRemoveExercise(session.id, exerciseId)
-                              }
-                              onMoveUp={() => handleMoveSessionUp(session.id)}
-                              onMoveDown={() => handleMoveSessionDown(session.id)}
-                              getExerciseById={(exerciseId) => exerciseMap.get(exerciseId)}
-                              onExerciseLabelChange={handleExerciseLabelChange}
-                              onExerciseDescriptionChange={handleExerciseDescriptionChange}
-                              onMoveExerciseUp={(exerciseId) =>
-                                handleMoveExerciseUp(session.id, exerciseId)
-                              }
-                              onMoveExerciseDown={(exerciseId) =>
-                                handleMoveExerciseDown(session.id, exerciseId)
-                              }
-                              onEditExercise={handleOpenEditExerciseDialog}
-                            />
-                          ))
-                        )}
-                      </Stack>
-
-                      <Tooltip title={builderCopy.library.tooltips.add_empty_session} arrow>
-                        <span style={{ display: 'flex', width: '100%' }}>
-                          <Button
-                            variant="contained"
-                            size="small"
-                            startIcon={<Add fontSize="small" />}
-                            fullWidth
-                            onClick={handleCreateEmptySession}
+                          <Typography
+                            variant="subtitle2"
+                            color="text.secondary"
+                            sx={{ whiteSpace: 'nowrap', ml: 2 }}
                           >
-                            {builderCopy.config.button_create}
-                          </Button>
-                        </span>
-                      </Tooltip>
-                    </Stack>
+                            {sessionCountLabel} · {exerciseCountLabel}
+                          </Typography>
+                        </Stack>
+
+                        <Stack
+                          spacing={1.5}
+                          sx={{
+                            border:
+                              sessionCount === 0
+                                ? `1px dashed ${alpha(theme.palette.text.primary, 0.2)}`
+                                : 'none',
+                            borderRadius: 2,
+                            p: sessions.length === 0 ? 2 : 0,
+                            minHeight: 280,
+                            bgcolor:
+                              sessions.length === 0
+                                ? alpha(theme.palette.background.default, 0.4)
+                                : 'transparent',
+                            flexGrow: 1,
+                          }}
+                        >
+                          {sessions.length === 0 ? (
+                            <Stack spacing={1} alignItems="center" justifyContent="center" flexGrow={1}>
+                              <Typography variant="body2" color="text.secondary" textAlign="center">
+                                {builderCopy.structure.empty}
+                              </Typography>
+                            </Stack>
+                          ) : (
+                            sessions.map((session, index) => (
+                              <ProgramBuilderSessionItem
+                                key={session.id}
+                                session={session}
+                                index={index}
+                                totalSessions={sessions.length}
+                                builderCopy={builderCopy}
+                                onLabelChange={handleSessionLabelChange}
+                                onDescriptionChange={handleSessionDescriptionChange}
+                                onDurationChange={handleSessionDurationChange}
+                                onRemoveSession={() => handleRemoveSession(session.id)}
+                                onRemoveExercise={(exerciseId) =>
+                                  handleRemoveExercise(session.id, exerciseId)
+                                }
+                                onMoveUp={() => handleMoveSessionUp(session.id)}
+                                onMoveDown={() => handleMoveSessionDown(session.id)}
+                                getExerciseById={(exerciseId) => exerciseMap.get(exerciseId)}
+                                onExerciseLabelChange={handleExerciseLabelChange}
+                                onExerciseDescriptionChange={handleExerciseDescriptionChange}
+                                onMoveExerciseUp={(exerciseId) =>
+                                  handleMoveExerciseUp(session.id, exerciseId)
+                                }
+                                onMoveExerciseDown={(exerciseId) =>
+                                  handleMoveExerciseDown(session.id, exerciseId)
+                                }
+                                onEditExercise={handleOpenEditExerciseDialog}
+                              />
+                            ))
+                          )}
+                        </Stack>
+
+                        <Tooltip title={builderCopy.library.tooltips.add_empty_session} arrow>
+                          <span style={{ display: 'flex', width: '100%' }}>
+                            <Button
+                              variant="contained"
+                              size="small"
+                              startIcon={<Add fontSize="small" />}
+                              fullWidth
+                              onClick={handleCreateEmptySession}
+                            >
+                              {builderCopy.config.button_create}
+                            </Button>
+                          </span>
+                        </Tooltip>
+                      </CardContent>
+                    </Card>
                   </Grid>
 
                   {/* Exercise Library Panel */}
@@ -930,117 +959,121 @@ export function ProgramBuilderPanel({
                       flexDirection: 'column',
                       px: 1,
                       py: 1,
-                      backgroundColor: '#f3f2f2e0',
                       minHeight: '100%',
                     }}
                   >
-                    <Stack
-                      spacing={2}
-                      sx={{
-                        flexGrow: 1,
-                        borderRadius: 2,
-                        minHeight: 420,
-                      }}
-                    >
-                      <Stack spacing={0.5}>
-                        <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                          {builderCopy.library.title}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {builderCopy.library.subtitle}
-                        </Typography>
-                      </Stack>
-
-                      <TextField
-                        fullWidth
-                        size="small"
-                        placeholder={builderCopy.library.search_placeholder}
-                        value={exerciseSearch}
-                        onChange={(event) => setExerciseSearch(event.target.value)}
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <Search fontSize="small" color="disabled" />
-                            </InputAdornment>
-                          ),
+                    <Card variant="outlined" sx={{ flexGrow: 1, display: 'flex' }}>
+                      <CardContent
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 2,
+                          flexGrow: 1,
+                          '&:last-child': {
+                            pb: 2,
+                          },
                         }}
-                        sx={{ backgroundColor: theme.palette.background.default }}
-                      />
-
-                      <Button
-                        variant="contained"
-                        size="small"
-                        startIcon={<Add fontSize="small" />}
-                        fullWidth
-                        onClick={handleOpenCreateExerciseDialog}
                       >
-                        {builderCopy.library.button_create}
-                      </Button>
-
-                      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
-                        <TextField
-                          select
-                          fullWidth
-                          size="small"
-                          label={builderCopy.library.primary_filter_label}
-                          value={exerciseCategory}
-                          disabled={categoriesLoading && !exerciseCategoryOptions.length}
-                          onChange={(event) => setExerciseCategory(event.target.value)}
-                          sx={{ backgroundColor: theme.palette.background.default }}
-                        >
-                          <MenuItem value="all">{builderCopy.library.primary_filter_all}</MenuItem>
-                          {exerciseCategoryOptions.map((category) => (
-                            <MenuItem key={category.id} value={category.id}>
-                              {category.label}
-                            </MenuItem>
-                          ))}
-                        </TextField>
-                        <TextField
-                          select
-                          fullWidth
-                          size="small"
-                          label={builderCopy.library.secondary_filter_label}
-                          value={exerciseType}
-                          onChange={(event) => setExerciseType(event.target.value as typeof exerciseType)}
-                          sx={{ backgroundColor: theme.palette.background.default }}
-                        >
-                          {exerciseTypeOptions.map((option) => (
-                            <MenuItem key={option.value} value={option.value}>
-                              {option.label}
-                            </MenuItem>
-                          ))}
-                        </TextField>
-                      </Stack>
-
-                      <Typography variant="caption" color="text.secondary">
-                        {limitHint}
-                      </Typography>
-
-                      <Stack spacing={1.5}>
-                        {exercisesLoading ? (
-                          <Box display="flex" justifyContent="center" py={2}>
-                            <CircularProgress size={24} />
-                          </Box>
-                        ) : filteredExercises.length === 0 ? (
-                          <Typography variant="body2" color="text.secondary">
-                            {emptyExercisesMessage}
+                        <Stack spacing={0.5}>
+                          <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                            {builderCopy.library.title}
                           </Typography>
-                        ) : (
-                          filteredExercises.map((exercise) => (
-                            <ProgramBuilderExerciseLibraryItem
-                              key={exercise.id}
-                              exercise={exercise}
-                              disabled={sessions.length === 0}
-                              onAdd={(event) =>
-                                handleOpenExerciseMenu(exercise.id, event.currentTarget)
-                              }
-                              onEdit={handleOpenEditExerciseDialog}
-                              onDelete={handleExerciseDeleted}
-                            />
-                          ))
-                        )}
-                      </Stack>
-                    </Stack>
+                          <Typography variant="body2" color="text.secondary">
+                            {builderCopy.library.subtitle}
+                          </Typography>
+                        </Stack>
+
+                        <TextField
+                          fullWidth
+                          size="small"
+                          placeholder={builderCopy.library.search_placeholder}
+                          value={exerciseSearch}
+                          onChange={(event) => setExerciseSearch(event.target.value)}
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Search fontSize="small" color="disabled" />
+                              </InputAdornment>
+                            ),
+                          }}
+                          sx={{ backgroundColor: theme.palette.background.default }}
+                        />
+
+                        <Button
+                          variant="contained"
+                          size="small"
+                          startIcon={<Add fontSize="small" />}
+                          fullWidth
+                          onClick={handleOpenCreateExerciseDialog}
+                        >
+                          {builderCopy.library.button_create}
+                        </Button>
+
+                        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
+                          <TextField
+                            select
+                            fullWidth
+                            size="small"
+                            label={builderCopy.library.primary_filter_label}
+                            value={exerciseCategory}
+                            disabled={categoriesLoading && !exerciseCategoryOptions.length}
+                            onChange={(event) => setExerciseCategory(event.target.value)}
+                            sx={{ backgroundColor: theme.palette.background.default }}
+                          >
+                            <MenuItem value="all">{builderCopy.library.primary_filter_all}</MenuItem>
+                            {exerciseCategoryOptions.map((category) => (
+                              <MenuItem key={category.id} value={category.id}>
+                                {category.label}
+                              </MenuItem>
+                            ))}
+                          </TextField>
+                          <TextField
+                            select
+                            fullWidth
+                            size="small"
+                            label={builderCopy.library.secondary_filter_label}
+                            value={exerciseType}
+                            onChange={(event) => setExerciseType(event.target.value as typeof exerciseType)}
+                            sx={{ backgroundColor: theme.palette.background.default }}
+                          >
+                            {exerciseTypeOptions.map((option) => (
+                              <MenuItem key={option.value} value={option.value}>
+                                {option.label}
+                              </MenuItem>
+                            ))}
+                          </TextField>
+                        </Stack>
+
+                        <Typography variant="caption" color="text.secondary">
+                          {limitHint}
+                        </Typography>
+
+                        <Stack spacing={1.5} sx={{ flexGrow: 1 }}>
+                          {exercisesLoading ? (
+                            <Box display="flex" justifyContent="center" py={2}>
+                              <CircularProgress size={24} />
+                            </Box>
+                          ) : filteredExercises.length === 0 ? (
+                            <Typography variant="body2" color="text.secondary">
+                              {emptyExercisesMessage}
+                            </Typography>
+                          ) : (
+                            filteredExercises.map((exercise) => (
+                              <ProgramBuilderExerciseLibraryItem
+                                key={exercise.id}
+                                exercise={exercise}
+                                disabled={sessions.length === 0}
+                                onAdd={(event) =>
+                                  handleOpenExerciseMenu(exercise.id, event.currentTarget)
+                                }
+                                onEdit={handleOpenEditExerciseDialog}
+                                onDelete={handleExerciseDeleted}
+                              />
+                            ))
+                          )}
+                        </Stack>
+                      </CardContent>
+                    </Card>
                   </Grid>
                 </Grid>
               </Box>
