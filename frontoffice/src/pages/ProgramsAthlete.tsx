@@ -33,7 +33,7 @@ export function ProgramsAthlete(): React.JSX.Element {
 
   const handleNavigateToProgram = React.useCallback(
     (nextProgram: Program) => {
-      navigate(`/programs-athlete/${nextProgram.id}`);
+      navigate(`/programs-athlete/view/${nextProgram.id}`);
     },
     [navigate],
   );

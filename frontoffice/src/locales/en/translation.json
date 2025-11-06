@@ -11,7 +11,10 @@
   "common": {
     "field_incorrect": "Incorrect field",
     "unexpected_error": "Unexpected error, please try again.",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "actions": {
+      "retry": "Retry"
+    }
   },
   "languages": {
     "fr": "French",

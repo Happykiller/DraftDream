@@ -79,12 +79,29 @@ export const router = createBrowserRouter([
         },
       },
       {
-        path: ':programId',
+        path: 'create',
+        lazy: async () => {
+          const mod = await import('@src/pages/ProgramCoachCreate');
+          return { Component: withTitle(mod.ProgramCoachCreate, 'programs-coatch.builder.title') };
+        },
+      },
+      {
+        path: 'view/:programId',
         lazy: async () => {
           const mod = await import('@src/pages/ProgramDetails');
           return {
             Component: withTitle(mod.ProgramDetails, 'programs-details.title'),
             loader: mod.programDetailsLoader,
+          };
+        },
+      },
+      {
+        path: 'edit/:programId',
+        lazy: async () => {
+          const mod = await import('@src/pages/ProgramCoachEdit');
+          return {
+            Component: withTitle(mod.ProgramCoachEdit, 'programs-coatch.builder.edit_title'),
+            loader: mod.programCoachEditLoader,
           };
         },
       },
@@ -104,7 +121,7 @@ export const router = createBrowserRouter([
         },
       },
       {
-        path: ':programId',
+        path: 'view/:programId',
         lazy: async () => {
           const mod = await import('@src/pages/ProgramDetails');
           return {

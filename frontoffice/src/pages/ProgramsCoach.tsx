@@ -3,8 +3,8 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { ProgramBuilderPanel, type BuilderCopy } from '@src/components/programs/ProgramBuilderPanel';
 import { ProgramList } from '@src/components/programs/ProgramList';
+import { type BuilderCopy } from '@src/components/programs/ProgramBuilderPanel';
 
 import { usePrograms, type Program } from '@src/hooks/usePrograms';
 import { slugify } from '@src/utils/slugify';
@@ -14,12 +14,13 @@ export function ProgramsCoach(): React.JSX.Element {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
 
-  const [builderOpen, setBuilderOpen] = React.useState<boolean>(false);
-  const [editingProgram, setEditingProgram] = React.useState<Program | null>(null);
-
-  const builderCopy = t('programs-coatch.builder', {
-    returnObjects: true,
-  }) as unknown as BuilderCopy;
+  const builderCopy = React.useMemo(
+    () =>
+      t('programs-coatch.builder', {
+        returnObjects: true,
+      }) as unknown as BuilderCopy,
+    [t],
+  );
 
   const { items: programs, loading, reload, remove, create } = usePrograms({
     page: 1,
@@ -38,21 +39,23 @@ export function ProgramsCoach(): React.JSX.Element {
     [remove],
   );
 
-  const handleOpenBuilderForCreate = React.useCallback(() => {
-    setEditingProgram(null);
-    setBuilderOpen(true);
-  }, []);
-
-  const handleEditProgram = React.useCallback((program: Program) => {
-    setEditingProgram(program);
-    setBuilderOpen(true);
-  }, []);
-
-  const handleViewProgram = React.useCallback((program: Program) => {
-    setBuilderOpen(false);
-    setEditingProgram(null);
-    navigate(`/programs-coach/${program.id}`);
+  const handleCreateProgram = React.useCallback(() => {
+    navigate('/programs-coach/create');
   }, [navigate]);
+
+  const handleEditProgram = React.useCallback(
+    (program: Program) => {
+      navigate(`/programs-coach/edit/${program.id}`);
+    },
+    [navigate],
+  );
+
+  const handleViewProgram = React.useCallback(
+    (program: Program) => {
+      navigate(`/programs-coach/view/${program.id}`);
+    },
+    [navigate],
+  );
 
   const handleCloneProgram = React.useCallback(
     async (
@@ -93,36 +96,14 @@ export function ProgramsCoach(): React.JSX.Element {
       });
 
       if (payload.openBuilder) {
-        setEditingProgram(cloned);
-        setBuilderOpen(true);
+        navigate(`/programs-coach/edit/${cloned.id}`);
         return;
       }
 
-      setEditingProgram(null);
-      setBuilderOpen(false);
+      handleProgramSaved();
     },
-    [create, i18n.language],
+    [create, handleProgramSaved, i18n.language, navigate],
   );
-
-  const handleCloseBuilder = React.useCallback(() => {
-    setBuilderOpen(false);
-    setEditingProgram(null);
-  }, []);
-
-  if (builderOpen) {
-    return (
-      <>
-        {/* General information */}
-        <ProgramBuilderPanel
-          builderCopy={builderCopy}
-          onCancel={handleCloseBuilder}
-          onCreated={handleProgramSaved}
-          onUpdated={handleProgramSaved}
-          program={editingProgram ?? undefined}
-        />
-      </>
-    );
-  }
 
   return (
     <>
@@ -133,7 +114,7 @@ export function ProgramsCoach(): React.JSX.Element {
         placeholderTitle={t('programs-coatch.placeholder')}
         placeholderSubtitle={builderCopy.subtitle}
         openBuilderLabel={t('programs-coatch.actions.open_builder')}
-        onOpenBuilder={handleOpenBuilderForCreate}
+        onOpenBuilder={handleCreateProgram}
         onDeleteProgram={handleDeleteProgram}
         onEditProgram={handleEditProgram}
         onCloneProgram={handleCloneProgram}
