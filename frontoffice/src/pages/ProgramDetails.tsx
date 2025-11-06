@@ -2,7 +2,17 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Visibility } from '@mui/icons-material';
-import { Alert, Box, Button, CircularProgress, Divider, Stack, Typography } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CircularProgress,
+  Divider,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import { type LoaderFunctionArgs, useLoaderData, useNavigate, useParams } from 'react-router-dom';
 
@@ -144,116 +154,152 @@ export function ProgramDetails(): React.JSX.Element {
         height: '100%',
         flex: 1,
         overflow: 'hidden',
-        backgroundColor: theme.palette.background.paper,
+        bgcolor: theme.palette.backgroundColor,
       }}
     >
-      {/* General information */}
-      {/* Header */}
-      <Stack
-        direction="row"
-        spacing={2}
-        alignItems="center"
+      <Box
         sx={{
-          px: { xs: 2, sm: 3, md: 4 },
-          py: { xs: 2, sm: 2.5 },
-          backgroundColor: alpha(theme.palette.primary.main, 0.1),
+          flexGrow: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: 0,
+          px: { xs: 2, md: 3 },
+          py: { xs: 2, md: 3 },
         }}
       >
-        <Box
-          aria-hidden
+        <Card
+          variant="outlined"
           sx={{
-            width: 40,
-            height: 40,
-            borderRadius: 2,
-            bgcolor: 'primary.main',
-            color: 'primary.contrastText',
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-            boxShadow: '0 10px 20px rgba(25, 118, 210, 0.24)',
+            flexDirection: 'column',
+            flex: 1,
+            minHeight: 0,
+            bgcolor: theme.palette.backgroundColor,
           }}
         >
-          <Visibility fontSize="medium" />
-        </Box>
-        <Stack spacing={0.5} sx={{ minWidth: 0 }}>
-          <Typography
-            variant="h5"
-            sx={{ fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis' }}
-            noWrap
+          {/* General information */}
+          <Box
+            component="header"
+            sx={{
+              backgroundColor: alpha(theme.palette.primary.main, 0.1),
+              px: { xs: 2, sm: 3, md: 4 },
+              py: { xs: 2, sm: 2.5 },
+            }}
           >
-            {program ? program.label : detailCopy.generic_title}
-          </Typography>
-          {programSubtitle ? (
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              noWrap
-              sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
+            <Stack direction="row" spacing={2} alignItems="center">
+              <Box
+                aria-hidden
+                sx={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 2,
+                  bgcolor: 'primary.main',
+                  color: 'primary.contrastText',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  boxShadow: '0 10px 20px rgba(25, 118, 210, 0.24)',
+                }}
+              >
+                <Visibility fontSize="medium" />
+              </Box>
+              <Stack spacing={0.5} sx={{ minWidth: 0 }}>
+                <Typography
+                  variant="h5"
+                  sx={{ fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis' }}
+                  noWrap
+                >
+                  {program ? program.label : detailCopy.generic_title}
+                </Typography>
+                {programSubtitle ? (
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    noWrap
+                    sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
+                  >
+                    {programSubtitle}
+                  </Typography>
+                ) : null}
+              </Stack>
+            </Stack>
+          </Box>
+
+          <Divider />
+
+          <CardContent
+            sx={{
+              flexGrow: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              minHeight: 0,
+              p: 0,
+              '&:last-child': {
+                pb: 0,
+              },
+            }}
+          >
+            <Box sx={{ flexGrow: 1, overflow: 'auto', minHeight: 0 }}>
+              <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3, md: 3.5 } }}>
+                {loading ? (
+                  <Stack alignItems="center" justifyContent="center" py={6}>
+                    <CircularProgress color="primary" />
+                  </Stack>
+                ) : (
+                  <Stack spacing={3}>
+                    {error ? <Alert severity="error">{error}</Alert> : null}
+
+                    {program ? (
+                      <ProgramViewContent
+                        program={program}
+                        activeTab={activeTab}
+                        onTabChange={handleTabChange}
+                        updatedOnLabel={programUpdatedOn}
+                      />
+                    ) : null}
+                  </Stack>
+                )}
+              </Box>
+            </Box>
+          </CardContent>
+
+          <Divider />
+
+          <Box
+            component="footer"
+            sx={{
+              backgroundColor: alpha(theme.palette.grey[500], 0.08),
+              px: { xs: 2, sm: 3, md: 4 },
+              py: { xs: 2, sm: 2.5 },
+            }}
+          >
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={2}
+              alignItems={{ xs: 'stretch', sm: 'center' }}
+              justifyContent="space-between"
             >
-              {programSubtitle}
-            </Typography>
-          ) : null}
-        </Stack>
-      </Stack>
+              {programUpdatedOn ? (
+                <Typography variant="caption" color="text.secondary">
+                  {programUpdatedOn}
+                </Typography>
+              ) : (
+                <Box sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }} />
+              )}
 
-      <Divider />
-
-      {/* Content */}
-      <Box sx={{ flexGrow: 1, overflow: 'auto', minHeight: 0 }}>
-        <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3, md: 3.5 } }}>
-          {loading ? (
-            <Stack alignItems="center" justifyContent="center" py={6}>
-              <CircularProgress color="primary" />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleBackToList}
+                sx={{ alignSelf: { xs: 'stretch', sm: 'center' } }}
+              >
+                {detailCopy.back_to_list}
+              </Button>
             </Stack>
-          ) : (
-            <Stack spacing={3}>
-              {error ? <Alert severity="error">{error}</Alert> : null}
-
-              {program ? (
-                <ProgramViewContent
-                  program={program}
-                  activeTab={activeTab}
-                  onTabChange={handleTabChange}
-                  updatedOnLabel={programUpdatedOn}
-                />
-              ) : null}
-            </Stack>
-          )}
-        </Box>
+          </Box>
+        </Card>
       </Box>
-
-      <Divider />
-
-      {/* Footer */}
-      <Stack
-        direction={{ xs: 'column', sm: 'row' }}
-        spacing={2}
-        alignItems={{ xs: 'stretch', sm: 'center' }}
-        justifyContent="space-between"
-        sx={{
-          px: { xs: 2, sm: 3, md: 4 },
-          py: { xs: 2, sm: 2.5 },
-          backgroundColor: alpha(theme.palette.grey[500], 0.08),
-        }}
-      >
-        {programUpdatedOn ? (
-          <Typography variant="caption" color="text.secondary">
-            {programUpdatedOn}
-          </Typography>
-        ) : (
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }} />
-        )}
-
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleBackToList}
-          sx={{ alignSelf: { xs: 'stretch', sm: 'center' } }}
-        >
-          {detailCopy.back_to_list}
-        </Button>
-      </Stack>
     </Stack>
   );
 }
