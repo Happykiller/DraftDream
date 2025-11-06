@@ -258,6 +258,7 @@ export function useProgramBuilder(
     update: updateExercise,
     remove: removeExercise,
     getById: getExerciseById,
+    reload: reloadExercises,
   } = useExercises({
     page: 1,
     limit: 10,
@@ -267,20 +268,12 @@ export function useProgramBuilder(
     locale: i18n.language,
   });
 
-  const [exerciseOverrides, setExerciseOverrides] = React.useState<
-    Map<string, Exercise>
-  >(() => new Map());
   const [exerciseSnapshots, setExerciseSnapshots] = React.useState<
     Map<string, Exercise>
   >(() => new Map());
 
   const registerExercise = React.useCallback(
     (exercise: Exercise) => {
-      setExerciseOverrides((prev) => {
-        const next = new Map(prev);
-        next.set(exercise.id, exercise);
-        return next;
-      });
       setExerciseSnapshots((prev) => {
         if (!prev.has(exercise.id)) {
           return prev;
@@ -289,21 +282,14 @@ export function useProgramBuilder(
         next.delete(exercise.id);
         return next;
       });
+      void reloadExercises();
     },
-    [setExerciseOverrides, setExerciseSnapshots],
+    [reloadExercises, setExerciseSnapshots],
   );
 
   const deleteExercise = React.useCallback(
     async (exerciseId: string) => {
       await removeExercise(exerciseId);
-      setExerciseOverrides((prev) => {
-        if (!prev.has(exerciseId)) {
-          return prev;
-        }
-        const next = new Map(prev);
-        next.delete(exerciseId);
-        return next;
-      });
       setExerciseSnapshots((prev) => {
         if (!prev.has(exerciseId)) {
           return prev;
@@ -313,39 +299,12 @@ export function useProgramBuilder(
         return next;
       });
     },
-    [removeExercise, setExerciseOverrides, setExerciseSnapshots],
+    [removeExercise, setExerciseSnapshots],
   );
-
-  React.useEffect(() => {
-    setExerciseOverrides((prev) => {
-      if (prev.size === 0) {
-        return prev;
-      }
-      let changed = false;
-      const next = new Map(prev);
-      for (const item of exerciseItems) {
-        if (next.delete(item.id)) {
-          changed = true;
-        }
-      }
-      return changed ? next : prev;
-    });
-  }, [exerciseItems]);
-
-  const combinedExercises = React.useMemo(() => {
-    const merged = new Map<string, Exercise>();
-    exerciseItems.forEach((item) => {
-      merged.set(item.id, item);
-    });
-    exerciseOverrides.forEach((item) => {
-      merged.set(item.id, item);
-    });
-    return Array.from(merged.values());
-  }, [exerciseItems, exerciseOverrides]);
 
   const rawExerciseMap = React.useMemo(() => {
     const merged = new Map<string, Exercise>();
-    combinedExercises.forEach((exercise) => {
+    exerciseItems.forEach((exercise) => {
       merged.set(exercise.id, exercise);
     });
     exerciseSnapshots.forEach((exercise, exerciseId) => {
@@ -354,7 +313,7 @@ export function useProgramBuilder(
       }
     });
     return merged;
-  }, [combinedExercises, exerciseSnapshots]);
+  }, [exerciseItems, exerciseSnapshots]);
 
   const getRawExerciseById = React.useCallback(
     (exerciseId: string) => rawExerciseMap.get(exerciseId),
@@ -438,7 +397,7 @@ export function useProgramBuilder(
   );
 
   const exerciseLibrary = React.useMemo<ExerciseLibraryItem[]>(() => {
-    const sorted = [...combinedExercises].sort((a, b) => collator.compare(a.label, b.label));
+    const sorted = [...exerciseItems].sort((a, b) => collator.compare(a.label, b.label));
     return sorted.map((item) => {
       const seenMuscles = new Set<string>();
       const muscles: ExerciseLibraryItem['muscles'] = [];
@@ -491,17 +450,10 @@ export function useProgramBuilder(
         equipment,
       };
     });
-  }, [categoryLabelById, collator, combinedExercises, currentUserId]);
-
-  const exerciseMapRef = React.useRef(new Map<string, ExerciseLibraryItem>());
+  }, [categoryLabelById, collator, currentUserId, exerciseItems]);
 
   const exerciseMap = React.useMemo(() => {
-    const merged = new Map(exerciseMapRef.current);
-    exerciseLibrary.forEach((exercise) => {
-      merged.set(exercise.id, exercise);
-    });
-    exerciseMapRef.current = merged;
-    return merged;
+    return new Map(exerciseLibrary.map((exercise) => [exercise.id, exercise]));
   }, [exerciseLibrary]);
 
   const exerciseTypeOptions = React.useMemo<ExerciseTypeOption[]>(
@@ -1282,15 +1234,8 @@ export function useProgramBuilder(
     idCountersRef.current.exercise = 0;
     usedIdsRef.current.session.clear();
     usedIdsRef.current.exercise.clear();
-    exerciseMapRef.current = new Map();
-    setExerciseOverrides(() => new Map());
     setExerciseSnapshots(() => new Map());
-  }, [
-    builderCopy.structure.header_description,
-    builderCopy.structure.title,
-    setExerciseOverrides,
-    setExerciseSnapshots,
-  ]);
+  }, [builderCopy.structure.header_description, builderCopy.structure.title, setExerciseSnapshots]);
 
   const handleSubmit = React.useCallback(
     async (event?: React.SyntheticEvent) => {
@@ -1464,7 +1409,6 @@ export function useProgramBuilder(
       setSelectedAthlete(null);
     }
 
-    exerciseMapRef.current = new Map();
     usedIdsRef.current.session.clear();
     usedIdsRef.current.exercise.clear();
 
