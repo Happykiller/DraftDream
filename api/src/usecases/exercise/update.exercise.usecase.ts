@@ -1,5 +1,6 @@
 // src/usecases/exercise/update.exercise.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { mapExerciseToUsecase } from '@usecases/exercise/exercise.mapper';
@@ -36,7 +37,7 @@ export class UpdateExerciseUsecase {
         throw e;
       }
       this.inversify.loggerService.error(`UpdateExerciseUsecase#execute => ${e?.message ?? e}`);
-      throw new Error(ERRORS.UPDATE_EXERCISE_USECASE);
+      throw normalizeError(e, ERRORS.UPDATE_EXERCISE_USECASE);
     }
   }
 }
