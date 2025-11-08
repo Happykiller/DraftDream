@@ -133,6 +133,58 @@ export const router = createBrowserRouter([
     ],
   },
   {
+    path: '/nutrition-coach',
+    element: <ProtectedLayout />,
+    loader: requireAuthLoader,
+    children: [
+      {
+        index: true,
+        lazy: async () => {
+          const mod = await import('@src/pages/nutrition/NutritionPlansCoach');
+          return {
+            Component: withTitle(mod.NutritionPlansCoach, 'nutrition-coach.title'),
+          };
+        },
+      },
+      {
+        path: 'view/:mealPlanId',
+        lazy: async () => {
+          const mod = await import('@src/pages/nutrition/NutritionPlanDetails');
+          return {
+            Component: withTitle(mod.NutritionPlanDetails, 'nutrition-details.title'),
+            loader: mod.nutritionPlanDetailsLoader,
+          };
+        },
+      },
+    ],
+  },
+  {
+    path: '/nutrition-athlete',
+    element: <ProtectedLayout />,
+    loader: requireAuthLoader,
+    children: [
+      {
+        index: true,
+        lazy: async () => {
+          const mod = await import('@src/pages/nutrition/NutritionPlansAthlete');
+          return {
+            Component: withTitle(mod.NutritionPlansAthlete, 'nutrition-athlete.title'),
+          };
+        },
+      },
+      {
+        path: 'view/:mealPlanId',
+        lazy: async () => {
+          const mod = await import('@src/pages/nutrition/NutritionPlanDetails');
+          return {
+            Component: withTitle(mod.NutritionPlanDetails, 'nutrition-details.title'),
+            loader: mod.nutritionPlanDetailsLoader,
+          };
+        },
+      },
+    ],
+  },
+  {
     path: '/clients',
     element: <ProtectedLayout />,
     loader: requireAuthLoader,

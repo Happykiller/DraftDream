@@ -471,6 +471,106 @@
       "load_failed": "We were unable to load this program. Please try again."
     }
   },
+  "nutrition-plans": {
+    "errors": {
+      "load_failed": "We could not load nutrition plans. Please try again.",
+      "load_meals_failed": "We could not load meals. Please try again.",
+      "load_meal_types_failed": "We could not load meal types. Please try again.",
+      "load_meal_days_failed": "We could not load meal day templates. Please try again."
+    },
+    "notifications": {
+      "created": "Meal plan created successfully.",
+      "create_failed": "We could not create the meal plan.",
+      "updated": "Meal plan updated successfully.",
+      "update_failed": "We could not update the meal plan.",
+      "deleted": "Meal plan archived successfully.",
+      "delete_failed": "We could not archive the meal plan.",
+      "meal_created": "Meal created successfully.",
+      "meal_create_failed": "We could not create the meal.",
+      "meal_updated": "Meal updated successfully.",
+      "meal_update_failed": "We could not update the meal.",
+      "meal_deleted": "Meal deleted successfully.",
+      "meal_delete_failed": "We could not delete the meal.",
+      "meal_type_created": "Meal type created successfully.",
+      "meal_type_create_failed": "We could not create the meal type.",
+      "meal_type_updated": "Meal type updated successfully.",
+      "meal_type_update_failed": "We could not update the meal type.",
+      "meal_type_deleted": "Meal type deleted successfully.",
+      "meal_type_delete_failed": "We could not delete the meal type.",
+      "meal_day_created": "Meal day created successfully.",
+      "meal_day_create_failed": "We could not create the meal day.",
+      "meal_day_updated": "Meal day updated successfully.",
+      "meal_day_update_failed": "We could not update the meal day.",
+      "meal_day_deleted": "Meal day deleted successfully.",
+      "meal_day_delete_failed": "We could not delete the meal day."
+    }
+  },
+  "nutrition-coach": {
+    "title": "Nutrition plans",
+    "subtitle": "Build nutrition plans tailored to each athlete.",
+    "helper": "Clone existing templates or start from scratch to deliver structured meal plans.",
+    "actions": {
+      "refresh": "Refresh plans"
+    },
+    "empty_state": {
+      "title": "No meal plan yet",
+      "description": "Start by creating your first nutrition plan.",
+      "helper": "Use the builder to combine meal days and meals for your athletes."
+    },
+    "list": {
+      "day_count": "{{count}} day",
+      "day_count_one": "{{count}} day",
+      "day_count_other": "{{count}} days"
+    },
+    "macros": {
+      "calories": "Calories",
+      "protein": "Protein",
+      "carbs": "Carbs",
+      "fats": "Fats"
+    }
+  },
+  "nutrition-athlete": {
+    "title": "My nutrition plans",
+    "subtitle": "Review the nutrition plans prepared by your coach.",
+    "helper": "Each plan includes daily meals and macro guidance tailored to you.",
+    "empty_state": {
+      "title": "No nutrition plan yet",
+      "description": "Your coach has not shared a nutrition plan yet.",
+      "helper": "New plans will appear here when they are assigned to you."
+    },
+    "list": {
+      "day_count": "{{count}} day",
+      "day_count_one": "{{count}} day",
+      "day_count_other": "{{count}} days"
+    },
+    "macros": {
+      "calories": "Calories",
+      "protein": "Protein",
+      "carbs": "Carbs",
+      "fats": "Fats"
+    }
+  },
+  "nutrition-details": {
+    "title": "Nutrition plan",
+    "errors": {
+      "not_found": "This nutrition plan is no longer available.",
+      "load_failed": "We were unable to load this nutrition plan. Please try again."
+    },
+    "actions": {
+      "back_to_list_coach": "Back to nutrition plans",
+      "back_to_list_athlete": "Back to my nutrition plans"
+    },
+    "labels": {
+      "macros": {
+        "calories": "Calories: {{value}} kcal",
+        "protein": "Protein: {{value}} g",
+        "carbs": "Carbs: {{value}} g",
+        "fats": "Fats: {{value}} g"
+      },
+      "meal_macros": "{{calories}} kcal · {{protein}} g protein · {{carbs}} g carbs · {{fats}} g fats"
+    },
+    "empty_days": "No meal days have been added to this plan yet."
+  },
   "sandbox": {
     "title": "Sandbox",
     "input_card": {
