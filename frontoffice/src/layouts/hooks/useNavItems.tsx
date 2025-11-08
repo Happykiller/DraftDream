@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
+  Apple,
   DirectionsRun,
   FitnessCenter,
   Group,
@@ -43,6 +44,22 @@ function createProgramsAthleteItem(t: (key: string) => string): NavItem {
   };
 }
 
+function createNutritionCoachItem(t: (key: string) => string): NavItem {
+  return {
+    label: t('nutrition-coach.title'),
+    icon: <Apple />,
+    path: '/nutrition-coach',
+  };
+}
+
+function createNutritionAthleteItem(t: (key: string) => string): NavItem {
+  return {
+    label: t('nutrition-athlete.title'),
+    icon: <Apple />,
+    path: '/nutrition-athlete',
+  };
+}
+
 function createSandboxItem(t: (key: string) => string): NavItem {
   return { label: t('sandbox.title'), icon: <Settings />, path: '/sandbox' };
 }
@@ -59,16 +76,22 @@ export function buildNavItems(role: Role, t: (key: string) => string): NavItem[]
         createClientsItem(t),
         createProgramsCoachItem(t),
         createProgramsAthleteItem(t),
+        createNutritionCoachItem(t),
+        createNutritionAthleteItem(t),
         createSandboxItem(t),
       );
       break;
     }
     case UserType.Coach: {
-      items.push(createClientsItem(t), createProgramsCoachItem(t));
+      items.push(
+        createClientsItem(t),
+        createProgramsCoachItem(t),
+        createNutritionCoachItem(t),
+      );
       break;
     }
     case UserType.Athlete: {
-      items.push(createProgramsAthleteItem(t));
+      items.push(createProgramsAthleteItem(t), createNutritionAthleteItem(t));
       break;
     }
     default: {
