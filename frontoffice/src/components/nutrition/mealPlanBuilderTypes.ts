@@ -54,6 +54,8 @@ export interface MealPlanBuilderCopy {
     add_label: string;
     create_label: string;
     limit_hint?: string;
+    add_tooltip: string;
+    menu_empty: string;
   };
   structure: {
     title: string;

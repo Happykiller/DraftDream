@@ -13,6 +13,8 @@ import {
   Grid,
   IconButton,
   InputAdornment,
+  Menu,
+  MenuItem,
   Skeleton,
   Stack,
   TextField,
@@ -103,7 +105,7 @@ export function MealPlanBuilderPanel({
     handleMoveDayUp,
     handleMoveDayDown,
     handleUpdateDay,
-    handleAddMealToSelectedDay,
+    handleAddMealToDay,
     handleRemoveMeal,
     handleMoveMealUp,
     handleMoveMealDown,
@@ -164,11 +166,32 @@ export function MealPlanBuilderPanel({
     [setUsersQ],
   );
 
-  const handleAddMealToPlan = React.useCallback(
-    (meal: Meal) => () => {
-      handleAddMealToSelectedDay(meal);
+  const [mealMenuAnchor, setMealMenuAnchor] = React.useState<{
+    meal: Meal;
+    anchor: HTMLElement;
+  } | null>(null);
+
+  const handleOpenMealMenu = React.useCallback(
+    (meal: Meal) => (event: React.MouseEvent<HTMLButtonElement>) => {
+      setMealMenuAnchor({ meal, anchor: event.currentTarget });
     },
-    [handleAddMealToSelectedDay],
+    [],
+  );
+
+  const handleCloseMealMenu = React.useCallback(() => {
+    setMealMenuAnchor(null);
+  }, []);
+
+  const handleAddMealFromMenu = React.useCallback(
+    (dayId: string) => {
+      if (!mealMenuAnchor) {
+        return;
+      }
+
+      handleAddMealToDay(dayId, mealMenuAnchor.meal);
+      handleCloseMealMenu();
+    },
+    [handleAddMealToDay, handleCloseMealMenu, mealMenuAnchor],
   );
 
   const handleAddDay = React.useCallback(
@@ -724,27 +747,46 @@ export function MealPlanBuilderPanel({
                             </Typography>
                           ) : (
                             mealLibrary.map((meal) => (
-                              <Card key={meal.id} variant="outlined">
-                                <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                                  <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                                    {meal.label}
-                                  </Typography>
-                                  <Typography variant="body2" color="text.secondary">
-                                    {meal.type?.label}
-                                  </Typography>
-                                  <Typography variant="caption" color="text.secondary">
-                                    {`${builderCopy.structure.calories_label}: ${meal.calories} · ${builderCopy.structure.protein_label}: ${meal.proteinGrams} · ${builderCopy.structure.carbs_label}: ${meal.carbGrams} · ${builderCopy.structure.fats_label}: ${meal.fatGrams}`}
-                                  </Typography>
-                                  <Button
-                                    onClick={handleAddMealToPlan(meal)}
-                                    size="small"
-                                    startIcon={<Add fontSize="small" />}
-                                    variant="text"
-                                    disabled={!selectedDayId}
-                                  >
-                                    {builderCopy.meal_library.add_label}
-                                  </Button>
+                              <Card
+                                key={meal.id}
+                                variant="outlined"
+                                sx={{ position: 'relative', overflow: 'visible' }}
+                              >
+                                <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
+                                  <Stack spacing={0.5}>
+                                    <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                                      {meal.label}
+                                    </Typography>
+                                    {meal.type?.label ? (
+                                      <Typography variant="body2" color="text.secondary">
+                                        {meal.type.label}
+                                      </Typography>
+                                    ) : null}
+                                    <Typography variant="caption" color="text.secondary">
+                                      {`${builderCopy.structure.calories_label}: ${meal.calories} · ${builderCopy.structure.protein_label}: ${meal.proteinGrams} · ${builderCopy.structure.carbs_label}: ${meal.carbGrams} · ${builderCopy.structure.fats_label}: ${meal.fatGrams}`}
+                                    </Typography>
+                                  </Stack>
                                 </CardContent>
+                                <Box
+                                  sx={{
+                                    position: 'absolute',
+                                    top: (theme) => theme.spacing(1),
+                                    right: (theme) => theme.spacing(1),
+                                  }}
+                                >
+                                  <Tooltip title={builderCopy.meal_library.add_tooltip} arrow placement="left">
+                                    <span style={{ display: 'inline-flex' }}>
+                                      <IconButton
+                                        size="small"
+                                        onClick={handleOpenMealMenu(meal)}
+                                        disabled={days.length === 0}
+                                        aria-label="add-meal-to-day"
+                                      >
+                                        <Add fontSize="small" />
+                                      </IconButton>
+                                    </span>
+                                  </Tooltip>
+                                </Box>
                               </Card>
                             ))
                           )}
@@ -789,6 +831,24 @@ export function MealPlanBuilderPanel({
           </Card>
         </Box>
       </Stack>
+
+      <Menu
+        anchorEl={mealMenuAnchor?.anchor ?? null}
+        open={Boolean(mealMenuAnchor)}
+        onClose={handleCloseMealMenu}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        {days.length === 0 ? (
+          <MenuItem disabled>{builderCopy.meal_library.menu_empty}</MenuItem>
+        ) : (
+          days.map((day) => (
+            <MenuItem key={day.uiId} onClick={() => handleAddMealFromMenu(day.uiId)}>
+              {day.label}
+            </MenuItem>
+          ))
+        )}
+      </Menu>
 
       {mealDialog}
     </>

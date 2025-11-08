@@ -58,6 +58,7 @@ export interface UseMealPlanBuilderResult {
   handleMoveDayUp: (dayId: string) => void;
   handleMoveDayDown: (dayId: string) => void;
   handleUpdateDay: (dayId: string, patch: Partial<MealPlanBuilderDay>) => void;
+  handleAddMealToDay: (dayId: string, meal: Meal) => void;
   handleAddMealToSelectedDay: (meal: Meal) => void;
   handleRemoveMeal: (dayId: string, mealUiId: string) => void;
   handleMoveMealUp: (dayId: string, mealUiId: string) => void;
@@ -126,6 +127,37 @@ function cloneDaySnapshot(day: MealPlanDaySnapshot): MealPlanBuilderDay {
     uiId: generateUiId(),
     description: day.description ?? '',
     meals: day.meals.map(cloneMealSnapshot),
+  };
+}
+
+function createMealFromTemplate(meal: Meal): MealPlanBuilderMeal {
+  const snapshot: MealPlanMealSnapshot = {
+    id: undefined,
+    templateMealId: meal.id,
+    slug: meal.slug,
+    locale: meal.locale,
+    label: meal.label,
+    description: undefined,
+    foods: meal.foods,
+    calories: meal.calories,
+    proteinGrams: meal.proteinGrams,
+    carbGrams: meal.carbGrams,
+    fatGrams: meal.fatGrams,
+    type: meal.type
+      ? {
+          id: meal.type.id,
+          templateMealTypeId: meal.type.templateMealTypeId,
+          slug: meal.type.slug,
+          locale: meal.type.locale,
+          label: meal.type.label,
+          visibility: meal.type.visibility ?? undefined,
+        }
+      : undefined,
+  };
+
+  return {
+    ...snapshot,
+    uiId: generateUiId(),
   };
 }
 
@@ -342,51 +374,36 @@ export function useMealPlanBuilder(
     );
   }, []);
 
+  const handleAddMealToDay = React.useCallback((dayId: string, meal: Meal) => {
+    setDays((prev) => {
+      const hasTargetDay = prev.some((day) => day.uiId === dayId);
+      if (!hasTargetDay) {
+        return prev;
+      }
+
+      const nextMeal = createMealFromTemplate(meal);
+
+      return prev.map((day) =>
+        day.uiId === dayId
+          ? {
+              ...day,
+              meals: [...day.meals, nextMeal],
+            }
+          : day,
+      );
+    });
+  }, []);
+
   const handleAddMealToSelectedDay = React.useCallback(
     (meal: Meal) => {
-      setDays((prev) => {
-        if (!selectedDayId) {
-          flashError(builderCopy.structure.select_day_warning);
-          return prev;
-        }
+      if (!selectedDayId) {
+        flashError(builderCopy.structure.select_day_warning);
+        return;
+      }
 
-        return prev.map((day) => {
-          if (day.uiId !== selectedDayId) {
-            return day;
-          }
-
-          const snapshot: MealPlanMealSnapshot = {
-            id: undefined,
-            templateMealId: meal.id,
-            slug: meal.slug,
-            locale: meal.locale,
-            label: meal.label,
-            description: undefined,
-            foods: meal.foods,
-            calories: meal.calories,
-            proteinGrams: meal.proteinGrams,
-            carbGrams: meal.carbGrams,
-            fatGrams: meal.fatGrams,
-            type: meal.type
-              ? {
-                  id: meal.type.id,
-                  templateMealTypeId: meal.type.templateMealTypeId,
-                  slug: meal.type.slug,
-                  locale: meal.type.locale,
-                  label: meal.type.label,
-                  visibility: meal.type.visibility ?? undefined,
-                }
-              : undefined,
-          };
-
-          return {
-            ...day,
-            meals: [...day.meals, cloneMealSnapshot(snapshot)],
-          };
-        });
-      });
+      handleAddMealToDay(selectedDayId, meal);
     },
-    [builderCopy.structure.select_day_warning, flashError, selectedDayId],
+    [builderCopy.structure.select_day_warning, flashError, handleAddMealToDay, selectedDayId],
   );
 
   const handleRemoveMeal = React.useCallback((dayId: string, mealUiId: string) => {
@@ -582,6 +599,7 @@ export function useMealPlanBuilder(
     handleMoveDayUp,
     handleMoveDayDown,
     handleUpdateDay,
+    handleAddMealToDay,
     handleAddMealToSelectedDay,
     handleRemoveMeal,
     handleMoveMealUp,
