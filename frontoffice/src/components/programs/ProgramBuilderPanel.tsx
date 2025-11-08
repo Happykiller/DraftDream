@@ -25,17 +25,16 @@ import { ProgramBuilderExerciseLibraryItem } from './ProgramBuilderExerciseLibra
 import { ProgramBuilderCreateExerciseDialog } from './ProgramBuilderCreateExerciseDialog';
 import type {
   BuilderCopy,
-  ExerciseLibraryItem,
   ProgramExercise,
   ProgramExercisePatch,
 } from './programBuilderTypes';
 import { parseSeriesCount } from './programBuilderUtils';
 
-import type { Exercise } from '@hooks/useExercises';
+import type { Exercise } from '@hooks/programs/useExercises';
 import type { User } from '@src/hooks/useUsers';
 import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
-import { useProgramBuilder } from '@src/hooks/useProgramBuilder';
-import type { Program } from '@src/hooks/usePrograms';
+import { useProgramBuilder } from '@src/hooks/programs/useProgramBuilder';
+import type { Program } from '@src/hooks/programs/usePrograms';
 
 interface ProgramBuilderPanelProps {
   builderCopy: BuilderCopy;

@@ -25,7 +25,7 @@ import {
   ExpandMoreOutlined,
 } from '@mui/icons-material';
 
-import type { Program } from '@src/hooks/usePrograms';
+import type { Program } from '@src/hooks/programs/usePrograms';
 import { UserType } from '@src/commons/enums';
 import { session } from '@stores/session';
 

@@ -2,20 +2,20 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ExerciseLevel as ExerciseLevelEnum, UserType } from '@src/commons/enums';
-import { useSessions } from '@hooks/useSessions';
+import { useSessions } from '@hooks/programs/useSessions';
 import {
   useExercises,
   type Exercise,
   type ExerciseLevel,
   type ExerciseVisibility,
-} from '@hooks/useExercises';
-import { useCategories } from '@hooks/useCategories';
+} from '@hooks/programs/useExercises';
+import { useCategories } from '@hooks/programs/useCategories';
 import { useUsers, type User } from '@src/hooks/useUsers';
 import {
   usePrograms,
   type Program,
   type ProgramSessionExercise as ProgramSnapshotExercise,
-} from '@src/hooks/usePrograms';
+} from '@hooks/programs/usePrograms';
 import { useFlashStore } from '@src/hooks/useFlashStore';
 import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
 import { slugify } from '@src/utils/slugify';

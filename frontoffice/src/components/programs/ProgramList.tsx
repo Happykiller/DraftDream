@@ -3,9 +3,9 @@ import { alpha, useTheme } from '@mui/material/styles';
 import { Button, Grid, Paper, Stack, Typography } from '@mui/material';
 import { Add } from '@mui/icons-material';
 
-import { ProgramCard, type ProgramActionKey } from '@src/components/programs/ProgramCard';
+import { ProgramCard, type ProgramActionKey } from '@components/programs/ProgramCard';
 
-import type { Program } from '@src/hooks/usePrograms';
+import type { Program } from '@hooks/programs/usePrograms';
 
 interface ProgramListProps {
   programs: Program[];

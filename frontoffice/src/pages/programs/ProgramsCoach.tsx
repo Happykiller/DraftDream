@@ -3,10 +3,10 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { ProgramList } from '@src/components/programs/ProgramList';
-import { type BuilderCopy } from '@src/components/programs/ProgramBuilderPanel';
+import { ProgramList } from '@components/programs/ProgramList';
+import { type BuilderCopy } from '@components/programs/ProgramBuilderPanel';
 
-import { usePrograms, type Program } from '@src/hooks/usePrograms';
+import { usePrograms, type Program } from '@hooks/programs/usePrograms';
 import { slugify } from '@src/utils/slugify';
 
 /** Coach-facing program management dashboard. */
