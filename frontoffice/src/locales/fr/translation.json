@@ -508,7 +508,7 @@
     }
   },
   "nutrition-coach": {
-    "title": "Plans nutritionnels",
+    "title": "Nutrition",
     "subtitle": "Créez des plans nutritionnels adaptés à chaque athlète.",
     "helper": "Réutilisez vos modèles ou composez de nouvelles journées pour fournir un accompagnement précis.",
     "actions": {
@@ -532,7 +532,7 @@
     }
   },
   "nutrition-athlete": {
-    "title": "Mes plans nutritionnels",
+    "title": "Nutrition",
     "subtitle": "Consultez les plans nutritionnels préparés par votre coach.",
     "helper": "Chaque plan détaille vos repas quotidiens et les apports recommandés.",
     "empty_state": {

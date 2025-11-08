@@ -12,7 +12,7 @@ import { MealTypesPanel } from '@pages/meals/MealTypesPanel';
 export function Meals(): React.JSX.Element {
   const { t } = useTranslation();
   const [params, setParams] = useSearchParams();
-  const tab = (params.get('tab') || 'meals') as string;
+  const tab = (params.get('tab') || 'meal-plans') as string;
 
   const setTab = (val: string) =>
     setParams(

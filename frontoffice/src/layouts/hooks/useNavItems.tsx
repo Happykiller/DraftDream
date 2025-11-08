@@ -3,11 +3,11 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
-  Apple,
   DirectionsRun,
   FitnessCenter,
   Group,
   Home,
+  RestaurantMenu,
   Settings,
 } from '@mui/icons-material';
 
@@ -47,7 +47,7 @@ function createProgramsAthleteItem(t: (key: string) => string): NavItem {
 function createNutritionCoachItem(t: (key: string) => string): NavItem {
   return {
     label: t('nutrition-coach.title'),
-    icon: <Apple />,
+    icon: <RestaurantMenu />,
     path: '/nutrition-coach',
   };
 }
@@ -55,7 +55,7 @@ function createNutritionCoachItem(t: (key: string) => string): NavItem {
 function createNutritionAthleteItem(t: (key: string) => string): NavItem {
   return {
     label: t('nutrition-athlete.title'),
-    icon: <Apple />,
+    icon: <RestaurantMenu />,
     path: '/nutrition-athlete',
   };
 }

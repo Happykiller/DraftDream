@@ -506,7 +506,7 @@
     }
   },
   "nutrition-coach": {
-    "title": "Nutrition plans",
+    "title": "Nutrition",
     "subtitle": "Build nutrition plans tailored to each athlete.",
     "helper": "Clone existing templates or start from scratch to deliver structured meal plans.",
     "actions": {
@@ -530,7 +530,7 @@
     }
   },
   "nutrition-athlete": {
-    "title": "My nutrition plans",
+    "title": "Nutrition",
     "subtitle": "Review the nutrition plans prepared by your coach.",
     "helper": "Each plan includes daily meals and macro guidance tailored to you.",
     "empty_state": {
