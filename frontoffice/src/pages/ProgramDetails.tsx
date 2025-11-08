@@ -2,17 +2,7 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Visibility } from '@mui/icons-material';
-import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CircularProgress,
-  Divider,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Alert, Box, Button, Card, CardContent, Divider, Stack, Typography } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import { type LoaderFunctionArgs, useLoaderData, useNavigate, useParams } from 'react-router-dom';
 
@@ -242,11 +232,7 @@ export function ProgramDetails(): React.JSX.Element {
           >
             <Box sx={{ flexGrow: 1, overflow: 'auto', minHeight: 0 }}>
               <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3, md: 3.5 } }}>
-                {loading ? (
-                  <Stack alignItems="center" justifyContent="center" py={6}>
-                    <CircularProgress color="primary" />
-                  </Stack>
-                ) : (
+                {loading ? null : (
                   <Stack spacing={3}>
                     {error ? <Alert severity="error">{error}</Alert> : null}
 

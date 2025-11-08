@@ -7,7 +7,6 @@ import {
   Button,
   Card,
   CardContent,
-  CircularProgress,
   Divider,
   Grid,
   InputAdornment,
@@ -803,7 +802,7 @@ export function ProgramBuilderPanel({
                         <Autocomplete<User>
                           options={users}
                           value={selectedAthlete}
-                          loading={usersLoading}
+                          disabled={usersLoading}
                           onChange={handleSelectAthlete}
                           isOptionEqualToValue={(option, value) => option.id === value.id}
                           getOptionLabel={userLabel}
@@ -821,12 +820,6 @@ export function ProgramBuilderPanel({
                                   <InputAdornment position="start">
                                     <Search fontSize="small" color="disabled" />
                                   </InputAdornment>
-                                ),
-                                endAdornment: (
-                                  <>
-                                    {usersLoading ? <CircularProgress size={18} /> : null}
-                                    {params.InputProps.endAdornment}
-                                  </>
                                 ),
                               }}
                               inputProps={{
@@ -904,11 +897,7 @@ export function ProgramBuilderPanel({
                         </Typography>
 
                         <Stack spacing={1.5} sx={{ flexGrow: 1 }}>
-                          {sessionsLoading ? (
-                            <Box display="flex" justifyContent="center" py={2}>
-                              <CircularProgress size={24} />
-                            </Box>
-                          ) : sessionTemplates.length === 0 ? (
+                          {sessionsLoading ? null : sessionTemplates.length === 0 ? (
                             <Typography variant="body2" color="text.secondary">
                               {builderCopy.structure.empty}
                             </Typography>
@@ -1224,11 +1213,7 @@ export function ProgramBuilderPanel({
                         </Typography>
 
                         <Stack spacing={1.5} sx={{ flexGrow: 1 }}>
-                          {exercisesLoading ? (
-                            <Box display="flex" justifyContent="center" py={2}>
-                              <CircularProgress size={24} />
-                            </Box>
-                          ) : filteredExercises.length === 0 ? (
+                          {exercisesLoading ? null : filteredExercises.length === 0 ? (
                             <Typography variant="body2" color="text.secondary">
                               {emptyExercisesMessage}
                             </Typography>

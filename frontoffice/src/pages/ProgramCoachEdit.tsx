@@ -1,7 +1,7 @@
 // src/pages/ProgramCoachEdit.tsx
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Button, CircularProgress, Stack } from '@mui/material';
+import { Alert, Button, Stack } from '@mui/material';
 import { type LoaderFunctionArgs, useLoaderData, useNavigate, useParams } from 'react-router-dom';
 
 import { ProgramBuilderPanel, type BuilderCopy } from '@src/components/programs/ProgramBuilderPanel';
@@ -88,10 +88,9 @@ export function ProgramCoachEdit(): React.JSX.Element {
 
   if (loading) {
     return (
-      <Stack alignItems="center" justifyContent="center" sx={{ flex: 1, py: 6 }}>
+      <>
         {/* General information */}
-        <CircularProgress color="primary" />
-      </Stack>
+      </>
     );
   }
 

@@ -1,13 +1,6 @@
 import * as React from 'react';
 import { alpha, useTheme } from '@mui/material/styles';
-import {
-  Button,
-  CircularProgress,
-  Grid,
-  Paper,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Button, Grid, Paper, Stack, Typography } from '@mui/material';
 import { Add } from '@mui/icons-material';
 
 import { ProgramCard, type ProgramActionKey } from '@src/components/programs/ProgramCard';
@@ -64,13 +57,6 @@ export function ProgramList({
           >
             {openBuilderLabel}
           </Button>
-        </Stack>
-      )}
-
-      {/* Loading state */}
-      {loading && (
-        <Stack alignItems="center" py={6}>
-          <CircularProgress color="primary" />
         </Stack>
       )}
 
