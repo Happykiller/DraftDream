@@ -526,6 +526,11 @@ export function MealPlanBuilderPanel({
                             ),
                           }}
                         />
+                        {builderCopy.day_library.limit_hint ? (
+                          <Typography variant="caption" color="text.secondary">
+                            {builderCopy.day_library.limit_hint}
+                          </Typography>
+                        ) : null}
                         <Stack spacing={1.5} sx={{ overflow: 'auto' }}>
                           {dayLibraryLoading ? (
                             <Stack spacing={1}>
@@ -541,30 +546,32 @@ export function MealPlanBuilderPanel({
                             dayLibrary.map((day) => (
                               <Card key={day.id} variant="outlined">
                                 <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                                  <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                                    {day.label}
-                                  </Typography>
-                                  <Typography variant="body2" color="text.secondary">
-                                    {day.description || builderCopy.structure.description_placeholder}
-                                  </Typography>
-                                  <Button
-                                    onClick={handleAddDay(day)}
-                                    variant="contained"
-                                    size="small"
-                                    startIcon={<Add fontSize="small" />}
-                                  >
-                                    {builderCopy.day_library.add_label}
-                                  </Button>
+                                  <Stack direction="row" alignItems="flex-start" spacing={1}>
+                                    <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+                                      <Typography variant="subtitle2" sx={{ fontWeight: 600 }} noWrap>
+                                        {day.label}
+                                      </Typography>
+                                      <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'pre-wrap' }}>
+                                        {day.description || builderCopy.structure.description_placeholder}
+                                      </Typography>
+                                    </Box>
+                                    <Tooltip title={builderCopy.day_library.add_label} arrow>
+                                      <span style={{ display: 'inline-flex' }}>
+                                        <IconButton
+                                          onClick={handleAddDay(day)}
+                                          size="small"
+                                          aria-label="add-meal-day-template"
+                                        >
+                                          <Add fontSize="small" />
+                                        </IconButton>
+                                      </span>
+                                    </Tooltip>
+                                  </Stack>
                                 </CardContent>
                               </Card>
                             ))
                           )}
                         </Stack>
-                        {builderCopy.day_library.limit_hint ? (
-                          <Typography variant="caption" color="text.secondary">
-                            {builderCopy.day_library.limit_hint}
-                          </Typography>
-                        ) : null}
                       </CardContent>
                     </Card>
                   </Grid>
@@ -747,30 +754,28 @@ export function MealPlanBuilderPanel({
 
               <Divider />
 
-              <Box
-                component="footer"
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  gap: 2,
-                  py: 2,
-                  px: 3,
-                  borderTop: `1px solid ${alpha(theme.palette.divider, 0.6)}`,
-                  bgcolor: alpha(theme.palette.warning.main, 0.05),
-                }}
-              >
-                <Button onClick={onCancel} variant="text">
-                  {builderCopy.footer.cancel}
-                </Button>
-                <Button
-                  color="warning"
-                  disabled={isSubmitDisabled || submitting}
-                  type="submit"
-                  variant="contained"
-                >
-                  {submitLabel}
-                </Button>
+              <Box component="footer" sx={{ p: 2, backgroundColor: '#e0dcdce0' }}>
+                <Stack direction="row" justifyContent="flex-end" spacing={2}>
+                  <Tooltip title={builderCopy.footer.cancel} arrow>
+                    <span style={{ display: 'inline-flex' }}>
+                      <Button variant="text" color="inherit" onClick={onCancel}>
+                        {builderCopy.footer.cancel}
+                      </Button>
+                    </span>
+                  </Tooltip>
+                  <Tooltip title={submitLabel} arrow>
+                    <span style={{ display: 'inline-flex' }}>
+                      <Button
+                        color="warning"
+                        disabled={isSubmitDisabled || submitting}
+                        type="submit"
+                        variant="contained"
+                      >
+                        {submitLabel}
+                      </Button>
+                    </span>
+                  </Tooltip>
+                </Stack>
               </Box>
             </CardContent>
           </Card>
