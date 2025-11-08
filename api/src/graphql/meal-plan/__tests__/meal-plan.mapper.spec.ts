@@ -1,3 +1,4 @@
+import { describe, expect, it } from '@jest/globals';
 import { mapMealPlanUsecaseToGql } from '../meal-plan.mapper';
 
 import { MealTypeVisibility } from '@graphql/meal-type/meal-type.gql.types';

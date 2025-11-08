@@ -1,3 +1,4 @@
+import { describe, expect, it } from '@jest/globals';
 import { mapTagUsecaseToGql } from '../tag.mapper';
 
 import { TagVisibility } from '@graphql/tag/tag.gql.types';

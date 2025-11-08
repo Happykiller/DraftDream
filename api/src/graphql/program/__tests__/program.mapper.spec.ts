@@ -1,3 +1,4 @@
+import { describe, expect, it } from '@jest/globals';
 import { mapProgramUsecaseToGql } from '../program.mapper';
 
 import type { ProgramUsecaseModel } from '@usecases/program/program.usecase.model';

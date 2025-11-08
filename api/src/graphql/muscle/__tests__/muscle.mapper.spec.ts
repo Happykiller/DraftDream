@@ -1,3 +1,4 @@
+import { describe, expect, it } from '@jest/globals';
 import { mapMuscleUsecaseToGql } from '../muscle.mapper';
 
 import { MuscleVisibility } from '@graphql/muscle/muscle.gql.types';

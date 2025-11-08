@@ -1,5 +1,4 @@
 // src/usecases/meal-day/meal-day.mapper.ts
-
 import { MealDay } from '@services/db/models/meal-day.model';
 import type { MealDayUsecaseModel } from '@usecases/meal-day/meal-day.usecase.model';
 

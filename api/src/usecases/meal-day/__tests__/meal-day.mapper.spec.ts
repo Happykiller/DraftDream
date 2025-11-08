@@ -1,6 +1,7 @@
-import { mapMealDayToUsecase } from '../meal-day.mapper';
+import { describe, expect, it } from '@jest/globals';
 
 import type { MealDay } from '@services/db/models/meal-day.model';
+import { mapMealDayToUsecase } from '@usecases/meal-day/meal-day.mapper';
 
 describe('mapMealDayToUsecase', () => {
   it('maps the persistence model to the use case format', () => {

@@ -1,3 +1,4 @@
+import { describe, expect, it } from '@jest/globals';
 import { mapExerciseToUsecase } from '../exercise.mapper';
 
 import type { Exercise } from '@services/db/models/exercise.model';
@@ -136,7 +137,7 @@ describe('mapExerciseToUsecase', () => {
 
     expect(result.categoryIds).toEqual([]);
     expect(result.muscleIds).toEqual([]);
-    expect(result.equipmentIds).toBeUndefined();
-    expect(result.tagIds).toBeUndefined();
+    expect(result.equipmentIds).toEqual([]);
+    expect(result.tagIds).toEqual([]);
   });
 });

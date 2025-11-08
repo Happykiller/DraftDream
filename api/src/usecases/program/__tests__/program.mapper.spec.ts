@@ -1,3 +1,4 @@
+import { describe, expect, it } from '@jest/globals';
 import { mapProgramToUsecase } from '../program.mapper';
 
 import type { Program } from '@services/db/models/program.model';

@@ -1,3 +1,4 @@
+import { describe, expect, it } from '@jest/globals';
 import { mapMealPlanToUsecase } from '../meal-plan.mapper';
 
 import type { MealPlan } from '@services/db/models/meal-plan.model';

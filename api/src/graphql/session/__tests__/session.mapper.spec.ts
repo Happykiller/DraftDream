@@ -1,3 +1,4 @@
+import { describe, expect, it } from '@jest/globals';
 import { mapSessionUsecaseToGql } from '../session.mapper';
 
 import type { SessionUsecaseModel } from '@usecases/session/session.usecase.model';

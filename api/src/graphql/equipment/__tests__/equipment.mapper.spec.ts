@@ -1,3 +1,4 @@
+import { describe, expect, it } from '@jest/globals';
 import { mapEquipmentUsecaseToGql } from '../equipment.mapper';
 
 import { EquipmentVisibility } from '@graphql/equipment/equipment.gql.types';

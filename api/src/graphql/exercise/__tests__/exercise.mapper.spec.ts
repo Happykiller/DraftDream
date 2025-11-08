@@ -1,3 +1,4 @@
+import { describe, expect, it } from '@jest/globals';
 import { mapExerciseUsecaseToGql } from '../exercise.mapper';
 
 import { ExerciseLevelGql, ExerciseVisibility } from '@graphql/exercise/exercise.gql.types';
