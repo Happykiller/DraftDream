@@ -1,0 +1,783 @@
+// src/components/nutrition/MealPlanBuilderPanel.tsx
+import * as React from 'react';
+import { useTranslation } from 'react-i18next';
+import { alpha, useTheme } from '@mui/material/styles';
+import {
+  Alert,
+  Autocomplete,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Chip,
+  Divider,
+  Grid,
+  IconButton,
+  InputAdornment,
+  Skeleton,
+  Stack,
+  TextField,
+  Tooltip,
+  Typography,
+} from '@mui/material';
+import {
+  Add,
+  ArrowDownward,
+  ArrowUpward,
+  Delete,
+  Edit,
+  RestaurantMenu,
+  Search,
+} from '@mui/icons-material';
+
+import type { Meal } from '@hooks/nutrition/useMeals';
+import type { MealDay } from '@hooks/nutrition/useMealDays';
+import type { MealPlan } from '@hooks/nutrition/useMealPlans';
+
+import { useMealPlanBuilder } from '@hooks/nutrition/useMealPlanBuilder';
+
+import type {
+  MealPlanBuilderCopy,
+  MealPlanBuilderDay,
+  MealPlanBuilderMeal,
+} from './mealPlanBuilderTypes';
+import { MealPlanBuilderCreateMealDialog } from './MealPlanBuilderCreateMealDialog';
+
+import type { User } from '@src/hooks/useUsers';
+
+interface MealPlanBuilderPanelProps {
+  builderCopy: MealPlanBuilderCopy;
+  onCancel: () => void;
+  onCreated?: (plan: MealPlan) => void;
+  onUpdated?: (plan: MealPlan) => void;
+  mealPlan?: MealPlan;
+}
+
+function formatMealSummary(meal: MealPlanBuilderMeal, copy: MealPlanBuilderCopy): string {
+  return `${copy.structure.calories_label}: ${meal.calories} · ${copy.structure.protein_label}: ${meal.proteinGrams} · ${copy.structure.carbs_label}: ${meal.carbGrams} · ${copy.structure.fats_label}: ${meal.fatGrams}`;
+}
+
+function mergeUsers(users: User[], selected: User | null): User[] {
+  if (!selected) {
+    return users;
+  }
+
+  const alreadyIncluded = users.some((user) => user.id === selected.id);
+  if (alreadyIncluded) {
+    return users;
+  }
+
+  return [selected, ...users];
+}
+
+export function MealPlanBuilderPanel({
+  builderCopy,
+  onCancel,
+  onCreated,
+  onUpdated,
+  mealPlan,
+}: MealPlanBuilderPanelProps): React.JSX.Element {
+  const { t } = useTranslation();
+  const theme = useTheme();
+
+  const {
+    form,
+    selectedAthlete,
+    users,
+    usersLoading,
+    setUsersQ,
+    daySearch,
+    setDaySearch,
+    mealSearch,
+    setMealSearch,
+    dayLibrary,
+    dayLibraryLoading,
+    mealLibrary,
+    mealLibraryLoading,
+    selectedDayId,
+    days,
+    handleSelectAthlete,
+    handleFormChange,
+    handleSelectDay,
+    handleAddDayFromTemplate,
+    handleCreateEmptyDay,
+    handleRemoveDay,
+    handleMoveDayUp,
+    handleMoveDayDown,
+    handleUpdateDay,
+    handleAddMealToSelectedDay,
+    handleRemoveMeal,
+    handleMoveMealUp,
+    handleMoveMealDown,
+    handleUpdateMeal,
+    handleSubmit,
+    isSubmitDisabled,
+    submitting,
+    mode,
+    reloadMeals,
+    createMeal,
+    reloadMealDays,
+  } = useMealPlanBuilder(builderCopy, {
+    onCancel,
+    onCreated,
+    onUpdated,
+    mealPlan,
+  });
+
+  const [isMealDialogOpen, setIsMealDialogOpen] = React.useState(false);
+
+  const panelTitle = mode === 'edit' ? builderCopy.edit_title ?? builderCopy.title : builderCopy.title;
+  const panelSubtitle =
+    mode === 'edit' ? builderCopy.edit_subtitle ?? builderCopy.subtitle : builderCopy.subtitle;
+  const submitLabel = mode === 'edit' ? builderCopy.footer.update ?? builderCopy.footer.submit : builderCopy.footer.submit;
+
+  const userOptions = React.useMemo(() => mergeUsers(users, selectedAthlete), [selectedAthlete, users]);
+
+  const handleOpenMealDialog = React.useCallback(() => {
+    setIsMealDialogOpen(true);
+  }, []);
+
+  const handleCloseMealDialog = React.useCallback(() => {
+    setIsMealDialogOpen(false);
+  }, []);
+
+  const handleMealCreated = React.useCallback(async () => {
+    await reloadMeals();
+  }, [reloadMeals]);
+
+  const handleDaySearchChange = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setDaySearch(event.target.value);
+    },
+    [setDaySearch],
+  );
+
+  const handleMealSearchChange = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setMealSearch(event.target.value);
+    },
+    [setMealSearch],
+  );
+
+  const handleUsersSearchChange = React.useCallback(
+    (_event: React.SyntheticEvent, value: string) => {
+      setUsersQ(value);
+    },
+    [setUsersQ],
+  );
+
+  const handleAddMealToPlan = React.useCallback(
+    (meal: Meal) => () => {
+      handleAddMealToSelectedDay(meal);
+    },
+    [handleAddMealToSelectedDay],
+  );
+
+  const handleAddDay = React.useCallback(
+    (day: MealDay) => () => {
+      handleAddDayFromTemplate(day);
+    },
+    [handleAddDayFromTemplate],
+  );
+
+  const handleRemoveDayClick = React.useCallback(
+    (dayId: string) => () => {
+      handleRemoveDay(dayId);
+    },
+    [handleRemoveDay],
+  );
+
+  const handleMoveDay = React.useCallback(
+    (direction: 'up' | 'down', dayId: string) => () => {
+      if (direction === 'up') {
+        handleMoveDayUp(dayId);
+        return;
+      }
+      handleMoveDayDown(dayId);
+    },
+    [handleMoveDayDown, handleMoveDayUp],
+  );
+
+  const handleRemoveMealClick = React.useCallback(
+    (dayId: string, mealId: string) => () => {
+      handleRemoveMeal(dayId, mealId);
+    },
+    [handleRemoveMeal],
+  );
+
+  const handleMoveMeal = React.useCallback(
+    (direction: 'up' | 'down', dayId: string, mealId: string) => () => {
+      if (direction === 'up') {
+        handleMoveMealUp(dayId, mealId);
+        return;
+      }
+      handleMoveMealDown(dayId, mealId);
+    },
+    [handleMoveMealDown, handleMoveMealUp],
+  );
+
+  const mealDialog = (
+    <MealPlanBuilderCreateMealDialog
+      open={isMealDialogOpen}
+      onClose={handleCloseMealDialog}
+      onCreated={handleMealCreated}
+      createMeal={createMeal}
+    />
+  );
+
+  const renderMealCard = React.useCallback(
+    (day: MealPlanBuilderDay, meal: MealPlanBuilderMeal, index: number) => (
+      <Card key={meal.uiId} variant="outlined">
+        <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+          <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
+            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+              {builderCopy.structure.meal_prefix} {index + 1}
+            </Typography>
+            <Stack direction="row" spacing={0.5}>
+              <Tooltip title={builderCopy.structure.remove_meal_label}>
+                <span>
+                  <IconButton onClick={handleRemoveMealClick(day.uiId, meal.uiId)} size="small">
+                    <Delete fontSize="small" />
+                  </IconButton>
+                </span>
+              </Tooltip>
+              <Tooltip title={builderCopy.structure.move_meal_up_label}>
+                <span>
+                  <IconButton onClick={handleMoveMeal('up', day.uiId, meal.uiId)} size="small" disabled={index === 0}>
+                    <ArrowUpward fontSize="small" />
+                  </IconButton>
+                </span>
+              </Tooltip>
+              <Tooltip title={builderCopy.structure.move_meal_down_label}>
+                <span>
+                  <IconButton
+                    onClick={handleMoveMeal('down', day.uiId, meal.uiId)}
+                    size="small"
+                    disabled={index === day.meals.length - 1}
+                  >
+                    <ArrowDownward fontSize="small" />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            </Stack>
+          </Stack>
+
+          <TextField
+            label={builderCopy.structure.meal_prefix}
+            value={meal.label}
+            onChange={(event) => handleUpdateMeal(day.uiId, meal.uiId, { label: event.target.value })}
+            size="small"
+          />
+          <TextField
+            label={builderCopy.structure.foods_label}
+            value={meal.foods}
+            onChange={(event) => handleUpdateMeal(day.uiId, meal.uiId, { foods: event.target.value })}
+            size="small"
+            multiline
+            minRows={2}
+          />
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(4, 1fr)' },
+              gap: 1,
+            }}
+          >
+            <TextField
+              label={builderCopy.structure.calories_label}
+              value={meal.calories}
+              onChange={(event) => handleUpdateMeal(day.uiId, meal.uiId, { calories: Number(event.target.value) })}
+              type="number"
+              size="small"
+            />
+            <TextField
+              label={builderCopy.structure.protein_label}
+              value={meal.proteinGrams}
+              onChange={(event) =>
+                handleUpdateMeal(day.uiId, meal.uiId, { proteinGrams: Number(event.target.value) })
+              }
+              type="number"
+              size="small"
+            />
+            <TextField
+              label={builderCopy.structure.carbs_label}
+              value={meal.carbGrams}
+              onChange={(event) => handleUpdateMeal(day.uiId, meal.uiId, { carbGrams: Number(event.target.value) })}
+              type="number"
+              size="small"
+            />
+            <TextField
+              label={builderCopy.structure.fats_label}
+              value={meal.fatGrams}
+              onChange={(event) => handleUpdateMeal(day.uiId, meal.uiId, { fatGrams: Number(event.target.value) })}
+              type="number"
+              size="small"
+            />
+          </Box>
+
+          {meal.type?.label ? <Chip label={meal.type.label} variant="outlined" size="small" /> : null}
+
+          <Typography variant="caption" color="text.secondary">
+            {formatMealSummary(meal, builderCopy)}
+          </Typography>
+        </CardContent>
+      </Card>
+    ),
+    [builderCopy, handleMoveMeal, handleRemoveMealClick, handleUpdateMeal, t],
+  );
+
+  return (
+    <>
+      {/* General information */}
+      <Stack
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{
+          minHeight: { xs: 'calc(100dvh - 56px)', sm: 'calc(100dvh - 64px)' },
+          maxHeight: { xs: 'calc(100dvh - 56px)', sm: 'calc(100dvh - 64px)' },
+          overflow: 'hidden',
+        }}
+      >
+        <Box
+          sx={{
+            flexGrow: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: 0,
+            px: { xs: 1.5, md: 2.5 },
+            py: { xs: 2, md: 3 },
+          }}
+        >
+          <Card
+            variant="outlined"
+            sx={{
+              flexGrow: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              minHeight: 0,
+              bgcolor: theme.palette.background.default,
+            }}
+          >
+            <Box
+              component="header"
+              sx={{
+                backgroundColor: alpha(theme.palette.warning.main, 0.18),
+                borderBottom: `1px solid ${alpha(theme.palette.warning.main, 0.24)}`,
+                p: 1.5,
+              }}
+            >
+              <Stack direction="row" spacing={2} alignItems="center">
+                <Box
+                  aria-hidden
+                  sx={{
+                    width: 48,
+                    height: 48,
+                    borderRadius: 2,
+                    bgcolor: 'warning.main',
+                    color: theme.palette.getContrastText(theme.palette.warning.main),
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  {mode === 'edit' ? <Edit fontSize="large" /> : <Add fontSize="large" />}
+                </Box>
+                <Stack spacing={0.5}>
+                  <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                    {panelTitle}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {panelSubtitle}
+                  </Typography>
+                </Stack>
+              </Stack>
+            </Box>
+
+            <CardContent
+              sx={{
+                flexGrow: 1,
+                minHeight: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                p: 0,
+              }}
+            >
+              <Box sx={{ flexGrow: 1, minHeight: 0, overflow: 'auto', p: { xs: 2, md: 3 } }}>
+                <Grid container columnSpacing={{ xs: 0, md: 2 }} rowSpacing={{ xs: 2, md: 0 }} sx={{ minHeight: '100%' }}>
+                  <Grid size={{ xs: 12, md: 3 }} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <Card variant="outlined">
+                      <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                        <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                          {builderCopy.config.title}
+                        </Typography>
+                        <Autocomplete<User>
+                          options={userOptions}
+                          loading={usersLoading}
+                          value={selectedAthlete}
+                          onChange={handleSelectAthlete}
+                          onInputChange={handleUsersSearchChange}
+                          isOptionEqualToValue={(option, value) => option.id === value.id}
+                          getOptionLabel={(option) => `${option.first_name ?? ''} ${option.last_name ?? ''}`.trim() || option.email}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label={builderCopy.config.client_label}
+                              placeholder={builderCopy.config.client_placeholder}
+                              size="small"
+                              InputProps={{
+                                ...params.InputProps,
+                                startAdornment: (
+                                  <InputAdornment position="start">
+                                    <Search fontSize="small" color="disabled" />
+                                  </InputAdornment>
+                                ),
+                              }}
+                            />
+                          )}
+                        />
+                        <TextField
+                          label={builderCopy.config.plan_name_label}
+                          value={form.planName}
+                          onChange={handleFormChange('planName')}
+                          size="small"
+                          required
+                        />
+                        <TextField
+                          label={builderCopy.config.plan_description_label}
+                          value={form.description}
+                          onChange={handleFormChange('description')}
+                          placeholder={builderCopy.config.plan_description_placeholder}
+                          multiline
+                          minRows={3}
+                        />
+                        <Box
+                          sx={{
+                            display: 'grid',
+                            gridTemplateColumns: { xs: 'repeat(2, 1fr)' },
+                            gap: 1,
+                          }}
+                        >
+                          <TextField
+                            label={builderCopy.config.calories_label}
+                            value={form.calories}
+                            onChange={handleFormChange('calories')}
+                            size="small"
+                            type="number"
+                            inputProps={{ min: 0 }}
+                          />
+                          <TextField
+                            label={builderCopy.config.protein_label}
+                            value={form.proteinGrams}
+                            onChange={handleFormChange('proteinGrams')}
+                            size="small"
+                            type="number"
+                            inputProps={{ min: 0 }}
+                          />
+                          <TextField
+                            label={builderCopy.config.carbs_label}
+                            value={form.carbGrams}
+                            onChange={handleFormChange('carbGrams')}
+                            size="small"
+                            type="number"
+                            inputProps={{ min: 0 }}
+                          />
+                          <TextField
+                            label={builderCopy.config.fats_label}
+                            value={form.fatGrams}
+                            onChange={handleFormChange('fatGrams')}
+                            size="small"
+                            type="number"
+                            inputProps={{ min: 0 }}
+                          />
+                        </Box>
+                      </CardContent>
+                    </Card>
+
+                    <Card variant="outlined" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                      <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, flexGrow: 1 }}>
+                        <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
+                          <Box>
+                            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                              {builderCopy.day_library.title}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              {builderCopy.day_library.subtitle}
+                            </Typography>
+                          </Box>
+                          <Tooltip title={builderCopy.day_library.refresh_label ?? ''}>
+                            <span>
+                              <IconButton onClick={reloadMealDays} size="small">
+                                <RestaurantMenu fontSize="small" />
+                              </IconButton>
+                            </span>
+                          </Tooltip>
+                        </Stack>
+                        <TextField
+                          value={daySearch}
+                          onChange={handleDaySearchChange}
+                          placeholder={builderCopy.day_library.search_placeholder}
+                          size="small"
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Search fontSize="small" color="disabled" />
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                        <Stack spacing={1.5} sx={{ overflow: 'auto' }}>
+                          {dayLibraryLoading ? (
+                            <Stack spacing={1}>
+                              {Array.from({ length: 3 }).map((_, index) => (
+                                <Skeleton key={index} variant="rounded" height={72} />
+                              ))}
+                            </Stack>
+                          ) : dayLibrary.length === 0 ? (
+                            <Typography color="text.secondary" variant="body2">
+                              {builderCopy.day_library.empty_state}
+                            </Typography>
+                          ) : (
+                            dayLibrary.map((day) => (
+                              <Card key={day.id} variant="outlined">
+                                <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                  <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                                    {day.label}
+                                  </Typography>
+                                  <Typography variant="body2" color="text.secondary">
+                                    {day.description || builderCopy.structure.description_placeholder}
+                                  </Typography>
+                                  <Button
+                                    onClick={handleAddDay(day)}
+                                    variant="contained"
+                                    size="small"
+                                    startIcon={<Add fontSize="small" />}
+                                  >
+                                    {builderCopy.day_library.add_label}
+                                  </Button>
+                                </CardContent>
+                              </Card>
+                            ))
+                          )}
+                        </Stack>
+                        {builderCopy.day_library.limit_hint ? (
+                          <Typography variant="caption" color="text.secondary">
+                            {builderCopy.day_library.limit_hint}
+                          </Typography>
+                        ) : null}
+                      </CardContent>
+                    </Card>
+                  </Grid>
+
+                  <Grid size={{ xs: 12, md: 6 }} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <Card variant="outlined" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                      <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, flexGrow: 1 }}>
+                        <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
+                          <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                            {builderCopy.draft_label}
+                          </Typography>
+                          <Button onClick={handleCreateEmptyDay} startIcon={<Add />} size="small" variant="text">
+                            {t('nutrition-coach.builder.structure.add_day')}
+                          </Button>
+                        </Stack>
+                        {days.length === 0 ? (
+                          <Alert severity="info">{builderCopy.structure.empty}</Alert>
+                        ) : (
+                          <Stack spacing={2} sx={{ overflow: 'auto' }}>
+                            {days.map((day, index) => (
+                              <Card
+                                key={day.uiId}
+                                variant={selectedDayId === day.uiId ? 'outlined' : 'elevation'}
+                                onClick={() => handleSelectDay(day.uiId)}
+                                sx={{
+                                  borderColor:
+                                    selectedDayId === day.uiId
+                                      ? alpha(theme.palette.warning.main, 0.8)
+                                      : undefined,
+                                  cursor: 'pointer',
+                                }}
+                              >
+                                <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                                  <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
+                                    <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                                      {builderCopy.structure.day_prefix} {index + 1}
+                                    </Typography>
+                                    <Stack direction="row" spacing={0.5}>
+                                      <Tooltip title={builderCopy.structure.move_day_up_label}>
+                                        <span>
+                                          <IconButton
+                                            onClick={handleMoveDay('up', day.uiId)}
+                                            size="small"
+                                            disabled={index === 0}
+                                          >
+                                            <ArrowUpward fontSize="small" />
+                                          </IconButton>
+                                        </span>
+                                      </Tooltip>
+                                      <Tooltip title={builderCopy.structure.move_day_down_label}>
+                                        <span>
+                                          <IconButton
+                                            onClick={handleMoveDay('down', day.uiId)}
+                                            size="small"
+                                            disabled={index === days.length - 1}
+                                          >
+                                            <ArrowDownward fontSize="small" />
+                                          </IconButton>
+                                        </span>
+                                      </Tooltip>
+                                      <Tooltip title={builderCopy.structure.remove_day_label}>
+                                        <span>
+                                          <IconButton onClick={handleRemoveDayClick(day.uiId)} size="small">
+                                            <Delete fontSize="small" />
+                                          </IconButton>
+                                        </span>
+                                      </Tooltip>
+                                    </Stack>
+                                  </Stack>
+                                  <TextField
+                                    label={builderCopy.structure.title}
+                                    value={day.label}
+                                    onChange={(event) => handleUpdateDay(day.uiId, { label: event.target.value })}
+                                    size="small"
+                                  />
+                                  <TextField
+                                    label={builderCopy.structure.description_placeholder}
+                                    value={day.description}
+                                    onChange={(event) => handleUpdateDay(day.uiId, { description: event.target.value })}
+                                    size="small"
+                                    multiline
+                                    minRows={2}
+                                  />
+                                  <Divider flexItem sx={{ my: 1 }} />
+                                  <Stack spacing={1.5}>
+                                    {day.meals.length === 0 ? (
+                                      <Typography color="text.secondary" variant="body2">
+                                        {builderCopy.structure.add_meal_placeholder}
+                                      </Typography>
+                                    ) : (
+                                      day.meals.map((meal, mealIndex) => renderMealCard(day, meal, mealIndex))
+                                    )}
+                                  </Stack>
+                                </CardContent>
+                              </Card>
+                            ))}
+                          </Stack>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </Grid>
+
+                  <Grid size={{ xs: 12, md: 3 }} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <Card variant="outlined" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                      <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, flexGrow: 1 }}>
+                        <Stack direction="row" alignItems="center" justifyContent="space-between">
+                          <Box>
+                            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                              {builderCopy.meal_library.title}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              {builderCopy.meal_library.subtitle}
+                            </Typography>
+                          </Box>
+                          <Button onClick={handleOpenMealDialog} size="small" variant="contained" startIcon={<Add fontSize="small" />}>
+                            {builderCopy.meal_library.create_label}
+                          </Button>
+                        </Stack>
+                        <TextField
+                          value={mealSearch}
+                          onChange={handleMealSearchChange}
+                          placeholder={builderCopy.meal_library.search_placeholder}
+                          size="small"
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Search fontSize="small" color="disabled" />
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                        <Stack spacing={1.5} sx={{ overflow: 'auto' }}>
+                          {mealLibraryLoading ? (
+                            <Stack spacing={1}>
+                              {Array.from({ length: 4 }).map((_, index) => (
+                                <Skeleton key={index} variant="rounded" height={96} />
+                              ))}
+                            </Stack>
+                          ) : mealLibrary.length === 0 ? (
+                            <Typography color="text.secondary" variant="body2">
+                              {builderCopy.meal_library.empty_state}
+                            </Typography>
+                          ) : (
+                            mealLibrary.map((meal) => (
+                              <Card key={meal.id} variant="outlined">
+                                <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                  <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                                    {meal.label}
+                                  </Typography>
+                                  <Typography variant="body2" color="text.secondary">
+                                    {meal.type?.label}
+                                  </Typography>
+                                  <Typography variant="caption" color="text.secondary">
+                                    {`${builderCopy.structure.calories_label}: ${meal.calories} · ${builderCopy.structure.protein_label}: ${meal.proteinGrams} · ${builderCopy.structure.carbs_label}: ${meal.carbGrams} · ${builderCopy.structure.fats_label}: ${meal.fatGrams}`}
+                                  </Typography>
+                                  <Button
+                                    onClick={handleAddMealToPlan(meal)}
+                                    size="small"
+                                    startIcon={<Add fontSize="small" />}
+                                    variant="text"
+                                    disabled={!selectedDayId}
+                                  >
+                                    {builderCopy.meal_library.add_label}
+                                  </Button>
+                                </CardContent>
+                              </Card>
+                            ))
+                          )}
+                        </Stack>
+                        {builderCopy.meal_library.limit_hint ? (
+                          <Typography variant="caption" color="text.secondary">
+                            {builderCopy.meal_library.limit_hint}
+                          </Typography>
+                        ) : null}
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                </Grid>
+              </Box>
+
+              <Divider />
+
+              <Box
+                component="footer"
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  gap: 2,
+                  py: 2,
+                  px: 3,
+                  borderTop: `1px solid ${alpha(theme.palette.divider, 0.6)}`,
+                  bgcolor: alpha(theme.palette.warning.main, 0.05),
+                }}
+              >
+                <Button onClick={onCancel} variant="text">
+                  {builderCopy.footer.cancel}
+                </Button>
+                <Button
+                  color="warning"
+                  disabled={isSubmitDisabled || submitting}
+                  type="submit"
+                  variant="contained"
+                >
+                  {submitLabel}
+                </Button>
+              </Box>
+            </CardContent>
+          </Card>
+        </Box>
+      </Stack>
+
+      {mealDialog}
+    </>
+  );
+}

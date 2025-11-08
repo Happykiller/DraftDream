@@ -137,12 +137,32 @@ export const router = createBrowserRouter([
     element: <ProtectedLayout />,
     loader: requireAuthLoader,
     children: [
-      {
+      { 
         index: true,
         lazy: async () => {
           const mod = await import('@src/pages/nutrition/NutritionPlansCoach');
           return {
             Component: withTitle(mod.NutritionPlansCoach, 'nutrition-coach.title'),
+          };
+        },
+      },
+      {
+        path: 'create',
+        lazy: async () => {
+          const mod = await import('@src/pages/nutrition/NutritionPlanCoachCreate');
+          return {
+            Component: withTitle(mod.NutritionPlanCoachCreate, 'nutrition-coach.builder.title'),
+          };
+        },
+      },
+      {
+        id: 'nutrition-plan-edit',
+        path: 'edit/:mealPlanId',
+        lazy: async () => {
+          const mod = await import('@src/pages/nutrition/NutritionPlanCoachEdit');
+          return {
+            Component: withTitle(mod.NutritionPlanCoachEdit, 'nutrition-coach.builder.edit_title'),
+            loader: mod.nutritionPlanCoachEditLoader,
           };
         },
       },

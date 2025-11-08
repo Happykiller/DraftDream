@@ -13,7 +13,9 @@
     "unexpected_error": "Erreur inattendue, veuillez réessayer.",
     "loading": "Chargement...",
     "actions": {
-      "retry": "Réessayer"
+      "retry": "Réessayer",
+      "cancel": "Annuler",
+      "create": "Créer"
     }
   },
   "languages": {
@@ -512,7 +514,79 @@
     "subtitle": "Créez des plans nutritionnels adaptés à chaque athlète.",
     "helper": "Réutilisez vos modèles ou composez de nouvelles journées pour fournir un accompagnement précis.",
     "actions": {
-      "refresh": "Actualiser les plans"
+      "refresh": "Actualiser les plans",
+      "create": "Créer un plan"
+    },
+    "builder": {
+      "title": "Créer un nouveau plan nutritionnel",
+      "edit_title": "Modifier le plan nutritionnel",
+      "subtitle": "Assemblez des journées types et des repas pour composer un plan adapté.",
+      "edit_subtitle": "Ajustez les repas existants et les apports pour votre athlète.",
+      "draft_label": "Brouillon du plan",
+      "config": {
+        "title": "Configuration du plan",
+        "client_label": "Athlète",
+        "client_placeholder": "Rechercher un athlète...",
+        "plan_name_label": "Nom du plan",
+        "plan_description_label": "Description",
+        "plan_description_placeholder": "Objectifs, recommandations et notes...",
+        "calories_label": "Calories (kcal)",
+        "protein_label": "Protéines (g)",
+        "carbs_label": "Glucides (g)",
+        "fats_label": "Lipides (g)"
+      },
+      "day_library": {
+        "title": "Bibliothèque de journées",
+        "subtitle": "Sélectionnez une journée type ou ajoutez-la au plan.",
+        "search_placeholder": "Rechercher une journée...",
+        "empty_state": "Aucune journée ne correspond à vos filtres.",
+        "add_label": "Ajouter au plan",
+        "limit_hint": "Affichage des 10 journées maximum triées par ordre alphabétique.",
+        "refresh_label": "Recharger les journées"
+      },
+      "meal_library": {
+        "title": "Bibliothèque de repas",
+        "subtitle": "Ajoutez des repas à la journée sélectionnée.",
+        "search_placeholder": "Rechercher un repas...",
+        "empty_state": "Aucun repas ne correspond à vos filtres.",
+        "add_label": "Ajouter au jour",
+        "create_label": "Nouveau repas",
+        "limit_hint": "Affichage des 10 repas maximum triés par ordre alphabétique.",
+        "create_title": "Créer un repas",
+        "name_label": "Nom du repas",
+        "type_label": "Type de repas",
+        "foods_label": "Aliments et notes",
+        "calories_label": "Calories (kcal)",
+        "protein_label": "Protéines (g)",
+        "carbs_label": "Glucides (g)",
+        "fats_label": "Lipides (g)"
+      },
+      "structure": {
+        "title": "Titre de la journée",
+        "description_placeholder": "Décrivez cette journée nutritionnelle...",
+        "empty": "Ajoutez une journée depuis la bibliothèque ou créez une journée vide pour démarrer.",
+        "day_prefix": "Jour",
+        "meal_prefix": "Repas",
+        "foods_label": "Aliments et notes",
+        "calories_label": "Calories (kcal)",
+        "protein_label": "Protéines (g)",
+        "carbs_label": "Glucides (g)",
+        "fats_label": "Lipides (g)",
+        "remove_day_label": "Supprimer la journée",
+        "remove_meal_label": "Supprimer le repas",
+        "add_meal_placeholder": "Utilisez la bibliothèque de repas pour compléter cette journée.",
+        "add_day_label": "Ajouter une journée vide",
+        "select_day_warning": "Sélectionnez une journée dans le plan avant d'ajouter des repas.",
+        "move_day_up_label": "Monter la journée",
+        "move_day_down_label": "Descendre la journée",
+        "move_meal_up_label": "Monter le repas",
+        "move_meal_down_label": "Descendre le repas"
+      },
+      "footer": {
+        "cancel": "Annuler",
+        "submit": "Créer le plan",
+        "update": "Enregistrer"
+      }
     },
     "empty_state": {
       "title": "Aucun plan nutritionnel",

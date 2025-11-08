@@ -1,6 +1,7 @@
 // src/pages/nutrition/NutritionPlansCoach.tsx
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
+import { Add } from '@mui/icons-material';
 import { Button, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -50,6 +51,10 @@ export function NutritionPlansCoach(): React.JSX.Element {
     void reload();
   }, [reload]);
 
+  const handleCreate = React.useCallback(() => {
+    navigate('/nutrition-coach/create');
+  }, [navigate]);
+
   return (
     <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
       {/* General information */}
@@ -67,9 +72,14 @@ export function NutritionPlansCoach(): React.JSX.Element {
         placeholderSubtitle={emptyState.description}
         placeholderHelper={emptyState.helper}
         actionSlot={
-          <Button onClick={handleRefresh} variant="contained">
-            {t('nutrition-coach.actions.refresh')}
-          </Button>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+            <Button onClick={handleCreate} startIcon={<Add />} variant="contained" color="warning">
+              {t('nutrition-coach.actions.create')}
+            </Button>
+            <Button onClick={handleRefresh} variant="outlined">
+              {t('nutrition-coach.actions.refresh')}
+            </Button>
+          </Stack>
         }
         onSelect={handleOpenMealPlan}
         dayCountFormatter={(count) =>
