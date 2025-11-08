@@ -279,6 +279,8 @@
       "more_exercises_other": "+ {{count}} exercices",
       "no_sessions": "Aucune séance pour le moment.",
       "assigned_to": "Assigné à {{name}}",
+      "expand_details": "Afficher plus de détails",
+      "collapse_details": "Afficher moins de détails",
       "actions": {
         "view": "Voir",
         "copy": "Copier",

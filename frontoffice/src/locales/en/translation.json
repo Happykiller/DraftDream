@@ -277,6 +277,8 @@
       "more_exercises_other": "+ {{count}} exercises",
       "no_sessions": "No sessions yet.",
       "assigned_to": "Assigned to {{name}}",
+      "expand_details": "Show more details",
+      "collapse_details": "Show fewer details",
       "actions": {
         "view": "View",
         "copy": "Copy",
