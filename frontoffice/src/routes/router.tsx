@@ -74,21 +74,21 @@ export const router = createBrowserRouter([
         // ProgramsCoach
         index: true,
         lazy: async () => {
-          const mod = await import('@src/pages/ProgramsCoach');
+          const mod = await import('@src/pages/programs/ProgramsCoach');
           return { Component: withTitle(mod.ProgramsCoach, 'programs-coatch.title') };
         },
       },
       {
         path: 'create',
         lazy: async () => {
-          const mod = await import('@src/pages/ProgramCoachCreate');
+          const mod = await import('@src/pages/programs/ProgramCoachCreate');
           return { Component: withTitle(mod.ProgramCoachCreate, 'programs-coatch.builder.title') };
         },
       },
       {
         path: 'view/:programId',
         lazy: async () => {
-          const mod = await import('@src/pages/ProgramDetails');
+          const mod = await import('@src/pages/programs/ProgramDetails');
           return {
             Component: withTitle(mod.ProgramDetails, 'programs-details.title'),
             loader: mod.programDetailsLoader,
@@ -98,7 +98,7 @@ export const router = createBrowserRouter([
       {
         path: 'edit/:programId',
         lazy: async () => {
-          const mod = await import('@src/pages/ProgramCoachEdit');
+          const mod = await import('@src/pages/programs/ProgramCoachEdit');
           return {
             Component: withTitle(mod.ProgramCoachEdit, 'programs-coatch.builder.edit_title'),
             loader: mod.programCoachEditLoader,
@@ -116,14 +116,14 @@ export const router = createBrowserRouter([
         // ProgramsAthlete
         index: true,
         lazy: async () => {
-          const mod = await import('@src/pages/ProgramsAthlete');
+          const mod = await import('@src/pages/programs/ProgramsAthlete');
           return { Component: withTitle(mod.ProgramsAthlete, 'programs-athlete.title') };
         },
       },
       {
         path: 'view/:programId',
         lazy: async () => {
-          const mod = await import('@src/pages/ProgramDetails');
+          const mod = await import('@src/pages/programs/ProgramDetails');
           return {
             Component: withTitle(mod.ProgramDetails, 'programs-details.title'),
             loader: mod.programDetailsLoader,
