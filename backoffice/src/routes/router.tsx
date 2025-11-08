@@ -1,8 +1,8 @@
 // src/routes/router.tsx
 import * as React from 'react';
-import { Box, CircularProgress } from '@mui/material';
 import { createBrowserRouter, redirect } from 'react-router-dom';
 
+import LoaderOverlay from '@components/layout/LoaderOverlay';
 import { session } from '@stores/session';
 import { withTitle } from '@src/routes/withTitle';
 import { PublicLayout } from '@layouts/PublicLayout';
@@ -16,21 +16,7 @@ export async function requireAuthLoader() {
 }
 
 function AppFallback(): React.JSX.Element {
-  return (
-    <Box
-      sx={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 9999,
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <CircularProgress size={60} />
-    </Box>
-  );
+  return <LoaderOverlay forceVisible />;
 }
 
 export const router = createBrowserRouter([
