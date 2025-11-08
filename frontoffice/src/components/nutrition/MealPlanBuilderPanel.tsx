@@ -457,21 +457,6 @@ export function MealPlanBuilderPanel({
                             />
                           )}
                         />
-                        <TextField
-                          label={builderCopy.config.plan_name_label}
-                          value={form.planName}
-                          onChange={handleFormChange('planName')}
-                          size="small"
-                          required
-                        />
-                        <TextField
-                          label={builderCopy.config.plan_description_label}
-                          value={form.description}
-                          onChange={handleFormChange('description')}
-                          placeholder={builderCopy.config.plan_description_placeholder}
-                          multiline
-                          minRows={3}
-                        />
                         <Box
                           sx={{
                             display: 'grid',
@@ -603,100 +588,121 @@ export function MealPlanBuilderPanel({
                         <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                           {builderCopy.draft_label}
                         </Typography>
-                        {days.length === 0 ? (
-                          <Alert severity="info">{builderCopy.structure.empty}</Alert>
-                        ) : (
-                          <Stack spacing={2} sx={{ overflow: 'auto' }}>
-                            {days.map((day, index) => (
-                              <Card
-                                key={day.uiId}
-                                variant={selectedDayId === day.uiId ? 'outlined' : 'elevation'}
-                                onClick={() => handleSelectDay(day.uiId)}
-                                sx={{
-                                  borderColor:
-                                    selectedDayId === day.uiId
-                                      ? alpha(theme.palette.warning.main, 0.8)
-                                      : undefined,
-                                  cursor: 'pointer',
-                                }}
-                              >
-                                <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                                  <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
-                                    <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                                      {builderCopy.structure.day_prefix} {index + 1}
-                                    </Typography>
-                                    <Stack direction="row" spacing={0.5}>
-                                      <Tooltip title={builderCopy.structure.move_day_up_label}>
-                                        <span>
-                                          <IconButton
-                                            onClick={handleMoveDay('up', day.uiId)}
-                                            size="small"
-                                            disabled={index === 0}
-                                          >
-                                            <ArrowUpward fontSize="small" />
-                                          </IconButton>
-                                        </span>
-                                      </Tooltip>
-                                      <Tooltip title={builderCopy.structure.move_day_down_label}>
-                                        <span>
-                                          <IconButton
-                                            onClick={handleMoveDay('down', day.uiId)}
-                                            size="small"
-                                            disabled={index === days.length - 1}
-                                          >
-                                            <ArrowDownward fontSize="small" />
-                                          </IconButton>
-                                        </span>
-                                      </Tooltip>
-                                      <Tooltip title={builderCopy.structure.remove_day_label}>
-                                        <span>
-                                          <IconButton onClick={handleRemoveDayClick(day.uiId)} size="small">
-                                            <Delete fontSize="small" />
-                                          </IconButton>
-                                        </span>
-                                      </Tooltip>
-                                    </Stack>
-                                  </Stack>
-                                  <TextField
-                                    label={builderCopy.structure.title}
-                                    value={day.label}
-                                    onChange={(event) => handleUpdateDay(day.uiId, { label: event.target.value })}
-                                    size="small"
-                                  />
-                                  <TextField
-                                    label={builderCopy.structure.description_placeholder}
-                                    value={day.description}
-                                    onChange={(event) => handleUpdateDay(day.uiId, { description: event.target.value })}
-                                    size="small"
-                                    multiline
-                                    minRows={2}
-                                  />
-                                  <Divider flexItem sx={{ my: 1 }} />
-                                  <Stack spacing={1.5}>
-                                    {day.meals.length === 0 ? (
-                                      <Typography color="text.secondary" variant="body2">
-                                        {builderCopy.structure.add_meal_placeholder}
-                                      </Typography>
-                                    ) : (
-                                      day.meals.map((meal, mealIndex) => renderMealCard(day, meal, mealIndex))
-                                    )}
-                                  </Stack>
-                                </CardContent>
-                              </Card>
-                            ))}
+                        <Stack spacing={2} sx={{ flexGrow: 1, minHeight: 0 }}>
+                          <Stack spacing={1.5}>
+                            <TextField
+                              label={builderCopy.config.plan_name_label}
+                              value={form.planName}
+                              onChange={handleFormChange('planName')}
+                              size="small"
+                              required
+                            />
+                            <TextField
+                              label={builderCopy.config.plan_description_label}
+                              value={form.description}
+                              onChange={handleFormChange('description')}
+                              placeholder={builderCopy.config.plan_description_placeholder}
+                              multiline
+                              minRows={3}
+                            />
                           </Stack>
-                        )}
-                        <Box>
-                          <Button
-                            onClick={handleCreateEmptyDay}
-                            startIcon={<Add fontSize="small" />}
-                            size="small"
-                            variant="contained"
-                            fullWidth
-                          >
-                            {builderCopy.structure.add_day_label}
-                          </Button>
-                        </Box>
+                          <Box sx={{ flexGrow: 1, minHeight: 0 }}>
+                            {days.length === 0 ? (
+                              <Alert severity="info">{builderCopy.structure.empty}</Alert>
+                            ) : (
+                              <Stack spacing={2} sx={{ overflow: 'auto', maxHeight: '100%' }}>
+                                {days.map((day, index) => (
+                                  <Card
+                                    key={day.uiId}
+                                    variant={selectedDayId === day.uiId ? 'outlined' : 'elevation'}
+                                    onClick={() => handleSelectDay(day.uiId)}
+                                    sx={{
+                                      borderColor:
+                                        selectedDayId === day.uiId
+                                          ? alpha(theme.palette.warning.main, 0.8)
+                                          : undefined,
+                                      cursor: 'pointer',
+                                    }}
+                                  >
+                                    <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                                      <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
+                                        <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                                          {builderCopy.structure.day_prefix} {index + 1}
+                                        </Typography>
+                                        <Stack direction="row" spacing={0.5}>
+                                          <Tooltip title={builderCopy.structure.move_day_up_label}>
+                                            <span>
+                                              <IconButton
+                                                onClick={handleMoveDay('up', day.uiId)}
+                                                size="small"
+                                                disabled={index === 0}
+                                              >
+                                                <ArrowUpward fontSize="small" />
+                                              </IconButton>
+                                            </span>
+                                          </Tooltip>
+                                          <Tooltip title={builderCopy.structure.move_day_down_label}>
+                                            <span>
+                                              <IconButton
+                                                onClick={handleMoveDay('down', day.uiId)}
+                                                size="small"
+                                                disabled={index === days.length - 1}
+                                              >
+                                                <ArrowDownward fontSize="small" />
+                                              </IconButton>
+                                            </span>
+                                          </Tooltip>
+                                          <Tooltip title={builderCopy.structure.remove_day_label}>
+                                            <span>
+                                              <IconButton onClick={handleRemoveDayClick(day.uiId)} size="small">
+                                                <Delete fontSize="small" />
+                                              </IconButton>
+                                            </span>
+                                          </Tooltip>
+                                        </Stack>
+                                      </Stack>
+                                      <TextField
+                                        label={builderCopy.structure.title}
+                                        value={day.label}
+                                        onChange={(event) => handleUpdateDay(day.uiId, { label: event.target.value })}
+                                        size="small"
+                                      />
+                                      <TextField
+                                        label={builderCopy.structure.description_placeholder}
+                                        value={day.description}
+                                        onChange={(event) => handleUpdateDay(day.uiId, { description: event.target.value })}
+                                        size="small"
+                                        multiline
+                                        minRows={2}
+                                      />
+                                      <Divider flexItem sx={{ my: 1 }} />
+                                      <Stack spacing={1.5}>
+                                        {day.meals.length === 0 ? (
+                                          <Typography color="text.secondary" variant="body2">
+                                            {builderCopy.structure.add_meal_placeholder}
+                                          </Typography>
+                                        ) : (
+                                          day.meals.map((meal, mealIndex) => renderMealCard(day, meal, mealIndex))
+                                        )}
+                                      </Stack>
+                                    </CardContent>
+                                  </Card>
+                                ))}
+                              </Stack>
+                            )}
+                          </Box>
+                          <Box>
+                            <Button
+                              onClick={handleCreateEmptyDay}
+                              startIcon={<Add fontSize="small" />}
+                              size="small"
+                              variant="contained"
+                              fullWidth
+                            >
+                              {builderCopy.structure.add_day_label}
+                            </Button>
+                          </Box>
+                        </Stack>
                       </CardContent>
                     </Card>
                   </Grid>
