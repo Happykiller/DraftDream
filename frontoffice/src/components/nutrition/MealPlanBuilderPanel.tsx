@@ -681,18 +681,13 @@ export function MealPlanBuilderPanel({
                   <Grid size={{ xs: 12, md: 3 }} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <Card variant="outlined" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, flexGrow: 1 }}>
-                        <Stack direction="row" alignItems="center" justifyContent="space-between">
-                          <Box>
-                            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                              {builderCopy.meal_library.title}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                              {builderCopy.meal_library.subtitle}
-                            </Typography>
-                          </Box>
-                          <Button onClick={handleOpenMealDialog} size="small" variant="contained" startIcon={<Add fontSize="small" />}>
-                            {builderCopy.meal_library.create_label}
-                          </Button>
+                        <Stack spacing={0.5}>
+                          <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                            {builderCopy.meal_library.title}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {builderCopy.meal_library.subtitle}
+                          </Typography>
                         </Stack>
                         <TextField
                           value={mealSearch}
@@ -707,6 +702,15 @@ export function MealPlanBuilderPanel({
                             ),
                           }}
                         />
+                        <Button
+                          onClick={handleOpenMealDialog}
+                          size="small"
+                          startIcon={<Add fontSize="small" />}
+                          variant="contained"
+                          fullWidth
+                        >
+                          {builderCopy.meal_library.create_label}
+                        </Button>
                         <Stack spacing={1.5} sx={{ overflow: 'auto' }}>
                           {mealLibraryLoading ? (
                             <Stack spacing={1}>
