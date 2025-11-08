@@ -24,7 +24,6 @@ export interface MealPlanBuilderCopy {
   edit_title?: string;
   subtitle: string;
   edit_subtitle?: string;
-  draft_label: string;
   config: {
     title: string;
     client_label: string;

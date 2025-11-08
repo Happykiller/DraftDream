@@ -585,9 +585,6 @@ export function MealPlanBuilderPanel({
                   <Grid size={{ xs: 12, md: 6 }} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <Card variant="outlined" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, flexGrow: 1 }}>
-                        <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                          {builderCopy.draft_label}
-                        </Typography>
                         <Stack spacing={2} sx={{ flexGrow: 1, minHeight: 0 }}>
                           <Stack spacing={1.5}>
                             <TextField
