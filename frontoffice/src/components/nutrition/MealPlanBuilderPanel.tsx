@@ -734,6 +734,11 @@ export function MealPlanBuilderPanel({
                         >
                           {builderCopy.meal_library.create_label}
                         </Button>
+                        {builderCopy.meal_library.limit_hint ? (
+                          <Typography variant="caption" color="text.secondary">
+                            {builderCopy.meal_library.limit_hint}
+                          </Typography>
+                        ) : null}
                         <Stack spacing={1.5} sx={{ overflow: 'auto' }}>
                           {mealLibraryLoading ? (
                             <Stack spacing={1}>
@@ -791,11 +796,6 @@ export function MealPlanBuilderPanel({
                             ))
                           )}
                         </Stack>
-                        {builderCopy.meal_library.limit_hint ? (
-                          <Typography variant="caption" color="text.secondary">
-                            {builderCopy.meal_library.limit_hint}
-                          </Typography>
-                        ) : null}
                       </CardContent>
                     </Card>
                   </Grid>
