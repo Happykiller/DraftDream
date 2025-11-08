@@ -1,6 +1,5 @@
 // src/components/nutrition/MealPlanBuilderPanel.tsx
 import * as React from 'react';
-import { useTranslation } from 'react-i18next';
 import { alpha, useTheme } from '@mui/material/styles';
 import {
   Alert,
@@ -77,7 +76,6 @@ export function MealPlanBuilderPanel({
   onUpdated,
   mealPlan,
 }: MealPlanBuilderPanelProps): React.JSX.Element {
-  const { t } = useTranslation();
   const theme = useTheme();
 
   const {
@@ -323,7 +321,7 @@ export function MealPlanBuilderPanel({
         </CardContent>
       </Card>
     ),
-    [builderCopy, handleMoveMeal, handleRemoveMealClick, handleUpdateMeal, t],
+    [builderCopy, handleMoveMeal, handleRemoveMealClick, handleUpdateMeal],
   );
 
   return (
@@ -579,14 +577,9 @@ export function MealPlanBuilderPanel({
                   <Grid size={{ xs: 12, md: 6 }} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <Card variant="outlined" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, flexGrow: 1 }}>
-                        <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
-                          <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                            {builderCopy.draft_label}
-                          </Typography>
-                          <Button onClick={handleCreateEmptyDay} startIcon={<Add />} size="small" variant="text">
-                            {t('nutrition-coach.builder.structure.add_day')}
-                          </Button>
-                        </Stack>
+                        <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                          {builderCopy.draft_label}
+                        </Typography>
                         {days.length === 0 ? (
                           <Alert severity="info">{builderCopy.structure.empty}</Alert>
                         ) : (
@@ -670,6 +663,17 @@ export function MealPlanBuilderPanel({
                             ))}
                           </Stack>
                         )}
+                        <Box>
+                          <Button
+                            onClick={handleCreateEmptyDay}
+                            startIcon={<Add fontSize="small" />}
+                            size="small"
+                            variant="contained"
+                            fullWidth
+                          >
+                            {builderCopy.structure.add_day_label}
+                          </Button>
+                        </Box>
                       </CardContent>
                     </Card>
                   </Grid>
