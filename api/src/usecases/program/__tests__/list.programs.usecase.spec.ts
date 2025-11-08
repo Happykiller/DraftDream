@@ -154,6 +154,70 @@ describe('ListProgramsUsecase', () => {
     });
   });
 
+  it('should aggregate all admin ids across paginated responses for coaches', async () => {
+    asMock(programRepositoryMock.list).mockResolvedValue({
+      items: [program],
+      total: 1,
+      page: 1,
+      limit: 15,
+    });
+    const firstPage = Array.from({ length: 50 }, (_, index) => ({ id: `admin-${index + 1}` })) as any;
+    const adminResponses = [
+      {
+        items: firstPage,
+        total: 51,
+        page: 1,
+        limit: 50,
+      },
+      {
+        items: [{ id: 'admin-51' }] as any,
+        total: 51,
+        page: 2,
+        limit: 50,
+      },
+    ];
+    let callIndex = 0;
+    asMock(userRepositoryMock.listUsers).mockImplementation(() => {
+      const response = adminResponses[callIndex] ?? adminResponses[adminResponses.length - 1];
+      callIndex += 1;
+      return Promise.resolve(response);
+    });
+
+    const dto: ListProgramsUsecaseDto = {
+      session: { userId: 'coach-1', role: Role.COACH },
+      page: 1,
+      limit: 15,
+    } as ListProgramsUsecaseDto;
+
+    const result = await usecase.execute(dto);
+
+    expect(asMock(userRepositoryMock.listUsers).mock.calls).toEqual([
+      [{ type: 'admin', limit: 50, page: 1 }],
+      [{ type: 'admin', limit: 50, page: 2 }],
+    ]);
+    expect(asMock(programRepositoryMock.list).mock.calls[0][0]).toEqual(
+      expect.objectContaining({
+        page: 1,
+        limit: 15,
+        createdByIn: expect.arrayContaining([
+          'coach-1',
+          'admin-1',
+          'admin-2',
+          'admin-3',
+          'admin-51',
+        ]),
+      }),
+    );
+    const { createdByIn } = asMock(programRepositoryMock.list).mock.calls[0][0];
+    expect(createdByIn).toHaveLength(52);
+    expect(result).toEqual({
+      items: [expectedProgram],
+      total: 1,
+      page: 1,
+      limit: 15,
+    });
+  });
+
   it('should list programs for coaches when filtering their own id', async () => {
     const filteredProgram = { ...program, createdBy: 'coach-1' };
     asMock(programRepositoryMock.list).mockResolvedValue({
@@ -241,6 +305,16 @@ describe('ListProgramsUsecase', () => {
     const dto: ListProgramsUsecaseDto = {
       session: { userId: 'athlete-1', role: Role.ATHLETE },
       createdBy: 'coach-1',
+    } as ListProgramsUsecaseDto;
+
+    await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.LIST_PROGRAMS_FORBIDDEN);
+    expect(asMock(programRepositoryMock.list).mock.calls.length).toBe(0);
+  });
+
+  it('should forbid athletes from filtering on creator lists', async () => {
+    const dto: ListProgramsUsecaseDto = {
+      session: { userId: 'athlete-1', role: Role.ATHLETE },
+      createdByIn: ['coach-1', 'coach-2'],
     } as ListProgramsUsecaseDto;
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.LIST_PROGRAMS_FORBIDDEN);
