@@ -11,21 +11,22 @@ type AsyncTask = <T>(task: () => Promise<T>) => Promise<T>;
  * or local state while the loader is reliably reset.
  */
 export const useAsyncTask = () => {
-  const setLoading = useLoaderStore((state) => state.setLoading);
+  const startTask = useLoaderStore((state) => state.startTask);
+  const finishTask = useLoaderStore((state) => state.finishTask);
 
   const execute = React.useCallback<AsyncTask>(
     async (task) => {
-      setLoading(true);
+      startTask();
       try {
         return await task();
       } catch (error) {
         console.error('[AsyncTask] Error:', error);
         throw error;
       } finally {
-        setLoading(false);
+        finishTask();
       }
     },
-    [setLoading],
+    [finishTask, startTask],
   );
 
   return { execute };
