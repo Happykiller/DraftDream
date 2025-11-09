@@ -195,6 +195,28 @@ export function MealPlanBuilderPanel({
   const [isEditingPlanName, setIsEditingPlanName] = React.useState(false);
   const planNameInputRef = React.useRef<HTMLInputElement | null>(null);
   const planNameBeforeEditRef = React.useRef(form.planName);
+  const [editingDayField, setEditingDayField] = React.useState<{
+    dayId: string;
+    field: 'label' | 'description';
+  } | null>(null);
+  const dayFieldRefs = React.useRef(new Map<string, HTMLInputElement | HTMLTextAreaElement>());
+  const dayFieldPreviousValues = React.useRef(new Map<string, string>());
+
+  const getDayFieldKey = React.useCallback((dayId: string, field: 'label' | 'description') => `${dayId}:${field}`, []);
+
+  const registerDayFieldRef = React.useCallback(
+    (dayId: string, field: 'label' | 'description') =>
+      (node: HTMLInputElement | HTMLTextAreaElement | null) => {
+        const key = getDayFieldKey(dayId, field);
+
+        if (node) {
+          dayFieldRefs.current.set(key, node);
+        } else {
+          dayFieldRefs.current.delete(key);
+        }
+      },
+    [getDayFieldKey],
+  );
 
   React.useEffect(() => {
     if (isEditingPlanName && planNameInputRef.current) {
@@ -202,6 +224,20 @@ export function MealPlanBuilderPanel({
       planNameInputRef.current.select();
     }
   }, [isEditingPlanName]);
+
+  React.useEffect(() => {
+    if (!editingDayField) {
+      return;
+    }
+
+    const key = getDayFieldKey(editingDayField.dayId, editingDayField.field);
+    const input = dayFieldRefs.current.get(key);
+
+    if (input) {
+      input.focus();
+      input.select();
+    }
+  }, [editingDayField, getDayFieldKey]);
 
   React.useEffect(() => {
     if (!isEditingPlanName) {
@@ -252,6 +288,94 @@ export function MealPlanBuilderPanel({
       }
     },
     [handlePlanNameEdit],
+  );
+
+  const handleStartDayFieldEdit = React.useCallback(
+    (dayId: string, field: 'label' | 'description', currentValue: string) => {
+      const key = getDayFieldKey(dayId, field);
+      dayFieldPreviousValues.current.set(key, currentValue);
+      setEditingDayField({ dayId, field });
+    },
+    [getDayFieldKey],
+  );
+
+  const handleDayFieldCommit = React.useCallback(
+    (dayId: string, field: 'label' | 'description', value: string) => {
+      if (!editingDayField || editingDayField.dayId !== dayId || editingDayField.field !== field) {
+        return;
+      }
+
+      const trimmedValue = value.trim();
+
+      if (field === 'label') {
+        handleUpdateDay(dayId, { label: trimmedValue });
+      } else {
+        handleUpdateDay(dayId, { description: trimmedValue });
+      }
+
+      const key = getDayFieldKey(dayId, field);
+      dayFieldPreviousValues.current.delete(key);
+      setEditingDayField(null);
+    },
+    [editingDayField, getDayFieldKey, handleUpdateDay],
+  );
+
+  const handleDayFieldCancel = React.useCallback(
+    (dayId: string, field: 'label' | 'description') => {
+      const key = getDayFieldKey(dayId, field);
+      const previous = dayFieldPreviousValues.current.get(key);
+
+      dayFieldPreviousValues.current.delete(key);
+
+      if (typeof previous === 'string') {
+        if (field === 'label') {
+          handleUpdateDay(dayId, { label: previous });
+        } else {
+          handleUpdateDay(dayId, { description: previous });
+        }
+      }
+
+      if (editingDayField && editingDayField.dayId === dayId && editingDayField.field === field) {
+        setEditingDayField(null);
+      }
+    },
+    [editingDayField, getDayFieldKey, handleUpdateDay],
+  );
+
+  const handleDayFieldDisplayKeyDown = React.useCallback(
+    (dayId: string, field: 'label' | 'description', currentValue: string) =>
+      (event: React.KeyboardEvent<HTMLElement>) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          handleStartDayFieldEdit(dayId, field, currentValue);
+        }
+      },
+    [handleStartDayFieldEdit],
+  );
+
+  const handleDayFieldBlur = React.useCallback(
+    (dayId: string, field: 'label' | 'description') =>
+      (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        handleDayFieldCommit(dayId, field, event.currentTarget.value);
+      },
+    [handleDayFieldCommit],
+  );
+
+  const handleDayFieldInputKeyDown = React.useCallback(
+    (dayId: string, field: 'label' | 'description') =>
+      (event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          handleDayFieldCancel(dayId, field);
+          return;
+        }
+
+        if (event.key === 'Enter' && (field === 'label' || !event.shiftKey)) {
+          event.preventDefault();
+          handleDayFieldCommit(dayId, field, event.currentTarget.value);
+        }
+      },
+    [handleDayFieldCancel, handleDayFieldCommit],
   );
 
   const userOptions = React.useMemo(() => mergeUsers(users, selectedAthlete), [selectedAthlete, users]);
@@ -828,96 +952,169 @@ export function MealPlanBuilderPanel({
                               </Stack>
                             ) : (
                               <Stack spacing={2} sx={{ overflow: 'auto', maxHeight: '100%' }}>
-                                {days.map((day, index) => (
-                                  <Card
-                                    key={day.uiId}
-                                    variant={selectedDayId === day.uiId ? 'outlined' : 'elevation'}
-                                    onClick={() => handleSelectDay(day.uiId)}
-                                    sx={{
-                                      borderColor:
-                                        selectedDayId === day.uiId
-                                          ? theme.palette.warning.main
-                                          : undefined,
-                                      borderWidth: selectedDayId === day.uiId ? 1 : undefined,
-                                      borderStyle: selectedDayId === day.uiId ? 'solid' : undefined,
-                                      cursor: 'pointer',
-                                      transition: theme.transitions.create(
-                                        ['border-color', 'box-shadow'],
-                                        {
-                                          duration: theme.transitions.duration.shortest,
+                                {days.map((day, index) => {
+                                  const dayLabel = day.label ?? '';
+                                  const dayDescription = day.description ?? '';
+                                  const trimmedDayLabel = dayLabel.trim();
+                                  const trimmedDayDescription = dayDescription.trim();
+                                  const isEditingDayLabel =
+                                    editingDayField?.dayId === day.uiId && editingDayField.field === 'label';
+                                  const isEditingDayDescription =
+                                    editingDayField?.dayId === day.uiId && editingDayField.field === 'description';
+
+                                  return (
+                                    <Card
+                                      key={day.uiId}
+                                      variant={selectedDayId === day.uiId ? 'outlined' : 'elevation'}
+                                      onClick={() => handleSelectDay(day.uiId)}
+                                      sx={{
+                                        borderColor:
+                                          selectedDayId === day.uiId ? theme.palette.warning.main : undefined,
+                                        borderWidth: selectedDayId === day.uiId ? 1 : undefined,
+                                        borderStyle: selectedDayId === day.uiId ? 'solid' : undefined,
+                                        cursor: 'pointer',
+                                        transition: theme.transitions.create(
+                                          ['border-color', 'box-shadow'],
+                                          {
+                                            duration: theme.transitions.duration.shortest,
+                                          },
+                                        ),
+                                        '&:hover': {
+                                          borderColor: alpha(theme.palette.warning.main, 0.24),
+                                          borderWidth: 1,
+                                          borderStyle: 'solid',
                                         },
-                                      ),
-                                      '&:hover': {
-                                        borderColor: alpha(theme.palette.warning.main, 0.24),
-                                        borderWidth: 1,
-                                        borderStyle: 'solid',
-                                      },
-                                    }}
-                                  >
-                                    <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                                      <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
-                                        <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                                          {builderCopy.structure.day_prefix} {index + 1}
-                                        </Typography>
-                                        <Stack direction="row" spacing={0.5}>
-                                          <Tooltip title={builderCopy.structure.move_day_up_label}>
-                                            <span>
-                                              <IconButton
-                                                onClick={handleMoveDay('up', day.uiId)}
-                                                size="small"
-                                                disabled={index === 0}
-                                              >
-                                                <ArrowUpward fontSize="small" />
-                                              </IconButton>
-                                            </span>
-                                          </Tooltip>
-                                          <Tooltip title={builderCopy.structure.move_day_down_label}>
-                                            <span>
-                                              <IconButton
-                                                onClick={handleMoveDay('down', day.uiId)}
-                                                size="small"
-                                                disabled={index === days.length - 1}
-                                              >
-                                                <ArrowDownward fontSize="small" />
-                                              </IconButton>
-                                            </span>
-                                          </Tooltip>
-                                          <Tooltip title={builderCopy.structure.remove_day_label}>
-                                            <span>
-                                              <IconButton onClick={handleRemoveDayClick(day.uiId)} size="small">
-                                                <Delete fontSize="small" />
-                                              </IconButton>
-                                            </span>
-                                          </Tooltip>
-                                        </Stack>
-                                      </Stack>
-                                      <TextField
-                                        label={builderCopy.structure.title}
-                                        value={day.label}
-                                        onChange={(event) => handleUpdateDay(day.uiId, { label: event.target.value })}
-                                        size="small"
-                                      />
-                                      <TextField
-                                        label={builderCopy.structure.description_placeholder}
-                                        value={day.description}
-                                        onChange={(event) => handleUpdateDay(day.uiId, { description: event.target.value })}
-                                        size="small"
-                                        multiline
-                                        minRows={2}
-                                      />
-                                      <Divider flexItem sx={{ my: 1 }} />
-                                      <Stack spacing={1.5}>
-                                        {day.meals.length === 0 ? (
-                                          <Typography color="text.secondary" variant="body2">
-                                            {builderCopy.structure.add_meal_placeholder}
+                                      }}
+                                    >
+                                      <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                                        <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
+                                          <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                                            {builderCopy.structure.day_prefix} {index + 1}
                                           </Typography>
+                                          <Stack direction="row" spacing={0.5}>
+                                            <Tooltip title={builderCopy.structure.move_day_up_label}>
+                                              <span>
+                                                <IconButton
+                                                  onClick={handleMoveDay('up', day.uiId)}
+                                                  size="small"
+                                                  disabled={index === 0}
+                                                >
+                                                  <ArrowUpward fontSize="small" />
+                                                </IconButton>
+                                              </span>
+                                            </Tooltip>
+                                            <Tooltip title={builderCopy.structure.move_day_down_label}>
+                                              <span>
+                                                <IconButton
+                                                  onClick={handleMoveDay('down', day.uiId)}
+                                                  size="small"
+                                                  disabled={index === days.length - 1}
+                                                >
+                                                  <ArrowDownward fontSize="small" />
+                                                </IconButton>
+                                              </span>
+                                            </Tooltip>
+                                            <Tooltip title={builderCopy.structure.remove_day_label}>
+                                              <span>
+                                                <IconButton onClick={handleRemoveDayClick(day.uiId)} size="small">
+                                                  <Delete fontSize="small" />
+                                                </IconButton>
+                                              </span>
+                                            </Tooltip>
+                                          </Stack>
+                                        </Stack>
+                                        {isEditingDayLabel ? (
+                                          <TextField
+                                            value={dayLabel}
+                                            onChange={(event) =>
+                                              handleUpdateDay(day.uiId, { label: event.target.value })
+                                            }
+                                            onBlur={handleDayFieldBlur(day.uiId, 'label')}
+                                            onKeyDown={handleDayFieldInputKeyDown(day.uiId, 'label')}
+                                            size="small"
+                                            variant="standard"
+                                            fullWidth
+                                            inputRef={registerDayFieldRef(day.uiId, 'label')}
+                                            inputProps={{ 'aria-label': builderCopy.structure.title }}
+                                          />
                                         ) : (
-                                          day.meals.map((meal, mealIndex) => renderMealCard(day, meal, mealIndex))
+                                          <Typography
+                                            variant="subtitle1"
+                                            sx={{
+                                              fontWeight: 600,
+                                              ...interactiveSurfaceSx,
+                                              display: 'inline-flex',
+                                              alignItems: 'center',
+                                              gap: 0.5,
+                                              width: 'fit-content',
+                                            }}
+                                            onClick={() => handleStartDayFieldEdit(day.uiId, 'label', dayLabel)}
+                                            onKeyDown={handleDayFieldDisplayKeyDown(day.uiId, 'label', dayLabel)}
+                                            tabIndex={0}
+                                            role="button"
+                                            aria-label={builderCopy.structure.title}
+                                          >
+                                            <Edit fontSize="inherit" color="disabled" />
+                                            {trimmedDayLabel.length > 0 ? dayLabel : builderCopy.structure.title}
+                                          </Typography>
                                         )}
-                                      </Stack>
-                                    </CardContent>
-                                  </Card>
-                                ))}
+                                        {isEditingDayDescription ? (
+                                          <TextField
+                                            value={dayDescription}
+                                            onChange={(event) =>
+                                              handleUpdateDay(day.uiId, { description: event.target.value })
+                                            }
+                                            onBlur={handleDayFieldBlur(day.uiId, 'description')}
+                                            onKeyDown={handleDayFieldInputKeyDown(day.uiId, 'description')}
+                                            size="small"
+                                            variant="standard"
+                                            fullWidth
+                                            multiline
+                                            minRows={2}
+                                            inputRef={registerDayFieldRef(day.uiId, 'description')}
+                                            inputProps={{ 'aria-label': builderCopy.structure.description_placeholder }}
+                                          />
+                                        ) : (
+                                          <Typography
+                                            variant="body2"
+                                            color={trimmedDayDescription.length > 0 ? 'text.primary' : 'text.secondary'}
+                                            sx={{
+                                              ...interactiveSurfaceSx,
+                                              display: 'flex',
+                                              alignItems: 'flex-start',
+                                              gap: 0.5,
+                                              width: '100%',
+                                            }}
+                                            onClick={() =>
+                                              handleStartDayFieldEdit(day.uiId, 'description', dayDescription)
+                                            }
+                                            onKeyDown={handleDayFieldDisplayKeyDown(day.uiId, 'description', dayDescription)}
+                                            tabIndex={0}
+                                            role="button"
+                                            aria-label={builderCopy.structure.description_placeholder}
+                                          >
+                                            <Edit fontSize="small" color="disabled" />
+                                            <Box component="span" sx={{ whiteSpace: 'pre-wrap' }}>
+                                              {trimmedDayDescription.length > 0
+                                                ? dayDescription
+                                                : builderCopy.structure.description_placeholder}
+                                            </Box>
+                                          </Typography>
+                                        )}
+                                        <Divider flexItem sx={{ my: 1 }} />
+                                        <Stack spacing={1.5}>
+                                          {day.meals.length === 0 ? (
+                                            <Typography color="text.secondary" variant="body2">
+                                              {builderCopy.structure.add_meal_placeholder}
+                                            </Typography>
+                                          ) : (
+                                            day.meals.map((meal, mealIndex) => renderMealCard(day, meal, mealIndex))
+                                          )}
+                                        </Stack>
+                                      </CardContent>
+                                    </Card>
+                                  );
+                                })}
                                 <Button
                                   onClick={handleCreateEmptyDay}
                                   startIcon={<Add fontSize="small" />}
