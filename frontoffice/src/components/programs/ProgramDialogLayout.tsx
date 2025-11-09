@@ -1,6 +1,15 @@
 import * as React from 'react';
 import { alpha, useTheme } from '@mui/material/styles';
-import { Box, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography } from '@mui/material';
+import type { PaletteColor } from '@mui/material/styles';
+import {
+  Box,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Stack,
+  Typography,
+} from '@mui/material';
 import type { BoxProps } from '@mui/material/Box';
 import type { DialogContentProps } from '@mui/material/DialogContent';
 import type { DialogProps } from '@mui/material/Dialog';
@@ -11,6 +20,7 @@ interface ProgramDialogLayoutProps {
   title: React.ReactNode;
   description?: React.ReactNode;
   icon: React.ReactNode;
+  tone?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info';
   actions: React.ReactNode;
   children: React.ReactNode;
   onClose?: DialogProps['onClose'];
@@ -30,6 +40,7 @@ export function ProgramDialogLayout({
   title,
   description,
   icon,
+  tone = 'success',
   actions,
   children,
   onClose,
@@ -43,7 +54,27 @@ export function ProgramDialogLayout({
   const { fullWidth = true, ...restDialogProps } = dialogProps ?? {};
   const { dividers = true, ...restContentProps } = contentProps ?? {};
   const { sx: actionsSx, ...restActionsProps } = actionsProps ?? {};
-  const headerBackground = alpha(theme.palette.success.main, 0.2);
+
+  const paletteColor: PaletteColor = React.useMemo(() => {
+    switch (tone) {
+      case 'primary':
+        return theme.palette.primary;
+      case 'secondary':
+        return theme.palette.secondary;
+      case 'warning':
+        return theme.palette.warning;
+      case 'error':
+        return theme.palette.error;
+      case 'info':
+        return theme.palette.info;
+      case 'success':
+      default:
+        return theme.palette.success;
+    }
+  }, [theme, tone]);
+
+  const headerBackground = alpha(paletteColor.main, 0.2);
+  const iconContrastColor = paletteColor.contrastText ?? theme.palette.getContrastText(paletteColor.main);
 
   const mergedActionsSx = !actionsSx
     ? { backgroundColor: '#e0dcdce0' }
@@ -66,8 +97,8 @@ export function ProgramDialogLayout({
                 width: 40,
                 height: 40,
                 borderRadius: 2,
-                bgcolor: 'success.main',
-                color: 'primary.contrastText',
+                bgcolor: paletteColor.main,
+                color: iconContrastColor,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',

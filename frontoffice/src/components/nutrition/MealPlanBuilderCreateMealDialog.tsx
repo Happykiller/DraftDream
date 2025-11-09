@@ -1,13 +1,10 @@
 // src/components/nutrition/MealPlanBuilderCreateMealDialog.tsx
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
+import { Add } from '@mui/icons-material';
 import {
   Box,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   MenuItem,
   Stack,
   TextField,
@@ -17,6 +14,7 @@ import { useMealTypes } from '@hooks/nutrition/useMealTypes';
 import type { UseMealsResult } from '@hooks/nutrition/useMeals';
 
 import { slugify } from '@src/utils/slugify';
+import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
 
 interface MealPlanBuilderCreateMealDialogProps {
   open: boolean;
@@ -111,85 +109,102 @@ export function MealPlanBuilderCreateMealDialog({
     [createMeal, form, i18n.language, onClose, onCreated],
   );
 
+  const actions = (
+    <>
+      <Button onClick={handleClose} disabled={submitting} color="inherit">
+        {t('common.actions.cancel')}
+      </Button>
+      <Button
+        color="warning"
+        disabled={submitting || !form.label.trim() || !form.typeId.trim()}
+        startIcon={<Add />}
+        type="submit"
+        variant="contained"
+      >
+        {t('common.actions.create')}
+      </Button>
+    </>
+  );
+
   return (
-    <Dialog fullWidth maxWidth="sm" open={open} onClose={handleClose} component="form" onSubmit={handleSubmit}>
-      <DialogTitle>{t('nutrition-coach.builder.meal_library.create_title')}</DialogTitle>
-      <DialogContent>
-        <Stack spacing={2} sx={{ mt: 1 }}>
+    <ProgramDialogLayout
+      open={open}
+      onClose={submitting ? undefined : handleClose}
+      icon={<Add fontSize="large" />}
+      tone="warning"
+      title={t('nutrition-coach.builder.meal_library.create_title')}
+      actions={actions}
+      dialogProps={{ maxWidth: 'sm' }}
+      formComponent="form"
+      formProps={{ onSubmit: handleSubmit, noValidate: true }}
+    >
+      <Stack spacing={2} sx={{ mt: 1 }}>
+        {/* General information */}
+        <TextField
+          label={t('nutrition-coach.builder.meal_library.name_label')}
+          value={form.label}
+          onChange={handleChange('label')}
+          required
+          autoFocus
+        />
+        <TextField
+          select
+          label={t('nutrition-coach.builder.meal_library.type_label')}
+          value={form.typeId}
+          onChange={handleChange('typeId')}
+          required
+          disabled={mealTypesLoading}
+        >
+          {mealTypes.map((type) => (
+            <MenuItem key={type.id} value={type.id}>
+              {type.label}
+            </MenuItem>
+          ))}
+        </TextField>
+        <TextField
+          label={t('nutrition-coach.builder.meal_library.foods_label')}
+          value={form.foods}
+          onChange={handleChange('foods')}
+          multiline
+          minRows={3}
+        />
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' },
+            gap: 2,
+          }}
+        >
           <TextField
-            label={t('nutrition-coach.builder.meal_library.name_label')}
-            value={form.label}
-            onChange={handleChange('label')}
-            required
-            autoFocus
+            label={t('nutrition-coach.builder.meal_library.calories_label')}
+            value={form.calories}
+            onChange={handleChange('calories')}
+            type="number"
+            inputProps={{ min: 0 }}
           />
           <TextField
-            select
-            label={t('nutrition-coach.builder.meal_library.type_label')}
-            value={form.typeId}
-            onChange={handleChange('typeId')}
-            required
-            disabled={mealTypesLoading}
-          >
-            {mealTypes.map((type) => (
-              <MenuItem key={type.id} value={type.id}>
-                {type.label}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            label={t('nutrition-coach.builder.meal_library.foods_label')}
-            value={form.foods}
-            onChange={handleChange('foods')}
-            multiline
-            minRows={3}
+            label={t('nutrition-coach.builder.meal_library.protein_label')}
+            value={form.proteinGrams}
+            onChange={handleChange('proteinGrams')}
+            type="number"
+            inputProps={{ min: 0 }}
           />
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' },
-              gap: 2,
-            }}
-          >
-            <TextField
-              label={t('nutrition-coach.builder.meal_library.calories_label')}
-              value={form.calories}
-              onChange={handleChange('calories')}
-              type="number"
-              inputProps={{ min: 0 }}
-            />
-            <TextField
-              label={t('nutrition-coach.builder.meal_library.protein_label')}
-              value={form.proteinGrams}
-              onChange={handleChange('proteinGrams')}
-              type="number"
-              inputProps={{ min: 0 }}
-            />
-            <TextField
-              label={t('nutrition-coach.builder.meal_library.carbs_label')}
-              value={form.carbGrams}
-              onChange={handleChange('carbGrams')}
-              type="number"
-              inputProps={{ min: 0 }}
-            />
-            <TextField
-              label={t('nutrition-coach.builder.meal_library.fats_label')}
-              value={form.fatGrams}
-              onChange={handleChange('fatGrams')}
-              type="number"
-              inputProps={{ min: 0 }}
-            />
-          </Box>
-        </Stack>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} disabled={submitting}>
-          {t('common.actions.cancel')}
-        </Button>
-        <Button color="primary" disabled={submitting || !form.label.trim() || !form.typeId.trim()} type="submit" variant="contained">
-          {t('common.actions.create')}
-        </Button>
-      </DialogActions>
-    </Dialog>
+          <TextField
+            label={t('nutrition-coach.builder.meal_library.carbs_label')}
+            value={form.carbGrams}
+            onChange={handleChange('carbGrams')}
+            type="number"
+            inputProps={{ min: 0 }}
+          />
+          <TextField
+            label={t('nutrition-coach.builder.meal_library.fats_label')}
+            value={form.fatGrams}
+            onChange={handleChange('fatGrams')}
+            type="number"
+            inputProps={{ min: 0 }}
+          />
+        </Box>
+      </Stack>
+    </ProgramDialogLayout>
   );
 }
