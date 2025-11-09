@@ -55,8 +55,8 @@ interface MealPlanBuilderPanelProps {
   mealPlan?: MealPlan;
 }
 
-function formatMealSummary(meal: MealPlanBuilderMeal, copy: MealPlanBuilderCopy): string {
-  return `${copy.structure.calories_label}: ${meal.calories} · ${copy.structure.protein_label}: ${meal.proteinGrams} · ${copy.structure.carbs_label}: ${meal.carbGrams} · ${copy.structure.fats_label}: ${meal.fatGrams}`;
+function formatMealSummary(meal: MealPlanBuilderMeal): string {
+  return `${meal.calories} cal • ${meal.proteinGrams}g P • ${meal.carbGrams}g G • ${meal.fatGrams}g L`;
 }
 
 function mergeUsers(users: User[], selected: User | null): User[] {
@@ -340,7 +340,7 @@ export function MealPlanBuilderPanel({
           {meal.type?.label ? <Chip label={meal.type.label} variant="outlined" size="small" /> : null}
 
           <Typography variant="caption" color="text.secondary">
-            {formatMealSummary(meal, builderCopy)}
+            {formatMealSummary(meal)}
           </Typography>
         </CardContent>
       </Card>
@@ -839,7 +839,7 @@ export function MealPlanBuilderPanel({
                                       </Typography>
                                     ) : null}
                                     <Typography variant="caption" color="text.secondary">
-                                      {`${builderCopy.structure.calories_label}: ${meal.calories} · ${builderCopy.structure.protein_label}: ${meal.proteinGrams} · ${builderCopy.structure.carbs_label}: ${meal.carbGrams} · ${builderCopy.structure.fats_label}: ${meal.fatGrams}`}
+                                      {formatMealSummary(meal)}
                                     </Typography>
                                   </Stack>
                                 </CardContent>
