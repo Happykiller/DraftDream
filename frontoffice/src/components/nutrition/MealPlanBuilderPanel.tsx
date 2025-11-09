@@ -21,15 +21,22 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import type { SvgIconComponent } from '@mui/icons-material';
 import {
   Add,
   ArrowDownward,
   ArrowUpward,
+  BrunchDining,
   CalendarMonth,
   Delete,
+  DinnerDining,
   Edit,
+  EggAlt,
+  LunchDining,
+  RamenDining,
   Replay,
   Search,
+  SoupKitchen,
 } from '@mui/icons-material';
 
 import type { Meal } from '@hooks/nutrition/useMeals';
@@ -57,6 +64,29 @@ interface MealPlanBuilderPanelProps {
 
 function formatMealSummary(meal: MealPlanBuilderMeal): string {
   return `${meal.calories} cal • ${meal.proteinGrams}g P • ${meal.carbGrams}g G • ${meal.fatGrams}g L`;
+}
+
+const MEAL_ICON_COMPONENTS: readonly SvgIconComponent[] = [
+  BrunchDining,
+  DinnerDining,
+  EggAlt,
+  LunchDining,
+  RamenDining,
+  SoupKitchen,
+];
+
+function computeMealIconIndex(reference: string): number {
+  let hash = 0;
+
+  for (let index = 0; index < reference.length; index += 1) {
+    hash = (hash * 31 + reference.charCodeAt(index)) >>> 0;
+  }
+
+  return hash % MEAL_ICON_COMPONENTS.length;
+}
+
+function getMealIcon(reference: string): SvgIconComponent {
+  return MEAL_ICON_COMPONENTS[computeMealIconIndex(reference)];
 }
 
 function mergeUsers(users: User[], selected: User | null): User[] {
@@ -131,6 +161,7 @@ export function MealPlanBuilderPanel({
   const panelSubtitle =
     mode === 'edit' ? builderCopy.edit_subtitle ?? builderCopy.subtitle : builderCopy.subtitle;
   const submitLabel = mode === 'edit' ? builderCopy.footer.update ?? builderCopy.footer.submit : builderCopy.footer.submit;
+  const mealIconColor = alpha(theme.palette.secondary.main, 0.5);
 
   const userOptions = React.useMemo(() => mergeUsers(users, selectedAthlete), [selectedAthlete, users]);
 
@@ -809,14 +840,18 @@ export function MealPlanBuilderPanel({
                               {builderCopy.meal_library.empty_state}
                             </Typography>
                           ) : (
-                            mealLibrary.map((meal) => (
-                              <Card
-                                key={meal.id}
-                                variant="outlined"
-                                sx={{
-                                  position: 'relative',
-                                  overflow: 'visible',
-                                  transition: theme.transitions.create(
+                            mealLibrary.map((meal) => {
+                              const mealIconReference = meal.id ?? meal.uiId ?? meal.label;
+                              const MealIcon = getMealIcon(mealIconReference);
+
+                              return (
+                                <Card
+                                  key={meal.id ?? meal.uiId}
+                                  variant="outlined"
+                                  sx={{
+                                    position: 'relative',
+                                    overflow: 'visible',
+                                    transition: theme.transitions.create(
                                     ['background-color', 'border-color', 'box-shadow'],
                                     {
                                       duration: theme.transitions.duration.shortest,
@@ -828,21 +863,27 @@ export function MealPlanBuilderPanel({
                                   },
                                 }}
                               >
-                                <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
-                                  <Stack spacing={0.5}>
-                                    <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                                      {meal.label}
-                                    </Typography>
-                                    {meal.type?.label ? (
-                                      <Typography variant="body2" color="text.secondary">
-                                        {meal.type.label}
+                                  <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
+                                    <Stack spacing={0.75}>
+                                      <Stack direction="row" spacing={1} alignItems="center">
+                                        {meal.type?.label ? (
+                                          <Tooltip title={meal.type.label}>
+                                            <span style={{ display: 'inline-flex' }}>
+                                              <MealIcon fontSize="small" sx={{ color: mealIconColor }} />
+                                            </span>
+                                          </Tooltip>
+                                        ) : (
+                                          <MealIcon fontSize="small" sx={{ color: mealIconColor }} />
+                                        )}
+                                        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                                          {meal.label}
+                                        </Typography>
+                                      </Stack>
+                                      <Typography variant="caption" color="text.secondary">
+                                        {formatMealSummary(meal)}
                                       </Typography>
-                                    ) : null}
-                                    <Typography variant="caption" color="text.secondary">
-                                      {formatMealSummary(meal)}
-                                    </Typography>
-                                  </Stack>
-                                </CardContent>
+                                    </Stack>
+                                  </CardContent>
                                 <Box
                                   sx={{
                                     position: 'absolute',
@@ -863,8 +904,9 @@ export function MealPlanBuilderPanel({
                                     </span>
                                   </Tooltip>
                                 </Box>
-                              </Card>
-                            ))
+                                </Card>
+                              );
+                            })
                           )}
                         </Stack>
                       </CardContent>
