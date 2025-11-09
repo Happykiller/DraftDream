@@ -590,75 +590,75 @@ export function MealPlanBuilderPanel({
                 {builderCopy.structure.meal_prefix} {index + 1}
               </Typography>
               <Stack direction="row" spacing={0.5}>
-              <Tooltip title={builderCopy.structure.move_meal_up_label}>
-                <span>
-                  <IconButton onClick={handleMoveMeal('up', day.uiId, meal.uiId)} size="small" disabled={index === 0}>
-                    <ArrowUpward fontSize="small" />
-                  </IconButton>
-                </span>
-              </Tooltip>
-              <Tooltip title={builderCopy.structure.move_meal_down_label}>
-                <span>
-                  <IconButton
-                    onClick={handleMoveMeal('down', day.uiId, meal.uiId)}
-                    size="small"
-                    disabled={index === day.meals.length - 1}
-                  >
-                    <ArrowDownward fontSize="small" />
-                  </IconButton>
-                </span>
-              </Tooltip>
-              <Tooltip title={builderCopy.structure.edit_meal_label}>
-                <span>
-                  <IconButton
-                    onClick={handleOpenDraftMealEditor(day, meal, index + 1)}
-                    size="small"
-                    aria-label="edit-draft-meal"
-                  >
-                    <Edit fontSize="small" />
-                  </IconButton>
-                </span>
-              </Tooltip>
-              <Tooltip title={builderCopy.structure.remove_meal_label}>
-                <span>
-                  <IconButton onClick={handleRemoveMealClick(day.uiId, meal.uiId)} size="small">
-                    <Delete fontSize="small" />
-                  </IconButton>
-                </span>
-              </Tooltip>
+                <Tooltip title={builderCopy.structure.move_meal_up_label}>
+                  <span>
+                    <IconButton onClick={handleMoveMeal('up', day.uiId, meal.uiId)} size="small" disabled={index === 0}>
+                      <ArrowUpward fontSize="small" />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+                <Tooltip title={builderCopy.structure.move_meal_down_label}>
+                  <span>
+                    <IconButton
+                      onClick={handleMoveMeal('down', day.uiId, meal.uiId)}
+                      size="small"
+                      disabled={index === day.meals.length - 1}
+                    >
+                      <ArrowDownward fontSize="small" />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+                <Tooltip title={builderCopy.structure.edit_meal_label}>
+                  <span>
+                    <IconButton
+                      onClick={handleOpenDraftMealEditor(day, meal, index + 1)}
+                      size="small"
+                      aria-label="edit-draft-meal"
+                    >
+                      <Edit fontSize="small" />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+                <Tooltip title={builderCopy.structure.remove_meal_label}>
+                  <span>
+                    <IconButton onClick={handleRemoveMealClick(day.uiId, meal.uiId)} size="small">
+                      <Delete fontSize="small" />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+              </Stack>
             </Stack>
-          </Stack>
 
-          <Stack spacing={0.75}>
-            <Stack direction="row" spacing={0.75} alignItems="center" sx={{ minWidth: 0 }}>
-              <Typography
-                variant="subtitle1"
-                sx={{
-                  fontWeight: 600,
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {displayMealLabel}
+            <Stack spacing={0.75}>
+              <Stack direction="row" spacing={0.75} alignItems="center" sx={{ minWidth: 0 }}>
+                <Typography
+                  variant="subtitle1"
+                  sx={{
+                    fontWeight: 600,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {displayMealLabel}
+                </Typography>
+                {meal.type?.label ? <Chip label={meal.type.label} variant="outlined" size="small" /> : null}
+              </Stack>
+              {meal.foods ? (
+                <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'pre-line' }}>
+                  {meal.foods}
+                </Typography>
+              ) : null}
+              {meal.description ? (
+                <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'pre-line' }}>
+                  {meal.description}
+                </Typography>
+              ) : null}
+              <Typography variant="caption" color="text.secondary">
+                {formatMealSummary(meal)}
               </Typography>
-              {meal.type?.label ? <Chip label={meal.type.label} variant="outlined" size="small" /> : null}
             </Stack>
-            {meal.foods ? (
-              <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'pre-line' }}>
-                {meal.foods}
-              </Typography>
-            ) : null}
-            {meal.description ? (
-              <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'pre-line' }}>
-                {meal.description}
-              </Typography>
-            ) : null}
-            <Typography variant="caption" color="text.secondary">
-              {formatMealSummary(meal)}
-            </Typography>
-          </Stack>
-        </CardContent>
+          </CardContent>
         </Card>
       );
     },
@@ -675,6 +675,7 @@ export function MealPlanBuilderPanel({
           minHeight: { xs: 'calc(100dvh - 56px)', sm: 'calc(100dvh - 64px)' },
           maxHeight: { xs: 'calc(100dvh - 56px)', sm: 'calc(100dvh - 64px)' },
           overflow: 'hidden',
+          bgcolor: theme.palette.backgroundColor,
         }}
       >
         <Box
@@ -694,7 +695,7 @@ export function MealPlanBuilderPanel({
               display: 'flex',
               flexDirection: 'column',
               minHeight: 0,
-              bgcolor: theme.palette.background.default,
+              bgcolor: theme.palette.backgroundColor,
             }}
           >
             <Box
@@ -1006,8 +1007,7 @@ export function MealPlanBuilderPanel({
                                       variant={selectedDayId === day.uiId ? 'outlined' : 'elevation'}
                                       onClick={() => handleSelectDay(day.uiId)}
                                       sx={{
-                                        borderColor:
-                                          selectedDayId === day.uiId ? theme.palette.warning.main : undefined,
+                                        borderColor: alpha(theme.palette.warning.main, 0.24),
                                         borderWidth: selectedDayId === day.uiId ? 1 : undefined,
                                         borderStyle: selectedDayId === day.uiId ? 'solid' : undefined,
                                         cursor: 'pointer',
@@ -1018,7 +1018,7 @@ export function MealPlanBuilderPanel({
                                           },
                                         ),
                                         '&:hover': {
-                                          borderColor: alpha(theme.palette.warning.main, 0.24),
+                                          backgroundColor: alpha(warningMain, 0.08),
                                           borderWidth: 1,
                                           borderStyle: 'solid',
                                         },
@@ -1036,7 +1036,7 @@ export function MealPlanBuilderPanel({
                                             }}
                                           >
                                             <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                                              {builderCopy.structure.day_prefix} {index + 1}
+                                              {builderCopy.structure.day_prefix} {index + 1}aaa
                                             </Typography>
                                             <Typography variant="subtitle1" color="text.disabled">
                                               -
@@ -1269,17 +1269,17 @@ export function MealPlanBuilderPanel({
                                     position: 'relative',
                                     overflow: 'visible',
                                     transition: theme.transitions.create(
-                                    ['background-color', 'border-color', 'box-shadow'],
-                                    {
-                                      duration: theme.transitions.duration.shortest,
+                                      ['background-color', 'border-color', 'box-shadow'],
+                                      {
+                                        duration: theme.transitions.duration.shortest,
+                                      },
+                                    ),
+                                    '&:hover': {
+                                      backgroundColor: alpha(theme.palette.warning.main, 0.08),
+                                      borderColor: alpha(theme.palette.warning.main, 0.24),
                                     },
-                                  ),
-                                  '&:hover': {
-                                    backgroundColor: alpha(theme.palette.warning.main, 0.08),
-                                    borderColor: alpha(theme.palette.warning.main, 0.24),
-                                  },
-                                }}
-                              >
+                                  }}
+                                >
                                   <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
                                     <Stack spacing={0.75}>
                                       <Stack direction="row" spacing={0.75} alignItems="center">
@@ -1350,7 +1350,6 @@ export function MealPlanBuilderPanel({
                                           <span style={{ display: 'inline-flex' }}>
                                             <IconButton
                                               size="small"
-                                              color="error"
                                               onClick={handleDeleteMealTemplate(meal.id)}
                                               disabled={isDeletingThisMeal}
                                               aria-label="delete-meal-template"
@@ -1367,21 +1366,21 @@ export function MealPlanBuilderPanel({
                                       position: 'absolute',
                                       top: (theme) => theme.spacing(1),
                                       right: (theme) => theme.spacing(1),
-                                  }}
-                                >
-                                  <Tooltip title={builderCopy.meal_library.add_tooltip} arrow placement="left">
-                                    <span style={{ display: 'inline-flex' }}>
-                                      <IconButton
-                                        size="small"
-                                        onClick={handleOpenMealMenu(meal)}
-                                        disabled={days.length === 0}
-                                        aria-label="add-meal-to-day"
-                                      >
-                                        <Add fontSize="small" />
-                                      </IconButton>
-                                    </span>
-                                  </Tooltip>
-                                </Box>
+                                    }}
+                                  >
+                                    <Tooltip title={builderCopy.meal_library.add_tooltip} arrow placement="left">
+                                      <span style={{ display: 'inline-flex' }}>
+                                        <IconButton
+                                          size="small"
+                                          onClick={handleOpenMealMenu(meal)}
+                                          disabled={days.length === 0}
+                                          aria-label="add-meal-to-day"
+                                        >
+                                          <Add fontSize="small" />
+                                        </IconButton>
+                                      </span>
+                                    </Tooltip>
+                                  </Box>
                                 </Card>
                               );
                             })

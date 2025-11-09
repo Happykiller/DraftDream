@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next';
 
 import { programGet } from '@services/graphql/programs.service';
 
-import type { Program } from './usePrograms';
+import type { Program } from '@hooks/programs/usePrograms';
 
-import { useAsyncTask } from './useAsyncTask';
+import { useAsyncTask } from '@hooks/useAsyncTask';
 
 export interface UseProgramOptions {
   programId?: string | null;

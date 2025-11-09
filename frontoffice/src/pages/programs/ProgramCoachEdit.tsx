@@ -6,8 +6,8 @@ import { type LoaderFunctionArgs, useLoaderData, useNavigate, useParams } from '
 
 import { ProgramBuilderPanel, type BuilderCopy } from '@src/components/programs/ProgramBuilderPanel';
 
-import { useProgram } from '@src/hooks/useProgram';
-import { type Program } from '@src/hooks/usePrograms';
+import { useProgram } from '@src/hooks/programs/useProgram';
+import { type Program } from '@src/hooks/programs/usePrograms';
 import { programGet } from '@src/services/graphql/programs.service';
 
 export type ProgramCoachEditLoaderStatus = 'success' | 'not_found' | 'error';
