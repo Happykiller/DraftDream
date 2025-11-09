@@ -1,7 +1,7 @@
 // src/components/nutrition/MealPlanBuilderCreateMealDialog.tsx
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Add } from '@mui/icons-material';
+import { Add, Edit } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 
 import { useMealTypes } from '@hooks/nutrition/useMealTypes';
-import type { UseMealsResult } from '@hooks/nutrition/useMeals';
+import type { Meal, UseMealsResult } from '@hooks/nutrition/useMeals';
 
 import { slugify } from '@src/utils/slugify';
 import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
@@ -21,6 +21,9 @@ interface MealPlanBuilderCreateMealDialogProps {
   onClose: () => void;
   onCreated?: () => void;
   createMeal: UseMealsResult['create'];
+  onUpdated?: () => void;
+  updateMeal: UseMealsResult['update'];
+  meal?: Meal | null;
 }
 
 interface MealFormState {
@@ -47,17 +50,44 @@ export function MealPlanBuilderCreateMealDialog({
   open,
   onClose,
   onCreated,
+  onUpdated,
   createMeal,
+  updateMeal,
+  meal,
 }: MealPlanBuilderCreateMealDialogProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
   const [form, setForm] = React.useState<MealFormState>(INITIAL_FORM_STATE);
   const [submitting, setSubmitting] = React.useState(false);
+
+  const isEditMode = Boolean(meal);
 
   const { items: mealTypes, loading: mealTypesLoading } = useMealTypes({
     page: 1,
     limit: 50,
     q: '',
   });
+
+  // Keep the local form state aligned with the selected meal when editing.
+  React.useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    if (meal) {
+      setForm({
+        label: meal.label,
+        typeId: meal.typeId,
+        foods: meal.foods,
+        calories: String(meal.calories ?? ''),
+        proteinGrams: String(meal.proteinGrams ?? ''),
+        carbGrams: String(meal.carbGrams ?? ''),
+        fatGrams: String(meal.fatGrams ?? ''),
+      });
+      return;
+    }
+
+    setForm(INITIAL_FORM_STATE);
+  }, [meal, open]);
 
   const handleClose = React.useCallback(() => {
     if (submitting) {
@@ -85,6 +115,27 @@ export function MealPlanBuilderCreateMealDialog({
 
       setSubmitting(true);
       try {
+        if (isEditMode && meal) {
+          // Persist updates to the existing meal template.
+          await updateMeal({
+            id: meal.id,
+            slug: meal.slug,
+            label: form.label.trim(),
+            typeId: form.typeId,
+            foods: form.foods.trim(),
+            calories: Number(form.calories || 0),
+            proteinGrams: Number(form.proteinGrams || 0),
+            carbGrams: Number(form.carbGrams || 0),
+            fatGrams: Number(form.fatGrams || 0),
+            visibility: meal.visibility,
+            locale: meal.locale,
+          });
+          setForm(INITIAL_FORM_STATE);
+          onUpdated?.();
+          onClose();
+          return;
+        }
+
         await createMeal({
           slug: slugify(form.label, `${Date.now()}`),
           label: form.label.trim(),
@@ -101,12 +152,12 @@ export function MealPlanBuilderCreateMealDialog({
         onCreated?.();
         onClose();
       } catch (caught: unknown) {
-        console.error('[MealPlanBuilderCreateMealDialog] Failed to create meal', caught);
+        console.error('[MealPlanBuilderCreateMealDialog] Failed to submit meal', caught);
       } finally {
         setSubmitting(false);
       }
     },
-    [createMeal, form, i18n.language, onClose, onCreated],
+    [createMeal, form, i18n.language, isEditMode, meal, onClose, onCreated, onUpdated, updateMeal],
   );
 
   const actions = (
@@ -117,11 +168,11 @@ export function MealPlanBuilderCreateMealDialog({
       <Button
         color="warning"
         disabled={submitting || !form.label.trim() || !form.typeId.trim()}
-        startIcon={<Add />}
+        startIcon={isEditMode ? <Edit /> : <Add />}
         type="submit"
         variant="contained"
       >
-        {t('common.actions.create')}
+        {t(isEditMode ? 'common.actions.save' : 'common.actions.create')}
       </Button>
     </>
   );
@@ -130,9 +181,11 @@ export function MealPlanBuilderCreateMealDialog({
     <ProgramDialogLayout
       open={open}
       onClose={submitting ? undefined : handleClose}
-      icon={<Add fontSize="large" />}
+      icon={isEditMode ? <Edit fontSize="large" /> : <Add fontSize="large" />}
       tone="warning"
-      title={t('nutrition-coach.builder.meal_library.create_title')}
+      title={t(
+        isEditMode ? 'nutrition-coach.builder.meal_library.edit_title' : 'nutrition-coach.builder.meal_library.create_title',
+      )}
       actions={actions}
       dialogProps={{ maxWidth: 'sm' }}
       formComponent="form"

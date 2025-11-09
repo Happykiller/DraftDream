@@ -150,6 +150,7 @@ export function MealPlanBuilderPanel({
     mode,
     reloadMeals,
     createMeal,
+    updateMeal,
     removeMeal,
     reloadMealDays,
     updatePlanName,
@@ -161,6 +162,8 @@ export function MealPlanBuilderPanel({
   });
 
   const [isMealDialogOpen, setIsMealDialogOpen] = React.useState(false);
+  const [mealDialogMode, setMealDialogMode] = React.useState<'create' | 'edit'>('create');
+  const [mealToEdit, setMealToEdit] = React.useState<Meal | null>(null);
   const [deletingMealId, setDeletingMealId] = React.useState<string | null>(null);
 
   const panelTitle = mode === 'edit' ? builderCopy.edit_title ?? builderCopy.title : builderCopy.title;
@@ -254,11 +257,22 @@ export function MealPlanBuilderPanel({
   const userOptions = React.useMemo(() => mergeUsers(users, selectedAthlete), [selectedAthlete, users]);
 
   const handleOpenMealDialog = React.useCallback(() => {
+    setMealDialogMode('create');
+    setMealToEdit(null);
+    setIsMealDialogOpen(true);
+  }, []);
+
+  const handleOpenEditMealDialog = React.useCallback((meal: Meal) => {
+    // Surface the creation dialog in edit mode for owned meals.
+    setMealDialogMode('edit');
+    setMealToEdit(meal);
     setIsMealDialogOpen(true);
   }, []);
 
   const handleCloseMealDialog = React.useCallback(() => {
     setIsMealDialogOpen(false);
+    setMealDialogMode('create');
+    setMealToEdit(null);
   }, []);
 
   const handleDeleteMealTemplate = React.useCallback(
@@ -277,6 +291,10 @@ export function MealPlanBuilderPanel({
   );
 
   const handleMealCreated = React.useCallback(async () => {
+    await reloadMeals();
+  }, [reloadMeals]);
+
+  const handleMealUpdated = React.useCallback(async () => {
     await reloadMeals();
   }, [reloadMeals]);
 
@@ -377,7 +395,10 @@ export function MealPlanBuilderPanel({
       open={isMealDialogOpen}
       onClose={handleCloseMealDialog}
       onCreated={handleMealCreated}
+      onUpdated={handleMealUpdated}
       createMeal={createMeal}
+      updateMeal={updateMeal}
+      meal={mealDialogMode === 'edit' ? mealToEdit : null}
     />
   );
 
@@ -1002,7 +1023,7 @@ export function MealPlanBuilderPanel({
                               >
                                   <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
                                     <Stack spacing={0.75}>
-                                      <Stack direction="row" spacing={1} alignItems="center">
+                                      <Stack direction="row" spacing={0.75} alignItems="center">
                                         {meal.type?.label ? (
                                           <Tooltip title={meal.type.label}>
                                             <span style={{ display: 'inline-flex' }}>
@@ -1012,6 +1033,20 @@ export function MealPlanBuilderPanel({
                                         ) : (
                                           <MealIcon fontSize="small" sx={{ color: mealIconColor }} />
                                         )}
+                                        {isMealOwnedByCurrentUser ? (
+                                          <Tooltip title={builderCopy.meal_library.edit_tooltip ?? ''} arrow>
+                                            <span style={{ display: 'inline-flex' }}>
+                                              <IconButton
+                                                size="small"
+                                                onClick={() => handleOpenEditMealDialog(meal)}
+                                                aria-label="edit-meal-template"
+                                                sx={{ p: 0.25 }}
+                                              >
+                                                <Edit fontSize="small" />
+                                              </IconButton>
+                                            </span>
+                                          </Tooltip>
+                                        ) : null}
                                         <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
                                           {meal.label}
                                         </Typography>

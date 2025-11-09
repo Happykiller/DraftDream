@@ -15,7 +15,8 @@
     "actions": {
       "retry": "Réessayer",
       "cancel": "Annuler",
-      "create": "Créer"
+      "create": "Créer",
+      "save": "Enregistrer"
     }
   },
   "languages": {
@@ -555,8 +556,10 @@
         "add_tooltip": "Ajouter ce repas à une journée du plan",
         "public_tooltip": "Repas public partagé avec la communauté",
         "delete_tooltip": "Supprimer ce repas privé de la bibliothèque",
+        "edit_tooltip": "Modifier ce repas",
         "menu_empty": "Créez d'abord une journée dans le plan pour ajouter des repas",
         "create_title": "Créer un repas",
+        "edit_title": "Modifier un repas",
         "name_label": "Nom du repas",
         "type_label": "Type de repas",
         "foods_label": "Aliments et notes",

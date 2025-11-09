@@ -15,7 +15,8 @@
     "actions": {
       "retry": "Retry",
       "cancel": "Cancel",
-      "create": "Create"
+      "create": "Create",
+      "save": "Save"
     }
   },
   "languages": {
@@ -553,8 +554,10 @@
         "add_tooltip": "Add this meal to a day in the plan",
         "public_tooltip": "Public meal shared with the community",
         "delete_tooltip": "Delete this meal from your library",
+        "edit_tooltip": "Edit this meal",
         "menu_empty": "Create a day in the plan to add meals",
         "create_title": "Create a meal",
+        "edit_title": "Edit meal",
         "name_label": "Meal name",
         "type_label": "Meal type",
         "foods_label": "Foods and notes",

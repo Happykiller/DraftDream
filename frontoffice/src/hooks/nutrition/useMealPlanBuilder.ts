@@ -74,6 +74,7 @@ export interface UseMealPlanBuilderResult {
   mode: 'create' | 'edit';
   reloadMeals: () => Promise<void>;
   createMeal: ReturnType<typeof useMeals>['create'];
+  updateMeal: ReturnType<typeof useMeals>['update'];
   removeMeal: ReturnType<typeof useMeals>['remove'];
   reloadMealDays: () => Promise<void>;
   updatePlanName: (value: string) => void;
@@ -226,6 +227,7 @@ export function useMealPlanBuilder(
     loading: mealLibraryLoading,
     reload: reloadMeals,
     create: createMeal,
+    update: updateMeal,
     remove: removeMeal,
   } = useMeals({
     page: 1,
@@ -621,6 +623,7 @@ export function useMealPlanBuilder(
     mode,
     reloadMeals,
     createMeal,
+    updateMeal,
     removeMeal,
     reloadMealDays,
     updatePlanName,
