@@ -383,7 +383,7 @@ export function MealPlanBuilderPanel({
             <Box
               component="header"
               sx={{
-                backgroundColor: alpha(theme.palette.warning.main, 0.18),
+                backgroundColor: alpha(theme.palette.warning.main, 0.08),
                 borderBottom: `1px solid ${alpha(theme.palette.warning.main, 0.24)}`,
                 p: 1.5,
               }}
@@ -563,7 +563,7 @@ export function MealPlanBuilderPanel({
                                     },
                                   ),
                                   '&:hover': {
-                                    backgroundColor: alpha(theme.palette.warning.main, 0.18),
+                                    backgroundColor: alpha(theme.palette.warning.main, 0.08),
                                     borderColor: alpha(theme.palette.warning.main, 0.24),
                                   },
                                 }}
@@ -572,7 +572,10 @@ export function MealPlanBuilderPanel({
                                   <Stack direction="row" alignItems="flex-start" spacing={1}>
                                     <Box sx={{ flexGrow: 1, minWidth: 0 }}>
                                       <Stack direction="row" spacing={1} alignItems="center">
-                                        <CalendarMonth fontSize="small" sx={{ color: 'warning.main' }} />
+                                        <CalendarMonth
+                                          fontSize="small"
+                                          sx={{ color: alpha(theme.palette.secondary.main, 0.5) }}
+                                        />
                                         <Typography variant="subtitle2" sx={{ fontWeight: 600 }} noWrap>
                                           {day.label}
                                         </Typography>
@@ -648,7 +651,7 @@ export function MealPlanBuilderPanel({
                                         },
                                       ),
                                       '&:hover': {
-                                        backgroundColor: alpha(theme.palette.warning.main, 0.18),
+                                        backgroundColor: alpha(theme.palette.warning.main, 0.08),
                                         borderColor: alpha(theme.palette.warning.main, 0.24),
                                         borderWidth: 1,
                                         borderStyle: 'solid',
@@ -802,7 +805,7 @@ export function MealPlanBuilderPanel({
                                     },
                                   ),
                                   '&:hover': {
-                                    backgroundColor: alpha(theme.palette.warning.main, 0.18),
+                                    backgroundColor: alpha(theme.palette.warning.main, 0.08),
                                     borderColor: alpha(theme.palette.warning.main, 0.24),
                                   },
                                 }}
