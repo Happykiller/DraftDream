@@ -46,6 +46,8 @@ import type { MealPlan } from '@hooks/nutrition/useMealPlans';
 
 import { useMealPlanBuilder } from '@hooks/nutrition/useMealPlanBuilder';
 
+import { session } from '@stores/session';
+
 import type {
   MealPlanBuilderCopy,
   MealPlanBuilderDay,
@@ -148,6 +150,7 @@ export function MealPlanBuilderPanel({
     mode,
     reloadMeals,
     createMeal,
+    removeMeal,
     reloadMealDays,
     updatePlanName,
   } = useMealPlanBuilder(builderCopy, {
@@ -158,6 +161,7 @@ export function MealPlanBuilderPanel({
   });
 
   const [isMealDialogOpen, setIsMealDialogOpen] = React.useState(false);
+  const [deletingMealId, setDeletingMealId] = React.useState<string | null>(null);
 
   const panelTitle = mode === 'edit' ? builderCopy.edit_title ?? builderCopy.title : builderCopy.title;
   const panelSubtitle =
@@ -165,6 +169,7 @@ export function MealPlanBuilderPanel({
   const submitLabel = mode === 'edit' ? builderCopy.footer.update ?? builderCopy.footer.submit : builderCopy.footer.submit;
   const mealIconColor = alpha(theme.palette.secondary.main, 0.5);
   const warningMain = theme.palette.warning.main;
+  const currentUserId = session((state) => state.id);
 
   const interactiveSurfaceSx = React.useMemo(
     () => ({
@@ -255,6 +260,21 @@ export function MealPlanBuilderPanel({
   const handleCloseMealDialog = React.useCallback(() => {
     setIsMealDialogOpen(false);
   }, []);
+
+  const handleDeleteMealTemplate = React.useCallback(
+    (mealId: string) =>
+      async () => {
+        setDeletingMealId(mealId);
+        try {
+          await removeMeal(mealId);
+        } catch {
+          // Feedback handled inside removeMeal via flash store.
+        } finally {
+          setDeletingMealId((current) => (current === mealId ? null : current));
+        }
+      },
+    [removeMeal],
+  );
 
   const handleMealCreated = React.useCallback(async () => {
     await reloadMeals();
@@ -957,6 +977,9 @@ export function MealPlanBuilderPanel({
                               const mealIconReference = meal.id ?? meal.uiId ?? meal.label;
                               const MealIcon = getMealIcon(mealIconReference);
                               const isMealPublic = meal.visibility === 'PUBLIC';
+                              const isMealOwnedByCurrentUser =
+                                !isMealPublic && currentUserId !== null && meal.createdBy === currentUserId;
+                              const isDeletingThisMeal = deletingMealId === meal.id;
 
                               return (
                                 <Card
@@ -998,22 +1021,53 @@ export function MealPlanBuilderPanel({
                                       </Typography>
                                     </Stack>
                                   </CardContent>
-                                  {isMealPublic ? (
-                                    <Tooltip title={builderCopy.meal_library.public_tooltip ?? ''} arrow placement="left">
-                                      <Box
-                                        sx={{
-                                          position: 'absolute',
-                                          bottom: (theme) => theme.spacing(1),
-                                          right: (theme) => theme.spacing(1),
-                                          display: 'flex',
-                                          alignItems: 'center',
-                                          color: (theme) => theme.palette.text.disabled,
-                                        }}
-                                      >
-                                        <Public fontSize="small" aria-hidden />
-                                      </Box>
-                                    </Tooltip>
-                                  ) : null}
+                                  {(isMealPublic || isMealOwnedByCurrentUser) && (
+                                    <Box
+                                      sx={{
+                                        position: 'absolute',
+                                        bottom: (theme) => theme.spacing(1),
+                                        right: (theme) => theme.spacing(1),
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                      }}
+                                    >
+                                      {isMealPublic ? (
+                                        <Tooltip
+                                          title={builderCopy.meal_library.public_tooltip ?? ''}
+                                          arrow
+                                          placement="left"
+                                        >
+                                          <Box
+                                            sx={{
+                                              display: 'flex',
+                                              alignItems: 'center',
+                                              color: (theme) => theme.palette.text.disabled,
+                                            }}
+                                          >
+                                            <Public fontSize="small" aria-hidden />
+                                          </Box>
+                                        </Tooltip>
+                                      ) : (
+                                        <Tooltip
+                                          title={builderCopy.meal_library.delete_tooltip ?? ''}
+                                          arrow
+                                          placement="left"
+                                        >
+                                          <span style={{ display: 'inline-flex' }}>
+                                            <IconButton
+                                              size="small"
+                                              color="error"
+                                              onClick={handleDeleteMealTemplate(meal.id)}
+                                              disabled={isDeletingThisMeal}
+                                              aria-label="delete-meal-template"
+                                            >
+                                              <Delete fontSize="small" />
+                                            </IconButton>
+                                          </span>
+                                        </Tooltip>
+                                      )}
+                                    </Box>
+                                  )}
                                   <Box
                                     sx={{
                                       position: 'absolute',

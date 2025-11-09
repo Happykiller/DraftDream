@@ -58,6 +58,7 @@ export interface MealPlanBuilderCopy {
     refresh_label?: string;
     menu_empty: string;
     public_tooltip?: string;
+    delete_tooltip?: string;
   };
   structure: {
     title: string;

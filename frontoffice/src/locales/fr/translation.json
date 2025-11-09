@@ -554,6 +554,7 @@
         "limit_hint": "Affichage des 10 repas maximum triés par ordre alphabétique.",
         "add_tooltip": "Ajouter ce repas à une journée du plan",
         "public_tooltip": "Repas public partagé avec la communauté",
+        "delete_tooltip": "Supprimer ce repas privé de la bibliothèque",
         "menu_empty": "Créez d'abord une journée dans le plan pour ajouter des repas",
         "create_title": "Créer un repas",
         "name_label": "Nom du repas",
