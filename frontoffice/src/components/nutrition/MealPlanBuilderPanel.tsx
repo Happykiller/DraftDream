@@ -792,7 +792,20 @@ export function MealPlanBuilderPanel({
                               <Card
                                 key={meal.id}
                                 variant="outlined"
-                                sx={{ position: 'relative', overflow: 'visible' }}
+                                sx={{
+                                  position: 'relative',
+                                  overflow: 'visible',
+                                  transition: theme.transitions.create(
+                                    ['background-color', 'border-color', 'box-shadow'],
+                                    {
+                                      duration: theme.transitions.duration.shortest,
+                                    },
+                                  ),
+                                  '&:hover': {
+                                    backgroundColor: alpha(theme.palette.warning.main, 0.18),
+                                    borderColor: alpha(theme.palette.warning.main, 0.24),
+                                  },
+                                }}
                               >
                                 <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
                                   <Stack spacing={0.5}>
