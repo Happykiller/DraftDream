@@ -551,6 +551,7 @@
         "create_label": "New meal",
         "limit_hint": "Showing up to 10 meals sorted alphabetically.",
         "add_tooltip": "Add this meal to a day in the plan",
+        "public_tooltip": "Public meal shared with the community",
         "menu_empty": "Create a day in the plan to add meals",
         "create_title": "Create a meal",
         "name_label": "Meal name",

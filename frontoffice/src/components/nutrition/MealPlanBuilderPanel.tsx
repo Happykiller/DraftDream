@@ -33,6 +33,7 @@ import {
   Edit,
   EggAlt,
   LunchDining,
+  Public,
   RamenDining,
   Replay,
   Search,
@@ -956,6 +957,7 @@ export function MealPlanBuilderPanel({
                             mealLibrary.map((meal) => {
                               const mealIconReference = meal.id ?? meal.uiId ?? meal.label;
                               const MealIcon = getMealIcon(mealIconReference);
+                              const isMealPublic = meal.visibility === 'PUBLIC';
 
                               return (
                                 <Card
@@ -997,11 +999,27 @@ export function MealPlanBuilderPanel({
                                       </Typography>
                                     </Stack>
                                   </CardContent>
-                                <Box
-                                  sx={{
-                                    position: 'absolute',
-                                    top: (theme) => theme.spacing(1),
-                                    right: (theme) => theme.spacing(1),
+                                  {isMealPublic ? (
+                                    <Tooltip title={builderCopy.meal_library.public_tooltip ?? ''} arrow placement="left">
+                                      <Box
+                                        sx={{
+                                          position: 'absolute',
+                                          bottom: (theme) => theme.spacing(1),
+                                          right: (theme) => theme.spacing(1),
+                                          display: 'flex',
+                                          alignItems: 'center',
+                                          color: (theme) => theme.palette.text.disabled,
+                                        }}
+                                      >
+                                        <Public fontSize="small" aria-hidden />
+                                      </Box>
+                                    </Tooltip>
+                                  ) : null}
+                                  <Box
+                                    sx={{
+                                      position: 'absolute',
+                                      top: (theme) => theme.spacing(1),
+                                      right: (theme) => theme.spacing(1),
                                   }}
                                 >
                                   <Tooltip title={builderCopy.meal_library.add_tooltip} arrow placement="left">
