@@ -454,6 +454,9 @@ export function MealPlanBuilderPanel({
                 display: 'flex',
                 flexDirection: 'column',
                 p: 0,
+                '&:last-child': {
+                  paddingBottom: 0,
+                },
               }}
             >
               <Box sx={{ flexGrow: 1, minHeight: 0, overflow: 'auto', p: { xs: 2, md: 3 } }}>
