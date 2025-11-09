@@ -801,13 +801,12 @@ export function MealPlanBuilderPanel({
                                       borderStyle: selectedDayId === day.uiId ? 'solid' : undefined,
                                       cursor: 'pointer',
                                       transition: theme.transitions.create(
-                                        ['background-color', 'border-color', 'box-shadow'],
+                                        ['border-color', 'box-shadow'],
                                         {
                                           duration: theme.transitions.duration.shortest,
                                         },
                                       ),
                                       '&:hover': {
-                                        backgroundColor: alpha(theme.palette.warning.main, 0.08),
                                         borderColor: alpha(theme.palette.warning.main, 0.24),
                                         borderWidth: 1,
                                         borderStyle: 'solid',
