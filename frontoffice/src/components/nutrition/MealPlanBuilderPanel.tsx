@@ -54,6 +54,7 @@ import type {
   MealPlanBuilderMeal,
 } from './mealPlanBuilderTypes';
 import { MealPlanBuilderCreateMealDialog } from './MealPlanBuilderCreateMealDialog';
+import { MealPlanBuilderEditDraftMealDialog } from './MealPlanBuilderEditDraftMealDialog';
 
 import type { User } from '@src/hooks/useUsers';
 
@@ -165,11 +166,18 @@ export function MealPlanBuilderPanel({
   const [mealDialogMode, setMealDialogMode] = React.useState<'create' | 'edit'>('create');
   const [mealToEdit, setMealToEdit] = React.useState<Meal | null>(null);
   const [deletingMealId, setDeletingMealId] = React.useState<string | null>(null);
+  const [draftMealEditor, setDraftMealEditor] = React.useState<{
+    dayId: string;
+    meal: MealPlanBuilderMeal;
+    contextLabel: string;
+  } | null>(null);
 
   const panelTitle = mode === 'edit' ? builderCopy.edit_title ?? builderCopy.title : builderCopy.title;
   const panelSubtitle =
     mode === 'edit' ? builderCopy.edit_subtitle ?? builderCopy.subtitle : builderCopy.subtitle;
   const submitLabel = mode === 'edit' ? builderCopy.footer.update ?? builderCopy.footer.submit : builderCopy.footer.submit;
+  const editMealTitle = builderCopy.structure.edit_meal_title ?? builderCopy.structure.edit_meal_label;
+  const editMealDescription = builderCopy.structure.edit_meal_description;
   const mealIconColor = alpha(theme.palette.secondary.main, 0.5);
   const warningMain = theme.palette.warning.main;
   const currentUserId = session((state) => state.id);
@@ -514,6 +522,37 @@ export function MealPlanBuilderPanel({
     [handleMoveMealDown, handleMoveMealUp],
   );
 
+  const handleOpenDraftMealEditor = React.useCallback(
+    (day: MealPlanBuilderDay, meal: MealPlanBuilderMeal, position: number) => () => {
+      const trimmedDayLabel = day.label.trim();
+      const fallbackDayLabel = builderCopy.structure.title;
+      const displayDayLabel = trimmedDayLabel.length > 0 ? day.label : fallbackDayLabel;
+
+      setDraftMealEditor({
+        dayId: day.uiId,
+        meal,
+        contextLabel: `${builderCopy.structure.day_prefix} ${position} • ${displayDayLabel}`,
+      });
+    },
+    [builderCopy.structure.day_prefix, builderCopy.structure.title],
+  );
+
+  const handleCloseDraftMealEditor = React.useCallback(() => {
+    setDraftMealEditor(null);
+  }, []);
+
+  const handleSubmitDraftMeal = React.useCallback(
+    (patch: Partial<MealPlanBuilderMeal>) => {
+      if (!draftMealEditor) {
+        return;
+      }
+
+      handleUpdateMeal(draftMealEditor.dayId, draftMealEditor.meal.uiId, patch);
+      setDraftMealEditor(null);
+    },
+    [draftMealEditor, handleUpdateMeal],
+  );
+
   const mealDialog = (
     <MealPlanBuilderCreateMealDialog
       open={isMealDialogOpen}
@@ -526,15 +565,31 @@ export function MealPlanBuilderPanel({
     />
   );
 
+  const draftMealDialog = (
+    <MealPlanBuilderEditDraftMealDialog
+      open={Boolean(draftMealEditor)}
+      meal={draftMealEditor?.meal ?? null}
+      title={editMealTitle}
+      description={editMealDescription}
+      contextLabel={draftMealEditor?.contextLabel}
+      onClose={handleCloseDraftMealEditor}
+      onSubmit={handleSubmitDraftMeal}
+    />
+  );
+
   const renderMealCard = React.useCallback(
-    (day: MealPlanBuilderDay, meal: MealPlanBuilderMeal, index: number) => (
-      <Card key={meal.uiId} variant="outlined">
-        <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-          <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
-            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-              {builderCopy.structure.meal_prefix} {index + 1}
-            </Typography>
-            <Stack direction="row" spacing={0.5}>
+    (day: MealPlanBuilderDay, meal: MealPlanBuilderMeal, index: number) => {
+      const trimmedMealLabel = meal.label.trim();
+      const displayMealLabel = trimmedMealLabel.length > 0 ? meal.label : builderCopy.structure.meal_prefix;
+
+      return (
+        <Card key={meal.uiId} variant="outlined">
+          <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.25 }}>
+            <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
+              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                {builderCopy.structure.meal_prefix} {index + 1}
+              </Typography>
+              <Stack direction="row" spacing={0.5}>
               <Tooltip title={builderCopy.structure.move_meal_up_label}>
                 <span>
                   <IconButton onClick={handleMoveMeal('up', day.uiId, meal.uiId)} size="small" disabled={index === 0}>
@@ -553,6 +608,17 @@ export function MealPlanBuilderPanel({
                   </IconButton>
                 </span>
               </Tooltip>
+              <Tooltip title={builderCopy.structure.edit_meal_label}>
+                <span>
+                  <IconButton
+                    onClick={handleOpenDraftMealEditor(day, meal, index + 1)}
+                    size="small"
+                    aria-label="edit-draft-meal"
+                  >
+                    <Edit fontSize="small" />
+                  </IconButton>
+                </span>
+              </Tooltip>
               <Tooltip title={builderCopy.structure.remove_meal_label}>
                 <span>
                   <IconButton onClick={handleRemoveMealClick(day.uiId, meal.uiId)} size="small">
@@ -563,68 +629,40 @@ export function MealPlanBuilderPanel({
             </Stack>
           </Stack>
 
-          <TextField
-            label={builderCopy.structure.meal_prefix}
-            value={meal.label}
-            onChange={(event) => handleUpdateMeal(day.uiId, meal.uiId, { label: event.target.value })}
-            size="small"
-          />
-          <TextField
-            label={builderCopy.structure.foods_label}
-            value={meal.foods}
-            onChange={(event) => handleUpdateMeal(day.uiId, meal.uiId, { foods: event.target.value })}
-            size="small"
-            multiline
-            minRows={2}
-          />
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(4, 1fr)' },
-              gap: 1,
-            }}
-          >
-            <TextField
-              label={builderCopy.structure.calories_label}
-              value={meal.calories}
-              onChange={(event) => handleUpdateMeal(day.uiId, meal.uiId, { calories: Number(event.target.value) })}
-              type="number"
-              size="small"
-            />
-            <TextField
-              label={builderCopy.structure.protein_label}
-              value={meal.proteinGrams}
-              onChange={(event) =>
-                handleUpdateMeal(day.uiId, meal.uiId, { proteinGrams: Number(event.target.value) })
-              }
-              type="number"
-              size="small"
-            />
-            <TextField
-              label={builderCopy.structure.carbs_label}
-              value={meal.carbGrams}
-              onChange={(event) => handleUpdateMeal(day.uiId, meal.uiId, { carbGrams: Number(event.target.value) })}
-              type="number"
-              size="small"
-            />
-            <TextField
-              label={builderCopy.structure.fats_label}
-              value={meal.fatGrams}
-              onChange={(event) => handleUpdateMeal(day.uiId, meal.uiId, { fatGrams: Number(event.target.value) })}
-              type="number"
-              size="small"
-            />
-          </Box>
-
-          {meal.type?.label ? <Chip label={meal.type.label} variant="outlined" size="small" /> : null}
-
-          <Typography variant="caption" color="text.secondary">
-            {formatMealSummary(meal)}
-          </Typography>
+          <Stack spacing={0.75}>
+            <Stack direction="row" spacing={0.75} alignItems="center" sx={{ minWidth: 0 }}>
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  fontWeight: 600,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {displayMealLabel}
+              </Typography>
+              {meal.type?.label ? <Chip label={meal.type.label} variant="outlined" size="small" /> : null}
+            </Stack>
+            {meal.foods ? (
+              <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'pre-line' }}>
+                {meal.foods}
+              </Typography>
+            ) : null}
+            {meal.description ? (
+              <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'pre-line' }}>
+                {meal.description}
+              </Typography>
+            ) : null}
+            <Typography variant="caption" color="text.secondary">
+              {formatMealSummary(meal)}
+            </Typography>
+          </Stack>
         </CardContent>
-      </Card>
-    ),
-    [builderCopy, handleMoveMeal, handleRemoveMealClick, handleUpdateMeal],
+        </Card>
+      );
+    },
+    [builderCopy, handleMoveMeal, handleOpenDraftMealEditor, handleRemoveMealClick],
   );
 
   return (
@@ -1404,6 +1442,7 @@ export function MealPlanBuilderPanel({
       </Menu>
 
       {mealDialog}
+      {draftMealDialog}
     </>
   );
 }

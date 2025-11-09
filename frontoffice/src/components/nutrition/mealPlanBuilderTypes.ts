@@ -75,6 +75,9 @@ export interface MealPlanBuilderCopy {
     fats_label: string;
     remove_day_label: string;
     remove_meal_label: string;
+    edit_meal_label: string;
+    edit_meal_title?: string;
+    edit_meal_description?: string;
     add_meal_placeholder: string;
     add_day_label: string;
     select_day_warning: string;
