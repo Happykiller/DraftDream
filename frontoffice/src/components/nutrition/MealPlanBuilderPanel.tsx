@@ -28,7 +28,7 @@ import {
   CalendarMonth,
   Delete,
   Edit,
-  RestaurantMenu,
+  Replay,
   Search,
 } from '@mui/icons-material';
 
@@ -503,7 +503,14 @@ export function MealPlanBuilderPanel({
 
                     <Card variant="outlined" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, flexGrow: 1 }}>
-                        <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
+                        <Stack direction="row" spacing={1} alignItems="flex-start">
+                          <Tooltip title={builderCopy.day_library.refresh_label ?? ''}>
+                            <span>
+                              <IconButton onClick={reloadMealDays} size="small">
+                                <Replay fontSize="small" />
+                              </IconButton>
+                            </span>
+                          </Tooltip>
                           <Box>
                             <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                               {builderCopy.day_library.title}
@@ -512,13 +519,6 @@ export function MealPlanBuilderPanel({
                               {builderCopy.day_library.subtitle}
                             </Typography>
                           </Box>
-                          <Tooltip title={builderCopy.day_library.refresh_label ?? ''}>
-                            <span>
-                              <IconButton onClick={reloadMealDays} size="small">
-                                <RestaurantMenu fontSize="small" />
-                              </IconButton>
-                            </span>
-                          </Tooltip>
                         </Stack>
                         <TextField
                           value={daySearch}
@@ -744,13 +744,22 @@ export function MealPlanBuilderPanel({
                   <Grid size={{ xs: 12, md: 3 }} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <Card variant="outlined" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, flexGrow: 1 }}>
-                        <Stack spacing={0.5}>
-                          <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                            {builderCopy.meal_library.title}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {builderCopy.meal_library.subtitle}
-                          </Typography>
+                        <Stack direction="row" spacing={1} alignItems="flex-start">
+                          <Tooltip title={builderCopy.meal_library.refresh_label ?? ''}>
+                            <span>
+                              <IconButton onClick={reloadMeals} size="small">
+                                <Replay fontSize="small" />
+                              </IconButton>
+                            </span>
+                          </Tooltip>
+                          <Stack spacing={0.5}>
+                            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                              {builderCopy.meal_library.title}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              {builderCopy.meal_library.subtitle}
+                            </Typography>
+                          </Stack>
                         </Stack>
                         <TextField
                           value={mealSearch}
