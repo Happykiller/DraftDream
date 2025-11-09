@@ -370,13 +370,6 @@ export function MealPlanBuilderPanel({
               {builderCopy.structure.meal_prefix} {index + 1}
             </Typography>
             <Stack direction="row" spacing={0.5}>
-              <Tooltip title={builderCopy.structure.remove_meal_label}>
-                <span>
-                  <IconButton onClick={handleRemoveMealClick(day.uiId, meal.uiId)} size="small">
-                    <Delete fontSize="small" />
-                  </IconButton>
-                </span>
-              </Tooltip>
               <Tooltip title={builderCopy.structure.move_meal_up_label}>
                 <span>
                   <IconButton onClick={handleMoveMeal('up', day.uiId, meal.uiId)} size="small" disabled={index === 0}>
@@ -392,6 +385,13 @@ export function MealPlanBuilderPanel({
                     disabled={index === day.meals.length - 1}
                   >
                     <ArrowDownward fontSize="small" />
+                  </IconButton>
+                </span>
+              </Tooltip>
+              <Tooltip title={builderCopy.structure.remove_meal_label}>
+                <span>
+                  <IconButton onClick={handleRemoveMealClick(day.uiId, meal.uiId)} size="small">
+                    <Delete fontSize="small" />
                   </IconButton>
                 </span>
               </Tooltip>
@@ -793,6 +793,7 @@ export function MealPlanBuilderPanel({
                                     variant={selectedDayId === day.uiId ? 'outlined' : 'elevation'}
                                     onClick={() => handleSelectDay(day.uiId)}
                                     sx={{
+                                      backgroundColor: theme.palette.background.paper,
                                       borderColor:
                                         selectedDayId === day.uiId
                                           ? theme.palette.warning.main
@@ -807,6 +808,7 @@ export function MealPlanBuilderPanel({
                                         },
                                       ),
                                       '&:hover': {
+                                        backgroundColor: theme.palette.background.paper,
                                         borderColor: alpha(theme.palette.warning.main, 0.24),
                                         borderWidth: 1,
                                         borderStyle: 'solid',
