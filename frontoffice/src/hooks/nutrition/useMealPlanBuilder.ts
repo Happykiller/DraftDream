@@ -75,6 +75,7 @@ export interface UseMealPlanBuilderResult {
   reloadMeals: () => Promise<void>;
   createMeal: ReturnType<typeof useMeals>['create'];
   reloadMealDays: () => Promise<void>;
+  updatePlanName: (value: string) => void;
 }
 
 function generateUiId() {
@@ -172,8 +173,11 @@ export function useMealPlanBuilder(
   const mode: 'create' | 'edit' = basePlan ? 'edit' : 'create';
 
   const [form, setForm] = React.useState<MealPlanBuilderForm>(() => ({
-    planName: basePlan?.label ?? builderCopy.structure.title,
-    description: basePlan?.description ?? builderCopy.structure.description_placeholder,
+    planName: (() => {
+      const candidate = basePlan?.label?.trim() ?? '';
+      return candidate.length > 0 ? candidate : builderCopy.config.plan_name_default;
+    })(),
+    description: basePlan?.description?.trim() ?? '',
     calories: basePlan ? String(basePlan.calories) : '',
     proteinGrams: basePlan ? String(basePlan.proteinGrams) : '',
     carbGrams: basePlan ? String(basePlan.carbGrams) : '',
@@ -271,6 +275,10 @@ export function useMealPlanBuilder(
       },
     [],
   );
+
+  const updatePlanName = React.useCallback((value: string) => {
+    setForm((prev) => ({ ...prev, planName: value }));
+  }, []);
 
   const handleSelectDay = React.useCallback((dayId: string) => {
     setSelectedDayId(dayId);
@@ -612,5 +620,6 @@ export function useMealPlanBuilder(
     reloadMeals,
     createMeal,
     reloadMealDays,
+    updatePlanName,
   };
 }

@@ -148,6 +148,7 @@ export function MealPlanBuilderPanel({
     reloadMeals,
     createMeal,
     reloadMealDays,
+    updatePlanName,
   } = useMealPlanBuilder(builderCopy, {
     onCancel,
     onCreated,
@@ -162,6 +163,87 @@ export function MealPlanBuilderPanel({
     mode === 'edit' ? builderCopy.edit_subtitle ?? builderCopy.subtitle : builderCopy.subtitle;
   const submitLabel = mode === 'edit' ? builderCopy.footer.update ?? builderCopy.footer.submit : builderCopy.footer.submit;
   const mealIconColor = alpha(theme.palette.secondary.main, 0.5);
+  const warningMain = theme.palette.warning.main;
+
+  const interactiveSurfaceSx = React.useMemo(
+    () => ({
+      cursor: 'pointer',
+      borderRadius: 1,
+      px: 0.75,
+      py: 0.25,
+      transition: 'background-color 120ms ease',
+      '&:hover': {
+        backgroundColor: alpha(warningMain, 0.08),
+      },
+      '&:focus-visible': {
+        outline: `2px solid ${alpha(warningMain, 0.32)}`,
+        outlineOffset: 2,
+      },
+    }),
+    [warningMain],
+  );
+
+  const [isEditingPlanName, setIsEditingPlanName] = React.useState(false);
+  const planNameInputRef = React.useRef<HTMLInputElement | null>(null);
+  const planNameBeforeEditRef = React.useRef(form.planName);
+
+  React.useEffect(() => {
+    if (isEditingPlanName && planNameInputRef.current) {
+      planNameInputRef.current.focus();
+      planNameInputRef.current.select();
+    }
+  }, [isEditingPlanName]);
+
+  React.useEffect(() => {
+    if (!isEditingPlanName) {
+      planNameBeforeEditRef.current = form.planName;
+    }
+  }, [form.planName, isEditingPlanName]);
+
+  const handlePlanNameEdit = React.useCallback(() => {
+    planNameBeforeEditRef.current = form.planName;
+    setIsEditingPlanName(true);
+  }, [form.planName]);
+
+  const handlePlanNameCommit = React.useCallback(() => {
+    if (!isEditingPlanName) {
+      return;
+    }
+
+    const trimmed = form.planName.trim();
+    updatePlanName(trimmed.length > 0 ? trimmed : builderCopy.config.plan_name_default);
+    setIsEditingPlanName(false);
+  }, [builderCopy.config.plan_name_default, form.planName, isEditingPlanName, updatePlanName]);
+
+  const handlePlanNameCancel = React.useCallback(() => {
+    const previous = planNameBeforeEditRef.current.trim();
+    const fallback = previous.length > 0 ? previous : builderCopy.config.plan_name_default;
+    updatePlanName(fallback);
+    setIsEditingPlanName(false);
+  }, [builderCopy.config.plan_name_default, updatePlanName]);
+
+  const handlePlanNameInputKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        handlePlanNameCommit();
+      } else if (event.key === 'Escape') {
+        event.preventDefault();
+        handlePlanNameCancel();
+      }
+    },
+    [handlePlanNameCancel, handlePlanNameCommit],
+  );
+
+  const handlePlanNameDisplayKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLElement>) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        handlePlanNameEdit();
+      }
+    },
+    [handlePlanNameEdit],
+  );
 
   const userOptions = React.useMemo(() => mergeUsers(users, selectedAthlete), [selectedAthlete, users]);
 
@@ -644,13 +726,41 @@ export function MealPlanBuilderPanel({
                       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, flexGrow: 1 }}>
                         <Stack spacing={2} sx={{ flexGrow: 1, minHeight: 0 }}>
                           <Stack spacing={1.5}>
-                            <TextField
-                              label={builderCopy.config.plan_name_label}
-                              value={form.planName}
-                              onChange={handleFormChange('planName')}
-                              size="small"
-                              required
-                            />
+                            {isEditingPlanName ? (
+                              <TextField
+                                inputRef={planNameInputRef}
+                                value={form.planName}
+                                onChange={handleFormChange('planName')}
+                                onBlur={handlePlanNameCommit}
+                                onKeyDown={handlePlanNameInputKeyDown}
+                                size="small"
+                                variant="standard"
+                                fullWidth
+                                required
+                                inputProps={{ 'aria-label': builderCopy.config.plan_name_label }}
+                              />
+                            ) : (
+                              <Typography
+                                variant="h6"
+                                component="h2"
+                                sx={{
+                                  fontWeight: 700,
+                                  ...interactiveSurfaceSx,
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: 0.5,
+                                  width: 'fit-content',
+                                }}
+                                onClick={handlePlanNameEdit}
+                                onKeyDown={handlePlanNameDisplayKeyDown}
+                                tabIndex={0}
+                                role="button"
+                                aria-label={builderCopy.config.plan_name_label}
+                              >
+                                <Edit fontSize="inherit" color="disabled" />
+                                {form.planName}
+                              </Typography>
+                            )}
                             <TextField
                               label={builderCopy.config.plan_description_label}
                               value={form.description}

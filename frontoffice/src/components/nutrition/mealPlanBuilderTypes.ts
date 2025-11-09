@@ -29,6 +29,7 @@ export interface MealPlanBuilderCopy {
     client_label: string;
     client_placeholder: string;
     plan_name_label: string;
+    plan_name_default: string;
     plan_description_label: string;
     plan_description_placeholder: string;
     calories_label: string;

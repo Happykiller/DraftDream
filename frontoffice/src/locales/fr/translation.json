@@ -527,6 +527,7 @@
         "client_label": "Athlète",
         "client_placeholder": "Rechercher un athlète...",
         "plan_name_label": "Nom du plan",
+        "plan_name_default": "Plan nutritionel",
         "plan_description_label": "Description",
         "plan_description_placeholder": "Objectifs, recommandations et notes...",
         "calories_label": "Calories (kcal)",
