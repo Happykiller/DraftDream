@@ -793,7 +793,6 @@ export function MealPlanBuilderPanel({
                                     variant={selectedDayId === day.uiId ? 'outlined' : 'elevation'}
                                     onClick={() => handleSelectDay(day.uiId)}
                                     sx={{
-                                      backgroundColor: theme.palette.background.paper,
                                       borderColor:
                                         selectedDayId === day.uiId
                                           ? theme.palette.warning.main
@@ -808,7 +807,6 @@ export function MealPlanBuilderPanel({
                                         },
                                       ),
                                       '&:hover': {
-                                        backgroundColor: theme.palette.background.paper,
                                         borderColor: alpha(theme.palette.warning.main, 0.24),
                                         borderWidth: 1,
                                         borderStyle: 'solid',
