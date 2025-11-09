@@ -551,7 +551,23 @@ export function MealPlanBuilderPanel({
                             </Typography>
                           ) : (
                             dayLibrary.map((day) => (
-                              <Card key={day.id} variant="outlined">
+                              <Card
+                                key={day.id}
+                                variant="outlined"
+                                sx={{
+                                  cursor: 'pointer',
+                                  transition: theme.transitions.create(
+                                    ['background-color', 'border-color', 'box-shadow'],
+                                    {
+                                      duration: theme.transitions.duration.shortest,
+                                    },
+                                  ),
+                                  '&:hover': {
+                                    backgroundColor: alpha(theme.palette.warning.main, 0.18),
+                                    borderColor: alpha(theme.palette.warning.main, 0.24),
+                                  },
+                                }}
+                              >
                                 <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                                   <Stack direction="row" alignItems="flex-start" spacing={1}>
                                     <Box sx={{ flexGrow: 1, minWidth: 0 }}>
@@ -620,7 +636,7 @@ export function MealPlanBuilderPanel({
                                     sx={{
                                       borderColor:
                                         selectedDayId === day.uiId
-                                          ? alpha(theme.palette.warning.main, 0.8)
+                                          ? theme.palette.warning.main
                                           : undefined,
                                       borderWidth: selectedDayId === day.uiId ? 1 : undefined,
                                       borderStyle: selectedDayId === day.uiId ? 'solid' : undefined,
@@ -633,7 +649,7 @@ export function MealPlanBuilderPanel({
                                       ),
                                       '&:hover': {
                                         backgroundColor: alpha(theme.palette.warning.main, 0.18),
-                                        borderColor: alpha(theme.palette.warning.main, 0.8),
+                                        borderColor: alpha(theme.palette.warning.main, 0.24),
                                         borderWidth: 1,
                                         borderStyle: 'solid',
                                       },
