@@ -504,14 +504,7 @@ export function MealPlanBuilderPanel({
                     <Card variant="outlined" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, flexGrow: 1 }}>
                         <Stack direction="row" spacing={1} alignItems="flex-start">
-                          <Tooltip title={builderCopy.day_library.refresh_label ?? ''}>
-                            <span>
-                              <IconButton onClick={reloadMealDays} size="small">
-                                <Replay fontSize="small" />
-                              </IconButton>
-                            </span>
-                          </Tooltip>
-                          <Box>
+                          <Box sx={{ flexGrow: 1 }}>
                             <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                               {builderCopy.day_library.title}
                             </Typography>
@@ -519,6 +512,13 @@ export function MealPlanBuilderPanel({
                               {builderCopy.day_library.subtitle}
                             </Typography>
                           </Box>
+                          <Tooltip title={builderCopy.day_library.refresh_label ?? ''}>
+                            <span>
+                              <IconButton onClick={reloadMealDays} size="small" aria-label="reload-meal-days">
+                                <Replay fontSize="small" />
+                              </IconButton>
+                            </span>
+                          </Tooltip>
                         </Stack>
                         <TextField
                           value={daySearch}
@@ -628,7 +628,18 @@ export function MealPlanBuilderPanel({
                           </Stack>
                           <Box sx={{ flexGrow: 1, minHeight: 0 }}>
                             {days.length === 0 ? (
-                              <Alert severity="info">{builderCopy.structure.empty}</Alert>
+                              <Stack spacing={2}>
+                                <Alert severity="info">{builderCopy.structure.empty}</Alert>
+                                <Button
+                                  onClick={handleCreateEmptyDay}
+                                  startIcon={<Add fontSize="small" />}
+                                  size="small"
+                                  variant="contained"
+                                  fullWidth
+                                >
+                                  {builderCopy.structure.add_day_label}
+                                </Button>
+                              </Stack>
                             ) : (
                               <Stack spacing={2} sx={{ overflow: 'auto', maxHeight: '100%' }}>
                                 {days.map((day, index) => (
@@ -722,19 +733,17 @@ export function MealPlanBuilderPanel({
                                     </CardContent>
                                   </Card>
                                 ))}
+                                <Button
+                                  onClick={handleCreateEmptyDay}
+                                  startIcon={<Add fontSize="small" />}
+                                  size="small"
+                                  variant="contained"
+                                  fullWidth
+                                >
+                                  {builderCopy.structure.add_day_label}
+                                </Button>
                               </Stack>
                             )}
-                          </Box>
-                          <Box>
-                            <Button
-                              onClick={handleCreateEmptyDay}
-                              startIcon={<Add fontSize="small" />}
-                              size="small"
-                              variant="contained"
-                              fullWidth
-                            >
-                              {builderCopy.structure.add_day_label}
-                            </Button>
                           </Box>
                         </Stack>
                       </CardContent>
@@ -745,14 +754,7 @@ export function MealPlanBuilderPanel({
                     <Card variant="outlined" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, flexGrow: 1 }}>
                         <Stack direction="row" spacing={1} alignItems="flex-start">
-                          <Tooltip title={builderCopy.meal_library.refresh_label ?? ''}>
-                            <span>
-                              <IconButton onClick={reloadMeals} size="small">
-                                <Replay fontSize="small" />
-                              </IconButton>
-                            </span>
-                          </Tooltip>
-                          <Stack spacing={0.5}>
+                          <Stack spacing={0.5} sx={{ flexGrow: 1 }}>
                             <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                               {builderCopy.meal_library.title}
                             </Typography>
@@ -760,6 +762,13 @@ export function MealPlanBuilderPanel({
                               {builderCopy.meal_library.subtitle}
                             </Typography>
                           </Stack>
+                          <Tooltip title={builderCopy.meal_library.refresh_label ?? ''}>
+                            <span>
+                              <IconButton onClick={reloadMeals} size="small" aria-label="reload-meals">
+                                <Replay fontSize="small" />
+                              </IconButton>
+                            </span>
+                          </Tooltip>
                         </Stack>
                         <TextField
                           value={mealSearch}
