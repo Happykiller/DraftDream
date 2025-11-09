@@ -25,6 +25,7 @@ import {
   Add,
   ArrowDownward,
   ArrowUpward,
+  CalendarMonth,
   Delete,
   Edit,
   RestaurantMenu,
@@ -554,9 +555,12 @@ export function MealPlanBuilderPanel({
                                 <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                                   <Stack direction="row" alignItems="flex-start" spacing={1}>
                                     <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-                                      <Typography variant="subtitle2" sx={{ fontWeight: 600 }} noWrap>
-                                        {day.label}
-                                      </Typography>
+                                      <Stack direction="row" spacing={1} alignItems="center">
+                                        <CalendarMonth fontSize="small" sx={{ color: 'warning.main' }} />
+                                        <Typography variant="subtitle2" sx={{ fontWeight: 600 }} noWrap>
+                                          {day.label}
+                                        </Typography>
+                                      </Stack>
                                       <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'pre-wrap' }}>
                                         {day.description || builderCopy.structure.description_placeholder}
                                       </Typography>
@@ -618,7 +622,21 @@ export function MealPlanBuilderPanel({
                                         selectedDayId === day.uiId
                                           ? alpha(theme.palette.warning.main, 0.8)
                                           : undefined,
+                                      borderWidth: selectedDayId === day.uiId ? 1 : undefined,
+                                      borderStyle: selectedDayId === day.uiId ? 'solid' : undefined,
                                       cursor: 'pointer',
+                                      transition: theme.transitions.create(
+                                        ['background-color', 'border-color', 'box-shadow'],
+                                        {
+                                          duration: theme.transitions.duration.shortest,
+                                        },
+                                      ),
+                                      '&:hover': {
+                                        backgroundColor: alpha(theme.palette.warning.main, 0.18),
+                                        borderColor: alpha(theme.palette.warning.main, 0.8),
+                                        borderWidth: 1,
+                                        borderStyle: 'solid',
+                                      },
                                     }}
                                   >
                                     <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
