@@ -988,9 +988,68 @@ export function MealPlanBuilderPanel({
                                     >
                                       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
                                         <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
-                                          <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                                            {builderCopy.structure.day_prefix} {index + 1}
-                                          </Typography>
+                                          <Box
+                                            sx={{
+                                              display: 'flex',
+                                              alignItems: 'center',
+                                              gap: 1,
+                                              flexGrow: 1,
+                                              minWidth: 0,
+                                            }}
+                                          >
+                                            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                                              {builderCopy.structure.day_prefix} {index + 1}
+                                            </Typography>
+                                            <Typography variant="subtitle1" color="text.disabled">
+                                              -
+                                            </Typography>
+                                            {isEditingDayLabel ? (
+                                              <TextField
+                                                value={dayLabel}
+                                                onChange={(event) =>
+                                                  handleUpdateDay(day.uiId, { label: event.target.value })
+                                                }
+                                                onBlur={handleDayFieldBlur(day.uiId, 'label')}
+                                                onKeyDown={handleDayFieldInputKeyDown(day.uiId, 'label')}
+                                                size="small"
+                                                variant="standard"
+                                                fullWidth
+                                                inputRef={registerDayFieldRef(day.uiId, 'label')}
+                                                inputProps={{ 'aria-label': builderCopy.structure.title }}
+                                              />
+                                            ) : (
+                                              <Typography
+                                                variant="subtitle1"
+                                                sx={{
+                                                  fontWeight: 600,
+                                                  ...interactiveSurfaceSx,
+                                                  display: 'inline-flex',
+                                                  alignItems: 'center',
+                                                  gap: 0.5,
+                                                  flexGrow: 1,
+                                                  minWidth: 0,
+                                                }}
+                                                onClick={() => handleStartDayFieldEdit(day.uiId, 'label', dayLabel)}
+                                                onKeyDown={handleDayFieldDisplayKeyDown(day.uiId, 'label', dayLabel)}
+                                                tabIndex={0}
+                                                role="button"
+                                                aria-label={builderCopy.structure.title}
+                                              >
+                                                <Edit fontSize="inherit" color="disabled" />
+                                                <Box
+                                                  component="span"
+                                                  sx={{
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
+                                                    whiteSpace: 'nowrap',
+                                                    flexGrow: 1,
+                                                  }}
+                                                >
+                                                  {trimmedDayLabel.length > 0 ? dayLabel : builderCopy.structure.title}
+                                                </Box>
+                                              </Typography>
+                                            )}
+                                          </Box>
                                           <Stack direction="row" spacing={0.5}>
                                             <Tooltip title={builderCopy.structure.move_day_up_label}>
                                               <span>
@@ -1023,41 +1082,6 @@ export function MealPlanBuilderPanel({
                                             </Tooltip>
                                           </Stack>
                                         </Stack>
-                                        {isEditingDayLabel ? (
-                                          <TextField
-                                            value={dayLabel}
-                                            onChange={(event) =>
-                                              handleUpdateDay(day.uiId, { label: event.target.value })
-                                            }
-                                            onBlur={handleDayFieldBlur(day.uiId, 'label')}
-                                            onKeyDown={handleDayFieldInputKeyDown(day.uiId, 'label')}
-                                            size="small"
-                                            variant="standard"
-                                            fullWidth
-                                            inputRef={registerDayFieldRef(day.uiId, 'label')}
-                                            inputProps={{ 'aria-label': builderCopy.structure.title }}
-                                          />
-                                        ) : (
-                                          <Typography
-                                            variant="subtitle1"
-                                            sx={{
-                                              fontWeight: 600,
-                                              ...interactiveSurfaceSx,
-                                              display: 'inline-flex',
-                                              alignItems: 'center',
-                                              gap: 0.5,
-                                              width: 'fit-content',
-                                            }}
-                                            onClick={() => handleStartDayFieldEdit(day.uiId, 'label', dayLabel)}
-                                            onKeyDown={handleDayFieldDisplayKeyDown(day.uiId, 'label', dayLabel)}
-                                            tabIndex={0}
-                                            role="button"
-                                            aria-label={builderCopy.structure.title}
-                                          >
-                                            <Edit fontSize="inherit" color="disabled" />
-                                            {trimmedDayLabel.length > 0 ? dayLabel : builderCopy.structure.title}
-                                          </Typography>
-                                        )}
                                         {isEditingDayDescription ? (
                                           <TextField
                                             value={dayDescription}
