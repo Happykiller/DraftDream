@@ -574,6 +574,14 @@ export function MealPlanBuilderPanel({
                             />
                           )}
                         />
+                        <TextField
+                          label={builderCopy.config.plan_description_label}
+                          value={form.description}
+                          onChange={handleFormChange('description')}
+                          placeholder={builderCopy.config.plan_description_placeholder}
+                          multiline
+                          minRows={3}
+                        />
                         <Box
                           sx={{
                             display: 'grid',
@@ -761,14 +769,6 @@ export function MealPlanBuilderPanel({
                                 {form.planName}
                               </Typography>
                             )}
-                            <TextField
-                              label={builderCopy.config.plan_description_label}
-                              value={form.description}
-                              onChange={handleFormChange('description')}
-                              placeholder={builderCopy.config.plan_description_placeholder}
-                              multiline
-                              minRows={3}
-                            />
                           </Stack>
                           <Box sx={{ flexGrow: 1, minHeight: 0 }}>
                             {days.length === 0 ? (
