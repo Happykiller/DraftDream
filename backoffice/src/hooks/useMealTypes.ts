@@ -14,6 +14,7 @@ export interface MealType {
   slug: string;
   label: string;
   locale: string;
+  icon: string | null;
   visibility: MealTypeVisibility;
   createdBy: string;
   createdAt: string;
@@ -50,6 +51,7 @@ const LIST_QUERY = `
         slug
         label
         locale
+        icon
         visibility
         createdBy
         creator { id email }
@@ -70,6 +72,7 @@ const CREATE_MUTATION = `
       slug
       label
       locale
+      icon
       visibility
       createdBy
       creator { id email }
@@ -86,6 +89,7 @@ const UPDATE_MUTATION = `
       slug
       label
       locale
+      icon
       visibility
       createdBy
       creator { id email }
@@ -142,7 +146,13 @@ export function useMealTypes({ page, limit, q }: UseMealTypesParams) {
   }, [load]);
 
   const create = React.useCallback(
-    async (input: { slug: string; label: string; locale: string; visibility: MealTypeVisibility }) => {
+    async (input: {
+      slug: string;
+      label: string;
+      locale: string;
+      icon?: string | null;
+      visibility: MealTypeVisibility;
+    }) => {
       try {
         const { errors } = await execute(() =>
           gql.send<CreateMealTypePayload>({
@@ -168,6 +178,7 @@ export function useMealTypes({ page, limit, q }: UseMealTypesParams) {
       slug?: string;
       label?: string;
       locale?: string;
+      icon?: string | null;
       visibility?: MealTypeVisibility;
     }) => {
       try {

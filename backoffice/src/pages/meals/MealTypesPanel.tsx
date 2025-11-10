@@ -51,6 +51,7 @@ export function MealTypesPanel(): React.JSX.Element {
             slug: values.slug,
             label: values.label,
             locale: values.locale,
+            icon: values.icon.trim() ? values.icon.trim() : null,
             visibility: values.visibility,
           })
         }
@@ -68,6 +69,7 @@ export function MealTypesPanel(): React.JSX.Element {
                 slug: values.slug,
                 label: values.label,
                 locale: values.locale,
+                icon: values.icon.trim() ? values.icon.trim() : null,
                 visibility: values.visibility,
               })
             : undefined

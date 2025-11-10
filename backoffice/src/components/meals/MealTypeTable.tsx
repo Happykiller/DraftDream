@@ -46,12 +46,18 @@ export function MealTypeTable(props: MealTypeTableProps): React.JSX.Element {
     () => [
       { field: 'slug', headerName: t('common.labels.slug'), flex: 1 },
       { field: 'label', headerName: t('common.labels.label'), flex: 1 },
+      {
+        field: 'icon',
+        headerName: t('common.labels.icon'),
+        width: 140,
+        valueGetter: (params) => params.row.icon ?? t('common.messages.no_value'),
+      },
       { field: 'locale', headerName: t('common.labels.locale'), width: 120 },
       { field: 'visibility', headerName: t('common.labels.visibility'), width: 140 },
       {
         field: 'creator',
         headerName: t('common.labels.creator'),
-        valueGetter: (params: any) => params?.email,
+        valueGetter: (params) => params.row.creator?.email ?? t('common.messages.no_value'),
         flex: 1,
       },
       {
