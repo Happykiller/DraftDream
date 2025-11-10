@@ -13,9 +13,10 @@ import {
 } from '@mui/material';
 
 import type { Meal } from '@hooks/nutrition/useMeals';
+import { useMealTypeIcon } from '@hooks/nutrition/useMealTypeIcon';
 
 import type { MealPlanBuilderCopy } from './mealPlanBuilderTypes';
-import { formatMealSummary, getMealIcon } from './mealPlanBuilderUtils';
+import { formatMealSummary } from './mealPlanBuilderUtils';
 
 type MealPlanBuilderPanelLibraryMealProps = {
   meal: Meal;
@@ -47,10 +48,15 @@ export const MealPlanBuilderPanelLibraryMeal = React.memo(function MealPlanBuild
     [secondaryMain],
   );
 
-  const MealIcon = React.useMemo(() => {
-    const reference = meal.id ?? meal.uiId ?? meal.label;
-    return getMealIcon(reference);
-  }, [meal.id, meal.label, meal.uiId]);
+  const fallbackReference = React.useMemo(
+    () => meal.id ?? meal.slug ?? meal.label ?? 'meal-library',
+    [meal.id, meal.label, meal.slug],
+  );
+
+  const MealIcon = useMealTypeIcon({
+    icon: meal.type?.icon,
+    fallbackReference,
+  });
 
   return (
     <Card

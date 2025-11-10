@@ -16,6 +16,7 @@ export interface MealTypeSummary {
   locale: string;
   slug?: string | null;
   visibility?: string | null;
+  icon?: string | null;
 }
 
 export interface MealCreator {
@@ -64,7 +65,7 @@ const LIST_QUERY = `
         locale
         label
         typeId
-        type { id slug label locale visibility }
+        type { id slug label locale visibility icon }
         foods
         calories
         proteinGrams
@@ -91,7 +92,7 @@ const CREATE_MUTATION = `
       locale
       label
       typeId
-      type { id slug label locale visibility }
+      type { id slug label locale visibility icon }
       foods
       calories
       proteinGrams
@@ -114,7 +115,7 @@ const UPDATE_MUTATION = `
       locale
       label
       typeId
-      type { id slug label locale visibility }
+      type { id slug label locale visibility icon }
       foods
       calories
       proteinGrams

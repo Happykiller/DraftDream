@@ -13,11 +13,13 @@ import {
   Typography,
 } from '@mui/material';
 
+import { useMealTypeIcon } from '@hooks/nutrition/useMealTypeIcon';
+
 import type {
   MealPlanBuilderCopy,
   MealPlanBuilderMeal,
 } from './mealPlanBuilderTypes';
-import { formatMealSummary, getMealIcon } from './mealPlanBuilderUtils';
+import { formatMealSummary } from './mealPlanBuilderUtils';
 
 type MealPlanBuilderPanelDraftMealProps = {
   meal: MealPlanBuilderMeal;
@@ -79,10 +81,15 @@ export const MealPlanBuilderPanelDraftMeal = React.memo(function MealPlanBuilder
     [warningMain],
   );
 
-  const MealIcon = React.useMemo(() => {
-    const reference = meal.id ?? meal.uiId ?? meal.label;
-    return getMealIcon(reference);
-  }, [meal.id, meal.label, meal.uiId]);
+  const fallbackReference = React.useMemo(
+    () => meal.id ?? meal.uiId ?? meal.label ?? 'meal-draft',
+    [meal.id, meal.label, meal.uiId],
+  );
+
+  const MealIcon = useMealTypeIcon({
+    icon: meal.type?.icon,
+    fallbackReference,
+  });
 
   React.useEffect(() => {
     if (!isEditingLabel) {

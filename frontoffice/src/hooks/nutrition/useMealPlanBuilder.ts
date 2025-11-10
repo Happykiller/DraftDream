@@ -117,15 +117,16 @@ function normalizeMealForSubmission(meal: MealPlanBuilderMeal): MealPlanMealSnap
     carbGrams: Number(meal.carbGrams ?? 0),
     fatGrams: Number(meal.fatGrams ?? 0),
     type: meal.type
-      ? {
-          id: meal.type.id ?? undefined,
-          templateMealTypeId: meal.type.templateMealTypeId ?? undefined,
-          slug: meal.type.slug ?? undefined,
-          locale: meal.type.locale ?? undefined,
-          label: meal.type.label,
-          visibility: meal.type.visibility ?? undefined,
-        }
-      : undefined,
+        ? {
+            id: meal.type.id ?? undefined,
+            templateMealTypeId: meal.type.templateMealTypeId ?? undefined,
+            slug: meal.type.slug ?? undefined,
+            locale: meal.type.locale ?? undefined,
+            label: meal.type.label,
+            visibility: meal.type.visibility ?? undefined,
+            icon: meal.type.icon ?? undefined,
+          }
+        : undefined,
   };
 }
 
@@ -152,15 +153,16 @@ function createMealFromTemplate(meal: Meal): MealPlanBuilderMeal {
     carbGrams: meal.carbGrams,
     fatGrams: meal.fatGrams,
     type: meal.type
-      ? {
-          id: meal.type.id,
-          templateMealTypeId: meal.type.templateMealTypeId,
-          slug: meal.type.slug,
-          locale: meal.type.locale,
-          label: meal.type.label,
-          visibility: meal.type.visibility ?? undefined,
-        }
-      : undefined,
+        ? {
+            id: meal.type.id,
+            templateMealTypeId: meal.type.templateMealTypeId,
+            slug: meal.type.slug,
+            locale: meal.type.locale,
+            label: meal.type.label,
+            visibility: meal.type.visibility ?? undefined,
+            icon: meal.type.icon ?? undefined,
+          }
+        : undefined,
   };
 
   return {
@@ -313,6 +315,7 @@ export function useMealPlanBuilder(
               locale: meal.type.locale ?? undefined,
               label: meal.type.label,
               visibility: meal.type.visibility ?? undefined,
+              icon: meal.type.icon ?? undefined,
             }
           : undefined,
       })),

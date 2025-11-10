@@ -19,6 +19,7 @@ export interface MealType {
   createdBy: string;
   createdAt: string;
   updatedAt: string;
+  icon?: string | null;
   creator?: { id: string; email: string } | null;
 }
 
@@ -52,6 +53,7 @@ const LIST_QUERY = `
         label
         locale
         visibility
+        icon
         createdBy
         creator { id email }
         createdAt
@@ -72,6 +74,7 @@ const CREATE_MUTATION = `
       label
       locale
       visibility
+      icon
       createdBy
       creator { id email }
       createdAt
@@ -88,6 +91,7 @@ const UPDATE_MUTATION = `
       label
       locale
       visibility
+      icon
       createdBy
       creator { id email }
       createdAt
@@ -117,6 +121,7 @@ export interface UseMealTypesResult {
     label: string;
     locale: string;
     visibility: MealTypeVisibility;
+    icon?: string | null;
   }) => Promise<void>;
   update: (input: {
     id: string;
@@ -124,6 +129,7 @@ export interface UseMealTypesResult {
     label?: string;
     locale?: string;
     visibility?: MealTypeVisibility;
+    icon?: string | null;
   }) => Promise<void>;
   remove: (id: string) => Promise<void>;
   reload: () => Promise<void>;

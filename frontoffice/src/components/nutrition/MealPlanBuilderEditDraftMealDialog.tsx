@@ -61,6 +61,7 @@ function buildTypeSnapshot(source: MealPlanMealTypeSnapshot | undefined, fallbac
       locale: source.locale ?? undefined,
       label: source.label,
       visibility: source.visibility ?? undefined,
+      icon: source.icon ?? undefined,
     };
   }
 
@@ -72,6 +73,7 @@ function buildTypeSnapshot(source: MealPlanMealTypeSnapshot | undefined, fallbac
       locale: fallback.type.locale ?? undefined,
       label: fallback.type.label,
       visibility: fallback.type.visibility ?? undefined,
+      icon: fallback.type.icon ?? undefined,
     };
   }
 
@@ -154,6 +156,7 @@ export function MealPlanBuilderEditDraftMealDialog({
               locale: selectedType.locale,
               label: selectedType.label,
               visibility: selectedType.visibility ?? undefined,
+              icon: selectedType.icon ?? undefined,
             }
           : undefined,
         meal,

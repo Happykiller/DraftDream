@@ -22,6 +22,7 @@ export interface MealPlanMealTypeSnapshot {
   locale?: string | null;
   label: string;
   visibility?: string | null;
+  icon?: string | null;
 }
 
 export interface MealPlanMealSnapshot {
@@ -175,6 +176,7 @@ const CREATE_MUTATION = `
             locale
             label
             visibility
+            icon
           }
         }
       }
@@ -226,6 +228,7 @@ const UPDATE_MUTATION = `
             locale
             label
             visibility
+            icon
           }
         }
       }
@@ -253,6 +256,7 @@ function normalizeMealType(input: MealPlanMealTypeSnapshot) {
     locale: input.locale || undefined,
     label: input.label,
     visibility: input.visibility || undefined,
+    icon: input.icon || undefined,
   };
 }
 
