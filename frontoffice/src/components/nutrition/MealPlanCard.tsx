@@ -93,6 +93,14 @@ export function MealPlanCard({
       }),
     [i18n.language],
   );
+  const summaryBackground = React.useMemo(
+    () => alpha(theme.palette.primary.main, 0.08),
+    [theme.palette.primary.main],
+  );
+  const summaryBorder = React.useMemo(
+    () => alpha(theme.palette.primary.main, 0.16),
+    [theme.palette.primary.main],
+  );
 
   const macroUnits = React.useMemo(
     () => ({
@@ -104,44 +112,54 @@ export function MealPlanCard({
     [t],
   );
 
-  const macros = React.useMemo(
+  const macroSummaries = React.useMemo(
     () => [
       {
-        key: 'calories',
-        label: macroLabels.calories,
-        value: `${numberFormatter.format(mealPlan.calories)} ${macroUnits.calories}`,
-      },
-      {
-        key: 'protein',
+        key: 'protein' as const,
         label: macroLabels.protein,
         value: `${numberFormatter.format(mealPlan.proteinGrams)} ${macroUnits.protein}`,
+        color: theme.palette.info.main,
       },
       {
-        key: 'carbs',
+        key: 'carbs' as const,
         label: macroLabels.carbs,
         value: `${numberFormatter.format(mealPlan.carbGrams)} ${macroUnits.carbs}`,
+        color: theme.palette.success.main,
       },
       {
-        key: 'fats',
+        key: 'fats' as const,
         label: macroLabels.fats,
         value: `${numberFormatter.format(mealPlan.fatGrams)} ${macroUnits.fats}`,
+        color: theme.palette.warning.main,
       },
     ],
     [
-      macroLabels.calories,
       macroLabels.carbs,
       macroLabels.fats,
       macroLabels.protein,
-      macroUnits.calories,
       macroUnits.carbs,
       macroUnits.fats,
       macroUnits.protein,
-      mealPlan.calories,
       mealPlan.carbGrams,
       mealPlan.fatGrams,
       mealPlan.proteinGrams,
       numberFormatter,
+      theme.palette.info.main,
+      theme.palette.success.main,
+      theme.palette.warning.main,
     ],
+  );
+  const caloriesPerDay = React.useMemo(
+    () => `${numberFormatter.format(mealPlan.calories)} ${macroUnits.calories}`,
+    [mealPlan.calories, macroUnits.calories, numberFormatter],
+  );
+  const caloriesPerDayLabel = React.useMemo(
+    () => t('nutrition-coach.list.calories_per_day', { label: macroLabels.calories }),
+    [macroLabels.calories, t],
+  );
+  const planLengthLabel = React.useMemo(
+    () => t('nutrition-coach.list.plan_length'),
+    [t],
   );
 
   const athleteLabel = React.useMemo(() => buildUserLabel(mealPlan.athlete), [mealPlan.athlete]);
@@ -155,9 +173,6 @@ export function MealPlanCard({
   const planAssignmentLabel = athleteLabel
     ? t('nutrition-coach.list.plan_for', { name: athleteLabel })
     : t('nutrition-coach.list.plan_unassigned');
-  const statusLabel = athleteLabel
-    ? t('nutrition-coach.list.status.assigned')
-    : t('nutrition-coach.list.status.unassigned');
   const overflowToggleLabel = isExpanded
     ? t('nutrition-coach.list.collapse_details')
     : t('nutrition-coach.list.expand_details');
@@ -276,6 +291,7 @@ export function MealPlanCard({
             : {}),
         })}
       >
+        {/* General information */}
         {/* Header */}
         <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={2}>
           <Stack flex={1} minWidth={0} spacing={0.75}>
@@ -287,15 +303,6 @@ export function MealPlanCard({
             </Typography>
           </Stack>
           <Stack direction="row" spacing={1} flexWrap="wrap" justifyContent="flex-end" useFlexGap>
-            <Chip
-              label={statusLabel}
-              size="small"
-              sx={(chipTheme) => ({
-                bgcolor: alpha(chipTheme.palette.success.main, 0.16),
-                color: chipTheme.palette.success.main,
-                fontWeight: 600,
-              })}
-            />
             <Chip
               label={dayCountLabel}
               size="small"
@@ -309,31 +316,61 @@ export function MealPlanCard({
         </Stack>
 
         {/* Nutrition goals */}
-        <Stack spacing={1.5}>
-          <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-            {t('nutrition-coach.list.sections.nutrition_goals')}
-          </Typography>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} flexWrap="wrap" useFlexGap>
-            {macros.map((macro) => (
-              <Box
-                key={macro.key}
-                sx={{
-                  flex: '1 1 160px',
-                  borderRadius: 2,
-                  p: 1.5,
-                  bgcolor: alpha(theme.palette.info.light, 0.12),
-                }}
-              >
-                <Typography variant="caption" color="text.secondary" sx={{ textTransform: 'uppercase' }}>
-                  {macro.label}
+        <Box
+          sx={{
+            borderRadius: 2,
+            backgroundColor: summaryBackground,
+            border: `1px solid ${summaryBorder}`,
+            px: { xs: 1.5, sm: 2 },
+            py: { xs: 1.5, sm: 2 },
+          }}
+        >
+          <Stack spacing={1.5}>
+            <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>
+              {t('nutrition-coach.list.sections.nutrition_goals')}
+            </Typography>
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={{ xs: 1.25, sm: 3 }}
+              useFlexGap
+              flexWrap="wrap"
+            >
+              <Stack spacing={0.25}>
+                <Typography variant="h6" component="p" sx={{ fontWeight: 700, color: theme.palette.primary.main }}>
+                  {caloriesPerDay}
                 </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {caloriesPerDayLabel}
+                </Typography>
+              </Stack>
+              <Stack spacing={0.25}>
                 <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                  {macro.value}
+                  {dayCountLabel}
                 </Typography>
-              </Box>
-            ))}
+                <Typography variant="caption" color="text.secondary">
+                  {planLengthLabel}
+                </Typography>
+              </Stack>
+            </Stack>
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={{ xs: 1.25, sm: 3 }}
+              useFlexGap
+              flexWrap="wrap"
+            >
+              {macroSummaries.map((macro) => (
+                <Stack key={macro.key} spacing={0.25} sx={{ minWidth: { sm: 96 } }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 700, color: macro.color }}>
+                    {macro.value}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {macro.label}
+                  </Typography>
+                </Stack>
+              ))}
+            </Stack>
           </Stack>
-        </Stack>
+        </Box>
 
         <Divider flexItem />
 
