@@ -50,14 +50,14 @@ export function MealTypeTable(props: MealTypeTableProps): React.JSX.Element {
         field: 'icon',
         headerName: t('common.labels.icon'),
         width: 140,
-        valueGetter: (params) => params.row.icon ?? t('common.messages.no_value'),
+        renderCell: (params) => params.row.icon ?? t('common.messages.no_value'),
       },
       { field: 'locale', headerName: t('common.labels.locale'), width: 120 },
       { field: 'visibility', headerName: t('common.labels.visibility'), width: 140 },
       {
         field: 'creator',
         headerName: t('common.labels.creator'),
-        valueGetter: (params) => params.row.creator?.email ?? t('common.messages.no_value'),
+        renderCell: (params) => params.row.creator?.email ?? t('common.messages.no_value'),
         flex: 1,
       },
       {
