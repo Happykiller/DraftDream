@@ -25,6 +25,7 @@ describe('UpdateMealTypeUsecase', () => {
     slug: 'post-workout',
     locale: 'en-US',
     label: 'Post workout',
+    icon: 'shaker',
     visibility: 'public',
   };
 
@@ -33,6 +34,7 @@ describe('UpdateMealTypeUsecase', () => {
     slug: 'post-workout',
     locale: 'en-us',
     label: 'Post workout',
+    icon: 'shaker',
     visibility: 'public',
     createdBy: 'coach-11',
     createdAt: new Date('2024-02-01T10:00:00.000Z'),
@@ -66,6 +68,7 @@ describe('UpdateMealTypeUsecase', () => {
       slug: dto.slug,
       locale: dto.locale,
       label: dto.label,
+      icon: dto.icon,
       visibility: dto.visibility,
     });
     expect(result).toEqual(updatedMealType);

@@ -4,13 +4,14 @@ export type CreateMealTypeDto = {
   slug: string;
   locale: string;
   label: string;
+  icon?: string | null;
   visibility: 'private' | 'public';
   createdBy: string;
 };
 
 /** Fields accepted when updating a meal type document. */
 export type UpdateMealTypeDto = Partial<
-  Pick<CreateMealTypeDto, 'slug' | 'locale' | 'label' | 'visibility'>
+  Pick<CreateMealTypeDto, 'slug' | 'locale' | 'label' | 'icon' | 'visibility'>
 >;
 
 /** Identifier wrapper used to fetch a meal type. */

@@ -19,6 +19,7 @@ export class UpdateMealTypeUsecase {
         slug: dto.slug,
         locale: dto.locale,
         label: dto.label,
+        icon: dto.icon,
         visibility: dto.visibility,
       });
       return updated ? { ...updated } : null;

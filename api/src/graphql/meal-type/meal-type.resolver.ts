@@ -51,6 +51,7 @@ export class MealTypeResolver {
       slug: input.slug,
       locale: input.locale,
       label: input.label,
+      icon: input.icon,
       visibility: input.visibility,
       createdBy: req?.user?.id,
     });
@@ -105,6 +106,7 @@ export class MealTypeResolver {
       slug: input.slug,
       locale: input.locale,
       label: input.label,
+      icon: input.icon,
       visibility: input.visibility,
     });
     return updated ? mapMealTypeUsecaseToGql(updated) : null;

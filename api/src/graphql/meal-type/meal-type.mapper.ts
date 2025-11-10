@@ -13,6 +13,7 @@ export function mapMealTypeUsecaseToGql(model: MealTypeUsecaseModel): MealTypeGq
     slug: model.slug,
     locale: model.locale,
     label: model.label,
+    icon: model.icon ?? null,
     visibility: model.visibility as MealTypeVisibility,
     createdBy: model.createdBy,
     createdAt: model.createdAt,

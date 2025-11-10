@@ -5,6 +5,7 @@ export interface MealTypeUsecaseModel {
   slug: string;
   locale: string;
   label: string;
+  icon?: string | null;
   visibility: 'private' | 'public';
   createdBy: string;
   createdAt: Date;

@@ -19,6 +19,7 @@ type MealTypeDoc = {
   slug: string;
   locale: string;
   label: string;
+  icon?: string | null;
   visibility: 'private' | 'public';
   createdBy: string;
   createdAt: Date;
@@ -55,10 +56,12 @@ export class BddServiceMealTypeMongo {
    */
   async create(dto: CreateMealTypeDto): Promise<MealType | null> {
     const now = new Date();
+    const icon = this.normalizeIcon(dto.icon);
     const doc: Omit<MealTypeDoc, '_id'> = {
       slug: dto.slug.toLowerCase().trim(),
       locale: dto.locale.toLowerCase().trim(),
       label: dto.label.trim(),
+      icon: icon ?? null,
       visibility: dto.visibility,
       createdBy: dto.createdBy,
       createdAt: now,
@@ -67,7 +70,11 @@ export class BddServiceMealTypeMongo {
 
     try {
       const res = await (await this.col()).insertOne(doc as MealTypeDoc);
-      return { id: res.insertedId.toHexString(), ...doc };
+      return {
+        id: res.insertedId.toHexString(),
+        ...doc,
+        icon: icon ?? null,
+      };
     } catch (error) {
       if (this.isDuplicateError(error)) return null;
       this.handleError('create', error);
@@ -144,6 +151,7 @@ export class BddServiceMealTypeMongo {
     if (patch.slug !== undefined) $set.slug = patch.slug.toLowerCase().trim();
     if (patch.locale !== undefined) $set.locale = patch.locale.toLowerCase().trim();
     if (patch.label !== undefined) $set.label = patch.label.trim();
+    if (patch.icon !== undefined) $set.icon = this.normalizeIcon(patch.icon) ?? null;
     if (patch.visibility !== undefined) $set.visibility = patch.visibility;
 
     try {
@@ -187,6 +195,7 @@ export class BddServiceMealTypeMongo {
     slug: doc.slug,
     locale: doc.locale,
     label: doc.label,
+    icon: doc.icon ?? null,
     visibility: doc.visibility,
     createdBy: doc.createdBy,
     createdAt: doc.createdAt,
@@ -201,5 +210,18 @@ export class BddServiceMealTypeMongo {
     const message = error instanceof Error ? error.message : String(error);
     inversify.loggerService.error(`BddServiceMealTypeMongo#${method} => ${message}`);
     throw error instanceof Error ? error : new Error(message);
+  }
+
+  private normalizeIcon(icon: string | null | undefined): string | null | undefined {
+    if (icon === undefined) {
+      return undefined;
+    }
+
+    if (icon === null) {
+      return null;
+    }
+
+    const trimmed = icon.trim();
+    return trimmed.length ? trimmed : null;
   }
 }
