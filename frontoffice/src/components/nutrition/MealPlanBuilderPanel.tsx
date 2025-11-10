@@ -112,6 +112,8 @@ export function MealPlanBuilderPanel({
     removeMeal,
     reloadMealDays,
     updatePlanName,
+    nutritionSummary,
+    totalMeals,
   } = useMealPlanBuilder(builderCopy, {
     onCancel,
     onCreated,
@@ -137,13 +139,6 @@ export function MealPlanBuilderPanel({
   const editMealDescription = builderCopy.structure.edit_meal_description;
   const warningMain = theme.palette.warning.main;
   const currentUserId = session((state) => state.id);
-  const totalMeals = React.useMemo(
-    () =>
-      days.reduce((accumulator, day) => {
-        return accumulator + day.meals.length;
-      }, 0),
-    [days],
-  );
   const totalMealsLabel = React.useMemo(() => {
     const summaryCopy = builderCopy.summary;
     if (!summaryCopy) {
@@ -163,6 +158,78 @@ export function MealPlanBuilderPanel({
 
     return template.replace('{{count}}', String(totalMeals));
   }, [builderCopy, totalMeals]);
+
+  const summaryBackground = React.useMemo(
+    () => alpha(theme.palette.primary.main, 0.08),
+    [theme.palette.primary.main],
+  );
+  const summaryBorder = React.useMemo(
+    () => alpha(theme.palette.primary.main, 0.16),
+    [theme.palette.primary.main],
+  );
+  const macroFormatter = React.useMemo(
+    () =>
+      new Intl.NumberFormat(undefined, {
+        maximumFractionDigits: 1,
+        minimumFractionDigits: 0,
+      }),
+    [],
+  );
+  const nutritionSummaryEntries = React.useMemo(
+    () => {
+      const summaryCopy = builderCopy.summary;
+      const structureCopy = builderCopy.structure;
+
+      const caloriesLabel = summaryCopy?.calories_label ?? structureCopy.calories_label;
+      const proteinLabel = summaryCopy?.protein_label ?? structureCopy.protein_label;
+      const carbsLabel = summaryCopy?.carbs_label ?? structureCopy.carbs_label;
+      const fatsLabel = summaryCopy?.fats_label ?? structureCopy.fats_label;
+
+      return [
+        {
+          key: 'calories' as const,
+          label: caloriesLabel,
+          value: macroFormatter.format(nutritionSummary.calories),
+          unit: summaryCopy?.calories_unit ?? 'kcal',
+          color: theme.palette.primary.main,
+        },
+        {
+          key: 'protein' as const,
+          label: proteinLabel,
+          value: macroFormatter.format(nutritionSummary.proteinGrams),
+          unit: summaryCopy?.protein_unit ?? 'g',
+          color: theme.palette.info.main,
+        },
+        {
+          key: 'carbs' as const,
+          label: carbsLabel,
+          value: macroFormatter.format(nutritionSummary.carbGrams),
+          unit: summaryCopy?.carbs_unit ?? 'g',
+          color: theme.palette.success.main,
+        },
+        {
+          key: 'fats' as const,
+          label: fatsLabel,
+          value: macroFormatter.format(nutritionSummary.fatGrams),
+          unit: summaryCopy?.fats_unit ?? 'g',
+          color: theme.palette.warning.main,
+        },
+      ];
+    },
+    [
+      builderCopy.structure,
+      builderCopy.summary,
+      macroFormatter,
+      nutritionSummary.carbGrams,
+      nutritionSummary.calories,
+      nutritionSummary.fatGrams,
+      nutritionSummary.proteinGrams,
+      theme.palette.info.main,
+      theme.palette.primary.main,
+      theme.palette.success.main,
+      theme.palette.warning.main,
+    ],
+  );
 
   const interactiveSurfaceSx = React.useMemo(
     () => ({
@@ -512,46 +579,6 @@ export function MealPlanBuilderPanel({
                           multiline
                           minRows={3}
                         />
-                        <Box
-                          sx={{
-                            display: 'grid',
-                            gridTemplateColumns: { xs: 'repeat(2, 1fr)' },
-                            gap: 1,
-                          }}
-                        >
-                          <TextField
-                            label={builderCopy.config.calories_label}
-                            value={form.calories}
-                            onChange={handleFormChange('calories')}
-                            size="small"
-                            type="number"
-                            inputProps={{ min: 0 }}
-                          />
-                          <TextField
-                            label={builderCopy.config.protein_label}
-                            value={form.proteinGrams}
-                            onChange={handleFormChange('proteinGrams')}
-                            size="small"
-                            type="number"
-                            inputProps={{ min: 0 }}
-                          />
-                          <TextField
-                            label={builderCopy.config.carbs_label}
-                            value={form.carbGrams}
-                            onChange={handleFormChange('carbGrams')}
-                            size="small"
-                            type="number"
-                            inputProps={{ min: 0 }}
-                          />
-                          <TextField
-                            label={builderCopy.config.fats_label}
-                            value={form.fatGrams}
-                            onChange={handleFormChange('fatGrams')}
-                            size="small"
-                            type="number"
-                            inputProps={{ min: 0 }}
-                          />
-                        </Box>
                       </CardContent>
                     </Card>
 
@@ -670,6 +697,46 @@ export function MealPlanBuilderPanel({
                                 </Typography>
                               ) : null}
                             </Stack>
+                            <Box
+                              sx={{
+                                borderRadius: 2,
+                                backgroundColor: summaryBackground,
+                                border: `1px solid ${summaryBorder}`,
+                                px: { xs: 1.25, md: 1.5 },
+                                py: { xs: 1.25, md: 1.5 },
+                              }}
+                            >
+                              <Stack spacing={1}>
+                                {builderCopy.summary?.nutrition_title ? (
+                                  <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>
+                                    {builderCopy.summary.nutrition_title}
+                                  </Typography>
+                                ) : null}
+                                <Stack
+                                  direction={{ xs: 'column', sm: 'row' }}
+                                  spacing={{ xs: 1.5, sm: 3 }}
+                                  useFlexGap
+                                  flexWrap="wrap"
+                                >
+                                  {nutritionSummaryEntries.map((entry) => {
+                                    const displayValue = entry.unit
+                                      ? `${entry.value}\u00a0${entry.unit}`
+                                      : entry.value;
+
+                                    return (
+                                      <Stack key={entry.key} spacing={0.25} sx={{ minWidth: { sm: 88 } }}>
+                                        <Typography variant="subtitle1" sx={{ fontWeight: 700, color: entry.color }}>
+                                          {displayValue}
+                                        </Typography>
+                                        <Typography variant="caption" color="text.secondary">
+                                          {entry.label}
+                                        </Typography>
+                                      </Stack>
+                                    );
+                                  })}
+                                </Stack>
+                              </Stack>
+                            </Box>
                           </Stack>
                           <Box sx={{ flexGrow: 1, minHeight: 0 }}>
                             {days.length === 0 ? (

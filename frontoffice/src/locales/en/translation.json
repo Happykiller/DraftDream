@@ -523,7 +523,17 @@
       "edit_subtitle": "Adjust existing meals and macros for your athlete.",
       "summary": {
         "total_meals": "{{count}} meals in total",
-        "total_meals_one": "{{count}} meal in total"
+        "total_meals_one": "{{count}} meal in total",
+        "total_meals_other": "{{count}} meals in total",
+        "nutrition_title": "Nutrition summary",
+        "calories_label": "Calories",
+        "calories_unit": "kcal",
+        "protein_label": "Protein",
+        "protein_unit": "g",
+        "carbs_label": "Carbs",
+        "carbs_unit": "g",
+        "fats_label": "Fats",
+        "fats_unit": "g"
       },
       "config": {
         "title": "Plan configuration",
@@ -532,11 +542,7 @@
         "plan_name_label": "Plan name",
         "plan_name_default": "Nutrition plan",
         "plan_description_label": "Notes",
-        "plan_description_placeholder": "Objectives, guidance and notes...",
-        "calories_label": "Calories (kcal)",
-        "protein_label": "Protein (g)",
-        "carbs_label": "Carbs (g)",
-        "fats_label": "Fats (g)"
+        "plan_description_placeholder": "Objectives, guidance and notes..."
       },
       "day_library": {
         "title": "Meal day library",

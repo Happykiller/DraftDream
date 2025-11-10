@@ -22,7 +22,10 @@ import type {
   MealPlanBuilderDay,
   MealPlanBuilderForm,
   MealPlanBuilderMeal,
+  MealPlanBuilderNutritionSummary,
 } from '@components/nutrition/mealPlanBuilderTypes';
+
+import { computePlanNutritionSummary } from '@components/nutrition/mealPlanBuilderUtils';
 
 interface UseMealPlanBuilderOptions {
   onCancel: () => void;
@@ -78,6 +81,8 @@ export interface UseMealPlanBuilderResult {
   removeMeal: ReturnType<typeof useMeals>['remove'];
   reloadMealDays: () => Promise<void>;
   updatePlanName: (value: string) => void;
+  nutritionSummary: MealPlanBuilderNutritionSummary;
+  totalMeals: number;
 }
 
 function generateUiId() {
@@ -180,10 +185,6 @@ export function useMealPlanBuilder(
       return candidate.length > 0 ? candidate : builderCopy.config.plan_name_default;
     })(),
     description: basePlan?.description?.trim() ?? '',
-    calories: basePlan ? String(basePlan.calories) : '',
-    proteinGrams: basePlan ? String(basePlan.proteinGrams) : '',
-    carbGrams: basePlan ? String(basePlan.carbGrams) : '',
-    fatGrams: basePlan ? String(basePlan.fatGrams) : '',
   }));
 
   const [selectedAthlete, setSelectedAthlete] = React.useState<User | null>(
@@ -254,10 +255,6 @@ export function useMealPlanBuilder(
         basePlan.description && basePlan.description.length > 0
           ? basePlan.description
           : builderCopy.structure.description_placeholder,
-      calories: String(basePlan.calories),
-      proteinGrams: String(basePlan.proteinGrams),
-      carbGrams: String(basePlan.carbGrams),
-      fatGrams: String(basePlan.fatGrams),
     });
     setSelectedAthlete(basePlan.athlete ?? null);
     setDays(basePlan.days.map(cloneDaySnapshot));
@@ -494,22 +491,26 @@ export function useMealPlanBuilder(
     [],
   );
 
+  const nutritionSummary = React.useMemo(
+    () => computePlanNutritionSummary(days),
+    [days],
+  );
+
+  const totalMeals = React.useMemo(
+    () =>
+      days.reduce((accumulator, day) => {
+        return accumulator + day.meals.length;
+      }, 0),
+    [days],
+  );
+
   const isSubmitDisabled = React.useMemo(() => {
     if (!form.planName.trim()) {
       return true;
     }
 
-    const calories = Number(form.calories);
-    const protein = Number(form.proteinGrams);
-    const carbs = Number(form.carbGrams);
-    const fats = Number(form.fatGrams);
-
-    if ([calories, protein, carbs, fats].some((value) => Number.isNaN(value) || value < 0)) {
-      return true;
-    }
-
     return submitting;
-  }, [form.calories, form.carbGrams, form.fatGrams, form.planName, form.proteinGrams, submitting]);
+  }, [form.planName, submitting]);
 
   const handleSubmit = React.useCallback(
     async (event?: React.SyntheticEvent) => {
@@ -536,10 +537,10 @@ export function useMealPlanBuilder(
         locale: i18n.language,
         label: form.planName.trim(),
         description: form.description?.trim() ?? '',
-        calories: Number(form.calories || 0),
-        proteinGrams: Number(form.proteinGrams || 0),
-        carbGrams: Number(form.carbGrams || 0),
-        fatGrams: Number(form.fatGrams || 0),
+        calories: nutritionSummary.calories,
+        proteinGrams: nutritionSummary.proteinGrams,
+        carbGrams: nutritionSummary.carbGrams,
+        fatGrams: nutritionSummary.fatGrams,
         days: payloadDays,
         userId: selectedAthlete?.id ?? null,
       };
@@ -570,15 +571,15 @@ export function useMealPlanBuilder(
       builderCopy.structure.day_prefix,
       create,
       days,
-      form.calories,
-      form.carbGrams,
       form.description,
-      form.fatGrams,
       form.planName,
-      form.proteinGrams,
       i18n.language,
       isSubmitDisabled,
       mode,
+      nutritionSummary.carbGrams,
+      nutritionSummary.calories,
+      nutritionSummary.fatGrams,
+      nutritionSummary.proteinGrams,
       onCreated,
       onUpdated,
       selectedAthlete?.id,
@@ -627,5 +628,7 @@ export function useMealPlanBuilder(
     removeMeal,
     reloadMealDays,
     updatePlanName,
+    nutritionSummary,
+    totalMeals,
   };
 }

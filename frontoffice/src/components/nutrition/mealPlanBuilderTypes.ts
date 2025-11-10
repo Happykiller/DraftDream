@@ -4,10 +4,13 @@ import type { MealPlanDaySnapshot, MealPlanMealSnapshot } from '@hooks/nutrition
 export interface MealPlanBuilderForm {
   planName: string;
   description: string;
-  calories: string;
-  proteinGrams: string;
-  carbGrams: string;
-  fatGrams: string;
+}
+
+export interface MealPlanBuilderNutritionSummary {
+  calories: number;
+  proteinGrams: number;
+  carbGrams: number;
+  fatGrams: number;
 }
 
 export interface MealPlanBuilderMeal extends MealPlanMealSnapshot {
@@ -28,6 +31,15 @@ export interface MealPlanBuilderCopy {
     total_meals: string;
     total_meals_one?: string;
     total_meals_other?: string;
+    nutrition_title?: string;
+    calories_label?: string;
+    calories_unit?: string;
+    protein_label?: string;
+    protein_unit?: string;
+    carbs_label?: string;
+    carbs_unit?: string;
+    fats_label?: string;
+    fats_unit?: string;
   };
   config: {
     title: string;
@@ -37,10 +49,6 @@ export interface MealPlanBuilderCopy {
     plan_name_default: string;
     plan_description_label: string;
     plan_description_placeholder: string;
-    calories_label: string;
-    protein_label: string;
-    carbs_label: string;
-    fats_label: string;
   };
   day_library: {
     title: string;
