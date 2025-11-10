@@ -68,6 +68,13 @@ export function NutritionPlansCoach(): React.JSX.Element {
     navigate('/nutrition-coach/create');
   }, [navigate]);
 
+  const handleEditMealPlan = React.useCallback(
+    (plan: MealPlan) => {
+      navigate(`/nutrition-coach/edit/${plan.id}`);
+    },
+    [navigate],
+  );
+
   return (
     <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
       {/* General information */}
@@ -113,6 +120,7 @@ export function NutritionPlansCoach(): React.JSX.Element {
         placeholderSubtitle={emptyState.description}
         placeholderHelper={emptyState.helper}
         onView={handleOpenMealPlan}
+        onEdit={handleEditMealPlan}
         onDelete={handleDeleteMealPlan}
         dayCountFormatter={(count) =>
           t('nutrition-coach.list.day_count', {
