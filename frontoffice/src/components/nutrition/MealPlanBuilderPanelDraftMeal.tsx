@@ -18,7 +18,7 @@ import type {
   MealPlanBuilderCopy,
   MealPlanBuilderMeal,
 } from './mealPlanBuilderTypes';
-import { formatMealSummary } from './mealPlanBuilderUtils';
+import { formatMealSummary, getMealIcon } from './mealPlanBuilderUtils';
 
 type MealPlanBuilderPanelDraftMealProps = {
   meal: MealPlanBuilderMeal;
@@ -47,6 +47,12 @@ export const MealPlanBuilderPanelDraftMeal = React.memo(function MealPlanBuilder
 }: MealPlanBuilderPanelDraftMealProps): React.JSX.Element {
   const theme = useTheme();
   const warningMain = theme.palette.warning.main;
+  const secondaryMain = theme.palette.secondary.main;
+
+  const mealIconColor = React.useMemo(
+    () => alpha(secondaryMain, 0.5),
+    [secondaryMain],
+  );
 
   const trimmedMealLabel = (meal.label ?? '').trim();
   const displayMealLabel = trimmedMealLabel.length > 0 ? meal.label : builderCopy.structure.meal_prefix;
@@ -73,6 +79,11 @@ export const MealPlanBuilderPanelDraftMeal = React.memo(function MealPlanBuilder
     }),
     [warningMain],
   );
+
+  const MealIcon = React.useMemo(() => {
+    const reference = meal.id ?? meal.uiId ?? meal.label;
+    return getMealIcon(reference);
+  }, [meal.id, meal.label, meal.uiId]);
 
   React.useEffect(() => {
     if (!isEditingLabel) {
@@ -161,6 +172,15 @@ export const MealPlanBuilderPanelDraftMeal = React.memo(function MealPlanBuilder
               minWidth: 0,
             }}
           >
+            {meal.type?.label ? (
+              <Tooltip title={meal.type.label}>
+                <span style={{ display: 'inline-flex' }}>
+                  <MealIcon fontSize="small" sx={{ color: mealIconColor }} />
+                </span>
+              </Tooltip>
+            ) : (
+              <MealIcon fontSize="small" sx={{ color: mealIconColor }} />
+            )}
             <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
               {builderCopy.structure.meal_prefix} {index + 1}
             </Typography>
