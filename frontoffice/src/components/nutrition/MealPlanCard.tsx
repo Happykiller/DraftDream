@@ -102,6 +102,14 @@ export function MealPlanCard({
     () => alpha(theme.palette.primary.main, 0.16),
     [theme.palette.primary.main],
   );
+  const coachNotesBackground = React.useMemo(
+    () => alpha(theme.palette.info.main, 0.08),
+    [theme.palette.info.main],
+  );
+  const coachNotesBorder = React.useMemo(
+    () => alpha(theme.palette.info.main, 0.24),
+    [theme.palette.info.main],
+  );
 
   const macroUnits = React.useMemo(
     () => ({
@@ -441,14 +449,25 @@ export function MealPlanCard({
         {mealPlan.description ? (
           <>
             <Divider flexItem />
-            <Stack spacing={1}>
-              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                {t('nutrition-coach.list.sections.coach_notes')}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {mealPlan.description}
-              </Typography>
-            </Stack>
+            <Box
+              sx={{
+                borderRadius: 2,
+                backgroundColor: coachNotesBackground,
+                border: `1px solid ${coachNotesBorder}`,
+                px: { xs: 1.5, sm: 2 },
+                py: { xs: 1.5, sm: 2 },
+              }}
+            >
+              <Stack spacing={1}>
+                <Typography
+                  variant="subtitle2"
+                  sx={{ fontWeight: 600, color: theme.palette.info.main }}
+                >
+                  {t('nutrition-coach.list.sections.coach_notes')}
+                </Typography>
+                <Typography variant="body2">{mealPlan.description}</Typography>
+              </Stack>
+            </Box>
           </>
         ) : null}
 
