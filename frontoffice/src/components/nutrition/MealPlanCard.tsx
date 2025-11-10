@@ -3,7 +3,6 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Box,
-  Chip,
   Divider,
   IconButton,
   Paper,
@@ -15,7 +14,9 @@ import { alpha, useTheme } from '@mui/material/styles';
 import {
   ExpandMoreOutlined,
   HistoryOutlined,
+  ModeStandby as ModeStandbyIcon,
   PersonOutline,
+  Restaurant as RestaurantIcon,
 } from '@mui/icons-material';
 
 import type { MealPlan, MealPlanDaySnapshot, MealPlanMealSnapshot } from '@hooks/nutrition/useMealPlans';
@@ -293,26 +294,13 @@ export function MealPlanCard({
       >
         {/* General information */}
         {/* Header */}
-        <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={2}>
-          <Stack flex={1} minWidth={0} spacing={0.75}>
-            <Typography variant="h6" sx={{ fontWeight: 600 }} noWrap>
-              {mealPlan.label}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" noWrap>
-              {planAssignmentLabel}
-            </Typography>
-          </Stack>
-          <Stack direction="row" spacing={1} flexWrap="wrap" justifyContent="flex-end" useFlexGap>
-            <Chip
-              label={dayCountLabel}
-              size="small"
-              sx={(chipTheme) => ({
-                bgcolor: alpha(chipTheme.palette.primary.main, 0.12),
-                color: chipTheme.palette.primary.main,
-                fontWeight: 600,
-              })}
-            />
-          </Stack>
+        <Stack spacing={0.75}>
+          <Typography variant="h6" sx={{ fontWeight: 600 }} noWrap>
+            {mealPlan.label}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" noWrap>
+            {planAssignmentLabel}
+          </Typography>
         </Stack>
 
         {/* Nutrition goals */}
@@ -326,9 +314,12 @@ export function MealPlanCard({
           }}
         >
           <Stack spacing={1.5}>
-            <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>
-              {t('nutrition-coach.list.sections.nutrition_goals')}
-            </Typography>
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <ModeStandbyIcon fontSize="small" color="primary" />
+              <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>
+                {t('nutrition-coach.list.sections.nutrition_goals')}
+              </Typography>
+            </Stack>
             <Stack
               direction={{ xs: 'column', sm: 'row' }}
               spacing={{ xs: 1.25, sm: 3 }}
@@ -376,9 +367,12 @@ export function MealPlanCard({
 
         {/* Plan preview */}
         <Stack spacing={1.5}>
-          <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-            {t('nutrition-coach.list.sections.plan_overview')}
-          </Typography>
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <RestaurantIcon fontSize="small" color="primary" />
+            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+              {t('nutrition-coach.list.sections.plan_overview')}
+            </Typography>
+          </Stack>
           {mealPlan.days.length > 0 ? (
             <Stack spacing={1.5}>
               {mealPlan.days.map((day, dayIndex) => {
