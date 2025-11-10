@@ -12,6 +12,7 @@ import {
   type MealPlan,
   type MealPlanDaySnapshot,
   type MealPlanMealSnapshot,
+  type MealPlanMealTypeSnapshot,
   type MealPlanUserSummary,
 } from './useMealPlans';
 import { useMealDays, type MealDay } from './useMealDays';
