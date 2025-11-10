@@ -370,13 +370,16 @@ export function MealPlanCard({
       >
         {/* General information */}
         {/* Header */}
-        <Stack
-          direction={{ xs: 'column', sm: 'row' }}
-          alignItems={{ xs: 'flex-start', sm: 'flex-start' }}
-          justifyContent="space-between"
-          spacing={1.5}
-        >
-          <Stack direction="row" spacing={0.5}>
+        <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={1.5}>
+          <Stack spacing={0.75} flex={1} minWidth={0}>
+            <Typography variant="h6" sx={{ fontWeight: 600 }} noWrap>
+              {mealPlan.label}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" noWrap>
+              {planAssignmentLabel}
+            </Typography>
+          </Stack>
+          <Stack direction="row" spacing={0.5} sx={{ ml: 2 }}>
             {MEAL_PLAN_ACTIONS.map(({ key, color, Icon }) => {
               const label = t(`nutrition-coach.list.actions.${key}`);
               const isDisabled =
@@ -415,14 +418,6 @@ export function MealPlanCard({
                 </Tooltip>
               );
             })}
-          </Stack>
-          <Stack spacing={0.75} flex={1} minWidth={0}>
-            <Typography variant="h6" sx={{ fontWeight: 600 }} noWrap>
-              {mealPlan.label}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" noWrap>
-              {planAssignmentLabel}
-            </Typography>
           </Stack>
         </Stack>
 
