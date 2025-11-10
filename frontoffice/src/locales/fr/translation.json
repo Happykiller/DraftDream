@@ -628,6 +628,8 @@
         "coach_notes": "Notes du coach"
       },
       "calories_per_day": "{{label}} par jour",
+      "day_calories": "Bilan calorique : {{value}} {{unit}}",
+      "meal_calories": "{{value}} {{unit}}",
       "plan_length": "Durée du plan",
       "day_meal_count": "{{count}} repas",
       "day_meal_count_one": "{{count}} repas",

@@ -626,6 +626,8 @@
         "coach_notes": "Coach notes"
       },
       "calories_per_day": "Daily {{label}}",
+      "day_calories": "Calorie total: {{value}} {{unit}}",
+      "meal_calories": "{{value}} {{unit}}",
       "plan_length": "Plan length",
       "day_meal_count": "{{count}} meal",
       "day_meal_count_one": "{{count}} meal",

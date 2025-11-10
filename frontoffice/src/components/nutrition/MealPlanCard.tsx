@@ -21,6 +21,7 @@ import {
 } from '@mui/icons-material';
 
 import type { MealPlan, MealPlanDaySnapshot, MealPlanMealSnapshot } from '@hooks/nutrition/useMealPlans';
+import { useMealTypeIcon } from '@hooks/nutrition/useMealTypeIcon';
 
 interface MealPlanCardProps {
   mealPlan: MealPlan;
@@ -186,6 +187,22 @@ export function MealPlanCard({
   const overflowToggleLabel = isExpanded
     ? t('nutrition-coach.list.collapse_details')
     : t('nutrition-coach.list.expand_details');
+  const formatMealCalories = React.useCallback(
+    (calories: number) =>
+      t('nutrition-coach.list.meal_calories', {
+        value: numberFormatter.format(calories),
+        unit: macroUnits.calories,
+      }),
+    [macroUnits.calories, numberFormatter, t],
+  );
+  const formatDayCalories = React.useCallback(
+    (calories: number) =>
+      t('nutrition-coach.list.day_calories', {
+        value: numberFormatter.format(calories),
+        unit: macroUnits.calories,
+      }),
+    [macroUnits.calories, numberFormatter, t],
+  );
 
   const handleSelect = React.useCallback(() => {
     onSelect?.(mealPlan);
@@ -389,54 +406,57 @@ export function MealPlanCard({
                 const mealCountLabel = t('nutrition-coach.list.day_meal_count', {
                   count: day.meals.length,
                 });
+                const dayCalories = day.meals.reduce((total, meal) => total + meal.calories, 0);
+                const dayCalorieLabel = formatDayCalories(dayCalories);
 
                 return (
-                  <Stack key={getDayKey(day, dayIndex)} spacing={1}>
-                    <Stack direction="row" justifyContent="space-between" alignItems="baseline">
-                      <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                        {dayLabel}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {mealCountLabel}
-                      </Typography>
-                    </Stack>
-                    {day.meals.length > 0 ? (
+                  <Paper
+                    key={getDayKey(day, dayIndex)}
+                    variant="outlined"
+                    sx={{
+                      borderRadius: 2,
+                      px: { xs: 1.5, sm: 2 },
+                      py: { xs: 1.5, sm: 2 },
+                    }}
+                  >
+                    <Stack spacing={1.5}>
                       <Stack spacing={0.5}>
-                        {day.meals.slice(0, 3).map((meal, mealIndex) => (
-                          <Stack
-                            key={getMealKey(meal, mealIndex)}
-                            direction="row"
-                            justifyContent="space-between"
-                            alignItems="baseline"
-                            spacing={1}
-                          >
-                            <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                              {meal.label}
-                            </Typography>
-                            <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'right' }}>
-                              {t('nutrition-details.labels.meal_macros', {
-                                calories: numberFormatter.format(meal.calories),
-                                protein: numberFormatter.format(meal.proteinGrams),
-                                carbs: numberFormatter.format(meal.carbGrams),
-                                fats: numberFormatter.format(meal.fatGrams),
+                        <Stack direction="row" alignItems="baseline" justifyContent="space-between" spacing={1}>
+                          <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                            {dayLabel}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>
+                            {dayCalorieLabel}
+                          </Typography>
+                        </Stack>
+                        <Typography variant="caption" color="text.secondary">
+                          {mealCountLabel}
+                        </Typography>
+                      </Stack>
+                      {day.meals.length > 0 ? (
+                        <Stack spacing={1}>
+                          {day.meals.slice(0, 3).map((meal, mealIndex) => (
+                            <MealPlanMealRow
+                              key={getMealKey(meal, mealIndex)}
+                              meal={meal}
+                              formatMealCalories={formatMealCalories}
+                            />
+                          ))}
+                          {day.meals.length > 3 ? (
+                            <Typography variant="caption" color="text.secondary">
+                              {t('nutrition-coach.list.more_meals', {
+                                count: day.meals.length - 3,
                               })}
                             </Typography>
-                          </Stack>
-                        ))}
-                        {day.meals.length > 3 ? (
-                          <Typography variant="caption" color="text.secondary">
-                            {t('nutrition-coach.list.more_meals', {
-                              count: day.meals.length - 3,
-                            })}
-                          </Typography>
-                        ) : null}
-                      </Stack>
-                    ) : (
-                      <Typography variant="body2" color="text.secondary">
-                        {t('nutrition-coach.list.no_meals')}
-                      </Typography>
-                    )}
-                  </Stack>
+                          ) : null}
+                        </Stack>
+                      ) : (
+                        <Typography variant="body2" color="text.secondary">
+                          {t('nutrition-coach.list.no_meals')}
+                        </Typography>
+                      )}
+                    </Stack>
+                  </Paper>
                 );
               })}
             </Stack>
@@ -532,3 +552,33 @@ export function MealPlanCard({
     </Paper>
   );
 }
+
+interface MealPlanMealRowProps {
+  meal: MealPlanMealSnapshot;
+  formatMealCalories: (calories: number) => string;
+}
+
+const MealPlanMealRow = React.memo(function MealPlanMealRow({
+  meal,
+  formatMealCalories,
+}: MealPlanMealRowProps): React.JSX.Element {
+  const MealIcon = useMealTypeIcon(meal.type?.icon);
+
+  return (
+    <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1.5}>
+      <Stack direction="row" spacing={1} alignItems="center" sx={{ flexGrow: 1, minWidth: 0 }}>
+        <MealIcon fontSize="small" color="action" />
+        <Typography variant="body2" sx={{ fontWeight: 500 }} noWrap>
+          {meal.label}
+        </Typography>
+      </Stack>
+      <Typography
+        variant="caption"
+        color="text.secondary"
+        sx={{ ml: 1, whiteSpace: 'nowrap', fontWeight: 600 }}
+      >
+        {formatMealCalories(meal.calories)}
+      </Typography>
+    </Stack>
+  );
+});
