@@ -120,7 +120,6 @@ function normalizeMealForSubmission(meal: MealPlanBuilderMeal): MealPlanMealSnap
             locale: meal.type.locale ?? undefined,
             label: meal.type.label,
             visibility: meal.type.visibility ?? undefined,
-            icon: meal.type.icon ?? undefined,
           }
         : undefined,
   };
