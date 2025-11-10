@@ -206,7 +206,7 @@ export const MealPlanBuilderPanelDraftDay = React.memo(function MealPlanBuilderP
   }, [commitDescription, isEditingDescription]);
 
   const handleDescriptionKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    (event: React.KeyboardEvent<HTMLElement>) => {
       if (event.key === 'Escape') {
         event.preventDefault();
         cancelDescriptionEdition();

@@ -854,7 +854,7 @@ export function MealPlanBuilderPanel({
 
                               return (
                                 <MealPlanBuilderPanelLibraryMeal
-                                  key={meal.id ?? meal.uiId}
+                                  key={meal.id}
                                   meal={meal}
                                   builderCopy={builderCopy}
                                   disableAdd={days.length === 0}

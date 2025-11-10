@@ -11,9 +11,15 @@ import {
 
 import type {
   MealPlanBuilderDay,
-  MealPlanBuilderMeal,
   MealPlanBuilderNutritionSummary,
 } from './mealPlanBuilderTypes';
+
+type MealSummaryLike = {
+  calories: number | null | undefined;
+  proteinGrams: number | null | undefined;
+  carbGrams: number | null | undefined;
+  fatGrams: number | null | undefined;
+};
 
 const MEAL_ICON_COMPONENTS: readonly SvgIconComponent[] = [
   BrunchDining,
@@ -24,8 +30,13 @@ const MEAL_ICON_COMPONENTS: readonly SvgIconComponent[] = [
   SoupKitchen,
 ];
 
-export function formatMealSummary(meal: MealPlanBuilderMeal): string {
-  return `${meal.calories} cal • ${meal.proteinGrams}g P • ${meal.carbGrams}g G • ${meal.fatGrams}g L`;
+export function formatMealSummary(meal: MealSummaryLike): string {
+  const calories = Number(meal.calories ?? 0);
+  const protein = Number(meal.proteinGrams ?? 0);
+  const carbs = Number(meal.carbGrams ?? 0);
+  const fats = Number(meal.fatGrams ?? 0);
+
+  return `${calories} cal • ${protein}g P • ${carbs}g G • ${fats}g L`;
 }
 
 function computeMealIconIndex(reference: string): number {

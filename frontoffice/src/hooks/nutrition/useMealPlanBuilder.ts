@@ -12,6 +12,7 @@ import {
   type MealPlan,
   type MealPlanDaySnapshot,
   type MealPlanMealSnapshot,
+  type MealPlanUserSummary,
 } from './useMealPlans';
 import { useMealDays, type MealDay } from './useMealDays';
 import { useMeals, type Meal } from './useMeals';
@@ -85,7 +86,67 @@ function generateUiId() {
   return `ui-${Math.random().toString(36).slice(2, 10)}-${Date.now().toString(36)}`;
 }
 
+type MealTypeFallback = {
+  label: string;
+  id?: string | null;
+  templateMealTypeId?: string | null;
+  slug?: string | null;
+  locale?: string | null;
+  visibility?: string | null;
+  icon?: string | null;
+};
+
+function coerceMealTypeSnapshot(
+  input: Partial<MealPlanMealTypeSnapshot> | null | undefined,
+  fallback: MealTypeFallback,
+): MealPlanMealTypeSnapshot {
+  const id = input?.id ?? fallback.id ?? undefined;
+  const templateMealTypeId =
+    input?.templateMealTypeId ?? fallback.templateMealTypeId ?? id;
+
+  return {
+    id,
+    templateMealTypeId,
+    slug: input?.slug ?? fallback.slug ?? undefined,
+    locale: input?.locale ?? fallback.locale ?? undefined,
+    label: input?.label ?? fallback.label,
+    visibility: input?.visibility ?? fallback.visibility ?? undefined,
+    icon: input?.icon ?? fallback.icon ?? undefined,
+  };
+}
+
+function mapMealPlanAthleteToUser(summary: MealPlanUserSummary | null | undefined): User | null {
+  if (!summary) {
+    return null;
+  }
+
+  return {
+    id: summary.id,
+    type: UserType.Athlete,
+    first_name: summary.first_name ?? '',
+    last_name: summary.last_name ?? '',
+    email: summary.email,
+    phone: null,
+    address: null,
+    company: null,
+    createdAt: null,
+    updatedAt: null,
+    is_active: true,
+    createdBy: '',
+  };
+}
+
 function cloneMealSnapshot(meal: MealPlanMealSnapshot): MealPlanBuilderMeal {
+  const type = coerceMealTypeSnapshot(meal.type, {
+    label: meal.type.label ?? meal.label,
+    id: meal.type.id ?? undefined,
+    templateMealTypeId: meal.type.templateMealTypeId ?? undefined,
+    slug: meal.type.slug ?? undefined,
+    locale: meal.type.locale ?? meal.locale ?? undefined,
+    visibility: meal.type.visibility ?? undefined,
+    icon: meal.type.icon ?? undefined,
+  });
+
   return {
     ...meal,
     uiId: generateUiId(),
@@ -95,11 +156,21 @@ function cloneMealSnapshot(meal: MealPlanMealSnapshot): MealPlanBuilderMeal {
     proteinGrams: meal.proteinGrams ?? 0,
     carbGrams: meal.carbGrams ?? 0,
     fatGrams: meal.fatGrams ?? 0,
-    type: meal.type ? { ...meal.type } : undefined,
+    type,
   };
 }
 
 function normalizeMealForSubmission(meal: MealPlanBuilderMeal): MealPlanMealSnapshot {
+  const type = coerceMealTypeSnapshot(meal.type ?? null, {
+    label: meal.type?.label ?? meal.label,
+    id: meal.type?.id ?? undefined,
+    templateMealTypeId: meal.type?.templateMealTypeId ?? undefined,
+    slug: meal.type?.slug ?? undefined,
+    locale: meal.type?.locale ?? meal.locale ?? undefined,
+    visibility: meal.type?.visibility ?? undefined,
+    icon: meal.type?.icon ?? undefined,
+  });
+
   return {
     id: meal.id ?? undefined,
     templateMealId: meal.templateMealId ?? undefined,
@@ -112,16 +183,7 @@ function normalizeMealForSubmission(meal: MealPlanBuilderMeal): MealPlanMealSnap
     proteinGrams: Number(meal.proteinGrams ?? 0),
     carbGrams: Number(meal.carbGrams ?? 0),
     fatGrams: Number(meal.fatGrams ?? 0),
-    type: meal.type
-        ? {
-            id: meal.type.id ?? undefined,
-            templateMealTypeId: meal.type.templateMealTypeId ?? undefined,
-            slug: meal.type.slug ?? undefined,
-            locale: meal.type.locale ?? undefined,
-            label: meal.type.label,
-            visibility: meal.type.visibility ?? undefined,
-          }
-        : undefined,
+    type,
   };
 }
 
@@ -135,6 +197,32 @@ function cloneDaySnapshot(day: MealPlanDaySnapshot): MealPlanBuilderDay {
 }
 
 function createMealFromTemplate(meal: Meal): MealPlanBuilderMeal {
+  const type = coerceMealTypeSnapshot(
+    meal.type
+      ? {
+          id: meal.type.id ?? undefined,
+          templateMealTypeId: meal.type.id ?? undefined,
+          slug: meal.type.slug ?? undefined,
+          locale: meal.type.locale ?? undefined,
+          label: meal.type.label,
+          visibility: meal.type.visibility ?? undefined,
+          icon: meal.type.icon ?? undefined,
+        }
+      : {
+          id: meal.typeId ?? undefined,
+          templateMealTypeId: meal.typeId ?? undefined,
+        },
+    {
+      label: meal.type?.label ?? meal.label,
+      id: meal.type?.id ?? meal.typeId ?? undefined,
+      templateMealTypeId: meal.type?.id ?? meal.typeId ?? undefined,
+      slug: meal.type?.slug ?? undefined,
+      locale: meal.type?.locale ?? meal.locale ?? undefined,
+      visibility: meal.type?.visibility ?? meal.visibility ?? undefined,
+      icon: meal.type?.icon ?? undefined,
+    },
+  );
+
   const snapshot: MealPlanMealSnapshot = {
     id: undefined,
     templateMealId: meal.id,
@@ -147,17 +235,7 @@ function createMealFromTemplate(meal: Meal): MealPlanBuilderMeal {
     proteinGrams: meal.proteinGrams,
     carbGrams: meal.carbGrams,
     fatGrams: meal.fatGrams,
-    type: meal.type
-        ? {
-            id: meal.type.id,
-            templateMealTypeId: meal.type.templateMealTypeId,
-            slug: meal.type.slug,
-            locale: meal.type.locale,
-            label: meal.type.label,
-            visibility: meal.type.visibility ?? undefined,
-            icon: meal.type.icon ?? undefined,
-          }
-        : undefined,
+    type,
   };
 
   return {
@@ -183,7 +261,7 @@ export function useMealPlanBuilder(
   }));
 
   const [selectedAthlete, setSelectedAthlete] = React.useState<User | null>(
-    basePlan?.athlete ?? null,
+    () => mapMealPlanAthleteToUser(basePlan?.athlete),
   );
   const [days, setDays] = React.useState<MealPlanBuilderDay[]>(() =>
     basePlan?.days?.length ? basePlan.days.map(cloneDaySnapshot) : [],
@@ -250,7 +328,7 @@ export function useMealPlanBuilder(
           ? basePlan.description
           : builderCopy.structure.description_placeholder,
     });
-    setSelectedAthlete(basePlan.athlete ?? null);
+    setSelectedAthlete(mapMealPlanAthleteToUser(basePlan.athlete));
     setDays(basePlan.days.map(cloneDaySnapshot));
   }, [basePlan, builderCopy.structure.description_placeholder]);
 
@@ -283,30 +361,43 @@ export function useMealPlanBuilder(
       locale: template.locale,
       label: template.label,
       description: template.description ?? undefined,
-      meals: (template.meals ?? []).map((meal) => ({
-        id: meal.id,
-        templateMealId: meal.id,
-        slug: meal.slug,
-        locale: meal.locale,
-        label: meal.label,
-        description: meal.description ?? undefined,
-        foods: meal.foods ?? '',
-        calories: meal.calories ?? 0,
-        proteinGrams: meal.proteinGrams ?? 0,
-        carbGrams: meal.carbGrams ?? 0,
-        fatGrams: meal.fatGrams ?? 0,
-        type: meal.type
-          ? {
-              id: meal.type.id ?? undefined,
-              templateMealTypeId: meal.type.templateMealTypeId ?? undefined,
-              slug: meal.type.slug ?? undefined,
-              locale: meal.type.locale ?? undefined,
-              label: meal.type.label,
-              visibility: meal.type.visibility ?? undefined,
-              icon: meal.type.icon ?? undefined,
-            }
-          : undefined,
-      })),
+      meals: (template.meals ?? []).map((meal) => {
+        const type = coerceMealTypeSnapshot(
+          meal.type
+            ? {
+                id: meal.type.id ?? undefined,
+                templateMealTypeId: meal.type.id ?? undefined,
+                slug: meal.type.slug ?? undefined,
+                locale: meal.type.locale ?? undefined,
+                label: meal.type.label,
+                visibility: meal.type.visibility ?? undefined,
+              }
+            : undefined,
+          {
+            label: meal.type?.label ?? meal.label,
+            id: meal.type?.id ?? undefined,
+            templateMealTypeId: meal.type?.id ?? undefined,
+            slug: meal.type?.slug ?? undefined,
+            locale: meal.type?.locale ?? meal.locale ?? undefined,
+            visibility: meal.type?.visibility ?? meal.visibility ?? undefined,
+          },
+        );
+
+        return {
+          id: meal.id,
+          templateMealId: meal.id,
+          slug: meal.slug,
+          locale: meal.locale,
+          label: meal.label,
+          description: undefined,
+          foods: meal.foods ?? '',
+          calories: meal.calories ?? 0,
+          proteinGrams: meal.proteinGrams ?? 0,
+          carbGrams: meal.carbGrams ?? 0,
+          fatGrams: meal.fatGrams ?? 0,
+          type,
+        };
+      }),
     };
 
     const cloned = cloneDaySnapshot(daySnapshot);

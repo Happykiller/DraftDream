@@ -1481,9 +1481,11 @@ export function useProgramBuilder(
         const resolveLabeledItems = (
           primary:
             | ({ id?: string | null; label?: string | null } | null | undefined)[]
+            | null
             | undefined,
           secondary:
             | ({ id?: string | null; label?: string | null } | null | undefined)[]
+            | null
             | undefined,
         ) => {
           const dedup = new Map<string, string>();

@@ -222,10 +222,13 @@ export const router = createBrowserRouter([
       {
         path: 'view/:mealPlanId',
         lazy: async () => {
-          const mod = await import('@src/pages/nutrition/NutritionPlanDetails');
+          const [componentModule, loaderModule] = await Promise.all([
+            import('@src/pages/nutrition/NutritionPlanDetails'),
+            import('@src/pages/nutrition/NutritionPlanDetails.loader'),
+          ]);
           return {
-            Component: withTitle(mod.NutritionPlanDetails, 'nutrition-details.title'),
-            loader: mod.nutritionPlanDetailsLoader,
+            Component: withTitle(componentModule.NutritionPlanDetails, 'nutrition-details.title'),
+            loader: loaderModule.nutritionPlanDetailsLoader,
           };
         },
       },
