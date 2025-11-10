@@ -2,44 +2,13 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Button, Stack } from '@mui/material';
-import { type LoaderFunctionArgs, useLoaderData, useNavigate, useParams } from 'react-router-dom';
+import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 
 import { ProgramBuilderPanel, type BuilderCopy } from '@src/components/programs/ProgramBuilderPanel';
 
 import { useProgram } from '@src/hooks/programs/useProgram';
-import { type Program } from '@src/hooks/programs/usePrograms';
-import { programGet } from '@src/services/graphql/programs.service';
 
-export type ProgramCoachEditLoaderStatus = 'success' | 'not_found' | 'error';
-
-export interface ProgramCoachEditLoaderData {
-  program: Program | null;
-  status: ProgramCoachEditLoaderStatus;
-}
-
-/** Ensures the target program is loaded before rendering the edit builder. */
-export async function programCoachEditLoader({
-  params,
-}: LoaderFunctionArgs): Promise<ProgramCoachEditLoaderData> {
-  const programId = params.programId;
-
-  if (!programId) {
-    return { program: null, status: 'not_found' };
-  }
-
-  try {
-    const program = await programGet({ programId });
-
-    if (!program) {
-      return { program: null, status: 'not_found' };
-    }
-
-    return { program, status: 'success' };
-  } catch (error) {
-    console.error('[ProgramCoachEditLoader] Failed to fetch program', error);
-    return { program: null, status: 'error' };
-  }
-}
+import type { ProgramCoachEditLoaderData } from './ProgramCoachEdit.loader';
 
 /** Program editing flow dedicated to coaches. */
 export function ProgramCoachEdit(): React.JSX.Element {

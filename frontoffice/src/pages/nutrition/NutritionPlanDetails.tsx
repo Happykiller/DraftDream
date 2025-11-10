@@ -11,7 +11,6 @@ import {
   Typography,
 } from '@mui/material';
 import {
-  type LoaderFunctionArgs,
   useLoaderData,
   useLocation,
   useNavigate,
@@ -19,36 +18,10 @@ import {
 } from 'react-router-dom';
 
 import { useMealPlan } from '@hooks/nutrition/useMealPlan';
-import type { MealPlan } from '@hooks/nutrition/useMealPlans';
-import { mealPlanGet } from '@services/graphql/mealPlans.service';
 
-type LoaderStatus = 'success' | 'not_found' | 'error';
-
-export interface NutritionPlanDetailsLoaderResult {
-  mealPlan: MealPlan | null;
-  status: LoaderStatus;
-}
-
-export async function nutritionPlanDetailsLoader({
-  params,
-}: LoaderFunctionArgs): Promise<NutritionPlanDetailsLoaderResult> {
-  const mealPlanId = params.mealPlanId;
-  if (!mealPlanId) {
-    return { mealPlan: null, status: 'not_found' };
-  }
-
-  try {
-    const mealPlan = await mealPlanGet({ mealPlanId });
-    if (!mealPlan) {
-      return { mealPlan: null, status: 'not_found' };
-    }
-
-    return { mealPlan, status: 'success' };
-  } catch (caught) {
-    console.error('[nutritionPlanDetailsLoader] Failed to fetch meal plan', caught);
-    return { mealPlan: null, status: 'error' };
-  }
-}
+import type {
+  NutritionPlanDetailsLoaderResult,
+} from './NutritionPlanDetails.loader';
 
 /** Detailed view of a nutrition meal plan including day and meal breakdowns. */
 export function NutritionPlanDetails(): React.JSX.Element {

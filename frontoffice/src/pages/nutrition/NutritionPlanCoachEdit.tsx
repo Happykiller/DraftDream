@@ -8,37 +8,14 @@ import { MealPlanBuilderPanel } from '@components/nutrition/MealPlanBuilderPanel
 
 import type { MealPlanBuilderCopy } from '@components/nutrition/mealPlanBuilderTypes';
 import type { MealPlan } from '@hooks/nutrition/useMealPlans';
-import { mealPlanGet } from '@services/graphql/mealPlans.service';
-
-interface LoaderResult {
-  mealPlan: MealPlan | null;
-  error: string | null;
-}
-
-export async function nutritionPlanCoachEditLoader({ params }: { params: Record<string, string | undefined> }) {
-  const mealPlanId = params.mealPlanId;
-  if (!mealPlanId) {
-    return { mealPlan: null, error: 'not_found' } satisfies LoaderResult;
-  }
-
-  try {
-    const mealPlan = await mealPlanGet({ mealPlanId });
-    if (!mealPlan) {
-      return { mealPlan: null, error: 'not_found' } satisfies LoaderResult;
-    }
-    return { mealPlan, error: null } satisfies LoaderResult;
-  } catch (caught: unknown) {
-    console.error('[nutritionPlanCoachEditLoader] Failed to load meal plan', caught);
-    return { mealPlan: null, error: 'load_failed' } satisfies LoaderResult;
-  }
-}
+import type { NutritionPlanCoachEditLoaderResult } from './NutritionPlanCoachEdit.loader';
 
 /** Nutrition plan edition flow for coaches. */
 export function NutritionPlanCoachEdit(): React.JSX.Element {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { mealPlanId } = useParams<{ mealPlanId: string }>();
-  const loaderData = useRouteLoaderData('nutrition-plan-edit') as LoaderResult | undefined;
+  const loaderData = useRouteLoaderData('nutrition-plan-edit') as NutritionPlanCoachEditLoaderResult | undefined;
 
   const builderCopy = React.useMemo(
     () =>

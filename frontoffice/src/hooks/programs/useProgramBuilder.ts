@@ -1650,6 +1650,7 @@ export function useProgramBuilder(
     return undefined;
   }, [
     program,
+    categoryLabelById,
     nextId,
     normalizeExerciseLevel,
     getExerciseById,

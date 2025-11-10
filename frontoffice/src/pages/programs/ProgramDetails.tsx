@@ -2,52 +2,28 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Visibility } from '@mui/icons-material';
-import { Alert, Box, Button, Card, CardContent, Divider, Stack, Typography } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Divider,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
-import { type LoaderFunctionArgs, useLoaderData, useNavigate, useParams } from 'react-router-dom';
+import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 
 import { ProgramViewContent } from '@src/components/programs/ProgramViewContent';
 import { formatProgramDate } from '@src/components/programs/programFormatting';
 import { getProgramAthleteLabel, type ProgramViewTab } from '@src/components/programs/programViewUtils';
 
 import { useProgram } from '@src/hooks/programs/useProgram';
-import { type Program } from '@src/hooks/programs/usePrograms';
-import { programGet } from '@src/services/graphql/programs.service';
 import { UserType } from '@src/commons/enums';
 import { session } from '@stores/session';
 
-export type ProgramDetailsLoaderStatus = 'success' | 'not_found' | 'error';
-
-export interface ProgramDetailsLoaderData {
-  program: Program | null;
-  status: ProgramDetailsLoaderStatus;
-}
-
-/**
- * Loader ensuring program details are fetched before rendering the detail page.
- */
-export async function programDetailsLoader({
-  params,
-}: LoaderFunctionArgs): Promise<ProgramDetailsLoaderData> {
-  const programId = params.programId;
-
-  if (!programId) {
-    return { program: null, status: 'not_found' };
-  }
-
-  try {
-    const program = await programGet({ programId });
-
-    if (!program) {
-      return { program: null, status: 'not_found' };
-    }
-
-    return { program, status: 'success' };
-  } catch (error) {
-    console.error('[ProgramDetailsLoader] Failed to fetch program', error);
-    return { program: null, status: 'error' };
-  }
-}
+import type { ProgramDetailsLoaderData } from './ProgramDetails.loader';
 
 type ProgramDetailsCopy = {
   back_to_list: string;

@@ -88,20 +88,32 @@ export const router = createBrowserRouter([
       {
         path: 'view/:programId',
         lazy: async () => {
-          const mod = await import('@src/pages/programs/ProgramDetails');
+          const [componentModule, loaderModule] = await Promise.all([
+            import('@src/pages/programs/ProgramDetails'),
+            import('@src/pages/programs/ProgramDetails.loader'),
+          ]);
           return {
-            Component: withTitle(mod.ProgramDetails, 'programs-details.title'),
-            loader: mod.programDetailsLoader,
+            Component: withTitle(
+              componentModule.ProgramDetails,
+              'programs-details.title',
+            ),
+            loader: loaderModule.programDetailsLoader,
           };
         },
       },
       {
         path: 'edit/:programId',
         lazy: async () => {
-          const mod = await import('@src/pages/programs/ProgramCoachEdit');
+          const [componentModule, loaderModule] = await Promise.all([
+            import('@src/pages/programs/ProgramCoachEdit'),
+            import('@src/pages/programs/ProgramCoachEdit.loader'),
+          ]);
           return {
-            Component: withTitle(mod.ProgramCoachEdit, 'programs-coatch.builder.edit_title'),
-            loader: mod.programCoachEditLoader,
+            Component: withTitle(
+              componentModule.ProgramCoachEdit,
+              'programs-coatch.builder.edit_title',
+            ),
+            loader: loaderModule.programCoachEditLoader,
           };
         },
       },
@@ -123,10 +135,16 @@ export const router = createBrowserRouter([
       {
         path: 'view/:programId',
         lazy: async () => {
-          const mod = await import('@src/pages/programs/ProgramDetails');
+          const [componentModule, loaderModule] = await Promise.all([
+            import('@src/pages/programs/ProgramDetails'),
+            import('@src/pages/programs/ProgramDetails.loader'),
+          ]);
           return {
-            Component: withTitle(mod.ProgramDetails, 'programs-details.title'),
-            loader: mod.programDetailsLoader,
+            Component: withTitle(
+              componentModule.ProgramDetails,
+              'programs-details.title',
+            ),
+            loader: loaderModule.programDetailsLoader,
           };
         },
       },
@@ -159,20 +177,29 @@ export const router = createBrowserRouter([
         id: 'nutrition-plan-edit',
         path: 'edit/:mealPlanId',
         lazy: async () => {
-          const mod = await import('@src/pages/nutrition/NutritionPlanCoachEdit');
+          const [componentModule, loaderModule] = await Promise.all([
+            import('@src/pages/nutrition/NutritionPlanCoachEdit'),
+            import('@src/pages/nutrition/NutritionPlanCoachEdit.loader'),
+          ]);
           return {
-            Component: withTitle(mod.NutritionPlanCoachEdit, 'nutrition-coach.builder.edit_title'),
-            loader: mod.nutritionPlanCoachEditLoader,
+            Component: withTitle(
+              componentModule.NutritionPlanCoachEdit,
+              'nutrition-coach.builder.edit_title',
+            ),
+            loader: loaderModule.nutritionPlanCoachEditLoader,
           };
         },
       },
       {
         path: 'view/:mealPlanId',
         lazy: async () => {
-          const mod = await import('@src/pages/nutrition/NutritionPlanDetails');
+          const [componentModule, loaderModule] = await Promise.all([
+            import('@src/pages/nutrition/NutritionPlanDetails'),
+            import('@src/pages/nutrition/NutritionPlanDetails.loader'),
+          ]);
           return {
-            Component: withTitle(mod.NutritionPlanDetails, 'nutrition-details.title'),
-            loader: mod.nutritionPlanDetailsLoader,
+            Component: withTitle(componentModule.NutritionPlanDetails, 'nutrition-details.title'),
+            loader: loaderModule.nutritionPlanDetailsLoader,
           };
         },
       },

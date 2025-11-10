@@ -355,14 +355,14 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
       return;
     }
     onMoveUp();
-  }, [canMoveUp, index, onMoveUp]);
+  }, [canMoveUp, onMoveUp]);
 
   const handleMoveDownClick = React.useCallback(() => {
     if (!canMoveDown) {
       return;
     }
     onMoveDown();
-  }, [canMoveDown, index, onMoveDown]);
+  }, [canMoveDown, onMoveDown]);
 
   const handleMoveExerciseUp = React.useCallback(
     (exerciseId: string, position: number) => {
