@@ -40,7 +40,7 @@ export function NutritionPlansCoach(): React.JSX.Element {
     returnObjects: true,
   }) as MacroCopy;
 
-  const { items: mealPlans, loading, reload } = useMealPlans({
+  const { items: mealPlans, loading, reload, remove } = useMealPlans({
     page: 1,
     limit: 12,
     q: '',
@@ -56,6 +56,13 @@ export function NutritionPlansCoach(): React.JSX.Element {
   const handleRefresh = React.useCallback(() => {
     void reload();
   }, [reload]);
+
+  const handleDeleteMealPlan = React.useCallback(
+    async (plan: MealPlan) => {
+      await remove(plan.id);
+    },
+    [remove],
+  );
 
   const handleCreate = React.useCallback(() => {
     navigate('/nutrition-coach/create');
@@ -106,6 +113,7 @@ export function NutritionPlansCoach(): React.JSX.Element {
         placeholderSubtitle={emptyState.description}
         placeholderHelper={emptyState.helper}
         onView={handleOpenMealPlan}
+        onDelete={handleDeleteMealPlan}
         dayCountFormatter={(count) =>
           t('nutrition-coach.list.day_count', {
             count,
