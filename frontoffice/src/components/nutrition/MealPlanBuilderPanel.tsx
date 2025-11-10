@@ -181,6 +181,32 @@ export function MealPlanBuilderPanel({
   const mealIconColor = alpha(theme.palette.secondary.main, 0.5);
   const warningMain = theme.palette.warning.main;
   const currentUserId = session((state) => state.id);
+  const totalMeals = React.useMemo(
+    () =>
+      days.reduce((accumulator, day) => {
+        return accumulator + day.meals.length;
+      }, 0),
+    [days],
+  );
+  const totalMealsLabel = React.useMemo(() => {
+    const summaryCopy = builderCopy.summary;
+    if (!summaryCopy) {
+      return null;
+    }
+
+    const template =
+      totalMeals === 1
+        ? summaryCopy.total_meals_one ?? summaryCopy.total_meals
+        : totalMeals > 1
+          ? summaryCopy.total_meals_other ?? summaryCopy.total_meals
+          : summaryCopy.total_meals;
+
+    if (!template) {
+      return null;
+    }
+
+    return template.replace('{{count}}', String(totalMeals));
+  }, [builderCopy, totalMeals]);
 
   const interactiveSurfaceSx = React.useMemo(
     () => ({
@@ -730,6 +756,11 @@ export function MealPlanBuilderPanel({
                   <Typography variant="body2" color="text.secondary">
                     {panelSubtitle}
                   </Typography>
+                  {totalMealsLabel ? (
+                    <Typography variant="caption" color="text.secondary">
+                      {totalMealsLabel}
+                    </Typography>
+                  ) : null}
                 </Stack>
               </Stack>
             </Box>

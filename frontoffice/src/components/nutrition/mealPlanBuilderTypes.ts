@@ -24,6 +24,11 @@ export interface MealPlanBuilderCopy {
   edit_title?: string;
   subtitle: string;
   edit_subtitle?: string;
+  summary?: {
+    total_meals: string;
+    total_meals_one?: string;
+    total_meals_other?: string;
+  };
   config: {
     title: string;
     client_label: string;

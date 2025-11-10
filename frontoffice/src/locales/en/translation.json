@@ -521,6 +521,10 @@
       "edit_title": "Edit nutrition plan",
       "subtitle": "Assemble meal days and meals to craft a tailored plan.",
       "edit_subtitle": "Adjust existing meals and macros for your athlete.",
+      "summary": {
+        "total_meals": "{{count}} meals in total",
+        "total_meals_one": "{{count}} meal in total"
+      },
       "config": {
         "title": "Plan configuration",
         "client_label": "Athlete",

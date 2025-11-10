@@ -523,6 +523,9 @@
       "edit_title": "Modifier le plan nutritionnel",
       "subtitle": "Assemblez des journées types et des repas pour composer un plan adapté.",
       "edit_subtitle": "Ajustez les repas existants et les apports pour votre athlète.",
+      "summary": {
+        "total_meals": "{{count}} repas au total"
+      },
       "config": {
         "title": "Configuration du plan",
         "client_label": "Athlète",
