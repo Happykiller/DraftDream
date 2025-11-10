@@ -15,6 +15,9 @@ export interface MealPlanListProps {
   placeholderHelper?: string;
   actionSlot?: React.ReactNode;
   onSelect?: (mealPlan: MealPlan) => void;
+  onView?: (mealPlan: MealPlan) => void;
+  onEdit?: (mealPlan: MealPlan) => void;
+  onDelete?: (mealPlan: MealPlan) => void;
   dayCountFormatter: (dayCount: number) => string;
   macroLabels: {
     calories: string;
@@ -35,6 +38,9 @@ export function MealPlanList({
   placeholderHelper,
   actionSlot,
   onSelect,
+  onView,
+  onEdit,
+  onDelete,
   dayCountFormatter,
   macroLabels,
 }: MealPlanListProps): React.JSX.Element {
@@ -63,6 +69,9 @@ export function MealPlanList({
                 dayCountFormatter={dayCountFormatter}
                 macroLabels={macroLabels}
                 onSelect={onSelect}
+                onView={onView}
+                onEdit={onEdit}
+                onDelete={onDelete}
               />
             </Grid>
           ))}

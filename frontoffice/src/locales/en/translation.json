@@ -616,6 +616,11 @@
       "day_count_other": "{{count}} days",
       "plan_for": "Plan for {{name}}",
       "plan_unassigned": "Unassigned plan",
+      "actions": {
+        "view": "View plan",
+        "edit": "Edit plan",
+        "delete": "Delete plan"
+      },
       "status": {
         "assigned": "Active",
         "unassigned": "Needs assignment"

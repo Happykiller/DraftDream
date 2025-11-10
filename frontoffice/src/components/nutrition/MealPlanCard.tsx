@@ -12,12 +12,15 @@ import {
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import {
+  DeleteOutline,
+  EditOutlined,
   EditSquare as EditSquareIcon,
   ExpandMoreOutlined,
   HistoryOutlined,
   ModeStandby as ModeStandbyIcon,
   PersonOutline,
   Restaurant as RestaurantIcon,
+  VisibilityOutlined,
 } from '@mui/icons-material';
 
 import type { MealPlan, MealPlanDaySnapshot, MealPlanMealSnapshot } from '@hooks/nutrition/useMealPlans';
@@ -33,7 +36,24 @@ interface MealPlanCardProps {
     fats: string;
   };
   onSelect?: (mealPlan: MealPlan) => void;
+  onView?: (mealPlan: MealPlan) => void;
+  onEdit?: (mealPlan: MealPlan) => void;
+  onDelete?: (mealPlan: MealPlan) => void;
 }
+
+type MealPlanActionKey = 'view' | 'edit' | 'delete';
+
+type MealPlanAction = {
+  key: MealPlanActionKey;
+  color: 'primary' | 'success' | 'error';
+  Icon: typeof VisibilityOutlined;
+};
+
+const MEAL_PLAN_ACTIONS: MealPlanAction[] = [
+  { key: 'view', color: 'primary', Icon: VisibilityOutlined },
+  { key: 'edit', color: 'success', Icon: EditOutlined },
+  { key: 'delete', color: 'error', Icon: DeleteOutline },
+];
 
 const COLLAPSED_CONTENT_MAX_HEIGHT = 480;
 
@@ -81,6 +101,9 @@ export function MealPlanCard({
   dayCountFormatter,
   macroLabels,
   onSelect,
+  onView,
+  onEdit,
+  onDelete,
 }: MealPlanCardProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
@@ -226,6 +249,33 @@ export function MealPlanCard({
     setIsExpanded((previous) => !previous);
   }, []);
 
+  const handleActionClick = React.useCallback(
+    (actionKey: MealPlanActionKey) => {
+      if (actionKey === 'view') {
+        if (onView) {
+          onView(mealPlan);
+          return;
+        }
+
+        if (onSelect) {
+          onSelect(mealPlan);
+        }
+
+        return;
+      }
+
+      if (actionKey === 'edit') {
+        onEdit?.(mealPlan);
+        return;
+      }
+
+      if (actionKey === 'delete') {
+        onDelete?.(mealPlan);
+      }
+    },
+    [mealPlan, onDelete, onEdit, onSelect, onView],
+  );
+
   React.useEffect(() => {
     const element = contentRef.current;
 
@@ -320,13 +370,60 @@ export function MealPlanCard({
       >
         {/* General information */}
         {/* Header */}
-        <Stack spacing={0.75}>
-          <Typography variant="h6" sx={{ fontWeight: 600 }} noWrap>
-            {mealPlan.label}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" noWrap>
-            {planAssignmentLabel}
-          </Typography>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          alignItems={{ xs: 'flex-start', sm: 'flex-start' }}
+          justifyContent="space-between"
+          spacing={1.5}
+        >
+          <Stack direction="row" spacing={0.5}>
+            {MEAL_PLAN_ACTIONS.map(({ key, color, Icon }) => {
+              const label = t(`nutrition-coach.list.actions.${key}`);
+              const isDisabled =
+                (key === 'view' && !onView && !onSelect) ||
+                (key === 'edit' && !onEdit) ||
+                (key === 'delete' && !onDelete);
+
+              return (
+                <Tooltip key={key} title={label}>
+                  <span>
+                    <IconButton
+                      size="small"
+                      aria-label={label}
+                      disabled={Boolean(isDisabled)}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleActionClick(key);
+                      }}
+                      sx={(innerTheme) => ({
+                        color: innerTheme.palette.text.secondary,
+                        transition: innerTheme.transitions.create(
+                          ['color', 'background-color'],
+                          {
+                            duration: innerTheme.transitions.duration.shorter,
+                          },
+                        ),
+                        '&:hover': {
+                          bgcolor: alpha(innerTheme.palette[color].main, 0.12),
+                          color: innerTheme.palette[color].main,
+                        },
+                      })}
+                    >
+                      <Icon fontSize="small" />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+              );
+            })}
+          </Stack>
+          <Stack spacing={0.75} flex={1} minWidth={0}>
+            <Typography variant="h6" sx={{ fontWeight: 600 }} noWrap>
+              {mealPlan.label}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" noWrap>
+              {planAssignmentLabel}
+            </Typography>
+          </Stack>
         </Stack>
 
         {/* Nutrition goals */}
