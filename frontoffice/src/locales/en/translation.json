@@ -613,7 +613,30 @@
     "list": {
       "day_count": "{{count}} day",
       "day_count_one": "{{count}} day",
-      "day_count_other": "{{count}} days"
+      "day_count_other": "{{count}} days",
+      "plan_for": "Plan for {{name}}",
+      "plan_unassigned": "Unassigned plan",
+      "status": {
+        "assigned": "Active",
+        "unassigned": "Needs assignment"
+      },
+      "sections": {
+        "nutrition_goals": "Nutrition goals",
+        "plan_overview": "Plan overview",
+        "coach_notes": "Coach notes"
+      },
+      "day_meal_count": "{{count}} meal",
+      "day_meal_count_one": "{{count}} meal",
+      "day_meal_count_other": "{{count}} meals",
+      "more_meals": "+ {{count}} more meals",
+      "no_meals": "No meals in this day yet",
+      "no_days": "No days have been defined yet",
+      "expand_details": "Expand details",
+      "collapse_details": "Collapse details",
+      "metadata": {
+        "created_on": "Created on {{date}}",
+        "creator": "By {{name}}"
+      }
     },
     "macros": {
       "calories": "Calories",

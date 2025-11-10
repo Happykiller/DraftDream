@@ -615,7 +615,30 @@
     "list": {
       "day_count": "{{count}} jour",
       "day_count_one": "{{count}} jour",
-      "day_count_other": "{{count}} jours"
+      "day_count_other": "{{count}} jours",
+      "plan_for": "Plan pour {{name}}",
+      "plan_unassigned": "Plan non assigné",
+      "status": {
+        "assigned": "Actif",
+        "unassigned": "À attribuer"
+      },
+      "sections": {
+        "nutrition_goals": "Objectifs nutritionnels",
+        "plan_overview": "Aperçu du plan",
+        "coach_notes": "Notes du coach"
+      },
+      "day_meal_count": "{{count}} repas",
+      "day_meal_count_one": "{{count}} repas",
+      "day_meal_count_other": "{{count}} repas",
+      "more_meals": "+ {{count}} repas supplémentaires",
+      "no_meals": "Aucun repas dans cette journée",
+      "no_days": "Aucune journée n'est encore définie",
+      "expand_details": "Afficher plus de détails",
+      "collapse_details": "Réduire les détails",
+      "metadata": {
+        "created_on": "Créé le {{date}}",
+        "creator": "Par {{name}}"
+      }
     },
     "macros": {
       "calories": "Calories",
