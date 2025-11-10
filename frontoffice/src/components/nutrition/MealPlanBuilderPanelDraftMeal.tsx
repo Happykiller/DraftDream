@@ -6,7 +6,6 @@ import {
   Box,
   Card,
   CardContent,
-  Chip,
   IconButton,
   Stack,
   TextField,
@@ -268,7 +267,6 @@ export const MealPlanBuilderPanelDraftMeal = React.memo(function MealPlanBuilder
         </Stack>
 
         <Stack spacing={0.75}>
-          {meal.type?.label ? <Chip label={meal.type.label} variant="outlined" size="small" /> : null}
           {meal.foods ? (
             <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'pre-line' }}>
               {meal.foods}
