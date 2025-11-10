@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 
 import { UserType } from '@src/commons/enums';
 import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
-import { useFlashStore } from '@src/hooks/useFlashStore';
 import { useUsers, type User } from '@src/hooks/useUsers';
 import { slugify } from '@src/utils/slugify';
 
@@ -48,13 +47,11 @@ export interface UseMealPlanBuilderResult {
   dayLibraryLoading: boolean;
   mealLibrary: Meal[];
   mealLibraryLoading: boolean;
-  selectedDayId: string | null;
   days: MealPlanBuilderDay[];
   handleSelectAthlete: (_event: unknown, user: User | null) => void;
   handleFormChange: (
     field: keyof MealPlanBuilderForm,
   ) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-  handleSelectDay: (dayId: string) => void;
   handleAddDayFromTemplate: (template: MealDay) => void;
   handleCreateEmptyDay: () => void;
   handleRemoveDay: (dayId: string) => void;
@@ -62,7 +59,6 @@ export interface UseMealPlanBuilderResult {
   handleMoveDayDown: (dayId: string) => void;
   handleUpdateDay: (dayId: string, patch: Partial<MealPlanBuilderDay>) => void;
   handleAddMealToDay: (dayId: string, meal: Meal) => void;
-  handleAddMealToSelectedDay: (meal: Meal) => void;
   handleRemoveMeal: (dayId: string, mealUiId: string) => void;
   handleMoveMealUp: (dayId: string, mealUiId: string) => void;
   handleMoveMealDown: (dayId: string, mealUiId: string) => void;
@@ -176,8 +172,6 @@ export function useMealPlanBuilder(
   { onCreated, onUpdated, mealPlan }: UseMealPlanBuilderOptions,
 ): UseMealPlanBuilderResult {
   const { i18n } = useTranslation();
-  const flashError = useFlashStore((state) => state.error);
-
   const basePlan = mealPlan ?? null;
   const mode: 'create' | 'edit' = basePlan ? 'edit' : 'create';
 
@@ -192,7 +186,6 @@ export function useMealPlanBuilder(
   const [selectedAthlete, setSelectedAthlete] = React.useState<User | null>(
     basePlan?.athlete ?? null,
   );
-  const [selectedDayId, setSelectedDayId] = React.useState<string | null>(null);
   const [days, setDays] = React.useState<MealPlanBuilderDay[]>(() =>
     basePlan?.days?.length ? basePlan.days.map(cloneDaySnapshot) : [],
   );
@@ -283,10 +276,6 @@ export function useMealPlanBuilder(
     setForm((prev) => ({ ...prev, planName: value }));
   }, []);
 
-  const handleSelectDay = React.useCallback((dayId: string) => {
-    setSelectedDayId(dayId);
-  }, []);
-
   const handleAddDayFromTemplate = React.useCallback((template: MealDay) => {
     const daySnapshot: MealPlanDaySnapshot = {
       id: undefined,
@@ -323,7 +312,6 @@ export function useMealPlanBuilder(
 
     const cloned = cloneDaySnapshot(daySnapshot);
     setDays((prev) => [...prev, cloned]);
-    setSelectedDayId(cloned.uiId);
   }, []);
 
   const handleCreateEmptyDay = React.useCallback(() => {
@@ -339,12 +327,10 @@ export function useMealPlanBuilder(
 
     const cloned = cloneDaySnapshot(emptyDay);
     setDays((prev) => [...prev, cloned]);
-    setSelectedDayId(cloned.uiId);
   }, [builderCopy.structure.day_prefix, days.length, i18n.language]);
 
   const handleRemoveDay = React.useCallback((dayId: string) => {
     setDays((prev) => prev.filter((day) => day.uiId !== dayId));
-    setSelectedDayId((prev) => (prev === dayId ? null : prev));
   }, []);
 
   const handleMoveDayUp = React.useCallback((dayId: string) => {
@@ -405,18 +391,6 @@ export function useMealPlanBuilder(
       );
     });
   }, []);
-
-  const handleAddMealToSelectedDay = React.useCallback(
-    (meal: Meal) => {
-      if (!selectedDayId) {
-        flashError(builderCopy.structure.select_day_warning);
-        return;
-      }
-
-      handleAddMealToDay(selectedDayId, meal);
-    },
-    [builderCopy.structure.select_day_warning, flashError, handleAddMealToDay, selectedDayId],
-  );
 
   const handleRemoveMeal = React.useCallback((dayId: string, mealUiId: string) => {
     setDays((prev) =>
@@ -604,11 +578,9 @@ export function useMealPlanBuilder(
     dayLibraryLoading,
     mealLibrary: meals,
     mealLibraryLoading,
-    selectedDayId,
     days,
     handleSelectAthlete,
     handleFormChange,
-    handleSelectDay,
     handleAddDayFromTemplate,
     handleCreateEmptyDay,
     handleRemoveDay,
@@ -616,7 +588,6 @@ export function useMealPlanBuilder(
     handleMoveDayDown,
     handleUpdateDay,
     handleAddMealToDay,
-    handleAddMealToSelectedDay,
     handleRemoveMeal,
     handleMoveMealUp,
     handleMoveMealDown,

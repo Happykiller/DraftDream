@@ -594,7 +594,6 @@
         "edit_meal_description": "Adjust this meal without changing the original template.",
         "add_meal_placeholder": "Use the meal library to populate this day.",
         "add_day_label": "Add empty day",
-        "select_day_warning": "Select a day in the plan before adding meals.",
         "move_day_up_label": "Move day up",
         "move_day_down_label": "Move day down",
         "move_meal_up_label": "Move meal up",

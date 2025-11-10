@@ -596,7 +596,6 @@
         "edit_meal_description": "Ajustez ce repas sans modifier le modèle d'origine.",
         "add_meal_placeholder": "Utilisez la bibliothèque de repas pour compléter cette journée.",
         "add_day_label": "Ajouter une journée vide",
-        "select_day_warning": "Sélectionnez une journée dans le plan avant d'ajouter des repas.",
         "move_day_up_label": "Monter la journée",
         "move_day_down_label": "Descendre la journée",
         "move_meal_up_label": "Monter le repas",

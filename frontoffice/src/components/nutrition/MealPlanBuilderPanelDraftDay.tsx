@@ -28,8 +28,6 @@ type MealPlanBuilderPanelDraftDayProps = {
   index: number;
   totalDays: number;
   builderCopy: MealPlanBuilderCopy;
-  isSelected: boolean;
-  onSelect: (dayId: string) => void;
   onUpdateDay: (dayId: string, patch: DayPatch) => void;
   onRemoveDay: (dayId: string) => void;
   onMoveDayUp: (dayId: string) => void;
@@ -50,8 +48,6 @@ export const MealPlanBuilderPanelDraftDay = React.memo(function MealPlanBuilderP
   index,
   totalDays,
   builderCopy,
-  isSelected,
-  onSelect,
   onUpdateDay,
   onRemoveDay,
   onMoveDayUp,
@@ -118,10 +114,6 @@ export const MealPlanBuilderPanelDraftDay = React.memo(function MealPlanBuilderP
       descriptionInputRef.current.select();
     }
   }, [isEditingDescription]);
-
-  const handleSelectDay = React.useCallback(() => {
-    onSelect(day.uiId);
-  }, [day.uiId, onSelect]);
 
   const handleLabelChange = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -251,20 +243,15 @@ export const MealPlanBuilderPanelDraftDay = React.memo(function MealPlanBuilderP
 
   return (
     <Card
-      variant={isSelected ? 'outlined' : 'elevation'}
-      onClick={handleSelectDay}
+      variant="outlined"
       sx={{
         borderColor: alpha(theme.palette.warning.main, 0.24),
-        borderWidth: isSelected ? 1 : undefined,
-        borderStyle: isSelected ? 'solid' : undefined,
-        cursor: 'pointer',
         transition: theme.transitions.create(['border-color', 'box-shadow'], {
           duration: theme.transitions.duration.shortest,
         }),
         '&:hover': {
           backgroundColor: alpha(warningMain, 0.08),
-          borderWidth: 1,
-          borderStyle: 'solid',
+          borderColor: alpha(warningMain, 0.24),
         },
       }}
     >

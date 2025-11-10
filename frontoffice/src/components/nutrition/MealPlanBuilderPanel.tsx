@@ -86,11 +86,9 @@ export function MealPlanBuilderPanel({
     dayLibraryLoading,
     mealLibrary,
     mealLibraryLoading,
-    selectedDayId,
     days,
     handleSelectAthlete,
     handleFormChange,
-    handleSelectDay,
     handleAddDayFromTemplate,
     handleCreateEmptyDay,
     handleRemoveDay,
@@ -761,8 +759,6 @@ export function MealPlanBuilderPanel({
                                     index={index}
                                     totalDays={days.length}
                                     builderCopy={builderCopy}
-                                    isSelected={selectedDayId === day.uiId}
-                                    onSelect={handleSelectDay}
                                     onUpdateDay={handleUpdateDay}
                                     onRemoveDay={handleRemoveDay}
                                     onMoveDayUp={handleMoveDayUp}

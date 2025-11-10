@@ -93,7 +93,6 @@ export interface MealPlanBuilderCopy {
     edit_meal_description?: string;
     add_meal_placeholder: string;
     add_day_label: string;
-    select_day_warning: string;
     move_day_up_label: string;
     move_day_down_label: string;
     move_meal_up_label: string;
