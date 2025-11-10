@@ -1,18 +1,11 @@
 // src/components/nutrition/MealPlanList.tsx
 import * as React from 'react';
-import {
-  Box,
-  Card,
-  CardActionArea,
-  CardContent,
-  Chip,
-  CircularProgress,
-  Paper,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { CircularProgress, Grid, Paper, Stack, Typography } from '@mui/material';
+import { alpha, useTheme } from '@mui/material/styles';
 
 import type { MealPlan } from '@hooks/nutrition/useMealPlans';
+
+import { MealPlanCard } from './MealPlanCard';
 
 export interface MealPlanListProps {
   mealPlans: MealPlan[];
@@ -32,7 +25,7 @@ export interface MealPlanListProps {
 }
 
 /**
- * Displays nutrition meal plans with macro highlights and simple placeholder states.
+ * Displays nutrition meal plans with macro highlights using a grid layout similar to program cards.
  */
 export function MealPlanList({
   mealPlans,
@@ -45,72 +38,61 @@ export function MealPlanList({
   dayCountFormatter,
   macroLabels,
 }: MealPlanListProps): React.JSX.Element {
-  const hasItems = mealPlans.length > 0;
+  const theme = useTheme();
+  const showPlaceholder = !loading && mealPlans.length === 0;
 
   return (
     <Stack spacing={3} sx={{ width: '100%' }}>
       {/* General information */}
-      {actionSlot ? <Box>{actionSlot}</Box> : null}
+      {actionSlot ? (
+        <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="flex-end" spacing={1} sx={{ width: '100%' }}>
+          {actionSlot}
+        </Stack>
+      ) : null}
 
       {loading ? (
         <Stack alignItems="center" justifyContent="center" sx={{ py: 6 }}>
           <CircularProgress size={32} />
         </Stack>
-      ) : hasItems ? (
-        <Stack spacing={2}>
-          {mealPlans.map((plan) => {
-            const dayCount = plan.days.length;
-            return (
-              <Card key={plan.id} variant="outlined">
-                <CardActionArea
-                  onClick={onSelect ? () => onSelect(plan) : undefined}
-                  disabled={!onSelect}
-                >
-                  <CardContent>
-                    <Stack spacing={1}>
-                      <Stack direction="row" justifyContent="space-between" alignItems="center">
-                        <Typography variant="h6">{plan.label}</Typography>
-                        <Typography color="text.secondary" variant="body2">
-                          {dayCountFormatter(dayCount)}
-                        </Typography>
-                      </Stack>
+      ) : mealPlans.length > 0 ? (
+        <Grid container spacing={3}>
+          {mealPlans.map((plan) => (
+            <Grid size={{ xs: 12, sm: 6, lg: 3 }} key={plan.id}>
+              <MealPlanCard
+                mealPlan={plan}
+                dayCountFormatter={dayCountFormatter}
+                macroLabels={macroLabels}
+                onSelect={onSelect}
+              />
+            </Grid>
+          ))}
+        </Grid>
+      ) : null}
 
-                      {plan.description ? (
-                        <Typography color="text.secondary" variant="body2">
-                          {plan.description}
-                        </Typography>
-                      ) : null}
-
-                      <Stack direction="row" spacing={1} flexWrap="wrap">
-                        <Chip label={`${macroLabels.calories}: ${plan.calories}`} size="small" />
-                        <Chip label={`${macroLabels.protein}: ${plan.proteinGrams}g`} size="small" />
-                        <Chip label={`${macroLabels.carbs}: ${plan.carbGrams}g`} size="small" />
-                        <Chip label={`${macroLabels.fats}: ${plan.fatGrams}g`} size="small" />
-                      </Stack>
-                    </Stack>
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            );
-          })}
-        </Stack>
-      ) : (
-        <Paper variant="outlined" sx={{ p: 3 }}>
-          <Stack spacing={1}>
-            <Typography variant="h6">{placeholderTitle}</Typography>
-            {placeholderSubtitle ? (
-              <Typography color="text.secondary" variant="body2">
-                {placeholderSubtitle}
-              </Typography>
-            ) : null}
-            {placeholderHelper ? (
-              <Typography color="text.secondary" variant="body2">
-                {placeholderHelper}
-              </Typography>
-            ) : null}
-          </Stack>
+      {showPlaceholder ? (
+        <Paper
+          sx={{
+            borderRadius: 3,
+            p: { xs: 3, md: 5 },
+            textAlign: 'center',
+            bgcolor: alpha(theme.palette.primary.light, 0.08),
+          }}
+        >
+          <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+            {placeholderTitle}
+          </Typography>
+          {placeholderSubtitle ? (
+            <Typography variant="body2" color="text.secondary">
+              {placeholderSubtitle}
+            </Typography>
+          ) : null}
+          {placeholderHelper ? (
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+              {placeholderHelper}
+            </Typography>
+          ) : null}
         </Paper>
-      )}
+      ) : null}
     </Stack>
   );
 }
