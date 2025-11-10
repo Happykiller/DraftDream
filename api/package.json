@@ -10,7 +10,8 @@
     "test:coverage": "jest --coverage",
     "start": "nest start",
     "start:dev": "cross-env NODE_ENV=dev nest start --watch",
-    "start:prod": "node ."
+    "start:prod": "node .",
+    "lint": "eslint \"src/**/*.ts\" --max-warnings=0"
   },
   "keywords": [],
   "author": "fabrice.rosito@gmail.com",
@@ -42,6 +43,11 @@
     "@nestjs/schematics": "^11.0.9",
     "@types/node": "^24.10.0",
     "cross-env": "^10.1.0",
+    "@eslint/js": "^9.39.1",
+    "globals": "^16.5.0",
+    "eslint": "^9.39.1",
+    "@typescript-eslint/eslint-plugin": "^8.46.3",
+    "@typescript-eslint/parser": "^8.46.3",
     "typescript": "^5.9.3"
   }
 }
