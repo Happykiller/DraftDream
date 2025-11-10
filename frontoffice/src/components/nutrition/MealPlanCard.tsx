@@ -35,7 +35,6 @@ interface MealPlanCardProps {
     carbs: string;
     fats: string;
   };
-  onSelect?: (mealPlan: MealPlan) => void;
   onView?: (mealPlan: MealPlan) => void;
   onEdit?: (mealPlan: MealPlan) => void;
   onDelete?: (mealPlan: MealPlan) => void;
@@ -100,7 +99,6 @@ export function MealPlanCard({
   mealPlan,
   dayCountFormatter,
   macroLabels,
-  onSelect,
   onView,
   onEdit,
   onDelete,
@@ -227,24 +225,6 @@ export function MealPlanCard({
     [macroUnits.calories, numberFormatter, t],
   );
 
-  const handleSelect = React.useCallback(() => {
-    onSelect?.(mealPlan);
-  }, [mealPlan, onSelect]);
-
-  const handleKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLDivElement>) => {
-      if (!onSelect) {
-        return;
-      }
-
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        handleSelect();
-      }
-    },
-    [handleSelect, onSelect],
-  );
-
   const handleToggleExpand = React.useCallback(() => {
     setIsExpanded((previous) => !previous);
   }, []);
@@ -254,13 +234,7 @@ export function MealPlanCard({
       if (actionKey === 'view') {
         if (onView) {
           onView(mealPlan);
-          return;
         }
-
-        if (onSelect) {
-          onSelect(mealPlan);
-        }
-
         return;
       }
 
@@ -273,7 +247,7 @@ export function MealPlanCard({
         onDelete?.(mealPlan);
       }
     },
-    [mealPlan, onDelete, onEdit, onSelect, onView],
+    [mealPlan, onDelete, onEdit, onView],
   );
 
   React.useEffect(() => {
@@ -323,24 +297,10 @@ export function MealPlanCard({
     <Paper
       elevation={0}
       variant="dashboardSection"
-      role={onSelect ? 'button' : undefined}
-      tabIndex={onSelect ? 0 : undefined}
-      onClick={onSelect ? handleSelect : undefined}
-      onKeyDown={onSelect ? handleKeyDown : undefined}
       sx={{
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        cursor: onSelect ? 'pointer' : 'default',
-        transition: theme.transitions.create(['box-shadow', 'transform'], {
-          duration: theme.transitions.duration.shorter,
-        }),
-        '&:hover': onSelect
-          ? {
-              transform: 'translateY(-2px)',
-              boxShadow: theme.shadows[4],
-            }
-          : undefined,
       }}
     >
       <Box
@@ -383,7 +343,7 @@ export function MealPlanCard({
             {MEAL_PLAN_ACTIONS.map(({ key, color, Icon }) => {
               const label = t(`nutrition-coach.list.actions.${key}`);
               const isDisabled =
-                (key === 'view' && !onView && !onSelect) ||
+                (key === 'view' && !onView) ||
                 (key === 'edit' && !onEdit) ||
                 (key === 'delete' && !onDelete);
 

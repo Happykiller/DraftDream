@@ -65,7 +65,7 @@ export function NutritionPlansAthlete(): React.JSX.Element {
         placeholderTitle={emptyState.title}
         placeholderSubtitle={emptyState.description}
         placeholderHelper={emptyState.helper}
-        onSelect={handleOpenMealPlan}
+        onView={handleOpenMealPlan}
         dayCountFormatter={(count) =>
           t('nutrition-athlete.list.day_count', {
             count,

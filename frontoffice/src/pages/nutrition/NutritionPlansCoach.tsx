@@ -81,7 +81,7 @@ export function NutritionPlansCoach(): React.JSX.Element {
             </Button>
           </Stack>
         }
-        onSelect={handleOpenMealPlan}
+        onView={handleOpenMealPlan}
         dayCountFormatter={(count) =>
           t('nutrition-coach.list.day_count', {
             count,

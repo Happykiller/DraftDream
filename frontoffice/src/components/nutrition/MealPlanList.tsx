@@ -14,7 +14,6 @@ export interface MealPlanListProps {
   placeholderSubtitle?: string;
   placeholderHelper?: string;
   actionSlot?: React.ReactNode;
-  onSelect?: (mealPlan: MealPlan) => void;
   onView?: (mealPlan: MealPlan) => void;
   onEdit?: (mealPlan: MealPlan) => void;
   onDelete?: (mealPlan: MealPlan) => void;
@@ -37,7 +36,6 @@ export function MealPlanList({
   placeholderSubtitle,
   placeholderHelper,
   actionSlot,
-  onSelect,
   onView,
   onEdit,
   onDelete,
@@ -68,7 +66,6 @@ export function MealPlanList({
                 mealPlan={plan}
                 dayCountFormatter={dayCountFormatter}
                 macroLabels={macroLabels}
-                onSelect={onSelect}
                 onView={onView}
                 onEdit={onEdit}
                 onDelete={onDelete}
