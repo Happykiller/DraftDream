@@ -965,53 +965,53 @@ export function MealPlanBuilderPanel({
                       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, flexGrow: 1 }}>
                         <Stack spacing={2} sx={{ flexGrow: 1, minHeight: 0 }}>
                           <Stack spacing={1.5}>
-                            {isEditingPlanName ? (
-                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
-                                <TextField
-                                  inputRef={planNameInputRef}
-                                  value={form.planName}
-                                  onChange={handleFormChange('planName')}
-                                  onBlur={handlePlanNameCommit}
-                                  onKeyDown={handlePlanNameInputKeyDown}
-                                  size="small"
-                                  variant="standard"
-                                  fullWidth
-                                  required
-                                  inputProps={{ 'aria-label': builderCopy.config.plan_name_label }}
-                                  sx={{ flexGrow: 1, minWidth: 0 }}
-                                />
-                                {totalMealsLabel ? (
-                                  <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
-                                    {totalMealsLabel}
-                                  </Typography>
-                                ) : null}
+                            <Stack direction="row" alignItems="center" spacing={1}>
+                              <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+                                {isEditingPlanName ? (
+                                  <TextField
+                                    inputRef={planNameInputRef}
+                                    value={form.planName}
+                                    onChange={handleFormChange('planName')}
+                                    onBlur={handlePlanNameCommit}
+                                    onKeyDown={handlePlanNameInputKeyDown}
+                                    size="small"
+                                    variant="standard"
+                                    fullWidth
+                                    required
+                                    inputProps={{ 'aria-label': builderCopy.config.plan_name_label }}
+                                  />
+                                ) : (
+                                  <Box
+                                    sx={{
+                                      ...interactiveSurfaceSx,
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: 0.75,
+                                      width: 'fit-content',
+                                    }}
+                                    onClick={handlePlanNameEdit}
+                                    onKeyDown={handlePlanNameDisplayKeyDown}
+                                    tabIndex={0}
+                                    role="button"
+                                    aria-label={builderCopy.config.plan_name_label}
+                                  >
+                                    <Edit fontSize="small" color="disabled" />
+                                    <Typography variant="h6" component="h2" sx={{ fontWeight: 700 }}>
+                                      {form.planName}
+                                    </Typography>
+                                  </Box>
+                                )}
                               </Box>
-                            ) : (
-                              <Box
-                                sx={{
-                                  ...interactiveSurfaceSx,
-                                  display: 'inline-flex',
-                                  alignItems: 'center',
-                                  gap: 0.75,
-                                  width: 'fit-content',
-                                }}
-                                onClick={handlePlanNameEdit}
-                                onKeyDown={handlePlanNameDisplayKeyDown}
-                                tabIndex={0}
-                                role="button"
-                                aria-label={builderCopy.config.plan_name_label}
-                              >
-                                <Edit fontSize="small" color="disabled" />
-                                <Typography variant="h6" component="h2" sx={{ fontWeight: 700 }}>
-                                  {form.planName}
+                              {totalMealsLabel ? (
+                                <Typography
+                                  variant="caption"
+                                  color="text.secondary"
+                                  sx={{ fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0 }}
+                                >
+                                  {totalMealsLabel}
                                 </Typography>
-                                {totalMealsLabel ? (
-                                  <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
-                                    {totalMealsLabel}
-                                  </Typography>
-                                ) : null}
-                              </Box>
-                            )}
+                              ) : null}
+                            </Stack>
                           </Stack>
                           <Box sx={{ flexGrow: 1, minHeight: 0 }}>
                             {days.length === 0 ? (
