@@ -1036,7 +1036,7 @@ export function MealPlanBuilderPanel({
                                             }}
                                           >
                                             <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                                              {builderCopy.structure.day_prefix} {index + 1}aaa
+                                              {builderCopy.structure.day_prefix} {index + 1}
                                             </Typography>
                                             <Typography variant="subtitle1" color="text.disabled">
                                               -
