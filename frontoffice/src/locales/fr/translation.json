@@ -623,6 +623,16 @@
         "edit": "Modifier le plan",
         "delete": "Supprimer le plan"
       },
+      "delete_dialog": {
+        "title": "Supprimer le plan nutrition",
+        "description": "Êtes-vous sûr de vouloir supprimer « {{label}} » ?",
+        "helper": "Le plan sera déplacé dans la corbeille et pourra être restauré plus tard si nécessaire.",
+        "actions": {
+          "cancel": "Annuler",
+          "confirm": "Supprimer",
+          "confirming": "Suppression…"
+        }
+      },
       "status": {
         "assigned": "Actif",
         "unassigned": "À attribuer"

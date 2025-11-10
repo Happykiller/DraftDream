@@ -621,6 +621,16 @@
         "edit": "Edit plan",
         "delete": "Delete plan"
       },
+      "delete_dialog": {
+        "title": "Delete the nutrition plan",
+        "description": "Are you sure you want to delete “{{label}}”?",
+        "helper": "The plan will be moved to the recycle bin and can be restored later if necessary.",
+        "actions": {
+          "cancel": "Cancel",
+          "confirm": "Delete",
+          "confirming": "Deleting…"
+        }
+      },
       "status": {
         "assigned": "Active",
         "unassigned": "Needs assignment"

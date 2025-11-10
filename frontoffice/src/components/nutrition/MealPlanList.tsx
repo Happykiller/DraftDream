@@ -16,7 +16,7 @@ export interface MealPlanListProps {
   actionSlot?: React.ReactNode;
   onView?: (mealPlan: MealPlan) => void;
   onEdit?: (mealPlan: MealPlan) => void;
-  onDelete?: (mealPlan: MealPlan) => void;
+  onDelete?: (mealPlan: MealPlan) => Promise<void> | void;
   dayCountFormatter: (dayCount: number) => string;
   macroLabels: {
     calories: string;

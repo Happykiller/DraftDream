@@ -26,6 +26,8 @@ import {
 import type { MealPlan, MealPlanDaySnapshot, MealPlanMealSnapshot } from '@hooks/nutrition/useMealPlans';
 import { useMealTypeIcon } from '@hooks/nutrition/useMealTypeIcon';
 
+import { MealPlanDeleteDialog } from './MealPlanDeleteDialog';
+
 interface MealPlanCardProps {
   mealPlan: MealPlan;
   dayCountFormatter: (count: number) => string;
@@ -37,7 +39,7 @@ interface MealPlanCardProps {
   };
   onView?: (mealPlan: MealPlan) => void;
   onEdit?: (mealPlan: MealPlan) => void;
-  onDelete?: (mealPlan: MealPlan) => void;
+  onDelete?: (mealPlan: MealPlan) => Promise<void> | void;
 }
 
 type MealPlanActionKey = 'view' | 'edit' | 'delete';
@@ -109,6 +111,8 @@ export function MealPlanCard({
   const contentRef = React.useRef<HTMLDivElement | null>(null);
   const [isOverflowing, setIsOverflowing] = React.useState(false);
   const [isExpanded, setIsExpanded] = React.useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
+  const [isDeleteSubmitting, setIsDeleteSubmitting] = React.useState(false);
 
   const numberFormatter = React.useMemo(
     () =>
@@ -229,6 +233,42 @@ export function MealPlanCard({
     setIsExpanded((previous) => !previous);
   }, []);
 
+  const handleOpenDeleteDialog = React.useCallback(() => {
+    setIsDeleteDialogOpen(true);
+  }, []);
+
+  const handleCloseDeleteDialog = React.useCallback<
+    NonNullable<React.ComponentProps<typeof MealPlanDeleteDialog>['onClose']>
+  >(
+    (_, reason) => {
+      if (isDeleteSubmitting && reason) {
+        return;
+      }
+
+      if (!isDeleteSubmitting) {
+        setIsDeleteDialogOpen(false);
+      }
+    },
+    [isDeleteSubmitting],
+  );
+
+  const handleConfirmDelete = React.useCallback(async () => {
+    if (!onDelete) {
+      return;
+    }
+
+    setIsDeleteSubmitting(true);
+
+    try {
+      await onDelete(mealPlan);
+      setIsDeleteDialogOpen(false);
+    } catch (error) {
+      console.log('[MealPlanCard] Failed to delete meal plan', error);
+    } finally {
+      setIsDeleteSubmitting(false);
+    }
+  }, [mealPlan, onDelete]);
+
   const handleActionClick = React.useCallback(
     (actionKey: MealPlanActionKey) => {
       if (actionKey === 'view') {
@@ -243,11 +283,11 @@ export function MealPlanCard({
         return;
       }
 
-      if (actionKey === 'delete') {
-        onDelete?.(mealPlan);
+      if (actionKey === 'delete' && onDelete) {
+        handleOpenDeleteDialog();
       }
     },
-    [mealPlan, onDelete, onEdit, onView],
+    [handleOpenDeleteDialog, mealPlan, onDelete, onEdit, onView],
   );
 
   React.useEffect(() => {
@@ -294,16 +334,17 @@ export function MealPlanCard({
   }, [mealPlan.id]);
 
   return (
-    <Paper
-      elevation={0}
-      variant="dashboardSection"
-      sx={{
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
-      <Box
+    <>
+      <Paper
+        elevation={0}
+        variant="dashboardSection"
+        sx={{
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <Box
         ref={contentRef}
         sx={(innerTheme) => ({
           position: 'relative',
@@ -345,7 +386,7 @@ export function MealPlanCard({
               const isDisabled =
                 (key === 'view' && !onView) ||
                 (key === 'edit' && !onEdit) ||
-                (key === 'delete' && !onDelete);
+                (key === 'delete' && (!onDelete || isDeleteSubmitting));
 
               return (
                 <Tooltip key={key} title={label}>
@@ -601,7 +642,18 @@ export function MealPlanCard({
           </Stack>
         </>
       ) : null}
-    </Paper>
+      </Paper>
+
+      <MealPlanDeleteDialog
+        open={isDeleteDialogOpen}
+        mealPlanLabel={mealPlan.label}
+        loading={isDeleteSubmitting}
+        onClose={handleCloseDeleteDialog}
+        onConfirm={() => {
+          void handleConfirmDelete();
+        }}
+      />
+    </>
   );
 }
 
