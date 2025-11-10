@@ -48,15 +48,7 @@ export const MealPlanBuilderPanelLibraryMeal = React.memo(function MealPlanBuild
     [secondaryMain],
   );
 
-  const fallbackReference = React.useMemo(
-    () => meal.id ?? meal.slug ?? meal.label ?? 'meal-library',
-    [meal.id, meal.label, meal.slug],
-  );
-
-  const MealIcon = useMealTypeIcon({
-    icon: meal.type?.icon,
-    fallbackReference,
-  });
+  const MealIcon = useMealTypeIcon(meal.type?.icon);
 
   return (
     <Card

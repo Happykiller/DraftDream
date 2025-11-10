@@ -81,15 +81,7 @@ export const MealPlanBuilderPanelDraftMeal = React.memo(function MealPlanBuilder
     [warningMain],
   );
 
-  const fallbackReference = React.useMemo(
-    () => meal.id ?? meal.uiId ?? meal.label ?? 'meal-draft',
-    [meal.id, meal.label, meal.uiId],
-  );
-
-  const MealIcon = useMealTypeIcon({
-    icon: meal.type?.icon,
-    fallbackReference,
-  });
+  const MealIcon = useMealTypeIcon(meal.type?.icon);
 
   React.useEffect(() => {
     if (!isEditingLabel) {

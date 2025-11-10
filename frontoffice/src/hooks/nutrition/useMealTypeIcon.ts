@@ -1,71 +1,30 @@
 // src/hooks/nutrition/useMealTypeIcon.ts
 import * as React from 'react';
+import * as Icons from '@mui/icons-material';
 import type { SvgIconComponent } from '@mui/icons-material';
-import {
-  BreakfastDining,
-  BrunchDining,
-  DinnerDining,
-  EmojiFoodBeverage,
-  Fastfood,
-  LocalDining,
-  LunchDining,
-  RamenDining,
-  Restaurant,
-  RestaurantMenu,
-  SoupKitchen,
-} from '@mui/icons-material';
+import { DinnerDining } from '@mui/icons-material';
 
-import { getMealIcon } from '@components/nutrition/mealPlanBuilderUtils';
+type IconLibrary = Record<string, SvgIconComponent | undefined>;
 
-export interface UseMealTypeIconOptions {
-  icon?: string | null;
-  fallbackReference: string;
-}
+// Casting keeps tree-shaking available while allowing dynamic icon lookup.
+const iconLibrary: IconLibrary = Icons as unknown as IconLibrary;
 
-type IconLibrary = Record<string, SvgIconComponent>;
-
-const ICON_LIBRARY: IconLibrary = {
-  breakfast: BreakfastDining,
-  breakfastdining: BreakfastDining,
-  brunch: BrunchDining,
-  brunchdining: BrunchDining,
-  lunch: LunchDining,
-  lunchdining: LunchDining,
-  dinner: DinnerDining,
-  dinnerdining: DinnerDining,
-  ramen: RamenDining,
-  ramendining: RamenDining,
-  soup: SoupKitchen,
-  soupkitchen: SoupKitchen,
-  restaurant: Restaurant,
-  restaurantmenu: RestaurantMenu,
-  dining: LocalDining,
-  localdining: LocalDining,
-  fastfood: Fastfood,
-  beverage: EmojiFoodBeverage,
-  emojifoodbeverage: EmojiFoodBeverage,
-};
-
-function normalizeIconKey(value: string): string {
-  return value.replace(/\s+/g, '').replace(/[-_]/g, '').toLowerCase();
-}
+const FALLBACK_ICON: SvgIconComponent = DinnerDining;
 
 /**
- * Resolves the Material UI icon component for the provided meal type definition.
- * Falls back to the deterministic hash-based icon when the meal type does not specify one.
+ * Resolves the Material UI icon component matching the provided meal type icon name.
+ * Falls back to {@link DinnerDining} when the requested icon is unavailable.
  */
-export function useMealTypeIcon({ icon, fallbackReference }: UseMealTypeIconOptions): SvgIconComponent {
+export function useMealTypeIcon(icon?: string | null): SvgIconComponent {
   return React.useMemo(() => {
     const trimmedIcon = icon?.trim();
     if (trimmedIcon) {
-      const normalized = normalizeIconKey(trimmedIcon);
-      const IconComponent = ICON_LIBRARY[normalized];
-      if (IconComponent) {
-        return IconComponent;
+      const matchedIcon = iconLibrary[trimmedIcon];
+      if (matchedIcon) {
+        return matchedIcon;
       }
     }
 
-    const safeReference = fallbackReference && fallbackReference.trim().length > 0 ? fallbackReference : 'default-icon';
-    return getMealIcon(safeReference);
-  }, [icon, fallbackReference]);
+    return FALLBACK_ICON;
+  }, [icon]);
 }
