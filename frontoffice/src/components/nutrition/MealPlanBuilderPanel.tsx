@@ -756,11 +756,6 @@ export function MealPlanBuilderPanel({
                   <Typography variant="body2" color="text.secondary">
                     {panelSubtitle}
                   </Typography>
-                  {totalMealsLabel ? (
-                    <Typography variant="caption" color="text.secondary">
-                      {totalMealsLabel}
-                    </Typography>
-                  ) : null}
                 </Stack>
               </Stack>
             </Box>
@@ -971,28 +966,33 @@ export function MealPlanBuilderPanel({
                         <Stack spacing={2} sx={{ flexGrow: 1, minHeight: 0 }}>
                           <Stack spacing={1.5}>
                             {isEditingPlanName ? (
-                              <TextField
-                                inputRef={planNameInputRef}
-                                value={form.planName}
-                                onChange={handleFormChange('planName')}
-                                onBlur={handlePlanNameCommit}
-                                onKeyDown={handlePlanNameInputKeyDown}
-                                size="small"
-                                variant="standard"
-                                fullWidth
-                                required
-                                inputProps={{ 'aria-label': builderCopy.config.plan_name_label }}
-                              />
+                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+                                <TextField
+                                  inputRef={planNameInputRef}
+                                  value={form.planName}
+                                  onChange={handleFormChange('planName')}
+                                  onBlur={handlePlanNameCommit}
+                                  onKeyDown={handlePlanNameInputKeyDown}
+                                  size="small"
+                                  variant="standard"
+                                  fullWidth
+                                  required
+                                  inputProps={{ 'aria-label': builderCopy.config.plan_name_label }}
+                                  sx={{ flexGrow: 1, minWidth: 0 }}
+                                />
+                                {totalMealsLabel ? (
+                                  <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                                    {totalMealsLabel}
+                                  </Typography>
+                                ) : null}
+                              </Box>
                             ) : (
-                              <Typography
-                                variant="h6"
-                                component="h2"
+                              <Box
                                 sx={{
-                                  fontWeight: 700,
                                   ...interactiveSurfaceSx,
                                   display: 'inline-flex',
                                   alignItems: 'center',
-                                  gap: 0.5,
+                                  gap: 0.75,
                                   width: 'fit-content',
                                 }}
                                 onClick={handlePlanNameEdit}
@@ -1001,9 +1001,16 @@ export function MealPlanBuilderPanel({
                                 role="button"
                                 aria-label={builderCopy.config.plan_name_label}
                               >
-                                <Edit fontSize="inherit" color="disabled" />
-                                {form.planName}
-                              </Typography>
+                                <Edit fontSize="small" color="disabled" />
+                                <Typography variant="h6" component="h2" sx={{ fontWeight: 700 }}>
+                                  {form.planName}
+                                </Typography>
+                                {totalMealsLabel ? (
+                                  <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                                    {totalMealsLabel}
+                                  </Typography>
+                                ) : null}
+                              </Box>
                             )}
                           </Stack>
                           <Box sx={{ flexGrow: 1, minHeight: 0 }}>
