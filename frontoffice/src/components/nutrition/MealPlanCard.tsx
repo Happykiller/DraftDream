@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import {
+  EditSquare as EditSquareIcon,
   ExpandMoreOutlined,
   HistoryOutlined,
   ModeStandby as ModeStandbyIcon,
@@ -459,12 +460,15 @@ export function MealPlanCard({
               }}
             >
               <Stack spacing={1}>
-                <Typography
-                  variant="subtitle2"
-                  sx={{ fontWeight: 600, color: theme.palette.info.main }}
-                >
-                  {t('nutrition-coach.list.sections.coach_notes')}
-                </Typography>
+                <Stack direction="row" alignItems="center" spacing={1}>
+                  <EditSquareIcon fontSize="small" color="info" />
+                  <Typography
+                    variant="subtitle2"
+                    sx={{ fontWeight: 600, color: theme.palette.info.main }}
+                  >
+                    {t('nutrition-coach.list.sections.coach_notes')}
+                  </Typography>
+                </Stack>
                 <Typography variant="body2">{mealPlan.description}</Typography>
               </Stack>
             </Box>
