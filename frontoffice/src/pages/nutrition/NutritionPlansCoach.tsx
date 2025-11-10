@@ -1,8 +1,14 @@
 // src/pages/nutrition/NutritionPlansCoach.tsx
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Add } from '@mui/icons-material';
-import { Button, Stack, Typography } from '@mui/material';
+import { Add, Refresh } from '@mui/icons-material';
+import {
+  Button,
+  IconButton,
+  Stack,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 import { MealPlanList } from '@components/nutrition/MealPlanList';
@@ -59,7 +65,35 @@ export function NutritionPlansCoach(): React.JSX.Element {
     <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
       {/* General information */}
       <Stack spacing={1}>
-        <Typography variant="h5">{t('nutrition-coach.subtitle')}</Typography>
+        <Stack
+          alignItems="center"
+          direction="row"
+          flexWrap="wrap"
+          justifyContent="space-between"
+          spacing={2}
+        >
+          <Typography variant="h5">{t('nutrition-coach.subtitle')}</Typography>
+          <Stack alignItems="center" direction="row" spacing={1} sx={{ ml: 'auto' }}>
+            <Tooltip title={t('nutrition-coach.actions.refresh')}>
+              <IconButton
+                aria-label={t('nutrition-coach.actions.refresh')}
+                color="primary"
+                onClick={handleRefresh}
+                size="small"
+              >
+                <Refresh fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Button
+              color="warning"
+              onClick={handleCreate}
+              startIcon={<Add />}
+              variant="contained"
+            >
+              {t('nutrition-coach.actions.create')}
+            </Button>
+          </Stack>
+        </Stack>
         <Typography color="text.secondary" variant="body2">
           {t('nutrition-coach.helper')}
         </Typography>
@@ -71,16 +105,6 @@ export function NutritionPlansCoach(): React.JSX.Element {
         placeholderTitle={emptyState.title}
         placeholderSubtitle={emptyState.description}
         placeholderHelper={emptyState.helper}
-        actionSlot={
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
-            <Button onClick={handleCreate} startIcon={<Add />} variant="contained" color="warning">
-              {t('nutrition-coach.actions.create')}
-            </Button>
-            <Button onClick={handleRefresh} variant="outlined">
-              {t('nutrition-coach.actions.refresh')}
-            </Button>
-          </Stack>
-        }
         onView={handleOpenMealPlan}
         dayCountFormatter={(count) =>
           t('nutrition-coach.list.day_count', {
