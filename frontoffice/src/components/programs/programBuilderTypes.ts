@@ -1,7 +1,7 @@
 import type {
   ExerciseLevel,
   ExerciseVisibility,
-} from '@hooks/useExercises';
+} from '@hooks/programs/useExercises';
 
 export type ExerciseLibraryItem = {
   id: string;

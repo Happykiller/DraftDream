@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-import { ProgramList } from '@src/components/programs/ProgramList';
-import { type Program, usePrograms } from '@src/hooks/usePrograms';
+import { ProgramList } from '@components/programs/ProgramList';
+import { type Program, usePrograms } from '@hooks/programs/usePrograms';
 import { session } from '@stores/session';
 
 type AthleteEmptyStateCopy = {

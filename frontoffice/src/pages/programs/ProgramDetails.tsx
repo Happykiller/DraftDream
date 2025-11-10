@@ -10,8 +10,8 @@ import { ProgramViewContent } from '@src/components/programs/ProgramViewContent'
 import { formatProgramDate } from '@src/components/programs/programFormatting';
 import { getProgramAthleteLabel, type ProgramViewTab } from '@src/components/programs/programViewUtils';
 
-import { useProgram } from '@src/hooks/useProgram';
-import { type Program } from '@src/hooks/usePrograms';
+import { useProgram } from '@src/hooks/programs/useProgram';
+import { type Program } from '@src/hooks/programs/usePrograms';
 import { programGet } from '@src/services/graphql/programs.service';
 import { UserType } from '@src/commons/enums';
 import { session } from '@stores/session';

@@ -171,9 +171,9 @@ function createMealFromTemplate(meal: Meal): MealPlanBuilderMeal {
 
 export function useMealPlanBuilder(
   builderCopy: MealPlanBuilderCopy,
-  { onCancel, onCreated, onUpdated, mealPlan }: UseMealPlanBuilderOptions,
+  { onCreated, onUpdated, mealPlan }: UseMealPlanBuilderOptions,
 ): UseMealPlanBuilderResult {
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
   const flashError = useFlashStore((state) => state.error);
 
   const basePlan = mealPlan ?? null;

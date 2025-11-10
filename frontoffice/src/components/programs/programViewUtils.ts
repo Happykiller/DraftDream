@@ -3,7 +3,7 @@ import type { TFunction } from 'i18next';
 import type {
   Program,
   ProgramSessionExercise,
-} from '@src/hooks/usePrograms';
+} from '@hooks/programs/usePrograms';
 
 export type ProgramViewTab = 'overview' | 'sessions';
 

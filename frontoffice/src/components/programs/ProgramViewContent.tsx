@@ -19,7 +19,7 @@ import {
   ScheduleOutlined,
 } from '@mui/icons-material';
 
-import type { Program, ProgramSession, ProgramSessionExercise } from '@src/hooks/usePrograms';
+import type { Program, ProgramSession, ProgramSessionExercise } from '@hooks/programs/usePrograms';
 
 import { deriveProgramDifficulty } from './programFormatting';
 import {

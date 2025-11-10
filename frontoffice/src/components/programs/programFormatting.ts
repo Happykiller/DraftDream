@@ -1,4 +1,4 @@
-import type { Program } from '@src/hooks/usePrograms';
+import type { Program } from '@hooks/programs/usePrograms';
 
 export type ProgramDifficulty = 'beginner' | 'intermediate' | 'advanced';
 

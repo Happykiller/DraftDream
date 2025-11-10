@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@mui/material';
 import { VisibilityOutlined } from '@mui/icons-material';
 
-import type { Program } from '@src/hooks/usePrograms';
+import type { Program } from '@hooks/programs/usePrograms';
 
 import { ProgramDialogLayout } from './ProgramDialogLayout';
 import { formatProgramDate } from './programFormatting';

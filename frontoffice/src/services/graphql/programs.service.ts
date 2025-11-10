@@ -1,5 +1,5 @@
 // src/services/graphql/programs.service.ts
-import type { Program } from '@hooks/usePrograms';
+import type { Program } from '@hooks/programs/usePrograms';
 
 import inversify from '@src/commons/inversify';
 

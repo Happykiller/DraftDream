@@ -137,7 +137,7 @@ export function ProgramCard({
       await onDelete(program.id);
       setIsDeleteDialogOpen(false);
     } catch (error) {
-      // Surface errors through the flash store while keeping the dialog open.
+      console.log('[ProgramCard] Failed to delete program', error);
     } finally {
       setIsDeleteSubmitting(false);
     }
