@@ -37,6 +37,11 @@ type MealPlanBuilderPanelDraftDayProps = {
   onRemoveMeal: (dayId: string, mealId: string) => void;
   onMoveMealUp: (dayId: string, mealId: string) => void;
   onMoveMealDown: (dayId: string, mealId: string) => void;
+  onUpdateMeal: (
+    dayId: string,
+    mealId: string,
+    patch: Partial<MealPlanBuilderMeal>,
+  ) => void;
   onEditMeal: (day: MealPlanBuilderDay, meal: MealPlanBuilderMeal, position: number) => void;
 };
 
@@ -54,6 +59,7 @@ export const MealPlanBuilderPanelDraftDay = React.memo(function MealPlanBuilderP
   onRemoveMeal,
   onMoveMealUp,
   onMoveMealDown,
+  onUpdateMeal,
   onEditMeal,
 }: MealPlanBuilderPanelDraftDayProps): React.JSX.Element {
   const theme = useTheme();
@@ -406,6 +412,7 @@ export const MealPlanBuilderPanelDraftDay = React.memo(function MealPlanBuilderP
                 onMoveDown={() => onMoveMealDown(day.uiId, meal.uiId)}
                 onEdit={() => onEditMeal(day, meal, mealIndex + 1)}
                 onRemove={() => onRemoveMeal(day.uiId, meal.uiId)}
+                onUpdate={(patch) => onUpdateMeal(day.uiId, meal.uiId, patch)}
               />
             ))
           )}

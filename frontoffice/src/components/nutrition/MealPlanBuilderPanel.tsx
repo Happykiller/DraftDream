@@ -770,6 +770,7 @@ export function MealPlanBuilderPanel({
                                     onRemoveMeal={handleRemoveMeal}
                                     onMoveMealUp={handleMoveMealUp}
                                     onMoveMealDown={handleMoveMealDown}
+                                    onUpdateMeal={handleUpdateMeal}
                                     onEditMeal={handleOpenDraftMealEditor}
                                   />
                                 ))}
