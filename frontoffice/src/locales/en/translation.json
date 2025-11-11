@@ -769,7 +769,8 @@
             "value": "{{value}} g"
           }
         },
-        "foods_label": "Foods:"
+        "foods_label": "Foods:",
+        "type_fallback": "Meal type"
       }
     },
     "labels": {
