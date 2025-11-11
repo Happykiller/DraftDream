@@ -1,4 +1,4 @@
-// src/services/db/mongo/repositories/meal-plan.repository.ts
+﻿// src/services/db/mongo/repositories/meal-plan.repository.ts
 import { Collection, Db, ObjectId } from 'mongodb';
 
 import inversify from '@src/inversify/investify';
@@ -18,16 +18,16 @@ import {
   UpdateMealPlanDto,
 } from '@services/db/dtos/meal-plan.dto';
 
-type MealPlanMealTypeDoc = {
+interface MealPlanMealTypeDoc {
   id?: string;
   templateMealTypeId?: string;
   slug?: string;
   locale?: string;
   label: string;
   visibility?: 'private' | 'public';
-};
+}
 
-type MealPlanMealDoc = {
+interface MealPlanMealDoc {
   id: string;
   templateMealId?: string;
   slug?: string;
@@ -40,9 +40,9 @@ type MealPlanMealDoc = {
   carbGrams: number;
   fatGrams: number;
   type: MealPlanMealTypeDoc;
-};
+}
 
-type MealPlanDayDoc = {
+interface MealPlanDayDoc {
   id: string;
   templateMealDayId?: string;
   slug?: string;
@@ -50,9 +50,9 @@ type MealPlanDayDoc = {
   label: string;
   description?: string;
   meals: MealPlanMealDoc[];
-};
+}
 
-type MealPlanDoc = {
+interface MealPlanDoc {
   _id: ObjectId;
   slug: string;
   locale: string;
@@ -68,17 +68,17 @@ type MealPlanDoc = {
   deletedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
-};
+}
 
 export class BddServiceMealPlanMongo {
-  private async col(): Promise<Collection<MealPlanDoc>> {
+  private col(): Collection<MealPlanDoc> {
     return inversify.mongo.collection<MealPlanDoc>('meal_plans');
   }
 
   /** Create necessary indexes for the meal plans collection. */
   async ensureIndexes(db?: Db): Promise<void> {
     try {
-      const collection = db ? db.collection<MealPlanDoc>('meal_plans') : await this.col();
+      const collection = db ? db.collection<MealPlanDoc>('meal_plans') : this.col();
       await collection.createIndexes([
         {
           key: { slug: 1, locale: 1 },
@@ -118,7 +118,7 @@ export class BddServiceMealPlanMongo {
     };
 
     try {
-      const res = await (await this.col()).insertOne(doc as MealPlanDoc);
+      const res = await (this.col()).insertOne(doc as MealPlanDoc);
       return this.toModel({ _id: res.insertedId, ...doc } as MealPlanDoc);
     } catch (error) {
       if (this.isDuplicateError(error)) return null;
@@ -130,7 +130,7 @@ export class BddServiceMealPlanMongo {
   async get(dto: GetMealPlanDto): Promise<MealPlan | null> {
     try {
       const _id = this.toObjectId(dto.id);
-      const doc = await (await this.col()).findOne({ _id });
+      const doc = await (this.col()).findOne({ _id });
       return doc ? this.toModel(doc) : null;
     } catch (error) {
       this.handleError('get', error);
@@ -153,7 +153,7 @@ export class BddServiceMealPlanMongo {
 
     const filter: Record<string, any> = {};
 
-    if (q && q.trim()) {
+    if (q?.trim()) {
       filter.$or = [
         { slug: { $regex: new RegExp(q.trim(), 'i') } },
         { label: { $regex: new RegExp(q.trim(), 'i') } },
@@ -161,7 +161,7 @@ export class BddServiceMealPlanMongo {
       ];
     }
 
-    if (locale && locale.trim()) {
+    if (locale?.trim()) {
       filter.locale = locale.trim().toLowerCase();
     }
 
@@ -190,7 +190,7 @@ export class BddServiceMealPlanMongo {
     }
 
     try {
-      const collection = await this.col();
+      const collection = this.col();
       const cursor = collection.find(filter).sort(sort).skip((page - 1) * limit).limit(limit);
       const [rows, total] = await Promise.all([cursor.toArray(), collection.countDocuments(filter)]);
 
@@ -229,7 +229,7 @@ export class BddServiceMealPlanMongo {
         updateDoc.$unset = $unset;
       }
 
-      const res: any = await (await this.col()).findOneAndUpdate(
+      const res: any = await (this.col()).findOneAndUpdate(
         { _id },
         updateDoc,
         { returnDocument: 'after' }
@@ -246,7 +246,7 @@ export class BddServiceMealPlanMongo {
     try {
       const _id = this.toObjectId(id);
       const now = new Date();
-      const res = await (await this.col()).updateOne(
+      const res = await (this.col()).updateOne(
         { _id, deletedAt: { $exists: false } },
         { $set: { deletedAt: now, updatedAt: now } }
       );
@@ -360,3 +360,4 @@ export class BddServiceMealPlanMongo {
     throw error instanceof Error ? error : new Error(message);
   }
 }
+

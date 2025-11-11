@@ -6,12 +6,12 @@ import inversify from '@src/inversify/investify';
 import { CryptService } from '@services/crypt/crypt.service';
 import { CryptServiceDto, CryptVerifyDto } from '@services/crypt/dto/crypt.service.dto';
 
-type Argon2Config = {
+interface Argon2Config {
   timeCost?: number;      // itérations (défaut: 2/3)
   memoryCost?: number;    // en KiB (défaut: 19_456 = ~19MB)
   parallelism?: number;   // threads (défaut: 1/2 selon machine)
   hashLength?: number;    // octets de hash (défaut: 32)
-};
+}
 
 export class CryptServiceReal implements CryptService {
   constructor(private readonly config: { argon2?: Argon2Config } = {}) {}

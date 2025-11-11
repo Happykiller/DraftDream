@@ -208,7 +208,8 @@ describe('ListProgramsUsecase', () => {
         ]),
       }),
     );
-    const { createdByIn } = asMock(programRepositoryMock.list).mock.calls[0][0];
+    const listCallArgs = asMock(programRepositoryMock.list).mock.calls[0][0];
+    const createdByIn = listCallArgs?.createdByIn ?? [];
     expect(createdByIn).toHaveLength(52);
     expect(result).toEqual({
       items: [expectedProgram],

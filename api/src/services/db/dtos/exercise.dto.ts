@@ -2,7 +2,7 @@
 export type Visibility = 'private' | 'public';
 export type ExerciseLevel = 'beginner' | 'intermediate' | 'advanced';
 
-export type CreateExerciseDto = {
+export interface CreateExerciseDto {
   slug: string;
   locale: string;
   label: string;
@@ -21,11 +21,11 @@ export type CreateExerciseDto = {
   tagIds?: string[];
 
   createdBy: string;
-};
+}
 
-export type GetExerciseDto = { id: string };
+export interface GetExerciseDto { id: string }
 
-export type ListExercisesDto = {
+export interface ListExercisesDto {
   q?: string;
   locale?: string;
   createdBy?: string;
@@ -38,7 +38,7 @@ export type ListExercisesDto = {
   limit?: number;            // default 20
   page?: number;             // default 1
   sort?: Record<string, 1 | -1>; // default { updatedAt: -1 }
-};
+}
 
 export type UpdateExerciseDto = Partial<{
   slug: string;

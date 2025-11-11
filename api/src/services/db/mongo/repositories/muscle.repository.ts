@@ -1,11 +1,11 @@
-// src/services/db/mongo/muscle.repository.ts
+﻿// src/services/db/mongo/muscle.repository.ts
 import { Collection, ObjectId, Db } from 'mongodb';
 
 import inversify from '@src/inversify/investify';
 import { Muscle } from '@services/db/models/muscle.model';
 import { CreateMuscleDto, GetMuscleDto, ListMusclesDto, UpdateMuscleDto } from '@services/db/dtos/muscle.dto';
 
-type MuscleDoc = {
+interface MuscleDoc {
   _id: ObjectId;
   slug: string;
   locale: string;
@@ -15,18 +15,18 @@ type MuscleDoc = {
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
-};
+}
 
 export class BddServiceMuscleMongo {
   // --- Collection access ---
-  private async col(): Promise<Collection<MuscleDoc>> {
+  private col(): Collection<MuscleDoc> {
     return inversify.mongo.collection<MuscleDoc>('muscles');
   }
 
   // --- Optional: call this once at startup OR ship as a migration ---
   async ensureIndexes(db?: Db): Promise<void> {
     try {
-      const collection = db ? db.collection<MuscleDoc>('muscles') : await this.col();
+      const collection = db ? db.collection<MuscleDoc>('muscles') : this.col();
       await collection.createIndexes([
         { key: { slug: 1, locale: 1 }, name: 'uniq_slug_locale', unique: true },
         { key: { updatedAt: -1 }, name: 'by_updatedAt' },
@@ -50,7 +50,7 @@ export class BddServiceMuscleMongo {
     };
 
     try {
-      const result = await (await this.col()).insertOne(doc as MuscleDoc);
+      const result = await (this.col()).insertOne(doc as MuscleDoc);
       return {
         id: result.insertedId.toHexString(),
         ...doc,
@@ -68,7 +68,7 @@ export class BddServiceMuscleMongo {
   async get(dto: GetMuscleDto): Promise<Muscle | null> {
     try {
       const _id = this.toObjectId(dto.id);
-      const doc = await (await this.col()).findOne({ _id });
+      const doc = await (this.col()).findOne({ _id });
       return doc ? this.toModel(doc) : null;
     } catch (error) {
       this.handleError('get', error);
@@ -87,7 +87,7 @@ export class BddServiceMuscleMongo {
     } = params;
 
     const filter: any = {};
-    if (q && q.trim()) {
+    if (q?.trim()) {
       const regex = new RegExp(q.trim(), 'i');
       filter.$or = [{ slug: { $regex: regex } }, { label: { $regex: regex } }];
     }
@@ -95,7 +95,7 @@ export class BddServiceMuscleMongo {
     if (createdBy) filter.createdBy = createdBy;
 
     try {
-      const collection = await this.col();
+      const collection = this.col();
       const cursor = collection.find(filter).sort(sort).skip((page - 1) * limit).limit(limit);
 
       const [rows, total] = await Promise.all([cursor.toArray(), collection.countDocuments(filter)]);
@@ -120,7 +120,7 @@ export class BddServiceMuscleMongo {
     if (patch.label !== undefined) $set.label = patch.label.trim();
 
     try {
-      const res:any = await (await this.col()).findOneAndUpdate(
+      const res:any = await (this.col()).findOneAndUpdate(
         { _id },
         { $set },
         { returnDocument: 'after' }
@@ -139,7 +139,7 @@ export class BddServiceMuscleMongo {
   async delete(id: string): Promise<boolean> {
     try {
       const _id = this.toObjectId(id);
-      const res = await (await this.col()).deleteOne({ _id });
+      const res = await (this.col()).deleteOne({ _id });
       return res.deletedCount === 1;
     } catch (error) {
       this.handleError('delete', error);
@@ -177,3 +177,4 @@ export class BddServiceMuscleMongo {
     throw error instanceof Error ? error : new Error(message);
   }
 }
+

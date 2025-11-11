@@ -32,7 +32,7 @@ export function Profile(): React.JSX.Element {
   const normalizeLanguage = React.useCallback((value: string | undefined) => value?.split('-')[0] ?? 'fr', []);
 
   const sessionData = React.useMemo<Omit<SessionStoreModel, 'reset'>>(() => {
-    const { reset, ...rest } = snapshot;
+    const { reset: _reset, ...rest } = snapshot;
 
     return rest;
   }, [snapshot]);

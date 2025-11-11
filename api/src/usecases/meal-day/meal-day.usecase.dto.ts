@@ -14,5 +14,5 @@ export type GetMealDayUsecaseDto = GetMealDayRepositoryDto & { session: UsecaseS
 export type ListMealDaysRepositoryDto = ListMealDaysServiceDto;
 export type ListMealDaysUsecaseDto = ListMealDaysRepositoryDto & { session: UsecaseSession };
 export type UpdateMealDayUsecaseDto = UpdateMealDayServiceDto;
-export type DeleteMealDayUsecaseDto = { id: string; session: UsecaseSession };
+export interface DeleteMealDayUsecaseDto { id: string; session: UsecaseSession }
 

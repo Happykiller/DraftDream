@@ -1,4 +1,4 @@
-// src\services\db\mongo\repositories\session.repository.ts
+﻿// src\services\db\mongo\repositories\session.repository.ts
 import { Collection, ObjectId, Db } from 'mongodb';
 
 import inversify from '@src/inversify/investify';
@@ -10,7 +10,7 @@ import {
   UpdateSessionDto,
 } from '@services/db/dtos/session.dto';
 
-type SessionDoc = {
+interface SessionDoc {
   _id: ObjectId;
   slug: string;
   locale: string;
@@ -25,18 +25,18 @@ type SessionDoc = {
   deletedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
-};
+}
 
 export class BddServiceSessionMongo {
   // -- Collection accessor --
-  private async col(): Promise<Collection<SessionDoc>> {
+  private col(): Collection<SessionDoc> {
     return inversify.mongo.collection<SessionDoc>('sessions');
   }
 
   /** Create all necessary indexes. */
   async ensureIndexes(db?: Db): Promise<void> {
     try {
-      const collection = db ? db.collection<SessionDoc>('sessions') : await this.col();
+      const collection = db ? db.collection<SessionDoc>('sessions') : this.col();
       await collection.createIndexes([
         // Unicity for active (non-deleted) documents
         {
@@ -76,7 +76,7 @@ export class BddServiceSessionMongo {
     };
 
     try {
-      const res = await (await this.col()).insertOne(doc as SessionDoc);
+      const res = await (this.col()).insertOne(doc as SessionDoc);
       return this.toModel({ _id: res.insertedId, ...doc } as SessionDoc);
     } catch (error) {
       // code 11000 => duplicate key (unique index violation)
@@ -89,7 +89,7 @@ export class BddServiceSessionMongo {
   async get(dto: GetSessionDto): Promise<Session | null> {
     try {
       const _id = this.toObjectId(dto.id);
-      const doc = await (await this.col()).findOne({ _id });
+      const doc = await (this.col()).findOne({ _id });
       return doc ? this.toModel(doc) : null;
     } catch (error) {
       this.handleError('get', error);
@@ -110,7 +110,7 @@ export class BddServiceSessionMongo {
     } = params;
 
     const filter: Record<string, any> = {};
-    if (q && q.trim()) {
+    if (q?.trim()) {
       filter.$or = [
         { slug: { $regex: new RegExp(q.trim(), 'i') } },
         { label: { $regex: new RegExp(q.trim(), 'i') } },
@@ -131,7 +131,7 @@ export class BddServiceSessionMongo {
     if (!includeArchived) filter.deletedAt = { $exists: false };
 
     try {
-      const collection = await this.col();
+      const collection = this.col();
       const cursor = collection.find(filter).sort(sort).skip((page - 1) * limit).limit(limit);
       const [rows, total] = await Promise.all([cursor.toArray(), collection.countDocuments(filter)]);
 
@@ -154,7 +154,7 @@ export class BddServiceSessionMongo {
     if (patch.exerciseIds !== undefined) $set.exerciseIds = [...patch.exerciseIds];
 
     try {
-      const res: any = await (await this.col()).findOneAndUpdate(
+      const res: any = await (this.col()).findOneAndUpdate(
         { _id },
         { $set },
         { returnDocument: 'after' }
@@ -171,7 +171,7 @@ export class BddServiceSessionMongo {
     try {
       const _id = this.toObjectId(id);
       const now = new Date();
-      const res = await (await this.col()).updateOne(
+      const res = await (this.col()).updateOne(
         { _id, deletedAt: { $exists: false } },
         { $set: { deletedAt: now, updatedAt: now } }
       );
@@ -219,3 +219,4 @@ export class BddServiceSessionMongo {
     throw error instanceof Error ? error : new Error(message);
   }
 }
+

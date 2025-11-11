@@ -15,6 +15,6 @@ export type ListExercisesRepositoryDto = ListExercisesServiceDto;
 export type ListExercisesUsecaseDto = ListExercisesRepositoryDto & { session: UsecaseSession };
 export type UpdateExerciseUsecaseDto = UpdateExerciseServiceDto & { session: UsecaseSession };
 
-export type ArchiveExerciseUsecaseDto = { id: string };
-export type UnarchiveExerciseUsecaseDto = { id: string };
-export type DeleteExerciseUsecaseDto = { id: string; session: UsecaseSession };
+export interface ArchiveExerciseUsecaseDto { id: string }
+export interface UnarchiveExerciseUsecaseDto { id: string }
+export interface DeleteExerciseUsecaseDto { id: string; session: UsecaseSession }

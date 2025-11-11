@@ -4,11 +4,12 @@ import { AccessTokenClaims, AuthContext } from '@graphql/auth/auth.types';
 
 export function buildContextFactory(inversify: any) {
   return async function buildContext({ req }): Promise<AuthContext> {
-    const authz: string | undefined = req?.headers?.authorization || req?.headers?.Authorization;
+    const authz: string | undefined =
+      req?.headers?.authorization ?? req?.headers?.Authorization;
     let user: AuthContext['user'] = null;
     let tokenPayload: AccessTokenClaims | null = null;
 
-    if (authz && authz.startsWith('Bearer ')) {
+    if (authz?.startsWith('Bearer ')) {
       const token = authz.slice('Bearer '.length).trim();
       try {
         const res = await inversify.jwtService.verify(token);
@@ -27,7 +28,8 @@ export function buildContextFactory(inversify: any) {
           inversify.loggerService.warn(`JWT invalid: ${res.reason}`);
         }
       } catch (e) {
-        inversify.loggerService.warn(`JWT verify failed: ${String(e?.message || e)}`);
+        const reason = e instanceof Error ? e.message : String(e);
+        inversify.loggerService.warn(`JWT verify failed: ${reason}`);
       }
     }
 

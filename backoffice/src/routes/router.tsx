@@ -2,21 +2,17 @@
 import * as React from 'react';
 import { createBrowserRouter, redirect } from 'react-router-dom';
 
-import LoaderOverlay from '@components/layout/LoaderOverlay';
 import { session } from '@stores/session';
 import { withTitle } from '@src/routes/withTitle';
 import { PublicLayout } from '@layouts/PublicLayout';
 import { ProtectedLayout } from '@layouts/ProtectedLayout';
+import { AppFallback } from './AppFallback';
 
 // Guard loader for protected branches
 export async function requireAuthLoader() {
   const ok = session.getState().access_token !== null;
   if (!ok) throw redirect('/login');
   return null;
-}
-
-function AppFallback(): React.JSX.Element {
-  return <LoaderOverlay forceVisible />;
 }
 
 export const router = createBrowserRouter([

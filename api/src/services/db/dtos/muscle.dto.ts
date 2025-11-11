@@ -1,17 +1,17 @@
 // src/services/db/dto/muscle.dto.ts
-export type CreateMuscleDto = {
+export interface CreateMuscleDto {
   slug: string;
   locale: string;
   label: string;
   visibility: 'private' | 'public';
   createdBy: string;
-};
+}
 
 export type UpdateMuscleDto = Partial<Pick<CreateMuscleDto, 'slug' | 'locale' | 'label'>>;
 
-export type GetMuscleDto = { id: string };
+export interface GetMuscleDto { id: string }
 
-export type ListMusclesDto = {
+export interface ListMusclesDto {
   q?: string;            // search on slug (regex)
   locale?: string;
   createdBy?: string;
@@ -19,4 +19,4 @@ export type ListMusclesDto = {
   limit?: number;        // default 20
   page?: number;         // default 1
   sort?: Record<string, 1 | -1>; // e.g. { updatedAt: -1 }
-};
+}

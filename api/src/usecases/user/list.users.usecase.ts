@@ -33,7 +33,7 @@ export class ListUsersUsecase {
     }
   }
 
-  private mapToUsecase(u: User): UserUsecaseModel {
+  private mapToUsecase(this: void, u: User): UserUsecaseModel {
     return {
       id: u.id,
       type: u.type,

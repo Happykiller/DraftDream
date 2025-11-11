@@ -1,4 +1,4 @@
-// src/services/db/mongo/tag.repository.ts
+﻿// src/services/db/mongo/tag.repository.ts
 import { Collection, ObjectId, Db } from 'mongodb';
 import inversify from '@src/inversify/investify';
 import { Tag } from '@services/db/models/tag.model';
@@ -6,7 +6,7 @@ import {
   CreateTagDto, GetTagDto, ListTagsDto, UpdateTagDto,
 } from '@services/db/dtos/tag.dto';
 
-type TagDoc = {
+interface TagDoc {
   _id: ObjectId;
   slug: string;
   locale: string;
@@ -16,18 +16,18 @@ type TagDoc = {
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
-};
+}
 
 export class BddServiceTagMongo {
   // Get collection handle
-  private async col(): Promise<Collection<TagDoc>> {
+  private col(): Collection<TagDoc> {
     return inversify.mongo.collection<TagDoc>('tags');
   }
 
   // Ensure indexes
   async ensureIndexes(db?: Db): Promise<void> {
     try {
-      const collection = db ? db.collection<TagDoc>('tags') : await this.col();
+      const collection = db ? db.collection<TagDoc>('tags') : this.col();
       await collection.createIndexes([
         // Unique per user to allow same tag name across users
         { key: { slug: 1, locale: 1, createdBy: 1 }, name: 'uniq_slug_locale_owner', unique: true },
@@ -55,7 +55,7 @@ export class BddServiceTagMongo {
     };
 
     try {
-      const res = await (await this.col()).insertOne(doc as TagDoc);
+      const res = await (this.col()).insertOne(doc as TagDoc);
       return { id: res.insertedId.toHexString(), ...doc };
     } catch (error) {
       if (this.isDuplicateError(error)) return null; // duplicate for same owner+locale
@@ -67,7 +67,7 @@ export class BddServiceTagMongo {
   async get(dto: GetTagDto): Promise<Tag | null> {
     try {
       const _id = this.toObjectId(dto.id);
-      const doc = await (await this.col()).findOne({ _id });
+      const doc = await (this.col()).findOne({ _id });
       return doc ? this.toModel(doc) : null;
     } catch (error) {
       this.handleError('get', error);
@@ -81,7 +81,7 @@ export class BddServiceTagMongo {
     } = params;
 
     const filter: Record<string, unknown> = {};
-    if (q && q.trim()) {
+    if (q?.trim()) {
       const regex = new RegExp(q.trim(), 'i');
       filter.$or = [{ slug: { $regex: regex } }, { label: { $regex: regex } }];
     }
@@ -90,7 +90,7 @@ export class BddServiceTagMongo {
     if (visibility === 'public' || visibility === 'private') filter.visibility = visibility;
 
     try {
-      const collection = await this.col();
+      const collection = this.col();
       const cursor = collection.find(filter).sort(sort).skip((page - 1) * limit).limit(limit);
       const [rows, total] = await Promise.all([cursor.toArray(), collection.countDocuments(filter)]);
 
@@ -110,7 +110,7 @@ export class BddServiceTagMongo {
     if (patch.visibility !== undefined) $set.visibility = patch.visibility;
 
     try {
-      const res: any = await (await this.col()).findOneAndUpdate(
+      const res: any = await (this.col()).findOneAndUpdate(
         { _id }, { $set }, { returnDocument: 'after' }
       );
       return res.value ? this.toModel(res.value) : null;
@@ -124,7 +124,7 @@ export class BddServiceTagMongo {
   async delete(id: string): Promise<boolean> {
     try {
       const _id = this.toObjectId(id);
-      const res = await (await this.col()).deleteOne({ _id });
+      const res = await (this.col()).deleteOne({ _id });
       return res.deletedCount === 1;
     } catch (error) {
       this.handleError('delete', error);
@@ -158,3 +158,4 @@ export class BddServiceTagMongo {
     throw error instanceof Error ? error : new Error(message);
   }
 }
+

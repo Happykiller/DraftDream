@@ -1,5 +1,5 @@
 // src\usecases\session\session.usecase.model.ts
-export type SessionUsecaseModel = {
+export interface SessionUsecaseModel {
   id: string;
   slug: string;
   locale: string;
@@ -14,4 +14,4 @@ export type SessionUsecaseModel = {
   deletedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
-};
+}

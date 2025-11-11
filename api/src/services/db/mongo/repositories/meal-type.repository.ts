@@ -1,4 +1,4 @@
-// src/services/db/mongo/repositories/meal-type.repository.ts
+﻿// src/services/db/mongo/repositories/meal-type.repository.ts
 import {
   Collection,
   Db,
@@ -14,7 +14,7 @@ import {
   UpdateMealTypeDto,
 } from '@services/db/dtos/meal-type.dto';
 
-type MealTypeDoc = {
+interface MealTypeDoc {
   _id: ObjectId;
   slug: string;
   locale: string;
@@ -25,14 +25,14 @@ type MealTypeDoc = {
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
-};
+}
 
 /** Mongo repository providing CRUD operations for meal types. */
 export class BddServiceMealTypeMongo {
   /**
    * Provides the Mongo collection instance for meal types.
    */
-  private async col(): Promise<Collection<MealTypeDoc>> {
+  private col(): Collection<MealTypeDoc> {
     return inversify.mongo.collection<MealTypeDoc>('meal_types');
   }
 
@@ -41,7 +41,7 @@ export class BddServiceMealTypeMongo {
    */
   async ensureIndexes(db?: Db): Promise<void> {
     try {
-      const collection = db ? db.collection<MealTypeDoc>('meal_types') : await this.col();
+      const collection = db ? db.collection<MealTypeDoc>('meal_types') : this.col();
       await collection.createIndexes([
         { key: { slug: 1, locale: 1 }, name: 'uniq_slug_locale', unique: true },
         { key: { updatedAt: -1 }, name: 'by_updatedAt' },
@@ -69,7 +69,7 @@ export class BddServiceMealTypeMongo {
     };
 
     try {
-      const res = await (await this.col()).insertOne(doc as MealTypeDoc);
+      const res = await (this.col()).insertOne(doc as MealTypeDoc);
       return {
         id: res.insertedId.toHexString(),
         ...doc,
@@ -87,7 +87,7 @@ export class BddServiceMealTypeMongo {
   async get(dto: GetMealTypeDto): Promise<MealType | null> {
     try {
       const _id = this.toObjectId(dto.id);
-      const doc = await (await this.col()).findOne({ _id });
+      const doc = await (this.col()).findOne({ _id });
       return doc ? this.toModel(doc) : null;
     } catch (error) {
       this.handleError('get', error);
@@ -109,7 +109,7 @@ export class BddServiceMealTypeMongo {
     } = params;
 
     const filter: Record<string, any> = {};
-    if (q && q.trim()) {
+    if (q?.trim()) {
       const regex = new RegExp(q.trim(), 'i');
       filter.$or = [{ slug: { $regex: regex } }, { label: { $regex: regex } }];
     }
@@ -120,7 +120,7 @@ export class BddServiceMealTypeMongo {
     }
 
     try {
-      const collection = await this.col();
+      const collection = this.col();
       const cursor = collection
         .find(filter)
         .sort(sort)
@@ -155,7 +155,7 @@ export class BddServiceMealTypeMongo {
     if (patch.visibility !== undefined) $set.visibility = patch.visibility;
 
     try {
-      const collection = await this.col();
+      const collection = this.col();
       const res = await collection.updateOne({ _id }, { $set });
       if (!res.matchedCount) {
         return null;
@@ -175,7 +175,7 @@ export class BddServiceMealTypeMongo {
   async delete(id: string): Promise<boolean> {
     try {
       const _id = this.toObjectId(id);
-      const res = await (await this.col()).deleteOne({ _id });
+      const res = await (this.col()).deleteOne({ _id });
       return res.deletedCount === 1;
     } catch (error) {
       this.handleError('delete', error);
@@ -225,3 +225,4 @@ export class BddServiceMealTypeMongo {
     return trimmed.length ? trimmed : null;
   }
 }
+

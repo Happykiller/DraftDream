@@ -39,7 +39,6 @@ export function MealsPanel(): React.JSX.Element {
         limit={limit}
         q={searchInput}
         loading={loading}
-        mealTypes={mealTypes}
         onCreate={() => setOpenCreate(true)}
         onEdit={(row) => setEditId(row.id)}
         onDelete={(row) => setDeleteId(row.id)}

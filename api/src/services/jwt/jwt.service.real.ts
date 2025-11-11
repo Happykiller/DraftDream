@@ -3,7 +3,7 @@ import { SignJWT, jwtVerify, decodeJwt, decodeProtectedHeader } from 'jose';
 
 import { JwtService } from '@services/jwt/jwt.service';
 
-type Cfg = {
+interface Cfg {
   jwt: {
     secret: string;              // config.jwt.secret
     expire: number;              // seconds (ex: 900)
@@ -11,7 +11,7 @@ type Cfg = {
     audience?: string;
     clockToleranceSec?: number;  // défaut 5
   }
-};
+}
 
 export class JwtServiceReal implements JwtService {
   private readonly key: Uint8Array;

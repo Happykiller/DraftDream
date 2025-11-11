@@ -1,11 +1,10 @@
-import { type MouseEvent } from 'react';
-
 import {
   Box,
   ToggleButton,
   ToggleButtonGroup,
   Typography
 } from '@mui/material';
+import { type MouseEvent } from 'react';
 
 import { supportedLanguages, useI18n, type Language } from '../i18n/I18nProvider';
 

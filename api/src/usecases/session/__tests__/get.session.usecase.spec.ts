@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+﻿import { beforeEach, describe, expect, it } from '@jest/globals';
 
 import { ERRORS } from '@src/common/ERROR';
 import { Role } from '@src/common/role.enum';
@@ -10,10 +10,11 @@ import { GetSessionUsecase } from '@usecases/session/get.session.usecase';
 import { GetSessionUsecaseDto } from '@usecases/session/session.usecase.dto';
 import { SessionUsecaseModel } from '@usecases/session/session.usecase.model';
 import { asMock, createMockFn } from '@src/test-utils/mock-helpers';
+import type { User } from '@services/db/models/user.model';
 
 interface LoggerMock {
   error: (message: string) => void;
-  warn?: (message: string) => void;
+  warn: (message: string) => void;
 }
 
 const now = new Date('2024-01-01T00:00:00.000Z');
@@ -25,7 +26,7 @@ const sessionEntity = {
   durationMin: 60,
   description: 'Full body workout',
   exerciseIds: ['ex-1', 'ex-2'],
-  createdBy: { id: 'coach-1' },
+  createdBy: 'coach-1',
   deletedAt: undefined,
   createdAt: now,
   updatedAt: now,
@@ -113,7 +114,7 @@ describe('GetSessionUsecase', () => {
   it('should allow the creator to access the session', async () => {
     const dto = buildDto(Role.COACH, 'coach-1');
     asMock(sessionRepositoryMock.get).mockResolvedValue(sessionEntity);
-    asMock(userRepositoryMock.getUser).mockResolvedValue({ id: 'coach-1', type: 'coach' });
+    asMock(userRepositoryMock.getUser).mockResolvedValue(buildUser('coach-1', 'coach'));
 
     const result = await usecase.execute(dto);
 
@@ -124,9 +125,9 @@ describe('GetSessionUsecase', () => {
     const dto = buildDto(Role.COACH, 'coach-2');
     asMock(sessionRepositoryMock.get).mockResolvedValue({
       ...sessionEntity,
-      createdBy: { id: 'admin-1' },
+      createdBy: 'admin-1',
     });
-    asMock(userRepositoryMock.getUser).mockResolvedValue({ id: 'admin-1', type: 'admin' });
+    asMock(userRepositoryMock.getUser).mockResolvedValue(buildUser('admin-1', 'admin'));
 
     const result = await usecase.execute(dto);
 
@@ -136,7 +137,7 @@ describe('GetSessionUsecase', () => {
   it('should reject unauthorized access attempts', async () => {
     const dto = buildDto(Role.COACH, 'coach-2');
     asMock(sessionRepositoryMock.get).mockResolvedValue(sessionEntity);
-    asMock(userRepositoryMock.getUser).mockResolvedValue({ id: 'coach-1', type: 'coach' });
+    asMock(userRepositoryMock.getUser).mockResolvedValue(buildUser('coach-1', 'coach'));
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.GET_SESSION_FORBIDDEN);
     expect(asMock(loggerMock.error).mock.calls.length).toBe(0);
@@ -158,7 +159,7 @@ describe('GetSessionUsecase', () => {
     const failure = new Error('user service down');
     asMock(sessionRepositoryMock.get).mockResolvedValue({
       ...sessionEntity,
-      createdBy: { id: 'admin-1' },
+      createdBy: 'admin-1',
     });
     asMock(userRepositoryMock.getUser).mockRejectedValue(failure);
 
@@ -168,4 +169,14 @@ describe('GetSessionUsecase', () => {
     ]);
     expect(asMock(loggerMock.error).mock.calls.length).toBe(0);
   });
+});
+
+const buildUser = (id: string, type: User['type']): User => ({
+  id,
+  type,
+  first_name: `Test ${id}`,
+  last_name: 'User',
+  email: `${id}@example.com`,
+  is_active: true,
+  createdBy: 'system',
 });

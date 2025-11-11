@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next';
 
 import type { Meal } from '@hooks/useMeals';
 import { useDateFormatter } from '@hooks/useDateFormatter';
-import type { MealType } from '@src/hooks/useMealTypes';
 
 export interface MealTableProps {
   rows: Meal[];
@@ -17,7 +16,6 @@ export interface MealTableProps {
   limit: number;
   q: string;
   loading: boolean;
-  mealTypes: MealType[];
   onCreate: () => void;
   onEdit: (row: Meal) => void;
   onDelete: (row: Meal) => void;
@@ -34,7 +32,6 @@ export function MealTable(props: MealTableProps): React.JSX.Element {
     limit,
     q,
     loading,
-    mealTypes,
     onCreate,
     onEdit,
     onDelete,
@@ -102,7 +99,7 @@ export function MealTable(props: MealTableProps): React.JSX.Element {
         ),
       },
     ];
-  }, [formatDate, mealTypes, onDelete, onEdit, t]);
+  }, [formatDate, onDelete, onEdit, t]);
 
   return (
     <Box sx={{ width: '100%' }}>

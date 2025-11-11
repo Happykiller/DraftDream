@@ -11,7 +11,8 @@
     "start": "nest start",
     "start:dev": "cross-env NODE_ENV=dev nest start --watch",
     "start:prod": "node .",
-    "lint": "eslint \"src/**/*.ts\" --max-warnings=0"
+    "lint": "eslint",
+    "lint:fix": "eslint --fix"
   },
   "keywords": [],
   "author": "fabrice.rosito@gmail.com",
@@ -39,8 +40,8 @@
     "winston-daily-rotate-file": "^5.0.0",
     "eslint": "^9.39.1",
     "@eslint/js": "^9.39.1",
-    "@typescript-eslint/eslint-plugin": "^8.46.3",
-    "@typescript-eslint/parser": "^8.46.3"
+    "@typescript-eslint/eslint-plugin": "^8.46.4",
+    "@typescript-eslint/parser": "^8.46.4"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.10",

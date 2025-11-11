@@ -14,7 +14,7 @@ export class AuthUsecase {
   async execute(dto: AuthUsecaseDto): Promise<SessionUsecaseModel> {
     try {
       const user = await this.inversify.bddService.user.getUserByEmail(dto.email, { includePassword: true });
-      if (!user || !user.password) throw new Error(ERRORS.INVALID_CREDENTIALS);
+      if (!user?.password) throw new Error(ERRORS.INVALID_CREDENTIALS);
 
       const ok = await this.inversify.cryptService.verify({ message: dto.password, hash: user.password });
       if (!ok) throw new Error(ERRORS.INVALID_CREDENTIALS);

@@ -1,15 +1,15 @@
 // src/services/db/dtos/meal-plan.dto.ts
 
-export type MealPlanMealTypeSnapshotDto = {
+export interface MealPlanMealTypeSnapshotDto {
   id?: string;
   templateMealTypeId?: string;
   slug?: string;
   locale?: string;
   label: string;
   visibility?: 'private' | 'public';
-};
+}
 
-export type MealPlanMealSnapshotDto = {
+export interface MealPlanMealSnapshotDto {
   id: string;
   templateMealId?: string;
   slug?: string;
@@ -22,9 +22,9 @@ export type MealPlanMealSnapshotDto = {
   carbGrams: number;
   fatGrams: number;
   type: MealPlanMealTypeSnapshotDto;
-};
+}
 
-export type MealPlanDaySnapshotDto = {
+export interface MealPlanDaySnapshotDto {
   id: string;
   templateMealDayId?: string;
   slug?: string;
@@ -32,9 +32,9 @@ export type MealPlanDaySnapshotDto = {
   label: string;
   description?: string;
   meals: MealPlanMealSnapshotDto[];
-};
+}
 
-export type CreateMealPlanDto = {
+export interface CreateMealPlanDto {
   slug: string;
   locale: string;
   label: string;
@@ -46,11 +46,11 @@ export type CreateMealPlanDto = {
   days: MealPlanDaySnapshotDto[];
   userId?: string | null;
   createdBy: string;
-};
+}
 
-export type GetMealPlanDto = { id: string };
+export interface GetMealPlanDto { id: string }
 
-export type ListMealPlansDto = {
+export interface ListMealPlansDto {
   q?: string;
   locale?: string;
   createdBy?: string;
@@ -60,7 +60,7 @@ export type ListMealPlansDto = {
   limit?: number;
   page?: number;
   sort?: Record<string, 1 | -1>;
-};
+}
 
 export type UpdateMealPlanDto = Partial<{
   slug: string;

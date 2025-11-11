@@ -1,17 +1,17 @@
 // src/services/db/dto/category.dto.ts
-export type CreateCategoryDto = {
+export interface CreateCategoryDto {
   slug: string;
   locale: string;
   label: string;
   visibility: 'private' | 'public';
   createdBy: string;
-};
+}
 
 export type UpdateCategoryDto = Partial<Pick<CreateCategoryDto, 'slug' | 'locale' | 'label'>>;
 
-export type GetCategoryDto = { id: string };
+export interface GetCategoryDto { id: string }
 
-export type ListCategoriesDto = {
+export interface ListCategoriesDto {
   q?: string;
   locale?: string;
   createdBy?: string;
@@ -19,4 +19,4 @@ export type ListCategoriesDto = {
   limit?: number;                 // default 20
   page?: number;                  // default 1
   sort?: Record<string, 1 | -1>;  // e.g. { updatedAt: -1 }
-};
+}

@@ -1,5 +1,5 @@
 // src\\usecases\\program\\program.usecase.model.ts
-export type ProgramExerciseUsecaseModel = {
+export interface ProgramExerciseUsecaseModel {
   id: string;
   templateExerciseId?: string;
   label: string;
@@ -15,9 +15,9 @@ export type ProgramExerciseUsecaseModel = {
   muscleIds?: string[];
   equipmentIds?: string[];
   tagIds?: string[];
-};
+}
 
-export type ProgramSessionUsecaseModel = {
+export interface ProgramSessionUsecaseModel {
   id: string;
   templateSessionId?: string;
   slug?: string;
@@ -26,9 +26,9 @@ export type ProgramSessionUsecaseModel = {
   durationMin: number;
   description?: string;
   exercises: ProgramExerciseUsecaseModel[];
-};
+}
 
-export type ProgramUsecaseModel = {
+export interface ProgramUsecaseModel {
   id: string;
   slug: string;
   locale: string;
@@ -42,4 +42,4 @@ export type ProgramUsecaseModel = {
   deletedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
-};
+}

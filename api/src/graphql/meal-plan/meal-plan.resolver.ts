@@ -111,7 +111,7 @@ export class MealPlanResolver {
         updateDto.slug = normalized;
       } else {
         let fallbackLabel = input.label;
-        if (!fallbackLabel || !fallbackLabel.trim()) {
+        if (!fallbackLabel?.trim()) {
           const current = await getCurrentMealPlan();
           fallbackLabel = current?.label;
         }
@@ -202,7 +202,7 @@ export class MealPlanResolver {
   ): Promise<MealPlanDaySnapshotUsecaseDto[]> {
     const defaultLocale = this.normalizeLocaleValue(options.defaultLocale);
 
-    if (daysInput && daysInput.length) {
+    if (daysInput?.length) {
       return daysInput.map((day) => ({
         id: day.id ?? this.generateId(),
         templateMealDayId: day.templateMealDayId,
@@ -214,7 +214,7 @@ export class MealPlanResolver {
       }));
     }
 
-    if (!dayIds || !dayIds.length) {
+    if (!dayIds?.length) {
       return [];
     }
 
@@ -312,7 +312,11 @@ export class MealPlanResolver {
     type: MealPlanMealTypeInput,
     options: { fallbackLabel: string },
   ): MealPlanMealTypeSnapshotUsecaseDto {
-    const label = type?.label?.trim() || options.fallbackLabel.trim();
+    const trimmedLabel = type?.label?.trim();
+    const label =
+      trimmedLabel && trimmedLabel.length > 0
+        ? trimmedLabel
+        : options.fallbackLabel.trim();
     return {
       id: type?.id,
       templateMealTypeId: type?.templateMealTypeId ?? type?.id,
@@ -337,6 +341,9 @@ export class MealPlanResolver {
 
   private normalizeLocaleValue(locale?: string | null): string | undefined {
     const normalized = locale?.trim().toLowerCase();
-    return normalized || undefined;
+    if (!normalized) {
+      return undefined;
+    }
+    return normalized;
   }
 }

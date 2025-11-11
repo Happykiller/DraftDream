@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+﻿import { beforeEach, describe, expect, it } from '@jest/globals';
 
 import { ERRORS } from '@src/common/ERROR';
 import { Role } from '@src/common/role.enum';
@@ -22,7 +22,7 @@ const sessionEntity = {
   durationMin: 60,
   description: 'Full body workout',
   exerciseIds: ['ex-1', 'ex-2'],
-  createdBy: { id: 'coach-1' },
+  createdBy: 'coach-1',
   deletedAt: undefined,
   createdAt: now,
   updatedAt: now,
@@ -129,3 +129,4 @@ describe('DeleteSessionUsecase', () => {
     ]);
   });
 });
+

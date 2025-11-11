@@ -40,7 +40,7 @@ const migration: Migration = {
     );
     if (!admin?._id) throw new Error('Admin user not found (email: "admin@fitdesk.com").');
 
-    const createdBy: ObjectId = admin._id as ObjectId;
+    const createdBy: ObjectId = admin._id;
     const now = new Date();
 
     const ops = FR_LABELS.map((label) => {

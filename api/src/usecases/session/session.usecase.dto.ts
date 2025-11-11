@@ -13,4 +13,4 @@ export type GetSessionUsecaseDto = GetSessionRepositoryDto & { session: UsecaseS
 export type ListSessionsRepositoryDto = ListSessionsServiceDto;
 export type ListSessionsUsecaseDto = ListSessionsRepositoryDto & { session: UsecaseSession };
 export type UpdateSessionUsecaseDto = UpdateSessionServiceDto;
-export type DeleteSessionUsecaseDto = { id: string; session: UsecaseSession };
+export interface DeleteSessionUsecaseDto { id: string; session: UsecaseSession }

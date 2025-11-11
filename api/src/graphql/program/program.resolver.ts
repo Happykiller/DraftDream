@@ -102,7 +102,7 @@ export class ProgramResolver {
         updateDto.slug = normalized;
       } else {
         let fallbackLabel = input.label;
-        if (!fallbackLabel || !fallbackLabel.trim()) {
+        if (!fallbackLabel?.trim()) {
           const current = await getCurrentProgram();
           fallbackLabel = current?.label;
         }
@@ -199,7 +199,7 @@ export class ProgramResolver {
   ): Promise<ProgramSessionSnapshotUsecaseDto[]> {
     const defaultLocale = this.normalizeLocaleValue(options.defaultLocale);
 
-    if (sessionsInput && sessionsInput.length) {
+    if (sessionsInput?.length) {
       return sessionsInput.map((session) => ({
         id: session.id ?? this.generateId(),
         templateSessionId: session.templateSessionId,
@@ -228,7 +228,7 @@ export class ProgramResolver {
       }));
     }
 
-    if (!sessionIds || !sessionIds.length) return [];
+    if (!sessionIds?.length) return [];
 
     const sessions = await Promise.all(
       sessionIds.map((id) =>
@@ -300,14 +300,17 @@ export class ProgramResolver {
 
   private normalizeLocaleValue(locale?: string | null): string | undefined {
     const normalized = locale?.trim().toLowerCase();
-    return normalized || undefined;
+    if (!normalized) {
+      return undefined;
+    }
+    return normalized;
   }
 
   private normalizeIdArray(values?: string[] | null): string[] | undefined {
     if (!Array.isArray(values)) {
       return undefined;
     }
-    const normalized = Array.from(new Set(values.map((value) => value?.trim()).filter(Boolean))) as string[];
+    const normalized = Array.from(new Set(values.map((value) => value?.trim()).filter(Boolean)));
     return normalized.length ? normalized : undefined;
   }
 }

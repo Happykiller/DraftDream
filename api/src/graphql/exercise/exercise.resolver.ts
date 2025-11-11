@@ -1,6 +1,5 @@
 // src/graphql/exercise/exercise.resolver.ts
-// Comments in English.
-import { ConflictException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 import { Args, Context, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 
 import { Role } from '@graphql/common/ROLE';

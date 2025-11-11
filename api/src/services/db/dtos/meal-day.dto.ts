@@ -2,7 +2,7 @@
 
 export type MealDayVisibility = 'private' | 'public';
 
-export type CreateMealDayDto = {
+export interface CreateMealDayDto {
   slug: string;
   locale: string;
 
@@ -14,11 +14,11 @@ export type CreateMealDayDto = {
 
   visibility: MealDayVisibility;
   createdBy: string;
-};
+}
 
-export type GetMealDayDto = { id: string };
+export interface GetMealDayDto { id: string }
 
-export type ListMealDaysDto = {
+export interface ListMealDaysDto {
   q?: string;
   locale?: string;
   visibility?: MealDayVisibility;
@@ -29,7 +29,7 @@ export type ListMealDaysDto = {
   limit?: number;            // default 20
   page?: number;             // default 1
   sort?: Record<string, 1 | -1>; // default { updatedAt: -1 }
-};
+}
 
 export type UpdateMealDayDto = Partial<{
   slug: string;

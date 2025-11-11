@@ -134,7 +134,7 @@ export function useUsers({ page, limit, q }: UseUsersParams) {
     if (lastSigRef.current === sig) return;
     lastSigRef.current = sig;
     void load({ page, limit, q });
-  }, [sig, load]);
+  }, [sig, load, page, limit, q]);
 
   const create = React.useCallback(
     async (input: {

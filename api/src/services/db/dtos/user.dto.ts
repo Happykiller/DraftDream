@@ -2,19 +2,19 @@
 
 export type UserType = 'athlete' | 'coach' | 'admin';
 
-export type AddressDto = {
+export interface AddressDto {
   name: string;
   city: string;
   code: string;
   country: string; // ISO 3166-1 alpha-2 recommandé
-};
+}
 
-export type CompanyDto = {
+export interface CompanyDto {
   name: string;
   address?: AddressDto;
-};
+}
 
-export type CreateUserDto = {
+export interface CreateUserDto {
   type: UserType;
   first_name: string;
   last_name: string;
@@ -25,7 +25,7 @@ export type CreateUserDto = {
   company?: CompanyDto;
   is_active?: boolean;
   createdBy: string; 
-};
+}
 
 export interface UpdateUserDto {
   type?: UserType;
@@ -39,9 +39,9 @@ export interface UpdateUserDto {
   createdBy?: string;
 }
 
-export type GetUserDto = { id: string };
+export interface GetUserDto { id: string }
 
-export type ListUsersDto = {
+export interface ListUsersDto {
   q?: string;                 // regex on first_name/last_name/email/phone/company.name
   type?: UserType;
   companyName?: string;       // exact/regex on company.name
@@ -51,4 +51,4 @@ export type ListUsersDto = {
   sort?: Record<string, 1 | -1>; // e.g. { createdAt: -1 }
   is_active?: boolean;
   createdBy?: string;
-};
+}

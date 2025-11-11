@@ -19,7 +19,7 @@ export type NavItem = {
 
 /** Return role-based navigation items. Pure list, memoized by role. */
 export function useNavItems(role?: string): NavItem[] {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   return React.useMemo(() => {
     const base: NavItem[] = [
@@ -52,5 +52,5 @@ export function useNavItems(role?: string): NavItem[] {
     );
 
     return base;
-  }, [role, i18n.language, t]);
+  }, [role, t]);
 }

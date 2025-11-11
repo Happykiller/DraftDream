@@ -1,4 +1,4 @@
-// src/services/db/mongo/user/user.repository.ts
+﻿// src/services/db/mongo/user/user.repository.ts
 import { Collection, Db, Document, Filter, ObjectId, Sort } from 'mongodb';
 import inversify from '@src/inversify/investify';
 import { User } from '@services/db/models/user.model';
@@ -7,7 +7,7 @@ import {
 } from '@services/db/dtos/user.dto';
 
 // --- Persisted document shape ---
-type UserDoc = {
+interface UserDoc {
   _id: ObjectId;
   type: UserType;
   first_name: string;
@@ -22,17 +22,17 @@ type UserDoc = {
   createdAt: Date;
   updatedAt: Date;
   schemaVersion: number;
-};
+}
 
 export class BddServiceUserMongo {
-  private async col(): Promise<Collection<UserDoc>> {
+  private col(): Collection<UserDoc> {
     return inversify.mongo.collection<UserDoc>('users');
   }
 
   // --- Ensure indexes (call once at bootstrap OR via migration) ---
   async ensureIndexes(db?: Db): Promise<void> {
     try {
-      const collection = db ? db.collection<UserDoc>('users') : await this.col();
+      const collection = db ? db.collection<UserDoc>('users') : this.col();
       await collection.createIndexes([
         { key: { email: 1 }, name: 'uniq_email', unique: true },
         { key: { type: 1 }, name: 'by_type' },
@@ -69,7 +69,7 @@ export class BddServiceUserMongo {
     };
 
     try {
-      const res = await (await this.col()).insertOne(doc as UserDoc);
+      const res = await (this.col()).insertOne(doc as UserDoc);
       const saved = await this.getUser({ id: res.insertedId.toHexString() }, { includePassword: false });
       if (!saved) throw new Error('Inserted but not found');
       return saved;
@@ -88,7 +88,7 @@ export class BddServiceUserMongo {
     try {
       const _id = this.toObjectId(dto.id);
       const projection = this.makeProjection(!!opts?.includePassword);
-      const doc = await (await this.col()).findOne({ _id }, { projection });
+      const doc = await (this.col()).findOne({ _id }, { projection });
       return doc ? this.toModel(doc, !!opts?.includePassword) : null;
     } catch (error) {
       this.handleError('getUser', error);
@@ -99,7 +99,7 @@ export class BddServiceUserMongo {
   async getUserByEmail(email: string, opts?: { includePassword?: boolean }): Promise<User | null> {
     try {
       const projection = this.makeProjection(!!opts?.includePassword);
-      const doc = await (await this.col()).findOne({ email: email.toLowerCase().trim() }, { projection });
+      const doc = await (this.col()).findOne({ email: email.toLowerCase().trim() }, { projection });
       return doc ? this.toModel(doc, !!opts?.includePassword) : null;
     } catch (error) {
       this.handleError('getUserByEmail', error);
@@ -117,13 +117,13 @@ export class BddServiceUserMongo {
 
     const filter: Filter<UserDoc> = {};
     if (type) filter.type = type;
-    if (companyName && companyName.trim()) {
+    if (companyName?.trim()) {
       filter['company.name' as keyof UserDoc] = new RegExp(companyName.trim(), 'i') as any;
     }
     if (typeof is_active === 'boolean') filter.is_active = is_active;
-    if (createdBy && createdBy.trim()) filter.createdBy = createdBy.trim();
+    if (createdBy?.trim()) filter.createdBy = createdBy.trim();
 
-    if (q && q.trim()) {
+    if (q?.trim()) {
       const regex = new RegExp(q.trim(), 'i');
       filter.$or = [
         { first_name: regex },
@@ -136,7 +136,7 @@ export class BddServiceUserMongo {
 
     const projection = this.makeProjection(includePassword);
     try {
-      const cursor = (await this.col())
+      const cursor = (this.col())
         .find(filter, { projection })
         .sort(sort as Sort)
         .skip((page - 1) * limit)
@@ -144,7 +144,7 @@ export class BddServiceUserMongo {
 
       const [rows, total] = await Promise.all([
         cursor.toArray(),
-        (await this.col()).countDocuments(filter),
+        (this.col()).countDocuments(filter),
       ]);
 
       return {
@@ -178,7 +178,7 @@ export class BddServiceUserMongo {
     if (patch.createdBy !== undefined) $set.createdBy = patch.createdBy;
 
     try {
-      const res: any = await (await this.col()).findOneAndUpdate(
+      const res: any = await (this.col()).findOneAndUpdate(
         { _id }, { $set }, { returnDocument: 'after', projection: this.makeProjection(false) }
       );
       return res.value ? this.toModel(res.value, false) : null;
@@ -196,7 +196,7 @@ export class BddServiceUserMongo {
   async updatePassword(id: string, hashedPassword: string): Promise<boolean> {
     try {
       const _id = this.toObjectId(id);
-      const res = await (await this.col()).updateOne(
+      const res = await (this.col()).updateOne(
         { _id }, { $set: { password: hashedPassword, updatedAt: new Date() } }
       );
       return res.matchedCount === 1;
@@ -209,7 +209,7 @@ export class BddServiceUserMongo {
   async deleteUser(id: string): Promise<boolean> {
     try {
       const _id = this.toObjectId(id);
-      const res = await (await this.col()).deleteOne({ _id });
+      const res = await (this.col()).deleteOne({ _id });
       return res.deletedCount === 1;
     } catch (error) {
       this.handleError('deleteUser', error);
@@ -229,7 +229,7 @@ export class BddServiceUserMongo {
   private toModel(doc: Partial<UserDoc> & { _id?: ObjectId }, keepPassword: boolean): User {
     const user: User = {
       id: String(doc._id),
-      type: doc.type as UserType,
+      type: doc.type!,
       first_name: doc.first_name!,
       last_name: doc.last_name!,
       email: doc.email!,
@@ -258,3 +258,4 @@ export class BddServiceUserMongo {
     throw error instanceof Error ? error : new Error(message);
   }
 }
+

@@ -7,14 +7,13 @@ import inversify from '@src/inversify/investify';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
-  constructor() {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const ctx = GqlExecutionContext.create(context);
     const req = ctx.getContext().req;
 
-    const authz = req.headers['authorization'] || req.headers['Authorization'];
-    if (!authz || !authz.startsWith('Bearer ')) {
+    const authz = req.headers.authorization ?? req.headers.Authorization;
+    if (!authz?.startsWith('Bearer ')) {
       throw new Error(ERRORS.UNAUTHORIZED);
     }
 
@@ -22,7 +21,7 @@ export class JwtAuthGuard implements CanActivate {
     const res = await inversify.jwtService.verify(token);
     if (!res.valid) throw new Error(ERRORS.INVALID_TOKEN);
 
-    const payload = res.payload as any;
+    const payload = res.payload;
     if (payload?.type !== 'access') throw new Error(ERRORS.ACCESS_TOKEN_REQUIRED);
 
     // on attache l'utilisateur au contexte

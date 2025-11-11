@@ -14,7 +14,7 @@ import { BddServiceMealMongo } from '@services/db/mongo/repositories/meal.reposi
 import { BddServiceMealDayMongo } from '@services/db/mongo/repositories/meal-day.repository';
 import { BddServiceMealPlanMongo } from '@services/db/mongo/repositories/meal-plan.repository';
 
-type InfraDeps = { inversify: any; config: any };
+interface InfraDeps { inversify: any; config: any }
 
 export class BddServiceMongo {
   readonly tag: BddServiceTagMongo;

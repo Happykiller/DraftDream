@@ -1,4 +1,4 @@
-// src/services/db/mongo/exercise.repository.ts
+﻿// src/services/db/mongo/exercise.repository.ts
 import { Collection, ObjectId, Db } from 'mongodb';
 
 import inversify from '@src/inversify/investify';
@@ -11,7 +11,7 @@ import {
 } from '@services/db/dtos/exercise.dto';
 import { ERRORS } from '@src/common/ERROR';
 
-type ExerciseDoc = {
+interface ExerciseDoc {
   _id: ObjectId;
   slug: string;
   locale: string;
@@ -35,17 +35,17 @@ type ExerciseDoc = {
   deletedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
-};
+}
 
 export class BddServiceExerciseMongo {
-  private async col(): Promise<Collection<ExerciseDoc>> {
+  private col(): Collection<ExerciseDoc> {
     return inversify.mongo.collection<ExerciseDoc>('exercises');
   }
 
   /** Create all necessary indexes. */
   async ensureIndexes(db?: Db): Promise<void> {
     try {
-      const collection = db ? db.collection<ExerciseDoc>('exercises') : await this.col();
+      const collection = db ? db.collection<ExerciseDoc>('exercises') : this.col();
       await collection.createIndexes([
         // Unicity for active (non-archived) documents
         {
@@ -97,7 +97,7 @@ export class BddServiceExerciseMongo {
     };
 
     const baseSlug = this.normalizeSlug(dto.slug);
-    const collection = await this.col();
+    const collection = this.col();
 
     for (let attempt = 0; attempt < 20; attempt += 1) {
       const candidateSlug = this.buildSlugCandidate(baseSlug, attempt);
@@ -121,7 +121,7 @@ export class BddServiceExerciseMongo {
   async get(dto: GetExerciseDto): Promise<Exercise | null> {
     try {
       const _id = this.toObjectId(dto.id);
-      const doc = await (await this.col()).findOne({ _id });
+      const doc = await (this.col()).findOne({ _id });
       return doc ? this.toModel(doc) : null;
     } catch (error) {
       this.handleError('get', error);
@@ -147,7 +147,7 @@ export class BddServiceExerciseMongo {
     const filter: Record<string, any> = {};
     const andConditions: Record<string, any>[] = [];
 
-    if (q && q.trim()) {
+    if (q?.trim()) {
       const search = q.trim();
       andConditions.push({
         $or: [
@@ -198,7 +198,7 @@ export class BddServiceExerciseMongo {
     filter.deletedAt = undefined;
 
     try {
-      const collection = await this.col();
+      const collection = this.col();
       const cursor = collection.find(filter).sort(sort).skip((page - 1) * limit).limit(limit);
       const [rows, total] = await Promise.all([cursor.toArray(), collection.countDocuments(filter)]);
 
@@ -243,7 +243,7 @@ export class BddServiceExerciseMongo {
     if (patch.tagIds !== undefined) $set.tags = patch.tagIds.map(this.toObjectId);
 
     try {
-      const res: any = await (await this.col()).findOneAndUpdate(
+      const res: any = await (this.col()).findOneAndUpdate(
         { _id },
         { $set },
         { returnDocument: 'after' }
@@ -264,7 +264,7 @@ export class BddServiceExerciseMongo {
     try {
       const _id = this.toObjectId(id);
       const now = new Date();
-      const res = await (await this.col()).updateOne(
+      const res = await (this.col()).updateOne(
         { _id, deletedAt: { $exists: false } },
         { $set: { deletedAt: now, updatedAt: now } }
       );
@@ -370,3 +370,4 @@ export class BddServiceExerciseMongo {
     throw error instanceof Error ? error : new Error(message);
   }
 }
+

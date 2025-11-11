@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+﻿import { beforeEach, describe, expect, it } from '@jest/globals';
 
 import { ERRORS } from '@src/common/ERROR';
 import { Role } from '@src/common/role.enum';
@@ -9,6 +9,7 @@ import { BddServiceUserMongo } from '@services/db/mongo/repositories/user.reposi
 import { ListSessionsUsecase } from '@usecases/session/list.sessions.usecase';
 import { ListSessionsUsecaseDto } from '@usecases/session/session.usecase.dto';
 import { asMock, createMockFn } from '@src/test-utils/mock-helpers';
+import type { User } from '@services/db/models/user.model';
 
 interface LoggerMock {
   error: (message: string) => void;
@@ -23,7 +24,7 @@ const sessionEntity = {
   durationMin: 60,
   description: 'Full body workout',
   exerciseIds: ['ex-1', 'ex-2'],
-  createdBy: { id: 'coach-1' },
+  createdBy: 'coach-1',
   deletedAt: undefined,
   createdAt: now,
   updatedAt: now,
@@ -35,6 +36,16 @@ const listResponse = {
   page: 1,
   limit: 10,
 };
+
+const buildAdmin = (id: string): User => ({
+  id,
+  type: 'admin',
+  first_name: `Admin ${id}`,
+  last_name: 'User',
+  email: `${id}@example.com`,
+  is_active: true,
+  createdBy: 'system',
+});
 
 describe('ListSessionsUsecase', () => {
   let inversifyMock: Inversify;
@@ -118,7 +129,12 @@ describe('ListSessionsUsecase', () => {
       createdBy: 'coach-1',
     });
     asMock(sessionRepositoryMock.list).mockResolvedValue(listResponse);
-    asMock(userRepositoryMock.listUsers).mockResolvedValue({ items: [], total: 0, page: 1, limit: 50 });
+    asMock(userRepositoryMock.listUsers).mockResolvedValue({
+      items: [] as User[],
+      total: 0,
+      page: 1,
+      limit: 50,
+    });
 
     const result = await usecase.execute(dto);
 
@@ -134,7 +150,12 @@ describe('ListSessionsUsecase', () => {
       createdBy: 'coach-1',
     });
     asMock(sessionRepositoryMock.list).mockResolvedValue(listResponse);
-    asMock(userRepositoryMock.listUsers).mockResolvedValue({ items: [], total: 0, page: 1, limit: 50 });
+    asMock(userRepositoryMock.listUsers).mockResolvedValue({
+      items: [] as User[],
+      total: 0,
+      page: 1,
+      limit: 50,
+    });
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.LIST_SESSIONS_FORBIDDEN);
   });
@@ -143,7 +164,7 @@ describe('ListSessionsUsecase', () => {
     const dto = buildDto({ session: { role: Role.COACH, userId: 'coach-1' } });
     asMock(sessionRepositoryMock.list).mockResolvedValue(listResponse);
     asMock(userRepositoryMock.listUsers).mockResolvedValue({
-      items: [{ id: 'admin-1' }, { id: 'admin-2' }],
+      items: [buildAdmin('admin-1'), buildAdmin('admin-2')],
       total: 2,
       page: 1,
       limit: 50,
@@ -151,8 +172,9 @@ describe('ListSessionsUsecase', () => {
 
     const result = await usecase.execute(dto);
 
-    const callArgs = asMock(sessionRepositoryMock.list).mock.calls[0][0];
-    expect(callArgs.createdByIn.sort()).toEqual(['admin-1', 'admin-2', 'coach-1']);
+    const callArgs = asMock(sessionRepositoryMock.list).mock.calls[0][0] ?? {};
+    const createdByIn = callArgs.createdByIn ?? [];
+    expect(createdByIn.sort()).toEqual(['admin-1', 'admin-2', 'coach-1']);
     expect(result.items).toHaveLength(1);
     expect(asMock(userRepositoryMock.listUsers).mock.calls[0]).toEqual([
       { type: 'admin', limit: 50, page: 1 },
@@ -176,3 +198,4 @@ describe('ListSessionsUsecase', () => {
     ]);
   });
 });
+

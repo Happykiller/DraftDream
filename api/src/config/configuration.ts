@@ -24,8 +24,8 @@ export class Configuration {
     connection_string: string;
     name: string;
   };
-  throttle: Array<{
+  throttle: {
     ttl: number;
     limit: number;
-  }>;
+  }[];
 }
