@@ -52,7 +52,8 @@ export function ProgramsAthlete(): React.JSX.Element {
       {/* General information */}
       <Stack spacing={3}>
         <Stack spacing={1}>
-          <Typography color="text.secondary">{t('programs-athlete.subtitle')}</Typography>
+          <Typography variant="h5">{t('nutrition-athlete.subtitle')}</Typography>
+          <Typography color="text.secondary">{t('nutrition-athlete.subtitle')}</Typography>
         </Stack>
 
         <ProgramList
