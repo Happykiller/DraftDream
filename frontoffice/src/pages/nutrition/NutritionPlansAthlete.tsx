@@ -28,6 +28,8 @@ export function NutritionPlansAthlete(): React.JSX.Element {
   const navigate = useNavigate();
   const athleteId = session((state) => state.id);
 
+  const [searchQuery, setSearchQuery] = React.useState('');
+
   const emptyState = t('nutrition-athlete.empty_state', {
     returnObjects: true,
   }) as EmptyStateCopy;
@@ -41,9 +43,12 @@ export function NutritionPlansAthlete(): React.JSX.Element {
   const { items: mealPlans, loading } = useMealPlans({
     page: 1,
     limit: 12,
-    q: '',
+    q: searchQuery,
     userId: athleteId ?? undefined,
   });
+
+  const searchPlaceholder = t('nutrition-athlete.list.search_placeholder');
+  const searchAriaLabel = t('nutrition-athlete.list.search_aria_label');
 
   const handleOpenMealPlan = React.useCallback(
     (plan: MealPlan) => {
@@ -51,6 +56,10 @@ export function NutritionPlansAthlete(): React.JSX.Element {
     },
     [navigate],
   );
+
+  const handleSearchChange = React.useCallback((value: string) => {
+    setSearchQuery(value);
+  }, []);
 
   return (
     <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
@@ -76,6 +85,10 @@ export function NutritionPlansAthlete(): React.JSX.Element {
         }
         macroLabels={macroCopy}
         allowedActions={athleteActions}
+        onSearchChange={handleSearchChange}
+        searchPlaceholder={searchPlaceholder}
+        searchAriaLabel={searchAriaLabel}
+        searchQuery={searchQuery}
       />
     </Stack>
   );

@@ -20,6 +20,8 @@ export function ProgramsAthlete(): React.JSX.Element {
   const athleteId = session((state) => state.id);
   const navigate = useNavigate();
 
+  const [searchQuery, setSearchQuery] = React.useState('');
+
   const emptyStateCopy = t('programs-athlete.empty_state', {
     returnObjects: true,
   }) as AthleteEmptyStateCopy;
@@ -27,9 +29,12 @@ export function ProgramsAthlete(): React.JSX.Element {
   const { items: programs, loading: listLoading } = usePrograms({
     page: 1,
     limit: 12,
-    q: '',
+    q: searchQuery,
     userId: athleteId ?? undefined,
   });
+
+  const searchPlaceholder = t('programs-athlete.list.search_placeholder');
+  const searchAriaLabel = t('programs-athlete.list.search_aria_label');
 
   const handleNavigateToProgram = React.useCallback(
     (nextProgram: Program) => {
@@ -37,6 +42,10 @@ export function ProgramsAthlete(): React.JSX.Element {
     },
     [navigate],
   );
+
+  const handleSearchChange = React.useCallback((value: string) => {
+    setSearchQuery(value);
+  }, []);
 
   return (
     <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
@@ -54,6 +63,10 @@ export function ProgramsAthlete(): React.JSX.Element {
           placeholderHelper={emptyStateCopy.helper}
           allowedActions={['view']}
           onViewProgram={handleNavigateToProgram}
+          onSearchChange={handleSearchChange}
+          searchPlaceholder={searchPlaceholder}
+          searchAriaLabel={searchAriaLabel}
+          searchQuery={searchQuery}
         />
       </Stack>
     </Stack>

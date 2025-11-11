@@ -467,6 +467,10 @@
       "description": "Your coach has not shared a program with you yet.",
       "helper": "New plans will be listed here as soon as they become available."
     },
+    "list": {
+      "search_placeholder": "Search programs...",
+      "search_aria_label": "Search programs"
+    },
     "errors": {
       "not_found": "This program is no longer available.",
       "load_failed": "We were unable to load this program. Please try again."
@@ -704,6 +708,8 @@
       "helper": "New plans will appear here when they are assigned to you."
     },
     "list": {
+      "search_placeholder": "Search nutrition plans...",
+      "search_aria_label": "Search nutrition plans",
       "day_count": "{{count}} day",
       "day_count_one": "{{count}} day",
       "day_count_other": "{{count}} days"

@@ -469,6 +469,10 @@
       "description": "Votre coach ne vous a pas encore partagé de programme.",
       "helper": "Les nouveaux plans apparaîtront ici dès qu'ils seront disponibles."
     },
+    "list": {
+      "search_placeholder": "Rechercher un programme...",
+      "search_aria_label": "Rechercher un programme"
+    },
     "errors": {
       "not_found": "Ce programme n'est plus disponible.",
       "load_failed": "Le chargement du programme a échoué. Veuillez réessayer."
@@ -706,6 +710,8 @@
       "helper": "Les nouveaux plans apparaîtront ici dès qu'ils vous seront attribués."
     },
     "list": {
+      "search_placeholder": "Rechercher un plan nutritionnel...",
+      "search_aria_label": "Rechercher un plan nutritionnel",
       "day_count": "{{count}} jour",
       "day_count_one": "{{count}} jour",
       "day_count_other": "{{count}} jours"
