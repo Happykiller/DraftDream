@@ -611,6 +611,8 @@
       "helper": "Use the builder to combine meal days and meals for your athletes."
     },
     "list": {
+      "search_placeholder": "Search nutrition plans...",
+      "search_aria_label": "Search nutrition plans",
       "day_count": "{{count}} day",
       "day_count_one": "{{count}} day",
       "day_count_other": "{{count}} days",

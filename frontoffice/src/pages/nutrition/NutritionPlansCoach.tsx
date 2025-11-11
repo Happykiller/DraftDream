@@ -30,8 +30,10 @@ interface MacroCopy {
 
 /** Coach dashboard showing owned nutrition meal plans. */
 export function NutritionPlansCoach(): React.JSX.Element {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+
+  const [searchQuery, setSearchQuery] = React.useState('');
 
   const emptyState = t('nutrition-coach.empty_state', {
     returnObjects: true,
@@ -44,8 +46,11 @@ export function NutritionPlansCoach(): React.JSX.Element {
   const { items: mealPlans, loading, reload, remove, create } = useMealPlans({
     page: 1,
     limit: 12,
-    q: '',
+    q: searchQuery,
   });
+
+  const searchPlaceholder = t('nutrition-coach.list.search_placeholder');
+  const searchAriaLabel = t('nutrition-coach.list.search_aria_label');
 
   const handleOpenMealPlan = React.useCallback(
     (plan: MealPlan) => {
@@ -140,6 +145,10 @@ export function NutritionPlansCoach(): React.JSX.Element {
     [create, i18n.language, navigate, reload],
   );
 
+  const handleSearchChange = React.useCallback((value: string) => {
+    setSearchQuery(value);
+  }, []);
+
   return (
     <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
       {/* General information */}
@@ -194,6 +203,10 @@ export function NutritionPlansCoach(): React.JSX.Element {
           })
         }
         macroLabels={macroCopy}
+        onSearchChange={handleSearchChange}
+        searchPlaceholder={searchPlaceholder}
+        searchAriaLabel={searchAriaLabel}
+        searchQuery={searchQuery}
       />
     </Stack>
   );

@@ -1,6 +1,15 @@
 // src/components/nutrition/MealPlanList.tsx
 import * as React from 'react';
-import { CircularProgress, Grid, Paper, Stack, Typography } from '@mui/material';
+import { Search } from '@mui/icons-material';
+import {
+  CircularProgress,
+  Grid,
+  InputAdornment,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 
 import type { MealPlan } from '@hooks/nutrition/useMealPlans';
@@ -29,6 +38,11 @@ export interface MealPlanListProps {
     fats: string;
   };
   allowedActions?: MealPlanActionKey[];
+  onSearchChange?: (query: string) => void;
+  searchPlaceholder?: string;
+  searchAriaLabel?: string;
+  searchQuery?: string;
+  searchDebounceMs?: number;
 }
 
 /**
@@ -48,16 +62,82 @@ export function MealPlanList({
   dayCountFormatter,
   macroLabels,
   allowedActions,
+  onSearchChange,
+  searchPlaceholder,
+  searchAriaLabel,
+  searchQuery,
+  searchDebounceMs = 400,
 }: MealPlanListProps): React.JSX.Element {
   const theme = useTheme();
   const showPlaceholder = !loading && mealPlans.length === 0;
+  const [searchValue, setSearchValue] = React.useState(searchQuery ?? '');
+
+  React.useEffect(() => {
+    setSearchValue(searchQuery ?? '');
+  }, [searchQuery]);
+
+  React.useEffect(() => {
+    if (!onSearchChange) {
+      return undefined;
+    }
+
+    const normalizedNext = searchValue.trim();
+    const normalizedPrevious = (searchQuery ?? '').trim();
+
+    if (normalizedNext === normalizedPrevious) {
+      return undefined;
+    }
+
+    const handler = window.setTimeout(() => {
+      onSearchChange(normalizedNext);
+    }, searchDebounceMs);
+
+    return () => {
+      window.clearTimeout(handler);
+    };
+  }, [onSearchChange, searchDebounceMs, searchQuery, searchValue]);
 
   return (
     <Stack spacing={3} sx={{ width: '100%' }}>
       {/* General information */}
-      {actionSlot ? (
-        <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="flex-end" spacing={1} sx={{ width: '100%' }}>
-          {actionSlot}
+      {onSearchChange || actionSlot ? (
+        <Stack
+          alignItems="stretch"
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={1.5}
+          sx={{ width: '100%' }}
+        >
+          {onSearchChange ? (
+            <TextField
+              fullWidth
+              inputProps={{ 'aria-label': searchAriaLabel ?? searchPlaceholder }}
+              onChange={(event) => {
+                setSearchValue(event.target.value);
+              }}
+              placeholder={searchPlaceholder}
+              size="small"
+              value={searchValue}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search color="action" fontSize="small" />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          ) : null}
+
+          {actionSlot ? (
+            <Stack
+              alignItems="center"
+              direction="row"
+              justifyContent="flex-end"
+              spacing={1}
+              sx={{ ml: { xs: 0, sm: 'auto' } }}
+            >
+              {actionSlot}
+            </Stack>
+          ) : null}
         </Stack>
       ) : null}
 

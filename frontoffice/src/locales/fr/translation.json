@@ -613,6 +613,8 @@
       "helper": "Assemblez des journées types et des repas pour structurer vos plans."
     },
     "list": {
+      "search_placeholder": "Rechercher un plan nutritionnel...",
+      "search_aria_label": "Rechercher un plan nutritionnel",
       "day_count": "{{count}} jour",
       "day_count_one": "{{count}} jour",
       "day_count_other": "{{count}} jours",
