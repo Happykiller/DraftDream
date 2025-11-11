@@ -748,7 +748,31 @@
       }
     },
     "meals": {
-      "empty": "Aucune journée n'a encore été ajoutée à ce plan."
+      "empty": "Aucune journée n'a encore été ajoutée à ce plan.",
+      "day_empty": "Aucun repas n'a encore été planifié pour ce jour.",
+      "day_header": {
+        "meal_count": "({{count}} repas)",
+        "meal_count_one": "({{count}} repas)",
+        "meal_count_other": "({{count}} repas)"
+      },
+      "meal_card": {
+        "calories": "{{value}} kcal",
+        "macros": {
+          "protein": {
+            "label": "Protéines",
+            "value": "{{value}} g"
+          },
+          "carbs": {
+            "label": "Glucides",
+            "value": "{{value}} g"
+          },
+          "fats": {
+            "label": "Lipides",
+            "value": "{{value}} g"
+          }
+        },
+        "foods_label": "Aliments :"
+      }
     },
     "labels": {
       "macros": {

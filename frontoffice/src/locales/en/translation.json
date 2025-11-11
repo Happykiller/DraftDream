@@ -746,7 +746,31 @@
       }
     },
     "meals": {
-      "empty": "No meal days have been added to this plan yet."
+      "empty": "No meal days have been added to this plan yet.",
+      "day_empty": "No meals have been scheduled for this day yet.",
+      "day_header": {
+        "meal_count": "({{count}} meal)",
+        "meal_count_one": "({{count}} meal)",
+        "meal_count_other": "({{count}} meals)"
+      },
+      "meal_card": {
+        "calories": "{{value}} kcal",
+        "macros": {
+          "protein": {
+            "label": "Protein",
+            "value": "{{value}} g"
+          },
+          "carbs": {
+            "label": "Carbs",
+            "value": "{{value}} g"
+          },
+          "fats": {
+            "label": "Fats",
+            "value": "{{value}} g"
+          }
+        },
+        "foods_label": "Foods:"
+      }
     },
     "labels": {
       "macros": {
