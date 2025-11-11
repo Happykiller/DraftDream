@@ -144,7 +144,7 @@ export function ProgramsCoach(): React.JSX.Element {
               </IconButton>
             </Tooltip>
             <Button
-              color="warning"
+              color="success"
               onClick={handleCreateProgram}
               startIcon={<Add />}
               variant="contained"
