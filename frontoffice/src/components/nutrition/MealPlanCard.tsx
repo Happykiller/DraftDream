@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import {
+  ContentCopyOutlined,
   DeleteOutline,
   EditOutlined,
   EditSquare as EditSquareIcon,
@@ -27,6 +28,7 @@ import type { MealPlan, MealPlanDaySnapshot, MealPlanMealSnapshot } from '@hooks
 import { useMealTypeIcon } from '@hooks/nutrition/useMealTypeIcon';
 
 import { MealPlanDeleteDialog } from './MealPlanDeleteDialog';
+import { MealPlanCloneDialog } from './MealPlanCloneDialog';
 
 interface MealPlanCardProps {
   mealPlan: MealPlan;
@@ -40,18 +42,26 @@ interface MealPlanCardProps {
   onView?: (mealPlan: MealPlan) => void;
   onEdit?: (mealPlan: MealPlan) => void;
   onDelete?: (mealPlan: MealPlan) => Promise<void> | void;
+  onClone?: (
+    mealPlan: MealPlan,
+    payload: { label: string; athleteId: string | null; openBuilder: boolean },
+  ) => Promise<void>;
+  allowedActions?: MealPlanActionKey[];
 }
 
-type MealPlanActionKey = 'view' | 'edit' | 'delete';
+export type MealPlanActionKey = 'view' | 'copy' | 'edit' | 'delete';
 
 type MealPlanAction = {
   key: MealPlanActionKey;
-  color: 'primary' | 'success' | 'error';
+  color: 'primary' | 'secondary' | 'success' | 'error';
   Icon: typeof VisibilityOutlined;
 };
 
+const DEFAULT_ALLOWED_ACTIONS: MealPlanActionKey[] = ['view', 'copy', 'edit', 'delete'];
+
 const MEAL_PLAN_ACTIONS: MealPlanAction[] = [
   { key: 'view', color: 'primary', Icon: VisibilityOutlined },
+  { key: 'copy', color: 'secondary', Icon: ContentCopyOutlined },
   { key: 'edit', color: 'success', Icon: EditOutlined },
   { key: 'delete', color: 'error', Icon: DeleteOutline },
 ];
@@ -104,6 +114,8 @@ export function MealPlanCard({
   onView,
   onEdit,
   onDelete,
+  onClone,
+  allowedActions = DEFAULT_ALLOWED_ACTIONS,
 }: MealPlanCardProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
@@ -113,6 +125,8 @@ export function MealPlanCard({
   const [isExpanded, setIsExpanded] = React.useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
   const [isDeleteSubmitting, setIsDeleteSubmitting] = React.useState(false);
+  const [isCloneDialogOpen, setIsCloneDialogOpen] = React.useState(false);
+  const [isCloneSubmitting, setIsCloneSubmitting] = React.useState(false);
 
   const numberFormatter = React.useMemo(
     () =>
@@ -212,6 +226,10 @@ export function MealPlanCard({
   const overflowToggleLabel = isExpanded
     ? t('nutrition-coach.list.collapse_details')
     : t('nutrition-coach.list.expand_details');
+  const availableActions = React.useMemo(
+    () => MEAL_PLAN_ACTIONS.filter((action) => allowedActions.includes(action.key)),
+    [allowedActions],
+  );
   const formatMealCalories = React.useCallback(
     (calories: number) =>
       t('nutrition-coach.list.meal_calories', {
@@ -228,6 +246,18 @@ export function MealPlanCard({
       }),
     [macroUnits.calories, numberFormatter, t],
   );
+
+  const handleOpenCloneDialog = React.useCallback(() => {
+    setIsCloneDialogOpen(true);
+  }, []);
+
+  const handleCloseCloneDialog = React.useCallback(() => {
+    setIsCloneDialogOpen(false);
+  }, []);
+
+  const handleCloneSubmittingChange = React.useCallback((submitting: boolean) => {
+    setIsCloneSubmitting(submitting);
+  }, []);
 
   const handleToggleExpand = React.useCallback(() => {
     setIsExpanded((previous) => !previous);
@@ -278,6 +308,11 @@ export function MealPlanCard({
         return;
       }
 
+      if (actionKey === 'copy') {
+        handleOpenCloneDialog();
+        return;
+      }
+
       if (actionKey === 'edit') {
         onEdit?.(mealPlan);
         return;
@@ -287,7 +322,7 @@ export function MealPlanCard({
         handleOpenDeleteDialog();
       }
     },
-    [handleOpenDeleteDialog, mealPlan, onDelete, onEdit, onView],
+    [handleOpenCloneDialog, handleOpenDeleteDialog, mealPlan, onDelete, onEdit, onView],
   );
 
   React.useEffect(() => {
@@ -381,10 +416,11 @@ export function MealPlanCard({
             </Typography>
           </Stack>
           <Stack direction="row" spacing={0.5} sx={{ ml: 2 }}>
-            {MEAL_PLAN_ACTIONS.map(({ key, color, Icon }) => {
+            {availableActions.map(({ key, color, Icon }) => {
               const label = t(`nutrition-coach.list.actions.${key}`);
               const isDisabled =
                 (key === 'view' && !onView) ||
+                (key === 'copy' && (isCloneSubmitting || !onClone)) ||
                 (key === 'edit' && !onEdit) ||
                 (key === 'delete' && (!onDelete || isDeleteSubmitting));
 
@@ -643,6 +679,16 @@ export function MealPlanCard({
         </>
       ) : null}
       </Paper>
+
+      {allowedActions.includes('copy') && onClone && (
+        <MealPlanCloneDialog
+          open={isCloneDialogOpen}
+          mealPlan={mealPlan}
+          onClose={handleCloseCloneDialog}
+          onClone={onClone}
+          onSubmittingChange={handleCloneSubmittingChange}
+        />
+      )}
 
       <MealPlanDeleteDialog
         open={isDeleteDialogOpen}

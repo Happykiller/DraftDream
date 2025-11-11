@@ -5,6 +5,7 @@ import { Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 import { MealPlanList } from '@components/nutrition/MealPlanList';
+import type { MealPlanActionKey } from '@components/nutrition/MealPlanCard';
 import { useMealPlans, type MealPlan } from '@hooks/nutrition/useMealPlans';
 import { session } from '@stores/session';
 
@@ -34,6 +35,8 @@ export function NutritionPlansAthlete(): React.JSX.Element {
   const macroCopy = t('nutrition-athlete.macros', {
     returnObjects: true,
   }) as MacroCopy;
+
+  const athleteActions = React.useMemo<MealPlanActionKey[]>(() => ['view'], []);
 
   const { items: mealPlans, loading } = useMealPlans({
     page: 1,
@@ -72,6 +75,7 @@ export function NutritionPlansAthlete(): React.JSX.Element {
           })
         }
         macroLabels={macroCopy}
+        allowedActions={athleteActions}
       />
     </Stack>
   );

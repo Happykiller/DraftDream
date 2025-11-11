@@ -620,6 +620,7 @@
       "plan_unassigned": "Plan non assigné",
       "actions": {
         "view": "Voir le plan",
+        "copy": "Copier le plan",
         "edit": "Modifier le plan",
         "delete": "Supprimer le plan"
       },
@@ -631,6 +632,28 @@
           "cancel": "Annuler",
           "confirm": "Supprimer",
           "confirming": "Suppression…"
+        }
+      },
+      "clone_dialog": {
+        "title": "Copier le plan nutritionnel",
+        "description": "Modifiez le nom du plan et l'athlète avant de le dupliquer.",
+        "fields": {
+          "name": "Nom du plan",
+          "name_placeholder": "Ex : Plan nutrition récupération",
+          "athlete": "Athlète",
+          "athlete_placeholder": "Sélectionner un athlète (optionnel)"
+        },
+        "actions": {
+          "cancel": "Annuler",
+          "copy": "Copier",
+          "copying": "Copie…",
+          "copy_and_open": "Copier et ouvrir",
+          "copying_and_opening": "Copie et ouverture…"
+        },
+        "copy_suffix": "(Copie)",
+        "no_results": "Aucun athlète trouvé",
+        "errors": {
+          "missing_label": "Veuillez saisir un nom de plan."
         }
       },
       "status": {

@@ -5,7 +5,7 @@ import { alpha, useTheme } from '@mui/material/styles';
 
 import type { MealPlan } from '@hooks/nutrition/useMealPlans';
 
-import { MealPlanCard } from './MealPlanCard';
+import { MealPlanCard, type MealPlanActionKey } from './MealPlanCard';
 
 export interface MealPlanListProps {
   mealPlans: MealPlan[];
@@ -17,6 +17,10 @@ export interface MealPlanListProps {
   onView?: (mealPlan: MealPlan) => void;
   onEdit?: (mealPlan: MealPlan) => void;
   onDelete?: (mealPlan: MealPlan) => Promise<void> | void;
+  onClone?: (
+    mealPlan: MealPlan,
+    payload: { label: string; athleteId: string | null; openBuilder: boolean },
+  ) => Promise<void>;
   dayCountFormatter: (dayCount: number) => string;
   macroLabels: {
     calories: string;
@@ -24,6 +28,7 @@ export interface MealPlanListProps {
     carbs: string;
     fats: string;
   };
+  allowedActions?: MealPlanActionKey[];
 }
 
 /**
@@ -39,8 +44,10 @@ export function MealPlanList({
   onView,
   onEdit,
   onDelete,
+  onClone,
   dayCountFormatter,
   macroLabels,
+  allowedActions,
 }: MealPlanListProps): React.JSX.Element {
   const theme = useTheme();
   const showPlaceholder = !loading && mealPlans.length === 0;
@@ -69,6 +76,8 @@ export function MealPlanList({
                 onView={onView}
                 onEdit={onEdit}
                 onDelete={onDelete}
+                onClone={onClone}
+                allowedActions={allowedActions}
               />
             </Grid>
           ))}

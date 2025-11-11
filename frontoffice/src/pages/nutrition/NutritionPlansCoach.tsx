@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { MealPlanList } from '@components/nutrition/MealPlanList';
 import { useMealPlans, type MealPlan } from '@hooks/nutrition/useMealPlans';
+import { slugify } from '@src/utils/slugify';
 
 interface EmptyStateCopy {
   title: string;
@@ -40,7 +41,7 @@ export function NutritionPlansCoach(): React.JSX.Element {
     returnObjects: true,
   }) as MacroCopy;
 
-  const { items: mealPlans, loading, reload, remove } = useMealPlans({
+  const { items: mealPlans, loading, reload, remove, create } = useMealPlans({
     page: 1,
     limit: 12,
     q: '',
@@ -73,6 +74,70 @@ export function NutritionPlansCoach(): React.JSX.Element {
       navigate(`/nutrition-coach/edit/${plan.id}`);
     },
     [navigate],
+  );
+
+  const handleCloneMealPlan = React.useCallback(
+    async (
+      basePlan: MealPlan,
+      payload: { label: string; athleteId: string | null; openBuilder: boolean },
+    ) => {
+      const locale = basePlan.locale || i18n.language;
+      const daySnapshots = basePlan.days.map((day) => ({
+        id: day.id ?? undefined,
+        templateMealDayId: day.templateMealDayId ?? undefined,
+        slug: day.slug ?? undefined,
+        locale: day.locale ?? locale,
+        label: day.label,
+        description: day.description ?? undefined,
+        meals: day.meals.map((meal) => ({
+          id: meal.id ?? undefined,
+          templateMealId: meal.templateMealId ?? undefined,
+          slug: meal.slug ?? undefined,
+          locale: meal.locale ?? locale,
+          label: meal.label,
+          description: meal.description ?? undefined,
+          foods: meal.foods,
+          calories: meal.calories,
+          proteinGrams: meal.proteinGrams,
+          carbGrams: meal.carbGrams,
+          fatGrams: meal.fatGrams,
+          type: {
+            id: meal.type.id ?? undefined,
+            templateMealTypeId: meal.type.templateMealTypeId ?? undefined,
+            slug: meal.type.slug ?? undefined,
+            locale: meal.type.locale ?? locale,
+            label: meal.type.label,
+            visibility: meal.type.visibility ?? undefined,
+            icon: meal.type.icon ?? undefined,
+          },
+        })),
+      }));
+      const dayIds = basePlan.days
+        .map((day) => day.id)
+        .filter((identifier): identifier is string => Boolean(identifier));
+
+      const cloned = await create({
+        slug: slugify(payload.label, String(Date.now()).slice(-5)),
+        locale,
+        label: payload.label,
+        description: basePlan.description ?? '',
+        calories: basePlan.calories,
+        proteinGrams: basePlan.proteinGrams,
+        carbGrams: basePlan.carbGrams,
+        fatGrams: basePlan.fatGrams,
+        days: daySnapshots,
+        dayIds,
+        userId: payload.athleteId,
+      });
+
+      if (payload.openBuilder) {
+        navigate(`/nutrition-coach/edit/${cloned.id}`);
+        return;
+      }
+
+      void reload();
+    },
+    [create, i18n.language, navigate, reload],
   );
 
   return (
@@ -122,6 +187,7 @@ export function NutritionPlansCoach(): React.JSX.Element {
         onView={handleOpenMealPlan}
         onEdit={handleEditMealPlan}
         onDelete={handleDeleteMealPlan}
+        onClone={handleCloneMealPlan}
         dayCountFormatter={(count) =>
           t('nutrition-coach.list.day_count', {
             count,
