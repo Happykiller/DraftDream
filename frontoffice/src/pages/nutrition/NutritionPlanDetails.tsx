@@ -9,7 +9,10 @@ import {
   CardContent,
   CircularProgress,
   Divider,
+  Paper,
   Stack,
+  Tab,
+  Tabs,
   Typography,
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
@@ -26,6 +29,16 @@ import { useMealPlan } from '@hooks/nutrition/useMealPlan';
 import type {
   NutritionPlanDetailsLoaderResult,
 } from './NutritionPlanDetails.loader';
+
+function formatNumber(value: number, locale: string): string {
+  try {
+    return new Intl.NumberFormat(locale).format(value);
+  } catch (_error) {
+    return value.toString();
+  }
+}
+
+type NutritionPlanTab = 'overview' | 'meals';
 
 function formatMealPlanDate(value: string, locale: string): string {
   try {
@@ -47,6 +60,7 @@ export function NutritionPlanDetails(): React.JSX.Element {
   const location = useLocation();
   const { mealPlanId } = useParams<{ mealPlanId: string }>();
   const theme = useTheme();
+  const [activeTab, setActiveTab] = React.useState<NutritionPlanTab>('overview');
 
   const loaderError = React.useMemo(() => {
     if (loaderData.status === 'not_found') {
@@ -77,38 +91,71 @@ export function NutritionPlanDetails(): React.JSX.Element {
     () => mealPlan?.label ?? t('nutrition-details.title'),
     [mealPlan?.label, t],
   );
-  const macroSummaries = React.useMemo(
+  const nutritionGoalItems = React.useMemo(
     () =>
       mealPlan
         ? [
             {
               key: 'calories' as const,
-              label: t('nutrition-details.labels.macros.calories', {
-                value: mealPlan.calories,
+              label: t('nutrition-details.overview.nutrition_goals.calories_per_day.label'),
+              value: t('nutrition-details.overview.nutrition_goals.calories_per_day.value', {
+                value: formatNumber(mealPlan.calories, i18n.language),
               }),
+              color: 'warning.main',
             },
             {
               key: 'protein' as const,
-              label: t('nutrition-details.labels.macros.protein', {
-                value: mealPlan.proteinGrams,
+              label: t('nutrition-details.overview.nutrition_goals.protein.label'),
+              value: t('nutrition-details.overview.nutrition_goals.protein.value', {
+                value: formatNumber(mealPlan.proteinGrams, i18n.language),
               }),
+              color: 'primary.main',
             },
             {
               key: 'carbs' as const,
-              label: t('nutrition-details.labels.macros.carbs', {
-                value: mealPlan.carbGrams,
+              label: t('nutrition-details.overview.nutrition_goals.carbs.label'),
+              value: t('nutrition-details.overview.nutrition_goals.carbs.value', {
+                value: formatNumber(mealPlan.carbGrams, i18n.language),
               }),
+              color: 'info.main',
             },
             {
               key: 'fats' as const,
-              label: t('nutrition-details.labels.macros.fats', {
-                value: mealPlan.fatGrams,
+              label: t('nutrition-details.overview.nutrition_goals.fats.label'),
+              value: t('nutrition-details.overview.nutrition_goals.fats.value', {
+                value: formatNumber(mealPlan.fatGrams, i18n.language),
               }),
+              color: 'success.main',
             },
           ]
         : [],
-    [mealPlan, t],
+    [i18n.language, mealPlan, t],
   );
+
+  const planStatistics = React.useMemo(() => {
+    if (!mealPlan) {
+      return null;
+    }
+
+    const dayCount = mealPlan.days.length;
+    const totalMeals = mealPlan.days.reduce(
+      (accumulator, day) => accumulator + day.meals.length,
+      0,
+    );
+    const totalCalories = mealPlan.days.reduce(
+      (accumulator, day) =>
+        accumulator +
+        day.meals.reduce((mealAccumulator, meal) => mealAccumulator + meal.calories, 0),
+      0,
+    );
+    const averageCalories = dayCount > 0 ? Math.round(totalCalories / dayCount) : 0;
+
+    return {
+      dayCount,
+      totalMeals,
+      averageCalories,
+    };
+  }, [mealPlan]);
   const createdOnLabel = React.useMemo(() => {
     if (!mealPlan) {
       return null;
@@ -123,6 +170,17 @@ export function NutritionPlanDetails(): React.JSX.Element {
     navigate(isCoachView ? '/nutrition-coach' : '/nutrition-athlete');
   }, [isCoachView, navigate]);
   const isInitialLoading = loading && !mealPlan;
+
+  React.useEffect(() => {
+    setActiveTab('overview');
+  }, [mealPlanId]);
+
+  const handleTabChange = React.useCallback(
+    (_event: React.SyntheticEvent, value: NutritionPlanTab) => {
+      setActiveTab(value);
+    },
+    [],
+  );
 
   return (
     <Stack
@@ -230,81 +288,164 @@ export function NutritionPlanDetails(): React.JSX.Element {
 
                     {mealPlan ? (
                       <Stack spacing={3}>
-                        {macroSummaries.length ? (
-                          <Stack
-                            direction={{ xs: 'column', sm: 'row' }}
-                            spacing={1}
-                            divider={
-                              <Divider
-                                orientation="vertical"
-                                flexItem
-                                sx={{ display: { xs: 'none', sm: 'block' } }}
-                              />
-                            }
-                          >
-                            {macroSummaries.map((macro) => (
-                              <Typography key={macro.key} variant="body2" color="text.secondary">
-                                {macro.label}
-                              </Typography>
-                            ))}
-                          </Stack>
-                        ) : null}
+                        <Tabs
+                          value={activeTab}
+                          onChange={handleTabChange}
+                          variant="scrollable"
+                          scrollButtons="auto"
+                          allowScrollButtonsMobile
+                        >
+                          <Tab value="overview" label={t('nutrition-details.tabs.overview')} />
+                          <Tab value="meals" label={t('nutrition-details.tabs.meals')} />
+                        </Tabs>
 
-                        <Stack spacing={2}>
-                          {mealPlan.days.length === 0 ? (
-                            <Typography color="text.secondary" variant="body2">
-                              {t('nutrition-details.empty_days')}
-                            </Typography>
-                          ) : (
-                            mealPlan.days.map((day) => (
-                              <Card key={day.id ?? day.label} variant="outlined">
-                                <CardContent>
-                                  <Stack spacing={1}>
-                                    <Typography variant="h6">{day.label}</Typography>
-                                    {day.description ? (
-                                      <Typography color="text.secondary" variant="body2">
-                                        {day.description}
-                                      </Typography>
-                                    ) : null}
-                                    <Stack spacing={1}>
-                                      {day.meals.map((meal) => (
-                                        <Card
-                                          key={meal.id ?? meal.label}
-                                          variant="outlined"
-                                          sx={{ bgcolor: 'grey.50' }}
+                        {activeTab === 'overview' ? (
+                          <Stack spacing={3}>
+                            <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+                              <Paper
+                                variant="outlined"
+                                sx={{ flex: 1, borderRadius: 2, p: { xs: 2, md: 2.5 } }}
+                              >
+                                <Stack spacing={2}>
+                                  <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                                    {t('nutrition-details.overview.sections.nutrition_goals')}
+                                  </Typography>
+                                  <Stack spacing={1.5}>
+                                    {nutritionGoalItems.map((item) => (
+                                      <Stack key={item.key} spacing={0.5}>
+                                        <Typography variant="body2" color="text.secondary">
+                                          {item.label}
+                                        </Typography>
+                                        <Typography
+                                          variant="h6"
+                                          sx={{ fontWeight: 700, color: item.color }}
                                         >
-                                          <CardContent>
-                                            <Stack spacing={0.5}>
-                                              <Typography variant="subtitle1">{meal.label}</Typography>
-                                              {meal.description ? (
-                                                <Typography color="text.secondary" variant="body2">
-                                                  {meal.description}
-                                                </Typography>
-                                              ) : null}
-                                              {meal.foods ? (
-                                                <Typography color="text.secondary" variant="body2">
-                                                  {meal.foods}
-                                                </Typography>
-                                              ) : null}
-                                              <Typography variant="body2">
-                                                {t('nutrition-details.labels.meal_macros', {
-                                                  calories: meal.calories,
-                                                  protein: meal.proteinGrams,
-                                                  carbs: meal.carbGrams,
-                                                  fats: meal.fatGrams,
-                                                })}
-                                              </Typography>
-                                            </Stack>
-                                          </CardContent>
-                                        </Card>
-                                      ))}
+                                          {item.value}
+                                        </Typography>
+                                      </Stack>
+                                    ))}
+                                  </Stack>
+                                </Stack>
+                              </Paper>
+
+                              <Paper
+                                variant="outlined"
+                                sx={{ flex: 1, borderRadius: 2, p: { xs: 2, md: 2.5 } }}
+                              >
+                                <Stack spacing={2}>
+                                  <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                                    {t('nutrition-details.overview.sections.plan_stats')}
+                                  </Typography>
+                                  <Stack spacing={1.5}>
+                                    <Stack spacing={0.5}>
+                                      <Typography variant="body2" color="text.secondary">
+                                        {t('nutrition-details.overview.plan_stats.days.label')}
+                                      </Typography>
+                                      <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                                        {t('nutrition-details.overview.plan_stats.days.value', {
+                                          count: planStatistics?.dayCount ?? 0,
+                                        })}
+                                      </Typography>
+                                    </Stack>
+                                    <Stack spacing={0.5}>
+                                      <Typography variant="body2" color="text.secondary">
+                                        {t('nutrition-details.overview.plan_stats.meals.label')}
+                                      </Typography>
+                                      <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                                        {t('nutrition-details.overview.plan_stats.meals.value', {
+                                          count: planStatistics?.totalMeals ?? 0,
+                                        })}
+                                      </Typography>
+                                    </Stack>
+                                    <Stack spacing={0.5}>
+                                      <Typography variant="body2" color="text.secondary">
+                                        {t('nutrition-details.overview.plan_stats.average_calories.label')}
+                                      </Typography>
+                                      <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                                        {t('nutrition-details.overview.plan_stats.average_calories.value', {
+                                          value: formatNumber(planStatistics?.averageCalories ?? 0, i18n.language),
+                                        })}
+                                      </Typography>
                                     </Stack>
                                   </Stack>
-                                </CardContent>
-                              </Card>
-                            ))
-                          )}
-                        </Stack>
+                                </Stack>
+                              </Paper>
+                            </Stack>
+
+                            <Paper variant="outlined" sx={{ borderRadius: 2, p: { xs: 2, md: 2.5 } }}>
+                              <Stack spacing={2}>
+                                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                                  {t('nutrition-details.overview.sections.coach_notes')}
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                  {mealPlan.description?.trim()
+                                    ? mealPlan.description
+                                    : t('nutrition-details.overview.coach_notes.empty')}
+                                </Typography>
+                              </Stack>
+                            </Paper>
+                          </Stack>
+                        ) : (
+                          <Stack spacing={2}>
+                            {mealPlan.days.length === 0 ? (
+                              <Typography color="text.secondary" variant="body2">
+                                {t('nutrition-details.meals.empty')}
+                              </Typography>
+                            ) : (
+                              mealPlan.days.map((day) => (
+                                <Card key={day.id ?? day.label} variant="outlined">
+                                  <CardContent>
+                                    <Stack spacing={1.5}>
+                                      <Stack spacing={0.5}>
+                                        <Typography variant="h6">{day.label}</Typography>
+                                        {day.description ? (
+                                          <Typography color="text.secondary" variant="body2">
+                                            {day.description}
+                                          </Typography>
+                                        ) : null}
+                                      </Stack>
+                                      <Stack spacing={1.5}>
+                                        {day.meals.map((meal) => (
+                                          <Card
+                                            key={meal.id ?? meal.label}
+                                            variant="outlined"
+                                            sx={{ bgcolor: 'grey.50' }}
+                                          >
+                                            <CardContent>
+                                              <Stack spacing={0.75}>
+                                                <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                                                  {meal.label}
+                                                </Typography>
+                                                {meal.description ? (
+                                                  <Typography color="text.secondary" variant="body2">
+                                                    {meal.description}
+                                                  </Typography>
+                                                ) : null}
+                                                {meal.foods ? (
+                                                  <Typography color="text.secondary" variant="body2">
+                                                    {meal.foods}
+                                                  </Typography>
+                                                ) : null}
+                                                <Typography variant="body2" color="text.secondary">
+                                                  {t('nutrition-details.labels.meal_macros', {
+                                                    calories: meal.calories,
+                                                    protein: meal.proteinGrams,
+                                                    carbs: meal.carbGrams,
+                                                    fats: meal.fatGrams,
+                                                  })}
+                                                </Typography>
+                                              </Stack>
+                                            </CardContent>
+                                          </Card>
+                                        ))}
+                                      </Stack>
+                                    </Stack>
+                                  </CardContent>
+                                </Card>
+                              ))
+                            )}
+                          </Stack>
+                        )}
                       </Stack>
                     ) : null}
                   </Stack>

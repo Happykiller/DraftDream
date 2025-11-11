@@ -695,6 +695,59 @@
       "back_to_list_coach": "Back to nutrition plans",
       "back_to_list_athlete": "Back to my nutrition plans"
     },
+    "tabs": {
+      "overview": "Overview",
+      "meals": "Detailed meals"
+    },
+    "overview": {
+      "sections": {
+        "nutrition_goals": "Nutrition goals",
+        "plan_stats": "Plan statistics",
+        "coach_notes": "Coach notes"
+      },
+      "nutrition_goals": {
+        "calories_per_day": {
+          "label": "Calories per day",
+          "value": "{{value}} kcal"
+        },
+        "protein": {
+          "label": "Protein",
+          "value": "{{value}} g"
+        },
+        "carbs": {
+          "label": "Carbs",
+          "value": "{{value}} g"
+        },
+        "fats": {
+          "label": "Fats",
+          "value": "{{value}} g"
+        }
+      },
+      "plan_stats": {
+        "days": {
+          "label": "Number of days",
+          "value": "{{count}} day",
+          "value_one": "{{count}} day",
+          "value_other": "{{count}} days"
+        },
+        "meals": {
+          "label": "Total meals",
+          "value": "{{count}} meal",
+          "value_one": "{{count}} meal",
+          "value_other": "{{count}} meals"
+        },
+        "average_calories": {
+          "label": "Average calories",
+          "value": "{{value}} kcal/day"
+        }
+      },
+      "coach_notes": {
+        "empty": "No coach notes have been added yet."
+      }
+    },
+    "meals": {
+      "empty": "No meal days have been added to this plan yet."
+    },
     "labels": {
       "macros": {
         "calories": "Calories: {{value}} kcal",
