@@ -230,7 +230,7 @@ export function NutritionPlanDetails(): React.JSX.Element {
           <Box
             component="header"
             sx={{
-              backgroundColor: alpha(theme.palette.primary.main, 0.1),
+              backgroundColor: alpha(theme.palette.warning.main, 0.12),
               px: { xs: 2, sm: 3, md: 4 },
               py: { xs: 2, sm: 2.5 },
             }}
@@ -242,13 +242,13 @@ export function NutritionPlanDetails(): React.JSX.Element {
                   width: 40,
                   height: 40,
                   borderRadius: 2,
-                  bgcolor: 'primary.main',
-                  color: 'primary.contrastText',
+                  bgcolor: 'warning.main',
+                  color: 'warning.contrastText',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0,
-                  boxShadow: '0 10px 20px rgba(25, 118, 210, 0.24)',
+                  boxShadow: `0 10px 20px ${alpha(theme.palette.warning.main, 0.24)}`,
                 }}
               >
                 <RestaurantMenu fontSize="medium" />
@@ -307,6 +307,19 @@ export function NutritionPlanDetails(): React.JSX.Element {
                           variant="scrollable"
                           scrollButtons="auto"
                           allowScrollButtonsMobile
+                          textColor="inherit"
+                          TabIndicatorProps={{
+                            sx: { backgroundColor: theme.palette.warning.main },
+                          }}
+                          sx={{
+                            '& .MuiTab-root': {
+                              color: theme.palette.warning.main,
+                              fontWeight: 600,
+                            },
+                            '& .MuiTab-root .MuiTab-iconWrapper': {
+                              color: 'inherit',
+                            },
+                          }}
                         >
                           <Tab
                             value="overview"
@@ -551,7 +564,7 @@ export function NutritionPlanDetails(): React.JSX.Element {
 
               <Button
                 variant="contained"
-                color="primary"
+                color="warning"
                 onClick={handleBack}
                 sx={{ alignSelf: { xs: 'stretch', sm: 'center' } }}
               >
