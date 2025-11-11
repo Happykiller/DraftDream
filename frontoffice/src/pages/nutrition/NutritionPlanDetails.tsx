@@ -16,7 +16,12 @@ import {
   Typography,
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
-import { RestaurantMenu } from '@mui/icons-material';
+import {
+  EditSquare as EditSquareIcon,
+  ModeStandby,
+  QueryStats,
+  RestaurantMenu,
+} from '@mui/icons-material';
 import {
   useLoaderData,
   useLocation,
@@ -61,6 +66,14 @@ export function NutritionPlanDetails(): React.JSX.Element {
   const { mealPlanId } = useParams<{ mealPlanId: string }>();
   const theme = useTheme();
   const [activeTab, setActiveTab] = React.useState<NutritionPlanTab>('overview');
+  const coachNotesBackground = React.useMemo(
+    () => alpha(theme.palette.info.main, 0.08),
+    [theme.palette.info.main],
+  );
+  const coachNotesBorder = React.useMemo(
+    () => alpha(theme.palette.info.main, 0.24),
+    [theme.palette.info.main],
+  );
 
   const loaderError = React.useMemo(() => {
     if (loaderData.status === 'not_found') {
@@ -101,7 +114,7 @@ export function NutritionPlanDetails(): React.JSX.Element {
               value: t('nutrition-details.overview.nutrition_goals.calories_per_day.value', {
                 value: formatNumber(mealPlan.calories, i18n.language),
               }),
-              color: 'warning.main',
+              color: 'text.primary',
             },
             {
               key: 'protein' as const,
@@ -109,7 +122,7 @@ export function NutritionPlanDetails(): React.JSX.Element {
               value: t('nutrition-details.overview.nutrition_goals.protein.value', {
                 value: formatNumber(mealPlan.proteinGrams, i18n.language),
               }),
-              color: 'primary.main',
+              color: 'info.main',
             },
             {
               key: 'carbs' as const,
@@ -117,7 +130,7 @@ export function NutritionPlanDetails(): React.JSX.Element {
               value: t('nutrition-details.overview.nutrition_goals.carbs.value', {
                 value: formatNumber(mealPlan.carbGrams, i18n.language),
               }),
-              color: 'info.main',
+              color: 'success.main',
             },
             {
               key: 'fats' as const,
@@ -125,7 +138,7 @@ export function NutritionPlanDetails(): React.JSX.Element {
               value: t('nutrition-details.overview.nutrition_goals.fats.value', {
                 value: formatNumber(mealPlan.fatGrams, i18n.language),
               }),
-              color: 'success.main',
+              color: 'warning.main',
             },
           ]
         : [],
@@ -295,8 +308,18 @@ export function NutritionPlanDetails(): React.JSX.Element {
                           scrollButtons="auto"
                           allowScrollButtonsMobile
                         >
-                          <Tab value="overview" label={t('nutrition-details.tabs.overview')} />
-                          <Tab value="meals" label={t('nutrition-details.tabs.meals')} />
+                          <Tab
+                            value="overview"
+                            icon={<QueryStats fontSize="small" />}
+                            iconPosition="start"
+                            label={t('nutrition-details.tabs.overview')}
+                          />
+                          <Tab
+                            value="meals"
+                            icon={<RestaurantMenu fontSize="small" />}
+                            iconPosition="start"
+                            label={t('nutrition-details.tabs.meals')}
+                          />
                         </Tabs>
 
                         {activeTab === 'overview' ? (
@@ -307,18 +330,31 @@ export function NutritionPlanDetails(): React.JSX.Element {
                                 sx={{ flex: 1, borderRadius: 2, p: { xs: 2, md: 2.5 } }}
                               >
                                 <Stack spacing={2}>
-                                  <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                                    {t('nutrition-details.overview.sections.nutrition_goals')}
-                                  </Typography>
+                                  <Stack direction="row" alignItems="center" spacing={1}>
+                                    <ModeStandby fontSize="small" color="info" />
+                                    <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                                      {t('nutrition-details.overview.sections.nutrition_goals')}
+                                    </Typography>
+                                  </Stack>
                                   <Stack spacing={1.5}>
                                     {nutritionGoalItems.map((item) => (
-                                      <Stack key={item.key} spacing={0.5}>
+                                      <Stack
+                                        key={item.key}
+                                        direction="row"
+                                        alignItems="center"
+                                        justifyContent="space-between"
+                                        spacing={1.5}
+                                      >
                                         <Typography variant="body2" color="text.secondary">
                                           {item.label}
                                         </Typography>
                                         <Typography
-                                          variant="h6"
-                                          sx={{ fontWeight: 700, color: item.color }}
+                                          variant="subtitle1"
+                                          sx={{
+                                            fontWeight: 700,
+                                            color: item.color,
+                                            textAlign: 'right',
+                                          }}
                                         >
                                           {item.value}
                                         </Typography>
@@ -333,37 +369,58 @@ export function NutritionPlanDetails(): React.JSX.Element {
                                 sx={{ flex: 1, borderRadius: 2, p: { xs: 2, md: 2.5 } }}
                               >
                                 <Stack spacing={2}>
-                                  <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                                    {t('nutrition-details.overview.sections.plan_stats')}
-                                  </Typography>
+                                  <Stack direction="row" alignItems="center" spacing={1}>
+                                    <QueryStats fontSize="small" color="primary" />
+                                    <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                                      {t('nutrition-details.overview.sections.plan_stats')}
+                                    </Typography>
+                                  </Stack>
                                   <Stack spacing={1.5}>
-                                    <Stack spacing={0.5}>
+                                    <Stack
+                                      direction="row"
+                                      alignItems="center"
+                                      justifyContent="space-between"
+                                      spacing={1.5}
+                                    >
                                       <Typography variant="body2" color="text.secondary">
                                         {t('nutrition-details.overview.plan_stats.days.label')}
                                       </Typography>
-                                      <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                                      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
                                         {t('nutrition-details.overview.plan_stats.days.value', {
                                           count: planStatistics?.dayCount ?? 0,
                                         })}
                                       </Typography>
                                     </Stack>
-                                    <Stack spacing={0.5}>
+                                    <Stack
+                                      direction="row"
+                                      alignItems="center"
+                                      justifyContent="space-between"
+                                      spacing={1.5}
+                                    >
                                       <Typography variant="body2" color="text.secondary">
                                         {t('nutrition-details.overview.plan_stats.meals.label')}
                                       </Typography>
-                                      <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                                      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
                                         {t('nutrition-details.overview.plan_stats.meals.value', {
                                           count: planStatistics?.totalMeals ?? 0,
                                         })}
                                       </Typography>
                                     </Stack>
-                                    <Stack spacing={0.5}>
+                                    <Stack
+                                      direction="row"
+                                      alignItems="center"
+                                      justifyContent="space-between"
+                                      spacing={1.5}
+                                    >
                                       <Typography variant="body2" color="text.secondary">
                                         {t('nutrition-details.overview.plan_stats.average_calories.label')}
                                       </Typography>
-                                      <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                                      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
                                         {t('nutrition-details.overview.plan_stats.average_calories.value', {
-                                          value: formatNumber(planStatistics?.averageCalories ?? 0, i18n.language),
+                                          value: formatNumber(
+                                            planStatistics?.averageCalories ?? 0,
+                                            i18n.language,
+                                          ),
                                         })}
                                       </Typography>
                                     </Stack>
@@ -372,18 +429,32 @@ export function NutritionPlanDetails(): React.JSX.Element {
                               </Paper>
                             </Stack>
 
-                            <Paper variant="outlined" sx={{ borderRadius: 2, p: { xs: 2, md: 2.5 } }}>
-                              <Stack spacing={2}>
-                                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                                  {t('nutrition-details.overview.sections.coach_notes')}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
+                            <Box
+                              sx={{
+                                borderRadius: 2,
+                                backgroundColor: coachNotesBackground,
+                                border: `1px solid ${coachNotesBorder}`,
+                                px: { xs: 2, md: 2.5 },
+                                py: { xs: 2, md: 2.5 },
+                              }}
+                            >
+                              <Stack spacing={1.5}>
+                                <Stack direction="row" alignItems="center" spacing={1}>
+                                  <EditSquareIcon fontSize="small" color="info" />
+                                  <Typography
+                                    variant="subtitle1"
+                                    sx={{ fontWeight: 700, color: theme.palette.info.main }}
+                                  >
+                                    {t('nutrition-details.overview.sections.coach_notes')}
+                                  </Typography>
+                                </Stack>
+                                <Typography variant="body2" color="text.primary">
                                   {mealPlan.description?.trim()
                                     ? mealPlan.description
                                     : t('nutrition-details.overview.coach_notes.empty')}
                                 </Typography>
                               </Stack>
-                            </Paper>
+                            </Box>
                           </Stack>
                         ) : (
                           <Stack spacing={2}>
