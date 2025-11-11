@@ -15,6 +15,7 @@ import { slugify } from '@src/utils/slugify';
 export function ProgramsCoach(): React.JSX.Element {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = React.useState('');
 
   const builderCopy = React.useMemo(
     () =>
@@ -27,8 +28,11 @@ export function ProgramsCoach(): React.JSX.Element {
   const { items: programs, loading, reload, remove, create } = usePrograms({
     page: 1,
     limit: 12,
-    q: '',
+    q: searchQuery,
   });
+
+  const searchPlaceholder = t('programs-coatch.list.search_placeholder');
+  const searchAriaLabel = t('programs-coatch.list.search_aria_label');
 
   const handleRefresh = React.useCallback(() => {
     void reload();
@@ -111,6 +115,10 @@ export function ProgramsCoach(): React.JSX.Element {
     [create, handleProgramSaved, i18n.language, navigate],
   );
 
+  const handleSearchChange = React.useCallback((value: string) => {
+    setSearchQuery(value);
+  }, []);
+
   return (
     <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
       {/* General information */}
@@ -159,6 +167,10 @@ export function ProgramsCoach(): React.JSX.Element {
         onEditProgram={handleEditProgram}
         onCloneProgram={handleCloneProgram}
         onViewProgram={handleViewProgram}
+        onSearchChange={handleSearchChange}
+        searchPlaceholder={searchPlaceholder}
+        searchAriaLabel={searchAriaLabel}
+        searchQuery={searchQuery}
       />
     </Stack>
   );

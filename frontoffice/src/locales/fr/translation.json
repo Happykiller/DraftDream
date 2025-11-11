@@ -259,6 +259,8 @@
       "program_create_failed": "Impossible de créer le programme."
     },
     "list": {
+      "search_placeholder": "Rechercher des programmes...",
+      "search_aria_label": "Rechercher des programmes",
       "created_by": "Créé par {{name}}",
       "created_by_unknown": "Coach inconnu",
       "no_description": "Aucune description fournie.",
