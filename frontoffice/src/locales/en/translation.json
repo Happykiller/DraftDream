@@ -88,10 +88,13 @@
   },
   "programs-coatch": {
     "title": "Programs",
+    "subtitle": "Build training programs tailored to each athlete.",
+    "helper": "Clone existing templates or start from scratch to deliver structured workouts.",
     "placeholder": "Training programs",
     "actions": {
       "open_builder": "Create program",
-      "close_builder": "Close builder"
+      "close_builder": "Close builder",
+      "refresh": "Refresh programs"
     },
     "builder": {
       "title": "Program builder",

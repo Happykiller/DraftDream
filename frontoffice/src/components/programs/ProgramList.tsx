@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { alpha, useTheme } from '@mui/material/styles';
-import { Button, Grid, Paper, Stack, Typography } from '@mui/material';
-import { Add } from '@mui/icons-material';
+import { Grid, Paper, Stack, Typography } from '@mui/material';
 
 import { ProgramCard, type ProgramActionKey } from '@components/programs/ProgramCard';
 
@@ -13,8 +12,6 @@ interface ProgramListProps {
   placeholderTitle: string;
   placeholderSubtitle: string;
   placeholderHelper?: string;
-  openBuilderLabel?: string;
-  onOpenBuilder?: () => void;
   onDeleteProgram?: (programId: string) => Promise<void> | void;
   onEditProgram?: (program: Program) => void;
   onCloneProgram?: (
@@ -31,8 +28,6 @@ export function ProgramList({
   placeholderTitle,
   placeholderSubtitle,
   placeholderHelper,
-  openBuilderLabel,
-  onOpenBuilder,
   onDeleteProgram,
   onEditProgram,
   onCloneProgram,
@@ -41,25 +36,10 @@ export function ProgramList({
 }: ProgramListProps): React.JSX.Element {
   const theme = useTheme();
   const showPlaceholder = !loading && programs.length === 0;
-  const showToolbarButton = Boolean(openBuilderLabel && onOpenBuilder);
   const actionKeys = allowedActions ?? ['view', 'copy', 'edit', 'delete'];
 
   return (
-    <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
-      {/* Toolbar */}
-      {showToolbarButton && (
-        <Stack direction="row" justifyContent="flex-end" sx={{ width: '100%' }}>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<Add fontSize="small" />}
-            onClick={onOpenBuilder}
-          >
-            {openBuilderLabel}
-          </Button>
-        </Stack>
-      )}
-
+    <Stack spacing={3} sx={{ width: '100%' }}>
       {/* Program grid */}
       {!loading && programs.length > 0 && (
         <Grid container spacing={3}>

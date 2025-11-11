@@ -88,10 +88,13 @@
   },
   "programs-coatch": {
     "title": "Programmes",
+    "subtitle": "Concevez des programmes adaptés à chaque athlète.",
+    "helper": "Dupliquez vos modèles ou démarrez de zéro pour proposer des entraînements structurés.",
     "placeholder": "Programmes d'entrainement",
     "actions": {
       "open_builder": "Creer un programme",
-      "close_builder": "Fermer le createur"
+      "close_builder": "Fermer le createur",
+      "refresh": "Rafraichir les programmes"
     },
     "builder": {
       "title": "Créer un nouveau programme sportif",

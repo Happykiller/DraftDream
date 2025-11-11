@@ -2,6 +2,8 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { Add, Refresh } from '@mui/icons-material';
+import { Button, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 
 import { ProgramList } from '@components/programs/ProgramList';
 import { type BuilderCopy } from '@components/programs/ProgramBuilderPanel';
@@ -27,6 +29,10 @@ export function ProgramsCoach(): React.JSX.Element {
     limit: 12,
     q: '',
   });
+
+  const handleRefresh = React.useCallback(() => {
+    void reload();
+  }, [reload]);
 
   const handleProgramSaved = React.useCallback(() => {
     void reload();
@@ -106,20 +112,54 @@ export function ProgramsCoach(): React.JSX.Element {
   );
 
   return (
-    <>
+    <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
       {/* General information */}
+      <Stack spacing={1}>
+        <Stack
+          alignItems="center"
+          direction="row"
+          flexWrap="wrap"
+          justifyContent="space-between"
+          spacing={2}
+        >
+          <Typography variant="h5">{t('programs-coatch.subtitle')}</Typography>
+
+          <Stack alignItems="center" direction="row" spacing={1} sx={{ ml: 'auto' }}>
+            <Tooltip title={t('programs-coatch.actions.refresh')}>
+              <IconButton
+                aria-label={t('programs-coatch.actions.refresh')}
+                color="primary"
+                onClick={handleRefresh}
+                size="small"
+              >
+                <Refresh fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Button
+              color="warning"
+              onClick={handleCreateProgram}
+              startIcon={<Add />}
+              variant="contained"
+            >
+              {t('programs-coatch.actions.open_builder')}
+            </Button>
+          </Stack>
+        </Stack>
+        <Typography color="text.secondary" variant="body2">
+          {t('programs-coatch.helper')}
+        </Typography>
+      </Stack>
+
       <ProgramList
         programs={programs}
         loading={loading}
         placeholderTitle={t('programs-coatch.placeholder')}
         placeholderSubtitle={builderCopy.subtitle}
-        openBuilderLabel={t('programs-coatch.actions.open_builder')}
-        onOpenBuilder={handleCreateProgram}
         onDeleteProgram={handleDeleteProgram}
         onEditProgram={handleEditProgram}
         onCloneProgram={handleCloneProgram}
         onViewProgram={handleViewProgram}
       />
-    </>
+    </Stack>
   );
 }
