@@ -1,5 +1,3 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-
 import {
   Alert,
   Box,
@@ -9,10 +7,12 @@ import {
   Stack,
   Typography
 } from '@mui/material';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import ReleaseAccordion from '../components/ReleaseAccordion';
 import { useI18n, type Language } from '../i18n/I18nProvider';
+
 import type { ReleaseDataset, ReleaseEntry } from '../types/releases.ts';
 
 type LoadingState = 'idle' | 'loading' | 'success' | 'error';

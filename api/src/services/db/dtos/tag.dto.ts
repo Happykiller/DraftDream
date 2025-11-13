@@ -1,17 +1,17 @@
 // src/services/db/dto/tag.dto.ts
-export type CreateTagDto = {
+export interface CreateTagDto {
   slug: string;
   locale: string;
   label: string;
   visibility: 'private' | 'public';
   createdBy: string;
-};
+}
 
 export type UpdateTagDto = Partial<Pick<CreateTagDto, 'slug' | 'locale' | 'label' | 'visibility'>>;
 
-export type GetTagDto = { id: string };
+export interface GetTagDto { id: string }
 
-export type ListTagsDto = {
+export interface ListTagsDto {
   q?: string;
   locale?: string;
   createdBy?: string;
@@ -19,4 +19,4 @@ export type ListTagsDto = {
   limit?: number;                 // default 20
   page?: number;                  // default 1
   sort?: Record<string, 1 | -1>;  // e.g. { updatedAt: -1 }
-};
+}

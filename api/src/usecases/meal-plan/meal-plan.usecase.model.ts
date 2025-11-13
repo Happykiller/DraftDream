@@ -1,15 +1,15 @@
 // src/usecases/meal-plan/meal-plan.usecase.model.ts
 
-export type MealPlanMealTypeUsecaseModel = {
+export interface MealPlanMealTypeUsecaseModel {
   id?: string;
   templateMealTypeId?: string;
   slug?: string;
   locale?: string;
   label: string;
   visibility?: 'private' | 'public';
-};
+}
 
-export type MealPlanMealUsecaseModel = {
+export interface MealPlanMealUsecaseModel {
   id: string;
   templateMealId?: string;
   slug?: string;
@@ -22,9 +22,9 @@ export type MealPlanMealUsecaseModel = {
   carbGrams: number;
   fatGrams: number;
   type: MealPlanMealTypeUsecaseModel;
-};
+}
 
-export type MealPlanDayUsecaseModel = {
+export interface MealPlanDayUsecaseModel {
   id: string;
   templateMealDayId?: string;
   slug?: string;
@@ -32,9 +32,9 @@ export type MealPlanDayUsecaseModel = {
   label: string;
   description?: string;
   meals: MealPlanMealUsecaseModel[];
-};
+}
 
-export type MealPlanUsecaseModel = {
+export interface MealPlanUsecaseModel {
   id: string;
   slug: string;
   locale: string;
@@ -50,4 +50,4 @@ export type MealPlanUsecaseModel = {
   deletedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
-};
+}

@@ -113,7 +113,7 @@ export function useUsers({ page, limit, q, type }: UseUsersParams) {
     if (lastSigRef.current === sig) return;
     lastSigRef.current = sig;
     void load({ page, limit, q, type });
-  }, [sig, load]);
+  }, [sig, load, page, limit, q, type]);
 
   return {
     items,

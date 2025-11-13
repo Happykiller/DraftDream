@@ -48,7 +48,7 @@ const migration: Migration = {
     if (!admin?._id) {
       throw new Error('Admin user not found (email: "admin@fitdesk.com"). Run admin migration first.');
     }
-    const createdBy: ObjectId = admin._id as ObjectId;
+    const createdBy: ObjectId = admin._id;
 
     // upserts
     const now = new Date();

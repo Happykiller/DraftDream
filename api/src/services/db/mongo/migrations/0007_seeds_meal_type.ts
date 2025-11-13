@@ -32,7 +32,7 @@ const migration: Migration = {
       throw new Error('Admin user not found (email: "admin@fitdesk.com").');
     }
 
-    const createdBy: ObjectId = admin._id as ObjectId;
+    const createdBy: ObjectId = admin._id;
     const now = new Date();
 
     const operations = FR_MEAL_TYPES.map((label) => {

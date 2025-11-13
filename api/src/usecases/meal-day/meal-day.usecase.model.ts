@@ -1,6 +1,6 @@
 // src/usecases/meal-day/meal-day.usecase.model.ts
 
-export type MealDayUsecaseModel = {
+export interface MealDayUsecaseModel {
   id: string;
   slug: string;
   locale: string;
@@ -15,5 +15,5 @@ export type MealDayUsecaseModel = {
   deletedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
-};
+}
 

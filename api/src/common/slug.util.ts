@@ -40,6 +40,12 @@ export function buildSlug({
   const candidate = slugifyCandidate(slug);
   if (candidate) return candidate;
 
-  const base = slugifyCandidate(label) || fallback || DEFAULT_FALLBACK_PREFIX;
+  const labelSlug = slugifyCandidate(label);
+  if (labelSlug) {
+    return `${labelSlug}-${randomSlugSuffix()}`;
+  }
+
+  const fallbackBase = fallback?.trim();
+  const base = fallbackBase && fallbackBase.length > 0 ? fallbackBase : DEFAULT_FALLBACK_PREFIX;
   return `${base}-${randomSlugSuffix()}`;
 }

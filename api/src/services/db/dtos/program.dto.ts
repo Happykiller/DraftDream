@@ -1,5 +1,5 @@
 // src\\services\\db\\dtos\\program.dto.ts
-export type ProgramExerciseSnapshotDto = {
+export interface ProgramExerciseSnapshotDto {
   id: string;
   templateExerciseId?: string;
   label: string;
@@ -15,9 +15,9 @@ export type ProgramExerciseSnapshotDto = {
   muscleIds?: string[];
   equipmentIds?: string[];
   tagIds?: string[];
-};
+}
 
-export type ProgramSessionSnapshotDto = {
+export interface ProgramSessionSnapshotDto {
   id: string;
   templateSessionId?: string;
   slug?: string;
@@ -26,9 +26,9 @@ export type ProgramSessionSnapshotDto = {
   durationMin: number;
   description?: string;
   exercises: ProgramExerciseSnapshotDto[];
-};
+}
 
-export type CreateProgramDto = {
+export interface CreateProgramDto {
   slug: string;
   locale: string;
   label: string;
@@ -40,11 +40,11 @@ export type CreateProgramDto = {
   /** Optional assigned user id */
   userId?: string | null;
   createdBy: string;
-};
+}
 
-export type GetProgramDto = { id: string };
+export interface GetProgramDto { id: string }
 
-export type ListProgramsDto = {
+export interface ListProgramsDto {
   q?: string;
   locale?: string;
   createdBy?: string;
@@ -55,7 +55,7 @@ export type ListProgramsDto = {
   limit?: number;            // default 20
   page?: number;             // default 1
   sort?: Record<string, 1 | -1>; // default { updatedAt: -1 }
-};
+}
 
 export type UpdateProgramDto = Partial<{
   slug: string;

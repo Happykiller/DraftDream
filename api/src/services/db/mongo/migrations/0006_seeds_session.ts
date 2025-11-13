@@ -1,14 +1,14 @@
 import { Db, ObjectId } from 'mongodb';
 import { Migration } from '@services/db/mongo/migration.runner.mongo';
 
-type SessionSeed = {
+interface SessionSeed {
   slug: string;
   locale: 'fr';
   label: string;
   durationMin: number;
   description?: string;
   exerciseSlugs: string[];
-};
+}
 
 const SESSION_SEEDS: SessionSeed[] = [
   {
@@ -41,7 +41,7 @@ const SESSION_SEEDS: SessionSeed[] = [
 ];
 
 function buildExerciseLookup(
-  exercises: Array<{ _id: ObjectId; slug: string }>
+  exercises: { _id: ObjectId; slug: string }[]
 ): Map<string, string> {
   const map = new Map<string, string>();
   for (const doc of exercises) {
@@ -97,7 +97,7 @@ const migration: Migration = {
         'Admin user not found (email: "admin@fitdesk.com"). Run admin migration first.'
       );
     }
-    const createdBy = admin._id as ObjectId;
+    const createdBy = admin._id;
 
     const exercises = await db
       .collection<{ _id: ObjectId; slug: string }>('exercises')

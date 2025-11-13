@@ -32,6 +32,9 @@ export class MealTypeGql {
   @Field()
   label!: string;
 
+  @Field(() => String, { nullable: true })
+  icon?: string | null;
+
   @Field(() => MealTypeVisibility)
   visibility!: MealTypeVisibility;
 
@@ -60,6 +63,9 @@ export class CreateMealTypeInput {
   @Field()
   label!: string;
 
+  @Field(() => String, { nullable: true })
+  icon?: string | null;
+
   @Field(() => MealTypeVisibility)
   visibility!: MealTypeVisibility;
 }
@@ -78,6 +84,9 @@ export class UpdateMealTypeInput {
 
   @Field({ nullable: true })
   label?: string;
+
+  @Field(() => String, { nullable: true })
+  icon?: string | null;
 
   @Field(() => MealTypeVisibility, { nullable: true })
   visibility?: MealTypeVisibility;

@@ -1,6 +1,42 @@
 {
   "releases": [
     {
+      "version": "0.5.0",
+      "title": "Release note : 0.5.0",
+      "date": "2025-11-06",
+      "global": [
+        "[FEAT] Full nutrition plan builder available to coaches and athletes.",
+        "[EXPERIENCE] Visual management of meal type icons with a streamlined tracking interface.",
+        "[USABILITY] Clearer, smoother flows to craft plans across training and nutrition modules.",
+        "[ALIGNMENT] Stronger convergence between training programs and personalized nutrition journeys."
+      ],
+      "notes": "FitDesk 0.5.0 doubles down on nutrition and delivers a fluent, expressive interface that unifies the athlete and coach experience across training and meal planning.",
+      "projects": {
+        "/api": [
+          "Expose meal type icon support across consuming applications.",
+          "Extend GraphQL schemas to describe plans, meals, and metadata with higher fidelity.",
+          "Harden error handling during updates to ensure predictable feedback.",
+          "Clean up test suites and adopt ESLint for consistent code quality."
+        ],
+        "/backoffice": [
+          "Control meal type icons straight from the admin experience.",
+          "Refresh the nutrition module so it reflects the new data points.",
+          "Polish navigation and visuals for a clearer, more cohesive workflow."
+        ],
+        "/frontoffice": [
+          "Introduce the new nutrition plan builder inspired by the existing program builder.",
+          "Allow athletes to create, edit, and delete their own meals and plans.",
+          "Display meal icons and a live nutrition summary during editing.",
+          "Redesign day, meal, and plan views with inline editing and updated visuals.",
+          "Refresh the exercise builder and tighten its integration with programs.",
+          "Simplify global loading flows and retire redundant waiting screens."
+        ],
+        "/showcase": [
+          "Maintain visual and translation parity to pave the way for future public updates."
+        ]
+      }
+    },
+    {
       "version": "0.4.0",
       "title": "Release note : 0.4.0",
       "date": "2025-10-15",

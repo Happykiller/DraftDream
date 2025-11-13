@@ -65,30 +65,27 @@ import { TokenSwatch } from '@pages/theme-studio/components/TokenSwatch';
 import { TokenTypography } from '@pages/theme-studio/components/TokenTypography';
 import { useSectionObserver } from '@pages/theme-studio/hooks/useSectionObserver';
 
-const COMPONENT_SECTION_IDS = [
-  'buttons',
-  'text-fields',
-  'selects',
-  'autocomplete',
-  'choice-controls',
-  'slider',
-  'chip',
-  'avatar-icon',
-  'alerts',
-  'snackbar',
-  'dialog',
-  'card',
-  'tabs',
-  'table',
-  'pagination',
-  'breadcrumbs',
-  'avatar-badge',
-  'tooltip',
-  'progress',
-  'skeleton',
-] as const;
-
-type ComponentSectionId = (typeof COMPONENT_SECTION_IDS)[number];
+type ComponentSectionId =
+  | 'buttons'
+  | 'text-fields'
+  | 'selects'
+  | 'autocomplete'
+  | 'choice-controls'
+  | 'slider'
+  | 'chip'
+  | 'avatar-icon'
+  | 'alerts'
+  | 'snackbar'
+  | 'dialog'
+  | 'card'
+  | 'tabs'
+  | 'table'
+  | 'pagination'
+  | 'breadcrumbs'
+  | 'avatar-badge'
+  | 'tooltip'
+  | 'progress'
+  | 'skeleton';
 
 type ComponentSection = {
   id: ComponentSectionId;

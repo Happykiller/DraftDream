@@ -1,4 +1,4 @@
-// src/services/db/mongo/repositories/meal-type.repository.ts
+﻿// src/services/db/mongo/repositories/meal-type.repository.ts
 import {
   Collection,
   Db,
@@ -14,24 +14,25 @@ import {
   UpdateMealTypeDto,
 } from '@services/db/dtos/meal-type.dto';
 
-type MealTypeDoc = {
+interface MealTypeDoc {
   _id: ObjectId;
   slug: string;
   locale: string;
   label: string;
+  icon?: string | null;
   visibility: 'private' | 'public';
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
-};
+}
 
 /** Mongo repository providing CRUD operations for meal types. */
 export class BddServiceMealTypeMongo {
   /**
    * Provides the Mongo collection instance for meal types.
    */
-  private async col(): Promise<Collection<MealTypeDoc>> {
+  private col(): Collection<MealTypeDoc> {
     return inversify.mongo.collection<MealTypeDoc>('meal_types');
   }
 
@@ -40,7 +41,7 @@ export class BddServiceMealTypeMongo {
    */
   async ensureIndexes(db?: Db): Promise<void> {
     try {
-      const collection = db ? db.collection<MealTypeDoc>('meal_types') : await this.col();
+      const collection = db ? db.collection<MealTypeDoc>('meal_types') : this.col();
       await collection.createIndexes([
         { key: { slug: 1, locale: 1 }, name: 'uniq_slug_locale', unique: true },
         { key: { updatedAt: -1 }, name: 'by_updatedAt' },
@@ -55,10 +56,12 @@ export class BddServiceMealTypeMongo {
    */
   async create(dto: CreateMealTypeDto): Promise<MealType | null> {
     const now = new Date();
+    const icon = this.normalizeIcon(dto.icon);
     const doc: Omit<MealTypeDoc, '_id'> = {
       slug: dto.slug.toLowerCase().trim(),
       locale: dto.locale.toLowerCase().trim(),
       label: dto.label.trim(),
+      icon: icon ?? null,
       visibility: dto.visibility,
       createdBy: dto.createdBy,
       createdAt: now,
@@ -66,8 +69,12 @@ export class BddServiceMealTypeMongo {
     };
 
     try {
-      const res = await (await this.col()).insertOne(doc as MealTypeDoc);
-      return { id: res.insertedId.toHexString(), ...doc };
+      const res = await (this.col()).insertOne(doc as MealTypeDoc);
+      return {
+        id: res.insertedId.toHexString(),
+        ...doc,
+        icon: icon ?? null,
+      };
     } catch (error) {
       if (this.isDuplicateError(error)) return null;
       this.handleError('create', error);
@@ -80,7 +87,7 @@ export class BddServiceMealTypeMongo {
   async get(dto: GetMealTypeDto): Promise<MealType | null> {
     try {
       const _id = this.toObjectId(dto.id);
-      const doc = await (await this.col()).findOne({ _id });
+      const doc = await (this.col()).findOne({ _id });
       return doc ? this.toModel(doc) : null;
     } catch (error) {
       this.handleError('get', error);
@@ -102,7 +109,7 @@ export class BddServiceMealTypeMongo {
     } = params;
 
     const filter: Record<string, any> = {};
-    if (q && q.trim()) {
+    if (q?.trim()) {
       const regex = new RegExp(q.trim(), 'i');
       filter.$or = [{ slug: { $regex: regex } }, { label: { $regex: regex } }];
     }
@@ -113,7 +120,7 @@ export class BddServiceMealTypeMongo {
     }
 
     try {
-      const collection = await this.col();
+      const collection = this.col();
       const cursor = collection
         .find(filter)
         .sort(sort)
@@ -144,10 +151,11 @@ export class BddServiceMealTypeMongo {
     if (patch.slug !== undefined) $set.slug = patch.slug.toLowerCase().trim();
     if (patch.locale !== undefined) $set.locale = patch.locale.toLowerCase().trim();
     if (patch.label !== undefined) $set.label = patch.label.trim();
+    if (patch.icon !== undefined) $set.icon = this.normalizeIcon(patch.icon) ?? null;
     if (patch.visibility !== undefined) $set.visibility = patch.visibility;
 
     try {
-      const collection = await this.col();
+      const collection = this.col();
       const res = await collection.updateOne({ _id }, { $set });
       if (!res.matchedCount) {
         return null;
@@ -167,7 +175,7 @@ export class BddServiceMealTypeMongo {
   async delete(id: string): Promise<boolean> {
     try {
       const _id = this.toObjectId(id);
-      const res = await (await this.col()).deleteOne({ _id });
+      const res = await (this.col()).deleteOne({ _id });
       return res.deletedCount === 1;
     } catch (error) {
       this.handleError('delete', error);
@@ -187,6 +195,7 @@ export class BddServiceMealTypeMongo {
     slug: doc.slug,
     locale: doc.locale,
     label: doc.label,
+    icon: doc.icon ?? null,
     visibility: doc.visibility,
     createdBy: doc.createdBy,
     createdAt: doc.createdAt,
@@ -202,4 +211,18 @@ export class BddServiceMealTypeMongo {
     inversify.loggerService.error(`BddServiceMealTypeMongo#${method} => ${message}`);
     throw error instanceof Error ? error : new Error(message);
   }
+
+  private normalizeIcon(icon: string | null | undefined): string | null | undefined {
+    if (icon === undefined) {
+      return undefined;
+    }
+
+    if (icon === null) {
+      return null;
+    }
+
+    const trimmed = icon.trim();
+    return trimmed.length ? trimmed : null;
+  }
 }
+

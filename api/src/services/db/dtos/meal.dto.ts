@@ -1,6 +1,6 @@
 // src/services/db/dtos/meal.dto.ts
 /** Document payload used when inserting a meal. */
-export type CreateMealDto = {
+export interface CreateMealDto {
   slug: string;
   locale: string;
   label: string;
@@ -12,7 +12,7 @@ export type CreateMealDto = {
   fatGrams: number;
   visibility: 'private' | 'public';
   createdBy: string;
-};
+}
 
 /** Fields accepted when updating a meal document. */
 export type UpdateMealDto = Partial<
@@ -23,10 +23,10 @@ export type UpdateMealDto = Partial<
 >;
 
 /** Identifier wrapper used to fetch a meal. */
-export type GetMealDto = { id: string };
+export interface GetMealDto { id: string }
 
 /** Query parameters used to list meals. */
-export type ListMealsDto = {
+export interface ListMealsDto {
   q?: string;
   locale?: string;
   typeId?: string;
@@ -35,4 +35,4 @@ export type ListMealsDto = {
   limit?: number;                 // default 20
   page?: number;                  // default 1
   sort?: Record<string, 1 | -1>;  // e.g. { updatedAt: -1 }
-};
+}

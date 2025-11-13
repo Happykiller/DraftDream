@@ -1,12 +1,13 @@
 {
   "name": "fitdesk-showcase",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview --host"
+    "preview": "vite preview --host",
+    "lint": "eslint \"src/**/*.{ts,tsx}\" --max-warnings=0"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
@@ -18,10 +19,21 @@
     "react-router-dom": "^6.23.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.1",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.1",
+    "@typescript-eslint/eslint-plugin": "^8.46.4",
+    "@typescript-eslint/parser": "^8.46.4",
     "@vitejs/plugin-react": "^5.0.0",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
     "typescript": "^5.4.0",
+    "typescript-eslint": "^8.46.4",
     "vite": "^5.2.0"
   }
 }

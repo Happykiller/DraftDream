@@ -1,4 +1,4 @@
-// src\services\db\mongo\category.repository.ts
+﻿// src\services\db\mongo\category.repository.ts
 import { Collection, ObjectId, Db } from 'mongodb';
 import inversify from '@src/inversify/investify';
 import { Category } from '@services/db/models/category.model';
@@ -6,7 +6,7 @@ import {
   CreateCategoryDto, GetCategoryDto, ListCategoriesDto, UpdateCategoryDto,
 } from '@services/db/dtos/category.dto';
 
-type CategoryDoc = {
+interface CategoryDoc {
   _id: ObjectId;
   slug: string;
   locale: string;
@@ -16,16 +16,16 @@ type CategoryDoc = {
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
-};
+}
 
 export class BddServiceCategoryMongo {
-  private async col(): Promise<Collection<CategoryDoc>> {
+  private col(): Collection<CategoryDoc> {
     return inversify.mongo.collection<CategoryDoc>('categories');
   }
 
   async ensureIndexes(db?: Db): Promise<void> {
     try {
-      const collection = db ? db.collection<CategoryDoc>('categories') : await this.col();
+      const collection = db ? db.collection<CategoryDoc>('categories') : this.col();
       await collection.createIndexes([
         { key: { slug: 1, locale: 1 }, name: 'uniq_slug_locale', unique: true },
         { key: { updatedAt: -1 }, name: 'by_updatedAt' },
@@ -48,7 +48,7 @@ export class BddServiceCategoryMongo {
     };
 
     try {
-      const res = await (await this.col()).insertOne(doc as CategoryDoc);
+      const res = await (this.col()).insertOne(doc as CategoryDoc);
       return { id: res.insertedId.toHexString(), ...doc };
     } catch (error) {
       if (this.isDuplicateError(error)) return null;
@@ -59,7 +59,7 @@ export class BddServiceCategoryMongo {
   async get(dto: GetCategoryDto): Promise<Category | null> {
     try {
       const _id = this.toObjectId(dto.id);
-      const doc = await (await this.col()).findOne({ _id });
+      const doc = await (this.col()).findOne({ _id });
       return doc ? this.toModel(doc) : null;
     } catch (error) {
       this.handleError('get', error);
@@ -72,7 +72,7 @@ export class BddServiceCategoryMongo {
     } = params;
 
     const filter: Record<string, any> = {};
-    if (q && q.trim()) {
+    if (q?.trim()) {
       const regex = new RegExp(q.trim(), 'i');
       filter.$or = [{ slug: { $regex: regex } }, { label: { $regex: regex } }];
     }
@@ -83,7 +83,7 @@ export class BddServiceCategoryMongo {
     }
 
     try {
-      const collection = await this.col();
+      const collection = this.col();
       const cursor = collection.find(filter).sort(sort).skip((page - 1) * limit).limit(limit);
       const [rows, total] = await Promise.all([cursor.toArray(), collection.countDocuments(filter)]);
 
@@ -101,7 +101,7 @@ export class BddServiceCategoryMongo {
     if (patch.label !== undefined) $set.label = patch.label.trim();
 
     try {
-      const res: any = await (await this.col()).findOneAndUpdate(
+      const res: any = await (this.col()).findOneAndUpdate(
         { _id }, { $set }, { returnDocument: 'after' }
       );
       return res.value ? this.toModel(res.value) : null;
@@ -114,7 +114,7 @@ export class BddServiceCategoryMongo {
   async delete(id: string): Promise<boolean> {
     try {
       const _id = this.toObjectId(id);
-      const res = await (await this.col()).deleteOne({ _id });
+      const res = await (this.col()).deleteOne({ _id });
       return res.deletedCount === 1;
     } catch (error) {
       this.handleError('delete', error);
@@ -147,3 +147,4 @@ export class BddServiceCategoryMongo {
     throw error instanceof Error ? error : new Error(message);
   }
 }
+

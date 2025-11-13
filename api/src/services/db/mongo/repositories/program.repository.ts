@@ -1,4 +1,4 @@
-// src\\services\\db\\mongo\\repositories\\program.repository.ts
+﻿// src\\services\\db\\mongo\\repositories\\program.repository.ts
 import { Collection, Db, ObjectId } from 'mongodb';
 
 import inversify from '@src/inversify/investify';
@@ -16,7 +16,7 @@ import {
   UpdateProgramDto,
 } from '@services/db/dtos/program.dto';
 
-type ProgramExerciseDoc = {
+interface ProgramExerciseDoc {
   id: string;
   templateExerciseId?: string;
   label: string;
@@ -32,9 +32,9 @@ type ProgramExerciseDoc = {
   muscleIds?: string[];
   equipmentIds?: string[];
   tagIds?: string[];
-};
+}
 
-type ProgramSessionDoc = {
+interface ProgramSessionDoc {
   id: string;
   templateSessionId?: string;
   slug?: string;
@@ -43,9 +43,9 @@ type ProgramSessionDoc = {
   durationMin: number;
   description?: string;
   exercises: ProgramExerciseDoc[];
-};
+}
 
-type ProgramDoc = {
+interface ProgramDoc {
   _id: ObjectId;
   slug: string;
   locale: string;
@@ -59,17 +59,17 @@ type ProgramDoc = {
   deletedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
-};
+}
 
 export class BddServiceProgramMongo {
-  private async col(): Promise<Collection<ProgramDoc>> {
+  private col(): Collection<ProgramDoc> {
     return inversify.mongo.collection<ProgramDoc>('programs');
   }
 
   /** Create all necessary indexes. */
   async ensureIndexes(db?: Db): Promise<void> {
     try {
-      const collection = db ? db.collection<ProgramDoc>('programs') : await this.col();
+      const collection = db ? db.collection<ProgramDoc>('programs') : this.col();
       await collection.createIndexes([
         {
           key: { slug: 1, locale: 1 },
@@ -107,7 +107,7 @@ export class BddServiceProgramMongo {
     };
 
     try {
-      const res = await (await this.col()).insertOne(doc as ProgramDoc);
+      const res = await (this.col()).insertOne(doc as ProgramDoc);
       return this.toModel({ _id: res.insertedId, ...doc } as ProgramDoc);
     } catch (error) {
       if (this.isDuplicateError(error)) return null;
@@ -119,7 +119,7 @@ export class BddServiceProgramMongo {
   async get(dto: GetProgramDto): Promise<Program | null> {
     try {
       const _id = this.toObjectId(dto.id);
-      const doc = await (await this.col()).findOne({ _id });
+      const doc = await (this.col()).findOne({ _id });
       return doc ? this.toModel(doc) : null;
     } catch (error) {
       this.handleError('get', error);
@@ -140,7 +140,7 @@ export class BddServiceProgramMongo {
     } = params;
 
     const filter: Record<string, any> = {};
-    if (q && q.trim()) {
+    if (q?.trim()) {
       filter.$or = [
         { slug: { $regex: new RegExp(q.trim(), 'i') } },
         { label: { $regex: new RegExp(q.trim(), 'i') } },
@@ -161,7 +161,7 @@ export class BddServiceProgramMongo {
     if (!includeArchived) filter.deletedAt = { $exists: false };
 
     try {
-      const collection = await this.col();
+      const collection = this.col();
       const cursor = collection.find(filter).sort(sort).skip((page - 1) * limit).limit(limit);
       const [rows, total] = await Promise.all([cursor.toArray(), collection.countDocuments(filter)]);
 
@@ -198,7 +198,7 @@ export class BddServiceProgramMongo {
         updateDoc.$unset = $unset;
       }
 
-      const res: any = await (await this.col()).findOneAndUpdate(
+      const res: any = await (this.col()).findOneAndUpdate(
         { _id },
         updateDoc,
         { returnDocument: 'after' }
@@ -215,7 +215,7 @@ export class BddServiceProgramMongo {
     try {
       const _id = this.toObjectId(id);
       const now = new Date();
-      const res = await (await this.col()).updateOne(
+      const res = await (this.col()).updateOne(
         { _id, deletedAt: { $exists: false } },
         { $set: { deletedAt: now, updatedAt: now } }
       );
@@ -323,7 +323,8 @@ export class BddServiceProgramMongo {
     if (!Array.isArray(ids)) {
       return undefined;
     }
-    const normalized = Array.from(new Set(ids.map((id) => id?.trim()).filter(Boolean))) as string[];
+    const normalized = Array.from(new Set(ids.map((id) => id?.trim()).filter(Boolean)));
     return normalized.length ? normalized : undefined;
   }
 }
+

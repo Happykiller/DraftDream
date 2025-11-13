@@ -21,6 +21,7 @@ import {
 import type {
   BuilderCopy,
   ExerciseLibraryItem,
+  ProgramExercise,
   ProgramSession,
 } from './programBuilderTypes';
 import { ProgramBuilderExerciseItem } from './ProgramBuilderExerciseItem';
@@ -50,7 +51,7 @@ type ProgramBuilderSessionItemProps = {
   ) => void;
   onMoveExerciseUp: (exerciseId: string) => void;
   onMoveExerciseDown: (exerciseId: string) => void;
-  onEditExercise?: (exerciseId: string) => void;
+  onEditExercise?: (sessionId: string, exerciseItem: ProgramExercise) => void;
 };
 
 export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessionItem({
@@ -354,14 +355,14 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
       return;
     }
     onMoveUp();
-  }, [canMoveUp, index, onMoveUp]);
+  }, [canMoveUp, onMoveUp]);
 
   const handleMoveDownClick = React.useCallback(() => {
     if (!canMoveDown) {
       return;
     }
     onMoveDown();
-  }, [canMoveDown, index, onMoveDown]);
+  }, [canMoveDown, onMoveDown]);
 
   const handleMoveExerciseUp = React.useCallback(
     (exerciseId: string, position: number) => {
@@ -595,10 +596,7 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
             </Typography>
           ) : (
             session.exercises.map((exerciseItem, exerciseIndex) => {
-              const exercise = getExerciseById(exerciseItem.exerciseId);
-              if (!exercise) {
-                return null;
-              }
+              const exercise = getExerciseById(exerciseItem.exerciseId) ?? null;
 
               return (
                 <ProgramBuilderExerciseItem
@@ -622,7 +620,11 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
                       session.exercises.length - 1,
                     )
                   }
-                  onEdit={onEditExercise}
+                  onEdit={
+                  onEditExercise
+                    ? () => onEditExercise(session.id, exerciseItem)
+                    : undefined
+                  }
                 />
               );
             })

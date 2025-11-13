@@ -1,7 +1,7 @@
 ﻿import { Db, ObjectId } from 'mongodb';
 import { Migration } from '@services/db/mongo/migration.runner.mongo';
 
-type ExerciseSeed = {
+interface ExerciseSeed {
   slug: string;
   locale: 'fr';
   label: string;
@@ -17,7 +17,7 @@ type ExerciseSeed = {
   categorySlugs: string[];
   muscleSlugs: string[];
   equipmentSlugs?: string[];
-};
+}
 
 const EXERCISE_SEEDS: ExerciseSeed[] = [
   {
@@ -161,7 +161,7 @@ const migration: Migration = {
     if (!admin?._id) {
       throw new Error('Admin user not found (email: "admin@fitdesk.com"). Run admin migration first.');
     }
-    const createdBy = admin._id as ObjectId;
+    const createdBy = admin._id;
 
     const [categories, muscles, equipments] = await Promise.all([
       db

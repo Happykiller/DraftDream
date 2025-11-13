@@ -29,6 +29,7 @@ describe('GetMealTypeUsecase', () => {
     slug: 'lunch',
     locale: 'en-US',
     label: 'Lunch',
+    icon: 'lunch',
     visibility: 'private',
     createdBy: 'coach-7',
     createdAt: new Date('2024-03-01T12:00:00.000Z'),

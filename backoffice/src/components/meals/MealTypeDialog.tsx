@@ -10,6 +10,7 @@ export interface MealTypeDialogValues {
   slug: string;
   label: string;
   locale: string;
+  icon: string;
   visibility: MealTypeVisibility;
 }
 
@@ -25,6 +26,7 @@ const DEFAULT_VALUES: MealTypeDialogValues = {
   slug: '',
   label: '',
   locale: 'en',
+  icon: '',
   visibility: 'PRIVATE',
 };
 
@@ -39,6 +41,7 @@ export function MealTypeDialog({ open, mode, initial, onClose, onSubmit }: MealT
         slug: initial.slug,
         label: initial.label,
         locale: initial.locale,
+        icon: initial.icon ?? '',
         visibility: initial.visibility,
       });
     } else {
@@ -56,7 +59,11 @@ export function MealTypeDialog({ open, mode, initial, onClose, onSubmit }: MealT
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
-    await onSubmit(values);
+    const payload: MealTypeDialogValues = {
+      ...values,
+      icon: values.icon.trim(),
+    };
+    await onSubmit(payload);
     onClose();
   };
 
@@ -84,6 +91,15 @@ export function MealTypeDialog({ open, mode, initial, onClose, onSubmit }: MealT
             onChange={onChange}
             inputProps={{ 'aria-label': 'meal-type-label' }}
             required
+            fullWidth
+          />
+          <TextField
+            label={t('common.labels.icon')}
+            name="icon"
+            value={values.icon}
+            onChange={onChange}
+            inputProps={{ 'aria-label': 'meal-type-icon' }}
+            placeholder={t('common.placeholders.icon')}
             fullWidth
           />
           <TextField

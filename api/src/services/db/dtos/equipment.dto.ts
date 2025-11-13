@@ -1,17 +1,17 @@
 // src/services/db/dto/equipment.dto.ts
-export type CreateEquipmentDto = {
+export interface CreateEquipmentDto {
   slug: string;
   locale: string;
   label: string;
   visibility: 'private' | 'public';
   createdBy: string;
-};
+}
 
 export type UpdateEquipmentDto = Partial<Pick<CreateEquipmentDto, 'slug' | 'locale' | 'label'>>;
 
-export type GetEquipmentDto = { id: string };
+export interface GetEquipmentDto { id: string }
 
-export type ListEquipmentDto = {
+export interface ListEquipmentDto {
   q?: string;                     // search on slug (regex)
   locale?: string;
   createdBy?: string;
@@ -19,4 +19,4 @@ export type ListEquipmentDto = {
   limit?: number;                 // default 20
   page?: number;                  // default 1
   sort?: Record<string, 1 | -1>;  // e.g. { updatedAt: -1 }
-};
+}

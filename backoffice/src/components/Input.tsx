@@ -67,7 +67,7 @@ export const Input: React.FC<InputProps> = ({
 
   React.useEffect(() => {
     setState(entity);
-  }, [entity.value, entity.valid]);
+  }, [entity]);
 
   const calcValid = (value: string): boolean => {
     const v = value.trim();

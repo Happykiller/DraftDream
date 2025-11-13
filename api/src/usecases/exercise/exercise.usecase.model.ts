@@ -1,7 +1,7 @@
 // src/usecases/exercise/exercise.usecase.model.ts
 import { ExerciseLevel } from '@services/db/models/exercise.model';
 
-export type ExerciseUsecaseModel = {
+export interface ExerciseUsecaseModel {
   id: string;
   slug: string;
   locale: string;
@@ -24,4 +24,4 @@ export type ExerciseUsecaseModel = {
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
-};
+}

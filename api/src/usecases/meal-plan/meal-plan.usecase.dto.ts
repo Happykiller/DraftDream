@@ -17,7 +17,7 @@ export type GetMealPlanUsecaseDto = GetMealPlanRepositoryDto & { session: Usecas
 export type ListMealPlansRepositoryDto = ListMealPlansServiceDto;
 export type ListMealPlansUsecaseDto = ListMealPlansRepositoryDto & { session: UsecaseSession };
 export type UpdateMealPlanUsecaseDto = UpdateMealPlanServiceDto;
-export type DeleteMealPlanUsecaseDto = { id: string; session: UsecaseSession };
+export interface DeleteMealPlanUsecaseDto { id: string; session: UsecaseSession }
 export type MealPlanDaySnapshotUsecaseDto = MealPlanDaySnapshotServiceDto;
 export type MealPlanMealSnapshotUsecaseDto = MealPlanMealSnapshotServiceDto;
 export type MealPlanMealTypeSnapshotUsecaseDto = MealPlanMealTypeSnapshotServiceDto;

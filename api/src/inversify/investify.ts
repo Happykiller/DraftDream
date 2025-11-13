@@ -146,10 +146,10 @@ export class Inversify {
     this.cryptService = new CryptServiceReal();
     this.jwtService = new JwtServiceReal(config);
     this.bddService = new BddServiceMongo({
-      inversify:this, 
-      config:config
+      inversify: this,
+      config,
     });
-    this.bddService.init.initConnection();
+    void this.bddService.init.initConnection();
 
     /**
      * Usecases

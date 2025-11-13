@@ -1,6 +1,5 @@
 // src/graphql/exercise/exercise.resolver.ts
-// Comments in English.
-import { ConflictException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 import { Args, Context, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 
 import { Role } from '@graphql/common/ROLE';
@@ -111,7 +110,11 @@ export class ExerciseResolver {
 
   @Mutation(() => ExerciseGql, { name: 'exercise_update', nullable: true })
   @Auth(Role.ADMIN, Role.COACH)
-  async exercise_update(@Args('input') input: UpdateExerciseInput): Promise<ExerciseGql | null> {
+  async exercise_update(
+    @Args('input') input: UpdateExerciseInput,
+    @Context('req') req: any,
+  ): Promise<ExerciseGql | null> {
+    const session = this.extractSession(req);
     const updated = await inversify.updateExerciseUsecase.execute(input.id, {
       slug: input.slug,
       locale: input.locale,
@@ -129,6 +132,7 @@ export class ExerciseResolver {
       muscleIds: input.muscleIds,
       equipmentIds: input.equipmentIds,
       tagIds: input.tagIds,
+      session,
     });
     return mapExerciseUsecaseToGql(updated);
   }

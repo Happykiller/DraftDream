@@ -27,7 +27,7 @@ import type {
 
 type ProgramBuilderExerciseItemProps = {
   exerciseItem: ProgramExercise;
-  exercise: ExerciseLibraryItem;
+  exercise?: ExerciseLibraryItem | null;
   index: number;
   totalExercises: number;
   onRemove: (exerciseId: string) => void;
@@ -35,7 +35,7 @@ type ProgramBuilderExerciseItemProps = {
   onDescriptionChange: (description: string) => void;
   onMoveUp: () => void;
   onMoveDown: () => void;
-  onEdit?: (exerciseId: string) => void;
+  onEdit?: () => void;
 };
 
 export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExerciseItem({
@@ -79,11 +79,11 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
   );
 
   const [isEditingLabel, setIsEditingLabel] = React.useState(false);
-  const displayLabel = exerciseItem.customLabel ?? exercise.label;
+  const fallbackLabel = exercise?.label ?? exerciseItem.label;
+  const displayLabel = exerciseItem.label || fallbackLabel;
   const [labelDraft, setLabelDraft] = React.useState(displayLabel);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
-  const baseDescription = exercise.description ?? '';
-  const displayDescription = exerciseItem.customDescription ?? baseDescription;
+  const displayDescription = exerciseItem.description ?? '';
   const [isEditingDescription, setIsEditingDescription] = React.useState(false);
   const [descriptionDraft, setDescriptionDraft] = React.useState(displayDescription);
   const descriptionInputRef = React.useRef<HTMLTextAreaElement | null>(null);
@@ -120,12 +120,12 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
 
   const commitLabelChange = React.useCallback(() => {
     const trimmed = labelDraft.trim();
-    const nextLabel = trimmed || exercise.label;
+    const nextLabel = trimmed || fallbackLabel;
     setIsEditingLabel(false);
     if (nextLabel !== displayLabel) {
       onLabelChange(nextLabel);
     }
-  }, [displayLabel, exercise.label, labelDraft, onLabelChange]);
+  }, [displayLabel, fallbackLabel, labelDraft, onLabelChange]);
 
   const cancelLabelEdition = React.useCallback(() => {
     setIsEditingLabel(false);
@@ -134,20 +134,14 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
 
   const commitDescriptionChange = React.useCallback(() => {
     const trimmed = descriptionDraft.trim();
-    const current = (exerciseItem.customDescription ?? baseDescription).trim();
+    const current = (exerciseItem.description ?? '').trim();
     setIsEditingDescription(false);
     if (trimmed === current) {
       setDescriptionDraft(displayDescription);
       return;
     }
     onDescriptionChange(trimmed);
-  }, [
-    baseDescription,
-    descriptionDraft,
-    displayDescription,
-    exerciseItem.customDescription,
-    onDescriptionChange,
-  ]);
+  }, [descriptionDraft, displayDescription, exerciseItem.description, onDescriptionChange]);
 
   const cancelDescriptionEdition = React.useCallback(() => {
     setIsEditingDescription(false);
@@ -253,8 +247,8 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
     if (!onEdit) {
       return;
     }
-    onEdit(exercise.id);
-  }, [exercise.id, onEdit]);
+    onEdit();
+  }, [onEdit]);
 
   const canMoveUp = index > 0;
   const canMoveDown = index < totalExercises - 1;
@@ -406,34 +400,39 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
               </Typography>
             )}
             <Typography variant="caption" color="text.secondary">
-              {exerciseItem.sets} x {exerciseItem.reps} - {exerciseItem.rest}
+              {exerciseItem.sets} x {exerciseItem.repetitions} - {exerciseItem.rest}
             </Typography>
-            {(exercise.muscles.length > 0 ||
-              exercise.tags.length > 0 ||
-              exercise.equipment.length > 0) && (
+            {(
+              (exerciseItem.muscles?.length ?? 0) > 0 ||
+              (exerciseItem.tags?.length ?? 0) > 0 ||
+              (exerciseItem.equipment?.length ?? 0) > 0 ||
+              (exercise?.muscles?.length ?? 0) > 0 ||
+              (exercise?.tags?.length ?? 0) > 0 ||
+              (exercise?.equipment?.length ?? 0) > 0
+            ) && (
               <Stack direction="row" spacing={0.5} flexWrap="wrap">
                 {/* Attribute chips */}
-                {exercise.muscles.map((muscle) => (
+                {(exerciseItem.muscles.length > 0 ? exerciseItem.muscles : exercise?.muscles ?? []).map((muscle) => (
                   <Tooltip
-                    key={`${exercise.id}-muscle-${muscle.id}`}
+                    key={`${exerciseItem.id}-muscle-${muscle.id}`}
                     title={tooltips.muscle_chip.replace('{{label}}', muscle.label)}
                     arrow
                   >
                     <Chip label={muscle.label} size="small" color="primary" variant="filled" />
                   </Tooltip>
                 ))}
-                {exercise.tags.map((tag) => (
+                {(exerciseItem.tags.length > 0 ? exerciseItem.tags : exercise?.tags ?? []).map((tag) => (
                   <Tooltip
-                    key={`${exercise.id}-tag-${tag.id}`}
+                    key={`${exerciseItem.id}-tag-${tag.id}`}
                     title={tooltips.tag_chip.replace('{{label}}', tag.label)}
                     arrow
                   >
                     <Chip label={tag.label} size="small" color="secondary" variant="outlined" />
                   </Tooltip>
                 ))}
-                {exercise.equipment.map((eq) => (
+                {(exerciseItem.equipment.length > 0 ? exerciseItem.equipment : exercise?.equipment ?? []).map((eq) => (
                   <Tooltip
-                    key={`${exercise.id}-equipment-${eq.id}`}
+                    key={`${exerciseItem.id}-equipment-${eq.id}`}
                     title={tooltips.equipment_chip.replace('{{label}}', eq.label)}
                     arrow
                   >

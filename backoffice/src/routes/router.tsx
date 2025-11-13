@@ -1,36 +1,17 @@
 // src/routes/router.tsx
-import * as React from 'react';
-import { Box, CircularProgress } from '@mui/material';
 import { createBrowserRouter, redirect } from 'react-router-dom';
 
 import { session } from '@stores/session';
 import { withTitle } from '@src/routes/withTitle';
 import { PublicLayout } from '@layouts/PublicLayout';
 import { ProtectedLayout } from '@layouts/ProtectedLayout';
+import { AppFallback } from './AppFallback';
 
 // Guard loader for protected branches
 export async function requireAuthLoader() {
   const ok = session.getState().access_token !== null;
   if (!ok) throw redirect('/login');
   return null;
-}
-
-function AppFallback(): React.JSX.Element {
-  return (
-    <Box
-      sx={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 9999,
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <CircularProgress size={60} />
-    </Box>
-  );
 }
 
 export const router = createBrowserRouter([

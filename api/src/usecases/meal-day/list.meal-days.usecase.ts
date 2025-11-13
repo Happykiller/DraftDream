@@ -32,7 +32,7 @@ export class ListMealDaysUsecase {
       if (session.role === Role.COACH) {
         const { createdBy, createdByIn, ...rest } = payload;
 
-        if (createdByIn && createdByIn.length) {
+        if (createdByIn?.length) {
           throw new Error(ERRORS.LIST_MEAL_DAYS_FORBIDDEN);
         }
 

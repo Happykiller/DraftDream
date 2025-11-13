@@ -7,7 +7,7 @@ const migration: Migration = {
   id: '0008_create_meal',
   description: 'Ensure meals collection and indexes are created',
 
-  async up(db: Db, log, inversify): Promise<void> {
+  async up(db: Db, log): Promise<void> {
     const collection = db.collection('meals');
     await collection.createIndexes([
       { key: { slug: 1, locale: 1 }, name: 'uniq_meal_slug_locale', unique: true },

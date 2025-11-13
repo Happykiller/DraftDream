@@ -11,7 +11,13 @@
   "common": {
     "field_incorrect": "Champ incorrect",
     "unexpected_error": "Erreur inattendue, veuillez réessayer.",
-    "loading": "Chargement..."
+    "loading": "Chargement...",
+    "actions": {
+      "retry": "Réessayer",
+      "cancel": "Annuler",
+      "create": "Créer",
+      "save": "Enregistrer"
+    }
   },
   "languages": {
     "fr": "Français",
@@ -82,10 +88,13 @@
   },
   "programs-coatch": {
     "title": "Programmes",
+    "subtitle": "Concevez des programmes adaptés à chaque athlète.",
+    "helper": "Dupliquez vos modèles ou démarrez de zéro pour proposer des entraînements structurés.",
     "placeholder": "Programmes d'entrainement",
     "actions": {
       "open_builder": "Creer un programme",
-      "close_builder": "Fermer le createur"
+      "close_builder": "Fermer le createur",
+      "refresh": "Rafraichir les programmes"
     },
     "builder": {
       "title": "Créer un nouveau programme sportif",
@@ -202,11 +211,11 @@
           }
         },
         "edit_dialog": {
-          "title": "Modifier le template d'exercice",
+          "title": "Modifier l'exercice",
           "subtitle": "Mettez à jour votre exercice réutilisable.",
           "flash": {
-            "success": "Template d'exercice mis à jour avec succès.",
-            "failure": "Impossible de mettre à jour le template d'exercice."
+            "success": "L'exercice mis à jour avec succès.",
+            "failure": "Impossible de mettre à jour l'exercice."
           },
           "actions": {
             "cancel": "Annuler",
@@ -215,6 +224,22 @@
           }
         },
         "no_sessions_warning": "Creez une seance avant d'ajouter des exercices."
+      },
+      "program_exercise_dialog": {
+        "title": "Modifier l'exercice dans la séance",
+        "subtitle": "Ajustez les détails propres à ce programme.",
+        "fields": {
+          "sets": "Séries",
+          "reps": "Répétitions",
+          "rest": "Repos (sec)",
+          "notes": "Notes (optionnel)",
+          "notes_placeholder": "Ajoutez des notes pour cet exercice (optionnel)..."
+        },
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Enregistrer",
+          "submitting": "Enregistrement..."
+        }
       },
       "footer": {
         "cancel": "Annuler",
@@ -234,6 +259,8 @@
       "program_create_failed": "Impossible de créer le programme."
     },
     "list": {
+      "search_placeholder": "Rechercher des programmes...",
+      "search_aria_label": "Rechercher des programmes",
       "created_by": "Créé par {{name}}",
       "created_by_unknown": "Coach inconnu",
       "no_description": "Aucune description fournie.",
@@ -260,6 +287,8 @@
       "more_exercises_other": "+ {{count}} exercices",
       "no_sessions": "Aucune séance pour le moment.",
       "assigned_to": "Assigné à {{name}}",
+      "expand_details": "Afficher plus de détails",
+      "collapse_details": "Afficher moins de détails",
       "actions": {
         "view": "Voir",
         "copy": "Copier",
@@ -440,6 +469,10 @@
       "description": "Votre coach ne vous a pas encore partagé de programme.",
       "helper": "Les nouveaux plans apparaîtront ici dès qu'ils seront disponibles."
     },
+    "list": {
+      "search_placeholder": "Rechercher un programme...",
+      "search_aria_label": "Rechercher un programme"
+    },
     "errors": {
       "not_found": "Ce programme n'est plus disponible.",
       "load_failed": "Le chargement du programme a échoué. Veuillez réessayer."
@@ -451,6 +484,343 @@
       "not_found": "Ce programme n'est plus disponible.",
       "load_failed": "Le chargement du programme a échoué. Veuillez réessayer."
     }
+  },
+  "nutrition-plans": {
+    "errors": {
+      "load_failed": "Impossible de charger les plans nutritionnels. Veuillez réessayer.",
+      "load_meals_failed": "Impossible de charger les repas. Veuillez réessayer.",
+      "load_meal_types_failed": "Impossible de charger les types de repas. Veuillez réessayer.",
+      "load_meal_days_failed": "Impossible de charger les journées types. Veuillez réessayer."
+    },
+    "notifications": {
+      "created": "Plan nutritionnel créé avec succès.",
+      "create_failed": "Impossible de créer le plan nutritionnel.",
+      "updated": "Plan nutritionnel mis à jour avec succès.",
+      "update_failed": "Impossible de mettre à jour le plan nutritionnel.",
+      "deleted": "Plan nutritionnel archivé avec succès.",
+      "delete_failed": "Impossible d'archiver le plan nutritionnel.",
+      "meal_created": "Repas créé avec succès.",
+      "meal_create_failed": "Impossible de créer le repas.",
+      "meal_updated": "Repas mis à jour avec succès.",
+      "meal_update_failed": "Impossible de mettre à jour le repas.",
+      "meal_deleted": "Repas supprimé avec succès.",
+      "meal_delete_failed": "Impossible de supprimer le repas.",
+      "meal_type_created": "Type de repas créé avec succès.",
+      "meal_type_create_failed": "Impossible de créer le type de repas.",
+      "meal_type_updated": "Type de repas mis à jour avec succès.",
+      "meal_type_update_failed": "Impossible de mettre à jour le type de repas.",
+      "meal_type_deleted": "Type de repas supprimé avec succès.",
+      "meal_type_delete_failed": "Impossible de supprimer le type de repas.",
+      "meal_day_created": "Journée type créée avec succès.",
+      "meal_day_create_failed": "Impossible de créer la journée type.",
+      "meal_day_updated": "Journée type mise à jour avec succès.",
+      "meal_day_update_failed": "Impossible de mettre à jour la journée type.",
+      "meal_day_deleted": "Journée type supprimée avec succès.",
+      "meal_day_delete_failed": "Impossible de supprimer la journée type."
+    }
+  },
+  "nutrition-coach": {
+    "title": "Nutrition",
+    "subtitle": "Créez des plans nutritionnels adaptés à chaque athlète.",
+    "helper": "Réutilisez vos modèles ou composez de nouvelles journées pour fournir un accompagnement précis.",
+    "actions": {
+      "refresh": "Actualiser les plans",
+      "create": "Créer un plan"
+    },
+    "builder": {
+      "title": "Créer un nouveau plan nutritionnel",
+      "edit_title": "Modifier le plan nutritionnel",
+      "subtitle": "Assemblez des journées types et des repas pour composer un plan adapté.",
+      "edit_subtitle": "Ajustez les repas existants et les apports pour votre athlète.",
+      "summary": {
+        "total_meals": "{{count}} repas au total",
+        "total_meals_one": "{{count}} repas au total",
+        "total_meals_other": "{{count}} repas au total",
+        "nutrition_title": "Résumé nutritionnel",
+        "calories_label": "Calories",
+        "calories_unit": "kcal",
+        "protein_label": "Protéines",
+        "protein_unit": "g",
+        "carbs_label": "Glucides",
+        "carbs_unit": "g",
+        "fats_label": "Lipides",
+        "fats_unit": "g"
+      },
+      "config": {
+        "title": "Configuration du plan",
+        "client_label": "Athlète",
+        "client_placeholder": "Rechercher un athlète...",
+        "plan_name_label": "Nom du plan",
+        "plan_name_default": "Plan nutritionel",
+        "plan_description_label": "Notes",
+        "plan_description_placeholder": "Objectifs, recommandations et notes..."
+      },
+      "day_library": {
+        "title": "Bibliothèque de journées",
+        "subtitle": "Sélectionnez une journée type ou ajoutez-la au plan.",
+        "search_placeholder": "Rechercher une journée...",
+        "empty_state": "Aucune journée ne correspond à vos filtres.",
+        "add_label": "Ajouter au plan",
+        "limit_hint": "Affichage des 10 journées maximum triées par ordre alphabétique.",
+        "refresh_label": "Recharger les journées"
+      },
+      "meal_library": {
+        "title": "Bibliothèque de repas",
+        "subtitle": "Ajoutez des repas aux journées du plan en choisissant la cible.",
+        "search_placeholder": "Rechercher un repas...",
+        "empty_state": "Aucun repas ne correspond à vos filtres.",
+        "add_label": "Ajouter au jour",
+        "create_label": "Nouveau repas",
+        "limit_hint": "Affichage des 10 repas maximum triés par ordre alphabétique.",
+        "add_tooltip": "Ajouter ce repas à une journée du plan",
+        "public_tooltip": "Repas public partagé avec la communauté",
+        "delete_tooltip": "Supprimer ce repas privé de la bibliothèque",
+        "edit_tooltip": "Modifier ce repas",
+        "menu_empty": "Créez d'abord une journée dans le plan pour ajouter des repas",
+        "create_title": "Créer un repas",
+        "edit_title": "Modifier un repas",
+        "name_label": "Nom du repas",
+        "type_label": "Type de repas",
+        "foods_label": "Aliments et notes",
+        "calories_label": "Calories (kcal)",
+        "protein_label": "Protéines (g)",
+        "carbs_label": "Glucides (g)",
+        "fats_label": "Lipides (g)"
+      },
+      "structure": {
+        "title": "Titre de la journée",
+        "description_placeholder": "Décrivez cette journée nutritionnelle...",
+        "empty": "Ajoutez une journée depuis la bibliothèque ou créez une journée vide pour démarrer.",
+        "day_prefix": "Jour",
+        "meal_prefix": "Repas",
+        "foods_label": "Aliments et notes",
+        "calories_label": "Calories (kcal)",
+        "protein_label": "Protéines (g)",
+        "carbs_label": "Glucides (g)",
+        "fats_label": "Lipides (g)",
+        "remove_day_label": "Supprimer la journée",
+        "remove_meal_label": "Supprimer le repas",
+        "edit_meal_label": "Modifier le repas",
+        "edit_meal_title": "Modifier le repas du plan",
+        "edit_meal_description": "Ajustez ce repas sans modifier le modèle d'origine.",
+        "add_meal_placeholder": "Utilisez la bibliothèque de repas pour compléter cette journée.",
+        "add_day_label": "Ajouter une journée vide",
+        "move_day_up_label": "Monter la journée",
+        "move_day_down_label": "Descendre la journée",
+        "move_meal_up_label": "Monter le repas",
+        "move_meal_down_label": "Descendre le repas"
+      },
+      "footer": {
+        "cancel": "Annuler",
+        "submit": "Créer le plan",
+        "update": "Enregistrer"
+      }
+    },
+    "empty_state": {
+      "title": "Aucun plan nutritionnel",
+      "description": "Créez votre premier plan nutritionnel pour le partager à vos athlètes.",
+      "helper": "Assemblez des journées types et des repas pour structurer vos plans."
+    },
+    "list": {
+      "search_placeholder": "Rechercher un plan nutritionnel...",
+      "search_aria_label": "Rechercher un plan nutritionnel",
+      "day_count": "{{count}} jour",
+      "day_count_one": "{{count}} jour",
+      "day_count_other": "{{count}} jours",
+      "plan_for": "Plan pour {{name}}",
+      "plan_unassigned": "Plan non assigné",
+      "actions": {
+        "view": "Voir le plan",
+        "copy": "Copier le plan",
+        "edit": "Modifier le plan",
+        "delete": "Supprimer le plan"
+      },
+      "delete_dialog": {
+        "title": "Supprimer le plan nutrition",
+        "description": "Êtes-vous sûr de vouloir supprimer « {{label}} » ?",
+        "helper": "Le plan sera déplacé dans la corbeille et pourra être restauré plus tard si nécessaire.",
+        "actions": {
+          "cancel": "Annuler",
+          "confirm": "Supprimer",
+          "confirming": "Suppression…"
+        }
+      },
+      "clone_dialog": {
+        "title": "Copier le plan nutritionnel",
+        "description": "Modifiez le nom du plan et l'athlète avant de le dupliquer.",
+        "fields": {
+          "name": "Nom du plan",
+          "name_placeholder": "Ex : Plan nutrition récupération",
+          "athlete": "Athlète",
+          "athlete_placeholder": "Sélectionner un athlète (optionnel)"
+        },
+        "actions": {
+          "cancel": "Annuler",
+          "copy": "Copier",
+          "copying": "Copie…",
+          "copy_and_open": "Copier et ouvrir",
+          "copying_and_opening": "Copie et ouverture…"
+        },
+        "copy_suffix": "(Copie)",
+        "no_results": "Aucun athlète trouvé",
+        "errors": {
+          "missing_label": "Veuillez saisir un nom de plan."
+        }
+      },
+      "status": {
+        "assigned": "Actif",
+        "unassigned": "À attribuer"
+      },
+      "sections": {
+        "nutrition_goals": "Objectifs nutritionnels",
+        "plan_overview": "Aperçu du plan",
+        "coach_notes": "Notes du coach"
+      },
+      "calories_per_day": "{{label}} par jour",
+      "day_calories": "Bilan calorique : {{value}} {{unit}}",
+      "meal_calories": "{{value}} {{unit}}",
+      "plan_length": "Durée du plan",
+      "day_meal_count": "{{count}} repas",
+      "day_meal_count_one": "{{count}} repas",
+      "day_meal_count_other": "{{count}} repas",
+      "more_meals": "+ {{count}} repas supplémentaires",
+      "no_meals": "Aucun repas dans cette journée",
+      "no_days": "Aucune journée n'est encore définie",
+      "expand_details": "Afficher plus de détails",
+      "collapse_details": "Réduire les détails",
+      "metadata": {
+        "created_on": "Créé le {{date}}",
+        "creator": "Par {{name}}"
+      }
+    },
+    "macros": {
+      "calories": "Calories",
+      "protein": "Protéines",
+      "carbs": "Glucides",
+      "fats": "Lipides"
+    }
+  },
+  "nutrition-athlete": {
+    "title": "Nutrition",
+    "subtitle": "Consultez les plans nutritionnels préparés par votre coach.",
+    "helper": "Chaque plan détaille vos repas quotidiens et les apports recommandés.",
+    "empty_state": {
+      "title": "Aucun plan nutritionnel",
+      "description": "Votre coach ne vous a pas encore partagé de plan nutritionnel.",
+      "helper": "Les nouveaux plans apparaîtront ici dès qu'ils vous seront attribués."
+    },
+    "list": {
+      "search_placeholder": "Rechercher un plan nutritionnel...",
+      "search_aria_label": "Rechercher un plan nutritionnel",
+      "day_count": "{{count}} jour",
+      "day_count_one": "{{count}} jour",
+      "day_count_other": "{{count}} jours"
+    },
+    "macros": {
+      "calories": "Calories",
+      "protein": "Protéines",
+      "carbs": "Glucides",
+      "fats": "Lipides"
+    }
+  },
+  "nutrition-details": {
+    "title": "Plan nutritionnel",
+    "errors": {
+      "not_found": "Ce plan nutritionnel n'est plus disponible.",
+      "load_failed": "Le chargement du plan nutritionnel a échoué. Veuillez réessayer."
+    },
+    "actions": {
+      "back_to_list_coach": "Retour aux plans nutritionnels",
+      "back_to_list_athlete": "Retour à mes plans nutritionnels"
+    },
+    "tabs": {
+      "overview": "Vue d'ensemble",
+      "meals": "Repas détaillés"
+    },
+    "overview": {
+      "sections": {
+        "nutrition_goals": "Objectifs nutritionnels",
+        "plan_stats": "Statistiques du plan",
+        "coach_notes": "Notes du coach"
+      },
+      "nutrition_goals": {
+        "calories_per_day": {
+          "label": "Calories par jour",
+          "value": "{{value}} kcal"
+        },
+        "protein": {
+          "label": "Protéines",
+          "value": "{{value}} g"
+        },
+        "carbs": {
+          "label": "Glucides",
+          "value": "{{value}} g"
+        },
+        "fats": {
+          "label": "Lipides",
+          "value": "{{value}} g"
+        }
+      },
+      "plan_stats": {
+        "days": {
+          "label": "Nombre de jours",
+          "value": "{{count}} jour",
+          "value_one": "{{count}} jour",
+          "value_other": "{{count}} jours"
+        },
+        "meals": {
+          "label": "Total de repas",
+          "value": "{{count}} repas",
+          "value_one": "{{count}} repas",
+          "value_other": "{{count}} repas"
+        },
+        "average_calories": {
+          "label": "Calories moyennes",
+          "value": "{{value}} kcal/jour"
+        }
+      },
+      "coach_notes": {
+        "empty": "Aucune note du coach pour le moment."
+      }
+    },
+    "meals": {
+      "empty": "Aucune journée n'a encore été ajoutée à ce plan.",
+      "day_empty": "Aucun repas n'a encore été planifié pour ce jour.",
+      "day_header": {
+        "meal_count": "({{count}} repas)",
+        "meal_count_one": "({{count}} repas)",
+        "meal_count_other": "({{count}} repas)"
+      },
+      "meal_card": {
+        "calories": "{{value}} kcal",
+        "macros": {
+          "protein": {
+            "label": "Protéines",
+            "value": "{{value}} g"
+          },
+          "carbs": {
+            "label": "Glucides",
+            "value": "{{value}} g"
+          },
+          "fats": {
+            "label": "Lipides",
+            "value": "{{value}} g"
+          }
+        },
+        "foods_label": "Aliments :",
+        "type_fallback": "Type de repas"
+      }
+    },
+    "labels": {
+      "macros": {
+        "calories": "Calories : {{value}} kcal",
+        "protein": "Protéines : {{value}} g",
+        "carbs": "Glucides : {{value}} g",
+        "fats": "Lipides : {{value}} g"
+      },
+      "meal_macros": "{{calories}} kcal · {{protein}} g de protéines · {{carbs}} g de glucides · {{fats}} g de lipides"
+    },
+    "empty_days": "Aucune journée n'a encore été ajoutée à ce plan."
   },
   "sandbox": {
     "title": "Bac à sable",

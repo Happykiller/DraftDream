@@ -11,7 +11,13 @@
   "common": {
     "field_incorrect": "Incorrect field",
     "unexpected_error": "Unexpected error, please try again.",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "actions": {
+      "retry": "Retry",
+      "cancel": "Cancel",
+      "create": "Create",
+      "save": "Save"
+    }
   },
   "languages": {
     "fr": "French",
@@ -82,10 +88,13 @@
   },
   "programs-coatch": {
     "title": "Programs",
+    "subtitle": "Build training programs tailored to each athlete.",
+    "helper": "Clone existing templates or start from scratch to deliver structured workouts.",
     "placeholder": "Training programs",
     "actions": {
       "open_builder": "Create program",
-      "close_builder": "Close builder"
+      "close_builder": "Close builder",
+      "refresh": "Refresh programs"
     },
     "builder": {
       "title": "Program builder",
@@ -214,6 +223,22 @@
           }
         }
       },
+      "program_exercise_dialog": {
+        "title": "Edit exercise in session",
+        "subtitle": "Adjust the details specific to this program.",
+        "fields": {
+          "sets": "Sets",
+          "reps": "Repetitions",
+          "rest": "Rest (sec)",
+          "notes": "Notes (optional)",
+          "notes_placeholder": "Add notes for this exercise (optional)..."
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Save",
+          "submitting": "Saving..."
+        }
+      },
       "footer": {
         "cancel": "Cancel",
         "submit": "Create the program",
@@ -232,6 +257,8 @@
       "program_create_failed": "Unable to create the program."
     },
     "list": {
+      "search_placeholder": "Search programs...",
+      "search_aria_label": "Search programs",
       "created_by": "Created by {{name}}",
       "created_by_unknown": "Unknown coach",
       "no_description": "No description provided.",
@@ -258,6 +285,8 @@
       "more_exercises_other": "+ {{count}} exercises",
       "no_sessions": "No sessions yet.",
       "assigned_to": "Assigned to {{name}}",
+      "expand_details": "Show more details",
+      "collapse_details": "Show fewer details",
       "actions": {
         "view": "View",
         "copy": "Copy",
@@ -438,6 +467,10 @@
       "description": "Your coach has not shared a program with you yet.",
       "helper": "New plans will be listed here as soon as they become available."
     },
+    "list": {
+      "search_placeholder": "Search programs...",
+      "search_aria_label": "Search programs"
+    },
     "errors": {
       "not_found": "This program is no longer available.",
       "load_failed": "We were unable to load this program. Please try again."
@@ -449,6 +482,343 @@
       "not_found": "This program is no longer available.",
       "load_failed": "We were unable to load this program. Please try again."
     }
+  },
+  "nutrition-plans": {
+    "errors": {
+      "load_failed": "We could not load nutrition plans. Please try again.",
+      "load_meals_failed": "We could not load meals. Please try again.",
+      "load_meal_types_failed": "We could not load meal types. Please try again.",
+      "load_meal_days_failed": "We could not load meal day templates. Please try again."
+    },
+    "notifications": {
+      "created": "Meal plan created successfully.",
+      "create_failed": "We could not create the meal plan.",
+      "updated": "Meal plan updated successfully.",
+      "update_failed": "We could not update the meal plan.",
+      "deleted": "Meal plan archived successfully.",
+      "delete_failed": "We could not archive the meal plan.",
+      "meal_created": "Meal created successfully.",
+      "meal_create_failed": "We could not create the meal.",
+      "meal_updated": "Meal updated successfully.",
+      "meal_update_failed": "We could not update the meal.",
+      "meal_deleted": "Meal deleted successfully.",
+      "meal_delete_failed": "We could not delete the meal.",
+      "meal_type_created": "Meal type created successfully.",
+      "meal_type_create_failed": "We could not create the meal type.",
+      "meal_type_updated": "Meal type updated successfully.",
+      "meal_type_update_failed": "We could not update the meal type.",
+      "meal_type_deleted": "Meal type deleted successfully.",
+      "meal_type_delete_failed": "We could not delete the meal type.",
+      "meal_day_created": "Meal day created successfully.",
+      "meal_day_create_failed": "We could not create the meal day.",
+      "meal_day_updated": "Meal day updated successfully.",
+      "meal_day_update_failed": "We could not update the meal day.",
+      "meal_day_deleted": "Meal day deleted successfully.",
+      "meal_day_delete_failed": "We could not delete the meal day."
+    }
+  },
+  "nutrition-coach": {
+    "title": "Nutrition",
+    "subtitle": "Build nutrition plans tailored to each athlete.",
+    "helper": "Clone existing templates or start from scratch to deliver structured meal plans.",
+    "actions": {
+      "refresh": "Refresh plans",
+      "create": "Create plan"
+    },
+    "builder": {
+      "title": "Create a new nutrition plan",
+      "edit_title": "Edit nutrition plan",
+      "subtitle": "Assemble meal days and meals to craft a tailored plan.",
+      "edit_subtitle": "Adjust existing meals and macros for your athlete.",
+      "summary": {
+        "total_meals": "{{count}} meals in total",
+        "total_meals_one": "{{count}} meal in total",
+        "total_meals_other": "{{count}} meals in total",
+        "nutrition_title": "Nutrition summary",
+        "calories_label": "Calories",
+        "calories_unit": "kcal",
+        "protein_label": "Protein",
+        "protein_unit": "g",
+        "carbs_label": "Carbs",
+        "carbs_unit": "g",
+        "fats_label": "Fats",
+        "fats_unit": "g"
+      },
+      "config": {
+        "title": "Plan configuration",
+        "client_label": "Athlete",
+        "client_placeholder": "Search athlete...",
+        "plan_name_label": "Plan name",
+        "plan_name_default": "Nutrition plan",
+        "plan_description_label": "Notes",
+        "plan_description_placeholder": "Objectives, guidance and notes..."
+      },
+      "day_library": {
+        "title": "Meal day library",
+        "subtitle": "Pick a template day or add it to the plan.",
+        "search_placeholder": "Search meal days...",
+        "empty_state": "No meal day matches your filters.",
+        "add_label": "Add day to plan",
+        "limit_hint": "Showing up to 10 meal days sorted alphabetically.",
+        "refresh_label": "Reload meal days"
+      },
+      "meal_library": {
+        "title": "Meal library",
+        "subtitle": "Add meals to your plan days by choosing the target day.",
+        "search_placeholder": "Search meals...",
+        "empty_state": "No meal matches your filters.",
+        "add_label": "Add to day",
+        "create_label": "New meal",
+        "limit_hint": "Showing up to 10 meals sorted alphabetically.",
+        "add_tooltip": "Add this meal to a day in the plan",
+        "public_tooltip": "Public meal shared with the community",
+        "delete_tooltip": "Delete this meal from your library",
+        "edit_tooltip": "Edit this meal",
+        "menu_empty": "Create a day in the plan to add meals",
+        "create_title": "Create a meal",
+        "edit_title": "Edit meal",
+        "name_label": "Meal name",
+        "type_label": "Meal type",
+        "foods_label": "Foods and notes",
+        "calories_label": "Calories (kcal)",
+        "protein_label": "Protein (g)",
+        "carbs_label": "Carbs (g)",
+        "fats_label": "Fats (g)"
+      },
+      "structure": {
+        "title": "Day title",
+        "description_placeholder": "Describe this meal day...",
+        "empty": "Add a meal day from the library or create an empty one to get started.",
+        "day_prefix": "Day",
+        "meal_prefix": "Meal",
+        "foods_label": "Foods and notes",
+        "calories_label": "Calories (kcal)",
+        "protein_label": "Protein (g)",
+        "carbs_label": "Carbs (g)",
+        "fats_label": "Fats (g)",
+        "remove_day_label": "Remove day",
+        "remove_meal_label": "Remove meal",
+        "edit_meal_label": "Edit meal",
+        "edit_meal_title": "Edit plan meal",
+        "edit_meal_description": "Adjust this meal without changing the original template.",
+        "add_meal_placeholder": "Use the meal library to populate this day.",
+        "add_day_label": "Add empty day",
+        "move_day_up_label": "Move day up",
+        "move_day_down_label": "Move day down",
+        "move_meal_up_label": "Move meal up",
+        "move_meal_down_label": "Move meal down"
+      },
+      "footer": {
+        "cancel": "Cancel",
+        "submit": "Create plan",
+        "update": "Save changes"
+      }
+    },
+    "empty_state": {
+      "title": "No meal plan yet",
+      "description": "Start by creating your first nutrition plan.",
+      "helper": "Use the builder to combine meal days and meals for your athletes."
+    },
+    "list": {
+      "search_placeholder": "Search nutrition plans...",
+      "search_aria_label": "Search nutrition plans",
+      "day_count": "{{count}} day",
+      "day_count_one": "{{count}} day",
+      "day_count_other": "{{count}} days",
+      "plan_for": "Plan for {{name}}",
+      "plan_unassigned": "Unassigned plan",
+      "actions": {
+        "view": "View plan",
+        "copy": "Copy plan",
+        "edit": "Edit plan",
+        "delete": "Delete plan"
+      },
+      "delete_dialog": {
+        "title": "Delete the nutrition plan",
+        "description": "Are you sure you want to delete “{{label}}”?",
+        "helper": "The plan will be moved to the recycle bin and can be restored later if necessary.",
+        "actions": {
+          "cancel": "Cancel",
+          "confirm": "Delete",
+          "confirming": "Deleting…"
+        }
+      },
+      "clone_dialog": {
+        "title": "Copy the nutrition plan",
+        "description": "Update the plan name and athlete before duplicating it.",
+        "fields": {
+          "name": "Plan name",
+          "name_placeholder": "Ex: Recovery nutrition plan",
+          "athlete": "Athlete",
+          "athlete_placeholder": "Select an athlete (optional)"
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "copy": "Copy",
+          "copying": "Copying…",
+          "copy_and_open": "Copy and open",
+          "copying_and_opening": "Copying and opening…"
+        },
+        "copy_suffix": "(Copy)",
+        "no_results": "No athlete found",
+        "errors": {
+          "missing_label": "Please provide a plan name."
+        }
+      },
+      "status": {
+        "assigned": "Active",
+        "unassigned": "Needs assignment"
+      },
+      "sections": {
+        "nutrition_goals": "Nutrition goals",
+        "plan_overview": "Plan overview",
+        "coach_notes": "Coach notes"
+      },
+      "calories_per_day": "Daily {{label}}",
+      "day_calories": "Calorie total: {{value}} {{unit}}",
+      "meal_calories": "{{value}} {{unit}}",
+      "plan_length": "Plan length",
+      "day_meal_count": "{{count}} meal",
+      "day_meal_count_one": "{{count}} meal",
+      "day_meal_count_other": "{{count}} meals",
+      "more_meals": "+ {{count}} more meals",
+      "no_meals": "No meals in this day yet",
+      "no_days": "No days have been defined yet",
+      "expand_details": "Expand details",
+      "collapse_details": "Collapse details",
+      "metadata": {
+        "created_on": "Created on {{date}}",
+        "creator": "By {{name}}"
+      }
+    },
+    "macros": {
+      "calories": "Calories",
+      "protein": "Protein",
+      "carbs": "Carbs",
+      "fats": "Fats"
+    }
+  },
+  "nutrition-athlete": {
+    "title": "Nutrition",
+    "subtitle": "Review the nutrition plans prepared by your coach.",
+    "helper": "Each plan includes daily meals and macro guidance tailored to you.",
+    "empty_state": {
+      "title": "No nutrition plan yet",
+      "description": "Your coach has not shared a nutrition plan yet.",
+      "helper": "New plans will appear here when they are assigned to you."
+    },
+    "list": {
+      "search_placeholder": "Search nutrition plans...",
+      "search_aria_label": "Search nutrition plans",
+      "day_count": "{{count}} day",
+      "day_count_one": "{{count}} day",
+      "day_count_other": "{{count}} days"
+    },
+    "macros": {
+      "calories": "Calories",
+      "protein": "Protein",
+      "carbs": "Carbs",
+      "fats": "Fats"
+    }
+  },
+  "nutrition-details": {
+    "title": "Nutrition plan",
+    "errors": {
+      "not_found": "This nutrition plan is no longer available.",
+      "load_failed": "We were unable to load this nutrition plan. Please try again."
+    },
+    "actions": {
+      "back_to_list_coach": "Back to nutrition plans",
+      "back_to_list_athlete": "Back to my nutrition plans"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "meals": "Detailed meals"
+    },
+    "overview": {
+      "sections": {
+        "nutrition_goals": "Nutrition goals",
+        "plan_stats": "Plan statistics",
+        "coach_notes": "Coach notes"
+      },
+      "nutrition_goals": {
+        "calories_per_day": {
+          "label": "Calories per day",
+          "value": "{{value}} kcal"
+        },
+        "protein": {
+          "label": "Protein",
+          "value": "{{value}} g"
+        },
+        "carbs": {
+          "label": "Carbs",
+          "value": "{{value}} g"
+        },
+        "fats": {
+          "label": "Fats",
+          "value": "{{value}} g"
+        }
+      },
+      "plan_stats": {
+        "days": {
+          "label": "Number of days",
+          "value": "{{count}} day",
+          "value_one": "{{count}} day",
+          "value_other": "{{count}} days"
+        },
+        "meals": {
+          "label": "Total meals",
+          "value": "{{count}} meal",
+          "value_one": "{{count}} meal",
+          "value_other": "{{count}} meals"
+        },
+        "average_calories": {
+          "label": "Average calories",
+          "value": "{{value}} kcal/day"
+        }
+      },
+      "coach_notes": {
+        "empty": "No coach notes have been added yet."
+      }
+    },
+    "meals": {
+      "empty": "No meal days have been added to this plan yet.",
+      "day_empty": "No meals have been scheduled for this day yet.",
+      "day_header": {
+        "meal_count": "({{count}} meal)",
+        "meal_count_one": "({{count}} meal)",
+        "meal_count_other": "({{count}} meals)"
+      },
+      "meal_card": {
+        "calories": "{{value}} kcal",
+        "macros": {
+          "protein": {
+            "label": "Protein",
+            "value": "{{value}} g"
+          },
+          "carbs": {
+            "label": "Carbs",
+            "value": "{{value}} g"
+          },
+          "fats": {
+            "label": "Fats",
+            "value": "{{value}} g"
+          }
+        },
+        "foods_label": "Foods:",
+        "type_fallback": "Meal type"
+      }
+    },
+    "labels": {
+      "macros": {
+        "calories": "Calories: {{value}} kcal",
+        "protein": "Protein: {{value}} g",
+        "carbs": "Carbs: {{value}} g",
+        "fats": "Fats: {{value}} g"
+      },
+      "meal_macros": "{{calories}} kcal · {{protein}} g protein · {{carbs}} g carbs · {{fats}} g fats"
+    },
+    "empty_days": "No meal days have been added to this plan yet."
   },
   "sandbox": {
     "title": "Sandbox",

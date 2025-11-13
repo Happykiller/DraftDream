@@ -1,4 +1,4 @@
-// src/services/db/mongo/repositories/meal-day.repository.ts
+﻿// src/services/db/mongo/repositories/meal-day.repository.ts
 
 import { Collection, Db, ObjectId } from 'mongodb';
 
@@ -12,7 +12,7 @@ import {
 } from '@services/db/dtos/meal-day.dto';
 import { MealDay } from '@services/db/models/meal-day.model';
 
-type MealDayDoc = {
+interface MealDayDoc {
   _id: ObjectId;
   slug: string;
   locale: string;
@@ -27,16 +27,16 @@ type MealDayDoc = {
   deletedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
-};
+}
 
 export class BddServiceMealDayMongo {
-  private async col(): Promise<Collection<MealDayDoc>> {
+  private col(): Collection<MealDayDoc> {
     return inversify.mongo.collection<MealDayDoc>('meal_days');
   }
 
   async ensureIndexes(db?: Db): Promise<void> {
     try {
-      const collection = db ? db.collection<MealDayDoc>('meal_days') : await this.col();
+      const collection = db ? db.collection<MealDayDoc>('meal_days') : this.col();
       await collection.createIndexes([
         {
           key: { slug: 1, locale: 1 },
@@ -73,7 +73,7 @@ export class BddServiceMealDayMongo {
     };
 
     try {
-      const res = await (await this.col()).insertOne(doc as MealDayDoc);
+      const res = await (this.col()).insertOne(doc as MealDayDoc);
       return this.toModel({ _id: res.insertedId, ...doc } as MealDayDoc);
     } catch (error) {
       if (this.isDuplicateError(error)) return null;
@@ -84,7 +84,7 @@ export class BddServiceMealDayMongo {
   async get(dto: GetMealDayDto): Promise<MealDay | null> {
     try {
       const _id = this.toObjectId(dto.id);
-      const doc = await (await this.col()).findOne({ _id });
+      const doc = await (this.col()).findOne({ _id });
       return doc ? this.toModel(doc) : null;
     } catch (error) {
       this.handleError('get', error);
@@ -105,7 +105,7 @@ export class BddServiceMealDayMongo {
     } = params;
 
     const andConditions: Record<string, any>[] = [];
-    if (q && q.trim()) {
+    if (q?.trim()) {
       andConditions.push({
         $or: [
           { slug: { $regex: new RegExp(q.trim(), 'i') } },
@@ -166,7 +166,7 @@ export class BddServiceMealDayMongo {
         : { $and: andConditions };
 
     try {
-      const collection = await this.col();
+      const collection = this.col();
       const cursor = collection.find(filter).sort(sort).skip((page - 1) * limit).limit(limit);
       const [rows, total] = await Promise.all([cursor.toArray(), collection.countDocuments(filter)]);
 
@@ -188,7 +188,7 @@ export class BddServiceMealDayMongo {
     if (patch.visibility !== undefined) $set.visibility = patch.visibility;
 
     try {
-      const res: any = await (await this.col()).findOneAndUpdate(
+      const res: any = await (this.col()).findOneAndUpdate(
         { _id },
         { $set },
         { returnDocument: 'after' },
@@ -204,7 +204,7 @@ export class BddServiceMealDayMongo {
     try {
       const _id = this.toObjectId(id);
       const now = new Date();
-      const res = await (await this.col()).updateOne(
+      const res = await (this.col()).updateOne(
         { _id, deletedAt: { $exists: false } },
         { $set: { deletedAt: now, updatedAt: now } },
       );
@@ -249,4 +249,5 @@ export class BddServiceMealDayMongo {
     throw error instanceof Error ? error : new Error(message);
   }
 }
+
 

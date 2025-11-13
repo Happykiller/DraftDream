@@ -5,7 +5,8 @@ import {
   Autocomplete,
   Box,
   Button,
-  CircularProgress,
+  Card,
+  CardContent,
   Divider,
   Grid,
   InputAdornment,
@@ -22,13 +23,18 @@ import { ProgramBuilderSessionItem } from './ProgramBuilderSessionItem';
 import { ProgramBuilderSessionLibraryItem } from './ProgramBuilderSessionLibraryItem';
 import { ProgramBuilderExerciseLibraryItem } from './ProgramBuilderExerciseLibraryItem';
 import { ProgramBuilderCreateExerciseDialog } from './ProgramBuilderCreateExerciseDialog';
-import type { BuilderCopy } from './programBuilderTypes';
+import type {
+  BuilderCopy,
+  ProgramExercise,
+  ProgramExercisePatch,
+} from './programBuilderTypes';
+import { parseSeriesCount } from './programBuilderUtils';
 
-import type { Exercise } from '@hooks/useExercises';
+import type { Exercise } from '@hooks/programs/useExercises';
 import type { User } from '@src/hooks/useUsers';
 import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
-import { useProgramBuilder } from '@src/hooks/useProgramBuilder';
-import type { Program } from '@src/hooks/usePrograms';
+import { useProgramBuilder } from '@src/hooks/programs/useProgramBuilder';
+import type { Program } from '@src/hooks/programs/usePrograms';
 
 interface ProgramBuilderPanelProps {
   builderCopy: BuilderCopy;
@@ -89,6 +95,7 @@ export function ProgramBuilderPanel({
     handleSessionDurationChange,
     handleExerciseLabelChange,
     handleExerciseDescriptionChange,
+    handleUpdateProgramExercise,
     handleAddExerciseToSession,
     handleMoveSessionUp,
     handleMoveSessionDown,
@@ -161,6 +168,10 @@ export function ProgramBuilderPanel({
 
   const [isExerciseDialogOpen, setIsExerciseDialogOpen] = React.useState(false);
   const [exerciseBeingEdited, setExerciseBeingEdited] = React.useState<Exercise | null>(null);
+  const [programExerciseContext, setProgramExerciseContext] = React.useState<{
+    sessionId: string;
+    exerciseItem: ProgramExercise;
+  } | null>(null);
 
   const [structureTitle, setStructureTitle] = React.useState(() => {
     const candidate = program?.label?.trim();
@@ -435,12 +446,14 @@ export function ProgramBuilderPanel({
 
   const handleOpenCreateExerciseDialog = React.useCallback(() => {
     setExerciseBeingEdited(null);
+    setProgramExerciseContext(null);
     setIsExerciseDialogOpen(true);
   }, []);
 
   const handleCloseExerciseDialog = React.useCallback(() => {
     setIsExerciseDialogOpen(false);
     setExerciseBeingEdited(null);
+    setProgramExerciseContext(null);
   }, []);
 
   const handleExerciseCreated = React.useCallback(
@@ -492,13 +505,165 @@ export function ProgramBuilderPanel({
     [deleteExercise],
   );
 
-  const handleOpenEditExerciseDialog = React.useCallback(
+  const handleOpenProgramExerciseDialog = React.useCallback(
+    (sessionId: string, exerciseItem: ProgramExercise) => {
+      const exercise = getRawExerciseById(exerciseItem.exerciseId);
+      if (!exercise) {
+        return;
+      }
+      setExerciseBeingEdited(exercise);
+      setProgramExerciseContext({ sessionId, exerciseItem });
+      setIsExerciseDialogOpen(true);
+    },
+    [getRawExerciseById],
+  );
+
+  const handleProgramExerciseSubmit = React.useCallback(
+    (patch: ProgramExercisePatch) => {
+      setProgramExerciseContext((current) => {
+        if (!current) {
+          return current;
+        }
+
+        handleUpdateProgramExercise(current.sessionId, current.exerciseItem.id, patch);
+        const nextExerciseItem: ProgramExercise = { ...current.exerciseItem };
+
+        if (Object.prototype.hasOwnProperty.call(patch, 'label') && patch.label !== undefined) {
+          nextExerciseItem.label = patch.label;
+        }
+
+        if (
+          Object.prototype.hasOwnProperty.call(patch, 'description') &&
+          patch.description !== undefined
+        ) {
+          nextExerciseItem.description = patch.description;
+        }
+
+        if (
+          Object.prototype.hasOwnProperty.call(patch, 'instructions') &&
+          patch.instructions !== undefined
+        ) {
+          nextExerciseItem.instructions = patch.instructions;
+        }
+
+        if (Object.prototype.hasOwnProperty.call(patch, 'level') && patch.level) {
+          nextExerciseItem.level = patch.level;
+        }
+
+        if (Object.prototype.hasOwnProperty.call(patch, 'series') && patch.series !== undefined) {
+          nextExerciseItem.series = patch.series;
+          const parsed = parseSeriesCount(patch.series);
+          if (Number.isFinite(parsed) && parsed) {
+            nextExerciseItem.sets = Math.max(1, Math.trunc(parsed));
+          }
+        }
+
+        if (
+          Object.prototype.hasOwnProperty.call(patch, 'repetitions') &&
+          patch.repetitions !== undefined
+        ) {
+          nextExerciseItem.repetitions = patch.repetitions;
+          nextExerciseItem.reps = patch.repetitions;
+        }
+
+        if (Object.prototype.hasOwnProperty.call(patch, 'sets') && patch.sets !== undefined) {
+          const parsedSets = Number.isFinite(patch.sets) ? Math.trunc(Number(patch.sets)) : NaN;
+          if (!Number.isNaN(parsedSets) && parsedSets > 0) {
+            nextExerciseItem.sets = parsedSets;
+          }
+        }
+
+        if (Object.prototype.hasOwnProperty.call(patch, 'reps') && patch.reps !== undefined) {
+          nextExerciseItem.reps = patch.reps;
+        }
+
+        if (Object.prototype.hasOwnProperty.call(patch, 'charge') && patch.charge !== undefined) {
+          nextExerciseItem.charge = patch.charge;
+        }
+
+        if (
+          Object.prototype.hasOwnProperty.call(patch, 'restSeconds') &&
+          patch.restSeconds !== undefined
+        ) {
+          nextExerciseItem.restSeconds = patch.restSeconds;
+          nextExerciseItem.rest =
+            patch.restSeconds != null && Number.isFinite(patch.restSeconds)
+              ? `${Math.max(0, Math.trunc(patch.restSeconds))}s`
+              : '-';
+        }
+
+        if (Object.prototype.hasOwnProperty.call(patch, 'rest') && patch.rest !== undefined) {
+          nextExerciseItem.rest = patch.rest;
+        }
+
+        if (
+          Object.prototype.hasOwnProperty.call(patch, 'videoUrl') &&
+          patch.videoUrl !== undefined
+        ) {
+          nextExerciseItem.videoUrl = patch.videoUrl;
+        }
+
+        if (
+          Object.prototype.hasOwnProperty.call(patch, 'categoryIds') &&
+          patch.categoryIds
+        ) {
+          nextExerciseItem.categoryIds = [...patch.categoryIds];
+        }
+
+        if (
+          Object.prototype.hasOwnProperty.call(patch, 'categoryLabels') &&
+          patch.categoryLabels
+        ) {
+          nextExerciseItem.categoryLabels = [...patch.categoryLabels];
+        }
+
+        if (
+          Object.prototype.hasOwnProperty.call(patch, 'muscleIds') &&
+          patch.muscleIds
+        ) {
+          nextExerciseItem.muscleIds = [...patch.muscleIds];
+        }
+
+        if (Object.prototype.hasOwnProperty.call(patch, 'muscles') && patch.muscles) {
+          nextExerciseItem.muscles = patch.muscles.map((item) => ({ ...item }));
+        }
+
+        if (
+          Object.prototype.hasOwnProperty.call(patch, 'equipmentIds') &&
+          patch.equipmentIds
+        ) {
+          nextExerciseItem.equipmentIds = [...patch.equipmentIds];
+        }
+
+        if (Object.prototype.hasOwnProperty.call(patch, 'equipment') && patch.equipment) {
+          nextExerciseItem.equipment = patch.equipment.map((item) => ({ ...item }));
+        }
+
+        if (Object.prototype.hasOwnProperty.call(patch, 'tagIds') && patch.tagIds) {
+          nextExerciseItem.tagIds = [...patch.tagIds];
+        }
+
+        if (Object.prototype.hasOwnProperty.call(patch, 'tags') && patch.tags) {
+          nextExerciseItem.tags = patch.tags.map((item) => ({ ...item }));
+        }
+
+        return {
+          sessionId: current.sessionId,
+          exerciseItem: nextExerciseItem,
+        };
+      });
+    },
+    [handleUpdateProgramExercise],
+  );
+
+  const handleOpenLibraryExerciseDialog = React.useCallback(
     (exerciseId: string) => {
       const exercise = getRawExerciseById(exerciseId);
       if (!exercise) {
         return;
       }
       setExerciseBeingEdited(exercise);
+      setProgramExerciseContext(null);
       setIsExerciseDialogOpen(true);
     },
     [getRawExerciseById],
@@ -514,485 +679,593 @@ export function ProgramBuilderPanel({
           height: '100%',
           flex: 1,
           overflow: 'hidden',
-          backgroundColor: theme.palette.background.paper,
+          bgcolor: theme.palette.backgroundColor,
         }}
       >
-        {/* Header */}
-        <Stack direction="row" spacing={2} alignItems="center" sx={{ backgroundColor: alpha(theme.palette.success.main, 0.20), p: 1 }}>
-          <Box
-            aria-hidden
+        <Box
+          sx={{
+            flexGrow: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: 0,
+            px: { xs: 2, md: 3 },
+            py: { xs: 2, md: 3 },
+          }}
+        >
+          <Card
+            variant="outlined"
             sx={{
-              width: 40,
-              height: 40,
-              borderRadius: 2,
-              bgcolor: 'success.main',
-              color: 'primary.contrastText',
               display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
+              flexDirection: 'column',
+              flex: 1,
+              minHeight: 0,
+              bgcolor: theme.palette.backgroundColor,
             }}
           >
-            {isEditing ? <Edit fontSize="large" /> : <Add fontSize="large" />}
-          </Box>
-          <Stack spacing={0.5}>
-            <Typography variant="h6" component="span" sx={{ fontWeight: 700 }}>
-              {panelTitle}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {panelSubtitle}
-            </Typography>
-          </Stack>
-        </Stack>
-
-        <Divider />
-
-        {/* Content Grid */}
-        <Box sx={{ flexGrow: 1, overflow: 'auto', minHeight: 0 }}>
-          <Grid container sx={{ minWidth: 0, minHeight: '100%', alignContent: 'stretch', alignItems: 'stretch', gap: 0 }}>
-            {/* Configuration Panel */}
-            <Grid size={{ xs: 12, md: 3, lg: 3 }} sx={{ backgroundColor: '#f3f2f2e0', px: 1, py: 1, display: 'flex', flexDirection: 'column', minHeight: '100%', pb: 0 }}>
-              <Grid spacing={3}>
-                <Grid
+            {/* General information */}
+            <Box
+              component="header"
+              sx={{
+                backgroundColor: alpha(theme.palette.success.main, 0.2),
+                p: 1,
+              }}
+            >
+              <Stack direction="row" spacing={2} alignItems="center">
+                <Box
+                  aria-hidden
                   sx={{
+                    width: 40,
+                    height: 40,
                     borderRadius: 2,
+                    bgcolor: 'success.main',
+                    color: 'primary.contrastText',
                     display: 'flex',
-                    flexDirection: 'column',
-                    gap: 2,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
                   }}
                 >
-                  <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                    {builderCopy.config.title}
+                  {isEditing ? <Edit fontSize="large" /> : <Add fontSize="large" />}
+                </Box>
+                <Stack spacing={0.5}>
+                  <Typography variant="h6" component="span" sx={{ fontWeight: 700 }}>
+                    {panelTitle}
                   </Typography>
-
-                  <Autocomplete<User>
-                    options={users}
-                    value={selectedAthlete}
-                    loading={usersLoading}
-                    onChange={handleSelectAthlete}
-                    isOptionEqualToValue={(option, value) => option.id === value.id}
-                    getOptionLabel={userLabel}
-                    noOptionsText={t('common.field_incorrect')}
-                    onInputChange={(_event, value) => setUsersQ(value)}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label={builderCopy.config.client_label}
-                        placeholder={builderCopy.config.client_placeholder}
-                        size="small"
-                        InputProps={{
-                          ...params.InputProps,
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <Search fontSize="small" color="disabled" />
-                            </InputAdornment>
-                          ),
-                          endAdornment: (
-                            <>
-                              {usersLoading ? <CircularProgress size={18} /> : null}
-                              {params.InputProps.endAdornment}
-                            </>
-                          ),
-                        }}
-                        inputProps={{
-                          ...params.inputProps,
-                          'aria-label': 'Select athlete',
-                        }}
-                      />
-                    )}
-                    sx={{ backgroundColor: theme.palette.background.default }}
-                  />
-
-                  <Stack direction="row" spacing={1.5}>
-                    <TextField
-                      label={builderCopy.config.duration_label}
-                      size="small"
-                      fullWidth
-                      value={form.duration}
-                      onChange={handleFormChange('duration')}
-                      required
-                      inputProps={{ 'aria-required': true }}
-                      sx={{ backgroundColor: theme.palette.background.default }}
-                    />
-                    <TextField
-                      label={builderCopy.config.frequency_label}
-                      size="small"
-                      fullWidth
-                      value={form.frequency}
-                      onChange={handleFormChange('frequency')}
-                      required
-                      inputProps={{ 'aria-required': true }}
-                      sx={{ backgroundColor: theme.palette.background.default }}
-                    />
-                  </Stack>
-
-                  <Divider />
-
-                  {/* Session Templates Library */}
-                  <Stack spacing={1}>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                      {builderCopy.templates_title}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {builderCopy.templates_subtitle}
-                    </Typography>
-
-                    <TextField
-                      fullWidth
-                      size="small"
-                      placeholder={builderCopy.config.search_placeholder}
-                      value={sessionSearch}
-                      onChange={(event) => setSessionSearch(event.target.value)}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <Search fontSize="small" color="disabled" />
-                          </InputAdornment>
-                        ),
-                      }}
-                      sx={{ backgroundColor: theme.palette.background.default }}
-                    />
-
-                    <Typography variant="caption" color="text.secondary">
-                      {sessionLimitHint}
-                    </Typography>
-
-                    <Stack spacing={1.5}>
-                      {sessionsLoading ? (
-                        <Box display="flex" justifyContent="center" py={2}>
-                          <CircularProgress size={24} />
-                        </Box>
-                      ) : sessionTemplates.length === 0 ? (
-                        <Typography variant="body2" color="text.secondary">
-                          {builderCopy.structure.empty}
-                        </Typography>
-                      ) : (
-                        sessionTemplates.map((template) => (
-                          <ProgramBuilderSessionLibraryItem
-                            key={template.id}
-                            template={template}
-                            builderCopy={builderCopy}
-                            onAdd={() => handleAddSessionFromTemplate(template.id)}
-                          />
-                        ))
-                      )}
-                    </Stack>
-                  </Stack>
-                </Grid>
-              </Grid>
-            </Grid>
-
-            {/* Structure Panel */}
-            <Grid size={{ xs: 12, md: 5, lg: 5 }} sx={{ px: 1, py: 1, display: 'flex', flexDirection: 'column', minHeight: '100%', pb: 0 }}>
-              <Box
-                sx={{
-                  borderRadius: 2,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 2,
-                }}
-              >
-              <Stack spacing={1.5}>
-                <Stack
-                  direction="row"
-                  alignItems="flex-start"
-                  justifyContent="space-between"
-                  spacing={2}
-                >
-                  <Stack spacing={0.75} flexGrow={1} minWidth={0}>
-                    {isEditingStructureTitle ? (
-                      <TextField
-                        inputRef={structureTitleRef}
-                        value={structureTitleDraft}
-                        onChange={(event) => setStructureTitleDraft(event.target.value)}
-                        onBlur={handleStructureTitleBlur}
-                        onKeyDown={handleStructureTitleInputKeyDown}
-                        size="small"
-                        variant="standard"
-                        inputProps={{ 'aria-label': 'structure-title' }}
-                        fullWidth
-                      />
-                    ) : (
-                      <Typography
-                        variant="h6"
-                        component="h2"
-                        sx={{
-                          fontWeight: 700,
-                          ...interactiveSurfaceSx,
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: 0.5,
-                          width: 'fit-content',
-                        }}
-                        onClick={handleStructureTitleClick}
-                        onKeyDown={handleStructureTitleDisplayKeyDown}
-                        tabIndex={0}
-                        role="button"
-                      >
-                        <Edit fontSize="inherit" color="disabled" />
-                        {structureTitle}
-                      </Typography>
-                    )}
-                    {isEditingStructureDescription ? (
-                      <TextField
-                        inputRef={structureDescriptionRef}
-                        value={structureDescriptionDraft}
-                        onChange={(event) => setStructureDescriptionDraft(event.target.value)}
-                        onBlur={handleStructureDescriptionBlur}
-                        onKeyDown={handleStructureDescriptionInputKeyDown}
-                        size="small"
-                        variant="standard"
-                        multiline
-                        minRows={1}
-                        inputProps={{ 'aria-label': 'structure-description' }}
-                        fullWidth
-                      />
-                    ) : (
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{
-                          ...interactiveSurfaceSx,
-                          display: 'inline-flex',
-                          alignItems: 'flex-start',
-                          gap: 0.5,
-                          maxWidth: '100%',
-                        }}
-                        onClick={handleStructureDescriptionClick}
-                        onKeyDown={handleStructureDescriptionDisplayKeyDown}
-                        tabIndex={0}
-                        role="button"
-                      >
-                        <Edit fontSize="inherit" color="disabled" />
-                        <Box
-                          component="span"
-                          sx={{
-                            whiteSpace: 'pre-wrap',
-                            fontStyle: structureDescription ? 'normal' : 'italic',
-                          }}
-                        >
-                          {structureDescription}
-                        </Box>
-                      </Typography>
-                    )}
-                  </Stack>
-                  <Typography
-                    variant="subtitle2"
-                    color="text.secondary"
-                    sx={{ whiteSpace: 'nowrap', ml: 2 }}
-                  >
-                    {sessionCountLabel} · {exerciseCountLabel}
+                  <Typography variant="body2" color="text.secondary">
+                    {panelSubtitle}
                   </Typography>
                 </Stack>
               </Stack>
-
-              <Stack
-                spacing={1.5}
-                sx={{
-                  border:
-                    sessionCount === 0
-                      ? `1px dashed ${alpha(theme.palette.text.primary, 0.2)}`
-                      : 'none',
-                  borderRadius: 2,
-                  p: sessions.length === 0 ? 2 : 0,
-                  minHeight: 280,
-                  bgcolor:
-                    sessions.length === 0
-                      ? alpha(theme.palette.background.default, 0.4)
-                      : 'transparent',
-                }}
-              >
-                {sessions.length === 0 ? (
-                  <Stack spacing={1} alignItems="center" justifyContent="center" flexGrow={1}>
-                    <Typography variant="body2" color="text.secondary" textAlign="center">
-                      {builderCopy.structure.empty}
-                    </Typography>
-                  </Stack>
-                ) : (
-                  sessions.map((session, index) => (
-                    <ProgramBuilderSessionItem
-                      key={session.id}
-                      session={session}
-                      index={index}
-                      totalSessions={sessions.length}
-                      builderCopy={builderCopy}
-                      onLabelChange={handleSessionLabelChange}
-                      onDescriptionChange={handleSessionDescriptionChange}
-                      onDurationChange={handleSessionDurationChange}
-                      onRemoveSession={() => handleRemoveSession(session.id)}
-                      onRemoveExercise={(exerciseId) =>
-                        handleRemoveExercise(session.id, exerciseId)
-                      }
-                      onMoveUp={() => handleMoveSessionUp(session.id)}
-                      onMoveDown={() => handleMoveSessionDown(session.id)}
-                      getExerciseById={(exerciseId) => exerciseMap.get(exerciseId)}
-                      onExerciseLabelChange={handleExerciseLabelChange}
-                      onExerciseDescriptionChange={handleExerciseDescriptionChange}
-                      onMoveExerciseUp={(exerciseId) =>
-                        handleMoveExerciseUp(session.id, exerciseId)
-                      }
-                      onMoveExerciseDown={(exerciseId) =>
-                        handleMoveExerciseDown(session.id, exerciseId)
-                      }
-                      onEditExercise={handleOpenEditExerciseDialog}
-                    />
-                  ))
-                )}
-              </Stack>
-
-              <Tooltip title={builderCopy.library.tooltips.add_empty_session} arrow>
-                <span style={{ display: 'flex', width: '100%' }}>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    startIcon={<Add fontSize="small" />}
-                    fullWidth
-                    onClick={handleCreateEmptySession}
-                  >
-                    {builderCopy.config.button_create}
-                  </Button>
-                </span>
-              </Tooltip>
             </Box>
-          </Grid>
 
-            {/* Exercise Library Panel */}
-            <Grid size={{ xs: 12, md: 4, lg: 4 }} sx={{ backgroundColor: '#f3f2f2e0', px: 1, py: 1, display: 'flex', flexDirection: 'column', minHeight: '100%', pb: 0 }}>
-              <Box
-                sx={{
-                  borderRadius: 2,
-                  minHeight: 420,
-                  display: 'flex',
+            <Divider />
+
+            <CardContent
+              sx={{
+                flexGrow: 1,
+                display: 'flex',
                 flexDirection: 'column',
-                gap: 2,
+                minHeight: 0,
+                p: 0,
+                '&:last-child': {
+                  pb: 0,
+                },
               }}
             >
-              <Stack spacing={0.5}>
-                <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                  {builderCopy.library.title}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {builderCopy.library.subtitle}
-                </Typography>
-              </Stack>
-
-              <TextField
-                fullWidth
-                size="small"
-                placeholder={builderCopy.library.search_placeholder}
-                value={exerciseSearch}
-                onChange={(event) => setExerciseSearch(event.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Search fontSize="small" color="disabled" />
-                    </InputAdornment>
-                  ),
+              <Box
+                sx={{
+                  flexGrow: 1,
+                  minHeight: 0,
+                  overflow: 'auto',
+                  px: { xs: 2, md: 3 },
+                  py: { xs: 2, md: 3 },
                 }}
-                sx={{ backgroundColor: theme.palette.background.default }}
-              />
-
-              <Button
-                variant="contained"
-                size="small"
-                startIcon={<Add fontSize="small" />}
-                fullWidth
-                onClick={handleOpenCreateExerciseDialog}
               >
-                {builderCopy.library.button_create}
-              </Button>
-
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
-                <TextField
-                  select
-                  fullWidth
-                  size="small"
-                  label={builderCopy.library.primary_filter_label}
-                  value={exerciseCategory}
-                  disabled={categoriesLoading && !exerciseCategoryOptions.length}
-                  onChange={(event) => setExerciseCategory(event.target.value)}
-                  sx={{ backgroundColor: theme.palette.background.default }}
+                <Grid
+                  container
+                  columnSpacing={{ xs: 0, md: 2 }}
+                  rowSpacing={{ xs: 2, md: 0 }}
+                  sx={{
+                    minWidth: 0,
+                    minHeight: '100%',
+                    alignItems: 'stretch',
+                  }}
                 >
-                  <MenuItem value="all">{builderCopy.library.primary_filter_all}</MenuItem>
-                  {exerciseCategoryOptions.map((category) => (
-                    <MenuItem key={category.id} value={category.id}>
-                      {category.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-                <TextField
-                  select
-                  fullWidth
-                  size="small"
-                  label={builderCopy.library.secondary_filter_label}
-                  value={exerciseType}
-                  onChange={(event) => setExerciseType(event.target.value as typeof exerciseType)}
-                  sx={{ backgroundColor: theme.palette.background.default }}
-                >
-                  {exerciseTypeOptions.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Stack>
+                  {/* Configuration Panel */}
+                  <Grid
+                    size={{ xs: 12, md: 3, lg: 3 }}
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      px: 1,
+                      py: 1,
+                      gap: 2,
+                      minHeight: '100%',
+                    }}
+                  >
+                    <Card variant="outlined" sx={{ flexShrink: 0 }}>
+                      <CardContent
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 2,
+                          '&:last-child': {
+                            pb: 2,
+                          },
+                        }}
+                      >
+                        <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                          {builderCopy.config.title}
+                        </Typography>
 
-              <Typography variant="caption" color="text.secondary">
-                {limitHint}
-              </Typography>
+                        <Autocomplete<User>
+                          options={users}
+                          value={selectedAthlete}
+                          disabled={usersLoading}
+                          onChange={handleSelectAthlete}
+                          isOptionEqualToValue={(option, value) => option.id === value.id}
+                          getOptionLabel={userLabel}
+                          noOptionsText={t('common.field_incorrect')}
+                          onInputChange={(_event, value) => setUsersQ(value)}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label={builderCopy.config.client_label}
+                              placeholder={builderCopy.config.client_placeholder}
+                              size="small"
+                              InputProps={{
+                                ...params.InputProps,
+                                startAdornment: (
+                                  <InputAdornment position="start">
+                                    <Search fontSize="small" color="disabled" />
+                                  </InputAdornment>
+                                ),
+                              }}
+                              inputProps={{
+                                ...params.inputProps,
+                                'aria-label': 'Select athlete',
+                              }}
+                            />
+                          )}
+                          sx={{ backgroundColor: theme.palette.background.default }}
+                        />
 
-              <Stack spacing={1.5}>
-                {exercisesLoading ? (
-                  <Box display="flex" justifyContent="center" py={2}>
-                    <CircularProgress size={24} />
-                  </Box>
-                ) : filteredExercises.length === 0 ? (
-                  <Typography variant="body2" color="text.secondary">
-                    {emptyExercisesMessage}
-                  </Typography>
-                ) : (
-                  filteredExercises.map((exercise) => (
-                    <ProgramBuilderExerciseLibraryItem
-                      key={exercise.id}
-                      exercise={exercise}
-                      disabled={sessions.length === 0}
-                      onAdd={(event) =>
-                        handleOpenExerciseMenu(exercise.id, event.currentTarget)
-                      }
-                      onEdit={handleOpenEditExerciseDialog}
-                      onDelete={handleExerciseDeleted}
-                    />
-                  ))
-                )}
+                        <Stack direction="row" spacing={1.5}>
+                          <TextField
+                            label={builderCopy.config.duration_label}
+                            size="small"
+                            fullWidth
+                            value={form.duration}
+                            onChange={handleFormChange('duration')}
+                            required
+                            inputProps={{ 'aria-required': true }}
+                            sx={{ backgroundColor: theme.palette.background.default }}
+                          />
+                          <TextField
+                            label={builderCopy.config.frequency_label}
+                            size="small"
+                            fullWidth
+                            value={form.frequency}
+                            onChange={handleFormChange('frequency')}
+                            required
+                            inputProps={{ 'aria-required': true }}
+                            sx={{ backgroundColor: theme.palette.background.default }}
+                          />
+                        </Stack>
+                      </CardContent>
+                    </Card>
+
+                    <Card variant="outlined" sx={{ flexGrow: 1, display: 'flex' }}>
+                      <CardContent
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 1,
+                          flexGrow: 1,
+                          '&:last-child': {
+                            pb: 2,
+                          },
+                        }}
+                      >
+                        {/* Session Templates Library */}
+                        <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                          {builderCopy.templates_title}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {builderCopy.templates_subtitle}
+                        </Typography>
+
+                        <TextField
+                          fullWidth
+                          size="small"
+                          placeholder={builderCopy.config.search_placeholder}
+                          value={sessionSearch}
+                          onChange={(event) => setSessionSearch(event.target.value)}
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Search fontSize="small" color="disabled" />
+                              </InputAdornment>
+                            ),
+                          }}
+                          sx={{ backgroundColor: theme.palette.background.default }}
+                        />
+
+                        <Typography variant="caption" color="text.secondary">
+                          {sessionLimitHint}
+                        </Typography>
+
+                        <Stack spacing={1.5} sx={{ flexGrow: 1 }}>
+                          {sessionsLoading ? null : sessionTemplates.length === 0 ? (
+                            <Typography variant="body2" color="text.secondary">
+                              {builderCopy.structure.empty}
+                            </Typography>
+                          ) : (
+                            sessionTemplates.map((template) => (
+                              <ProgramBuilderSessionLibraryItem
+                                key={template.id}
+                                template={template}
+                                builderCopy={builderCopy}
+                                onAdd={() => handleAddSessionFromTemplate(template.id)}
+                              />
+                            ))
+                          )}
+                        </Stack>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+
+                  {/* Structure Panel */}
+                  <Grid
+                    size={{ xs: 12, md: 5, lg: 5 }}
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      px: 1,
+                      py: 1,
+                      minHeight: '100%',
+                    }}
+                  >
+                    <Card
+                      variant="outlined"
+                      sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}
+                    >
+                      <CardContent
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 1.5,
+                          flexGrow: 1,
+                          '&:last-child': {
+                            pb: 2,
+                          },
+                        }}
+                      >
+                        <Stack
+                          direction="row"
+                          alignItems="flex-start"
+                          justifyContent="space-between"
+                          spacing={2}
+                        >
+                          <Stack spacing={0.75} flexGrow={1} minWidth={0}>
+                            {isEditingStructureTitle ? (
+                              <TextField
+                                inputRef={structureTitleRef}
+                                value={structureTitleDraft}
+                                onChange={(event) => setStructureTitleDraft(event.target.value)}
+                                onBlur={handleStructureTitleBlur}
+                                onKeyDown={handleStructureTitleInputKeyDown}
+                                size="small"
+                                variant="standard"
+                                inputProps={{ 'aria-label': 'structure-title' }}
+                                fullWidth
+                              />
+                            ) : (
+                              <Typography
+                                variant="h6"
+                                component="h2"
+                                sx={{
+                                  fontWeight: 700,
+                                  ...interactiveSurfaceSx,
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: 0.5,
+                                  width: 'fit-content',
+                                }}
+                                onClick={handleStructureTitleClick}
+                                onKeyDown={handleStructureTitleDisplayKeyDown}
+                                tabIndex={0}
+                                role="button"
+                              >
+                                <Edit fontSize="inherit" color="disabled" />
+                                {structureTitle}
+                              </Typography>
+                            )}
+                            {isEditingStructureDescription ? (
+                              <TextField
+                                inputRef={structureDescriptionRef}
+                                value={structureDescriptionDraft}
+                                onChange={(event) => setStructureDescriptionDraft(event.target.value)}
+                                onBlur={handleStructureDescriptionBlur}
+                                onKeyDown={handleStructureDescriptionInputKeyDown}
+                                size="small"
+                                variant="standard"
+                                multiline
+                                minRows={1}
+                                inputProps={{ 'aria-label': 'structure-description' }}
+                                fullWidth
+                              />
+                            ) : (
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{
+                                  ...interactiveSurfaceSx,
+                                  display: 'inline-flex',
+                                  alignItems: 'flex-start',
+                                  gap: 0.5,
+                                  maxWidth: '100%',
+                                }}
+                                onClick={handleStructureDescriptionClick}
+                                onKeyDown={handleStructureDescriptionDisplayKeyDown}
+                                tabIndex={0}
+                                role="button"
+                              >
+                                <Edit fontSize="inherit" color="disabled" />
+                                <Box
+                                  component="span"
+                                  sx={{
+                                    whiteSpace: 'pre-wrap',
+                                    fontStyle: structureDescription ? 'normal' : 'italic',
+                                  }}
+                                >
+                                  {structureDescription}
+                                </Box>
+                              </Typography>
+                            )}
+                          </Stack>
+                          <Typography
+                            variant="subtitle2"
+                            color="text.secondary"
+                            sx={{ whiteSpace: 'nowrap', ml: 2 }}
+                          >
+                            {sessionCountLabel} · {exerciseCountLabel}
+                          </Typography>
+                        </Stack>
+
+                        <Stack spacing={1.5} sx={{ width: '100%' }}>
+                          <Box
+                            sx={{
+                              border:
+                                sessionCount === 0
+                                  ? `1px dashed ${alpha(theme.palette.text.primary, 0.2)}`
+                                  : 'none',
+                              borderRadius: 2,
+                              p: sessionCount === 0 ? 2 : 0,
+                              bgcolor:
+                                sessionCount === 0
+                                  ? alpha(theme.palette.background.default, 0.4)
+                                  : 'transparent',
+                              width: '100%',
+                              display: 'flex',
+                              flexDirection: 'column',
+                            }}
+                          >
+                            {sessionCount === 0 ? (
+                              <Stack
+                                spacing={1}
+                                alignItems="center"
+                                justifyContent="center"
+                                sx={{ minHeight: 220, width: '100%' }}
+                              >
+                                <Typography variant="body2" color="text.secondary" textAlign="center">
+                                  {builderCopy.structure.empty}
+                                </Typography>
+                              </Stack>
+                            ) : (
+                              <Stack spacing={1.5} sx={{ width: '100%' }}>
+                                {sessions.map((session, index) => (
+                                  <ProgramBuilderSessionItem
+                                    key={session.id}
+                                    session={session}
+                                    index={index}
+                                    totalSessions={sessions.length}
+                                    builderCopy={builderCopy}
+                                    onLabelChange={handleSessionLabelChange}
+                                    onDescriptionChange={handleSessionDescriptionChange}
+                                    onDurationChange={handleSessionDurationChange}
+                                    onRemoveSession={() => handleRemoveSession(session.id)}
+                                    onRemoveExercise={(exerciseId) =>
+                                      handleRemoveExercise(session.id, exerciseId)
+                                    }
+                                    onMoveUp={() => handleMoveSessionUp(session.id)}
+                                    onMoveDown={() => handleMoveSessionDown(session.id)}
+                                    getExerciseById={(exerciseId) => exerciseMap.get(exerciseId)}
+                                    onExerciseLabelChange={handleExerciseLabelChange}
+                                    onExerciseDescriptionChange={handleExerciseDescriptionChange}
+                                    onMoveExerciseUp={(exerciseId) =>
+                                      handleMoveExerciseUp(session.id, exerciseId)
+                                    }
+                                    onMoveExerciseDown={(exerciseId) =>
+                                      handleMoveExerciseDown(session.id, exerciseId)
+                                    }
+                                    onEditExercise={handleOpenProgramExerciseDialog}
+                                  />
+                                ))}
+                              </Stack>
+                            )}
+                          </Box>
+
+                          <Tooltip title={builderCopy.library.tooltips.add_empty_session} arrow>
+                            <span style={{ display: 'flex', width: '100%' }}>
+                              <Button
+                                variant="contained"
+                                size="small"
+                                startIcon={<Add fontSize="small" />}
+                                fullWidth
+                                onClick={handleCreateEmptySession}
+                              >
+                                {builderCopy.config.button_create}
+                              </Button>
+                            </span>
+                          </Tooltip>
+                        </Stack>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+
+                  {/* Exercise Library Panel */}
+                  <Grid
+                    size={{ xs: 12, md: 4, lg: 4 }}
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      px: 1,
+                      py: 1,
+                      minHeight: '100%',
+                    }}
+                  >
+                    <Card variant="outlined" sx={{ flexGrow: 1, display: 'flex' }}>
+                      <CardContent
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 2,
+                          flexGrow: 1,
+                          '&:last-child': {
+                            pb: 2,
+                          },
+                        }}
+                      >
+                        <Stack spacing={0.5}>
+                          <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                            {builderCopy.library.title}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {builderCopy.library.subtitle}
+                          </Typography>
+                        </Stack>
+
+                        <TextField
+                          fullWidth
+                          size="small"
+                          placeholder={builderCopy.library.search_placeholder}
+                          value={exerciseSearch}
+                          onChange={(event) => setExerciseSearch(event.target.value)}
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Search fontSize="small" color="disabled" />
+                              </InputAdornment>
+                            ),
+                          }}
+                          sx={{ backgroundColor: theme.palette.background.default }}
+                        />
+
+                        <Button
+                          variant="contained"
+                          size="small"
+                          startIcon={<Add fontSize="small" />}
+                          fullWidth
+                          onClick={handleOpenCreateExerciseDialog}
+                        >
+                          {builderCopy.library.button_create}
+                        </Button>
+
+                        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
+                          <TextField
+                            select
+                            fullWidth
+                            size="small"
+                            label={builderCopy.library.primary_filter_label}
+                            value={exerciseCategory}
+                            disabled={categoriesLoading && !exerciseCategoryOptions.length}
+                            onChange={(event) => setExerciseCategory(event.target.value)}
+                            sx={{ backgroundColor: theme.palette.background.default }}
+                          >
+                            <MenuItem value="all">{builderCopy.library.primary_filter_all}</MenuItem>
+                            {exerciseCategoryOptions.map((category) => (
+                              <MenuItem key={category.id} value={category.id}>
+                                {category.label}
+                              </MenuItem>
+                            ))}
+                          </TextField>
+                          <TextField
+                            select
+                            fullWidth
+                            size="small"
+                            label={builderCopy.library.secondary_filter_label}
+                            value={exerciseType}
+                            onChange={(event) => setExerciseType(event.target.value as typeof exerciseType)}
+                            sx={{ backgroundColor: theme.palette.background.default }}
+                          >
+                            {exerciseTypeOptions.map((option) => (
+                              <MenuItem key={option.value} value={option.value}>
+                                {option.label}
+                              </MenuItem>
+                            ))}
+                          </TextField>
+                        </Stack>
+
+                        <Typography variant="caption" color="text.secondary">
+                          {limitHint}
+                        </Typography>
+
+                        <Stack spacing={1.5} sx={{ flexGrow: 1 }}>
+                          {exercisesLoading ? null : filteredExercises.length === 0 ? (
+                            <Typography variant="body2" color="text.secondary">
+                              {emptyExercisesMessage}
+                            </Typography>
+                          ) : (
+                            filteredExercises.map((exercise) => (
+                              <ProgramBuilderExerciseLibraryItem
+                                key={exercise.id}
+                                exercise={exercise}
+                                disabled={sessions.length === 0}
+                                onAdd={(event) =>
+                                  handleOpenExerciseMenu(exercise.id, event.currentTarget)
+                                }
+                                onEdit={handleOpenLibraryExerciseDialog}
+                                onDelete={handleExerciseDeleted}
+                              />
+                            ))
+                          )}
+                        </Stack>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                </Grid>
+              </Box>
+            </CardContent>
+
+            <Divider />
+
+            <Box component="footer" sx={{ p: 2, backgroundColor: '#e0dcdce0' }}>
+              <Stack direction="row" justifyContent="flex-end" spacing={2}>
+                <Tooltip title={builderCopy.footer.cancel} arrow>
+                  <span style={{ display: 'inline-flex' }}>
+                    <Button variant="text" color="inherit" onClick={onCancel}>
+                      {builderCopy.footer.cancel}
+                    </Button>
+                  </span>
+                </Tooltip>
+                <Tooltip title={submitLabel} arrow>
+                  <span style={{ display: 'inline-flex' }}>
+                    <Button
+                      variant="contained"
+                      type="button"
+                      onClick={handleSubmit}
+                      disabled={isSubmitDisabled}
+                      color="success"
+                    >
+                      {submitLabel}
+                    </Button>
+                  </span>
+                </Tooltip>
               </Stack>
             </Box>
-          </Grid>
-        </Grid>
-      </Box>
-
-        {/* Footer */}
-        <Stack direction="row" justifyContent="flex-end" spacing={2} sx={{ p: 2, backgroundColor: '#e0dcdce0' }}>
-          <Tooltip title={builderCopy.footer.cancel} arrow>
-            <span style={{ display: 'inline-flex' }}>
-              <Button variant="text" color="inherit" onClick={onCancel}>
-                {builderCopy.footer.cancel}
-              </Button>
-            </span>
-          </Tooltip>
-          <Tooltip title={submitLabel} arrow>
-            <span style={{ display: 'inline-flex' }}>
-              <Button
-                variant="contained"
-                type="button"
-                onClick={handleSubmit}
-                disabled={isSubmitDisabled}
-                color="success"
-              >
-                {submitLabel}
-              </Button>
-            </span>
-          </Tooltip>
-        </Stack>
+          </Card>
+        </Box>
       </Stack>
 
       {/* Exercise Add Menu */}
@@ -1025,6 +1298,14 @@ export function ProgramBuilderPanel({
         onClose={handleCloseExerciseDialog}
         onCreated={handleExerciseCreated}
         onUpdated={handleExerciseUpdated}
+        programExerciseContext={
+          programExerciseContext
+            ? {
+                exerciseItem: programExerciseContext.exerciseItem,
+                onSubmit: handleProgramExerciseSubmit,
+              }
+            : null
+        }
       />
     </>
   );

@@ -1,16 +1,47 @@
 // src\common\logger.ts
 import 'winston-daily-rotate-file';
 import { createLogger, format, transports } from 'winston';
+import { inspect } from 'util';
+import type { TransformableInfo } from 'logform';
+
+type LoggerInfo = TransformableInfo & {
+  timestamp?: string;
+  module?: string;
+  level: string;
+  message: string;
+  error?: unknown;
+};
+
+const toLogString = (value: unknown): string => {
+  if (typeof value === 'string') {
+    return value;
+  }
+  if (value instanceof Error) {
+    return value.stack ?? value.message;
+  }
+  if (value === undefined || value === null) {
+    return '';
+  }
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return inspect(value, { depth: 3, breakLength: 80 });
+  }
+};
 
 /* istanbul ignore next */
-const myFormat = format.printf((info) => {
-  let myformat: string;
+const myFormat = format.printf((info: LoggerInfo) => {
+  const timestamp = toLogString(info.timestamp);
+  const moduleName = toLogString(info.module);
+  const level = toLogString(info.level);
+  const message = toLogString(info.message);
+  const prefix = [timestamp, moduleName, level].filter(Boolean).join(' ').trim();
+  const base = prefix ? `${prefix}: ${message}` : message;
   if (info.error) {
-    myformat = `${info.timestamp} ${info.module} ${info.level}: ${info.message} => ${info.error}`;
-  } else {
-    myformat = `${info.timestamp} ${info.module} ${info.level}: ${info.message}`;
+    const errorDetails = toLogString(info.error);
+    return `${base} => ${errorDetails}`;
   }
-  return myformat;
+  return base;
 });
 
 // Default

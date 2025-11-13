@@ -2,11 +2,6 @@
 import { Db, ObjectId } from "mongodb";
 import { Migration } from "@services/db/mongo/migration.runner.mongo";
 
-/**
- * NOTE: on reste volontairement en "raw" MongoDB ici.
- * Avantages: pas de dÃ©pendance Ã  la couche service, migration stable dans le temps.
- */
-
 const FR_LABELS = [
   "pectoraux",
   "dos",
@@ -24,7 +19,7 @@ const FR_LABELS = [
   "obliques",
 ];
 
-/** Petit utilitaire pour uniformiser les slugs Ã  partir dâ€™un libellÃ© FR */
+/** Petit utilitaire pour uniformiser les slugs à partir libellé */
 function toSlug(label: string): string {
   return label
     .normalize("NFD")
@@ -65,7 +60,7 @@ const migration: Migration = {
         'Admin user not found (email: "admin@fitdesk.com"). Run admin migration first.'
       );
     }
-    const createdBy: ObjectId = admin._id as ObjectId;
+    const createdBy: ObjectId = admin._id;
 
     // 3) Build docs (idempotent upsert)
     const now = new Date();

@@ -45,4 +45,8 @@ async function bootstrap() {
   const port = Number(process.env.PORT) || 3000;
   await app.listen({ port, host: '0.0.0.0' });
 }
-bootstrap();
+bootstrap().catch((error) => {
+  const reason = error instanceof Error ? error : new Error(String(error));
+  inversify.loggerService.error('Bootstrap failed', reason);
+  process.exitCode = 1;
+});

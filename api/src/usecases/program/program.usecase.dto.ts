@@ -9,10 +9,10 @@ import {
 } from '@services/db/dtos/program.dto';
 import type { Role } from '@src/common/role.enum';
 
-export type UsecaseSession = {
+export interface UsecaseSession {
   userId: string;
   role: Role;
-};
+}
 
 export type CreateProgramUsecaseDto = CreateProgramServiceDto;
 export type GetProgramRepositoryDto = GetProgramServiceDto;
@@ -20,6 +20,6 @@ export type GetProgramUsecaseDto = GetProgramRepositoryDto & { session: UsecaseS
 export type ListProgramsRepositoryDto = ListProgramsServiceDto;
 export type ListProgramsUsecaseDto = ListProgramsRepositoryDto & { session: UsecaseSession };
 export type UpdateProgramUsecaseDto = UpdateProgramServiceDto;
-export type DeleteProgramUsecaseDto = { id: string; session: UsecaseSession };
+export interface DeleteProgramUsecaseDto { id: string; session: UsecaseSession }
 export type ProgramSessionSnapshotUsecaseDto = ProgramSessionSnapshotServiceDto;
 export type ProgramExerciseSnapshotUsecaseDto = ProgramExerciseSnapshotServiceDto;

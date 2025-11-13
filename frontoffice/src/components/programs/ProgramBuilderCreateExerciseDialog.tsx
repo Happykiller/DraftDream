@@ -11,11 +11,16 @@ import type {
   Exercise,
   ExerciseLevel,
   UpdateExerciseInput,
-} from '@hooks/useExercises';
-import { useMuscles } from '@hooks/useMuscles';
-import { useEquipment } from '@hooks/useEquipment';
+} from '@hooks/programs/useExercises';
+import { useMuscles } from '@hooks/programs/useMuscles';
+import { useEquipment } from '@hooks/programs/useEquipment';
 import { useTags } from '@hooks/useTags';
-import type { ExerciseCategoryOption } from '@components/programs/programBuilderTypes';
+import type {
+  ExerciseCategoryOption,
+  ProgramExercise,
+  ProgramExercisePatch,
+} from '@components/programs/programBuilderTypes';
+import { parseSeriesCount } from '@components/programs/programBuilderUtils';
 import { slugify } from '@src/utils/slugify';
 
 type Option = { id: string; label: string };
@@ -35,6 +40,10 @@ type ProgramBuilderCreateExerciseDialogProps = {
   onClose: () => void;
   onCreated?: (exercise: Exercise) => void;
   onUpdated?: (exercise: Exercise) => void;
+  programExerciseContext?: {
+    exerciseItem: ProgramExercise;
+    onSubmit: (patch: ProgramExercisePatch) => Promise<void> | void;
+  } | null;
 };
 
 export function ProgramBuilderCreateExerciseDialog({
@@ -47,6 +56,7 @@ export function ProgramBuilderCreateExerciseDialog({
   onClose,
   onCreated,
   onUpdated,
+  programExerciseContext = null,
 }: ProgramBuilderCreateExerciseDialogProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
   const locale = i18n.resolvedLanguage ?? i18n.language;
@@ -54,6 +64,7 @@ export function ProgramBuilderCreateExerciseDialog({
     () => new Intl.Collator(locale, { sensitivity: 'base' }),
     [locale],
   );
+  const isProgramExerciseEdit = Boolean(programExerciseContext);
   const isEditMode = mode === 'edit';
   const dialogNamespace = isEditMode
     ? 'programs-coatch.builder.library.edit_dialog'
@@ -298,13 +309,49 @@ export function ProgramBuilderCreateExerciseDialog({
   }, [open]);
 
   React.useEffect(() => {
-    if (!open || !isEditMode || !exercise) {
+    if (!open) {
       return;
     }
-    if (previousExerciseIdRef.current === exercise.id) {
+
+    const programExercise = programExerciseContext?.exerciseItem;
+    const key = isProgramExerciseEdit
+      ? programExercise?.id ?? null
+      : exercise && isEditMode
+        ? exercise.id
+        : null;
+
+    if (!key) {
       return;
     }
-    previousExerciseIdRef.current = exercise.id;
+
+    if (previousExerciseIdRef.current === key) {
+      return;
+    }
+    previousExerciseIdRef.current = key;
+
+    if (isProgramExerciseEdit && programExercise) {
+      setLabel(programExercise.label ?? '');
+      setDescription(programExercise.description ?? '');
+      setInstructions(programExercise.instructions ?? '');
+      setSeries(programExercise.series ?? '');
+      setRepetitions(programExercise.repetitions ?? '');
+      setRest(
+        programExercise.restSeconds != null ? String(programExercise.restSeconds) : '',
+      );
+      setCharge(programExercise.charge ?? '');
+      setVideoUrl(programExercise.videoUrl ?? '');
+      setCategoryIds(programExercise.categoryIds ?? []);
+      setLevel(programExercise.level);
+      setMuscleIds([...programExercise.muscleIds]);
+      setEquipmentIds([...programExercise.equipmentIds]);
+      setTagIds([...programExercise.tagIds]);
+      return;
+    }
+
+    if (!isEditMode || !exercise) {
+      return;
+    }
+
     setLabel(exercise.label ?? '');
     setDescription(exercise.description ?? '');
     setInstructions(exercise.instructions ?? '');
@@ -330,7 +377,13 @@ export function ProgramBuilderCreateExerciseDialog({
         .filter((item): item is NonNullable<typeof item> => Boolean(item?.id))
         .map((item) => item!.id),
     );
-  }, [exercise, isEditMode, open]);
+  }, [
+    exercise,
+    isEditMode,
+    isProgramExerciseEdit,
+    open,
+    programExerciseContext?.exerciseItem,
+  ]);
 
   const levelOptions = React.useMemo<{ value: ExerciseLevel; label: string }[]>(
     () => [
@@ -369,6 +422,98 @@ export function ProgramBuilderCreateExerciseDialog({
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (isSubmitDisabled) {
+      return;
+    }
+    if (isProgramExerciseEdit && programExerciseContext) {
+      const { exerciseItem, onSubmit } = programExerciseContext;
+      const trimmedLabel = label.trim();
+      const trimmedDescription = description.trim();
+      const trimmedInstructions = instructions.trim();
+      const trimmedSeries = series.trim();
+      const trimmedRepetitions = repetitions.trim();
+      const trimmedCharge = charge.trim();
+      const trimmedVideoUrl = videoUrl.trim();
+      const restInput = rest.trim();
+      const parsedRest = restInput ? Number.parseInt(restInput, 10) : Number.NaN;
+      const restSeconds = Number.isNaN(parsedRest) || parsedRest < 0 ? null : parsedRest;
+      const restLabel = restSeconds != null ? `${Math.max(0, Math.trunc(restSeconds))}s` : '-';
+      const parsedSets = parseSeriesCount(trimmedSeries);
+      const nextSets =
+        Number.isFinite(parsedSets) && parsedSets
+          ? Math.max(1, Math.trunc(parsedSets))
+          : exerciseItem.sets;
+
+      const resolveCategoryLabels = (ids: string[]) => {
+        return ids.map((id) => {
+          const option = categoryOptionsByLocale.find((candidate) => candidate.id === id);
+          if (option) {
+            return option.label;
+          }
+          const existingIndex = exerciseItem.categoryIds.indexOf(id);
+          if (existingIndex >= 0 && exerciseItem.categoryLabels[existingIndex]) {
+            return exerciseItem.categoryLabels[existingIndex];
+          }
+          return id;
+        });
+      };
+
+      const resolveLabeledValues = (
+        ids: string[],
+        options: CreatableOption[],
+        fallback: { id: string; label: string }[],
+      ) => {
+        const dedup = new Map<string, string>();
+        ids.forEach((id) => {
+          if (!id) {
+            return;
+          }
+          const option = options.find((item) => item.id === id);
+          const fallbackItem = fallback.find((item) => item.id === id);
+          const label = option?.label ?? fallbackItem?.label ?? id;
+          if (!dedup.has(id)) {
+            dedup.set(id, label);
+          }
+        });
+        return Array.from(dedup.entries()).map(([valueId, valueLabel]) => ({
+          id: valueId,
+          label: valueLabel,
+        }));
+      };
+
+      const nextCategoryLabels = resolveCategoryLabels(normalizedCategoryIds);
+      const nextMuscles = resolveLabeledValues(muscleIds, muscleOptions, exerciseItem.muscles);
+      const nextEquipment = resolveLabeledValues(
+        equipmentIds,
+        equipmentOptions,
+        exerciseItem.equipment,
+      );
+      const nextTags = resolveLabeledValues(tagIds, tagOptions, exerciseItem.tags);
+
+      const patch: ProgramExercisePatch = {
+        label: trimmedLabel,
+        description: trimmedDescription,
+        instructions: trimmedInstructions,
+        level,
+        series: trimmedSeries,
+        repetitions: trimmedRepetitions,
+        charge: trimmedCharge,
+        restSeconds,
+        rest: restLabel,
+        videoUrl: trimmedVideoUrl,
+        categoryIds: [...normalizedCategoryIds],
+        categoryLabels: nextCategoryLabels,
+        muscleIds: [...muscleIds],
+        muscles: nextMuscles,
+        equipmentIds: [...equipmentIds],
+        equipment: nextEquipment,
+        tagIds: [...tagIds],
+        tags: nextTags,
+        sets: nextSets,
+        reps: trimmedRepetitions,
+      };
+
+      await onSubmit(patch);
+      onClose();
       return;
     }
     if (isEditMode && (!updateExercise || !exercise)) {
@@ -610,7 +755,13 @@ export function ProgramBuilderCreateExerciseDialog({
               onChange={(_event, options) => setCategoryIds(options.map((option) => option.id))}
               getOptionLabel={(option) => option.label}
               isOptionEqualToValue={(option, value) => option.id === value.id}
-              renderInput={(params) => <TextField {...params} required label={categoryLabel} />}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  required
+                  label={categoryLabel}
+                />
+              )}
             />
           </Stack>
 
@@ -766,7 +917,12 @@ export function ProgramBuilderCreateExerciseDialog({
                 />
               ))
             }
-            renderInput={(params) => <TextField {...params} label={fieldCopy.equipment} />}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={fieldCopy.equipment}
+              />
+            )}
           />
 
           {/* Tags selector */}
@@ -803,9 +959,15 @@ export function ProgramBuilderCreateExerciseDialog({
                 />
               ))
             }
-            renderInput={(params) => <TextField {...params} label={fieldCopy.tags} />}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={fieldCopy.tags}
+              />
+            )}
           />
         </Stack>
+
       </Stack>
     </ProgramDialogLayout>
   );

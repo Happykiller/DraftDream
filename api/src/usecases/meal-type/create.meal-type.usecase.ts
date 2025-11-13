@@ -19,6 +19,7 @@ export class CreateMealTypeUsecase {
         slug: dto.slug,
         locale: dto.locale,
         label: dto.label,
+        icon: dto.icon,
         visibility: dto.visibility,
         createdBy: dto.createdBy,
       });

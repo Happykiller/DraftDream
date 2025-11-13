@@ -22,7 +22,7 @@ const sessionEntity = {
   durationMin: 75,
   description: 'Full body workout',
   exerciseIds: ['ex-1', 'ex-2'],
-  createdBy: { id: 'coach-1' },
+  createdBy: 'coach-1',
   deletedAt: undefined,
   createdAt: now,
   updatedAt: now,

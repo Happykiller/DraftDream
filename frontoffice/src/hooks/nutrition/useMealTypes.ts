@@ -1,0 +1,264 @@
+// src/hooks/nutrition/useMealTypes.ts
+import * as React from 'react';
+import { useTranslation } from 'react-i18next';
+
+import inversify from '@src/commons/inversify';
+
+import { useAsyncTask } from '@hooks/useAsyncTask';
+import { useFlashStore } from '@hooks/useFlashStore';
+import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
+
+export type MealTypeVisibility = 'PRIVATE' | 'PUBLIC';
+
+export interface MealType {
+  id: string;
+  slug: string;
+  label: string;
+  locale: string;
+  visibility: MealTypeVisibility;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+  icon?: string | null;
+  creator?: { id: string; email: string } | null;
+}
+
+interface MealTypeListPayload {
+  mealType_list: {
+    items: MealType[];
+    total: number;
+    page: number;
+    limit: number;
+  };
+}
+
+interface CreateMealTypePayload {
+  mealType_create: MealType;
+}
+
+interface UpdateMealTypePayload {
+  mealType_update: MealType;
+}
+
+interface DeleteMealTypePayload {
+  mealType_delete: boolean;
+}
+
+const LIST_QUERY = `
+  query ListMealTypes($input: ListMealTypesInput) {
+    mealType_list(input: $input) {
+      items {
+        id
+        slug
+        label
+        locale
+        visibility
+        icon
+        createdBy
+        creator { id email }
+        createdAt
+        updatedAt
+      }
+      total
+      page
+      limit
+    }
+  }
+`;
+
+const CREATE_MUTATION = `
+  mutation CreateMealType($input: CreateMealTypeInput!) {
+    mealType_create(input: $input) {
+      id
+      slug
+      label
+      locale
+      visibility
+      icon
+      createdBy
+      creator { id email }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+const UPDATE_MUTATION = `
+  mutation UpdateMealType($input: UpdateMealTypeInput!) {
+    mealType_update(input: $input) {
+      id
+      slug
+      label
+      locale
+      visibility
+      icon
+      createdBy
+      creator { id email }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+const DELETE_MUTATION = `
+  mutation DeleteMealType($id: ID!) {
+    mealType_delete(id: $id)
+  }
+`;
+
+export interface UseMealTypesParams {
+  page: number; // 1-based
+  limit: number;
+  q: string;
+}
+
+export interface UseMealTypesResult {
+  items: MealType[];
+  total: number;
+  loading: boolean;
+  create: (input: {
+    slug: string;
+    label: string;
+    locale: string;
+    visibility: MealTypeVisibility;
+    icon?: string | null;
+  }) => Promise<void>;
+  update: (input: {
+    id: string;
+    slug?: string;
+    label?: string;
+    locale?: string;
+    visibility?: MealTypeVisibility;
+    icon?: string | null;
+  }) => Promise<void>;
+  remove: (id: string) => Promise<void>;
+  reload: () => Promise<void>;
+}
+
+/**
+ * Handles lifecycle of meal types to help build nutrition plan editors.
+ */
+export function useMealTypes({ page, limit, q }: UseMealTypesParams): UseMealTypesResult {
+  const { t } = useTranslation();
+  const [items, setItems] = React.useState<MealType[]>([]);
+  const [total, setTotal] = React.useState(0);
+  const [loading, setLoading] = React.useState(false);
+  const { execute } = useAsyncTask();
+  const flashError = useFlashStore((state) => state.error);
+  const flashSuccess = useFlashStore((state) => state.success);
+
+  const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
+
+  const load = React.useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data, errors } = await execute(() =>
+        gql.send<MealTypeListPayload>({
+          query: LIST_QUERY,
+          variables: { input: { page, limit, q: q.trim() || undefined } },
+          operationName: 'ListMealTypes',
+        }),
+      );
+      if (errors?.length) {
+        throw new Error(errors[0].message);
+      }
+      setItems(data?.mealType_list.items ?? []);
+      setTotal(data?.mealType_list.total ?? 0);
+    } catch (caught: unknown) {
+      const message =
+        caught instanceof Error
+          ? caught.message
+          : t('nutrition-plans.errors.load_meal_types_failed');
+      flashError(message);
+    } finally {
+      setLoading(false);
+    }
+  }, [execute, flashError, gql, limit, page, q, t]);
+
+  React.useEffect(() => {
+    void load();
+  }, [load]);
+
+  const create = React.useCallback<UseMealTypesResult['create']>(
+    async (input) => {
+      try {
+        const { errors } = await execute(() =>
+          gql.send<CreateMealTypePayload>({
+            query: CREATE_MUTATION,
+            variables: { input },
+            operationName: 'CreateMealType',
+          }),
+        );
+        if (errors?.length) {
+          throw new Error(errors[0].message);
+        }
+        flashSuccess(t('nutrition-plans.notifications.meal_type_created'));
+        await load();
+      } catch (caught: unknown) {
+        const message =
+          caught instanceof Error
+            ? caught.message
+            : t('nutrition-plans.notifications.meal_type_create_failed');
+        flashError(message);
+        throw caught;
+      }
+    },
+    [execute, flashError, flashSuccess, gql, load, t],
+  );
+
+  const update = React.useCallback<UseMealTypesResult['update']>(
+    async (input) => {
+      try {
+        const { errors } = await execute(() =>
+          gql.send<UpdateMealTypePayload>({
+            query: UPDATE_MUTATION,
+            variables: { input },
+            operationName: 'UpdateMealType',
+          }),
+        );
+        if (errors?.length) {
+          throw new Error(errors[0].message);
+        }
+        flashSuccess(t('nutrition-plans.notifications.meal_type_updated'));
+        await load();
+      } catch (caught: unknown) {
+        const message =
+          caught instanceof Error
+            ? caught.message
+            : t('nutrition-plans.notifications.meal_type_update_failed');
+        flashError(message);
+        throw caught;
+      }
+    },
+    [execute, flashError, flashSuccess, gql, load, t],
+  );
+
+  const remove = React.useCallback<UseMealTypesResult['remove']>(
+    async (id) => {
+      try {
+        const { errors } = await execute(() =>
+          gql.send<DeleteMealTypePayload>({
+            query: DELETE_MUTATION,
+            variables: { id },
+            operationName: 'DeleteMealType',
+          }),
+        );
+        if (errors?.length) {
+          throw new Error(errors[0].message);
+        }
+        flashSuccess(t('nutrition-plans.notifications.meal_type_deleted'));
+        await load();
+      } catch (caught: unknown) {
+        const message =
+          caught instanceof Error
+            ? caught.message
+            : t('nutrition-plans.notifications.meal_type_delete_failed');
+        flashError(message);
+        throw caught;
+      }
+    },
+    [execute, flashError, flashSuccess, gql, load, t],
+  );
+
+  return { items, total, loading, create, update, remove, reload: load };
+}

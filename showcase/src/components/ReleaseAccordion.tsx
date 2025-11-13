@@ -1,5 +1,3 @@
-import { type SyntheticEvent, useMemo, useState } from 'react';
-
 import {
   Accordion,
   AccordionDetails,
@@ -10,6 +8,7 @@ import {
   Stack,
   Typography
 } from '@mui/material';
+import { type SyntheticEvent, useMemo, useState } from 'react';
 
 import type { ReleaseEntry } from '../types/releases.ts';
 

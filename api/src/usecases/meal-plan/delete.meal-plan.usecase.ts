@@ -3,6 +3,7 @@
 import { ERRORS } from '@src/common/ERROR';
 import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
+import { normalizeError } from '@src/common/error.util';
 import { DeleteMealPlanUsecaseDto } from '@usecases/meal-plan/meal-plan.usecase.dto';
 
 export class DeleteMealPlanUsecase {
@@ -26,11 +27,8 @@ export class DeleteMealPlanUsecase {
 
       return await this.inversify.bddService.mealPlan.delete(id);
     } catch (error: any) {
-      if (error?.message === ERRORS.DELETE_MEAL_PLAN_FORBIDDEN) {
-        throw error;
-      }
       this.inversify.loggerService.error(`DeleteMealPlanUsecase#execute => ${error?.message ?? error}`);
-      throw new Error(ERRORS.DELETE_MEAL_PLAN_USECASE);
+      throw normalizeError(error, ERRORS.UPDATE_EXERCISE_USECASE);
     }
   }
 }

@@ -4,15 +4,15 @@ import { GraphQLFormattedError } from 'graphql';
 import { logger } from '@src/common/logger';
 
 const nestFormatterError = (error: any) => {
-  // eslint-disable-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
+   
   const errorMessage = error.message;
 
   // Log
+  const driverError = error.extensions?.exception?.driverError;
+
   logger.error(errorMessage, {
     module: 'nestjs',
-    error:
-      error.extensions?.exception?.driverError?.stderr ||
-      error.extensions?.exception?.driverError?.error?.stderr,
+    error: driverError?.stderr ?? driverError?.error?.stderr,
     exception: error.extensions?.exception,
   });
 
