@@ -1,5 +1,4 @@
 // src/routes/router.tsx
-import * as React from 'react';
 import { createBrowserRouter, redirect } from 'react-router-dom';
 
 import { session } from '@stores/session';

@@ -1,6 +1,42 @@
 {
   "releases": [
     {
+      "version": "0.5.0",
+      "title": "Note de mise à jour : 0.5.0",
+      "date": "2025-11-06",
+      "global": [
+        "[NOUVEAUTÉ] Nouvel éditeur complet de plans nutritionnels pour coachs et athlètes.",
+        "[EXPÉRIENCE] Gestion visuelle des icônes de types de repas et interface de suivi unifiée.",
+        "[ERGONOMIE] Parcours de construction des plans plus clair, fluide et cohérent entre les modules.",
+        "[ALIGNEMENT] Convergence renforcée entre programmes d'entraînement et nutrition personnalisée."
+      ],
+      "notes": "FitDesk 0.5.0 pose les bases d'une plateforme totalement unifiée entre entraînement et nutrition, avec une interface plus fluide, expressive et autonome pour les coachs comme pour les athlètes.",
+      "projects": {
+        "/api": [
+          "Support complet des icônes de types de repas exposées dans les applications clientes.",
+          "Schémas GraphQL enrichis pour structurer précisément plans, repas et métadonnées.",
+          "Gestion d'erreurs durcie lors des mises à jour afin de garantir des retours fiables.",
+          "Nettoyage des suites de tests et adoption d'ESLint pour homogénéiser le code."
+        ],
+        "/backoffice": [
+          "Pilotage des icônes de repas directement depuis l'interface d'administration.",
+          "Module nutrition repensé pour refléter les nouveaux types et données disponibles.",
+          "Ajustements visuels apportant une navigation plus claire et homogène."
+        ],
+        "/frontoffice": [
+          "Nouveau constructeur de plans nutritionnels aligné sur le builder de programmes.",
+          "Création, édition et suppression complètes des repas et plans personnels.",
+          "Affichage des icônes de repas et d'un résumé nutritionnel mis à jour en temps réel.",
+          "Interfaces jour, repas et plan repensées avec édition in-app et design revu.",
+          "Refonte du builder d'exercices et meilleure intégration avec les programmes existants.",
+          "Simplification du chargement global avec disparition des écrans d'attente redondants."
+        ],
+        "/showcase": [
+          "Maintien de la cohérence graphique et linguistique en préparation des futures extensions publiques."
+        ]
+      }
+    },
+    {
       "version": "0.4.0",
       "title": "Note de mise à jour : 0.4.0",
       "date": "2025-10-15",
