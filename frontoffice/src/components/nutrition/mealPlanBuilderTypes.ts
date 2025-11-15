@@ -66,6 +66,10 @@ export interface MealPlanBuilderCopy {
     empty_state: string;
     add_label: string;
     create_label: string;
+    type_filter_label?: string;
+    type_filter_placeholder?: string;
+    type_filter_no_results?: string;
+    type_filter_clear_label?: string;
     limit_hint?: string;
     add_tooltip: string;
     refresh_label?: string;
