@@ -8,7 +8,8 @@ export class DeleteClientObjectiveUsecase {
 
   async execute(dto: DeleteClientObjectiveUsecaseDto): Promise<boolean> {
     try {
-      return this.inversify.bddService.clientObjective.delete(dto.id);
+      const deleted = await this.inversify.bddService.clientObjective.delete(dto.id);
+      return deleted;
     } catch (error: any) {
       this.inversify.loggerService.error(`DeleteClientObjectiveUsecase#execute => ${error?.message ?? error}`);
       throw new Error(ERRORS.DELETE_CLIENT_OBJECTIVE_USECASE);
