@@ -764,6 +764,7 @@ input UpdateCategoryInput {
   slug: String
   locale: String
   label: String
+  visibility: CategoryVisibility
 }
 
 input CreateExerciseInput {

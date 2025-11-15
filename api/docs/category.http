@@ -64,7 +64,12 @@ Content-Type: application/json
 {
   "query": "mutation($input: UpdateCategoryInput!){ category_update(input:$input){ id slug locale visibility createdAt updatedAt creator { id email } } }",
   "variables": {
-    "input": { "id": "REPLACE_WITH_ID", "slug": "halterophilie", "locale": "{{locale}}" }
+    "input": {
+      "id": "REPLACE_WITH_ID",
+      "slug": "halterophilie",
+      "locale": "{{locale}}",
+      "visibility": "PUBLIC"
+    }
   }
 }
 

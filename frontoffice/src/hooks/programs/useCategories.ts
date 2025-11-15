@@ -133,7 +133,7 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
   );
 
   const update = React.useCallback(
-    async (input: { id: string; slug?: string; locale?: string; label?: string }) => {
+    async (input: { id: string; slug?: string; locale?: string; label?: string; visibility?: Visibility }) => {
       try {
         const { errors } = await execute(() =>
           gql.send<UpdateCategoryPayload>({

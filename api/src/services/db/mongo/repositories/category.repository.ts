@@ -99,6 +99,7 @@ export class BddServiceCategoryMongo {
     if (patch.slug !== undefined) $set.slug = patch.slug.toLowerCase().trim();
     if (patch.locale !== undefined) $set.locale = patch.locale.toLowerCase().trim();
     if (patch.label !== undefined) $set.label = patch.label.trim();
+    if (patch.visibility !== undefined) $set.visibility = patch.visibility;
 
     try {
       const res: any = await (this.col()).findOneAndUpdate(

@@ -9,6 +9,7 @@ import {
   CategoryListGql,
   CreateCategoryInput,
   ListCategoriesInput,
+  CategoryVisibility,
   UpdateCategoryInput,
 } from '@graphql/category/category.gql.types';
 import { UserGql } from '@graphql/user/user.gql.types';
@@ -86,6 +87,12 @@ export class CategoryResolver {
       slug: input.slug,
       locale: input.locale,
       label: input.label,
+      visibility:
+        input.visibility === undefined
+          ? undefined
+          : input.visibility === CategoryVisibility.PUBLIC
+            ? 'public'
+            : 'private',
     });
     return updated ? mapCategoryUsecaseToGql(updated) : null;
   }

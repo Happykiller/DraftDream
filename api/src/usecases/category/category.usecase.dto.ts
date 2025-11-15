@@ -29,6 +29,7 @@ export interface UpdateCategoryUsecaseDto {
   slug?: string;
   locale?: string;
   label?: string;
+  visibility?: 'private' | 'public';
 }
 
 // src/usecases/category/dto/delete.category.usecase.dto.ts

@@ -37,6 +37,7 @@ export class UpdateCategoryInput {
   @Field({ nullable: true }) slug?: string;
   @Field({ nullable: true }) locale?: string;
   @Field({ nullable: true }) label?: string;
+  @Field(() => CategoryVisibility, { nullable: true }) visibility?: CategoryVisibility;
 }
 
 @InputType()

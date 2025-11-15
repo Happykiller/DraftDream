@@ -25,6 +25,7 @@ describe('UpdateCategoryUsecase', () => {
     slug: 'flexibility',
     locale: 'en-US',
     label: 'Flexibility',
+    visibility: 'public',
   };
 
   const updatedCategory: CategoryUsecaseModel = {
@@ -65,6 +66,7 @@ describe('UpdateCategoryUsecase', () => {
       slug: dto.slug,
       locale: dto.locale,
       label: dto.label,
+      visibility: dto.visibility,
     });
     expect(result).toEqual(updatedCategory);
     expect(result).not.toBe(updatedCategory);
