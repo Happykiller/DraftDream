@@ -9,6 +9,7 @@ import {
   CardContent,
   Divider,
   Grid,
+  IconButton,
   InputAdornment,
   Menu,
   MenuItem,
@@ -17,7 +18,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { Add, Edit, Search } from '@mui/icons-material';
+import { Add, Edit, Replay, Search } from '@mui/icons-material';
 
 import { ProgramBuilderSessionItem } from './ProgramBuilderSessionItem';
 import { ProgramBuilderSessionLibraryItem } from './ProgramBuilderSessionLibraryItem';
@@ -77,6 +78,7 @@ export function ProgramBuilderPanel({
     exercisesLoading,
     categoriesLoading,
     usersLoading,
+    reloadSessions,
     setSessionSearch,
     setExerciseSearch,
     setExerciseCategory,
@@ -868,12 +870,28 @@ export function ProgramBuilderPanel({
                         }}
                       >
                         {/* Session Templates Library */}
-                        <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                          {builderCopy.templates_title}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {builderCopy.templates_subtitle}
-                        </Typography>
+                        <Stack direction="row" spacing={1} alignItems="flex-start">
+                          <Box sx={{ flexGrow: 1 }}>
+                            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                              {builderCopy.templates_title}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              {builderCopy.templates_subtitle}
+                            </Typography>
+                          </Box>
+                          <Tooltip title={builderCopy.templates_refresh_label ?? ''}>
+                            <span>
+                              <IconButton
+                                onClick={reloadSessions}
+                                size="small"
+                                aria-label="reload-session-templates"
+                                disabled={sessionsLoading}
+                              >
+                                <Replay fontSize="small" />
+                              </IconButton>
+                            </span>
+                          </Tooltip>
+                        </Stack>
 
                         <TextField
                           fullWidth

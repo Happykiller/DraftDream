@@ -104,6 +104,7 @@ type UseProgramBuilderResult = {
   exercisesLoading: boolean;
   categoriesLoading: boolean;
   usersLoading: boolean;
+  reloadSessions: () => Promise<void>;
   setSessionSearch: React.Dispatch<React.SetStateAction<string>>;
   setExerciseSearch: React.Dispatch<React.SetStateAction<string>>;
   setExerciseCategory: React.Dispatch<React.SetStateAction<string>>;
@@ -238,7 +239,11 @@ export function useProgramBuilder(
     [i18n.language],
   );
 
-  const { items: sessionItems, loading: sessionsLoading } = useSessions({
+  const {
+    items: sessionItems,
+    loading: sessionsLoading,
+    reload: reloadSessions,
+  } = useSessions({
     page: 1,
     limit: 10,
     q: debouncedSessionSearch,
@@ -1690,6 +1695,7 @@ export function useProgramBuilder(
     exercisesLoading,
     categoriesLoading,
     usersLoading,
+    reloadSessions,
     setSessionSearch,
     setExerciseSearch,
     setExerciseCategory,

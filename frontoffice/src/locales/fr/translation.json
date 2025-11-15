@@ -118,6 +118,7 @@
       "templates_title": "Bibliotheque de séances",
       "templates_subtitle": "Choisissez une séance dans la liste ou cliquez pour l'ajouter.",
       "templates_limit_hint": "Affichage des 10 sessions maximum triés par ordre alphabétique.",
+      "templates_refresh_label": "Recharger les séances",
       "structure": {
         "title": "Nom du programme",
         "header_description": "Ajouter une description à votre programme.",

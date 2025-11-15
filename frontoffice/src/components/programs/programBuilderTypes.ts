@@ -105,6 +105,7 @@ export type BuilderCopy = {
   templates_title: string;
   templates_subtitle: string;
   templates_limit_hint?: string;
+  templates_refresh_label?: string;
   structure: {
     title: string;
     summary: string;
