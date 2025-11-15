@@ -4,6 +4,7 @@ import {
   MealPlanDaySnapshotGql,
   MealPlanMealSnapshotGql,
   MealPlanMealTypeSnapshotGql,
+  MealPlanVisibility,
 } from '@graphql/meal-plan/meal-plan.gql.types';
 import { MealTypeVisibility } from '@graphql/meal-type/meal-type.gql.types';
 import {
@@ -54,6 +55,7 @@ export function mapMealPlanUsecaseToGql(model: MealPlanUsecaseModel): MealPlanGq
     locale: model.locale,
     label: model.label,
     description: model.description ?? null,
+    visibility: model.visibility === 'public' ? MealPlanVisibility.PUBLIC : MealPlanVisibility.PRIVATE,
     calories: model.calories,
     proteinGrams: model.proteinGrams,
     carbGrams: model.carbGrams,

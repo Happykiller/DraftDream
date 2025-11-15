@@ -57,6 +57,7 @@ export class ProgramResolver {
       slug,
       locale: input.locale,
       label: input.label,
+      visibility: input.visibility ?? 'private',
       duration: input.duration,
       frequency: input.frequency,
       description: input.description,
@@ -79,6 +80,7 @@ export class ProgramResolver {
     const updateDto: any = {
       locale: input.locale,
       label: input.label,
+      visibility: input.visibility,
       duration: input.duration,
       frequency: input.frequency,
       description: input.description ?? undefined,
@@ -174,6 +176,7 @@ export class ProgramResolver {
       q: input?.q,
       locale: input?.locale,
       createdBy: input?.createdBy,
+      visibility: input?.visibility,
       userId: input?.userId,
       limit: input?.limit,
       page: input?.page,

@@ -23,7 +23,9 @@ export class GetProgramUsecase {
       const isAdmin = session.role === Role.ADMIN;
       const isCreator = creatorId === session.userId;
       const isCoach = session.role === Role.COACH;
-      const isPublic = isCoach ? await this.isPublicProgram(creatorId) : false;
+      const isPublic = isCoach
+        ? program.visibility === 'public' || (await this.isPublicProgram(creatorId))
+        : false;
       const isAssignedAthlete = session.role === Role.ATHLETE && assigneeId === session.userId;
 
       if (!isAdmin && !isCreator && !(isCoach && isPublic) && !isAssignedAthlete) {

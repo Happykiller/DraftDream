@@ -50,6 +50,7 @@ interface ProgramDoc {
   slug: string;
   locale: string;
   label: string;
+  visibility: 'private' | 'public';
   duration: number;
   frequency: number;
   description?: string;
@@ -96,6 +97,7 @@ export class BddServiceProgramMongo {
       slug: dto.slug.toLowerCase().trim(),
       locale: dto.locale.toLowerCase().trim(),
       label: dto.label.trim(),
+      visibility: dto.visibility === 'public' ? 'public' : 'private',
       duration: Math.trunc(dto.duration),
       frequency: Math.trunc(dto.frequency),
       description: dto.description,
@@ -132,6 +134,7 @@ export class BddServiceProgramMongo {
       q,
       createdBy,
       createdByIn,
+      visibility,
       userId,
       includeArchived = false,
       limit = 20,
@@ -156,6 +159,9 @@ export class BddServiceProgramMongo {
     if (createdBy) filter.createdBy = this.toObjectId(createdBy);
     if (!createdBy && normalizedCreatedByIn.length) {
       filter.createdBy = { $in: normalizedCreatedByIn.map(this.toObjectId) };
+    }
+    if (visibility) {
+      filter.visibility = visibility === 'public' ? 'public' : 'private';
     }
     if (userId) filter.userId = this.toObjectId(userId);
     if (!includeArchived) filter.deletedAt = { $exists: false };
@@ -183,6 +189,9 @@ export class BddServiceProgramMongo {
     if (patch.duration !== undefined) $set.duration = Math.trunc(patch.duration);
     if (patch.frequency !== undefined) $set.frequency = Math.trunc(patch.frequency);
     if (patch.description !== undefined) $set.description = patch.description;
+    if (patch.visibility !== undefined) {
+      $set.visibility = patch.visibility === 'public' ? 'public' : 'private';
+    }
     if (patch.sessions !== undefined) $set.sessions = patch.sessions.map(this.toSessionDoc);
     if (patch.userId !== undefined) {
       if (patch.userId === null) {
@@ -268,6 +277,7 @@ export class BddServiceProgramMongo {
       slug: doc.slug,
       locale: doc.locale,
       label: doc.label,
+      visibility: doc.visibility ?? 'private',
       duration: doc.duration,
       frequency: doc.frequency,
       description: doc.description,

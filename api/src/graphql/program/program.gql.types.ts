@@ -6,6 +6,7 @@ import {
   InputType,
   Int,
   ObjectType,
+  registerEnumType,
 } from '@nestjs/graphql';
 
 import { CategoryGql } from '@graphql/category/category.gql.types';
@@ -13,6 +14,12 @@ import { EquipmentGql } from '@graphql/equipment/equipment.gql.types';
 import { MuscleGql } from '@graphql/muscle/muscle.gql.types';
 import { TagGql } from '@graphql/tag/tag.gql.types';
 import { UserGql } from '@graphql/user/user.gql.types';
+
+export enum ProgramVisibility {
+  PRIVATE = 'private',
+  PUBLIC = 'public',
+}
+registerEnumType(ProgramVisibility, { name: 'ProgramVisibility' });
 
 @ObjectType()
 export class ProgramSessionExerciseGql {
@@ -63,6 +70,8 @@ export class ProgramGql {
   @Field(() => Int) duration!: number;
   @Field(() => Int) frequency!: number;
   @Field({ nullable: true }) description?: string;
+  @Field(() => ProgramVisibility)
+  visibility!: ProgramVisibility;
   /** Snapshot definition available directly from the program document. */
   @Field(() => [ProgramSessionGql]) sessions!: ProgramSessionGql[];
 
@@ -115,6 +124,8 @@ export class CreateProgramInput {
   @Field({ nullable: true }) slug?: string;
   @Field() locale!: string;
   @Field() label!: string;
+  @Field(() => ProgramVisibility, { nullable: true })
+  visibility?: ProgramVisibility;
   @Field(() => Int) duration!: number;
   @Field(() => Int) frequency!: number;
   @Field({ nullable: true }) description?: string;
@@ -132,6 +143,8 @@ export class UpdateProgramInput {
   @Field({ nullable: true }) slug?: string;
   @Field({ nullable: true }) locale?: string;
   @Field({ nullable: true }) label?: string;
+  @Field(() => ProgramVisibility, { nullable: true })
+  visibility?: ProgramVisibility;
   @Field(() => Int, { nullable: true }) duration?: number;
   @Field(() => Int, { nullable: true }) frequency?: number;
   @Field({ nullable: true }) description?: string;
@@ -150,6 +163,8 @@ export class ListProgramsInput {
   @Field({ nullable: true }) q?: string;
   @Field({ nullable: true }) locale?: string;
   @Field({ nullable: true }) createdBy?: string;
+  @Field(() => ProgramVisibility, { nullable: true })
+  visibility?: ProgramVisibility;
   @Field(() => ID, { nullable: true })
   userId?: string;
   @Field(() => Int, { nullable: true }) limit?: number;

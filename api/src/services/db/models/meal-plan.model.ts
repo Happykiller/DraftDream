@@ -40,6 +40,7 @@ export interface MealPlan {
   locale: string;
   label: string;
   description?: string;
+  visibility: 'private' | 'public';
   calories: number;
   proteinGrams: number;
   carbGrams: number;

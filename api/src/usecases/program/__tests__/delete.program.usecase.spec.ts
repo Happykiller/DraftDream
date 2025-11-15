@@ -26,6 +26,7 @@ describe('DeleteProgramUsecase', () => {
     slug: 'strength',
     locale: 'en-us',
     label: 'Strength',
+    visibility: 'private',
     duration: 6,
     frequency: 3,
     sessions: [],

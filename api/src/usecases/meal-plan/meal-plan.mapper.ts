@@ -53,6 +53,7 @@ export const mapMealPlanToUsecase = (plan: MealPlan): MealPlanUsecaseModel => ({
   locale: plan.locale,
   label: plan.label,
   description: plan.description,
+  visibility: plan.visibility,
   calories: plan.calories,
   proteinGrams: plan.proteinGrams,
   carbGrams: plan.carbGrams,

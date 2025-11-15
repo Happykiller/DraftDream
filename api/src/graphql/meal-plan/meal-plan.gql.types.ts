@@ -6,10 +6,17 @@ import {
   InputType,
   Int,
   ObjectType,
+  registerEnumType,
 } from '@nestjs/graphql';
 
 import { MealTypeVisibility } from '@graphql/meal-type/meal-type.gql.types';
 import { UserGql } from '@graphql/user/user.gql.types';
+
+export enum MealPlanVisibility {
+  PRIVATE = 'private',
+  PUBLIC = 'public',
+}
+registerEnumType(MealPlanVisibility, { name: 'MealPlanVisibility' });
 
 @ObjectType()
 export class MealPlanMealTypeSnapshotGql {
@@ -111,6 +118,9 @@ export class MealPlanGql {
 
   @Field(() => String, { nullable: true })
   description?: string | null;
+
+  @Field(() => MealPlanVisibility)
+  visibility!: MealPlanVisibility;
 
   @Field(() => Int)
   calories!: number;
@@ -244,6 +254,9 @@ export class CreateMealPlanInput {
   @Field(() => String, { nullable: true })
   description?: string;
 
+  @Field(() => MealPlanVisibility, { nullable: true })
+  visibility?: MealPlanVisibility;
+
   @Field(() => Int)
   calories!: number;
 
@@ -283,6 +296,9 @@ export class UpdateMealPlanInput {
   @Field(() => String, { nullable: true })
   description?: string;
 
+  @Field(() => MealPlanVisibility, { nullable: true })
+  visibility?: MealPlanVisibility;
+
   @Field(() => Int, { nullable: true })
   calories?: number;
 
@@ -315,6 +331,9 @@ export class ListMealPlansInput {
 
   @Field(() => ID, { nullable: true })
   createdBy?: string;
+
+  @Field(() => MealPlanVisibility, { nullable: true })
+  visibility?: MealPlanVisibility;
 
   @Field(() => ID, { nullable: true })
   userId?: string;

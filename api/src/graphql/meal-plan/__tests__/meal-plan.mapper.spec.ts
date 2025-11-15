@@ -2,6 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 import { mapMealPlanUsecaseToGql } from '../meal-plan.mapper';
 
 import { MealTypeVisibility } from '@graphql/meal-type/meal-type.gql.types';
+import { MealPlanVisibility } from '@graphql/meal-plan/meal-plan.gql.types';
 import type { MealPlanUsecaseModel } from '@usecases/meal-plan/meal-plan.usecase.model';
 
 describe('mapMealPlanUsecaseToGql', () => {
@@ -15,6 +16,7 @@ describe('mapMealPlanUsecaseToGql', () => {
       locale: 'fr-FR',
       label: 'Prise de masse',
       description: 'Mass gain plan',
+      visibility: 'private',
       calories: 3000,
       proteinGrams: 200,
       carbGrams: 320,
@@ -66,6 +68,7 @@ describe('mapMealPlanUsecaseToGql', () => {
       locale: 'fr-FR',
       label: 'Prise de masse',
       description: 'Mass gain plan',
+      visibility: MealPlanVisibility.PRIVATE,
       calories: 3000,
       proteinGrams: 200,
       carbGrams: 320,

@@ -40,6 +40,7 @@ export const mapProgramToUsecase = (program: Program): ProgramUsecaseModel => ({
   slug: program.slug,
   locale: program.locale,
   label: program.label,
+  visibility: program.visibility,
   duration: program.duration,
   frequency: program.frequency,
   description: program.description,

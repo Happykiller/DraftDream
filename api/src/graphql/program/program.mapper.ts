@@ -1,5 +1,10 @@
 // src\\graphql\\program\\program.mapper.ts
-import { ProgramGql, ProgramSessionGql, ProgramSessionExerciseGql } from '@graphql/program/program.gql.types';
+import {
+  ProgramGql,
+  ProgramSessionGql,
+  ProgramSessionExerciseGql,
+  ProgramVisibility,
+} from '@graphql/program/program.gql.types';
 import {
   ProgramUsecaseModel,
   ProgramSessionUsecaseModel,
@@ -41,6 +46,8 @@ export function mapProgramUsecaseToGql(model: ProgramUsecaseModel): ProgramGql {
     slug: model.slug,
     locale: model.locale,
     label: model.label,
+    visibility:
+      model.visibility === 'public' ? ProgramVisibility.PUBLIC : ProgramVisibility.PRIVATE,
     duration: model.duration,
     frequency: model.frequency,
     description: model.description,
