@@ -30,7 +30,6 @@ describe('ListExercisesUsecase', () => {
     label: 'Push-up',
     description: 'A classic upper body exercise.',
     instructions: 'Keep your body straight.',
-    level: 'beginner',
     series: '3',
     repetitions: '12',
     charge: 'bodyweight',
@@ -97,7 +96,6 @@ describe('ListExercisesUsecase', () => {
     label: 'Push-up',
     description: 'A classic upper body exercise.',
     instructions: 'Keep your body straight.',
-    level: 'beginner',
     series: '3',
     repetitions: '12',
     charge: 'bodyweight',
@@ -211,7 +209,6 @@ describe('ListExercisesUsecase', () => {
       session: { userId: 'coach-1', role: Role.COACH },
       page: 1,
       limit: 20,
-      level: 'beginner',
     };
 
     await usecase.execute(dto);
@@ -219,7 +216,6 @@ describe('ListExercisesUsecase', () => {
     expect(exerciseRepositoryMock.list).toHaveBeenCalledWith({
       page: 1,
       limit: 20,
-      level: 'beginner',
       createdByIn: ['coach-1'],
       includePublicVisibility: true,
     });

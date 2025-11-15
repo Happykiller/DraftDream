@@ -467,8 +467,6 @@ function ProgramExerciseCard({
     [exercise.charge, exercise.repetitions, exercise.restSeconds, exercise.series, formatRestDuration, t],
   );
 
-  const levelKey = exercise.level?.toLowerCase();
-  const levelLabel = levelKey ? t(`programs-coatch.view.exercises.levels.${levelKey}`) : null;
   const effortSummary = summarizeExerciseEffort(exercise);
 
   const badgeGroups = React.useMemo(
@@ -549,18 +547,6 @@ function ProgramExerciseCard({
               </Typography>
             ) : null}
           </Stack>
-          {levelLabel ? (
-            <Chip
-              size="small"
-              label={levelLabel}
-              sx={(theme) => ({
-                bgcolor: alpha(theme.palette.secondary.main, 0.12),
-                color: theme.palette.secondary.main,
-                fontWeight: 600,
-                textTransform: 'uppercase',
-              })}
-            />
-          ) : null}
         </Stack>
 
         {exercise.description ? (

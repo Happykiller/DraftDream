@@ -5,8 +5,6 @@ import { Muscle } from '@services/db/models/muscle.model';
 import { Category } from '@services/db/models/category.model';
 import { Equipment } from '@services/db/models/equipment.model';
 
-export type ExerciseLevel = 'beginner' | 'intermediate' | 'advanced';
-
 export interface Exercise {
   id: string;
   slug: string;
@@ -14,7 +12,6 @@ export interface Exercise {
   label: string;
   description?: string;
   instructions?: string;
-  level: ExerciseLevel;
   series: string;
   repetitions: string,
   charge?: string;

@@ -44,7 +44,6 @@ export const ExerciseTable = React.memo(function ExerciseTable({
     { field: 'slug', headerName: t('common.labels.slug'), flex: 1, minWidth: 140 },
     { field: 'label', headerName: t('common.labels.label'), flex: 1.4, minWidth: 160 },
     { field: 'locale', headerName: t('common.labels.locale'), width: 90 },
-    { field: 'level', headerName: t('common.labels.level'), width: 130 },
     { field: 'series', headerName: t('common.labels.series'), width: 110 },
     { field: 'repetitions', headerName: t('common.labels.repetitions'), width: 110 },
     {

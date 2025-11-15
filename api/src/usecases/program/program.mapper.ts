@@ -17,7 +17,6 @@ const mapExercise = (exercise: ProgramExerciseSnapshot): ProgramExerciseUsecaseM
   charge: exercise.charge,
   restSeconds: exercise.restSeconds,
   videoUrl: exercise.videoUrl,
-  level: exercise.level,
   categoryIds: exercise.categoryIds,
   muscleIds: exercise.muscleIds,
   equipmentIds: exercise.equipmentIds,

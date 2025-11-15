@@ -1,6 +1,6 @@
 // src/graphql/exercise/exercise.mapper.ts
 import { ExerciseUsecaseModel } from '@usecases/exercise/exercise.usecase.model';
-import { ExerciseGql, ExerciseLevelGql, ExerciseVisibility } from '@graphql/exercise/exercise.gql.types';
+import { ExerciseGql, ExerciseVisibility } from '@graphql/exercise/exercise.gql.types';
 
 export function mapExerciseUsecaseToGql(m: ExerciseUsecaseModel): ExerciseGql {
   return {
@@ -10,7 +10,6 @@ export function mapExerciseUsecaseToGql(m: ExerciseUsecaseModel): ExerciseGql {
     label: m.label,
     description: m.description,
     instructions: m.instructions,
-    level: m.level as ExerciseLevelGql,
     series: m.series,
     repetitions: m.repetitions,
     charge: m.charge,

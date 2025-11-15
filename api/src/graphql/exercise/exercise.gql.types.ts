@@ -12,13 +12,6 @@ export enum ExerciseVisibility {
 }
 registerEnumType(ExerciseVisibility, { name: 'ExerciseVisibility' });
 
-export enum ExerciseLevelGql {
-  BEGINNER = 'beginner',
-  INTERMEDIATE = 'intermediate',
-  ADVANCED = 'advanced',
-}
-registerEnumType(ExerciseLevelGql, { name: 'ExerciseLevel' });
-
 @ObjectType()
 export class ExerciseGql {
   @Field(() => ID) id!: string;
@@ -27,7 +20,6 @@ export class ExerciseGql {
   @Field() label!: string;
   @Field({ nullable: true }) description?: string;
   @Field({ nullable: true }) instructions?: string;
-  @Field(() => ExerciseLevelGql) level!: ExerciseLevelGql;
   @Field() series!: string;
   @Field() repetitions!: string;
   @Field({ nullable: true }) charge?: string;
@@ -64,7 +56,6 @@ export class CreateExerciseInput {
   @Field() slug!: string;
   @Field() locale!: string;
   @Field() label!: string;
-  @Field(() => ExerciseLevelGql) level!: ExerciseLevelGql;
   @Field() series!: string;
   @Field() repetitions!: string;
   @Field({ nullable: true }) description?: string;
@@ -85,7 +76,6 @@ export class UpdateExerciseInput {
   @Field({ nullable: true }) slug?: string;
   @Field({ nullable: true }) locale?: string;
   @Field({ nullable: true }) label?: string;
-  @Field(() => ExerciseLevelGql, { nullable: true }) level?: ExerciseLevelGql;
   @Field({ nullable: true }) series?: string;
   @Field({ nullable: true }) repetitions?: string;
   @Field({ nullable: true }) description?: string;
@@ -108,7 +98,6 @@ export class ListExercisesInput {
   @Field({ nullable: true }) locale?: string;
   @Field({ nullable: true }) createdBy?: string;
   @Field(() => ExerciseVisibility, { nullable: true }) visibility?: ExerciseVisibility;
-  @Field(() => ExerciseLevelGql, { nullable: true }) level?: ExerciseLevelGql;
   @Field(() => [ID], { nullable: true }) categoryIds?: string[];
   @Field(() => Int, { nullable: true }) limit?: number;
   @Field(() => Int, { nullable: true }) page?: number;

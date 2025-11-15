@@ -24,7 +24,6 @@ export interface ProgramSessionExercise {
   charge?: string | null;
   restSeconds?: number | null;
   videoUrl?: string | null;
-  level?: string | null;
   categoryIds?: string[] | null;
   muscleIds?: string[] | null;
   equipmentIds?: string[] | null;
@@ -88,7 +87,7 @@ const LIST_Q = `
         sessions {
           id templateSessionId slug locale label durationMin description
           exercises {
-            id templateExerciseId label description instructions series repetitions charge restSeconds videoUrl level
+            id templateExerciseId label description instructions series repetitions charge restSeconds videoUrl
             categoryIds muscleIds equipmentIds tagIds
           }
         }
@@ -120,7 +119,7 @@ const CREATE_M = `
       sessions {
         id templateSessionId slug locale label durationMin description
         exercises {
-          id templateExerciseId label description instructions series repetitions charge restSeconds videoUrl level
+          id templateExerciseId label description instructions series repetitions charge restSeconds videoUrl
           categoryIds muscleIds equipmentIds tagIds
         }
       }
@@ -148,7 +147,7 @@ const UPDATE_M = `
       sessions {
         id templateSessionId slug locale label durationMin description
         exercises {
-          id templateExerciseId label description instructions series repetitions charge restSeconds videoUrl level
+          id templateExerciseId label description instructions series repetitions charge restSeconds videoUrl
           categoryIds muscleIds equipmentIds tagIds
         }
       }
@@ -256,7 +255,6 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
                     charge: exercise.charge ?? undefined,
                     restSeconds: exercise.restSeconds ?? undefined,
                     videoUrl: exercise.videoUrl ?? undefined,
-                    level: exercise.level ?? undefined,
                   })),
                 })),
               },
@@ -315,7 +313,6 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
                     charge: exercise.charge ?? undefined,
                     restSeconds: exercise.restSeconds ?? undefined,
                     videoUrl: exercise.videoUrl ?? undefined,
-                    level: exercise.level ?? undefined,
                   })),
                 })),
               },

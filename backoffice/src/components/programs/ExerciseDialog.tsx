@@ -13,7 +13,7 @@ import {
   Chip,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import type { Exercise, ExerciseLevel, ExerciseVisibility } from '@hooks/useExercises';
+import type { Exercise, ExerciseVisibility } from '@hooks/useExercises';
 
 // Minimal ref entity for selects
 export interface RefEntity {
@@ -27,7 +27,6 @@ export interface ExerciseDialogValues {
   slug: string;
   locale: string;
   label: string;
-  level: ExerciseLevel;
   series: string;
   repetitions: string;
   description?: string;
@@ -58,7 +57,6 @@ const DEFAULTS: ExerciseDialogValues = {
   slug: '',
   locale: 'en',
   label: '',
-  level: 'BEGINNER',
   series: '3',
   repetitions: '10',
   description: '',
@@ -130,7 +128,6 @@ export function ExerciseDialog({
         slug: initial.slug,
         locale: initial.locale,
         label: initial.label,
-        level: initial.level,
         series: initial.series,
         repetitions: initial.repetitions,
         description: initial.description ?? '',
@@ -229,21 +226,6 @@ export function ExerciseDialog({
               {['en', 'fr', 'es', 'de', 'it'].map((loc) => (
                 <MenuItem key={loc} value={loc}>
                   {loc.toUpperCase()}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              select
-              label={t('common.labels.level')}
-              name="level"
-              value={values.level}
-              onChange={onChange}
-              required
-              fullWidth
-            >
-              {(['BEGINNER', 'INTERMEDIATE', 'ADVANCED'] as ExerciseLevel[]).map((level) => (
-                <MenuItem key={level} value={level}>
-                  {t(`programs.exercises.levels.${level}`)}
                 </MenuItem>
               ))}
             </TextField>

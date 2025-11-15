@@ -187,7 +187,6 @@
             "label": "Nom de l'exercice",
             "description": "Description (optionnel)",
             "instructions": "Consignes (optionnel)",
-            "level": "Niveau",
             "series": "Séries",
             "repetitions": "Répétitions",
             "rest": "Repos (sec)",
@@ -206,11 +205,6 @@
             "equipment": "Créer l'équipement \"{{label}}\"",
             "tag": "Créer le tag \"{{label}}\""
           },
-          "levels": {
-            "beginner": "Débutant",
-            "intermediate": "Intermédiaire",
-            "advanced": "Avancé"
-          }
         },
         "edit_dialog": {
           "title": "Modifier l'exercice",
@@ -439,11 +433,6 @@
         "muscles": "Muscles",
         "equipment": "Équipements",
         "tags": "Tags",
-        "levels": {
-          "beginner": "Débutant",
-          "intermediate": "Intermédiaire",
-          "advanced": "Avancé"
-        },
         "rest_duration": {
           "minutes_seconds": "{{minutes}} min {{seconds}} s",
           "minutes": "{{count}} min",

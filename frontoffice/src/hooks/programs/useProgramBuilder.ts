@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ExerciseLevel as ExerciseLevelEnum, UserType } from '@src/commons/enums';
+import { UserType } from '@src/commons/enums';
 import { useSessions } from '@hooks/programs/useSessions';
 import {
   useExercises,
   type Exercise,
-  type ExerciseLevel,
   type ExerciseVisibility,
 } from '@hooks/programs/useExercises';
 import { useCategories } from '@hooks/programs/useCategories';
@@ -326,20 +325,6 @@ export function useProgramBuilder(
     [rawExerciseMap],
   );
 
-  const normalizeExerciseLevel = React.useCallback(
-    (level?: string | null): ExerciseLevel => {
-      const normalized = (level ?? '').toUpperCase();
-      if (normalized === ExerciseLevelEnum.Intermediate) {
-        return ExerciseLevelEnum.Intermediate;
-      }
-      if (normalized === ExerciseLevelEnum.Advanced) {
-        return ExerciseLevelEnum.Advanced;
-      }
-      return ExerciseLevelEnum.Beginner;
-    },
-    [],
-  );
-
   const { items: categoryItems, loading: categoriesLoading } = useCategories({
     page: 1,
     limit: 100,
@@ -440,7 +425,6 @@ export function useProgramBuilder(
       return {
         id: item.id,
         label: item.label,
-        level: item.level,
         categoryIds: Array.from(new Set(item.categoryIds ?? [])),
         categoryLabels: Array.from(new Set((item.categoryIds ?? []).map((categoryId) => {
           const category = item.categories?.find((candidate) => candidate?.id === categoryId);
@@ -613,9 +597,6 @@ export function useProgramBuilder(
         normalizedRestSeconds != null
           ? `${Math.max(0, Math.trunc(normalizedRestSeconds))}s`
           : libraryExercise?.rest ?? '-';
-      const normalizedLevel = normalizeExerciseLevel(
-        'level' in source ? source.level : libraryExercise?.level,
-      );
       const baseCategoryIds = Array.from(
         new Set(
           (
@@ -678,7 +659,6 @@ export function useProgramBuilder(
         label: ('label' in source ? source.label : libraryExercise?.label) ?? '',
         description: descriptionValue ?? '',
         instructions: instructionsValue ?? '',
-        level: normalizedLevel,
         series: seriesValue ?? '',
         repetitions: repetitionsValue ?? '',
         charge: chargeValue ?? '',
@@ -719,10 +699,6 @@ export function useProgramBuilder(
         overrides.instructions !== undefined
       ) {
         nextExercise.instructions = overrides.instructions;
-      }
-
-      if (Object.prototype.hasOwnProperty.call(overrides, 'level') && overrides.level) {
-        nextExercise.level = overrides.level;
       }
 
       if (Object.prototype.hasOwnProperty.call(overrides, 'series') && overrides.series !== undefined) {
@@ -826,12 +802,7 @@ export function useProgramBuilder(
 
       return nextExercise;
     },
-    [
-      categoryLabelById,
-      exerciseMap,
-      getRawExerciseById,
-      normalizeExerciseLevel,
-    ],
+    [categoryLabelById, exerciseMap, getRawExerciseById],
   );
 
   const createSessionFromTemplate = React.useCallback(
@@ -1060,10 +1031,6 @@ export function useProgramBuilder(
               patch.instructions !== undefined
             ) {
               nextExercise.instructions = patch.instructions;
-            }
-
-            if (Object.prototype.hasOwnProperty.call(patch, 'level') && patch.level) {
-              nextExercise.level = patch.level;
             }
 
             if (Object.prototype.hasOwnProperty.call(patch, 'series') && patch.series !== undefined) {
@@ -1301,7 +1268,6 @@ export function useProgramBuilder(
               instructions: exercise.instructions ? exercise.instructions : undefined,
               charge: exercise.charge ? exercise.charge : undefined,
               videoUrl: exercise.videoUrl ? exercise.videoUrl : undefined,
-              level: exercise.level,
               categoryIds: normalizedCategoryIds.length ? normalizedCategoryIds : undefined,
               muscleIds: normalizedMuscleIds.length ? normalizedMuscleIds : undefined,
               equipmentIds: normalizedEquipmentIds.length
@@ -1464,7 +1430,6 @@ export function useProgramBuilder(
             label: exerciseItem.label,
             description: exerciseItem.description ?? null,
             instructions: exerciseItem.instructions ?? null,
-            level: normalizeExerciseLevel(exerciseItem.level),
             series: exerciseItem.series ?? '',
             repetitions: exerciseItem.repetitions ?? '',
             charge: exerciseItem.charge ?? null,
@@ -1542,7 +1507,6 @@ export function useProgramBuilder(
           exerciseItem.description ?? fallbackExercise?.description ?? '';
         const instructionsValue =
           exerciseItem.instructions ?? fallbackExercise?.instructions ?? '';
-        const levelValue = normalizeExerciseLevel(exerciseItem.level ?? fallbackExercise?.level);
         const seriesValue = exerciseItem.series ?? fallbackExercise?.series ?? '';
         const repetitionsValue = exerciseItem.repetitions ?? fallbackExercise?.repetitions ?? '';
         const chargeValue = exerciseItem.charge ?? fallbackExercise?.charge ?? '';
@@ -1562,7 +1526,6 @@ export function useProgramBuilder(
           label: exerciseItem.label ?? fallbackExercise?.label ?? baseExerciseId,
           description: descriptionValue ?? '',
           instructions: instructionsValue ?? '',
-          level: levelValue,
           series: seriesValue ?? '',
           repetitions: repetitionsValue ?? '',
           charge: chargeValue ?? '',
@@ -1667,7 +1630,6 @@ export function useProgramBuilder(
     program,
     categoryLabelById,
     nextId,
-    normalizeExerciseLevel,
     getExerciseById,
     getRawExerciseById,
     setExerciseCategory,

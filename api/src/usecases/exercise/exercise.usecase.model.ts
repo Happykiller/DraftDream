@@ -1,6 +1,4 @@
 // src/usecases/exercise/exercise.usecase.model.ts
-import { ExerciseLevel } from '@services/db/models/exercise.model';
-
 export interface ExerciseUsecaseModel {
   id: string;
   slug: string;
@@ -8,7 +6,6 @@ export interface ExerciseUsecaseModel {
   label: string;
   description?: string;
   instructions?: string;
-  level: ExerciseLevel;
   series: string;
   repetitions: string;
   charge?: string;

@@ -1,12 +1,8 @@
-import type {
-  ExerciseLevel,
-  ExerciseVisibility,
-} from '@hooks/programs/useExercises';
+import type { ExerciseVisibility } from '@hooks/programs/useExercises';
 
 export type ExerciseLibraryItem = {
   id: string;
   label: string;
-  level: string;
   categoryIds: string[];
   categoryLabels: string[];
   type: ExerciseVisibility;
@@ -45,7 +41,6 @@ export type ProgramExercise = {
   label: string;
   description: string;
   instructions: string;
-  level: ExerciseLevel;
   series: string;
   repetitions: string;
   charge: string;

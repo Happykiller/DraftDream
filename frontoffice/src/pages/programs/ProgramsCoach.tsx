@@ -89,7 +89,6 @@ export function ProgramsCoach(): React.JSX.Element {
           instructions: exercise.instructions ?? undefined,
           charge: exercise.charge ?? undefined,
           videoUrl: exercise.videoUrl ?? undefined,
-          level: exercise.level ?? undefined,
         })),
       }));
 

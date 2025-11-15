@@ -183,7 +183,6 @@ type ProgramSessionExerciseGql {
   charge: String
   restSeconds: Float
   videoUrl: String
-  level: String
   categoryIds: [ID!]
   muscleIds: [ID!]
   equipmentIds: [ID!]
@@ -236,7 +235,6 @@ type ExerciseGql {
   label: String!
   description: String
   instructions: String
-  level: ExerciseLevel!
   series: String!
   repetitions: String!
   charge: String
@@ -257,11 +255,6 @@ type ExerciseGql {
   creator: UserGql
 }
 
-enum ExerciseLevel {
-  BEGINNER
-  INTERMEDIATE
-  ADVANCED
-}
 
 enum ExerciseVisibility {
   PRIVATE
@@ -509,7 +502,6 @@ input ListExercisesInput {
   locale: String
   createdBy: String
   visibility: ExerciseVisibility
-  level: ExerciseLevel
   categoryIds: [ID!]
   limit: Int
   page: Int
@@ -730,7 +722,6 @@ input ProgramSessionExerciseInput {
   charge: String
   restSeconds: Float
   videoUrl: String
-  level: String
   categoryIds: [ID!]
   muscleIds: [ID!]
   equipmentIds: [ID!]
@@ -771,7 +762,6 @@ input CreateExerciseInput {
   slug: String!
   locale: String!
   label: String!
-  level: ExerciseLevel!
   series: String!
   repetitions: String!
   description: String
@@ -791,7 +781,6 @@ input UpdateExerciseInput {
   slug: String
   locale: String
   label: String
-  level: ExerciseLevel
   series: String
   repetitions: String
   description: String

@@ -7,7 +7,6 @@ interface ExerciseSeed {
   label: string;
   description?: string;
   instructions?: string;
-  level: 'beginner' | 'intermediate' | 'advanced';
   series: string;
   repetitions: string;
   charge?: string;
@@ -27,7 +26,6 @@ const EXERCISE_SEEDS: ExerciseSeed[] = [
     description: 'Poussee au poids du corps pour renforcer poitrine et triceps.',
     instructions:
       'Positionnez vos mains sous vos epaules, gainez tout le corps et descendez la poitrine vers le sol avant de repousser.',
-    level: 'beginner',
     series: '3',
     repetitions: '10-12',
     rest: 60,
@@ -42,7 +40,6 @@ const EXERCISE_SEEDS: ExerciseSeed[] = [
     description: 'Mouvement fondamental de force pour le bas du corps.',
     instructions:
       'Placez la barre sur vos trapezes, descendez en gardant le buste droit et poussez dans le sol pour remonter.',
-    level: 'intermediate',
     series: '4',
     repetitions: '6-8',
     rest: 120,
@@ -59,7 +56,6 @@ const EXERCISE_SEEDS: ExerciseSeed[] = [
     description: 'Variante hinge pour renforcer chaine posterieure et gainage.',
     instructions:
       'Charniere de hanches, dos neutre, poussez les hanches vers l arriere puis contractez les fessiers pour revenir debout.',
-    level: 'intermediate',
     series: '3',
     repetitions: '8-10',
     rest: 90,
@@ -75,7 +71,6 @@ const EXERCISE_SEEDS: ExerciseSeed[] = [
     description: 'Exercice de gainage statique pour le centre du corps.',
     instructions:
       'Sur les avant-bras et la pointe des pieds, maintenez une ligne droite des epaules aux chevilles.',
-    level: 'beginner',
     series: '3',
     repetitions: '40-60s',
     rest: 60,
@@ -90,7 +85,6 @@ const EXERCISE_SEEDS: ExerciseSeed[] = [
     description: 'Mouvement explosif complet pour l endurance cardio et musculaire.',
     instructions:
       'Depuis la position debout, descendez en squat, jetez les pieds en arriere pour une planche, effectuez une pompe puis revenez avec un saut vertical.',
-    level: 'advanced',
     series: '5',
     repetitions: '12-15',
     rest: 75,
@@ -105,7 +99,6 @@ const EXERCISE_SEEDS: ExerciseSeed[] = [
     description: 'Tirage incline pour renforcer le dos et l arriere des epaules.',
     instructions:
       'Buste penche, dos plat, tirez les halteres vers vos hanches en serrant les omoplates.',
-    level: 'intermediate',
     series: '4',
     repetitions: '10-12',
     rest: 75,
@@ -150,7 +143,6 @@ const migration: Migration = {
       { key: { updatedAt: -1 }, name: 'by_updatedAt' },
       { key: { createdBy: 1 }, name: 'by_createdBy' },
       { key: { visibility: 1 }, name: 'by_visibility' },
-      { key: { level: 1 }, name: 'by_level' },
     ]);
     log('exercises indexes ensured');
 
@@ -194,7 +186,6 @@ const migration: Migration = {
         label: seed.label,
         description: seed.description,
         instructions: seed.instructions,
-        level: seed.level,
         series: seed.series,
         repetitions: seed.repetitions,
         visibility: seed.visibility,

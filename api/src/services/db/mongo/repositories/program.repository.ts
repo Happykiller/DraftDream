@@ -27,7 +27,6 @@ interface ProgramExerciseDoc {
   charge?: string;
   restSeconds?: number;
   videoUrl?: string;
-  level?: string;
   categoryIds?: string[];
   muscleIds?: string[];
   equipmentIds?: string[];
@@ -264,7 +263,6 @@ export class BddServiceProgramMongo {
     charge: exercise.charge,
     restSeconds: exercise.restSeconds,
     videoUrl: exercise.videoUrl,
-    level: exercise.level,
     categoryIds: this.normalizeIdArray(exercise.categoryIds),
     muscleIds: this.normalizeIdArray(exercise.muscleIds),
     equipmentIds: this.normalizeIdArray(exercise.equipmentIds),
@@ -312,7 +310,6 @@ export class BddServiceProgramMongo {
     charge: exercise.charge,
     restSeconds: exercise.restSeconds,
     videoUrl: exercise.videoUrl,
-    level: exercise.level,
     categoryIds: this.normalizeIdArray(exercise.categoryIds),
     muscleIds: this.normalizeIdArray(exercise.muscleIds),
     equipmentIds: this.normalizeIdArray(exercise.equipmentIds),

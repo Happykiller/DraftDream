@@ -1,7 +1,7 @@
 import { describe, expect, it } from '@jest/globals';
 import { mapExerciseUsecaseToGql } from '../exercise.mapper';
 
-import { ExerciseLevelGql, ExerciseVisibility } from '@graphql/exercise/exercise.gql.types';
+import { ExerciseVisibility } from '@graphql/exercise/exercise.gql.types';
 import type { ExerciseUsecaseModel } from '@usecases/exercise/exercise.usecase.model';
 
 describe('mapExerciseUsecaseToGql', () => {
@@ -16,7 +16,6 @@ describe('mapExerciseUsecaseToGql', () => {
       label: 'Pompes',
       description: 'Upper body exercise',
       instructions: 'Keep your body aligned',
-      level: 'intermediate',
       series: '4',
       repetitions: '12',
       charge: 'bodyweight',
@@ -41,7 +40,6 @@ describe('mapExerciseUsecaseToGql', () => {
       label: 'Pompes',
       description: 'Upper body exercise',
       instructions: 'Keep your body aligned',
-      level: ExerciseLevelGql.INTERMEDIATE,
       series: '4',
       repetitions: '12',
       charge: 'bodyweight',
@@ -68,7 +66,6 @@ describe('mapExerciseUsecaseToGql', () => {
       slug: 'plank',
       locale: 'fr-FR',
       label: 'Gainage',
-      level: 'beginner',
       series: '3',
       repetitions: '45s',
       visibility: 'public',

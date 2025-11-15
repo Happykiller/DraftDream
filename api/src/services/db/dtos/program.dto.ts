@@ -10,7 +10,6 @@ export interface ProgramExerciseSnapshotDto {
   charge?: string;
   restSeconds?: number;
   videoUrl?: string;
-  level?: string;
   categoryIds?: string[];
   muscleIds?: string[];
   equipmentIds?: string[];

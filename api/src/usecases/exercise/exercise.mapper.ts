@@ -10,7 +10,6 @@ export const mapExerciseToUsecase = (e: Exercise): ExerciseUsecaseModel => ({
   label: e.label,
   description: e.description,
   instructions: e.instructions,
-  level: e.level,
   series: e.series,
   repetitions: e.repetitions,
   charge: e.charge,

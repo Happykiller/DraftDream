@@ -549,10 +549,6 @@ export function ProgramBuilderPanel({
           nextExerciseItem.instructions = patch.instructions;
         }
 
-        if (Object.prototype.hasOwnProperty.call(patch, 'level') && patch.level) {
-          nextExerciseItem.level = patch.level;
-        }
-
         if (Object.prototype.hasOwnProperty.call(patch, 'series') && patch.series !== undefined) {
           nextExerciseItem.series = patch.series;
           const parsed = parseSeriesCount(patch.series);

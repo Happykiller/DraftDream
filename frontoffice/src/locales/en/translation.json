@@ -186,7 +186,6 @@
             "label": "Exercise name",
             "description": "Description (optional)",
             "instructions": "Instructions (optional)",
-            "level": "Level",
             "series": "Series",
             "repetitions": "Repetitions",
             "rest": "Rest (sec)",
@@ -205,11 +204,6 @@
             "equipment": "Create equipment \"{{label}}\"",
             "tag": "Create tag \"{{label}}\""
           },
-          "levels": {
-            "beginner": "Beginner",
-            "intermediate": "Intermediate",
-            "advanced": "Advanced"
-          }
         },
         "edit_dialog": {
           "title": "Edit exercise template",
@@ -437,11 +431,6 @@
         "muscles": "Muscles",
         "equipment": "Equipment",
         "tags": "Tags",
-        "levels": {
-          "beginner": "Beginner",
-          "intermediate": "Intermediate",
-          "advanced": "Advanced"
-        },
         "rest_duration": {
           "minutes_seconds": "{{minutes}} min {{seconds}} s",
           "minutes": "{{count}} min",

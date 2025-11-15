@@ -34,7 +34,6 @@ const PROGRAM_GET_Q = `
           charge
           restSeconds
           videoUrl
-          level
           categoryIds
           categories {
             id

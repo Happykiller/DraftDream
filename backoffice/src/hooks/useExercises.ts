@@ -7,7 +7,6 @@ import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
 export type ExerciseVisibility = 'PRIVATE' | 'PUBLIC';
-export type ExerciseLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 
 export interface Creator { id: string; email: string; }
 
@@ -25,7 +24,6 @@ export interface Exercise {
   label: string;
   description?: string | null;
   instructions?: string | null;
-  level: ExerciseLevel;
   series: string;
   repetitions: string;
   charge?: string | null;
@@ -63,7 +61,7 @@ const LIST_Q = `
   query ListExercises($input: ListExercisesInput) {
     exercise_list(input: $input) {
       items {
-        id slug locale label description instructions level series repetitions
+        id slug locale label description instructions series repetitions
         charge rest videoUrl visibility createdBy createdAt updatedAt
         categoryIds muscleIds equipmentIds tagIds
         categories { id slug label locale }
@@ -80,7 +78,7 @@ const LIST_Q = `
 const CREATE_M = `
   mutation CreateExercise($input: CreateExerciseInput!) {
     exercise_create(input: $input) {
-      id slug locale label description instructions level series repetitions
+      id slug locale label description instructions series repetitions
       charge rest videoUrl visibility createdBy createdAt updatedAt
       categoryIds muscleIds equipmentIds tagIds
       categories { id slug label locale }
@@ -95,7 +93,7 @@ const CREATE_M = `
 const UPDATE_M = `
   mutation UpdateExercise($input: UpdateExerciseInput!) {
     exercise_update(input: $input) {
-      id slug locale label description instructions level series repetitions
+      id slug locale label description instructions series repetitions
       charge rest videoUrl visibility createdBy createdAt updatedAt
       categoryIds muscleIds equipmentIds tagIds
       categories { id slug label locale }
@@ -150,7 +148,7 @@ export function useExercises({ page, limit, q }: UseExercisesParams) {
 
   const create = React.useCallback(
     async (input: {
-      slug: string; locale: string; label: string; level: ExerciseLevel;
+      slug: string; locale: string; label: string;
       series: string; repetitions: string; description?: string; instructions?: string;
       charge?: string; rest?: number; videoUrl?: string; visibility: ExerciseVisibility;
       categoryIds: string[];                        // required
@@ -180,7 +178,7 @@ export function useExercises({ page, limit, q }: UseExercisesParams) {
   const update = React.useCallback(
     async (input: {
       id: string;
-      slug?: string; locale?: string; label?: string; level?: ExerciseLevel;
+      slug?: string; locale?: string; label?: string;
       series?: string; repetitions?: string; description?: string; instructions?: string;
       charge?: string; rest?: number; videoUrl?: string; visibility?: ExerciseVisibility;
       categoryIds?: string[];
