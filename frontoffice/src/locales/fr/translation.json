@@ -345,8 +345,7 @@
           "frequency": "Fréquence",
           "difficulty": "Niveau",
           "athlete": "Athlète assigné",
-          "no_athlete": "Non assigné",
-          "no_difficulty": "Non défini"
+          "no_athlete": "Non assigné"
         },
         "stats": {
           "sessions": "Nombre de séances",
@@ -393,8 +392,7 @@
         "frequency": "Fréquence",
         "difficulty": "Niveau",
         "athlete": "Athlète assigné",
-        "no_athlete": "Non assigné",
-        "no_difficulty": "Non défini"
+        "no_athlete": "Non assigné"
       },
       "stats": {
         "sessions": "Nombre de séances",

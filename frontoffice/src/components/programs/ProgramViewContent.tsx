@@ -89,8 +89,8 @@ export function ProgramViewContent({
     [averageDurationMinutes, t],
   );
 
-  const overviewInfoItems = React.useMemo<OverviewInfoItem[]>(
-    () => [
+  const overviewInfoItems = React.useMemo<OverviewInfoItem[]>(() => {
+    const items: OverviewInfoItem[] = [
       {
         key: 'duration',
         label: t('programs-coatch.view.information.duration'),
@@ -108,14 +108,6 @@ export function ProgramViewContent({
         isChip: false,
       },
       {
-        key: 'difficulty',
-        label: t('programs-coatch.view.information.difficulty'),
-        value: difficulty ? t(`programs-coatch.list.difficulty.${difficulty}`) : null,
-        fallback: t('programs-coatch.view.information.no_difficulty'),
-        Icon: CenterFocusStrongOutlined,
-        isChip: Boolean(difficulty),
-      },
-      {
         key: 'athlete',
         label: t('programs-coatch.view.information.athlete'),
         value: athleteLabel,
@@ -123,9 +115,21 @@ export function ProgramViewContent({
         Icon: PersonOutline,
         isChip: false,
       },
-    ],
-    [athleteLabel, difficulty, program.duration, program.frequency, t],
-  );
+    ];
+
+    if (difficulty) {
+      items.splice(2, 0, {
+        key: 'difficulty',
+        label: t('programs-coatch.view.information.difficulty'),
+        value: t(`programs-coatch.list.difficulty.${difficulty}`),
+        fallback: '',
+        Icon: CenterFocusStrongOutlined,
+        isChip: true,
+      });
+    }
+
+    return items;
+  }, [athleteLabel, difficulty, program.duration, program.frequency, t]);
 
   const statsItems = React.useMemo<ProgramStatItem[]>(
     () => [

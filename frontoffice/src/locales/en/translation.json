@@ -343,8 +343,7 @@
           "frequency": "Frequency",
           "difficulty": "Level",
           "athlete": "Assigned athlete",
-          "no_athlete": "Not assigned",
-          "no_difficulty": "Not set"
+          "no_athlete": "Not assigned"
         },
         "stats": {
           "sessions": "Number of sessions",
@@ -391,8 +390,7 @@
         "frequency": "Frequency",
         "difficulty": "Level",
         "athlete": "Assigned athlete",
-        "no_athlete": "Not assigned",
-        "no_difficulty": "Not set"
+        "no_athlete": "Not assigned"
       },
       "stats": {
         "sessions": "Number of sessions",
