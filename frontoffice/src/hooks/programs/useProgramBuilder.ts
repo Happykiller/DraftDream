@@ -247,6 +247,7 @@ export function useProgramBuilder(
     page: 1,
     limit: 10,
     q: debouncedSessionSearch,
+    locale: i18n.language,
   });
 
   const exerciseCategoryIdsFilter = React.useMemo<string[] | undefined>(() => {
@@ -366,7 +367,14 @@ export function useProgramBuilder(
   }, []);
 
   const sessionTemplates = React.useMemo<SessionTemplate[]>(() => {
-    const sorted = [...sessionItems].sort((a, b) => a.label.localeCompare(b.label));
+    const eligible = sessionItems.filter((item) => {
+      if (!item.locale) {
+        return true;
+      }
+      return item.locale === i18n.language;
+    });
+
+    const sorted = eligible.sort((a, b) => collator.compare(a.label, b.label));
     return sorted.map((item) => ({
       id: item.id,
       label: item.label,
@@ -381,7 +389,7 @@ export function useProgramBuilder(
         };
       }),
     }));
-  }, [sessionItems]);
+  }, [collator, i18n.language, sessionItems]);
 
   const exerciseCategoryOptions = React.useMemo<ExerciseCategoryOption[]>(() => {
     const dedup = new Map<string, ExerciseCategoryOption>();
