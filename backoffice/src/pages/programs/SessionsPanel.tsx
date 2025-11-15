@@ -23,7 +23,12 @@ export function SessionsPanel(): React.JSX.Element {
   const { t } = useTranslation();
 
   const exerciseOptions = React.useMemo<ExerciseOption[]>(
-    () => exerciseItems.map(ex => ({ id: ex.id, slug: ex.slug, label: ex.label })),
+    () => exerciseItems.map((exercise) => ({
+      id: exercise.id,
+      slug: exercise.slug,
+      label: exercise.label,
+      locale: exercise.locale,
+    })),
     [exerciseItems]
   );
 
