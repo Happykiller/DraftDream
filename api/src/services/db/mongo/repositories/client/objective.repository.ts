@@ -1,5 +1,10 @@
 // src/services/db/mongo/repositories/client/objective.repository.ts
-import { Collection, ObjectId, Db } from 'mongodb';
+import {
+  Collection,
+  Db,
+  ModifyResult,
+  ObjectId,
+} from 'mongodb';
 
 import inversify from '@src/inversify/investify';
 
@@ -113,12 +118,15 @@ export class BddServiceClientObjectiveMongo {
     if (patch.visibility !== undefined) $set.visibility = patch.visibility;
 
     try {
-      const res = await this.col().findOneAndUpdate(
+      const res: ModifyResult<ClientObjectiveDoc> = await this.col().findOneAndUpdate(
         { _id },
         { $set },
         { returnDocument: 'after' },
       );
-      return res.value ? this.toModel(res.value) : null;
+      if (!res.value) {
+        return null;
+      }
+      return this.toModel(res.value);
     } catch (error) {
       if (this.isDuplicateError(error)) return null;
       this.handleError('update', error);
