@@ -204,7 +204,7 @@
             "muscle": "Créer le muscle \"{{label}}\"",
             "equipment": "Créer l'équipement \"{{label}}\"",
             "tag": "Créer le tag \"{{label}}\""
-          },
+          }
         },
         "edit_dialog": {
           "title": "Modifier l'exercice",

@@ -203,7 +203,7 @@
             "muscle": "Create muscle \"{{label}}\"",
             "equipment": "Create equipment \"{{label}}\"",
             "tag": "Create tag \"{{label}}\""
-          },
+          }
         },
         "edit_dialog": {
           "title": "Edit exercise template",
