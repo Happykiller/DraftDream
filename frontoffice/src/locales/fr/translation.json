@@ -583,7 +583,7 @@
       "structure": {
         "title": "Titre de la journée",
         "description_placeholder": "Décrivez cette journée nutritionnelle...",
-        "empty": "Ajoutez une journée depuis la bibliothèque ou créez une journée vide pour démarrer.",
+        "empty": "Ajoutez une journée depuis la colonne de gauche pour démarrer.",
         "day_prefix": "Jour",
         "meal_prefix": "Repas",
         "foods_label": "Aliments et notes",

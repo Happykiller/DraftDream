@@ -581,7 +581,7 @@
       "structure": {
         "title": "Day title",
         "description_placeholder": "Describe this meal day...",
-        "empty": "Add a meal day from the library or create an empty one to get started.",
+        "empty": "Add a day from the left column to get started.",
         "day_prefix": "Day",
         "meal_prefix": "Meal",
         "foods_label": "Foods and notes",

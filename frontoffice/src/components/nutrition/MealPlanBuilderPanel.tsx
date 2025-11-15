@@ -2,7 +2,6 @@
 import * as React from 'react';
 import { alpha, useTheme } from '@mui/material/styles';
 import {
-  Alert,
   Autocomplete,
   Box,
   Button,
@@ -756,7 +755,32 @@ export function MealPlanBuilderPanel({
                           <Box sx={{ flexGrow: 1, minHeight: 0 }}>
                             {days.length === 0 ? (
                               <Stack spacing={2}>
-                                <Alert severity="info">{builderCopy.structure.empty}</Alert>
+                                <Box
+                                  sx={{
+                                    border: `1px dashed ${alpha(theme.palette.text.primary, 0.2)}`,
+                                    borderRadius: 2,
+                                    p: 2,
+                                    bgcolor: alpha(theme.palette.background.default, 0.4),
+                                    width: '100%',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                  }}
+                                >
+                                  <Stack
+                                    spacing={1}
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    sx={{ minHeight: 220, width: '100%' }}
+                                  >
+                                    <Typography
+                                      variant="body2"
+                                      color="text.secondary"
+                                      textAlign="center"
+                                    >
+                                      {builderCopy.structure.empty}
+                                    </Typography>
+                                  </Stack>
+                                </Box>
                                 <Button
                                   onClick={handleCreateEmptyDay}
                                   startIcon={<Add fontSize="small" />}
