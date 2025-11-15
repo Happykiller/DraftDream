@@ -16,7 +16,12 @@ import { useTranslation } from 'react-i18next';
 import type { Exercise, ExerciseLevel, ExerciseVisibility } from '@hooks/useExercises';
 
 // Minimal ref entity for selects
-export interface RefEntity { id: string; slug: string; label?: string; }
+export interface RefEntity {
+  id: string;
+  slug: string;
+  label?: string;
+  locale?: string;
+}
 
 export interface ExerciseDialogValues {
   slug: string;
@@ -83,9 +88,40 @@ export function ExerciseDialog({
   const isEdit = mode === 'edit';
   const { t } = useTranslation();
 
-  const toRefs = (entities?: Array<{ id: string; slug: string; label?: string | null }> | null): RefEntity[] => {
-    return entities?.map((item) => ({ id: item.id, slug: item.slug, label: item.label ?? item.slug })) ?? [];
+  const toRefs = (
+    entities?: Array<{ id: string; slug: string; label?: string | null; locale?: string | null }> | null,
+  ): RefEntity[] => {
+    return (
+      entities?.map((item) => ({
+        id: item.id,
+        slug: item.slug,
+        label: item.label ?? item.slug,
+        locale: item.locale ?? undefined,
+      })) ?? []
+    );
   };
+
+  const filterOptionsByLocale = React.useCallback(
+    (option: RefEntity) => option.locale === values.locale,
+    [values.locale],
+  );
+
+  const categoryChoices = React.useMemo(
+    () => categoryOptions.filter(filterOptionsByLocale),
+    [categoryOptions, filterOptionsByLocale],
+  );
+  const muscleChoices = React.useMemo(
+    () => muscleOptions.filter(filterOptionsByLocale),
+    [muscleOptions, filterOptionsByLocale],
+  );
+  const equipmentChoices = React.useMemo(
+    () => equipmentOptions.filter(filterOptionsByLocale),
+    [equipmentOptions, filterOptionsByLocale],
+  );
+  const tagChoices = React.useMemo(
+    () => tagOptions.filter(filterOptionsByLocale),
+    [tagOptions, filterOptionsByLocale],
+  );
 
   React.useEffect(() => {
     if (isEdit && initial) {
@@ -115,10 +151,32 @@ export function ExerciseDialog({
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setValues((prev) => ({
-      ...prev,
-      [name]: name === 'rest' ? (value === '' ? null : Number(value)) : value,
-    }));
+    setValues((prev) => {
+      if (name === 'rest') {
+        return {
+          ...prev,
+          rest: value === '' ? null : Number(value),
+        };
+      }
+
+      if (name === 'locale') {
+        const nextLocale = value;
+        const filterByLocale = (items: RefEntity[]) => items.filter((item) => item.locale === nextLocale);
+        return {
+          ...prev,
+          locale: nextLocale,
+          categories: filterByLocale(prev.categories),
+          muscles: filterByLocale(prev.muscles),
+          equipment: filterByLocale(prev.equipment),
+          tags: filterByLocale(prev.tags),
+        };
+      }
+
+      return {
+        ...prev,
+        [name]: value,
+      };
+    });
   };
 
   const submit = async (event: React.FormEvent) => {
@@ -273,10 +331,11 @@ export function ExerciseDialog({
           {/* Category anchors taxonomy, so we fail submission when it is missing. */}
           <Autocomplete
             multiple
-            options={categoryOptions}
+            options={categoryChoices}
             getOptionLabel={(option) => option.label || option.slug}
             value={values.categories}
             onChange={(_, value) => setValues((prev) => ({ ...prev, categories: value }))}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
             renderTags={(tagValue, getTagProps) =>
               tagValue.map((option, index) => (
                 <Chip {...getTagProps({ index })} key={option.id} label={option.label || option.slug} />
@@ -288,10 +347,11 @@ export function ExerciseDialog({
           {/* Muscles drive programming logic; coaches must confirm at least one target group. */}
           <Autocomplete
             multiple
-            options={muscleOptions}
+            options={muscleChoices}
             getOptionLabel={(option) => option.label || option.slug}
             value={values.muscles}
             onChange={(_, value) => setValues((prev) => ({ ...prev, muscles: value }))}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
             renderTags={(tagValue, getTagProps) =>
               tagValue.map((option, index) => (
                 <Chip {...getTagProps({ index })} key={option.id} label={option.label || option.slug} />
@@ -303,10 +363,11 @@ export function ExerciseDialog({
           {/* Equipment mapping ensures coaches only pick gear available in the gym inventory. */}
           <Autocomplete
             multiple
-            options={equipmentOptions}
+            options={equipmentChoices}
             getOptionLabel={(option) => option.label || option.slug}
             value={values.equipment}
             onChange={(_, value) => setValues((prev) => ({ ...prev, equipment: value }))}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
             renderTags={(tagValue, getTagProps) =>
               tagValue.map((option, index) => (
                 <Chip {...getTagProps({ index })} key={option.id} label={option.label || option.slug} />
@@ -318,10 +379,11 @@ export function ExerciseDialog({
           {/* Tags feed search filters, so we expose them despite being optional. */}
           <Autocomplete
             multiple
-            options={tagOptions}
+            options={tagChoices}
             getOptionLabel={(option) => option.label || option.slug}
             value={values.tags}
             onChange={(_, value) => setValues((prev) => ({ ...prev, tags: value }))}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
             renderTags={(tagValue, getTagProps) =>
               tagValue.map((option, index) => (
                 <Chip {...getTagProps({ index })} key={option.id} label={option.label || option.slug} />

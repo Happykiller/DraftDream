@@ -11,7 +11,12 @@ export type ExerciseLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 
 export interface Creator { id: string; email: string; }
 
-export interface ExerciseLink { id: string; slug: string; label?: string | null; }
+export interface ExerciseLink {
+  id: string;
+  slug: string;
+  label?: string | null;
+  locale?: string | null;
+}
 
 export interface Exercise {
   id: string;
@@ -61,10 +66,10 @@ const LIST_Q = `
         id slug locale label description instructions level series repetitions
         charge rest videoUrl visibility createdBy createdAt updatedAt
         categoryIds muscleIds equipmentIds tagIds
-        categories { id slug label }
-        muscles { id slug label }
-        equipment { id slug label }
-        tags { id slug label }
+        categories { id slug label locale }
+        muscles { id slug label locale }
+        equipment { id slug label locale }
+        tags { id slug label locale }
         creator { id email }
       }
       total page limit
@@ -78,10 +83,10 @@ const CREATE_M = `
       id slug locale label description instructions level series repetitions
       charge rest videoUrl visibility createdBy createdAt updatedAt
       categoryIds muscleIds equipmentIds tagIds
-      categories { id slug label }
-      muscles { id slug label }
-      equipment { id slug label }
-      tags { id slug label }
+      categories { id slug label locale }
+      muscles { id slug label locale }
+      equipment { id slug label locale }
+      tags { id slug label locale }
       creator { id email }
     }
   }
@@ -93,10 +98,10 @@ const UPDATE_M = `
       id slug locale label description instructions level series repetitions
       charge rest videoUrl visibility createdBy createdAt updatedAt
       categoryIds muscleIds equipmentIds tagIds
-      categories { id slug label }
-      muscles { id slug label }
-      equipment { id slug label }
-      tags { id slug label }
+      categories { id slug label locale }
+      muscles { id slug label locale }
+      equipment { id slug label locale }
+      tags { id slug label locale }
       creator { id email }
     }
   }
