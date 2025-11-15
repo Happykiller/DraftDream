@@ -43,6 +43,11 @@ import { DeleteExerciseUsecase } from '@usecases/exercise/delete.exercise.usecas
 import { UpdateCategoryUsecase } from '@usecases/category/update.category.usecase';
 import { CreateCategoryUsecase } from '@usecases/category/create.category.usecase';
 import { DeleteCategoryUsecase } from '@usecases/category/delete.category.usecase';
+import { GetClientObjectiveUsecase } from '@usecases/client/objective/get.client-objective.usecase';
+import { ListClientObjectivesUsecase } from '@usecases/client/objective/list.client-objective.usecase';
+import { CreateClientObjectiveUsecase } from '@usecases/client/objective/create.client-objective.usecase';
+import { UpdateClientObjectiveUsecase } from '@usecases/client/objective/update.client-objective.usecase';
+import { DeleteClientObjectiveUsecase } from '@usecases/client/objective/delete.client-objective.usecase';
 import { GetMealTypeUsecase } from '@usecases/meal-type/get.meal-type.usecase';
 import { ListMealTypesUsecase } from '@usecases/meal-type/list.meal-type.usecase';
 import { CreateMealTypeUsecase } from '@usecases/meal-type/create.meal-type.usecase';
@@ -110,6 +115,11 @@ export class Inversify {
   createCategoryUsecase: CreateCategoryUsecase;
   listCategoriesUsecase: ListCategoriesUsecase;
   deleteCategoryUsecase: DeleteCategoryUsecase;
+  getClientObjectiveUsecase: GetClientObjectiveUsecase;
+  createClientObjectiveUsecase: CreateClientObjectiveUsecase;
+  listClientObjectivesUsecase: ListClientObjectivesUsecase;
+  updateClientObjectiveUsecase: UpdateClientObjectiveUsecase;
+  deleteClientObjectiveUsecase: DeleteClientObjectiveUsecase;
   getMealTypeUsecase: GetMealTypeUsecase;
   listMealTypesUsecase: ListMealTypesUsecase;
   createMealTypeUsecase: CreateMealTypeUsecase;
@@ -167,6 +177,12 @@ export class Inversify {
     this.listCategoriesUsecase = new ListCategoriesUsecase(this);
     this.updateCategoryUsecase = new UpdateCategoryUsecase(this);
     this.deleteCategoryUsecase = new DeleteCategoryUsecase(this);
+    // usecases client objective
+    this.getClientObjectiveUsecase = new GetClientObjectiveUsecase(this);
+    this.createClientObjectiveUsecase = new CreateClientObjectiveUsecase(this);
+    this.listClientObjectivesUsecase = new ListClientObjectivesUsecase(this);
+    this.updateClientObjectiveUsecase = new UpdateClientObjectiveUsecase(this);
+    this.deleteClientObjectiveUsecase = new DeleteClientObjectiveUsecase(this);
     // usecases meal type
     this.createMealTypeUsecase = new CreateMealTypeUsecase(this);
     this.getMealTypeUsecase = new GetMealTypeUsecase(this);

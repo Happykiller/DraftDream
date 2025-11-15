@@ -13,6 +13,7 @@ import { SessionModule } from '@graphql/session/session.module';
 import { ProgramModule } from '@graphql/program/program.module';
 import { ExerciseModule } from '@graphql/exercise/exercise.module';
 import { CategoryModule } from '@graphql/category/category.module';
+import { ClientObjectiveModule } from '@graphql/client/objective/client-objective.module';
 import { EquipmentModule } from '@graphql/equipment/equipment.module';
 import { MealTypeModule } from '@graphql/meal-type/meal-type.module';
 import { MealDayModule } from '@graphql/meal-day/meal-day.module';
@@ -30,6 +31,7 @@ import { MealPlanModule } from '@graphql/meal-plan/meal-plan.module';
     SessionModule,
     ProgramModule,
     CategoryModule,
+    ClientObjectiveModule,
     ExerciseModule,
     EquipmentModule,
     MealTypeModule,
