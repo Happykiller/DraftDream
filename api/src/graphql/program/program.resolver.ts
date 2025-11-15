@@ -12,6 +12,7 @@ import {
   ListProgramsInput,
   ProgramListGql,
   ProgramSessionInput,
+  ProgramVisibility,
 } from '@graphql/program/program.gql.types';
 import { mapProgramUsecaseToGql } from '@graphql/program/program.mapper';
 import { UserGql } from '@graphql/user/user.gql.types';
@@ -57,7 +58,7 @@ export class ProgramResolver {
       slug,
       locale: input.locale,
       label: input.label,
-      visibility: input.visibility ?? 'private',
+      visibility: this.normalizeProgramVisibility(input.visibility) ?? 'private',
       duration: input.duration,
       frequency: input.frequency,
       description: input.description,
@@ -80,7 +81,7 @@ export class ProgramResolver {
     const updateDto: any = {
       locale: input.locale,
       label: input.label,
-      visibility: input.visibility,
+      visibility: this.normalizeProgramVisibility(input.visibility),
       duration: input.duration,
       frequency: input.frequency,
       description: input.description ?? undefined,
@@ -176,7 +177,7 @@ export class ProgramResolver {
       q: input?.q,
       locale: input?.locale,
       createdBy: input?.createdBy,
-      visibility: input?.visibility,
+      visibility: this.normalizeProgramVisibility(input?.visibility),
       userId: input?.userId,
       limit: input?.limit,
       page: input?.page,
@@ -315,5 +316,17 @@ export class ProgramResolver {
     }
     const normalized = Array.from(new Set(values.map((value) => value?.trim()).filter(Boolean)));
     return normalized.length ? normalized : undefined;
+  }
+
+  /**
+   * Maps the GraphQL visibility enum to the persistence-friendly string literal union.
+   */
+  private normalizeProgramVisibility(
+    visibility?: ProgramVisibility | null,
+  ): 'private' | 'public' | undefined {
+    if (!visibility) {
+      return undefined;
+    }
+    return visibility === ProgramVisibility.PUBLIC ? 'public' : 'private';
   }
 }

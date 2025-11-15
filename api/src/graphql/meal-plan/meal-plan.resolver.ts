@@ -14,8 +14,10 @@ import {
   MealPlanDayInput,
   MealPlanMealInput,
   MealPlanMealTypeInput,
+  MealPlanVisibility,
 } from '@graphql/meal-plan/meal-plan.gql.types';
 import { mapMealPlanUsecaseToGql } from '@graphql/meal-plan/meal-plan.mapper';
+import { MealTypeVisibility } from '@graphql/meal-type/meal-type.gql.types';
 import { UserGql } from '@graphql/user/user.gql.types';
 import { mapUserUsecaseToGql } from '@graphql/user/user.mapper';
 import inversify from '@src/inversify/investify';
@@ -63,7 +65,7 @@ export class MealPlanResolver {
       locale: input.locale,
       label: input.label,
       description: input.description,
-      visibility: input.visibility ?? 'private',
+      visibility: this.normalizeMealPlanVisibility(input.visibility) ?? 'private',
       calories: input.calories,
       proteinGrams: input.proteinGrams,
       carbGrams: input.carbGrams,
@@ -88,7 +90,7 @@ export class MealPlanResolver {
       locale: input.locale,
       label: input.label,
       description: input.description ?? undefined,
-      visibility: input.visibility,
+      visibility: this.normalizeMealPlanVisibility(input.visibility),
       calories: input.calories,
       proteinGrams: input.proteinGrams,
       carbGrams: input.carbGrams,
@@ -179,7 +181,7 @@ export class MealPlanResolver {
       q: input?.q,
       locale: input?.locale,
       createdBy: input?.createdBy,
-      visibility: input?.visibility,
+      visibility: this.normalizeMealPlanVisibility(input?.visibility),
       userId: input?.userId,
       limit: input?.limit,
       page: input?.page,
@@ -326,7 +328,7 @@ export class MealPlanResolver {
       slug: type?.slug ?? undefined,
       locale: this.normalizeLocaleValue(type?.locale),
       label,
-      visibility: type?.visibility ?? undefined,
+      visibility: this.normalizeMealTypeVisibility(type?.visibility),
     };
   }
 
@@ -348,5 +350,29 @@ export class MealPlanResolver {
       return undefined;
     }
     return normalized;
+  }
+
+  /**
+   * Aligns the GraphQL enum with the domain visibility literals.
+   */
+  private normalizeMealPlanVisibility(
+    visibility?: MealPlanVisibility | null,
+  ): 'private' | 'public' | undefined {
+    if (!visibility) {
+      return undefined;
+    }
+    return visibility === MealPlanVisibility.PUBLIC ? 'public' : 'private';
+  }
+
+  /**
+   * Converts the nested meal type visibility enum to the persisted literal union.
+   */
+  private normalizeMealTypeVisibility(
+    visibility?: MealTypeVisibility | null,
+  ): 'private' | 'public' | undefined {
+    if (!visibility) {
+      return undefined;
+    }
+    return visibility === MealTypeVisibility.PUBLIC ? 'public' : 'private';
   }
 }
