@@ -312,21 +312,19 @@ export function ExerciseDialog({
             fullWidth
           />
 
-          {/* Visibility becomes immutable post creation so historical sharing rules stay auditable. */}
-          {!isEdit && (
-            <TextField
-              select
-              label={t('common.labels.visibility')}
-              name="visibility"
-              value={values.visibility}
-              onChange={onChange}
-              required
-              fullWidth
-            >
-              <MenuItem value="PRIVATE">{t('common.visibility.private')}</MenuItem>
-              <MenuItem value="PUBLIC">{t('common.visibility.public')}</MenuItem>
-            </TextField>
-          )}
+          {/* Visibility governs sharing scope, so keep it editable during creation and updates. */}
+          <TextField
+            select
+            label={t('common.labels.visibility')}
+            name="visibility"
+            value={values.visibility}
+            onChange={onChange}
+            required
+            fullWidth
+          >
+            <MenuItem value="PRIVATE">{t('common.visibility.private')}</MenuItem>
+            <MenuItem value="PUBLIC">{t('common.visibility.public')}</MenuItem>
+          </TextField>
 
           {/* Category anchors taxonomy, so we fail submission when it is missing. */}
           <Autocomplete
