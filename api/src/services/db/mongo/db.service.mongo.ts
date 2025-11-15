@@ -7,6 +7,7 @@ import { BddServiceMuscleMongo } from '@services/db/mongo/repositories/muscle.re
 import { BddServiceSessionMongo } from '@services/db/mongo/repositories/session.repository';
 import { BddServiceProgramMongo } from '@services/db/mongo/repositories/program.repository';
 import { BddServiceCategoryMongo } from '@services/db/mongo/repositories/category.repository';
+import { BddServiceClientObjectiveMongo } from '@services/db/mongo/repositories/client/objective.repository';
 import { BddServiceMealTypeMongo } from '@services/db/mongo/repositories/meal-type.repository';
 import { BddServiceExerciseMongo } from '@services/db/mongo/repositories/exercise.repository';
 import { BddServiceEquipmentMongo } from '@services/db/mongo/repositories/equipment.repository';
@@ -25,6 +26,7 @@ export class BddServiceMongo {
   readonly session: BddServiceSessionMongo;
   readonly program: BddServiceProgramMongo;
   readonly category: BddServiceCategoryMongo;
+  readonly clientObjective: BddServiceClientObjectiveMongo;
   readonly mealType: BddServiceMealTypeMongo;
   readonly mealDay: BddServiceMealDayMongo;
   readonly meal: BddServiceMealMongo;
@@ -39,6 +41,7 @@ export class BddServiceMongo {
     this.session = new BddServiceSessionMongo();
     this.program = new BddServiceProgramMongo();
     this.category = new BddServiceCategoryMongo();
+    this.clientObjective = new BddServiceClientObjectiveMongo();
     this.mealType = new BddServiceMealTypeMongo();
     this.mealDay = new BddServiceMealDayMongo();
     this.meal = new BddServiceMealMongo();
