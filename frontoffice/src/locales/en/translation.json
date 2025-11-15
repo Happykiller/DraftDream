@@ -147,6 +147,7 @@
         "limit_hint": "Showing up to 10 exercises sorted alphabetically.",
         "empty_state": "No exercises match your filters.",
         "button_create": "Create an exercise",
+        "refresh_label": "Reload exercises",
         "subtitle": "Add an exercise to a session to include it.",
         "no_sessions_warning": "Create a session before adding exercises.",
         "sets_label": " sets",

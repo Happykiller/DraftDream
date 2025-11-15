@@ -1704,6 +1704,7 @@ export function useProgramBuilder(
     categoriesLoading,
     usersLoading,
     reloadSessions,
+    reloadExercises,
     setSessionSearch,
     setExerciseSearch,
     setExerciseCategory,

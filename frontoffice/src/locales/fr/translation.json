@@ -149,6 +149,7 @@
         "limit_hint": "Affichage des 10 exercices maximum triés par ordre alphabétique.",
         "empty_state": "Aucun exercice ne correspond à vos filtres.",
         "button_create": "Creer un exercice",
+        "refresh_label": "Recharger les exercices",
         "subtitle": "Ajoutez un exercice à une séance pour l'intégrer.",
         "sets_label": " séries",
         "reps_label": " répétitions",

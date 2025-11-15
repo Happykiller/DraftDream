@@ -132,6 +132,7 @@ export type BuilderCopy = {
     secondary_filter_label: string;
     secondary_filter_all: string;
     button_create: string;
+    refresh_label?: string;
     limit_hint?: string;
     type_private?: string;
     type_public?: string;

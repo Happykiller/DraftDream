@@ -79,6 +79,7 @@ export function ProgramBuilderPanel({
     categoriesLoading,
     usersLoading,
     reloadSessions,
+    reloadExercises,
     setSessionSearch,
     setExerciseSearch,
     setExerciseCategory,
@@ -1155,13 +1156,27 @@ export function ProgramBuilderPanel({
                           },
                         }}
                       >
-                        <Stack spacing={0.5}>
-                          <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                            {builderCopy.library.title}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {builderCopy.library.subtitle}
-                          </Typography>
+                        <Stack direction="row" spacing={1} alignItems="flex-start">
+                          <Box sx={{ flexGrow: 1 }}>
+                            <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                              {builderCopy.library.title}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              {builderCopy.library.subtitle}
+                            </Typography>
+                          </Box>
+                          <Tooltip title={builderCopy.library.refresh_label ?? ''}>
+                            <span>
+                              <IconButton
+                                onClick={reloadExercises}
+                                size="small"
+                                aria-label="reload-exercise-library"
+                                disabled={exercisesLoading}
+                              >
+                                <Replay fontSize="small" />
+                              </IconButton>
+                            </span>
+                          </Tooltip>
                         </Stack>
 
                         <TextField
