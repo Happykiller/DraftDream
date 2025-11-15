@@ -54,7 +54,6 @@ interface ProgramViewContentProps {
   program: Program;
   activeTab: ProgramViewTab;
   onTabChange: (tab: ProgramViewTab) => void;
-  updatedOnLabel: string;
 }
 
 /**
@@ -64,7 +63,6 @@ export function ProgramViewContent({
   program,
   activeTab,
   onTabChange,
-  updatedOnLabel,
 }: ProgramViewContentProps): React.JSX.Element {
   const { t } = useTranslation();
 
@@ -186,11 +184,6 @@ export function ProgramViewContent({
         <ProgramSessionsTab sessions={program.sessions} />
       )}
 
-      <Divider flexItem />
-
-      <Typography variant="caption" color="text.secondary">
-        {updatedOnLabel}
-      </Typography>
     </Stack>
   );
 }
