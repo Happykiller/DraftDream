@@ -2,7 +2,6 @@
 import {
   Collection,
   Db,
-  ModifyResult,
   ObjectId,
 } from 'mongodb';
 
@@ -118,15 +117,15 @@ export class BddServiceClientObjectiveMongo {
     if (patch.visibility !== undefined) $set.visibility = patch.visibility;
 
     try {
-      const res: ModifyResult<ClientObjectiveDoc> = await this.col().findOneAndUpdate(
+      const updatedDoc = await this.col().findOneAndUpdate(
         { _id },
         { $set },
         { returnDocument: 'after' },
       );
-      if (!res.value) {
+      if (!updatedDoc) {
         return null;
       }
-      return this.toModel(res.value);
+      return this.toModel(updatedDoc);
     } catch (error) {
       if (this.isDuplicateError(error)) return null;
       this.handleError('update', error);
