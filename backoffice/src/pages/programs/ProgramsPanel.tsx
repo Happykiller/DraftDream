@@ -59,6 +59,7 @@ export function ProgramsPanel(): React.JSX.Element {
     description: values.description ? values.description : undefined,
     sessionIds: values.sessions.map((session) => session.id),
     userId: values.user?.id ?? undefined,
+    visibility: values.visibility,
   });
 
   const toUpdateInput = (id: string, values: ProgramDialogValues) => ({
@@ -71,6 +72,7 @@ export function ProgramsPanel(): React.JSX.Element {
     description: values.description ? values.description : undefined,
     sessionIds: values.sessions.map((session) => session.id),
     userId: values.user?.id ?? undefined,
+    visibility: values.visibility,
   });
 
   return (

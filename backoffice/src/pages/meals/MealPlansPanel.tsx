@@ -153,12 +153,13 @@ export function MealPlansPanel(): React.JSX.Element {
       calories: values.calories,
       proteinGrams: values.proteinGrams,
       carbGrams: values.carbGrams,
-      fatGrams: values.fatGrams,
-      userId: values.user?.id ?? undefined,
-      days: values.days.map(toMealPlanMutationDay),
-    }),
-    [],
-  );
+    fatGrams: values.fatGrams,
+    userId: values.user?.id ?? undefined,
+    days: values.days.map(toMealPlanMutationDay),
+    visibility: values.visibility,
+  }),
+  [],
+);
 
   const toUpdateInput = React.useCallback(
     (id: string, values: MealPlanDialogValues) => ({
@@ -170,12 +171,13 @@ export function MealPlansPanel(): React.JSX.Element {
       calories: values.calories,
       proteinGrams: values.proteinGrams,
       carbGrams: values.carbGrams,
-      fatGrams: values.fatGrams,
-      userId: values.user?.id ?? undefined,
-      days: values.days.map(toMealPlanMutationDay),
-    }),
-    [],
-  );
+    fatGrams: values.fatGrams,
+    userId: values.user?.id ?? undefined,
+    days: values.days.map(toMealPlanMutationDay),
+    visibility: values.visibility,
+  }),
+  [],
+);
 
   return (
     <Box>

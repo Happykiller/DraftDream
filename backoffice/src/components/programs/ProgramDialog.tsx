@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import type { Program } from '@hooks/usePrograms';
+import type { Program, ProgramVisibility } from '@hooks/usePrograms';
 
 export interface ProgramSessionOption {
   id: string;
@@ -33,6 +33,7 @@ export interface ProgramDialogValues {
   description: string;
   sessions: ProgramSessionOption[];
   user: ProgramUserOption | null;
+  visibility: ProgramVisibility;
 }
 
 export interface ProgramDialogProps {
@@ -54,6 +55,7 @@ const DEFAULT_VALUES: ProgramDialogValues = {
   description: '',
   sessions: [],
   user: null,
+  visibility: 'PRIVATE',
 };
 
 function mergeSessionOptions(
@@ -114,6 +116,7 @@ export function ProgramDialog({
           const match = userOptions.find((user) => user.id === initial.userId);
           return match ?? { id: initial.userId, email: initial.userId };
         })(),
+        visibility: initial.visibility ?? 'PRIVATE',
       });
     } else {
       setValues(DEFAULT_VALUES);
@@ -151,6 +154,7 @@ export function ProgramDialog({
       </DialogTitle>
       <DialogContent>
         <Stack component="form" spacing={2} sx={{ mt: 1 }} onSubmit={submit}>
+          {/* General information */}
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             {/* Slug is used inside shareable URLs, so editors keep manual control over it. */}
             <TextField
@@ -176,6 +180,18 @@ export function ProgramDialog({
                   {loc.toUpperCase()}
                 </MenuItem>
               ))}
+            </TextField>
+            <TextField
+              select
+              label={t('common.labels.visibility')}
+              name="visibility"
+              value={values.visibility}
+              onChange={handleChange}
+              required
+              fullWidth
+            >
+              <MenuItem value="PRIVATE">{t('common.visibility.private')}</MenuItem>
+              <MenuItem value="PUBLIC">{t('common.visibility.public')}</MenuItem>
             </TextField>
           </Stack>
 

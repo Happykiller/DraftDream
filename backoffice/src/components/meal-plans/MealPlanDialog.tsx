@@ -29,6 +29,7 @@ import type {
   MealPlanDaySnapshot,
   MealPlanMealSnapshot,
   MealPlanMealTypeSnapshot,
+  MealPlanVisibility,
 } from '@hooks/useMealPlans';
 
 function generateClientId(): string {
@@ -86,6 +87,7 @@ export interface MealPlanDialogValues {
   fatGrams: number;
   days: MealPlanDialogDay[];
   user: MealPlanDialogUserOption | null;
+  visibility: MealPlanVisibility;
 }
 
 export interface MealPlanDialogProps {
@@ -114,6 +116,7 @@ const DEFAULT_VALUES: MealPlanDialogValues = {
   fatGrams: 0,
   days: [],
   user: null,
+  visibility: 'PRIVATE',
 };
 
 function cloneMeal(option: MealPlanDialogMealOption): MealPlanDialogMeal {
@@ -176,6 +179,7 @@ function toDialogValues(initial: MealPlan, userOptions: MealPlanDialogUserOption
     carbGrams: initial.carbGrams,
     fatGrams: initial.fatGrams,
     user,
+    visibility: initial.visibility ?? 'PRIVATE',
     days: initial.days.map((day) => ({
       clientId: generateClientId(),
       id: day.id,
@@ -441,6 +445,18 @@ export function MealPlanDialog({
                     {loc.toUpperCase()}
                   </MenuItem>
                 ))}
+              </TextField>
+              <TextField
+                select
+                label={t('common.labels.visibility')}
+                name="visibility"
+                value={values.visibility}
+                onChange={handleFieldChange}
+                required
+                fullWidth
+              >
+                <MenuItem value="PRIVATE">{t('common.visibility.private')}</MenuItem>
+                <MenuItem value="PUBLIC">{t('common.visibility.public')}</MenuItem>
               </TextField>
             </Stack>
 
