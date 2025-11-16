@@ -2,7 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 import { mapEquipmentUsecaseToGql } from '../equipment.mapper';
 
 import { EquipmentVisibility } from '@src/graphql/sport/equipment/equipment.gql.types';
-import type { EquipmentUsecaseModel } from '@usecases/equipment/equipment.usecase.model';
+import type { EquipmentUsecaseModel } from '@src/usecases/sport/equipment/equipment.usecase.model';
 
 describe('mapEquipmentUsecaseToGql', () => {
   it('maps visibility to the GraphQL enum', () => {

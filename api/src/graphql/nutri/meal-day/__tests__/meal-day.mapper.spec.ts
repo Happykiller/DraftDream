@@ -2,7 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 import { mapMealDayUsecaseToGql } from '../meal-day.mapper';
 
 import { MealDayVisibility } from '@src/graphql/nutri/meal-day/meal-day.gql.types';
-import type { MealDayUsecaseModel } from '@usecases/meal-day/meal-day.usecase.model';
+import type { MealDayUsecaseModel } from '@src/usecases/nutri/meal-day/meal-day.usecase.model';
 
 describe('mapMealDayUsecaseToGql', () => {
   it('clones identifiers arrays to avoid shared references', () => {

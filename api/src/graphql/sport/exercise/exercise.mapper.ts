@@ -1,5 +1,5 @@
 // src/graphql/exercise/exercise.mapper.ts
-import { ExerciseUsecaseModel } from '@usecases/exercise/exercise.usecase.model';
+import { ExerciseUsecaseModel } from '@src/usecases/sport/exercise/exercise.usecase.model';
 import { ExerciseGql, ExerciseVisibility } from '@src/graphql/sport/exercise/exercise.gql.types';
 
 export function mapExerciseUsecaseToGql(m: ExerciseUsecaseModel): ExerciseGql {

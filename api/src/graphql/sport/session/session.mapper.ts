@@ -1,5 +1,5 @@
 // src\graphql\session\session.mapper.ts
-import { SessionUsecaseModel } from '@usecases/session/session.usecase.model';
+import { SessionUsecaseModel } from '@src/usecases/sport/session/session.usecase.model';
 import { SessionSportGql } from '@src/graphql/sport/session/session.gql.types';
 
 export function mapSessionUsecaseToGql(m: SessionUsecaseModel): SessionSportGql {

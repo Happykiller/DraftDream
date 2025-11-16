@@ -2,7 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 import { mapMealTypeUsecaseToGql } from '../meal-type.mapper';
 
 import { MealTypeVisibility } from '@src/graphql/nutri/meal-type/meal-type.gql.types';
-import type { MealTypeUsecaseModel } from '@usecases/meal-type/meal-type.usecase.model';
+import type { MealTypeUsecaseModel } from '@src/usecases/nutri/meal-type/meal-type.usecase.model';
 
 describe('mapMealTypeUsecaseToGql', () => {
   it('casts visibility to the GraphQL enum', () => {

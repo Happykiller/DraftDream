@@ -1,5 +1,5 @@
 // src/graphql/meal-type/meal-type.mapper.ts
-import { MealTypeUsecaseModel } from '@usecases/meal-type/meal-type.usecase.model';
+import { MealTypeUsecaseModel } from '@src/usecases/nutri/meal-type/meal-type.usecase.model';
 
 import {
   MealTypeGql,

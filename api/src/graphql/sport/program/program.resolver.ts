@@ -22,8 +22,8 @@ import { buildSlug, slugifyCandidate } from '@src/common/slug.util';
 import type {
   ProgramSessionSnapshotUsecaseDto,
   UsecaseSession,
-} from '@usecases/program/program.usecase.dto';
-import type { ProgramUsecaseModel } from '@usecases/program/program.usecase.model';
+} from '@src/usecases/sport/program/program.usecase.dto';
+import type { ProgramUsecaseModel } from '@src/usecases/sport/program/program.usecase.model';
 
 @Resolver(() => ProgramGql)
 export class ProgramResolver {

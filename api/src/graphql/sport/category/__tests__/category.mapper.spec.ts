@@ -1,8 +1,8 @@
 import { describe, expect, it } from '@jest/globals';
 import { mapCategoryUsecaseToGql } from '../category.mapper';
 
-import { CategoryVisibility } from '@graphql/category/category.gql.types';
-import type { CategoryUsecaseModel } from '@usecases/category/category.usecase.model';
+import { CategoryVisibility } from '@graphql/sport/category/category.gql.types';
+import type { CategoryUsecaseModel } from '@src/usecases/sport/category/category.usecase.model';
 
 describe('mapCategoryUsecaseToGql', () => {
   it('casts visibility and copies metadata', () => {

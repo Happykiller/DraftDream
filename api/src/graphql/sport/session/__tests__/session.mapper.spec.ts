@@ -1,7 +1,7 @@
 import { describe, expect, it } from '@jest/globals';
 import { mapSessionUsecaseToGql } from '../session.mapper';
 
-import type { SessionUsecaseModel } from '@usecases/session/session.usecase.model';
+import type { SessionUsecaseModel } from '@src/usecases/sport/session/session.usecase.model';
 
 describe('mapSessionUsecaseToGql', () => {
   it('copies identifiers and metadata', () => {

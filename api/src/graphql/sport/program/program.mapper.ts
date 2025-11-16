@@ -9,7 +9,7 @@ import {
   ProgramUsecaseModel,
   ProgramSessionUsecaseModel,
   ProgramExerciseUsecaseModel,
-} from '@usecases/program/program.usecase.model';
+} from '@src/usecases/sport/program/program.usecase.model';
 
 const mapExercise = (exercise: ProgramExerciseUsecaseModel): ProgramSessionExerciseGql => ({
   id: exercise.id,

@@ -23,7 +23,7 @@ import { TagGql } from '@graphql/tag/tag.gql.types';
 import { mapTagUsecaseToGql } from '@graphql/tag/tag.mapper';
 import inversify from '@src/inversify/investify';
 import { mapExerciseUsecaseToGql } from '@src/graphql/sport/exercise/exercise.mapper';
-import type { UsecaseSession } from '@usecases/program/program.usecase.dto';
+import type { UsecaseSession } from '@src/usecases/sport/program/program.usecase.dto';
 
 @Resolver(() => ExerciseGql)
 export class ExerciseResolver {

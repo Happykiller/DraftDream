@@ -8,7 +8,7 @@ export class DeleteClientActivityPreferenceUsecase {
 
   async execute(dto: DeleteClientActivityPreferenceUsecaseDto): Promise<boolean> {
     try {
-      return this.inversify.bddService.clientActivityPreference.delete(dto.id);
+      return await this.inversify.bddService.clientActivityPreference.delete(dto.id);
     } catch (error: any) {
       this.inversify.loggerService.error(`DeleteClientActivityPreferenceUsecase#execute => ${error?.message ?? error}`);
       throw new Error(ERRORS.DELETE_CLIENT_ACTIVITY_PREFERENCE_USECASE);

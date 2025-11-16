@@ -1,5 +1,5 @@
 // src/graphql/category/category.mapper.ts
-import { CategoryUsecaseModel } from '@usecases/category/category.usecase.model';
+import { CategoryUsecaseModel } from '@src/usecases/sport/category/category.usecase.model';
 import { CategoryGql, CategoryVisibility } from './category.gql.types';
 
 export function mapCategoryUsecaseToGql(m: CategoryUsecaseModel): CategoryGql {

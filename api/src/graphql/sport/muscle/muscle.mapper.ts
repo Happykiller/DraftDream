@@ -1,5 +1,5 @@
 // src/graphql/muscle/muscle.mapper.ts
-import { MuscleUsecaseModel } from '@usecases/muscle/muscle.usecase.model';
+import { MuscleUsecaseModel } from '@src/usecases/sport/muscle/muscle.usecase.model';
 import { MuscleGql, MuscleVisibility } from '@src/graphql/sport/muscle/muscle.gql.types';
 
 export function mapMuscleUsecaseToGql(m: MuscleUsecaseModel): MuscleGql {

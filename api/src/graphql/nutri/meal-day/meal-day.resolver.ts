@@ -27,7 +27,7 @@ import { MealGql } from '@src/graphql/nutri/meal/meal.gql.types';
 import { UserGql } from '@graphql/user/user.gql.types';
 import { mapUserUsecaseToGql } from '@graphql/user/user.mapper';
 import inversify from '@src/inversify/investify';
-import type { UsecaseSession } from '@usecases/program/program.usecase.dto';
+import type { UsecaseSession } from '@src/usecases/sport/program/program.usecase.dto';
 
 @Resolver(() => MealDayGql)
 export class MealDayResolver {

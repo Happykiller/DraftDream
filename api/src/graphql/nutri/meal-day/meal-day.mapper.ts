@@ -1,6 +1,6 @@
 // src/graphql/meal-day/meal-day.mapper.ts
 
-import type { MealDayUsecaseModel } from '@usecases/meal-day/meal-day.usecase.model';
+import type { MealDayUsecaseModel } from '@src/usecases/nutri/meal-day/meal-day.usecase.model';
 
 import { MealDayGql, MealDayVisibility } from '@src/graphql/nutri/meal-day/meal-day.gql.types';
 

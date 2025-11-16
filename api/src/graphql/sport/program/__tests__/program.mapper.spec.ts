@@ -1,7 +1,7 @@
 import { describe, expect, it } from '@jest/globals';
 import { mapProgramUsecaseToGql } from '../program.mapper';
 
-import type { ProgramUsecaseModel } from '@usecases/program/program.usecase.model';
+import type { ProgramUsecaseModel } from '@src/usecases/sport/program/program.usecase.model';
 
 describe('mapProgramUsecaseToGql', () => {
   it('maps nested sessions and exercises to GraphQL snapshots', () => {

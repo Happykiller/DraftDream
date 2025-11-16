@@ -2,7 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 import { mapExerciseUsecaseToGql } from '../exercise.mapper';
 
 import { ExerciseVisibility } from '@src/graphql/sport/exercise/exercise.gql.types';
-import type { ExerciseUsecaseModel } from '@usecases/exercise/exercise.usecase.model';
+import type { ExerciseUsecaseModel } from '@src/usecases/sport/exercise/exercise.usecase.model';
 
 describe('mapExerciseUsecaseToGql', () => {
   it('transforms identifiers arrays and enums for GraphQL', () => {

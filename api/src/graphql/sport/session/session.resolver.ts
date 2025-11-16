@@ -15,7 +15,7 @@ import {
 import { UserGql } from '@graphql/user/user.gql.types';
 import { mapUserUsecaseToGql } from '@graphql/user/user.mapper';
 import { mapSessionUsecaseToGql } from '@src/graphql/sport/session/session.mapper';
-import type { UsecaseSession } from '@usecases/program/program.usecase.dto';
+import type { UsecaseSession } from '@src/usecases/sport/program/program.usecase.dto';
 
 @Resolver(() => SessionSportGql)
 export class SessionResolver {

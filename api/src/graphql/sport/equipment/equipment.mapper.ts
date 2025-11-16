@@ -1,5 +1,5 @@
 // src/graphql/equipment/equipment.mapper.ts
-import { EquipmentUsecaseModel } from '@usecases/equipment/equipment.usecase.model';
+import { EquipmentUsecaseModel } from '@src/usecases/sport/equipment/equipment.usecase.model';
 import { EquipmentGql, EquipmentVisibility } from '@src/graphql/sport/equipment/equipment.gql.types';
 
 export function mapEquipmentUsecaseToGql(m: EquipmentUsecaseModel): EquipmentGql {

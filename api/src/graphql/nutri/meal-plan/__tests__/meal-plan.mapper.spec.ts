@@ -3,7 +3,7 @@ import { mapMealPlanUsecaseToGql } from '../meal-plan.mapper';
 
 import { MealTypeVisibility } from '@src/graphql/nutri/meal-type/meal-type.gql.types';
 import { MealPlanVisibility } from '@src/graphql/nutri/meal-plan/meal-plan.gql.types';
-import type { MealPlanUsecaseModel } from '@usecases/meal-plan/meal-plan.usecase.model';
+import type { MealPlanUsecaseModel } from '@src/usecases/nutri/meal-plan/meal-plan.usecase.model';
 
 describe('mapMealPlanUsecaseToGql', () => {
   it('normalizes nullable fields and nested snapshots', () => {

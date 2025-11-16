@@ -12,7 +12,7 @@ import {
   MealPlanMealTypeUsecaseModel,
   MealPlanMealUsecaseModel,
   MealPlanUsecaseModel,
-} from '@usecases/meal-plan/meal-plan.usecase.model';
+} from '@src/usecases/nutri/meal-plan/meal-plan.usecase.model';
 
 const mapMealType = (type: MealPlanMealTypeUsecaseModel): MealPlanMealTypeSnapshotGql => ({
   id: type.id ?? null,

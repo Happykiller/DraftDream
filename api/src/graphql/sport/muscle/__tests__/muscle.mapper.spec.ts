@@ -2,7 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 import { mapMuscleUsecaseToGql } from '../muscle.mapper';
 
 import { MuscleVisibility } from '@src/graphql/sport/muscle/muscle.gql.types';
-import type { MuscleUsecaseModel } from '@usecases/muscle/muscle.usecase.model';
+import type { MuscleUsecaseModel } from '@src/usecases/sport/muscle/muscle.usecase.model';
 
 describe('mapMuscleUsecaseToGql', () => {
   it('maps fields and casts visibility enum', () => {
