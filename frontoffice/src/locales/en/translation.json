@@ -60,6 +60,8 @@
       "search_aria": "Search clients",
       "empty_title": "No clients yet",
       "empty_description": "Create your first client to centralize their onboarding information.",
+      "expand_details": "Show more details",
+      "collapse_details": "Show fewer details",
       "actions": {
         "edit": "Edit client",
         "delete": "Delete client"

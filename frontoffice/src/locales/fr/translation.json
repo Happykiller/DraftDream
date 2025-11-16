@@ -60,6 +60,8 @@
       "search_aria": "Rechercher des clients",
       "empty_title": "Aucun client pour le moment",
       "empty_description": "Ajoutez votre premier client pour suivre son onboarding.",
+      "expand_details": "Afficher plus de détails",
+      "collapse_details": "Afficher moins de détails",
       "actions": {
         "edit": "Modifier le client",
         "delete": "Supprimer le client"
