@@ -94,6 +94,13 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
         flex: 1,
       },
       {
+        field: 'creator',
+        headerName: t('common.labels.creator'),
+        renderCell: (params) => params.row.creator?.email ?? params.row.createdBy ?? t('common.messages.no_value'),
+        minWidth: 200,
+        flex: 1,
+      },
+      {
         field: 'objectives',
         headerName: t('common.labels.objectives'),
         renderCell: (params) => renderList(params.row.objectives),
@@ -116,6 +123,12 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
         field: 'desiredStartDate',
         headerName: t('common.labels.desired_start_date'),
         renderCell: (params) => (params.value ? fmtDate(params.value) : t('common.messages.no_value')),
+        minWidth: 160,
+      },
+      {
+        field: 'createdAt',
+        headerName: t('common.labels.created'),
+        renderCell: (params) => (params.value ? fmtDate(params.value as string) : t('common.messages.no_value')),
         minWidth: 160,
       },
       {
