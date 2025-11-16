@@ -1,5 +1,6 @@
 // src/components/clients/ClientFormPanel.tsx
 import * as React from 'react';
+import { alpha, useTheme } from '@mui/material/styles';
 import { Add, Edit } from '@mui/icons-material';
 import {
   Autocomplete,
@@ -147,6 +148,7 @@ export function ClientFormPanel({
   onSubmit,
 }: ClientFormPanelProps): React.JSX.Element {
   const [values, setValues] = React.useState<ClientFormValues>(initialValues ?? DEFAULT_VALUES);
+  const theme = useTheme();
 
   React.useEffect(() => {
     setValues(initialValues ?? DEFAULT_VALUES);
@@ -169,6 +171,10 @@ export function ClientFormPanel({
   const subtitle = mode === 'edit' ? copy.editSubtitle : copy.subtitle;
   const submitLabel = mode === 'edit' ? copy.fields.submitEdit : copy.fields.submitCreate;
   const HeaderIcon = mode === 'edit' ? Edit : Add;
+  const brandRed = theme.palette.error.main;
+  const headerBackground = alpha(brandRed, 0.08);
+  const headerBorder = alpha(brandRed, 0.24);
+  const headerContrast = theme.palette.getContrastText(brandRed);
 
   return (
     <Stack
@@ -178,15 +184,34 @@ export function ClientFormPanel({
         minHeight: { xs: 'calc(100dvh - 56px)', sm: 'calc(100dvh - 64px)' },
         maxHeight: { xs: 'calc(100dvh - 56px)', sm: 'calc(100dvh - 64px)' },
         overflow: 'hidden',
+        bgcolor: theme.palette.backgroundColor,
       }}
     >
       {/* General information */}
-      <Box sx={{ flexGrow: 1, minHeight: 0, overflow: 'hidden', p: { xs: 1.5, md: 2.5 } }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: 0,
+          px: { xs: 1.5, md: 2.5 },
+          py: { xs: 2, md: 3 },
+        }}
+      >
         <Card
           variant="outlined"
-          sx={{ flexGrow: 1, minHeight: '100%', display: 'flex', flexDirection: 'column' }}
+          sx={{ flexGrow: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}
         >
-          <Box component="header" sx={{ px: 2, py: 1.5, borderBottom: '1px solid', borderColor: 'divider' }}>
+          <Box
+            component="header"
+            sx={{
+              px: 2,
+              py: 1.5,
+              borderBottom: '1px solid',
+              borderColor: headerBorder,
+              backgroundColor: headerBackground,
+            }}
+          >
             <Stack direction="row" spacing={2} alignItems="center">
               <Box
                 aria-hidden
@@ -194,11 +219,12 @@ export function ClientFormPanel({
                   width: 48,
                   height: 48,
                   borderRadius: 2,
-                  bgcolor: 'warning.main',
-                  color: 'warning.contrastText',
+                  bgcolor: brandRed,
+                  color: headerContrast,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
+                  flexShrink: 0,
                 }}
               >
                 <HeaderIcon />
@@ -222,7 +248,7 @@ export function ClientFormPanel({
               '&:last-child': { paddingBottom: 0 },
             }}
           >
-            <Box sx={{ flexGrow: 1, overflow: 'auto', p: { xs: 2, md: 3 } }}>
+            <Box sx={{ flexGrow: 1, minHeight: 0, overflow: 'auto', p: { xs: 2, md: 3 } }}>
               <Stack spacing={3}>
                 <Stack spacing={2}>
                   <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
@@ -480,7 +506,7 @@ export function ClientFormPanel({
                 <Button color="inherit" onClick={onCancel} disabled={submitting}>
                   {copy.fields.cancel}
                 </Button>
-                <Button type="submit" variant="contained" disabled={submitting}>
+                <Button type="submit" variant="contained" color="error" disabled={submitting}>
                   {submitting ? `${submitLabel}…` : submitLabel}
                 </Button>
               </Stack>
