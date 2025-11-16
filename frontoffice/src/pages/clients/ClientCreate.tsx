@@ -3,12 +3,8 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  ClientFormPanel,
-  useClientFormValues,
-  type ClientFormCopy,
-  type ClientFormValues,
-} from '@components/clients/ClientFormPanel';
+import { ClientFormPanel, type ClientFormCopy } from '@components/clients/ClientFormPanel';
+import { useClientFormValues, type ClientFormValues } from '@components/clients/clientFormValues';
 
 import { useClientMetadataOptions } from '@hooks/clients/useClientMetadataOptions';
 import { useAsyncTask } from '@hooks/useAsyncTask';

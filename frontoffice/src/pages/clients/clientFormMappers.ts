@@ -1,5 +1,5 @@
 // src/pages/clients/clientFormMappers.ts
-import type { ClientFormValues } from '@components/clients/ClientFormPanel';
+import type { ClientFormValues } from '@components/clients/clientFormValues';
 
 import type { ClientCreateInput, ClientUpdateInput } from '@services/graphql/clients.service';
 

@@ -4,12 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 import { Alert, Button, Stack } from '@mui/material';
 
-import {
-  ClientFormPanel,
-  useClientFormValues,
-  type ClientFormCopy,
-  type ClientFormValues,
-} from '@components/clients/ClientFormPanel';
+import { ClientFormPanel, type ClientFormCopy } from '@components/clients/ClientFormPanel';
+import { useClientFormValues, type ClientFormValues } from '@components/clients/clientFormValues';
 
 import { useClientMetadataOptions } from '@hooks/clients/useClientMetadataOptions';
 import { useAsyncTask } from '@hooks/useAsyncTask';
@@ -26,11 +22,14 @@ export function ClientEdit(): React.JSX.Element {
   const navigate = useNavigate();
   const loaderData = useLoaderData() as ClientEditLoaderData;
   const metadata = useClientMetadataOptions();
+  const hasClient = loaderData.status === 'success' && Boolean(loaderData.client);
+  const client = hasClient ? loaderData.client : null;
+  const clientId = client?.id ?? null;
+  const initialValues = useClientFormValues(client);
   const { execute } = useAsyncTask();
   const flashSuccess = useFlashStore((state) => state.success);
   const flashError = useFlashStore((state) => state.error);
   const [submitting, setSubmitting] = React.useState(false);
-
   const copy = React.useMemo(
     () =>
       t('clients.form', {
@@ -39,24 +38,14 @@ export function ClientEdit(): React.JSX.Element {
     [t],
   );
 
-  if (loaderData.status !== 'success' || !loaderData.client) {
-    return (
-      <Stack spacing={2} sx={{ mt: 4, alignItems: 'center' }}>
-        <Alert severity="error">{t('clients.form.not_found')}</Alert>
-        <Button variant="contained" onClick={() => navigate('/clients')}>
-          {t('clients.actions.back_to_list')}
-        </Button>
-      </Stack>
-    );
-  }
-
-  const initialValues = useClientFormValues(loaderData.client);
-
   const handleSubmit = React.useCallback(
     async (values: ClientFormValues) => {
+      if (!clientId) {
+        return;
+      }
       setSubmitting(true);
       try {
-        await execute(() => clientUpdate(buildClientUpdateInput(loaderData.client!.id, values)));
+        await execute(() => clientUpdate(buildClientUpdateInput(clientId, values)));
         flashSuccess(t('clients.notifications.update_success'));
         navigate('/clients');
       } catch (error) {
@@ -66,12 +55,23 @@ export function ClientEdit(): React.JSX.Element {
         setSubmitting(false);
       }
     },
-    [execute, flashError, flashSuccess, loaderData.client, navigate, t],
+    [clientId, execute, flashError, flashSuccess, navigate, t],
   );
 
   const handleCancel = React.useCallback(() => {
     navigate('/clients');
   }, [navigate]);
+
+  if (!hasClient) {
+    return (
+      <Stack spacing={2} sx={{ mt: 4, alignItems: 'center' }}>
+        <Alert severity="error">{t('clients.form.not_found')}</Alert>
+        <Button variant="contained" onClick={() => navigate('/clients')}>
+          {t('clients.actions.back_to_list')}
+        </Button>
+      </Stack>
+    );
+  }
 
   return (
     <ClientFormPanel
