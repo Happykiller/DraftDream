@@ -48,6 +48,11 @@ import { ListClientObjectivesUsecase } from '@usecases/client/objective/list.cli
 import { CreateClientObjectiveUsecase } from '@usecases/client/objective/create.client-objective.usecase';
 import { UpdateClientObjectiveUsecase } from '@usecases/client/objective/update.client-objective.usecase';
 import { DeleteClientObjectiveUsecase } from '@usecases/client/objective/delete.client-objective.usecase';
+import { GetClientActivityPreferenceUsecase } from '@usecases/client/activity-preference/get.client-activity-preference.usecase';
+import { ListClientActivityPreferencesUsecase } from '@usecases/client/activity-preference/list.client-activity-preference.usecase';
+import { CreateClientActivityPreferenceUsecase } from '@usecases/client/activity-preference/create.client-activity-preference.usecase';
+import { UpdateClientActivityPreferenceUsecase } from '@usecases/client/activity-preference/update.client-activity-preference.usecase';
+import { DeleteClientActivityPreferenceUsecase } from '@usecases/client/activity-preference/delete.client-activity-preference.usecase';
 import { GetMealTypeUsecase } from '@usecases/meal-type/get.meal-type.usecase';
 import { ListMealTypesUsecase } from '@usecases/meal-type/list.meal-type.usecase';
 import { CreateMealTypeUsecase } from '@usecases/meal-type/create.meal-type.usecase';
@@ -120,6 +125,11 @@ export class Inversify {
   listClientObjectivesUsecase: ListClientObjectivesUsecase;
   updateClientObjectiveUsecase: UpdateClientObjectiveUsecase;
   deleteClientObjectiveUsecase: DeleteClientObjectiveUsecase;
+  getClientActivityPreferenceUsecase: GetClientActivityPreferenceUsecase;
+  createClientActivityPreferenceUsecase: CreateClientActivityPreferenceUsecase;
+  listClientActivityPreferencesUsecase: ListClientActivityPreferencesUsecase;
+  updateClientActivityPreferenceUsecase: UpdateClientActivityPreferenceUsecase;
+  deleteClientActivityPreferenceUsecase: DeleteClientActivityPreferenceUsecase;
   getMealTypeUsecase: GetMealTypeUsecase;
   listMealTypesUsecase: ListMealTypesUsecase;
   createMealTypeUsecase: CreateMealTypeUsecase;
@@ -183,6 +193,12 @@ export class Inversify {
     this.listClientObjectivesUsecase = new ListClientObjectivesUsecase(this);
     this.updateClientObjectiveUsecase = new UpdateClientObjectiveUsecase(this);
     this.deleteClientObjectiveUsecase = new DeleteClientObjectiveUsecase(this);
+    // usecases client activity preference
+    this.getClientActivityPreferenceUsecase = new GetClientActivityPreferenceUsecase(this);
+    this.createClientActivityPreferenceUsecase = new CreateClientActivityPreferenceUsecase(this);
+    this.listClientActivityPreferencesUsecase = new ListClientActivityPreferencesUsecase(this);
+    this.updateClientActivityPreferenceUsecase = new UpdateClientActivityPreferenceUsecase(this);
+    this.deleteClientActivityPreferenceUsecase = new DeleteClientActivityPreferenceUsecase(this);
     // usecases meal type
     this.createMealTypeUsecase = new CreateMealTypeUsecase(this);
     this.getMealTypeUsecase = new GetMealTypeUsecase(this);
