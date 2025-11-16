@@ -51,6 +51,10 @@ export function ClientCard({ client, onEdit, onDelete }: ClientCardProps): React
   }, [client.budget, t]);
 
   const shouldShowStatusBadge = Boolean(client.status?.label);
+  const shouldShowObjectiveBadges = (client.objectives?.length ?? 0) > 0;
+  const shouldShowPreferenceBadges = (client.activityPreferences?.length ?? 0) > 0;
+  const shouldShowMetadataBadges =
+    shouldShowStatusBadge || shouldShowObjectiveBadges || shouldShowPreferenceBadges;
   const overflowToggleLabel = isExpanded
     ? t('clients.list.collapse_details')
     : t('clients.list.expand_details');
@@ -132,18 +136,28 @@ export function ClientCard({ client, onEdit, onDelete }: ClientCardProps): React
             </Typography>
           }
           subheader={
-            client.email || shouldShowStatusBadge ? (
+            client.email || shouldShowMetadataBadges ? (
               <Stack spacing={0.75} sx={{ pt: 0.5 }}>
                 {client.email ? (
                   <Typography variant="body2" color="text.secondary">
                     {client.email}
                   </Typography>
                 ) : null}
-                {shouldShowStatusBadge ? (
+                {shouldShowMetadataBadges ? (
                   <Stack direction="row" spacing={0.5} flexWrap="wrap">
                     {client.status?.label ? (
                       <Chip label={client.status.label} size="small" color="primary" />
                     ) : null}
+                    {shouldShowObjectiveBadges
+                      ? client.objectives?.map((objective) => (
+                          <Chip key={objective.id ?? objective.label} label={objective.label} size="small" />
+                        ))
+                      : null}
+                    {shouldShowPreferenceBadges
+                      ? client.activityPreferences?.map((preference) => (
+                          <Chip key={preference.id ?? preference.label} label={preference.label} size="small" />
+                        ))
+                      : null}
                   </Stack>
                 ) : null}
               </Stack>
@@ -177,28 +191,6 @@ export function ClientCard({ client, onEdit, onDelete }: ClientCardProps): React
             <Phone color="action" fontSize="small" />
             <Typography variant="body2">{client.phone || t('clients.list.card.no_phone')}</Typography>
           </Stack>
-
-          {client.objectives?.length ? (
-            <Stack spacing={0.5}>
-              <Typography variant="subtitle2" color="text.secondary">
-                {t('clients.list.card.objectives')}
-              </Typography>
-              <Typography variant="body2">
-                {client.objectives.map((objective) => objective.label).join(', ')}
-              </Typography>
-            </Stack>
-          ) : null}
-
-          {client.activityPreferences?.length ? (
-            <Stack spacing={0.5}>
-              <Typography variant="subtitle2" color="text.secondary">
-                {t('clients.list.card.preferences')}
-              </Typography>
-              <Typography variant="body2">
-                {client.activityPreferences.map((pref) => pref.label).join(', ')}
-              </Typography>
-            </Stack>
-          ) : null}
 
           {client.notes ? (
             <Stack spacing={0.5}>
@@ -236,8 +228,6 @@ export function ClientCard({ client, onEdit, onDelete }: ClientCardProps): React
             </Stack>
           ) : null}
         </CardContent>
-
-        <Divider />
 
         <CardActions sx={{ justifyContent: 'space-between', px: 2, py: 1.5 }}>
           <Typography variant="caption" color="text.secondary">
