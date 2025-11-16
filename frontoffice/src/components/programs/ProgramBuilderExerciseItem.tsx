@@ -289,33 +289,6 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
         justifyContent="space-between"
       >
         <Stack direction="row" spacing={1.5} alignItems="flex-start">
-          <Stack spacing={0.5} alignItems="center" pt={0.25}>
-            {/* Reorder actions */}
-            <Tooltip title={tooltips.move_exercise_up} arrow>
-              <span style={{ display: 'inline-flex' }}>
-                <IconButton
-                  size="small"
-                  onClick={handleMoveUpClick}
-                  disabled={!canMoveUp}
-                  aria-label="move-exercise-up"
-                >
-                  <KeyboardArrowUp fontSize="small" />
-                </IconButton>
-              </span>
-            </Tooltip>
-            <Tooltip title={tooltips.move_exercise_down} arrow>
-              <span style={{ display: 'inline-flex' }}>
-                <IconButton
-                  size="small"
-                  onClick={handleMoveDownClick}
-                  disabled={!canMoveDown}
-                  aria-label="move-exercise-down"
-                >
-                  <KeyboardArrowDown fontSize="small" />
-                </IconButton>
-              </span>
-            </Tooltip>
-          </Stack>
           <Typography variant="subtitle2" sx={{ fontWeight: 700, minWidth: 24 }}>
             {index + 1}.
           </Typography>
@@ -444,26 +417,44 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
           </Stack>
         </Stack>
 
-        {/* Edit action */}
-        <Tooltip title={tooltips.edit_exercise} arrow>
-          <span style={{ display: 'inline-flex' }}>
-            <IconButton
-              size="small"
-              onClick={handleEditClick}
-              aria-label="edit-exercise-template"
-            >
-              <Edit fontSize="small" />
-            </IconButton>
-          </span>
-        </Tooltip>
-        <Box
-          sx={{
-            position: 'absolute',
-            right: theme.spacing(1.5),
-            bottom: theme.spacing(1.5),
-          }}
-        >
-          {/* Remove action */}
+        <Stack direction="row" spacing={0.5} alignItems="flex-start">
+          <Tooltip title={tooltips.move_exercise_up} arrow>
+            <span style={{ display: 'inline-flex' }}>
+              <IconButton
+                size="small"
+                onClick={handleMoveUpClick}
+                disabled={!canMoveUp}
+                aria-label="move-exercise-up"
+              >
+                <KeyboardArrowUp fontSize="small" />
+              </IconButton>
+            </span>
+          </Tooltip>
+          <Tooltip title={tooltips.move_exercise_down} arrow>
+            <span style={{ display: 'inline-flex' }}>
+              <IconButton
+                size="small"
+                onClick={handleMoveDownClick}
+                disabled={!canMoveDown}
+                aria-label="move-exercise-down"
+              >
+                <KeyboardArrowDown fontSize="small" />
+              </IconButton>
+            </span>
+          </Tooltip>
+          {onEdit ? (
+            <Tooltip title={tooltips.edit_exercise} arrow>
+              <span style={{ display: 'inline-flex' }}>
+                <IconButton
+                  size="small"
+                  onClick={handleEditClick}
+                  aria-label="edit-exercise-template"
+                >
+                  <Edit fontSize="small" />
+                </IconButton>
+              </span>
+            </Tooltip>
+          ) : null}
           <Tooltip title={tooltips.delete_exercise} arrow>
             <span style={{ display: 'inline-flex' }}>
               <IconButton
@@ -475,7 +466,7 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
               </IconButton>
             </span>
           </Tooltip>
-        </Box>
+        </Stack>
       </Stack>
 
     </Paper>

@@ -405,33 +405,6 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
         <Stack spacing={0.75}>
           <Stack direction="row" justifyContent="space-between" alignItems="center">
             <Stack direction="row" spacing={1.5} alignItems="center">
-              <Stack spacing={0.5} alignItems="center">
-                {/* Session reorder actions */}
-                <Tooltip title={tooltips.move_session_up} arrow>
-                  <span style={{ display: 'inline-flex' }}>
-                    <IconButton
-                      size="small"
-                      onClick={handleMoveUpClick}
-                      disabled={!canMoveUp}
-                      aria-label="move-session-up"
-                    >
-                      <KeyboardArrowUp fontSize="small" />
-                    </IconButton>
-                  </span>
-                </Tooltip>
-                <Tooltip title={tooltips.move_session_down} arrow>
-                  <span style={{ display: 'inline-flex' }}>
-                    <IconButton
-                      size="small"
-                      onClick={handleMoveDownClick}
-                      disabled={!canMoveDown}
-                      aria-label="move-session-down"
-                    >
-                      <KeyboardArrowDown fontSize="small" />
-                    </IconButton>
-                  </span>
-                </Tooltip>
-              </Stack>
               <Stack direction="row" spacing={1} alignItems="center">
                 <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                   {builderCopy.structure.session_prefix} {index + 1} -
@@ -518,18 +491,44 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
                   </Typography>
                 )}
               </Tooltip>
-              {/* Delete session */}
-              <Tooltip title={tooltips.delete_session} arrow>
-                <span style={{ display: 'inline-flex' }}>
-                  <IconButton
-                    size="small"
-                    onClick={handleRemoveSession}
-                    aria-label="delete-session"
-                  >
-                    <DeleteOutline fontSize="small" />
-                  </IconButton>
-                </span>
-              </Tooltip>
+              <Stack direction="row" spacing={0.5} alignItems="center">
+                <Tooltip title={tooltips.move_session_up} arrow>
+                  <span style={{ display: 'inline-flex' }}>
+                    <IconButton
+                      size="small"
+                      onClick={handleMoveUpClick}
+                      disabled={!canMoveUp}
+                      aria-label="move-session-up"
+                    >
+                      <KeyboardArrowUp fontSize="small" />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+                <Tooltip title={tooltips.move_session_down} arrow>
+                  <span style={{ display: 'inline-flex' }}>
+                    <IconButton
+                      size="small"
+                      onClick={handleMoveDownClick}
+                      disabled={!canMoveDown}
+                      aria-label="move-session-down"
+                    >
+                      <KeyboardArrowDown fontSize="small" />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+                {/* Delete session */}
+                <Tooltip title={tooltips.delete_session} arrow>
+                  <span style={{ display: 'inline-flex' }}>
+                    <IconButton
+                      size="small"
+                      onClick={handleRemoveSession}
+                      aria-label="delete-session"
+                    >
+                      <DeleteOutline fontSize="small" />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+              </Stack>
             </Stack>
           </Stack>
         {/* Session description */}
