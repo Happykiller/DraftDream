@@ -1,0 +1,493 @@
+// src/components/clients/ClientFormPanel.tsx
+import * as React from 'react';
+import { Add, Edit } from '@mui/icons-material';
+import {
+  Autocomplete,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Divider,
+  Grid,
+  MenuItem,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
+
+import type { Client } from '@types/clients';
+
+import type { ClientMetadataOption } from '@hooks/clients/useClientMetadataOptions';
+
+export interface ClientFormValues {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  statusId: string | null;
+  levelId: string | null;
+  sourceId: string | null;
+  objectiveIds: string[];
+  activityPreferenceIds: string[];
+  medicalConditions: string;
+  allergies: string;
+  notes: string;
+  budget: string;
+  dealDescription: string;
+  desiredStartDate: string;
+}
+
+export interface ClientFormCopy {
+  title: string;
+  subtitle: string;
+  editTitle: string;
+  editSubtitle: string;
+  sections: {
+    identity: string;
+    profile: string;
+    commercial: string;
+    notes: string;
+  };
+  fields: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    status: string;
+    level: string;
+    source: string;
+    objectives: string;
+    objectivesHelper: string;
+    activityPreferences: string;
+    activityPreferencesHelper: string;
+    medicalConditions: string;
+    allergies: string;
+    notes: string;
+    budget: string;
+    dealDescription: string;
+    desiredStartDate: string;
+    cancel: string;
+    submitCreate: string;
+    submitEdit: string;
+  };
+}
+
+export interface ClientFormPanelProps {
+  mode: 'create' | 'edit';
+  initialValues: ClientFormValues;
+  metadata: {
+    statuses: ClientMetadataOption[];
+    levels: ClientMetadataOption[];
+    sources: ClientMetadataOption[];
+    objectives: ClientMetadataOption[];
+    activityPreferences: ClientMetadataOption[];
+  };
+  metadataLoading: boolean;
+  submitting: boolean;
+  copy: ClientFormCopy;
+  onCancel: () => void;
+  onSubmit: (values: ClientFormValues) => Promise<void> | void;
+}
+
+const DEFAULT_VALUES: ClientFormValues = {
+  firstName: '',
+  lastName: '',
+  email: '',
+  phone: '',
+  statusId: null,
+  levelId: null,
+  sourceId: null,
+  objectiveIds: [],
+  activityPreferenceIds: [],
+  medicalConditions: '',
+  allergies: '',
+  notes: '',
+  budget: '',
+  dealDescription: '',
+  desiredStartDate: '',
+};
+
+function normalizeClient(client?: Client | null): ClientFormValues {
+  if (!client) {
+    return DEFAULT_VALUES;
+  }
+
+  return {
+    firstName: client.firstName,
+    lastName: client.lastName,
+    email: client.email,
+    phone: client.phone ?? '',
+    statusId: client.statusId ?? null,
+    levelId: client.levelId ?? null,
+    sourceId: client.sourceId ?? null,
+    objectiveIds: client.objectiveIds ?? [],
+    activityPreferenceIds: client.activityPreferenceIds ?? [],
+    medicalConditions: client.medicalConditions ?? '',
+    allergies: client.allergies ?? '',
+    notes: client.notes ?? '',
+    budget: client.budget != null ? String(client.budget) : '',
+    dealDescription: client.dealDescription ?? '',
+    desiredStartDate: client.desiredStartDate ? client.desiredStartDate.slice(0, 10) : '',
+  } satisfies ClientFormValues;
+}
+
+export function useClientFormValues(client?: Client | null): ClientFormValues {
+  return React.useMemo(() => normalizeClient(client), [client]);
+}
+
+/** Large form layout mirroring the nutrition/program builders for client workflows. */
+export function ClientFormPanel({
+  mode,
+  initialValues,
+  metadata,
+  metadataLoading,
+  submitting,
+  copy,
+  onCancel,
+  onSubmit,
+}: ClientFormPanelProps): React.JSX.Element {
+  const [values, setValues] = React.useState<ClientFormValues>(initialValues ?? DEFAULT_VALUES);
+
+  React.useEffect(() => {
+    setValues(initialValues ?? DEFAULT_VALUES);
+  }, [initialValues]);
+
+  const handleChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = event.target;
+    setValues((prev) => ({ ...prev, [name]: value }));
+  }, []);
+
+  const handleSubmit = React.useCallback(
+    async (event: React.FormEvent) => {
+      event.preventDefault();
+      await onSubmit(values);
+    },
+    [onSubmit, values],
+  );
+
+  const title = mode === 'edit' ? copy.editTitle : copy.title;
+  const subtitle = mode === 'edit' ? copy.editSubtitle : copy.subtitle;
+  const submitLabel = mode === 'edit' ? copy.fields.submitEdit : copy.fields.submitCreate;
+  const HeaderIcon = mode === 'edit' ? Edit : Add;
+
+  return (
+    <Stack
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{
+        minHeight: { xs: 'calc(100dvh - 56px)', sm: 'calc(100dvh - 64px)' },
+        maxHeight: { xs: 'calc(100dvh - 56px)', sm: 'calc(100dvh - 64px)' },
+        overflow: 'hidden',
+      }}
+    >
+      {/* General information */}
+      <Box sx={{ flexGrow: 1, minHeight: 0, overflow: 'hidden', p: { xs: 1.5, md: 2.5 } }}>
+        <Card
+          variant="outlined"
+          sx={{ flexGrow: 1, minHeight: '100%', display: 'flex', flexDirection: 'column' }}
+        >
+          <Box component="header" sx={{ px: 2, py: 1.5, borderBottom: '1px solid', borderColor: 'divider' }}>
+            <Stack direction="row" spacing={2} alignItems="center">
+              <Box
+                aria-hidden
+                sx={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: 2,
+                  bgcolor: 'warning.main',
+                  color: 'warning.contrastText',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <HeaderIcon />
+              </Box>
+              <Stack spacing={0.5}>
+                <Typography variant="h6">{title}</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {subtitle}
+                </Typography>
+              </Stack>
+            </Stack>
+          </Box>
+
+          <CardContent
+            sx={{
+              flexGrow: 1,
+              minHeight: 0,
+              p: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              '&:last-child': { paddingBottom: 0 },
+            }}
+          >
+            <Box sx={{ flexGrow: 1, overflow: 'auto', p: { xs: 2, md: 3 } }}>
+              <Stack spacing={3}>
+                <Stack spacing={2}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                    {copy.sections.identity}
+                  </Typography>
+                  <Grid container spacing={2}>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <TextField
+                        label={copy.fields.firstName}
+                        name="firstName"
+                        value={values.firstName}
+                        onChange={handleChange}
+                        required
+                        fullWidth
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <TextField
+                        label={copy.fields.lastName}
+                        name="lastName"
+                        value={values.lastName}
+                        onChange={handleChange}
+                        required
+                        fullWidth
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <TextField
+                        label={copy.fields.email}
+                        name="email"
+                        type="email"
+                        value={values.email}
+                        onChange={handleChange}
+                        required
+                        fullWidth
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <TextField
+                        label={copy.fields.phone}
+                        name="phone"
+                        value={values.phone}
+                        onChange={handleChange}
+                        fullWidth
+                      />
+                    </Grid>
+                  </Grid>
+                </Stack>
+
+                <Divider />
+
+                <Stack spacing={2}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                    {copy.sections.profile}
+                  </Typography>
+                  <Grid container spacing={2}>
+                    <Grid size={{ xs: 12, md: 4 }}>
+                      <TextField
+                        select
+                        label={copy.fields.status}
+                        name="statusId"
+                        value={values.statusId ?? ''}
+                        onChange={(event) =>
+                          setValues((prev) => ({ ...prev, statusId: event.target.value || null }))
+                        }
+                        fullWidth
+                      >
+                        <MenuItem value="">
+                          <em>—</em>
+                        </MenuItem>
+                        {metadata.statuses.map((status) => (
+                          <MenuItem key={status.id} value={status.id}>
+                            {status.label}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 4 }}>
+                      <TextField
+                        select
+                        label={copy.fields.level}
+                        name="levelId"
+                        value={values.levelId ?? ''}
+                        onChange={(event) =>
+                          setValues((prev) => ({ ...prev, levelId: event.target.value || null }))
+                        }
+                        fullWidth
+                      >
+                        <MenuItem value="">
+                          <em>—</em>
+                        </MenuItem>
+                        {metadata.levels.map((level) => (
+                          <MenuItem key={level.id} value={level.id}>
+                            {level.label}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 4 }}>
+                      <TextField
+                        select
+                        label={copy.fields.source}
+                        name="sourceId"
+                        value={values.sourceId ?? ''}
+                        onChange={(event) =>
+                          setValues((prev) => ({ ...prev, sourceId: event.target.value || null }))
+                        }
+                        fullWidth
+                      >
+                        <MenuItem value="">
+                          <em>—</em>
+                        </MenuItem>
+                        {metadata.sources.map((source) => (
+                          <MenuItem key={source.id} value={source.id}>
+                            {source.label}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </Grid>
+                    <Grid size={{ xs: 12 }}>
+                      <Autocomplete
+                        multiple
+                        options={metadata.objectives}
+                        loading={metadataLoading}
+                        value={metadata.objectives.filter((opt) =>
+                          values.objectiveIds.includes(opt.id),
+                        )}
+                        onChange={(_, data) =>
+                          setValues((prev) => ({ ...prev, objectiveIds: data.map((opt) => opt.id) }))
+                        }
+                        getOptionLabel={(option) => option.label}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label={copy.fields.objectives}
+                            helperText={copy.fields.objectivesHelper}
+                          />
+                        )}
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 12 }}>
+                      <Autocomplete
+                        multiple
+                        options={metadata.activityPreferences}
+                        loading={metadataLoading}
+                        value={metadata.activityPreferences.filter((opt) =>
+                          values.activityPreferenceIds.includes(opt.id),
+                        )}
+                        onChange={(_, data) =>
+                          setValues((prev) => ({
+                            ...prev,
+                            activityPreferenceIds: data.map((opt) => opt.id),
+                          }))
+                        }
+                        getOptionLabel={(option) => option.label}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label={copy.fields.activityPreferences}
+                            helperText={copy.fields.activityPreferencesHelper}
+                          />
+                        )}
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 12 }}>
+                      <TextField
+                        label={copy.fields.medicalConditions}
+                        name="medicalConditions"
+                        value={values.medicalConditions}
+                        onChange={handleChange}
+                        multiline
+                        minRows={2}
+                        fullWidth
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 12 }}>
+                      <TextField
+                        label={copy.fields.allergies}
+                        name="allergies"
+                        value={values.allergies}
+                        onChange={handleChange}
+                        multiline
+                        minRows={2}
+                        fullWidth
+                      />
+                    </Grid>
+                  </Grid>
+                </Stack>
+
+                <Divider />
+
+                <Stack spacing={2}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                    {copy.sections.commercial}
+                  </Typography>
+                  <Grid container spacing={2}>
+                    <Grid size={{ xs: 12, md: 4 }}>
+                      <TextField
+                        label={copy.fields.budget}
+                        name="budget"
+                        type="number"
+                        value={values.budget}
+                        onChange={handleChange}
+                        fullWidth
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 4 }}>
+                      <TextField
+                        label={copy.fields.desiredStartDate}
+                        name="desiredStartDate"
+                        type="date"
+                        value={values.desiredStartDate}
+                        onChange={handleChange}
+                        fullWidth
+                        InputLabelProps={{ shrink: true }}
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 12 }}>
+                      <TextField
+                        label={copy.fields.dealDescription}
+                        name="dealDescription"
+                        value={values.dealDescription}
+                        onChange={handleChange}
+                        multiline
+                        minRows={2}
+                        fullWidth
+                      />
+                    </Grid>
+                  </Grid>
+                </Stack>
+
+                <Divider />
+
+                <Stack spacing={2}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                    {copy.sections.notes}
+                  </Typography>
+                  <TextField
+                    label={copy.fields.notes}
+                    name="notes"
+                    value={values.notes}
+                    onChange={handleChange}
+                    multiline
+                    minRows={3}
+                    fullWidth
+                  />
+                </Stack>
+              </Stack>
+            </Box>
+
+            <Divider />
+
+            <Box component="footer" sx={{ p: 2, backgroundColor: 'background.default' }}>
+              <Stack direction="row" justifyContent="flex-end" spacing={2}>
+                <Button color="inherit" onClick={onCancel} disabled={submitting}>
+                  {copy.fields.cancel}
+                </Button>
+                <Button type="submit" variant="contained" disabled={submitting}>
+                  {submitting ? `${submitLabel}…` : submitLabel}
+                </Button>
+              </Stack>
+            </Box>
+          </CardContent>
+        </Card>
+      </Box>
+    </Stack>
+  );
+}

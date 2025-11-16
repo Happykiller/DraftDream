@@ -48,7 +48,91 @@
   },
   "clients": {
     "title": "Clients",
-    "placeholder": "Clients"
+    "subtitle": "Manage every athlete you coach.",
+    "helper": "Create contacts, record their preferences, and stay aligned with your sales pipeline.",
+    "actions": {
+      "create": "New client",
+      "refresh": "Refresh",
+      "back_to_list": "Back to the list"
+    },
+    "list": {
+      "search_placeholder": "Search a client...",
+      "search_aria": "Search clients",
+      "empty_title": "No clients yet",
+      "empty_description": "Create your first client to centralize their onboarding information.",
+      "actions": {
+        "edit": "Edit client",
+        "delete": "Delete client"
+      },
+      "card": {
+        "contact": "Contact",
+        "no_phone": "Phone number unavailable",
+        "objectives": "Objectives",
+        "preferences": "Activity preferences",
+        "notes": "Notes",
+        "budget": "Budget",
+        "start_date": "Desired start date",
+        "created": "Created on {{date}}",
+        "updated": "Updated on {{date}}",
+        "no_budget": "Budget not defined"
+      },
+      "delete_dialog": {
+        "title": "Delete client",
+        "description": "Are you sure you want to delete “{{name}}”?",
+        "helper": "This action cannot be undone.",
+        "actions": {
+          "cancel": "Cancel",
+          "confirm": "Delete",
+          "confirming": "Deleting..."
+        }
+      }
+    },
+    "form": {
+      "create_page_title": "Create client",
+      "edit_page_title": "Edit client",
+      "title": "Create a client",
+      "subtitle": "Record the key information before assigning programs or plans.",
+      "edit_title": "Edit client",
+      "edit_subtitle": "Update contact and onboarding information.",
+      "not_found": "This client could not be found.",
+      "sections": {
+        "identity": "Identity",
+        "profile": "Profile & preferences",
+        "commercial": "Commercial follow-up",
+        "notes": "Notes"
+      },
+      "fields": {
+        "firstName": "First name",
+        "lastName": "Last name",
+        "email": "Email",
+        "phone": "Phone",
+        "status": "Status",
+        "level": "Level",
+        "source": "Source",
+        "objectives": "Objectives",
+        "objectivesHelper": "Select one or several objectives.",
+        "activityPreferences": "Activity preferences",
+        "activityPreferencesHelper": "Select the sports or workouts the client enjoys.",
+        "medicalConditions": "Medical conditions",
+        "allergies": "Allergies",
+        "notes": "Notes",
+        "budget": "Budget (€)",
+        "dealDescription": "Deal description",
+        "desiredStartDate": "Desired start date",
+        "cancel": "Cancel",
+        "submitCreate": "Create client",
+        "submitEdit": "Save changes"
+      }
+    },
+    "notifications": {
+      "load_failure": "Unable to load clients.",
+      "create_success": "Client created",
+      "create_failure": "Unable to create the client.",
+      "update_success": "Client updated",
+      "update_failure": "Unable to update the client.",
+      "delete_success": "Client deleted",
+      "delete_failure": "Unable to delete the client."
+    }
   },
   "profile": {
     "title": "Profile",

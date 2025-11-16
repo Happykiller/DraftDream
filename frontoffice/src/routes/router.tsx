@@ -247,6 +247,26 @@ export const router = createBrowserRouter([
           return { Component: withTitle(mod.Clients, 'clients.title') };
         },
       },
+      {
+        path: 'create',
+        lazy: async () => {
+          const mod = await import('@src/pages/clients/ClientCreate');
+          return { Component: withTitle(mod.ClientCreate, 'clients.form.create_page_title') };
+        },
+      },
+      {
+        path: 'edit/:clientId',
+        lazy: async () => {
+          const [componentModule, loaderModule] = await Promise.all([
+            import('@src/pages/clients/ClientEdit'),
+            import('@src/pages/clients/ClientEdit.loader'),
+          ]);
+          return {
+            Component: withTitle(componentModule.ClientEdit, 'clients.form.edit_page_title'),
+            loader: loaderModule.clientEditLoader,
+          };
+        },
+      },
     ],
   },
   {
