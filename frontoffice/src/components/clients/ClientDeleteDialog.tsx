@@ -1,14 +1,15 @@
 // src/components/clients/ClientDeleteDialog.tsx
 import * as React from 'react';
+
+import { DeleteOutline } from '@mui/icons-material';
 import {
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
+  Stack,
   Typography,
 } from '@mui/material';
+import type { DialogProps } from '@mui/material/Dialog';
+
+import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
 
 import type { Client } from '@types/clients';
 
@@ -29,7 +30,7 @@ export interface ClientDeleteDialogProps {
   loading: boolean;
   copy: ClientDeleteDialogCopy;
   onCancel: () => void;
-  onConfirm: () => void;
+  onConfirm: () => void | Promise<void>;
 }
 
 /** Confirmation dialog asking the user to validate client deletion. */
@@ -41,26 +42,69 @@ export function ClientDeleteDialog({
   onCancel,
   onConfirm,
 }: ClientDeleteDialogProps): React.JSX.Element {
+  const clientName = React.useMemo(() => {
+    if (!client) {
+      return '';
+    }
+    return `${client.firstName} ${client.lastName}`;
+  }, [client]);
+
+  const description = React.useMemo(
+    () => copy.description.replace('{{name}}', clientName),
+    [clientName, copy.description],
+  );
+
+  const handleDialogClose = React.useCallback<NonNullable<DialogProps['onClose']>>(
+    (_event, _reason) => {
+      if (loading) {
+        return;
+      }
+      onCancel();
+    },
+    [loading, onCancel],
+  );
+
+  const handleCancelClick = React.useCallback(() => {
+    if (loading) {
+      return;
+    }
+    onCancel();
+  }, [loading, onCancel]);
+
+  const handleConfirmClick = React.useCallback(() => {
+    if (loading) {
+      return;
+    }
+    void onConfirm();
+  }, [loading, onConfirm]);
+
   return (
-    <Dialog open={open} onClose={loading ? undefined : onCancel} maxWidth="xs" fullWidth>
-      {/* General information */}
-      <DialogTitle>{copy.title}</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-          {copy.description.replace('{{name}}', client ? `${client.firstName} ${client.lastName}` : '')}
-        </DialogContentText>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+    <ProgramDialogLayout
+      open={open}
+      onClose={(event, reason) => {
+        handleDialogClose(event, reason);
+      }}
+      icon={<DeleteOutline fontSize="large" />}
+      tone="error"
+      title={copy.title}
+      description={description}
+      actions={
+        <>
+          <Button onClick={handleCancelClick} disabled={loading} color="inherit">
+            {copy.actions.cancel}
+          </Button>
+          <Button onClick={handleConfirmClick} color="error" variant="contained" disabled={loading}>
+            {loading ? copy.actions.confirming : copy.actions.confirm}
+          </Button>
+        </>
+      }
+    >
+      <Stack spacing={2}>
+        {/* General information */}
+        <Typography variant="body2" color="text.secondary">
           {copy.helper}
         </Typography>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onCancel} disabled={loading} color="inherit">
-          {copy.actions.cancel}
-        </Button>
-        <Button onClick={onConfirm} color="error" variant="contained" disabled={loading}>
-          {loading ? copy.actions.confirming : copy.actions.confirm}
-        </Button>
-      </DialogActions>
-    </Dialog>
+      </Stack>
+    </ProgramDialogLayout>
   );
 }
