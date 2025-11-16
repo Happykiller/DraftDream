@@ -74,6 +74,7 @@
         "notes": "Notes",
         "budget": "Budget",
         "start_date": "Date de début souhaitée",
+        "level": "Niveau :",
         "created": "Créé le {{date}}",
         "updated": "Mis à jour le {{date}}",
         "no_budget": "Budget non défini"

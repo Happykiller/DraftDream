@@ -50,7 +50,7 @@ export function ClientCard({ client, onEdit, onDelete }: ClientCardProps): React
     }).format(client.budget);
   }, [client.budget, t]);
 
-  const shouldShowBadges = Boolean(client.status?.label || client.level?.label);
+  const shouldShowStatusBadge = Boolean(client.status?.label);
   const overflowToggleLabel = isExpanded
     ? t('clients.list.collapse_details')
     : t('clients.list.expand_details');
@@ -132,20 +132,17 @@ export function ClientCard({ client, onEdit, onDelete }: ClientCardProps): React
             </Typography>
           }
           subheader={
-            client.email || shouldShowBadges ? (
+            client.email || shouldShowStatusBadge ? (
               <Stack spacing={0.75} sx={{ pt: 0.5 }}>
                 {client.email ? (
                   <Typography variant="body2" color="text.secondary">
                     {client.email}
                   </Typography>
                 ) : null}
-                {shouldShowBadges ? (
+                {shouldShowStatusBadge ? (
                   <Stack direction="row" spacing={0.5} flexWrap="wrap">
                     {client.status?.label ? (
                       <Chip label={client.status.label} size="small" color="primary" />
-                    ) : null}
-                    {client.level?.label ? (
-                      <Chip label={client.level.label} size="small" color="success" />
                     ) : null}
                   </Stack>
                 ) : null}
@@ -225,6 +222,17 @@ export function ClientCard({ client, onEdit, onDelete }: ClientCardProps): React
                 {t('clients.list.card.start_date')}
               </Typography>
               <Typography variant="body2">{formatDesiredStartDate(client.desiredStartDate)}</Typography>
+            </Stack>
+          ) : null}
+
+          {client.level?.label ? (
+            <Stack direction="row" justifyContent="space-between" alignItems="baseline">
+              <Typography variant="subtitle2" color="text.secondary">
+                {t('clients.list.card.level')}
+              </Typography>
+              <Typography variant="body2" fontWeight={600}>
+                {client.level.label}
+              </Typography>
             </Stack>
           ) : null}
         </CardContent>
