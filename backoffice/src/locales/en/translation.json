@@ -442,6 +442,9 @@
     "tabs": {
       "objectives": "Objectives",
       "activity_preferences": "Activity preferences",
+      "statuses": "Statuses",
+      "levels": "Levels",
+      "sources": "Sources",
       "aria_label": "Prospect sections"
     },
     "objectives": {
@@ -466,6 +469,42 @@
       },
       "confirm": {
         "delete_title": "Delete activity preference"
+      }
+    },
+    "statuses": {
+      "title": "Statuses",
+      "search_placeholder": "Search statuses...",
+      "create": "New status",
+      "dialog": {
+        "create_title": "New status",
+        "edit_title": "Edit status"
+      },
+      "confirm": {
+        "delete_title": "Delete status"
+      }
+    },
+    "levels": {
+      "title": "Levels",
+      "search_placeholder": "Search levels...",
+      "create": "New level",
+      "dialog": {
+        "create_title": "New level",
+        "edit_title": "Edit level"
+      },
+      "confirm": {
+        "delete_title": "Delete level"
+      }
+    },
+    "sources": {
+      "title": "Sources",
+      "search_placeholder": "Search sources...",
+      "create": "New source",
+      "dialog": {
+        "create_title": "New source",
+        "edit_title": "Edit source"
+      },
+      "confirm": {
+        "delete_title": "Delete source"
       }
     }
   }

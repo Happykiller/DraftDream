@@ -15,6 +15,9 @@ import { ExerciseModule } from '@src/graphql/sport/exercise/exercise.module';
 import { CategoryModule } from '@graphql/sport/category/category.module';
 import { ClientObjectiveModule } from '@graphql/client/objective/client-objective.module';
 import { ClientActivityPreferenceModule } from '@graphql/client/activity-preference/client-activity-preference.module';
+import { ClientStatusModule } from '@graphql/client/status/client-status.module';
+import { ClientLevelModule } from '@graphql/client/level/client-level.module';
+import { ClientSourceModule } from '@graphql/client/source/client-source.module';
 import { EquipmentModule } from '@src/graphql/sport/equipment/equipment.module';
 import { MealTypeModule } from '@src/graphql/nutri/meal-type/meal-type.module';
 import { MealDayModule } from '@src/graphql/nutri/meal-day/meal-day.module';
@@ -34,6 +37,9 @@ import { MealPlanModule } from '@src/graphql/nutri/meal-plan/meal-plan.module';
     CategoryModule,
     ClientObjectiveModule,
     ClientActivityPreferenceModule,
+    ClientStatusModule,
+    ClientLevelModule,
+    ClientSourceModule,
     ExerciseModule,
     EquipmentModule,
     MealTypeModule,

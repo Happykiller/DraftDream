@@ -53,6 +53,21 @@ import { ListClientActivityPreferencesUsecase } from '@usecases/client/activity-
 import { CreateClientActivityPreferenceUsecase } from '@usecases/client/activity-preference/create.client-activity-preference.usecase';
 import { UpdateClientActivityPreferenceUsecase } from '@usecases/client/activity-preference/update.client-activity-preference.usecase';
 import { DeleteClientActivityPreferenceUsecase } from '@usecases/client/activity-preference/delete.client-activity-preference.usecase';
+import { GetClientStatusUsecase } from '@usecases/client/status/get.client-status.usecase';
+import { ListClientStatusesUsecase } from '@usecases/client/status/list.client-status.usecase';
+import { CreateClientStatusUsecase } from '@usecases/client/status/create.client-status.usecase';
+import { UpdateClientStatusUsecase } from '@usecases/client/status/update.client-status.usecase';
+import { DeleteClientStatusUsecase } from '@usecases/client/status/delete.client-status.usecase';
+import { GetClientLevelUsecase } from '@usecases/client/level/get.client-level.usecase';
+import { ListClientLevelsUsecase } from '@usecases/client/level/list.client-level.usecase';
+import { CreateClientLevelUsecase } from '@usecases/client/level/create.client-level.usecase';
+import { UpdateClientLevelUsecase } from '@usecases/client/level/update.client-level.usecase';
+import { DeleteClientLevelUsecase } from '@usecases/client/level/delete.client-level.usecase';
+import { GetClientSourceUsecase } from '@usecases/client/source/get.client-source.usecase';
+import { ListClientSourcesUsecase } from '@usecases/client/source/list.client-source.usecase';
+import { CreateClientSourceUsecase } from '@usecases/client/source/create.client-source.usecase';
+import { UpdateClientSourceUsecase } from '@usecases/client/source/update.client-source.usecase';
+import { DeleteClientSourceUsecase } from '@usecases/client/source/delete.client-source.usecase';
 import { GetMealTypeUsecase } from '@usecases/meal-type/get.meal-type.usecase';
 import { ListMealTypesUsecase } from '@usecases/meal-type/list.meal-type.usecase';
 import { CreateMealTypeUsecase } from '@usecases/meal-type/create.meal-type.usecase';
@@ -130,6 +145,21 @@ export class Inversify {
   listClientActivityPreferencesUsecase: ListClientActivityPreferencesUsecase;
   updateClientActivityPreferenceUsecase: UpdateClientActivityPreferenceUsecase;
   deleteClientActivityPreferenceUsecase: DeleteClientActivityPreferenceUsecase;
+  getClientStatusUsecase: GetClientStatusUsecase;
+  createClientStatusUsecase: CreateClientStatusUsecase;
+  listClientStatusesUsecase: ListClientStatusesUsecase;
+  updateClientStatusUsecase: UpdateClientStatusUsecase;
+  deleteClientStatusUsecase: DeleteClientStatusUsecase;
+  getClientLevelUsecase: GetClientLevelUsecase;
+  createClientLevelUsecase: CreateClientLevelUsecase;
+  listClientLevelsUsecase: ListClientLevelsUsecase;
+  updateClientLevelUsecase: UpdateClientLevelUsecase;
+  deleteClientLevelUsecase: DeleteClientLevelUsecase;
+  getClientSourceUsecase: GetClientSourceUsecase;
+  createClientSourceUsecase: CreateClientSourceUsecase;
+  listClientSourcesUsecase: ListClientSourcesUsecase;
+  updateClientSourceUsecase: UpdateClientSourceUsecase;
+  deleteClientSourceUsecase: DeleteClientSourceUsecase;
   getMealTypeUsecase: GetMealTypeUsecase;
   listMealTypesUsecase: ListMealTypesUsecase;
   createMealTypeUsecase: CreateMealTypeUsecase;
@@ -199,6 +229,24 @@ export class Inversify {
     this.listClientActivityPreferencesUsecase = new ListClientActivityPreferencesUsecase(this);
     this.updateClientActivityPreferenceUsecase = new UpdateClientActivityPreferenceUsecase(this);
     this.deleteClientActivityPreferenceUsecase = new DeleteClientActivityPreferenceUsecase(this);
+    // usecases client status
+    this.getClientStatusUsecase = new GetClientStatusUsecase(this);
+    this.createClientStatusUsecase = new CreateClientStatusUsecase(this);
+    this.listClientStatusesUsecase = new ListClientStatusesUsecase(this);
+    this.updateClientStatusUsecase = new UpdateClientStatusUsecase(this);
+    this.deleteClientStatusUsecase = new DeleteClientStatusUsecase(this);
+    // usecases client level
+    this.getClientLevelUsecase = new GetClientLevelUsecase(this);
+    this.createClientLevelUsecase = new CreateClientLevelUsecase(this);
+    this.listClientLevelsUsecase = new ListClientLevelsUsecase(this);
+    this.updateClientLevelUsecase = new UpdateClientLevelUsecase(this);
+    this.deleteClientLevelUsecase = new DeleteClientLevelUsecase(this);
+    // usecases client source
+    this.getClientSourceUsecase = new GetClientSourceUsecase(this);
+    this.createClientSourceUsecase = new CreateClientSourceUsecase(this);
+    this.listClientSourcesUsecase = new ListClientSourcesUsecase(this);
+    this.updateClientSourceUsecase = new UpdateClientSourceUsecase(this);
+    this.deleteClientSourceUsecase = new DeleteClientSourceUsecase(this);
     // usecases meal type
     this.createMealTypeUsecase = new CreateMealTypeUsecase(this);
     this.getMealTypeUsecase = new GetMealTypeUsecase(this);

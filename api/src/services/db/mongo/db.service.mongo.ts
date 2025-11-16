@@ -9,6 +9,9 @@ import { BddServiceProgramMongo } from '@services/db/mongo/repositories/program.
 import { BddServiceCategoryMongo } from '@services/db/mongo/repositories/category.repository';
 import { BddServiceClientObjectiveMongo } from '@services/db/mongo/repositories/client/objective.repository';
 import { BddServiceClientActivityPreferenceMongo } from '@services/db/mongo/repositories/client/activity-preference.repository';
+import { BddServiceClientStatusMongo } from '@services/db/mongo/repositories/client/status.repository';
+import { BddServiceClientLevelMongo } from '@services/db/mongo/repositories/client/level.repository';
+import { BddServiceClientSourceMongo } from '@services/db/mongo/repositories/client/source.repository';
 import { BddServiceMealTypeMongo } from '@services/db/mongo/repositories/meal-type.repository';
 import { BddServiceExerciseMongo } from '@services/db/mongo/repositories/exercise.repository';
 import { BddServiceEquipmentMongo } from '@services/db/mongo/repositories/equipment.repository';
@@ -29,6 +32,9 @@ export class BddServiceMongo {
   readonly category: BddServiceCategoryMongo;
   readonly clientObjective: BddServiceClientObjectiveMongo;
   readonly clientActivityPreference: BddServiceClientActivityPreferenceMongo;
+  readonly clientStatus: BddServiceClientStatusMongo;
+  readonly clientLevel: BddServiceClientLevelMongo;
+  readonly clientSource: BddServiceClientSourceMongo;
   readonly mealType: BddServiceMealTypeMongo;
   readonly mealDay: BddServiceMealDayMongo;
   readonly meal: BddServiceMealMongo;
@@ -45,6 +51,9 @@ export class BddServiceMongo {
     this.category = new BddServiceCategoryMongo();
     this.clientObjective = new BddServiceClientObjectiveMongo();
     this.clientActivityPreference = new BddServiceClientActivityPreferenceMongo();
+    this.clientStatus = new BddServiceClientStatusMongo();
+    this.clientLevel = new BddServiceClientLevelMongo();
+    this.clientSource = new BddServiceClientSourceMongo();
     this.mealType = new BddServiceMealTypeMongo();
     this.mealDay = new BddServiceMealDayMongo();
     this.meal = new BddServiceMealMongo();

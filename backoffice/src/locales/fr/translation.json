@@ -443,6 +443,9 @@
     "tabs": {
       "objectives": "Objectifs",
       "activity_preferences": "Préférences d'activité",
+      "statuses": "Statuts",
+      "levels": "Niveaux",
+      "sources": "Sources",
       "aria_label": "Sections prospects"
     },
     "objectives": {
@@ -467,6 +470,42 @@
       },
       "confirm": {
         "delete_title": "Supprimer la préférence"
+      }
+    },
+    "statuses": {
+      "title": "Statuts",
+      "search_placeholder": "Rechercher des statuts...",
+      "create": "Nouveau statut",
+      "dialog": {
+        "create_title": "Nouveau statut",
+        "edit_title": "Modifier le statut"
+      },
+      "confirm": {
+        "delete_title": "Supprimer le statut"
+      }
+    },
+    "levels": {
+      "title": "Niveaux",
+      "search_placeholder": "Rechercher des niveaux...",
+      "create": "Nouveau niveau",
+      "dialog": {
+        "create_title": "Nouveau niveau",
+        "edit_title": "Modifier le niveau"
+      },
+      "confirm": {
+        "delete_title": "Supprimer le niveau"
+      }
+    },
+    "sources": {
+      "title": "Sources",
+      "search_placeholder": "Rechercher des sources...",
+      "create": "Nouvelle source",
+      "dialog": {
+        "create_title": "Nouvelle source",
+        "edit_title": "Modifier la source"
+      },
+      "confirm": {
+        "delete_title": "Supprimer la source"
       }
     }
   }

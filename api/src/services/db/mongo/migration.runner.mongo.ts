@@ -12,6 +12,9 @@ import migration0007 from './migrations/0007_seeds_meal_type';
 import migration0008 from './migrations/0008_create_meal';
 import migration0009 from './migrations/0009_seeds_client_objective';
 import migration0010 from './migrations/0010_seeds_client_activity_preference';
+import migration0011 from './migrations/0011_seeds_client_status';
+import migration0012 from './migrations/0012_seeds_client_level';
+import migration0013 from './migrations/0013_seeds_client_source';
 
 export interface Migration {
   id: string;
@@ -38,6 +41,9 @@ export class MongoMigrationRunner {
       migration0008,
       migration0009,
       migration0010,
+      migration0011,
+      migration0012,
+      migration0013,
     ];
   }
 
