@@ -347,27 +347,6 @@ export function ClientFormPanel({
                         ))}
                       </TextField>
                     </Grid>
-                    <Grid size={{ xs: 12, md: 4 }}>
-                      <TextField
-                        select
-                        label={copy.fields.source}
-                        name="sourceId"
-                        value={values.sourceId ?? ''}
-                        onChange={(event) =>
-                          setValues((prev) => ({ ...prev, sourceId: event.target.value || null }))
-                        }
-                        fullWidth
-                      >
-                        <MenuItem value="">
-                          <em>—</em>
-                        </MenuItem>
-                        {metadata.sources.map((source) => (
-                          <MenuItem key={source.id} value={source.id}>
-                            {source.label}
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    </Grid>
                     <Grid size={{ xs: 12 }}>
                       <Autocomplete
                         multiple
@@ -445,6 +424,27 @@ export function ClientFormPanel({
                     {copy.sections.commercial}
                   </Typography>
                   <Grid container spacing={2}>
+                    <Grid size={{ xs: 12, md: 4 }}>
+                      <TextField
+                        select
+                        label={copy.fields.source}
+                        name="sourceId"
+                        value={values.sourceId ?? ''}
+                        onChange={(event) =>
+                          setValues((prev) => ({ ...prev, sourceId: event.target.value || null }))
+                        }
+                        fullWidth
+                      >
+                        <MenuItem value="">
+                          <em>—</em>
+                        </MenuItem>
+                        {metadata.sources.map((source) => (
+                          <MenuItem key={source.id} value={source.id}>
+                            {source.label}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </Grid>
                     <Grid size={{ xs: 12, md: 4 }}>
                       <TextField
                         label={copy.fields.budget}
