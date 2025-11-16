@@ -1,5 +1,6 @@
 // src/components/prospects/ProspectClientDialog.tsx
 import * as React from 'react';
+
 import {
   Autocomplete,
   Box,
@@ -9,10 +10,10 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Grid2 as Grid,
   MenuItem,
   TextField,
 } from '@mui/material';
+import Grid from '@mui/material/Unstable_Grid2';
 import { useTranslation } from 'react-i18next';
 
 import type { Client } from '@hooks/useClients';
