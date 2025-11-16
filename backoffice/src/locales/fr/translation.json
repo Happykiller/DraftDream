@@ -442,6 +442,7 @@
     "title": "Prospects",
     "tabs": {
       "objectives": "Objectifs",
+      "activity_preferences": "Préférences d'activité",
       "aria_label": "Sections prospects"
     },
     "objectives": {
@@ -454,6 +455,18 @@
       },
       "confirm": {
         "delete_title": "Supprimer l'objectif"
+      }
+    },
+    "activity_preferences": {
+      "title": "Préférences d'activité",
+      "search_placeholder": "Rechercher des préférences...",
+      "create": "Nouvelle préférence",
+      "dialog": {
+        "create_title": "Nouvelle préférence d'activité",
+        "edit_title": "Modifier la préférence"
+      },
+      "confirm": {
+        "delete_title": "Supprimer la préférence"
       }
     }
   }

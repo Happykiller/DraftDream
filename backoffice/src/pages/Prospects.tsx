@@ -4,6 +4,7 @@ import { Stack, Tab, Tabs } from '@mui/material';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
+import { ActivityPreferencesPanel } from '@pages/prospects/ActivityPreferencesPanel';
 import { ObjectivesPanel } from '@pages/prospects/ObjectivesPanel';
 
 export function Prospects(): React.JSX.Element {
@@ -29,9 +30,11 @@ export function Prospects(): React.JSX.Element {
         scrollButtons="auto"
       >
         <Tab value="objectives" label={t('prospects.tabs.objectives')} />
+        <Tab value="activity-preferences" label={t('prospects.tabs.activity_preferences')} />
       </Tabs>
 
       {tab === 'objectives' && <ObjectivesPanel />}
+      {tab === 'activity-preferences' && <ActivityPreferencesPanel />}
     </Stack>
   );
 }
