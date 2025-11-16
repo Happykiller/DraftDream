@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {
+  ArrowDownward,
+  ArrowUpward,
   DeleteOutline,
   Edit,
-  KeyboardArrowDown,
-  KeyboardArrowUp,
 } from '@mui/icons-material';
 import { alpha, useTheme } from '@mui/material/styles';
 import {
@@ -500,7 +500,7 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
                       disabled={!canMoveUp}
                       aria-label="move-session-up"
                     >
-                      <KeyboardArrowUp fontSize="small" />
+                      <ArrowUpward fontSize="small" />
                     </IconButton>
                   </span>
                 </Tooltip>
@@ -512,7 +512,7 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
                       disabled={!canMoveDown}
                       aria-label="move-session-down"
                     >
-                      <KeyboardArrowDown fontSize="small" />
+                      <ArrowDownward fontSize="small" />
                     </IconButton>
                   </span>
                 </Tooltip>

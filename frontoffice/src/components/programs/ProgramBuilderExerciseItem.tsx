@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {
+  ArrowDownward,
+  ArrowUpward,
   DeleteOutline,
   Edit,
-  KeyboardArrowDown,
-  KeyboardArrowUp,
 } from '@mui/icons-material';
 import {
   Box,
@@ -426,7 +426,7 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
                 disabled={!canMoveUp}
                 aria-label="move-exercise-up"
               >
-                <KeyboardArrowUp fontSize="small" />
+                <ArrowUpward fontSize="small" />
               </IconButton>
             </span>
           </Tooltip>
@@ -438,7 +438,7 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
                 disabled={!canMoveDown}
                 aria-label="move-exercise-down"
               >
-                <KeyboardArrowDown fontSize="small" />
+                <ArrowDownward fontSize="small" />
               </IconButton>
             </span>
           </Tooltip>
