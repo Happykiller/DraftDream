@@ -1,8 +1,7 @@
 // src/components/clients/ClientCard.tsx
 import * as React from 'react';
-import { Edit, Delete } from '@mui/icons-material';
+import { Delete, Edit, Phone } from '@mui/icons-material';
 import {
-  Avatar,
   Card,
   CardActions,
   CardContent,
@@ -29,12 +28,8 @@ export interface ClientCardProps {
 export function ClientCard({ client, onEdit, onDelete }: ClientCardProps): React.JSX.Element {
   const { t } = useTranslation();
   const formatDate = useDateFormatter();
-
-  const initials = React.useMemo(() => {
-    const first = client.firstName?.[0] ?? '';
-    const last = client.lastName?.[0] ?? '';
-    return `${first}${last}`.toUpperCase() || client.firstName?.[0]?.toUpperCase() || '?';
-  }, [client.firstName, client.lastName]);
+  const dayOnlyFormatterOptions = React.useMemo<Intl.DateTimeFormatOptions>(() => ({ day: '2-digit' }), []);
+  const formatDesiredStartDay = useDateFormatter({ options: dayOnlyFormatterOptions });
 
   const budgetLabel = React.useMemo(() => {
     if (client.budget == null) {
@@ -51,8 +46,11 @@ export function ClientCard({ client, onEdit, onDelete }: ClientCardProps): React
     <Card variant="outlined" sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       {/* General information */}
       <CardHeader
-        avatar={<Avatar sx={{ bgcolor: 'warning.main' }}>{initials}</Avatar>}
-        title={`${client.firstName} ${client.lastName}`}
+        title={
+          <Typography fontWeight={600} variant="subtitle1">
+            {`${client.firstName} ${client.lastName}`}
+          </Typography>
+        }
         subheader={client.email}
         action={
           <Stack direction="row" spacing={0.5}>
@@ -71,10 +69,8 @@ export function ClientCard({ client, onEdit, onDelete }: ClientCardProps): React
       />
 
       <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-        <Stack spacing={0.5}>
-          <Typography variant="subtitle2" color="text.secondary">
-            {t('clients.list.card.contact')}
-          </Typography>
+        <Stack direction="row" spacing={1} alignItems="center">
+          <Phone color="action" fontSize="small" />
           <Typography variant="body2">{client.phone || t('clients.list.card.no_phone')}</Typography>
         </Stack>
 
@@ -127,7 +123,7 @@ export function ClientCard({ client, onEdit, onDelete }: ClientCardProps): React
             <Typography variant="subtitle2" color="text.secondary">
               {t('clients.list.card.start_date')}
             </Typography>
-            <Typography variant="body2">{formatDate(client.desiredStartDate)}</Typography>
+            <Typography variant="body2">{formatDesiredStartDay(client.desiredStartDate)}</Typography>
           </Stack>
         ) : null}
       </CardContent>
