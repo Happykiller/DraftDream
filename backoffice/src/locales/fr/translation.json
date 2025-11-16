@@ -47,8 +47,12 @@
       "confirm_password": "Confirmer le mot de passe",
       "type": "Type",
       "status": "Statut",
+      "first_name": "Prénom",
+      "last_name": "Nom",
       "company": "Entreprise",
       "phone": "Téléphone",
+      "level": "Niveau",
+      "source": "Source",
       "address_name": "Nom de l'adresse",
       "address_city": "Ville",
       "address_code": "Code postal",
@@ -81,7 +85,15 @@
       "calories": "Calories",
       "protein_grams": "Protéines (g)",
       "carb_grams": "Glucides (g)",
-      "fat_grams": "Lipides (g)"
+      "fat_grams": "Lipides (g)",
+      "objectives": "Objectifs",
+      "activity_preferences": "Préférences d'activité",
+      "budget": "Budget",
+      "desired_start_date": "Date de début souhaitée",
+      "medical_conditions": "Conditions médicales",
+      "allergies": "Allergies",
+      "notes": "Notes",
+      "deal_description": "Description du deal"
     },
     "status": {
       "active": "Actif",
@@ -441,12 +453,25 @@
   "prospects": {
     "title": "Prospects",
     "tabs": {
+      "clients": "Clients",
       "objectives": "Objectifs",
       "activity_preferences": "Préférences d'activité",
       "statuses": "Statuts",
       "levels": "Niveaux",
       "sources": "Sources",
       "aria_label": "Sections prospects"
+    },
+    "clients": {
+      "title": "Clients",
+      "search_placeholder": "Rechercher des clients...",
+      "create": "Nouveau client",
+      "dialog": {
+        "create_title": "Nouveau client",
+        "edit_title": "Modifier le client"
+      },
+      "confirm": {
+        "delete_title": "Supprimer le client"
+      }
     },
     "objectives": {
       "title": "Objectifs",

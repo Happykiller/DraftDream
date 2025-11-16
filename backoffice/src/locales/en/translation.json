@@ -47,8 +47,12 @@
       "confirm_password": "Confirm password",
       "type": "Type",
       "status": "Status",
+      "first_name": "First name",
+      "last_name": "Last name",
       "company": "Company",
       "phone": "Phone",
+      "level": "Level",
+      "source": "Source",
       "address_name": "Address name",
       "address_city": "City",
       "address_code": "Postal code",
@@ -81,7 +85,15 @@
       "calories": "Calories",
       "protein_grams": "Protein (g)",
       "carb_grams": "Carbs (g)",
-      "fat_grams": "Fat (g)"
+      "fat_grams": "Fat (g)",
+      "objectives": "Objectives",
+      "activity_preferences": "Activity preferences",
+      "budget": "Budget",
+      "desired_start_date": "Desired start date",
+      "medical_conditions": "Medical conditions",
+      "allergies": "Allergies",
+      "notes": "Notes",
+      "deal_description": "Deal description"
     },
     "status": {
       "active": "Active",
@@ -440,12 +452,25 @@
   "prospects": {
     "title": "Prospects",
     "tabs": {
+      "clients": "Clients",
       "objectives": "Objectives",
       "activity_preferences": "Activity preferences",
       "statuses": "Statuses",
       "levels": "Levels",
       "sources": "Sources",
       "aria_label": "Prospect sections"
+    },
+    "clients": {
+      "title": "Clients",
+      "search_placeholder": "Search clients...",
+      "create": "New client",
+      "dialog": {
+        "create_title": "New client",
+        "edit_title": "Edit client"
+      },
+      "confirm": {
+        "delete_title": "Delete client"
+      }
     },
     "objectives": {
       "title": "Objectives",
