@@ -68,6 +68,11 @@ import { ListClientSourcesUsecase } from '@usecases/client/source/list.client-so
 import { CreateClientSourceUsecase } from '@usecases/client/source/create.client-source.usecase';
 import { UpdateClientSourceUsecase } from '@usecases/client/source/update.client-source.usecase';
 import { DeleteClientSourceUsecase } from '@usecases/client/source/delete.client-source.usecase';
+import { GetClientUsecase } from '@usecases/client/client/get.client.usecase';
+import { ListClientsUsecase } from '@usecases/client/client/list.clients.usecase';
+import { CreateClientUsecase } from '@usecases/client/client/create.client.usecase';
+import { UpdateClientUsecase } from '@usecases/client/client/update.client.usecase';
+import { DeleteClientUsecase } from '@usecases/client/client/delete.client.usecase';
 import { GetMealTypeUsecase } from '@src/usecases/nutri/meal-type/get.meal-type.usecase';
 import { ListMealTypesUsecase } from '@src/usecases/nutri/meal-type/list.meal-type.usecase';
 import { CreateMealTypeUsecase } from '@src/usecases/nutri/meal-type/create.meal-type.usecase';
@@ -160,6 +165,11 @@ export class Inversify {
   listClientSourcesUsecase: ListClientSourcesUsecase;
   updateClientSourceUsecase: UpdateClientSourceUsecase;
   deleteClientSourceUsecase: DeleteClientSourceUsecase;
+  getClientUsecase: GetClientUsecase;
+  createClientUsecase: CreateClientUsecase;
+  listClientsUsecase: ListClientsUsecase;
+  updateClientUsecase: UpdateClientUsecase;
+  deleteClientUsecase: DeleteClientUsecase;
   getMealTypeUsecase: GetMealTypeUsecase;
   listMealTypesUsecase: ListMealTypesUsecase;
   createMealTypeUsecase: CreateMealTypeUsecase;
@@ -247,6 +257,12 @@ export class Inversify {
     this.listClientSourcesUsecase = new ListClientSourcesUsecase(this);
     this.updateClientSourceUsecase = new UpdateClientSourceUsecase(this);
     this.deleteClientSourceUsecase = new DeleteClientSourceUsecase(this);
+    // usecases client
+    this.getClientUsecase = new GetClientUsecase(this);
+    this.createClientUsecase = new CreateClientUsecase(this);
+    this.listClientsUsecase = new ListClientsUsecase(this);
+    this.updateClientUsecase = new UpdateClientUsecase(this);
+    this.deleteClientUsecase = new DeleteClientUsecase(this);
     // usecases meal type
     this.createMealTypeUsecase = new CreateMealTypeUsecase(this);
     this.getMealTypeUsecase = new GetMealTypeUsecase(this);

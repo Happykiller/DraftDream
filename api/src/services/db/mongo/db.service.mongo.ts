@@ -12,6 +12,7 @@ import { BddServiceClientActivityPreferenceMongo } from '@services/db/mongo/repo
 import { BddServiceClientStatusMongo } from '@services/db/mongo/repositories/client/status.repository';
 import { BddServiceClientLevelMongo } from '@services/db/mongo/repositories/client/level.repository';
 import { BddServiceClientSourceMongo } from '@services/db/mongo/repositories/client/source.repository';
+import { BddServiceClientMongo } from '@services/db/mongo/repositories/client/client.repository';
 import { BddServiceMealTypeMongo } from '@services/db/mongo/repositories/meal-type.repository';
 import { BddServiceExerciseMongo } from '@services/db/mongo/repositories/exercise.repository';
 import { BddServiceEquipmentMongo } from '@services/db/mongo/repositories/equipment.repository';
@@ -35,6 +36,7 @@ export class BddServiceMongo {
   readonly clientStatus: BddServiceClientStatusMongo;
   readonly clientLevel: BddServiceClientLevelMongo;
   readonly clientSource: BddServiceClientSourceMongo;
+  readonly client: BddServiceClientMongo;
   readonly mealType: BddServiceMealTypeMongo;
   readonly mealDay: BddServiceMealDayMongo;
   readonly meal: BddServiceMealMongo;
@@ -54,6 +56,7 @@ export class BddServiceMongo {
     this.clientStatus = new BddServiceClientStatusMongo();
     this.clientLevel = new BddServiceClientLevelMongo();
     this.clientSource = new BddServiceClientSourceMongo();
+    this.client = new BddServiceClientMongo();
     this.mealType = new BddServiceMealTypeMongo();
     this.mealDay = new BddServiceMealDayMongo();
     this.meal = new BddServiceMealMongo();

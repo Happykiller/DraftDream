@@ -18,6 +18,7 @@ import { ClientActivityPreferenceModule } from '@graphql/client/activity-prefere
 import { ClientStatusModule } from '@graphql/client/status/client-status.module';
 import { ClientLevelModule } from '@graphql/client/level/client-level.module';
 import { ClientSourceModule } from '@graphql/client/source/client-source.module';
+import { ClientModule } from '@graphql/client/client/client.module';
 import { EquipmentModule } from '@src/graphql/sport/equipment/equipment.module';
 import { MealTypeModule } from '@src/graphql/nutri/meal-type/meal-type.module';
 import { MealDayModule } from '@src/graphql/nutri/meal-day/meal-day.module';
@@ -40,6 +41,7 @@ import { MealPlanModule } from '@src/graphql/nutri/meal-plan/meal-plan.module';
     ClientStatusModule,
     ClientLevelModule,
     ClientSourceModule,
+    ClientModule,
     ExerciseModule,
     EquipmentModule,
     MealTypeModule,

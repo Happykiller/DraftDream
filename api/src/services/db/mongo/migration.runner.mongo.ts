@@ -15,6 +15,7 @@ import migration0010 from './migrations/0010_seeds_client_activity_preference';
 import migration0011 from './migrations/0011_seeds_client_status';
 import migration0012 from './migrations/0012_seeds_client_level';
 import migration0013 from './migrations/0013_seeds_client_source';
+import migration0014 from './migrations/0014_create_clients';
 
 export interface Migration {
   id: string;
@@ -44,6 +45,7 @@ export class MongoMigrationRunner {
       migration0011,
       migration0012,
       migration0013,
+      migration0014,
     ];
   }
 
