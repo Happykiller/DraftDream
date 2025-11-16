@@ -1,4 +1,4 @@
-﻿{
+{
   "common": {
     "field_incorrect": "Incorrect field",
     "brand": {
@@ -72,16 +72,16 @@
       "charge": "Load",
       "rest_seconds": "Rest (sec)",
       "video_url": "Video URL",
-    "instructions": "Instructions",
-    "category": "Category",
+      "instructions": "Instructions",
+      "category": "Category",
       "equipment_optional": "Equipment (optional)",
       "tags_optional": "Tags (optional)",
       "meals": "Meals",
       "foods": "Foods",
-    "calories": "Calories",
-    "protein_grams": "Protein (g)",
-    "carb_grams": "Carbs (g)",
-    "fat_grams": "Fat (g)"
+      "calories": "Calories",
+      "protein_grams": "Protein (g)",
+      "carb_grams": "Carbs (g)",
+      "fat_grams": "Fat (g)"
     },
     "status": {
       "active": "Active",
@@ -435,6 +435,25 @@
     "LOGIN": {
       "EMAIL": "Email format: username@domain.ext",
       "PASSWORD": "Must contain at least 6 characters."
+    }
+  },
+  "prospects": {
+    "title": "Prospects",
+    "tabs": {
+      "objectives": "Objectives",
+      "aria_label": "Prospect sections"
+    },
+    "objectives": {
+      "title": "Objectives",
+      "search_placeholder": "Search objectives...",
+      "create": "New objective",
+      "dialog": {
+        "create_title": "New objective",
+        "edit_title": "Edit objective"
+      },
+      "confirm": {
+        "delete_title": "Delete objective"
+      }
     }
   }
 }

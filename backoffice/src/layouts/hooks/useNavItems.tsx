@@ -2,6 +2,7 @@
 import * as React from 'react';
 import {
   FitnessCenter,
+  FlagCircle,
   Home,
   ManageAccounts,
   Palette,
@@ -37,6 +38,11 @@ export function useNavItems(role?: string): NavItem[] {
           label: t('meals.title'),
           icon: <RestaurantMenu />,
           path: '/meals',
+        },
+        {
+          label: t('prospects.title'),
+          icon: <FlagCircle />,
+          path: '/prospects',
         },
         {
           label: t('users.title'),

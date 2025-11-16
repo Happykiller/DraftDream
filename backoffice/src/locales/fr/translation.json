@@ -1,4 +1,4 @@
-﻿{
+{
   "common": {
     "field_incorrect": "Champ incorrect",
     "brand": {
@@ -72,16 +72,16 @@
       "charge": "Charge",
       "rest_seconds": "Repos (sec)",
       "video_url": "URL vidéo",
-    "instructions": "Instructions",
-    "category": "Catégorie",
+      "instructions": "Instructions",
+      "category": "Catégorie",
       "equipment_optional": "Équipement (optionnel)",
       "tags_optional": "Tags (optionnel)",
       "meals": "Repas",
       "foods": "Aliments",
-    "calories": "Calories",
-    "protein_grams": "Protéines (g)",
-    "carb_grams": "Glucides (g)",
-    "fat_grams": "Lipides (g)"
+      "calories": "Calories",
+      "protein_grams": "Protéines (g)",
+      "carb_grams": "Glucides (g)",
+      "fat_grams": "Lipides (g)"
     },
     "status": {
       "active": "Actif",
@@ -436,6 +436,25 @@
     "LOGIN": {
       "EMAIL": "Format email : identifiant@domaine.ext",
       "PASSWORD": "Doit contenir au moins 6 caractères."
+    }
+  },
+  "prospects": {
+    "title": "Prospects",
+    "tabs": {
+      "objectives": "Objectifs",
+      "aria_label": "Sections prospects"
+    },
+    "objectives": {
+      "title": "Objectifs",
+      "search_placeholder": "Rechercher des objectifs...",
+      "create": "Nouvel objectif",
+      "dialog": {
+        "create_title": "Nouvel objectif",
+        "edit_title": "Modifier l'objectif"
+      },
+      "confirm": {
+        "delete_title": "Supprimer l'objectif"
+      }
     }
   }
 }
