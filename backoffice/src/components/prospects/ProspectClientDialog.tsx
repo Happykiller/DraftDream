@@ -13,7 +13,7 @@ import {
   MenuItem,
   TextField,
 } from '@mui/material';
-import Grid from '@mui/material/Unstable_Grid2';
+import Grid from '@mui/material/Grid';
 import { useTranslation } from 'react-i18next';
 
 import type { Client } from '@hooks/useClients';
@@ -234,7 +234,6 @@ export function ProspectClientDialog({
                 label={t('common.labels.budget')}
                 name="budget"
                 type="number"
-                inputProps={{ min: 0, step: 50 }}
                 value={values.budget}
                 onChange={handleChange}
                 fullWidth

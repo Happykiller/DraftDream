@@ -75,53 +75,53 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
       {
         field: 'status',
         headerName: t('common.labels.status'),
-        valueGetter: (params) => params.row.status?.label ?? t('common.messages.no_value'),
+        renderCell: (params) => params.row.status?.label ?? t('common.messages.no_value'),
         minWidth: 140,
         flex: 1,
       },
       {
         field: 'level',
         headerName: t('common.labels.level'),
-        valueGetter: (params) => params.row.level?.label ?? t('common.messages.no_value'),
+        renderCell: (params) => params.row.level?.label ?? t('common.messages.no_value'),
         minWidth: 140,
         flex: 1,
       },
       {
         field: 'source',
         headerName: t('common.labels.source'),
-        valueGetter: (params) => params.row.source?.label ?? t('common.messages.no_value'),
+        renderCell: (params) => params.row.source?.label ?? t('common.messages.no_value'),
         minWidth: 140,
         flex: 1,
       },
       {
         field: 'objectives',
         headerName: t('common.labels.objectives'),
-        valueGetter: (params) => renderList(params.row.objectives),
+        renderCell: (params) => renderList(params.row.objectives),
         flex: 1,
       },
       {
         field: 'activityPreferences',
         headerName: t('common.labels.activity_preferences'),
-        valueGetter: (params) => renderList(params.row.activityPreferences),
+        renderCell: (params) => renderList(params.row.activityPreferences),
         flex: 1,
       },
       {
         field: 'budget',
         headerName: t('common.labels.budget'),
-        valueFormatter: (params) =>
+        renderCell: (params) =>
           params.value != null ? `${params.value} €` : t('common.messages.no_value'),
         minWidth: 120,
       },
       {
         field: 'desiredStartDate',
         headerName: t('common.labels.desired_start_date'),
-        valueFormatter: (params) => (params.value ? fmtDate(params.value) : t('common.messages.no_value')),
+        renderCell: (params) => (params.value ? fmtDate(params.value) : t('common.messages.no_value')),
         minWidth: 160,
       },
       {
         field: 'updatedAt',
         headerName: t('common.labels.updated'),
-        valueFormatter: (params) => fmtDate(params.value as string),
+        renderCell: (params) => fmtDate(params.value as string),
         minWidth: 160,
       },
       {
