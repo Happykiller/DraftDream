@@ -83,8 +83,13 @@ export function CoachAthleteDialog(props: CoachAthleteDialogProps): React.JSX.El
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await onSubmit(values);
-    onClose();
+    try {
+      await onSubmit(values);
+      onClose();
+    } catch (error) {
+      // Keep the dialog open so the user can fix the issue after the toast feedback.
+      console.error('CoachAthleteDialog submission failed', error);
+    }
   };
 
   return (

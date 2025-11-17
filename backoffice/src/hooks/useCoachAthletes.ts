@@ -8,6 +8,29 @@ import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
+type CoachAthleteGraphqlError = { message?: string };
+
+const API_OUTDATED_MESSAGE =
+  'Athlete management requires the latest API deployment. Please update the API before using this section.';
+
+const coachAthleteSchemaError = (
+  errors?: CoachAthleteGraphqlError[],
+  fallback?: string,
+): Error | null => {
+  if (!errors?.length) return null;
+  const normalized = errors.map((error) => (error?.message ?? '').toLowerCase());
+  const schemaMismatch = normalized.some((message) =>
+    ['createcoachathleteinput', 'updatecoachathleteinput', 'listcoachathletesinput', 'coachathlete_'].some((marker) =>
+      message.includes(marker),
+    ),
+  );
+  if (schemaMismatch) {
+    return new Error(API_OUTDATED_MESSAGE);
+  }
+  const primary = errors[0]?.message ?? fallback ?? 'GraphQL request failed';
+  return new Error(primary);
+};
+
 export interface CoachAthleteUser {
   id: string;
   first_name: string;
@@ -153,7 +176,8 @@ export function useCoachAthletes(params: UseCoachAthletesParams) {
             operationName: 'CoachAthleteList',
           }),
         );
-        if (errors?.length) throw new Error(errors[0].message);
+        const gqlError = coachAthleteSchemaError(errors, 'Failed to load coach-athlete relations');
+        if (gqlError) throw gqlError;
         setItems(data?.coachAthlete_list.items ?? []);
         setTotal(data?.coachAthlete_list.total ?? 0);
       } catch (error: any) {
@@ -184,7 +208,8 @@ export function useCoachAthletes(params: UseCoachAthletesParams) {
             operationName: 'CreateCoachAthlete',
           }),
         );
-        if (errors?.length) throw new Error(errors[0].message);
+        const gqlError = coachAthleteSchemaError(errors, 'Creation failed');
+        if (gqlError) throw gqlError;
         flashSuccess('Relation created');
         await load({ page, limit, coachId, athleteId, isActive, includeArchived });
       } catch (error: any) {
@@ -205,7 +230,8 @@ export function useCoachAthletes(params: UseCoachAthletesParams) {
             operationName: 'UpdateCoachAthlete',
           }),
         );
-        if (errors?.length) throw new Error(errors[0].message);
+        const gqlError = coachAthleteSchemaError(errors, 'Update failed');
+        if (gqlError) throw gqlError;
         flashSuccess('Relation updated');
         await load({ page, limit, coachId, athleteId, isActive, includeArchived });
       } catch (error: any) {
@@ -226,7 +252,8 @@ export function useCoachAthletes(params: UseCoachAthletesParams) {
             operationName: 'DeleteCoachAthlete',
           }),
         );
-        if (errors?.length) throw new Error(errors[0].message);
+        const gqlError = coachAthleteSchemaError(errors, 'Delete failed');
+        if (gqlError) throw gqlError;
         flashSuccess('Relation archived');
         await load({ page, limit, coachId, athleteId, isActive, includeArchived });
       } catch (error: any) {

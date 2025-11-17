@@ -9,6 +9,7 @@ import {
 
 import { UserGql } from '@graphql/user/user.gql.types';
 
+/** GraphQL object representing a coach-athlete relation. */
 @ObjectType()
 export class CoachAthleteGql {
   @Field(() => ID) id!: string;
@@ -27,7 +28,8 @@ export class CoachAthleteGql {
   @Field(() => UserGql, { nullable: true }) athlete?: UserGql | null;
 }
 
-@InputType()
+/** Input payload used when creating a relation. */
+@InputType('CreateCoachAthleteInput')
 export class CreateCoachAthleteInput {
   @Field(() => ID) coachId!: string;
   @Field(() => ID) athleteId!: string;
@@ -37,7 +39,8 @@ export class CreateCoachAthleteInput {
   @Field({ nullable: true }) is_active?: boolean;
 }
 
-@InputType()
+/** Input payload used when updating a relation. */
+@InputType('UpdateCoachAthleteInput')
 export class UpdateCoachAthleteInput {
   @Field(() => ID) id!: string;
   @Field(() => ID, { nullable: true }) coachId?: string;
@@ -48,7 +51,8 @@ export class UpdateCoachAthleteInput {
   @Field({ nullable: true }) is_active?: boolean;
 }
 
-@InputType()
+/** Filters used when listing relations. */
+@InputType('ListCoachAthletesInput')
 export class ListCoachAthletesInput {
   @Field(() => ID, { nullable: true }) coachId?: string;
   @Field(() => ID, { nullable: true }) athleteId?: string;
@@ -59,6 +63,7 @@ export class ListCoachAthletesInput {
   @Field({ nullable: true }) includeArchived?: boolean;
 }
 
+/** Paginated list returned by the coach-athlete list query. */
 @ObjectType()
 export class CoachAthleteListGql {
   @Field(() => [CoachAthleteGql]) items!: CoachAthleteGql[];
