@@ -532,5 +532,52 @@
         "delete_title": "Delete source"
       }
     }
+  },
+  "athletes": {
+    "title": "Athletes",
+    "table": {
+      "create": "New link",
+      "no_note": "No note provided",
+      "columns": {
+        "coach": "Coach",
+        "athlete": "Athlete",
+        "start_date": "Start date",
+        "end_date": "End date",
+        "status": "Status",
+        "note": "Note",
+        "updated_at": "Updated on",
+        "deleted_at": "Archived on"
+      },
+      "status": {
+        "all": "All statuses",
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "filters": {
+        "coach": "Coach",
+        "coach_placeholder": "Filter by coach",
+        "athlete": "Athlete",
+        "athlete_placeholder": "Filter by athlete",
+        "status": "Status",
+        "include_archived": "Include archived"
+      }
+    },
+    "dialog": {
+      "create_title": "New coach-athlete link",
+      "edit_title": "Edit coach-athlete link",
+      "coach_label": "Coach",
+      "coach_placeholder": "Select a coach",
+      "athlete_label": "Athlete",
+      "athlete_placeholder": "Select an athlete",
+      "start_date_label": "Start date",
+      "end_date_label": "End date",
+      "note_label": "Note",
+      "is_active_label": "Active link"
+    },
+    "confirm": {
+      "delete_title": "Archive link",
+      "delete_message": "Archive the link between {{coach}} and {{athlete}}?",
+      "delete_confirm": "Archive"
+    }
   }
 }

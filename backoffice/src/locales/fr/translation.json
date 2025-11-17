@@ -533,5 +533,52 @@
         "delete_title": "Supprimer la source"
       }
     }
+  },
+  "athletes": {
+    "title": "Athlètes",
+    "table": {
+      "create": "Nouvelle liaison",
+      "no_note": "Aucune note",
+      "columns": {
+        "coach": "Coach",
+        "athlete": "Athlète",
+        "start_date": "Date de début",
+        "end_date": "Date de fin",
+        "status": "Statut",
+        "note": "Note",
+        "updated_at": "Mis à jour le",
+        "deleted_at": "Archivé le"
+      },
+      "status": {
+        "all": "Tous les statuts",
+        "active": "Actif",
+        "inactive": "Inactif"
+      },
+      "filters": {
+        "coach": "Coach",
+        "coach_placeholder": "Filtrer par coach",
+        "athlete": "Athlète",
+        "athlete_placeholder": "Filtrer par athlète",
+        "status": "Statut",
+        "include_archived": "Inclure les archivés"
+      }
+    },
+    "dialog": {
+      "create_title": "Nouvelle liaison coach / athlète",
+      "edit_title": "Modifier la liaison",
+      "coach_label": "Coach",
+      "coach_placeholder": "Sélectionner un coach",
+      "athlete_label": "Athlète",
+      "athlete_placeholder": "Sélectionner un athlète",
+      "start_date_label": "Date de début",
+      "end_date_label": "Date de fin",
+      "note_label": "Note",
+      "is_active_label": "Lien actif"
+    },
+    "confirm": {
+      "delete_title": "Archiver la liaison",
+      "delete_message": "Confirmez-vous l'archivage du lien entre {{coach}} et {{athlete}} ?",
+      "delete_confirm": "Archiver"
+    }
   }
 }

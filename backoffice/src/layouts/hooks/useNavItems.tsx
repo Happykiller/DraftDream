@@ -3,6 +3,7 @@ import * as React from 'react';
 import {
   FitnessCenter,
   FlagCircle,
+  Groups,
   Home,
   ManageAccounts,
   Palette,
@@ -43,6 +44,11 @@ export function useNavItems(role?: string): NavItem[] {
           label: t('prospects.title'),
           icon: <FlagCircle />,
           path: '/prospects',
+        },
+        {
+          label: t('athletes.title'),
+          icon: <Groups />,
+          path: '/athletes',
         },
         {
           label: t('users.title'),
