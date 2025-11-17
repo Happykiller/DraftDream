@@ -5,7 +5,7 @@ import { Migration } from '@services/db/mongo/migration.runner.mongo';
 
 import { toSlug } from './0004_seeds_category';
 
-const FR_STATUSES = ['Client', 'Prospect'];
+const FR_STATUSES = ['Client', 'Prospect', 'A créer'];
 
 const migration: Migration = {
   id: '0011_seeds_client_status',
