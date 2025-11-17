@@ -280,6 +280,10 @@ export function ThemeStudioContent(): React.ReactElement {
     setMode((current) => (current === 'light' ? 'dark' : 'light'));
   }, []);
 
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, []);
+
   return (
     <ThemeProvider theme={derivedTheme}>
       <GlobalStyles
@@ -580,7 +584,7 @@ function StyledButton({ color, variant, size, state, theme, children }: StyledBu
 
   React.useEffect(() => {
     if (state === 'focus') {
-      buttonRef.current?.focus();
+      buttonRef.current?.focus({ preventScroll: true });
     } else {
       buttonRef.current?.blur();
     }
