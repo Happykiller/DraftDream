@@ -83,7 +83,7 @@ export function Clients(): React.JSX.Element {
                 <Refresh fontSize="small" />
               </IconButton>
             </Tooltip>
-            <Button color="warning" startIcon={<Add />} variant="contained" onClick={handleCreateClient}>
+            <Button color="primary" startIcon={<Add />} variant="contained" onClick={handleCreateClient}>
               {t('clients.actions.create')}
             </Button>
           </Stack>

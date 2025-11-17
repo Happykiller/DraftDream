@@ -107,10 +107,10 @@ export function ClientFormPanel({
   const subtitle = mode === 'edit' ? copy.editSubtitle : copy.subtitle;
   const submitLabel = mode === 'edit' ? copy.fields.submitEdit : copy.fields.submitCreate;
   const HeaderIcon = mode === 'edit' ? Edit : Add;
-  const brandRed = theme.palette.error.main;
-  const headerBackground = alpha(brandRed, 0.08);
-  const headerBorder = alpha(brandRed, 0.24);
-  const headerContrast = theme.palette.getContrastText(brandRed);
+  const brandPrimary = theme.palette.primary.main;
+  const headerBackground = alpha(brandPrimary, 0.08);
+  const headerBorder = alpha(brandPrimary, 0.24);
+  const headerContrast = theme.palette.getContrastText(brandPrimary);
 
   return (
     <Stack
@@ -155,7 +155,7 @@ export function ClientFormPanel({
                   width: 48,
                   height: 48,
                   borderRadius: 2,
-                  bgcolor: brandRed,
+                  bgcolor: brandPrimary,
                   color: headerContrast,
                   display: 'flex',
                   alignItems: 'center',
@@ -442,7 +442,7 @@ export function ClientFormPanel({
                 <Button color="inherit" onClick={onCancel} disabled={submitting}>
                   {copy.fields.cancel}
                 </Button>
-                <Button type="submit" variant="contained" color="error" disabled={submitting}>
+                <Button type="submit" variant="contained" color="primary" disabled={submitting}>
                   {submitting ? `${submitLabel}…` : submitLabel}
                 </Button>
               </Stack>
