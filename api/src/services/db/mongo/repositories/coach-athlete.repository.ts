@@ -194,7 +194,7 @@ export class BddServiceCoachAthleteMongo {
         Object.keys($unset).length ? { $set, $unset } : { $set },
         { returnDocument: 'after' },
       );
-      return result?.value ? this.toModel(result.value) : null;
+      return result ? this.toModel(result) : null;
     } catch (error) {
       if (this.isDuplicateError(error)) return null;
       this.handleError('update', error);
