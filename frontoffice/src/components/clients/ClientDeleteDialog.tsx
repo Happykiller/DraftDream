@@ -85,7 +85,7 @@ export function ClientDeleteDialog({
         handleDialogClose(event, reason);
       }}
       icon={<DeleteOutline fontSize="large" />}
-      tone="error"
+      tone="primary"
       title={copy.title}
       description={description}
       actions={

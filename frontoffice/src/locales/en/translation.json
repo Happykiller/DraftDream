@@ -48,7 +48,7 @@
   },
   "clients": {
     "title": "Clients",
-    "subtitle": "Manage every athlete you coach.",
+    "subtitle": "Manage all your clients.",
     "helper": "Create contacts, record their preferences, and stay aligned with your sales pipeline.",
     "actions": {
       "create": "New client",

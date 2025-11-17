@@ -48,7 +48,7 @@
   },
   "clients": {
     "title": "Clients",
-    "subtitle": "Gérez tous vos athlètes.",
+    "subtitle": "Gérer tous vos clients",
     "helper": "Centralisez les informations, préférences et suivis commerciaux de chaque client.",
     "actions": {
       "create": "Nouveau client",

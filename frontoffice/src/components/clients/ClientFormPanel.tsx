@@ -23,8 +23,14 @@ import { DEFAULT_CLIENT_FORM_VALUES, type ClientFormValues } from './clientFormV
 export interface ClientFormCopy {
   title: string;
   subtitle: string;
-  editTitle: string;
-  editSubtitle: string;
+  editTitle?: string;
+  editSubtitle?: string;
+  /**
+   * Legacy translation keys kept for backward compatibility until
+   * all dictionaries are migrated to camelCase naming.
+   */
+  'edit_title'?: string;
+  'edit_subtitle'?: string;
   sections: {
     identity: string;
     profile: string;
@@ -103,8 +109,10 @@ export function ClientFormPanel({
     [onSubmit, values],
   );
 
-  const title = mode === 'edit' ? copy.editTitle : copy.title;
-  const subtitle = mode === 'edit' ? copy.editSubtitle : copy.subtitle;
+  const editTitle = copy.editTitle ?? copy['edit_title'];
+  const editSubtitle = copy.editSubtitle ?? copy['edit_subtitle'];
+  const title = mode === 'edit' ? editTitle ?? copy.title : copy.title;
+  const subtitle = mode === 'edit' ? editSubtitle ?? copy.subtitle : copy.subtitle;
   const submitLabel = mode === 'edit' ? copy.fields.submitEdit : copy.fields.submitCreate;
   const HeaderIcon = mode === 'edit' ? Edit : Add;
   const brandPrimary = theme.palette.primary.main;
