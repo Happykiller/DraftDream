@@ -270,6 +270,20 @@ export const router = createBrowserRouter([
     ],
   },
   {
+    path: '/athletes',
+    element: <ProtectedLayout />,
+    loader: requireAuthLoader,
+    children: [
+      {
+        index: true,
+        lazy: async () => {
+          const mod = await import('@src/pages/Athletes');
+          return { Component: withTitle(mod.Athletes, 'athletes.title') };
+        },
+      },
+    ],
+  },
+  {
     // NotFound (public by default)
     path: '*',
     lazy: async () => {

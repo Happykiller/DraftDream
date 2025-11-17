@@ -137,6 +137,31 @@
       "delete_failure": "Unable to delete the client."
     }
   },
+  "athletes": {
+    "title": "Athletes",
+    "subtitle": "Manage your athletes",
+    "helper": "Quickly review every active link between you and your athletes.",
+    "actions": {
+      "refresh": "Refresh"
+    },
+    "list": {
+      "search_placeholder": "Search an athlete...",
+      "search_aria": "Search athletes",
+      "empty_title": "No athletes linked yet",
+      "empty_description": "Create a link from the back office to populate this list.",
+      "card": {
+        "start_date": "Start: {{date}}",
+        "end_date": "End: {{date}}",
+        "no_end_date": "No end date",
+        "no_note": "No note provided",
+        "status_active": "Active link",
+        "status_inactive": "Inactive link"
+      }
+    },
+    "notifications": {
+      "load_failure": "Unable to load athletes."
+    }
+  },
   "profile": {
     "title": "Profile",
     "hero": {

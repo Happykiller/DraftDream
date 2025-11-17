@@ -137,6 +137,31 @@
       "delete_failure": "Impossible de supprimer le client."
     }
   },
+  "athletes": {
+    "title": "Athlètes",
+    "subtitle": "Gérer vos athlètes",
+    "helper": "Visualisez instantanément les liaisons actives entre vous et vos athlètes.",
+    "actions": {
+      "refresh": "Rafraîchir"
+    },
+    "list": {
+      "search_placeholder": "Rechercher un athlète...",
+      "search_aria": "Rechercher des athlètes",
+      "empty_title": "Aucun athlète lié",
+      "empty_description": "Créez une liaison depuis le back-office pour commencer à suivre vos athlètes ici.",
+      "card": {
+        "start_date": "Début : {{date}}",
+        "end_date": "Fin : {{date}}",
+        "no_end_date": "Pas de date de fin",
+        "no_note": "Aucune note enregistrée",
+        "status_active": "Lien actif",
+        "status_inactive": "Lien inactif"
+      }
+    },
+    "notifications": {
+      "load_failure": "Impossible de charger la liste des athlètes."
+    }
+  },
   "profile": {
     "title": "Profil",
     "hero": {
