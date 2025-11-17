@@ -30,6 +30,7 @@ export class ListCoachAthletesUsecase {
         createdBy: dto.createdBy,
         limit: dto.limit,
         page: dto.page,
+        includeArchived: dto.includeArchived,
       });
       return {
         items: result.items.map((item) => ({ ...item })),

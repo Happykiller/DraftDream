@@ -28,6 +28,7 @@ interface CoachAthleteDoc {
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
+  deletedAt?: Date;
   schemaVersion: number;
 }
 
@@ -46,11 +47,17 @@ export class BddServiceCoachAthleteMongo {
     try {
       const collection = db ? db.collection<CoachAthleteDoc>('coach_athletes') : this.col();
       await collection.createIndexes([
-        { key: { coachId: 1, athleteId: 1 }, name: 'coach_athletes_unique_pair', unique: true },
+        {
+          key: { coachId: 1, athleteId: 1 },
+          name: 'coach_athletes_unique_pair',
+          unique: true,
+          partialFilterExpression: { deletedAt: { $exists: false } },
+        },
         { key: { coachId: 1 }, name: 'coach_athletes_coachId' },
         { key: { athleteId: 1 }, name: 'coach_athletes_athleteId' },
         { key: { is_active: 1 }, name: 'coach_athletes_is_active' },
         { key: { updatedAt: -1 }, name: 'coach_athletes_updatedAt' },
+        { key: { deletedAt: 1 }, name: 'coach_athletes_deletedAt' },
       ]);
     } catch (error) {
       this.handleError('ensureIndexes', error);
@@ -111,6 +118,7 @@ export class BddServiceCoachAthleteMongo {
       athleteId,
       is_active,
       createdBy,
+      includeArchived = false,
       limit = 20,
       page = 1,
       sort = { updatedAt: -1 } as Record<string, 1 | -1>,
@@ -121,6 +129,9 @@ export class BddServiceCoachAthleteMongo {
     if (athleteId?.trim()) filter.athleteId = athleteId.trim();
     if (createdBy?.trim()) filter.createdBy = createdBy.trim();
     if (typeof is_active === 'boolean') filter.is_active = is_active;
+    if (!includeArchived) {
+      filter.deletedAt = { $exists: false } as Filter<CoachAthleteDoc>['deletedAt'];
+    }
 
     try {
       const cursor = this.col()
@@ -191,13 +202,17 @@ export class BddServiceCoachAthleteMongo {
   }
 
   /**
-   * Deletes a relation permanently.
+   * Soft deletes a relation by stamping deletedAt when not already deleted.
    */
   async delete(id: string): Promise<boolean> {
     try {
       const _id = this.toObjectId(id);
-      const res = await this.col().deleteOne({ _id });
-      return res.deletedCount === 1;
+      const now = new Date();
+      const res = await this.col().updateOne(
+        { _id, deletedAt: { $exists: false } },
+        { $set: { deletedAt: now, updatedAt: now } },
+      );
+      return res.modifiedCount === 1;
     } catch (error) {
       this.handleError('delete', error);
     }
@@ -215,6 +230,7 @@ export class BddServiceCoachAthleteMongo {
       createdBy: doc.createdBy,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
+      deletedAt: doc.deletedAt,
       schemaVersion: doc.schemaVersion,
     };
   }

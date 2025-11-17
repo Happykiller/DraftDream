@@ -21,6 +21,7 @@ export class CoachAthleteGql {
   @Field(() => ID) createdBy!: string;
   @Field() createdAt!: Date;
   @Field() updatedAt!: Date;
+  @Field({ nullable: true }) deletedAt?: Date;
 
   @Field(() => UserGql, { nullable: true }) coach?: UserGql | null;
   @Field(() => UserGql, { nullable: true }) athlete?: UserGql | null;
@@ -55,6 +56,7 @@ export class ListCoachAthletesInput {
   @Field(() => ID, { nullable: true }) createdBy?: string;
   @Field(() => Int, { nullable: true }) limit?: number;
   @Field(() => Int, { nullable: true }) page?: number;
+  @Field({ nullable: true }) includeArchived?: boolean;
 }
 
 @ObjectType()

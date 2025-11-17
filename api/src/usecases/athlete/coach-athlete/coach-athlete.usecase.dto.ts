@@ -31,6 +31,7 @@ export interface ListCoachAthletesUsecaseDto {
   createdBy?: string;
   limit?: number;
   page?: number;
+  includeArchived?: boolean;
 }
 
 export interface DeleteCoachAthleteUsecaseDto {

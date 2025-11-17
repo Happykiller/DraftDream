@@ -85,6 +85,7 @@ export class CoachAthleteResolver {
       createdBy: input?.createdBy,
       limit: input?.limit,
       page: input?.page,
+      includeArchived: input?.includeArchived,
     });
     return {
       items: result.items.map(mapCoachAthleteUsecaseToGql),
@@ -115,7 +116,7 @@ export class CoachAthleteResolver {
   }
 
   /**
-   * Deletes a relation permanently.
+   * Soft deletes a relation.
    */
   @Mutation(() => Boolean, { name: 'coachAthlete_delete' })
   @Auth(Role.ADMIN, Role.COACH)

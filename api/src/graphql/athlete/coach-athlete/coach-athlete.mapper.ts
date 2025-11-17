@@ -14,4 +14,5 @@ export const mapCoachAthleteUsecaseToGql = (link: CoachAthleteUsecaseModel): Coa
   createdBy: link.createdBy,
   createdAt: link.createdAt,
   updatedAt: link.updatedAt,
+  deletedAt: link.deletedAt,
 });
