@@ -14,7 +14,9 @@ const migration: Migration = {
         key: { coachId: 1, athleteId: 1 },
         name: 'coach_athletes_unique_pair',
         unique: true,
-        partialFilterExpression: { deletedAt: { $exists: false } },
+        // The local MongoDB version rejects `$exists: false` inside partial indexes, so rely on `$eq: null`
+        // which matches both missing and null fields. This still enforces uniqueness for active links.
+        partialFilterExpression: { deletedAt: { $eq: null } },
       },
       { key: { coachId: 1 }, name: 'coach_athletes_coachId' },
       { key: { athleteId: 1 }, name: 'coach_athletes_athleteId' },
