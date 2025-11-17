@@ -73,6 +73,11 @@ import { ListClientsUsecase } from '@usecases/client/client/list.clients.usecase
 import { CreateClientUsecase } from '@usecases/client/client/create.client.usecase';
 import { UpdateClientUsecase } from '@usecases/client/client/update.client.usecase';
 import { DeleteClientUsecase } from '@usecases/client/client/delete.client.usecase';
+import { GetCoachAthleteUsecase } from '@usecases/athlete/coach-athlete/get.coach-athlete.usecase';
+import { ListCoachAthletesUsecase } from '@usecases/athlete/coach-athlete/list.coach-athletes.usecase';
+import { CreateCoachAthleteUsecase } from '@usecases/athlete/coach-athlete/create.coach-athlete.usecase';
+import { UpdateCoachAthleteUsecase } from '@usecases/athlete/coach-athlete/update.coach-athlete.usecase';
+import { DeleteCoachAthleteUsecase } from '@usecases/athlete/coach-athlete/delete.coach-athlete.usecase';
 import { GetMealTypeUsecase } from '@src/usecases/nutri/meal-type/get.meal-type.usecase';
 import { ListMealTypesUsecase } from '@src/usecases/nutri/meal-type/list.meal-type.usecase';
 import { CreateMealTypeUsecase } from '@src/usecases/nutri/meal-type/create.meal-type.usecase';
@@ -170,6 +175,11 @@ export class Inversify {
   listClientsUsecase: ListClientsUsecase;
   updateClientUsecase: UpdateClientUsecase;
   deleteClientUsecase: DeleteClientUsecase;
+  getCoachAthleteUsecase: GetCoachAthleteUsecase;
+  createCoachAthleteUsecase: CreateCoachAthleteUsecase;
+  listCoachAthletesUsecase: ListCoachAthletesUsecase;
+  updateCoachAthleteUsecase: UpdateCoachAthleteUsecase;
+  deleteCoachAthleteUsecase: DeleteCoachAthleteUsecase;
   getMealTypeUsecase: GetMealTypeUsecase;
   listMealTypesUsecase: ListMealTypesUsecase;
   createMealTypeUsecase: CreateMealTypeUsecase;
@@ -263,6 +273,12 @@ export class Inversify {
     this.listClientsUsecase = new ListClientsUsecase(this);
     this.updateClientUsecase = new UpdateClientUsecase(this);
     this.deleteClientUsecase = new DeleteClientUsecase(this);
+    // usecases coach athlete
+    this.getCoachAthleteUsecase = new GetCoachAthleteUsecase(this);
+    this.createCoachAthleteUsecase = new CreateCoachAthleteUsecase(this);
+    this.listCoachAthletesUsecase = new ListCoachAthletesUsecase(this);
+    this.updateCoachAthleteUsecase = new UpdateCoachAthleteUsecase(this);
+    this.deleteCoachAthleteUsecase = new DeleteCoachAthleteUsecase(this);
     // usecases meal type
     this.createMealTypeUsecase = new CreateMealTypeUsecase(this);
     this.getMealTypeUsecase = new GetMealTypeUsecase(this);

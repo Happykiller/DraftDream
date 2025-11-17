@@ -19,6 +19,7 @@ import { BddServiceEquipmentMongo } from '@services/db/mongo/repositories/equipm
 import { BddServiceMealMongo } from '@services/db/mongo/repositories/meal.repository';
 import { BddServiceMealDayMongo } from '@services/db/mongo/repositories/meal-day.repository';
 import { BddServiceMealPlanMongo } from '@services/db/mongo/repositories/meal-plan.repository';
+import { BddServiceCoachAthleteMongo } from '@services/db/mongo/repositories/coach-athlete.repository';
 
 interface InfraDeps { inversify: any; config: any }
 
@@ -37,6 +38,7 @@ export class BddServiceMongo {
   readonly clientLevel: BddServiceClientLevelMongo;
   readonly clientSource: BddServiceClientSourceMongo;
   readonly client: BddServiceClientMongo;
+  readonly coachAthlete: BddServiceCoachAthleteMongo;
   readonly mealType: BddServiceMealTypeMongo;
   readonly mealDay: BddServiceMealDayMongo;
   readonly meal: BddServiceMealMongo;
@@ -57,6 +59,7 @@ export class BddServiceMongo {
     this.clientLevel = new BddServiceClientLevelMongo();
     this.clientSource = new BddServiceClientSourceMongo();
     this.client = new BddServiceClientMongo();
+    this.coachAthlete = new BddServiceCoachAthleteMongo();
     this.mealType = new BddServiceMealTypeMongo();
     this.mealDay = new BddServiceMealDayMongo();
     this.meal = new BddServiceMealMongo();
