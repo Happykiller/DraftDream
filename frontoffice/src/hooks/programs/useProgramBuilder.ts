@@ -105,6 +105,7 @@ type UseProgramBuilderResult = {
   categoriesLoading: boolean;
   usersLoading: boolean;
   reloadSessions: () => Promise<void>;
+  reloadExercises: () => Promise<void>;
   setSessionSearch: React.Dispatch<React.SetStateAction<string>>;
   setExerciseSearch: React.Dispatch<React.SetStateAction<string>>;
   setExerciseCategory: React.Dispatch<React.SetStateAction<string>>;

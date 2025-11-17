@@ -5,7 +5,7 @@ import { Box, Grid, InputAdornment, Skeleton, Stack, TextField, Typography } fro
 
 import { ClientCard } from './ClientCard';
 
-import type { Client } from '@types/clients';
+import type { Client } from '@app-types/clients';
 
 export interface ClientListProps {
   clients: Client[];

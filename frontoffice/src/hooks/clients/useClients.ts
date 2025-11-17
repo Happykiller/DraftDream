@@ -13,7 +13,7 @@ import {
   type ClientListInput,
   type ClientUpdateInput,
 } from '@services/graphql/clients.service';
-import type { ClientListResult } from '@types/clients';
+import type { ClientListResult } from '@app-types/clients';
 
 export interface UseClientsParams extends Pick<ClientListInput, 'page' | 'limit'> {
   q?: string;

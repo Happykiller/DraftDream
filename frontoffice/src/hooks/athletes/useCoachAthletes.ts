@@ -8,7 +8,7 @@ import {
   coachAthleteList,
   type CoachAthleteListInput,
 } from '@services/graphql/coachAthletes.service';
-import type { CoachAthleteListResult } from '@types/coachAthletes';
+import type { CoachAthleteListResult } from '@app-types/coachAthletes';
 
 export interface UseCoachAthletesParams extends Pick<CoachAthleteListInput, 'coachId' | 'page' | 'limit'> {
   includeArchived?: boolean;

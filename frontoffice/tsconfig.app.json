@@ -27,7 +27,7 @@
       "@routes/*": ["src/routes/*"],
       "@layouts/*": ["src/layouts/*"],
       "@pages/*": ["src/pages/*"],
-      "@types/*": ["src/types/*"]
+      "@app-types/*": ["src/types/*"]
     },
 
     /* Linting */

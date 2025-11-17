@@ -6,7 +6,7 @@ import { UserType } from '@src/commons/enums';
 import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { coachAthleteList } from '@services/graphql/coachAthletes.service';
-import type { CoachAthleteLink } from '@types/coachAthletes';
+import type { CoachAthleteLink } from '@app-types/coachAthletes';
 import type { User } from '@src/hooks/useUsers';
 
 interface UseCoachAthleteUsersParams {

@@ -2,7 +2,7 @@
 import type { LoaderFunctionArgs } from 'react-router-dom';
 
 import { clientGet } from '@services/graphql/clients.service';
-import type { Client } from '@types/clients';
+import type { Client } from '@app-types/clients';
 
 export type ClientEditLoaderStatus = 'success' | 'not_found' | 'error';
 

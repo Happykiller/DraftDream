@@ -17,7 +17,7 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { useDateFormatter } from '@hooks/useDateFormatter';
-import type { Client } from '@types/clients';
+import type { Client } from '@app-types/clients';
 
 export interface ClientCardProps {
   client: Client;

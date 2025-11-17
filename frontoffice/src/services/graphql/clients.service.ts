@@ -1,7 +1,7 @@
 // src/services/graphql/clients.service.ts
 import inversify from '@src/commons/inversify';
 
-import type { Client, ClientListResult } from '@types/clients';
+import type { Client, ClientListResult } from '@app-types/clients';
 
 import { GraphqlServiceFetch } from './graphql.service.fetch';
 

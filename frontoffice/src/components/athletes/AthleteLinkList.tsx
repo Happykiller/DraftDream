@@ -5,7 +5,7 @@ import { Box, Grid, InputAdornment, Skeleton, Stack, TextField, Typography } fro
 
 import { AthleteLinkCard } from './AthleteLinkCard';
 
-import type { CoachAthleteLink } from '@types/coachAthletes';
+import type { CoachAthleteLink } from '@app-types/coachAthletes';
 
 export interface AthleteLinkListProps {
   links: CoachAthleteLink[];

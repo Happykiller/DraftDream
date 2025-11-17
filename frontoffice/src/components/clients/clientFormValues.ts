@@ -1,7 +1,7 @@
 // src/components/clients/clientFormValues.ts
 import * as React from 'react';
 
-import type { Client } from '@types/clients';
+import type { Client } from '@app-types/clients';
 
 export interface ClientFormValues {
   firstName: string;

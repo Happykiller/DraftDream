@@ -11,7 +11,7 @@ import type { DialogProps } from '@mui/material/Dialog';
 
 import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
 
-import type { Client } from '@types/clients';
+import type { Client } from '@app-types/clients';
 
 export interface ClientDeleteDialogCopy {
   title: string;

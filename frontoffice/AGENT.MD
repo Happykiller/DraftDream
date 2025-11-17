@@ -15,7 +15,7 @@
 - `src/stores/session.ts` persists auth context with Zustand. Prefer manipulating session state via the exported store helpers instead of touching `localStorage` directly.
 
 ## Implementation Rules
-- Use the path aliases defined in `tsconfig.app.json` (e.g., `@components/*`, `@stores/*`) to avoid brittle relative paths.
+- Use the path aliases defined in `tsconfig.app.json` (e.g., `@components/*`, `@stores/*`, `@app-types/*`) to avoid brittle relative paths.
 - Keep business decisions inside hooks or dedicated services. Components should focus on rendering and delegating actions.
 - Extend translations in both `src/locales/en` and `src/locales/fr` simultaneously; missing keys must fail loudly rather than relying on defaults.
 - When adding API interactions, expose them as async functions within a domain-specific service (e.g., `src/services/graphql/<feature>.ts`) and call them from hooks/pages.
@@ -46,9 +46,8 @@
    - Do not rely on translation `defaultValue` fallbacks; keep localization dictionaries up to date for every supported language.
 5. **Async workflows**:
    - Route every asynchronous workflow (GraphQL fetches, mutations, loaders, service calls) through `src/hooks/useAsyncTask.ts` so `useLoaderStore` fuels the global overlay. For example, the login form wraps its authentication mutation inside `useAsyncTask` to keep the overlay synchronized.
-Add this compact section near the end of your **Coding Guidelines** block:
 6. **MUI Grid syntax (v6+)**
-   Use the new prop `size` instead of `item` and `xs`/`md`.
-   **Deprecated:** `<Grid item xs={12} md={5}>`
-   **Correct:** `<Grid size={{ xs: 12, md: 5 }}>`
-   Keep `container` for parent grids, and use `spacing`, `rowSpacing`, or `columnSpacing` as usual.
+   - Use the new prop `size` instead of `item` and `xs`/`md`.
+   - **Deprecated:** `<Grid item xs={12} md={5}>`
+   - **Correct:** `<Grid size={{ xs: 12, md: 5 }}>`
+   - Keep `container` for parent grids, and use `spacing`, `rowSpacing`, or `columnSpacing` as usual.

@@ -1,7 +1,7 @@
 // src/services/graphql/coachAthletes.service.ts
 import inversify from '@src/commons/inversify';
 
-import type { CoachAthleteListResult } from '@types/coachAthletes';
+import type { CoachAthleteListResult } from '@app-types/coachAthletes';
 
 import { GraphqlServiceFetch } from './graphql.service.fetch';
 

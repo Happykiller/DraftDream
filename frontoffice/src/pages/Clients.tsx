@@ -11,7 +11,7 @@ import { ClientList } from '@components/clients/ClientList';
 import { useClients } from '@hooks/clients/useClients';
 import { useDebouncedValue } from '@hooks/useDebouncedValue';
 
-import type { Client } from '@types/clients';
+import type { Client } from '@app-types/clients';
 
 /** Client dashboard listing coach-owned contacts with quick actions. */
 export function Clients(): React.JSX.Element {

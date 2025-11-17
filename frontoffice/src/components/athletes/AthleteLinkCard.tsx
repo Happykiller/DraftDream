@@ -14,7 +14,7 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { useDateFormatter } from '@hooks/useDateFormatter';
-import type { CoachAthleteLink } from '@types/coachAthletes';
+import type { CoachAthleteLink } from '@app-types/coachAthletes';
 
 export interface AthleteLinkCardProps {
   link: CoachAthleteLink;
