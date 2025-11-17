@@ -4,8 +4,10 @@ import { useTranslation } from 'react-i18next';
 
 import { UserType } from '@src/commons/enums';
 import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
-import { useUsers, type User } from '@src/hooks/useUsers';
+import { useCoachAthleteUsers } from '@hooks/athletes/useCoachAthleteUsers';
+import type { User } from '@src/hooks/useUsers';
 import { slugify } from '@src/utils/slugify';
+import { session } from '@stores/session';
 
 import {
   useMealPlans,
@@ -257,6 +259,14 @@ export function useMealPlanBuilder(
   const { i18n } = useTranslation();
   const basePlan = mealPlan ?? null;
   const mode: 'create' | 'edit' = basePlan ? 'edit' : 'create';
+  const [currentUserId, setCurrentUserId] = React.useState<string | null>(() => session.getState().id);
+
+  React.useEffect(() => {
+    const unsubscribe = session.subscribe((state) => {
+      setCurrentUserId(state.id);
+    });
+    return unsubscribe;
+  }, []);
 
   const [form, setForm] = React.useState<MealPlanBuilderForm>(() => ({
     planName: (() => {
@@ -282,14 +292,9 @@ export function useMealPlanBuilder(
   const [usersQ, setUsersQ] = React.useState('');
   const debouncedUsersQ = useDebouncedValue(usersQ, 300);
 
-  const {
-    items: users,
-    loading: usersLoading,
-  } = useUsers({
-    page: 1,
-    limit: 25,
-    q: debouncedUsersQ,
-    type: UserType.Athlete,
+  const { items: users, loading: usersLoading } = useCoachAthleteUsers({
+    coachId: currentUserId,
+    search: debouncedUsersQ,
   });
 
   const {

@@ -9,7 +9,8 @@ import {
   type ExerciseVisibility,
 } from '@hooks/programs/useExercises';
 import { useCategories } from '@hooks/programs/useCategories';
-import { useUsers, type User } from '@src/hooks/useUsers';
+import { useCoachAthleteUsers } from '@hooks/athletes/useCoachAthleteUsers';
+import type { User } from '@src/hooks/useUsers';
 import {
   usePrograms,
   type Program,
@@ -331,11 +332,9 @@ export function useProgramBuilder(
     q: '',
   });
 
-  const { items: users, loading: usersLoading } = useUsers({
-    page: 1,
-    limit: 100,
-    q: debouncedQ,
-    type: UserType.Athlete,
+  const { items: users, loading: usersLoading } = useCoachAthleteUsers({
+    coachId: currentUserId,
+    search: debouncedQ,
   });
 
   const { create: createProgram, update: updateProgram } = usePrograms({
@@ -348,7 +347,11 @@ export function useProgramBuilder(
     if (!user) {
       return '';
     }
-    return user.email;
+    const email = user.email?.trim();
+    if (email) {
+      return email;
+    }
+    return `${user.first_name ?? ''} ${user.last_name ?? ''}`.trim();
   }, []);
 
   const sessionTemplates = React.useMemo<SessionTemplate[]>(() => {
