@@ -1,6 +1,42 @@
 {
   "releases": [
     {
+      "version": "0.6.0",
+      "title": "Note de mise à jour : 0.6.0",
+      "date": "2025-11-20",
+      "global": [
+        "[NOUVEAUTÉ] Gestion complète des prospects, clients et athlètes avec suivi unifié.",
+        "[RELATION] Introduction de la relation directe coach ↔ athlète pour structurer l'accompagnement.",
+        "[VISIBILITÉ] Amélioration du contrôle de visibilité des programmes, repas et contenus clés.",
+        "[EXPÉRIENCE] Interfaces harmonisées entre modules pour simplifier les flux quotidiens des coachs."
+      ],
+      "notes": "FitDesk 0.6.0 place la relation coach–athlète au centre : les équipes disposent d'outils pour qualifier prospects, gérer clients et suivre les athlètes tout en conservant une visibilité claire sur les contenus et les plans.",
+      "projects": {
+        "/api": [
+          "Ajout du système de relations coach–athlète avec gestion souple et suppression douce.",
+          "Introduction de la base d'objectifs et préférences clients couvrant nutrition, activité et ambitions sportives.",
+          "Gestion complète des prospects avec statuts, niveaux, sources et préférences d'activité.",
+          "Uniformisation des statuts de visibilité pour les programmes et plans de repas.",
+          "Simplification des modèles et retrait des anciens niveaux de difficulté pour clarifier la couche métier."
+        ],
+        "/backoffice": [
+          "Nouveau module de gestion des prospects et clients avec suivi du statut, des objectifs et des préférences.",
+          "Section dédiée aux athlètes pour orchestrer les relations coach–athlète.",
+          "Possibilité d'ajuster la visibilité des programmes et plans nutritionnels directement depuis l'interface.",
+          "Présentation des données revue : fiches clients enrichies, sources, créateurs et détails accessibles instantanément."
+        ],
+        "/frontoffice": [
+          "Module complet de gestion des clients avec création, édition, suppression et suivi contextualisé.",
+          "Espace Athlètes connecté au backoffice pour gérer les relations et le suivi terrain.",
+          "Interfaces retravaillées : formulaires clarifiés, blocs thématiques simplifiés et alignés sur la charte graphique.",
+          "Nettoyage des données héritées et suppression de l'ancien concept de niveau d'exercice."
+        ],
+        "/showcase": [
+          "Ajustements internes pour préserver la cohérence et la fluidité avec les nouveaux modules métiers."
+        ]
+      }
+    },
+    {
       "version": "0.5.0",
       "title": "Note de mise à jour : 0.5.0",
       "date": "2025-11-06",
