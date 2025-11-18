@@ -17,13 +17,12 @@ Content-Type: application/json
 
 {
   "query":
-    "mutation($input: CreateExerciseInput!){ exercise_create(input:$input){ id slug locale label level visibility createdAt updatedAt } }",
+    "mutation($input: CreateExerciseInput!){ exercise_create(input:$input){ id slug locale label visibility createdAt updatedAt } }",
   "variables": {
     "input": {
       "slug":"front-squat",
       "locale":"{{locale}}",
       "label":"Front squat",
-      "level":"INTERMEDIATE",
       "series":"5x5",
       "repetitions":"5",
       "description":"Mouvement de force complet",
@@ -46,7 +45,7 @@ Content-Type: application/json
 
 {
   "query":
-    "query($id: ID!){ exercise_get(id:$id){ id slug locale label level description instructions rest visibility createdAt updatedAt categories{ id label } muscles{ id label } equipment{ id label } tags{ id label } creator{ id email } } }",
+    "query($id: ID!){ exercise_get(id:$id){ id slug locale label description instructions rest visibility createdAt updatedAt categories{ id label } muscles{ id label } equipment{ id label } tags{ id label } creator{ id email } } }",
   "variables": { "id":"REPLACE_EXERCISE_ID" }
 }
 
@@ -58,14 +57,13 @@ Content-Type: application/json
 
 {
   "query":
-    "query($input: ListExercisesInput){ exercise_list(input:$input){ items{ id slug label level visibility createdAt updatedAt } total page limit } }",
+    "query($input: ListExercisesInput){ exercise_list(input:$input){ items{ id slug label visibility createdAt updatedAt } total page limit } }",
   "variables": {
     "input": {
       //"q":"squat",
       "locale":"fr",
       "createdBy":"{{createdBy}}",
       "visibility":"PUBLIC",
-      //"level":"INTERMEDIATE",
       "page":{{page}},
       "limit":{{limit}}
     }
@@ -80,7 +78,7 @@ Content-Type: application/json
 
 {
   "query":
-    "mutation($input: UpdateExerciseInput!){ exercise_update(input:$input){ id slug locale label level series repetitions visibility updatedAt } }",
+    "mutation($input: UpdateExerciseInput!){ exercise_update(input:$input){ id slug locale label series repetitions visibility updatedAt } }",
   "variables": {
     "input": {
       "id":"REPLACE_EXERCISE_ID",

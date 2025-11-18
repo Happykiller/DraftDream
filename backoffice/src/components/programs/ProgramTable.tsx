@@ -53,6 +53,13 @@ export const ProgramTable = React.memo(function ProgramTable({
     { field: 'label', headerName: t('common.labels.label'), flex: 1.4, minWidth: 180 },
     { field: 'locale', headerName: t('common.labels.locale'), width: 110 },
     {
+      field: 'visibility',
+      headerName: t('common.labels.visibility'),
+      width: 140,
+      valueFormatter: ({ value }) =>
+        value === 'PUBLIC' ? t('common.visibility.public') : t('common.visibility.private'),
+    },
+    {
       field: 'duration',
       headerName: t('common.labels.duration_weeks'),
       width: 150,

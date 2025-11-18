@@ -2,7 +2,6 @@
 import * as React from 'react';
 import { alpha, useTheme } from '@mui/material/styles';
 import {
-  Alert,
   Autocomplete,
   Box,
   Button,
@@ -23,6 +22,7 @@ import {
 import { Add, Edit, Replay, Search } from '@mui/icons-material';
 
 import type { Meal } from '@hooks/nutrition/useMeals';
+import type { MealType } from '@hooks/nutrition/useMealTypes';
 import type { MealPlan } from '@hooks/nutrition/useMealPlans';
 
 import { useMealPlanBuilder } from '@hooks/nutrition/useMealPlanBuilder';
@@ -86,6 +86,9 @@ export function MealPlanBuilderPanel({
     dayLibraryLoading,
     mealLibrary,
     mealLibraryLoading,
+    mealTypes,
+    mealTypesLoading,
+    selectedMealTypeId,
     days,
     handleSelectAthlete,
     handleFormChange,
@@ -100,6 +103,7 @@ export function MealPlanBuilderPanel({
     handleMoveMealUp,
     handleMoveMealDown,
     handleUpdateMeal,
+    handleSelectMealType,
     handleSubmit,
     isSubmitDisabled,
     submitting,
@@ -128,6 +132,18 @@ export function MealPlanBuilderPanel({
     meal: MealPlanBuilderMeal;
     contextLabel: string;
   } | null>(null);
+
+  const selectedMealType = React.useMemo<MealType | null>(
+    () => mealTypes.find((type) => type.id === selectedMealTypeId) ?? null,
+    [mealTypes, selectedMealTypeId],
+  );
+
+  const handleMealTypeFilterChange = React.useCallback(
+    (_event: React.SyntheticEvent<Element, Event>, next: MealType | null) => {
+      handleSelectMealType(next);
+    },
+    [handleSelectMealType],
+  );
 
   const panelTitle = mode === 'edit' ? builderCopy.edit_title ?? builderCopy.title : builderCopy.title;
   const panelSubtitle =
@@ -739,7 +755,32 @@ export function MealPlanBuilderPanel({
                           <Box sx={{ flexGrow: 1, minHeight: 0 }}>
                             {days.length === 0 ? (
                               <Stack spacing={2}>
-                                <Alert severity="info">{builderCopy.structure.empty}</Alert>
+                                <Box
+                                  sx={{
+                                    border: `1px dashed ${alpha(theme.palette.text.primary, 0.2)}`,
+                                    borderRadius: 2,
+                                    p: 2,
+                                    bgcolor: alpha(theme.palette.background.default, 0.4),
+                                    width: '100%',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                  }}
+                                >
+                                  <Stack
+                                    spacing={1}
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    sx={{ minHeight: 220, width: '100%' }}
+                                  >
+                                    <Typography
+                                      variant="body2"
+                                      color="text.secondary"
+                                      textAlign="center"
+                                    >
+                                      {builderCopy.structure.empty}
+                                    </Typography>
+                                  </Stack>
+                                </Box>
                                 <Button
                                   onClick={handleCreateEmptyDay}
                                   startIcon={<Add fontSize="small" />}
@@ -829,6 +870,26 @@ export function MealPlanBuilderPanel({
                         >
                           {builderCopy.meal_library.create_label}
                         </Button>
+                        <Autocomplete
+                          options={mealTypes}
+                          loading={mealTypesLoading}
+                          value={selectedMealType}
+                          onChange={handleMealTypeFilterChange}
+                          getOptionLabel={(option) => option.label}
+                          isOptionEqualToValue={(option, value) => option.id === value.id}
+                          size="small"
+                          fullWidth
+                          noOptionsText={builderCopy.meal_library.type_filter_no_results ?? ''}
+                          clearText={builderCopy.meal_library.type_filter_clear_label}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label={builderCopy.meal_library.type_filter_label}
+                              placeholder={builderCopy.meal_library.type_filter_placeholder}
+                              size="small"
+                            />
+                          )}
+                        />
                         {builderCopy.meal_library.limit_hint ? (
                           <Typography variant="caption" color="text.secondary">
                             {builderCopy.meal_library.limit_hint}

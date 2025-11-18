@@ -18,7 +18,6 @@ interface ExerciseDoc {
   label: string;
   description?: string;
   instructions?: string;
-  level: 'beginner' | 'intermediate' | 'advanced';
   series: string;
   repetitions: string;
   charge?: string;
@@ -56,7 +55,6 @@ export class BddServiceExerciseMongo {
         { key: { updatedAt: -1 }, name: 'by_updatedAt' },
         { key: { createdBy: 1 }, name: 'by_createdBy' },
         { key: { visibility: 1 }, name: 'by_visibility' },
-        { key: { level: 1 }, name: 'by_level' },
         { key: { categories: 1 }, name: 'by_categories' },
       ]);
     } catch (error) {
@@ -78,7 +76,6 @@ export class BddServiceExerciseMongo {
       label: dto.label.trim(),
       description: dto.description,
       instructions: dto.instructions,
-      level: dto.level,
       series: dto.series.trim(),
       repetitions: dto.repetitions.trim(),
       charge: dto.charge?.trim(),
@@ -137,7 +134,6 @@ export class BddServiceExerciseMongo {
       createdByIn,
       includePublicVisibility,
       visibility,
-      level,
       categoryIds,
       limit = 20,
       page = 1,
@@ -188,7 +184,6 @@ export class BddServiceExerciseMongo {
       filter.$and = andConditions;
     }
 
-    if (level) filter.level = level;
     const normalizedCategoryIds = Array.isArray(categoryIds)
       ? Array.from(new Set(categoryIds)).map((id) => id.trim()).filter(Boolean)
       : [];
@@ -221,7 +216,6 @@ export class BddServiceExerciseMongo {
     if (patch.label !== undefined) $set.label = patch.label.trim();
     if (patch.description !== undefined) $set.description = patch.description;
     if (patch.instructions !== undefined) $set.instructions = patch.instructions;
-    if (patch.level !== undefined) $set.level = patch.level;
     if (patch.series !== undefined) $set.series = patch.series.trim();
     if (patch.repetitions !== undefined) $set.repetitions = patch.repetitions.trim();
     if (patch.charge !== undefined) $set.charge = patch.charge?.trim();
@@ -316,7 +310,6 @@ export class BddServiceExerciseMongo {
     label: doc.label,
     description: doc.description,
     instructions: doc.instructions,
-    level: doc.level,
     series: doc.series,
     repetitions: doc.repetitions,
     charge: doc.charge,

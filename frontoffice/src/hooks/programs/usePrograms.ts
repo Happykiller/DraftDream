@@ -46,7 +46,6 @@ export interface ProgramSessionExercise {
   charge?: string | null;
   restSeconds?: number | null;
   videoUrl?: string | null;
-  level?: string | null;
   categoryIds?: string[] | null;
   categories?: ProgramExerciseCategory[];
   muscleIds?: string[] | null;
@@ -128,7 +127,6 @@ const LIST_Q = `
             charge
             restSeconds
             videoUrl
-            level
             categoryIds
             categories {
               id
@@ -194,7 +192,6 @@ const CREATE_M = `
           charge
           restSeconds
           videoUrl
-          level
           categoryIds
           categories {
             id
@@ -256,7 +253,6 @@ const UPDATE_M = `
           charge
           restSeconds
           videoUrl
-          level
           categoryIds
           categories {
             id
@@ -391,7 +387,6 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
                     charge: exercise.charge ?? undefined,
                     restSeconds: exercise.restSeconds ?? undefined,
                     videoUrl: exercise.videoUrl ?? undefined,
-                    level: exercise.level ?? undefined,
                   })),
                 })),
               },
@@ -471,7 +466,6 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
                     charge: exercise.charge ?? undefined,
                     restSeconds: exercise.restSeconds ?? undefined,
                     videoUrl: exercise.videoUrl ?? undefined,
-                    level: exercise.level ?? undefined,
                   })),
                 })),
               },

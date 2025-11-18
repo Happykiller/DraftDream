@@ -4,8 +4,10 @@ import { useTranslation } from 'react-i18next';
 
 import { UserType } from '@src/commons/enums';
 import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
-import { useUsers, type User } from '@src/hooks/useUsers';
+import { useCoachAthleteUsers } from '@hooks/athletes/useCoachAthleteUsers';
+import type { User } from '@src/hooks/useUsers';
 import { slugify } from '@src/utils/slugify';
+import { session } from '@stores/session';
 
 import {
   useMealPlans,
@@ -17,6 +19,7 @@ import {
 } from './useMealPlans';
 import { useMealDays, type MealDay } from './useMealDays';
 import { useMeals, type Meal } from './useMeals';
+import { useMealTypes, type MealType } from './useMealTypes';
 
 import type {
   MealPlanBuilderCopy,
@@ -49,6 +52,9 @@ export interface UseMealPlanBuilderResult {
   dayLibraryLoading: boolean;
   mealLibrary: Meal[];
   mealLibraryLoading: boolean;
+  mealTypes: MealType[];
+  mealTypesLoading: boolean;
+  selectedMealTypeId: string | null;
   days: MealPlanBuilderDay[];
   handleSelectAthlete: (_event: unknown, user: User | null) => void;
   handleFormChange: (
@@ -69,6 +75,7 @@ export interface UseMealPlanBuilderResult {
     mealUiId: string,
     patch: Partial<MealPlanBuilderMeal>,
   ) => void;
+  handleSelectMealType: (type: MealType | null) => void;
   handleSubmit: (event?: React.SyntheticEvent) => Promise<void>;
   isSubmitDisabled: boolean;
   submitting: boolean;
@@ -252,6 +259,14 @@ export function useMealPlanBuilder(
   const { i18n } = useTranslation();
   const basePlan = mealPlan ?? null;
   const mode: 'create' | 'edit' = basePlan ? 'edit' : 'create';
+  const [currentUserId, setCurrentUserId] = React.useState<string | null>(() => session.getState().id);
+
+  React.useEffect(() => {
+    const unsubscribe = session.subscribe((state) => {
+      setCurrentUserId(state.id);
+    });
+    return unsubscribe;
+  }, []);
 
   const [form, setForm] = React.useState<MealPlanBuilderForm>(() => ({
     planName: (() => {
@@ -270,20 +285,16 @@ export function useMealPlanBuilder(
 
   const [daySearch, setDaySearch] = React.useState('');
   const [mealSearch, setMealSearch] = React.useState('');
+  const [selectedMealTypeId, setSelectedMealTypeId] = React.useState<string | null>(null);
   const debouncedDaySearch = useDebouncedValue(daySearch, 300);
   const debouncedMealSearch = useDebouncedValue(mealSearch, 300);
 
   const [usersQ, setUsersQ] = React.useState('');
   const debouncedUsersQ = useDebouncedValue(usersQ, 300);
 
-  const {
-    items: users,
-    loading: usersLoading,
-  } = useUsers({
-    page: 1,
-    limit: 25,
-    q: debouncedUsersQ,
-    type: UserType.Athlete,
+  const { items: users, loading: usersLoading } = useCoachAthleteUsers({
+    coachId: currentUserId,
+    search: debouncedUsersQ,
   });
 
   const {
@@ -307,7 +318,33 @@ export function useMealPlanBuilder(
     page: 1,
     limit: 10,
     q: debouncedMealSearch,
+    typeId: selectedMealTypeId ?? undefined,
   });
+
+  const {
+    items: mealTypes,
+    loading: mealTypesLoading,
+  } = useMealTypes({
+    page: 1,
+    limit: 25,
+    q: '',
+  });
+
+  const filteredMealTypes = React.useMemo(
+    () => mealTypes.filter((type) => type.locale === i18n.language),
+    [i18n.language, mealTypes],
+  );
+
+  React.useEffect(() => {
+    if (!selectedMealTypeId) {
+      return;
+    }
+
+    const stillAvailable = filteredMealTypes.some((type) => type.id === selectedMealTypeId);
+    if (!stillAvailable) {
+      setSelectedMealTypeId(null);
+    }
+  }, [filteredMealTypes, selectedMealTypeId]);
 
   const { create, update } = useMealPlans({
     page: 1,
@@ -353,6 +390,13 @@ export function useMealPlanBuilder(
   const updatePlanName = React.useCallback((value: string) => {
     setForm((prev) => ({ ...prev, planName: value }));
   }, []);
+
+  const handleSelectMealType = React.useCallback(
+    (type: MealType | null) => {
+      setSelectedMealTypeId(type?.id ?? null);
+    },
+    [],
+  );
 
   const handleAddDayFromTemplate = React.useCallback((template: MealDay) => {
     const daySnapshot: MealPlanDaySnapshot = {
@@ -669,6 +713,9 @@ export function useMealPlanBuilder(
     dayLibraryLoading,
     mealLibrary: meals,
     mealLibraryLoading,
+    mealTypes: filteredMealTypes,
+    mealTypesLoading,
+    selectedMealTypeId,
     days,
     handleSelectAthlete,
     handleFormChange,
@@ -683,6 +730,7 @@ export function useMealPlanBuilder(
     handleMoveMealUp,
     handleMoveMealDown,
     handleUpdateMeal,
+    handleSelectMealType,
     handleSubmit,
     isSubmitDisabled,
     submitting,

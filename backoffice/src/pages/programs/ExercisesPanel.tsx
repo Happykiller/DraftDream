@@ -28,6 +28,23 @@ export function ExercisesPanel(): React.JSX.Element {
   const tags = useTags({ page: 1, limit: 200, q: '' });
   const eqp = useEquipment({ page: 1, limit: 200, q: '' });
 
+  const categoryOptions = React.useMemo<RefEntity[]>(
+    () => cats.items.map((item) => ({ id: item.id, slug: item.slug, label: item.label, locale: item.locale })),
+    [cats.items],
+  );
+  const muscleOptions = React.useMemo<RefEntity[]>(
+    () => musc.items.map((item) => ({ id: item.id, slug: item.slug, label: item.label, locale: item.locale })),
+    [musc.items],
+  );
+  const tagOptions = React.useMemo<RefEntity[]>(
+    () => tags.items.map((item) => ({ id: item.id, slug: item.slug, label: item.label, locale: item.locale })),
+    [tags.items],
+  );
+  const equipmentOptions = React.useMemo<RefEntity[]>(
+    () => eqp.items.map((item) => ({ id: item.id, slug: item.slug, label: item.label, locale: item.locale })),
+    [eqp.items],
+  );
+
   const [openCreate, setOpenCreate] = React.useState(false);
   const [editId, setEditId] = React.useState<string | null>(null);
   const [deleteId, setDeleteId] = React.useState<string | null>(null);
@@ -39,7 +56,6 @@ export function ExercisesPanel(): React.JSX.Element {
     slug: v.slug,
     locale: v.locale,
     label: v.label,
-    level: v.level,
     series: v.series,
     repetitions: v.repetitions,
     description: v.description || undefined,
@@ -59,7 +75,6 @@ export function ExercisesPanel(): React.JSX.Element {
     slug: v.slug,
     locale: v.locale,
     label: v.label,
-    level: v.level,
     series: v.series,
     repetitions: v.repetitions,
     description: v.description || undefined,
@@ -95,10 +110,10 @@ export function ExercisesPanel(): React.JSX.Element {
       <ExerciseDialog
         open={openCreate}
         mode="create"
-        categoryOptions={cats.items as any}
-        muscleOptions={musc.items as any}
-        tagOptions={tags.items.map(t => ({ id: t.id, slug: t.slug, label: t.label })) as any}
-        equipmentOptions={eqp.items as any}
+        categoryOptions={categoryOptions}
+        muscleOptions={muscleOptions}
+        tagOptions={tagOptions}
+        equipmentOptions={equipmentOptions}
         onClose={() => setOpenCreate(false)}
         onSubmit={(v) => create(toCreateInput(v))}
       />
@@ -107,10 +122,10 @@ export function ExercisesPanel(): React.JSX.Element {
         open={!!editId}
         mode="edit"
         initial={editing as any}
-        categoryOptions={cats.items as any}
-        muscleOptions={musc.items as any}
-        tagOptions={tags.items.map(t => ({ id: t.id, slug: t.slug, label: t.label })) as any}
-        equipmentOptions={eqp.items as any}
+        categoryOptions={categoryOptions}
+        muscleOptions={muscleOptions}
+        tagOptions={tagOptions}
+        equipmentOptions={equipmentOptions}
         onClose={() => setEditId(null)}
         onSubmit={(v) => editId ? update(toUpdateInput(editId, v)) : undefined}
       />

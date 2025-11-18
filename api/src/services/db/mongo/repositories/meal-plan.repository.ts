@@ -58,6 +58,7 @@ interface MealPlanDoc {
   locale: string;
   label: string;
   description?: string;
+  visibility: 'private' | 'public';
   calories: number;
   proteinGrams: number;
   carbGrams: number;
@@ -106,6 +107,7 @@ export class BddServiceMealPlanMongo {
       locale: dto.locale.toLowerCase().trim(),
       label: dto.label.trim(),
       description: dto.description,
+      visibility: dto.visibility === 'public' ? 'public' : 'private',
       calories: Math.round(dto.calories),
       proteinGrams: Math.round(dto.proteinGrams),
       carbGrams: Math.round(dto.carbGrams),
@@ -144,6 +146,7 @@ export class BddServiceMealPlanMongo {
       locale,
       createdBy,
       createdByIn,
+      visibility,
       userId,
       includeArchived = false,
       limit = 20,
@@ -181,6 +184,10 @@ export class BddServiceMealPlanMongo {
       filter.createdBy = { $in: normalizedCreatedByIn.map(this.toObjectId) };
     }
 
+    if (visibility) {
+      filter.visibility = visibility === 'public' ? 'public' : 'private';
+    }
+
     if (userId) {
       filter.userId = this.toObjectId(userId);
     }
@@ -210,6 +217,9 @@ export class BddServiceMealPlanMongo {
     if (patch.locale !== undefined) $set.locale = patch.locale.toLowerCase().trim();
     if (patch.label !== undefined) $set.label = patch.label.trim();
     if (patch.description !== undefined) $set.description = patch.description;
+    if (patch.visibility !== undefined) {
+      $set.visibility = patch.visibility === 'public' ? 'public' : 'private';
+    }
     if (patch.calories !== undefined) $set.calories = Math.round(patch.calories);
     if (patch.proteinGrams !== undefined) $set.proteinGrams = Math.round(patch.proteinGrams);
     if (patch.carbGrams !== undefined) $set.carbGrams = Math.round(patch.carbGrams);
@@ -304,6 +314,7 @@ export class BddServiceMealPlanMongo {
     locale: doc.locale,
     label: doc.label,
     description: doc.description,
+    visibility: doc.visibility ?? 'private',
     calories: doc.calories,
     proteinGrams: doc.proteinGrams,
     carbGrams: doc.carbGrams,

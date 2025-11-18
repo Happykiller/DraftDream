@@ -1,0 +1,91 @@
+// src/components/clients/ClientList.tsx
+import * as React from 'react';
+import { Search } from '@mui/icons-material';
+import { Box, Grid, InputAdornment, Skeleton, Stack, TextField, Typography } from '@mui/material';
+
+import { ClientCard } from './ClientCard';
+
+import type { Client } from '@app-types/clients';
+
+export interface ClientListProps {
+  clients: Client[];
+  loading: boolean;
+  searchQuery: string;
+  searchPlaceholder: string;
+  searchAriaLabel: string;
+  emptyTitle: string;
+  emptyDescription: string;
+  onSearchChange: (value: string) => void;
+  onEditClient: (client: Client) => void;
+  onDeleteClient: (client: Client) => void;
+}
+
+/** List wrapper exposing search and responsive card layout for clients. */
+export function ClientList({
+  clients,
+  loading,
+  searchQuery,
+  searchPlaceholder,
+  searchAriaLabel,
+  emptyTitle,
+  emptyDescription,
+  onSearchChange,
+  onEditClient,
+  onDeleteClient,
+}: ClientListProps): React.JSX.Element {
+  const showEmpty = !loading && clients.length === 0;
+
+  return (
+    <Stack spacing={2} sx={{ width: '100%' }}>
+      {/* General information */}
+      <TextField
+        value={searchQuery}
+        onChange={(event) => onSearchChange(event.target.value)}
+        placeholder={searchPlaceholder}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <Search fontSize="small" color="disabled" />
+            </InputAdornment>
+          ),
+          'aria-label': searchAriaLabel,
+        }}
+        size="small"
+      />
+
+      {loading ? (
+        <Grid container spacing={2}>
+          {Array.from({ length: 6 }).map((_, index) => (
+            <Grid key={index} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+              <Skeleton variant="rounded" height={280} />
+            </Grid>
+          ))}
+        </Grid>
+      ) : showEmpty ? (
+        <Box
+          sx={{
+            border: '1px dashed',
+            borderColor: 'divider',
+            borderRadius: 2,
+            p: 4,
+            textAlign: 'center',
+            bgcolor: 'background.default',
+          }}
+        >
+          <Typography variant="h6">{emptyTitle}</Typography>
+          <Typography color="text.secondary" sx={{ mt: 1 }}>
+            {emptyDescription}
+          </Typography>
+        </Box>
+      ) : (
+        <Grid container spacing={2}>
+          {clients.map((client) => (
+            <Grid key={client.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+              <ClientCard client={client} onEdit={onEditClient} onDelete={onDeleteClient} />
+            </Grid>
+          ))}
+        </Grid>
+      )}
+    </Stack>
+  );
+}

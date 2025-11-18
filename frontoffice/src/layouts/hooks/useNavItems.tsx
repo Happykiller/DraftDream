@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import {
   DirectionsRun,
+  EmojiEvents,
   FitnessCenter,
   Group,
   Home,
@@ -26,6 +27,10 @@ function createHomeItem(t: (key: string) => string): NavItem {
 
 function createClientsItem(t: (key: string) => string): NavItem {
   return { label: t('clients.title'), icon: <Group />, path: '/clients' };
+}
+
+function createAthletesItem(t: (key: string) => string): NavItem {
+  return { label: t('athletes.title'), icon: <EmojiEvents />, path: '/athletes' };
 }
 
 function createProgramsCoachItem(t: (key: string) => string): NavItem {
@@ -74,6 +79,7 @@ export function buildNavItems(role: Role, t: (key: string) => string): NavItem[]
     case UserType.Admin: {
       items.push(
         createClientsItem(t),
+        createAthletesItem(t),
         createProgramsCoachItem(t),
         createProgramsAthleteItem(t),
         createNutritionCoachItem(t),
@@ -85,6 +91,7 @@ export function buildNavItems(role: Role, t: (key: string) => string): NavItem[]
     case UserType.Coach: {
       items.push(
         createClientsItem(t),
+        createAthletesItem(t),
         createProgramsCoachItem(t),
         createNutritionCoachItem(t),
       );

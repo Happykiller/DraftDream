@@ -2,20 +2,16 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { ExerciseLevel as ExerciseLevelType } from '@src/commons/enums';
 import inversify from '@src/commons/inversify';
 import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
 export type ExerciseVisibility = 'PRIVATE' | 'PUBLIC';
-export type ExerciseLevel = ExerciseLevelType;
-
 export type CreateExerciseInput = {
   slug: string;
   locale: string;
   label: string;
-  level: ExerciseLevel;
   series: string;
   repetitions: string;
   description?: string;
@@ -35,7 +31,6 @@ export type UpdateExerciseInput = {
   slug?: string;
   locale?: string;
   label?: string;
-  level?: ExerciseLevel;
   series?: string;
   repetitions?: string;
   description?: string | null;
@@ -59,7 +54,6 @@ export interface Exercise {
   label: string;
   description?: string | null;
   instructions?: string | null;
-  level: ExerciseLevel;
   series: string;
   repetitions: string;
   charge?: string | null;
@@ -95,7 +89,7 @@ const LIST_Q = `
   query ListExercises($input: ListExercisesInput) {
     exercise_list(input: $input) {
       items {
-        id slug locale label description instructions level series repetitions
+        id slug locale label description instructions series repetitions
         charge rest videoUrl visibility categoryIds createdBy createdAt updatedAt
         creator { id email }
         categories { id label }
@@ -111,7 +105,7 @@ const LIST_Q = `
 const CREATE_M = `
   mutation CreateExercise($input: CreateExerciseInput!) {
     exercise_create(input: $input) {
-      id slug locale label description instructions level series repetitions
+      id slug locale label description instructions series repetitions
       charge rest videoUrl visibility categoryIds createdBy createdAt updatedAt
       creator { id email }
       categories { id label }
@@ -125,7 +119,7 @@ const CREATE_M = `
 const UPDATE_M = `
   mutation UpdateExercise($input: UpdateExerciseInput!) {
     exercise_update(input: $input) {
-      id slug locale label description instructions level series repetitions
+      id slug locale label description instructions series repetitions
       charge rest videoUrl visibility categoryIds createdBy createdAt updatedAt
       creator { id email }
       categories { id label }
@@ -149,7 +143,6 @@ const GET_Q = `
       label
       description
       instructions
-      level
       series
       repetitions
       charge
@@ -174,7 +167,6 @@ export interface UseExercisesParams {
   limit: number;
   q: string;
   visibility?: ExerciseVisibility;
-  level?: ExerciseLevel;
   categoryIds?: string[];
   locale?: string;
   createdBy?: string;
@@ -185,7 +177,6 @@ export function useExercises({
   limit,
   q,
   visibility,
-  level,
   categoryIds,
   locale,
   createdBy,
@@ -212,7 +203,6 @@ export function useExercises({
               limit,
               ...(trimmedQuery ? { q: trimmedQuery } : {}),
               ...(visibility ? { visibility } : {}),
-              ...(level ? { level } : {}),
               ...(categoryIds && categoryIds.length ? { categoryIds } : {}),
               ...(locale ? { locale } : {}),
               ...(createdBy ? { createdBy } : {}),
@@ -231,7 +221,7 @@ export function useExercises({
     } finally {
       setLoading(false);
     }
-  }, [categoryIds, createdBy, execute, flashError, gql, level, limit, locale, page, q, visibility]);
+  }, [categoryIds, createdBy, execute, flashError, gql, limit, locale, page, q, visibility]);
 
   React.useEffect(() => { void load(); }, [load]);
 

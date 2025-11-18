@@ -39,6 +39,7 @@ export interface CreateMealPlanDto {
   locale: string;
   label: string;
   description?: string;
+  visibility?: 'private' | 'public';
   calories: number;
   proteinGrams: number;
   carbGrams: number;
@@ -55,6 +56,7 @@ export interface ListMealPlansDto {
   locale?: string;
   createdBy?: string;
   createdByIn?: string[];
+  visibility?: 'private' | 'public';
   userId?: string;
   includeArchived?: boolean;
   limit?: number;
@@ -67,6 +69,7 @@ export type UpdateMealPlanDto = Partial<{
   locale: string;
   label: string;
   description: string;
+  visibility: 'private' | 'public';
   calories: number;
   proteinGrams: number;
   carbGrams: number;

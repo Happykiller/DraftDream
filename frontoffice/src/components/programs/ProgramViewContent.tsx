@@ -54,7 +54,6 @@ interface ProgramViewContentProps {
   program: Program;
   activeTab: ProgramViewTab;
   onTabChange: (tab: ProgramViewTab) => void;
-  updatedOnLabel: string;
 }
 
 /**
@@ -64,7 +63,6 @@ export function ProgramViewContent({
   program,
   activeTab,
   onTabChange,
-  updatedOnLabel,
 }: ProgramViewContentProps): React.JSX.Element {
   const { t } = useTranslation();
 
@@ -91,8 +89,8 @@ export function ProgramViewContent({
     [averageDurationMinutes, t],
   );
 
-  const overviewInfoItems = React.useMemo<OverviewInfoItem[]>(
-    () => [
+  const overviewInfoItems = React.useMemo<OverviewInfoItem[]>(() => {
+    const items: OverviewInfoItem[] = [
       {
         key: 'duration',
         label: t('programs-coatch.view.information.duration'),
@@ -110,14 +108,6 @@ export function ProgramViewContent({
         isChip: false,
       },
       {
-        key: 'difficulty',
-        label: t('programs-coatch.view.information.difficulty'),
-        value: difficulty ? t(`programs-coatch.list.difficulty.${difficulty}`) : null,
-        fallback: t('programs-coatch.view.information.no_difficulty'),
-        Icon: CenterFocusStrongOutlined,
-        isChip: Boolean(difficulty),
-      },
-      {
         key: 'athlete',
         label: t('programs-coatch.view.information.athlete'),
         value: athleteLabel,
@@ -125,9 +115,21 @@ export function ProgramViewContent({
         Icon: PersonOutline,
         isChip: false,
       },
-    ],
-    [athleteLabel, difficulty, program.duration, program.frequency, t],
-  );
+    ];
+
+    if (difficulty) {
+      items.splice(2, 0, {
+        key: 'difficulty',
+        label: t('programs-coatch.view.information.difficulty'),
+        value: t(`programs-coatch.list.difficulty.${difficulty}`),
+        fallback: '',
+        Icon: CenterFocusStrongOutlined,
+        isChip: true,
+      });
+    }
+
+    return items;
+  }, [athleteLabel, difficulty, program.duration, program.frequency, t]);
 
   const statsItems = React.useMemo<ProgramStatItem[]>(
     () => [
@@ -186,11 +188,6 @@ export function ProgramViewContent({
         <ProgramSessionsTab sessions={program.sessions} />
       )}
 
-      <Divider flexItem />
-
-      <Typography variant="caption" color="text.secondary">
-        {updatedOnLabel}
-      </Typography>
     </Stack>
   );
 }
@@ -474,8 +471,6 @@ function ProgramExerciseCard({
     [exercise.charge, exercise.repetitions, exercise.restSeconds, exercise.series, formatRestDuration, t],
   );
 
-  const levelKey = exercise.level?.toLowerCase();
-  const levelLabel = levelKey ? t(`programs-coatch.view.exercises.levels.${levelKey}`) : null;
   const effortSummary = summarizeExerciseEffort(exercise);
 
   const badgeGroups = React.useMemo(
@@ -556,18 +551,6 @@ function ProgramExerciseCard({
               </Typography>
             ) : null}
           </Stack>
-          {levelLabel ? (
-            <Chip
-              size="small"
-              label={levelLabel}
-              sx={(theme) => ({
-                bgcolor: alpha(theme.palette.secondary.main, 0.12),
-                color: theme.palette.secondary.main,
-                fontWeight: 600,
-                textTransform: 'uppercase',
-              })}
-            />
-          ) : null}
         </Stack>
 
         {exercise.description ? (

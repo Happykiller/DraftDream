@@ -53,6 +53,17 @@ export default tseslint.config([
           varsIgnorePattern: '^_',
         },
       ],
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@types/*'],
+              message: 'Use @app-types/* for application domain models.',
+            },
+          ],
+        },
+      ],
 
       // React Hooks recommended baseline
       // (explicit to avoid pulling legacy presets)

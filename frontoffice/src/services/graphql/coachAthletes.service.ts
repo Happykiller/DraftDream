@@ -1,0 +1,77 @@
+// src/services/graphql/coachAthletes.service.ts
+import inversify from '@src/commons/inversify';
+
+import type { CoachAthleteListResult } from '@app-types/coachAthletes';
+
+import { GraphqlServiceFetch } from './graphql.service.fetch';
+
+const COACH_ATHLETE_FIELDS = `
+  id
+  coachId
+  athleteId
+  startDate
+  endDate
+  is_active
+  note
+  createdBy
+  createdAt
+  updatedAt
+  deletedAt
+  coach { id first_name last_name email }
+  athlete { id first_name last_name email }
+`;
+
+const LIST_QUERY = `
+  query CoachAthleteList($input: ListCoachAthletesInput) {
+    coachAthlete_list(input: $input) {
+      items {
+        ${COACH_ATHLETE_FIELDS}
+      }
+      total
+      page
+      limit
+    }
+  }
+`;
+
+type CoachAthleteListPayload = { coachAthlete_list: CoachAthleteListResult };
+
+export interface CoachAthleteListInput {
+  page?: number;
+  limit?: number;
+  coachId?: string | null;
+  athleteId?: string | null;
+  is_active?: boolean | null;
+  includeArchived?: boolean;
+}
+
+function sanitizeListInput(input: CoachAthleteListInput): Record<string, unknown> {
+  return {
+    page: input.page ?? 1,
+    limit: input.limit ?? 20,
+    coachId: input.coachId?.trim() || undefined,
+    athleteId: input.athleteId?.trim() || undefined,
+    is_active: input.is_active ?? undefined,
+    includeArchived: input.includeArchived,
+  };
+}
+
+export async function coachAthleteList(input: CoachAthleteListInput): Promise<CoachAthleteListResult> {
+  const graphql = new GraphqlServiceFetch(inversify);
+  const { data, errors } = await graphql.send<CoachAthleteListPayload>({
+    query: LIST_QUERY,
+    operationName: 'CoachAthleteList',
+    variables: { input: sanitizeListInput(input) },
+  });
+
+  if (errors?.length) {
+    throw new Error(errors[0].message);
+  }
+
+  return data?.coachAthlete_list ?? {
+    items: [],
+    total: 0,
+    page: input.page ?? 1,
+    limit: input.limit ?? 20,
+  };
+}

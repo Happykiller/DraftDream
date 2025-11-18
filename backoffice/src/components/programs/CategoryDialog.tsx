@@ -1,5 +1,5 @@
 // src/components/programs/CategoryDialog.tsx
-// Comment in English: Create/Edit dialog. Visibility allowed only on create (per schema).
+// Comment in English: Create/Edit dialog. Visibility can now be managed on both flows.
 import * as React from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, MenuItem, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -94,20 +94,18 @@ export function CategoryDialog({ open, mode, initial, onClose, onSubmit }: Categ
             ))}
           </TextField>
 
-          {!isEdit && (
-            <TextField
-              select
-              label={t('common.labels.visibility')}
-              name="visibility"
-              value={values.visibility}
-              onChange={onChange}
-              required
-              fullWidth
-            >
-              <MenuItem value="PRIVATE">{t('common.visibility.private')}</MenuItem>
-              <MenuItem value="PUBLIC">{t('common.visibility.public')}</MenuItem>
-            </TextField>
-          )}
+          <TextField
+            select
+            label={t('common.labels.visibility')}
+            name="visibility"
+            value={values.visibility}
+            onChange={onChange}
+            required
+            fullWidth
+          >
+            <MenuItem value="PRIVATE">{t('common.visibility.private')}</MenuItem>
+            <MenuItem value="PUBLIC">{t('common.visibility.public')}</MenuItem>
+          </TextField>
 
           <DialogActions sx={{ px: 0 }}>
             <Button onClick={onClose} color="inherit">

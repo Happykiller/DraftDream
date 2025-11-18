@@ -51,7 +51,17 @@ export function CategoriesPanel(): React.JSX.Element {
         mode="edit"
         initial={editing}
         onClose={() => setEditId(null)}
-        onSubmit={(v) => editId ? update({ id: editId, slug: v.slug, label: v.label, locale: v.locale }) : undefined}
+        onSubmit={(v) =>
+          editId
+            ? update({
+                id: editId,
+                slug: v.slug,
+                label: v.label,
+                locale: v.locale,
+                visibility: v.visibility,
+              })
+            : undefined
+        }
       />
       <ConfirmDialog
         open={!!deleteId}

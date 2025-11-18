@@ -8,6 +8,8 @@ import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
+export type MealPlanVisibility = 'PRIVATE' | 'PUBLIC';
+
 export interface MealPlanUserSummary {
   id: string;
   email: string;
@@ -64,6 +66,7 @@ export interface MealPlan {
   createdAt: string;
   updatedAt: string;
   creator?: MealPlanUserSummary | null;
+  visibility: MealPlanVisibility;
 }
 
 type MealPlanListPayload = {
@@ -88,6 +91,7 @@ const LIST_QUERY = `
         locale
         label
         description
+        visibility
         calories
         proteinGrams
         carbGrams
@@ -143,6 +147,7 @@ const CREATE_MUTATION = `
       locale
       label
       description
+      visibility
       calories
       proteinGrams
       carbGrams
@@ -194,6 +199,7 @@ const UPDATE_MUTATION = `
       locale
       label
       description
+      visibility
       calories
       proteinGrams
       carbGrams
@@ -265,6 +271,7 @@ export interface UseMealPlansResult {
     fatGrams: number;
     days?: MealPlanDaySnapshot[];
     userId?: string;
+    visibility: MealPlanVisibility;
   }) => Promise<void>;
   update: (input: {
     id: string;
@@ -278,6 +285,7 @@ export interface UseMealPlansResult {
     fatGrams?: number;
     days?: MealPlanDaySnapshot[];
     userId?: string;
+    visibility?: MealPlanVisibility;
   }) => Promise<void>;
   remove: (id: string) => Promise<void>;
   reload: () => Promise<void>;
@@ -331,7 +339,7 @@ export function useMealPlans({ page, limit, q, userId }: UseMealPlansParams): Us
           gql.send<CreateMealPlanPayload>({
             query: CREATE_MUTATION,
             operationName: 'CreateMealPlan',
-            variables: { input },
+            variables: { input: { ...input, description: input.description ?? undefined, visibility: input.visibility } },
           }),
         );
         if (errors?.length) throw new Error(errors[0].message);
@@ -352,7 +360,13 @@ export function useMealPlans({ page, limit, q, userId }: UseMealPlansParams): Us
           gql.send<UpdateMealPlanPayload>({
             query: UPDATE_MUTATION,
             operationName: 'UpdateMealPlan',
-            variables: { input },
+            variables: {
+              input: {
+                ...input,
+                description: input.description ?? undefined,
+                visibility: input.visibility ?? undefined,
+              },
+            },
           }),
         );
         if (errors?.length) throw new Error(errors[0].message);

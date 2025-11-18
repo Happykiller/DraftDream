@@ -217,7 +217,6 @@ export function ProgramDetails(): React.JSX.Element {
                         program={program}
                         activeTab={activeTab}
                         onTabChange={handleTabChange}
-                        updatedOnLabel={programUpdatedOn}
                       />
                     ) : null}
                   </Stack>

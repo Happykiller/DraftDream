@@ -48,7 +48,119 @@
   },
   "clients": {
     "title": "Clients",
-    "placeholder": "Clients"
+    "subtitle": "Manage all your clients.",
+    "helper": "Create contacts, record their preferences, and stay aligned with your sales pipeline.",
+    "actions": {
+      "create": "New client",
+      "refresh": "Refresh",
+      "back_to_list": "Back to the list"
+    },
+    "list": {
+      "search_placeholder": "Search a client...",
+      "search_aria": "Search clients",
+      "empty_title": "No clients yet",
+      "empty_description": "Create your first client to centralize their onboarding information.",
+      "expand_details": "Show more details",
+      "collapse_details": "Show fewer details",
+      "actions": {
+        "edit": "Edit client",
+        "delete": "Delete client"
+      },
+      "card": {
+        "contact": "Contact",
+        "no_phone": "Phone number unavailable",
+        "objectives": "Objectives",
+        "preferences": "Activity preferences",
+        "notes": "Notes",
+        "budget": "Budget",
+        "start_date": "Desired start date",
+        "level": "Level :",
+        "created": "Created on {{date}}",
+        "updated": "Updated on {{date}}",
+        "no_budget": "Budget not defined"
+      },
+      "delete_dialog": {
+        "title": "Delete client",
+        "description": "Are you sure you want to delete “{{name}}”?",
+        "helper": "This action cannot be undone.",
+        "actions": {
+          "cancel": "Cancel",
+          "confirm": "Delete",
+          "confirming": "Deleting..."
+        }
+      }
+    },
+    "form": {
+      "create_page_title": "Create client",
+      "edit_page_title": "Edit client",
+      "title": "Create a client",
+      "subtitle": "Record the key information before assigning programs or plans.",
+      "edit_title": "Edit client",
+      "edit_subtitle": "Update contact and onboarding information.",
+      "not_found": "This client could not be found.",
+      "sections": {
+        "identity": "Identity",
+        "profile": "Profile & preferences",
+        "commercial": "Commercial follow-up",
+        "notes": "Notes"
+      },
+      "fields": {
+        "firstName": "First name",
+        "lastName": "Last name",
+        "email": "Email",
+        "phone": "Phone",
+        "status": "Status",
+        "level": "Level",
+        "source": "Source",
+        "objectives": "Objectives",
+        "objectivesHelper": "Select one or several objectives.",
+        "activityPreferences": "Activity preferences",
+        "activityPreferencesHelper": "Select the sports or workouts the client enjoys.",
+        "medicalConditions": "Medical conditions",
+        "allergies": "Allergies",
+        "notes": "Notes",
+        "budget": "Budget (€)",
+        "dealDescription": "Deal description",
+        "desiredStartDate": "Desired start date",
+        "cancel": "Cancel",
+        "submitCreate": "Create client",
+        "submitEdit": "Save changes"
+      }
+    },
+    "notifications": {
+      "load_failure": "Unable to load clients.",
+      "create_success": "Client created",
+      "create_failure": "Unable to create the client.",
+      "update_success": "Client updated",
+      "update_failure": "Unable to update the client.",
+      "delete_success": "Client deleted",
+      "delete_failure": "Unable to delete the client."
+    }
+  },
+  "athletes": {
+    "title": "Athletes",
+    "subtitle": "Manage your athletes",
+    "helper": "Quickly review every active link between you and your athletes.",
+    "actions": {
+      "refresh": "Refresh"
+    },
+    "list": {
+      "search_placeholder": "Search an athlete...",
+      "search_aria": "Search athletes",
+      "empty_title": "No athletes linked yet",
+      "empty_description": "Create a link from the back office to populate this list.",
+      "card": {
+        "start_date": "Start: {{date}}",
+        "end_date": "End: {{date}}",
+        "no_end_date": "No end date",
+        "no_note": "No note provided",
+        "status_active": "Active link",
+        "status_inactive": "Inactive link"
+      }
+    },
+    "notifications": {
+      "load_failure": "Unable to load athletes."
+    }
   },
   "profile": {
     "title": "Profile",
@@ -116,6 +228,7 @@
       "templates_title": "Session templates",
       "templates_subtitle": "Choose a template from the list or click to add it.",
       "templates_limit_hint": "Showing up to 10 sessions sorted alphabetically.",
+      "templates_refresh_label": "Reload sessions",
       "structure": {
         "title": "Program name",
         "header_description": "Adjust the outline of your draft program.",
@@ -146,6 +259,7 @@
         "limit_hint": "Showing up to 10 exercises sorted alphabetically.",
         "empty_state": "No exercises match your filters.",
         "button_create": "Create an exercise",
+        "refresh_label": "Reload exercises",
         "subtitle": "Add an exercise to a session to include it.",
         "no_sessions_warning": "Create a session before adding exercises.",
         "sets_label": " sets",
@@ -184,7 +298,6 @@
             "label": "Exercise name",
             "description": "Description (optional)",
             "instructions": "Instructions (optional)",
-            "level": "Level",
             "series": "Series",
             "repetitions": "Repetitions",
             "rest": "Rest (sec)",
@@ -202,11 +315,6 @@
             "muscle": "Create muscle \"{{label}}\"",
             "equipment": "Create equipment \"{{label}}\"",
             "tag": "Create tag \"{{label}}\""
-          },
-          "levels": {
-            "beginner": "Beginner",
-            "intermediate": "Intermediate",
-            "advanced": "Advanced"
           }
         },
         "edit_dialog": {
@@ -347,8 +455,7 @@
           "frequency": "Frequency",
           "difficulty": "Level",
           "athlete": "Assigned athlete",
-          "no_athlete": "Not assigned",
-          "no_difficulty": "Not set"
+          "no_athlete": "Not assigned"
         },
         "stats": {
           "sessions": "Number of sessions",
@@ -395,8 +502,7 @@
         "frequency": "Frequency",
         "difficulty": "Level",
         "athlete": "Assigned athlete",
-        "no_athlete": "Not assigned",
-        "no_difficulty": "Not set"
+        "no_athlete": "Not assigned"
       },
       "stats": {
         "sessions": "Number of sessions",
@@ -435,11 +541,6 @@
         "muscles": "Muscles",
         "equipment": "Equipment",
         "tags": "Tags",
-        "levels": {
-          "beginner": "Beginner",
-          "intermediate": "Intermediate",
-          "advanced": "Advanced"
-        },
         "rest_duration": {
           "minutes_seconds": "{{minutes}} min {{seconds}} s",
           "minutes": "{{count}} min",
@@ -569,6 +670,10 @@
         "empty_state": "No meal matches your filters.",
         "add_label": "Add to day",
         "create_label": "New meal",
+        "type_filter_label": "Meal type",
+        "type_filter_placeholder": "All meal types",
+        "type_filter_no_results": "No meal type matches your filters.",
+        "type_filter_clear_label": "Clear meal type filter",
         "limit_hint": "Showing up to 10 meals sorted alphabetically.",
         "add_tooltip": "Add this meal to a day in the plan",
         "public_tooltip": "Public meal shared with the community",
@@ -588,7 +693,7 @@
       "structure": {
         "title": "Day title",
         "description_placeholder": "Describe this meal day...",
-        "empty": "Add a meal day from the library or create an empty one to get started.",
+        "empty": "Add a day from the left column to get started.",
         "day_prefix": "Day",
         "meal_prefix": "Meal",
         "foods_label": "Foods and notes",

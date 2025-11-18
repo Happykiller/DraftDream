@@ -1,4 +1,4 @@
-﻿{
+{
   "common": {
     "field_incorrect": "Champ incorrect",
     "brand": {
@@ -47,8 +47,12 @@
       "confirm_password": "Confirmer le mot de passe",
       "type": "Type",
       "status": "Statut",
+      "first_name": "Prénom",
+      "last_name": "Nom",
       "company": "Entreprise",
       "phone": "Téléphone",
+      "level": "Niveau",
+      "source": "Source",
       "address_name": "Nom de l'adresse",
       "address_city": "Ville",
       "address_code": "Code postal",
@@ -67,22 +71,29 @@
       "tags": "Tags",
       "equipment": "Équipement",
       "title": "Titre",
-      "level": "Niveau",
       "series": "Séries",
       "repetitions": "Répétitions",
       "charge": "Charge",
       "rest_seconds": "Repos (sec)",
       "video_url": "URL vidéo",
-    "instructions": "Instructions",
-    "category": "Catégorie",
+      "instructions": "Instructions",
+      "category": "Catégorie",
       "equipment_optional": "Équipement (optionnel)",
       "tags_optional": "Tags (optionnel)",
       "meals": "Repas",
       "foods": "Aliments",
-    "calories": "Calories",
-    "protein_grams": "Protéines (g)",
-    "carb_grams": "Glucides (g)",
-    "fat_grams": "Lipides (g)"
+      "calories": "Calories",
+      "protein_grams": "Protéines (g)",
+      "carb_grams": "Glucides (g)",
+      "fat_grams": "Lipides (g)",
+      "objectives": "Objectifs",
+      "activity_preferences": "Préférences d'activité",
+      "budget": "Budget",
+      "desired_start_date": "Date de début souhaitée",
+      "medical_conditions": "Conditions médicales",
+      "allergies": "Allergies",
+      "notes": "Notes",
+      "deal_description": "Description du deal"
     },
     "status": {
       "active": "Actif",
@@ -267,11 +278,6 @@
       "title": "Exercices",
       "search_placeholder": "Rechercher des exercices...",
       "create": "Nouvel exercice",
-      "levels": {
-        "BEGINNER": "Débutant",
-        "INTERMEDIATE": "Intermédiaire",
-        "ADVANCED": "Avancé"
-      },
       "dialog": {
         "create_title": "Nouvel exercice",
         "edit_title": "Modifier l'exercice"
@@ -442,6 +448,137 @@
     "LOGIN": {
       "EMAIL": "Format email : identifiant@domaine.ext",
       "PASSWORD": "Doit contenir au moins 6 caractères."
+    }
+  },
+  "prospects": {
+    "title": "Prospects",
+    "tabs": {
+      "clients": "Clients",
+      "objectives": "Objectifs",
+      "activity_preferences": "Préférences d'activité",
+      "statuses": "Statuts",
+      "levels": "Niveaux",
+      "sources": "Sources",
+      "aria_label": "Sections prospects"
+    },
+    "clients": {
+      "title": "Clients",
+      "search_placeholder": "Rechercher des clients...",
+      "create": "Nouveau client",
+      "dialog": {
+        "create_title": "Nouveau client",
+        "edit_title": "Modifier le client"
+      },
+      "confirm": {
+        "delete_title": "Supprimer le client"
+      }
+    },
+    "objectives": {
+      "title": "Objectifs",
+      "search_placeholder": "Rechercher des objectifs...",
+      "create": "Nouvel objectif",
+      "dialog": {
+        "create_title": "Nouvel objectif",
+        "edit_title": "Modifier l'objectif"
+      },
+      "confirm": {
+        "delete_title": "Supprimer l'objectif"
+      }
+    },
+    "activity_preferences": {
+      "title": "Préférences d'activité",
+      "search_placeholder": "Rechercher des préférences...",
+      "create": "Nouvelle préférence",
+      "dialog": {
+        "create_title": "Nouvelle préférence d'activité",
+        "edit_title": "Modifier la préférence"
+      },
+      "confirm": {
+        "delete_title": "Supprimer la préférence"
+      }
+    },
+    "statuses": {
+      "title": "Statuts",
+      "search_placeholder": "Rechercher des statuts...",
+      "create": "Nouveau statut",
+      "dialog": {
+        "create_title": "Nouveau statut",
+        "edit_title": "Modifier le statut"
+      },
+      "confirm": {
+        "delete_title": "Supprimer le statut"
+      }
+    },
+    "levels": {
+      "title": "Niveaux",
+      "search_placeholder": "Rechercher des niveaux...",
+      "create": "Nouveau niveau",
+      "dialog": {
+        "create_title": "Nouveau niveau",
+        "edit_title": "Modifier le niveau"
+      },
+      "confirm": {
+        "delete_title": "Supprimer le niveau"
+      }
+    },
+    "sources": {
+      "title": "Sources",
+      "search_placeholder": "Rechercher des sources...",
+      "create": "Nouvelle source",
+      "dialog": {
+        "create_title": "Nouvelle source",
+        "edit_title": "Modifier la source"
+      },
+      "confirm": {
+        "delete_title": "Supprimer la source"
+      }
+    }
+  },
+  "athletes": {
+    "title": "Athlètes",
+    "table": {
+      "create": "Nouvelle liaison",
+      "no_note": "Aucune note",
+      "columns": {
+        "coach": "Coach",
+        "athlete": "Athlète",
+        "start_date": "Date de début",
+        "end_date": "Date de fin",
+        "status": "Statut",
+        "note": "Note",
+        "updated_at": "Mis à jour le",
+        "deleted_at": "Archivé le"
+      },
+      "status": {
+        "all": "Tous les statuts",
+        "active": "Actif",
+        "inactive": "Inactif"
+      },
+      "filters": {
+        "coach": "Coach",
+        "coach_placeholder": "Filtrer par coach",
+        "athlete": "Athlète",
+        "athlete_placeholder": "Filtrer par athlète",
+        "status": "Statut",
+        "include_archived": "Inclure les archivés"
+      }
+    },
+    "dialog": {
+      "create_title": "Nouvelle liaison coach / athlète",
+      "edit_title": "Modifier la liaison",
+      "coach_label": "Coach",
+      "coach_placeholder": "Sélectionner un coach",
+      "athlete_label": "Athlète",
+      "athlete_placeholder": "Sélectionner un athlète",
+      "start_date_label": "Date de début",
+      "end_date_label": "Date de fin",
+      "note_label": "Note",
+      "is_active_label": "Lien actif"
+    },
+    "confirm": {
+      "delete_title": "Archiver la liaison",
+      "delete_message": "Confirmez-vous l'archivage du lien entre {{coach}} et {{athlete}} ?",
+      "delete_confirm": "Archiver"
     }
   }
 }

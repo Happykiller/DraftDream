@@ -7,7 +7,7 @@ export interface CreateCategoryDto {
   createdBy: string;
 }
 
-export type UpdateCategoryDto = Partial<Pick<CreateCategoryDto, 'slug' | 'locale' | 'label'>>;
+export type UpdateCategoryDto = Partial<Pick<CreateCategoryDto, 'slug' | 'locale' | 'label' | 'visibility'>>;
 
 export interface GetCategoryDto { id: string }
 

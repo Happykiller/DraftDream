@@ -10,7 +10,6 @@ export interface ProgramExerciseSnapshotDto {
   charge?: string;
   restSeconds?: number;
   videoUrl?: string;
-  level?: string;
   categoryIds?: string[];
   muscleIds?: string[];
   equipmentIds?: string[];
@@ -35,6 +34,7 @@ export interface CreateProgramDto {
   duration: number;
   frequency: number;
   description?: string;
+  visibility?: 'private' | 'public';
   /** Snapshot of sessions attached to the program. */
   sessions: ProgramSessionSnapshotDto[];
   /** Optional assigned user id */
@@ -49,6 +49,7 @@ export interface ListProgramsDto {
   locale?: string;
   createdBy?: string;
   createdByIn?: string[];
+  visibility?: 'private' | 'public';
   /** Filter by assigned user id */
   userId?: string;
   includeArchived?: boolean; // default false (exclude deleted items)
@@ -64,6 +65,7 @@ export type UpdateProgramDto = Partial<{
   duration: number;
   frequency: number;
   description: string;
+  visibility: 'private' | 'public';
   /** Replace the whole snapshot definition. */
   sessions: ProgramSessionSnapshotDto[];
   /** Set/replace the assigned user id */

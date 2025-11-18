@@ -19,6 +19,7 @@ export interface ExerciseOption {
   id: string;
   slug: string;
   label: string;
+  locale: string;
 }
 
 export interface SessionDialogValues {
@@ -68,12 +69,37 @@ export function SessionDialog({
         label: initial.label,
         durationMin: initial.durationMin,
         description: initial.description ?? '',
-        exercises: exerciseOptions.filter(opt => initial.exerciseIds.includes(opt.id)),
+        exercises: exerciseOptions.filter(
+          (opt) => opt.locale === initial.locale && initial.exerciseIds.includes(opt.id),
+        ),
       });
     } else {
       setValues(DEFAULTS);
     }
   }, [isEdit, initial, exerciseOptions]);
+
+  React.useEffect(() => {
+    setValues((prev) => {
+      const allowedIds = new Set(
+        exerciseOptions
+          .filter((option) => option.locale === prev.locale)
+          .map((option) => option.id),
+      );
+      const filteredExercises = prev.exercises.filter((exercise) => allowedIds.has(exercise.id));
+      if (filteredExercises.length === prev.exercises.length) {
+        return prev;
+      }
+      return {
+        ...prev,
+        exercises: filteredExercises,
+      };
+    });
+  }, [exerciseOptions, values.locale]);
+
+  const filteredExerciseOptions = React.useMemo(
+    () => exerciseOptions.filter((option) => option.locale === values.locale),
+    [exerciseOptions, values.locale],
+  );
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -167,7 +193,7 @@ export function SessionDialog({
           {/* Exercises are mandatory on creation to prevent empty sessions from surfacing. */}
           <Autocomplete
             multiple
-            options={exerciseOptions}
+            options={filteredExerciseOptions}
             getOptionLabel={(option) => option.label || option.slug}
             isOptionEqualToValue={(opt, val) => opt.id === val.id}
             value={values.exercises}

@@ -86,9 +86,10 @@ export interface UseUsersParams {
   page: number; // 1-based
   limit: number;
   q: string;
+  type?: 'athlete' | 'coach' | 'admin';
 }
 
-export function useUsers({ page, limit, q }: UseUsersParams) {
+export function useUsers({ page, limit, q, type }: UseUsersParams) {
   const [items, setItems] = React.useState<User[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
@@ -98,7 +99,7 @@ export function useUsers({ page, limit, q }: UseUsersParams) {
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
 
   const load = React.useCallback(
-    async (vars: { page: number; limit: number; q?: string }) => {
+    async (vars: { page: number; limit: number; q?: string; type?: 'athlete' | 'coach' | 'admin' }) => {
       setLoading(true);
       try {
         const { data, errors } = await execute(() =>
@@ -109,6 +110,7 @@ export function useUsers({ page, limit, q }: UseUsersParams) {
                 page: vars.page,
                 limit: vars.limit,
                 q: vars.q || undefined,
+                type: vars.type,
               },
             },
             operationName: 'ListUsers',
@@ -127,14 +129,14 @@ export function useUsers({ page, limit, q }: UseUsersParams) {
   );
 
   const lastSigRef = React.useRef<string | null>(null);
-  const sig = `${page}|${limit}|${q || ''}`;
+  const sig = `${page}|${limit}|${q || ''}|${type || '-'}`;
 
   // Comment in English: Avoid duplicate fetches in StrictMode without blocking new mounts.
   React.useEffect(() => {
     if (lastSigRef.current === sig) return;
     lastSigRef.current = sig;
-    void load({ page, limit, q });
-  }, [sig, load, page, limit, q]);
+    void load({ page, limit, q, type });
+  }, [sig, load, page, limit, q, type]);
 
   const create = React.useCallback(
     async (input: {
@@ -159,13 +161,13 @@ export function useUsers({ page, limit, q }: UseUsersParams) {
         );
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('User created');
-        await load({ page, limit, q });
+        await load({ page, limit, q, type });
       } catch (e: any) {
         flashError(e?.message ?? 'Create failed');
         throw e;
       }
     },
-    [execute, gql, flashError, flashSuccess, load, page, limit, q]
+    [execute, gql, flashError, flashSuccess, load, page, limit, q, type]
   );
 
   const update = React.useCallback(
@@ -190,14 +192,14 @@ export function useUsers({ page, limit, q }: UseUsersParams) {
         );
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('User updated');
-        await load({ page, limit, q });
+        await load({ page, limit, q, type });
       } catch (e: any) {
         flashError(e?.message ?? 'Update failed');
         throw e;
       }
     },
-    [execute, gql, flashError, flashSuccess, load, page, limit, q]
+    [execute, gql, flashError, flashSuccess, load, page, limit, q, type]
   );
 
-  return { items, total, loading, create, update, reload: () => load({ page, limit, q }) };
+  return { items, total, loading, create, update, reload: () => load({ page, limit, q, type }) };
 }

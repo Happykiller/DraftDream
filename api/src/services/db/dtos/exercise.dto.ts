@@ -1,14 +1,11 @@
 // src/services/db/dtos/exercise.dto.ts
 export type Visibility = 'private' | 'public';
-export type ExerciseLevel = 'beginner' | 'intermediate' | 'advanced';
-
 export interface CreateExerciseDto {
   slug: string;
   locale: string;
   label: string;
   description?: string;
   instructions?: string;
-  level: ExerciseLevel;
   series: string;         // e.g. "3"
   repetitions: string;    // e.g. "10-12"
   charge?: string;        // e.g. "20kg" or "poids du corps"
@@ -32,7 +29,6 @@ export interface ListExercisesDto {
   createdByIn?: string[];
   includePublicVisibility?: boolean;
   visibility?: Visibility;
-  level?: ExerciseLevel;
   categoryIds?: string[];
   includeArchived?: boolean; // default false
   limit?: number;            // default 20
@@ -46,7 +42,6 @@ export type UpdateExerciseDto = Partial<{
   label: string;
   description: string;
   instructions: string;
-  level: ExerciseLevel;
   series: string;
   repetitions: string;
   charge: string;

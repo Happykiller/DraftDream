@@ -27,11 +27,6 @@ export function ProgramViewDialog({ open, program, onClose }: ProgramViewDialogP
     [i18n.language, program.createdAt],
   );
 
-  const updatedOn = React.useMemo(
-    () => formatProgramDate(program.updatedAt, i18n.language),
-    [i18n.language, program.updatedAt],
-  );
-
   React.useEffect(() => {
     if (open) {
       return;
@@ -67,12 +62,7 @@ export function ProgramViewDialog({ open, program, onClose }: ProgramViewDialogP
       }}
     >
       {/* General information */}
-      <ProgramViewContent
-        program={program}
-        activeTab={activeTab}
-        onTabChange={handleTabChange}
-        updatedOnLabel={t('programs-coatch.list.updated_on', { date: updatedOn })}
-      />
+      <ProgramViewContent program={program} activeTab={activeTab} onTabChange={handleTabChange} />
     </ProgramDialogLayout>
   );
 }

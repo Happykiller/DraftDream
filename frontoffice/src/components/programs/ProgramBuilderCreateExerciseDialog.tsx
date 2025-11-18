@@ -1,15 +1,13 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
-import { Button, Chip, MenuItem, Stack, TextField } from '@mui/material';
+import { Button, Chip, Stack, TextField } from '@mui/material';
 import { Add, Edit } from '@mui/icons-material';
 
 import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
-import { ExerciseLevel as ExerciseLevelEnum } from '@src/commons/enums';
 import type {
   CreateExerciseInput,
   Exercise,
-  ExerciseLevel,
   UpdateExerciseInput,
 } from '@hooks/programs/useExercises';
 import { useMuscles } from '@hooks/programs/useMuscles';
@@ -153,7 +151,6 @@ export function ProgramBuilderCreateExerciseDialog({
   const [charge, setCharge] = React.useState('');
   const [videoUrl, setVideoUrl] = React.useState('');
   const [categoryIds, setCategoryIds] = React.useState<string[]>([]);
-  const [level, setLevel] = React.useState<ExerciseLevel>(ExerciseLevelEnum.Beginner);
   const [muscleIds, setMuscleIds] = React.useState<string[]>([]);
   const [equipmentIds, setEquipmentIds] = React.useState<string[]>([]);
   const [tagIds, setTagIds] = React.useState<string[]>([]);
@@ -297,7 +294,6 @@ export function ProgramBuilderCreateExerciseDialog({
     setCharge('');
     setVideoUrl('');
     setCategoryIds([]);
-    setLevel(ExerciseLevelEnum.Beginner);
     setMuscleIds([]);
     setEquipmentIds([]);
     setTagIds([]);
@@ -341,7 +337,6 @@ export function ProgramBuilderCreateExerciseDialog({
       setCharge(programExercise.charge ?? '');
       setVideoUrl(programExercise.videoUrl ?? '');
       setCategoryIds(programExercise.categoryIds ?? []);
-      setLevel(programExercise.level);
       setMuscleIds([...programExercise.muscleIds]);
       setEquipmentIds([...programExercise.equipmentIds]);
       setTagIds([...programExercise.tagIds]);
@@ -361,7 +356,6 @@ export function ProgramBuilderCreateExerciseDialog({
     setCharge(exercise.charge ?? '');
     setVideoUrl(exercise.videoUrl ?? '');
     setCategoryIds(exercise.categoryIds ?? []);
-    setLevel(exercise.level);
     setMuscleIds(
       (exercise.muscles ?? [])
         .filter((muscle): muscle is NonNullable<typeof muscle> => Boolean(muscle?.id))
@@ -384,24 +378,6 @@ export function ProgramBuilderCreateExerciseDialog({
     open,
     programExerciseContext?.exerciseItem,
   ]);
-
-  const levelOptions = React.useMemo<{ value: ExerciseLevel; label: string }[]>(
-    () => [
-      {
-        value: ExerciseLevelEnum.Beginner,
-        label: t('programs-coatch.builder.library.create_dialog.levels.beginner'),
-      },
-      {
-        value: ExerciseLevelEnum.Intermediate,
-        label: t('programs-coatch.builder.library.create_dialog.levels.intermediate'),
-      },
-      {
-        value: ExerciseLevelEnum.Advanced,
-        label: t('programs-coatch.builder.library.create_dialog.levels.advanced'),
-      },
-    ],
-    [t],
-  );
 
   const normalizedCategoryIds = React.useMemo(
     () => Array.from(new Set(categoryIds.map((id) => id.trim()).filter(Boolean))),
@@ -493,7 +469,6 @@ export function ProgramBuilderCreateExerciseDialog({
         label: trimmedLabel,
         description: trimmedDescription,
         instructions: trimmedInstructions,
-        level,
         series: trimmedSeries,
         repetitions: trimmedRepetitions,
         charge: trimmedCharge,
@@ -530,7 +505,6 @@ export function ProgramBuilderCreateExerciseDialog({
         const payload: UpdateExerciseInput = {
           id: exercise.id,
           label: trimmedLabel,
-          level,
           series: trimmedSeries,
           repetitions: trimmedRepetitions,
           visibility: exercise.visibility,
@@ -574,7 +548,6 @@ export function ProgramBuilderCreateExerciseDialog({
           slug: slugify(label.trim()),
           locale,
           label: label.trim(),
-          level,
           series: series.trim(),
           repetitions: repetitions.trim(),
           visibility: 'PRIVATE',
@@ -666,7 +639,6 @@ export function ProgramBuilderCreateExerciseDialog({
       label: t('programs-coatch.builder.library.create_dialog.fields.label'),
       description: t('programs-coatch.builder.library.create_dialog.fields.description'),
       instructions: t('programs-coatch.builder.library.create_dialog.fields.instructions'),
-      level: t('programs-coatch.builder.library.create_dialog.fields.level'),
       series: t('programs-coatch.builder.library.create_dialog.fields.series'),
       repetitions: t('programs-coatch.builder.library.create_dialog.fields.repetitions'),
       rest: t('programs-coatch.builder.library.create_dialog.fields.rest'),
@@ -809,21 +781,8 @@ export function ProgramBuilderCreateExerciseDialog({
             )}
           />
 
-          {/* Level and media */}
+          {/* Media */}
           <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-            <TextField
-              select
-              fullWidth
-              label={fieldCopy.level}
-              value={level}
-              onChange={(event) => setLevel(event.target.value as ExerciseLevel)}
-            >
-              {levelOptions.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
             <TextField
               fullWidth
               label={fieldCopy.videoUrl}

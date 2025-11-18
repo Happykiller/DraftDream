@@ -1,6 +1,42 @@
 {
   "releases": [
     {
+      "version": "0.6.0",
+      "title": "Release note : 0.6.0",
+      "date": "2025-11-20",
+      "global": [
+        "[FEAT] End-to-end management for prospects, clients, and athletes with a unified tracking flow.",
+        "[RELATIONSHIP] Direct coach ↔ athlete relationship modeling to structure personalized guidance.",
+        "[VISIBILITY] Refined visibility controls for programs, meals, and other flagship assets.",
+        "[EXPERIENCE] Harmonized interfaces across modules so coaches navigate their daily flows faster."
+      ],
+      "notes": "FitDesk 0.6.0 elevates the human relationship layer: teams can qualify prospects, manage clients, and follow athletes while keeping clear visibility on programs, plans, and shared content.",
+      "projects": {
+        "/api": [
+          "Add the coach–athlete relationship system with flexible handling and soft deletion.",
+          "Introduce the objectives and preferences foundation for clients across nutrition, activity, and sport goals.",
+          "Deliver full prospect management with statuses, levels, sources, and activity preferences.",
+          "Standardize visibility statuses for programs and meal plans.",
+          "Simplify models and retire the legacy difficulty levels to clarify the business layer."
+        ],
+        "/backoffice": [
+          "New prospect and client management module with end-to-end tracking of status, objectives, and preferences.",
+          "Dedicated Athletes section that orchestrates coach–athlete relationships.",
+          "Control visibility for programs and nutrition plans directly inside the backoffice.",
+          "Revamped data presentation: richer client records, sources, creators, and details surfaced at a glance."
+        ],
+        "/frontoffice": [
+          "Full client management module covering creation, edition, deletion, and contextual tracking.",
+          "Athletes area connected with the backoffice to manage relationships and field follow-up.",
+          "Forms and thematic blocks redesigned to stay in line with the main design language.",
+          "Legacy data trimmed, including the removal of the former exercise difficulty concept."
+        ],
+        "/showcase": [
+          "Internal adjustments to stay aligned with the refreshed business modules."
+        ]
+      }
+    },
+    {
       "version": "0.5.0",
       "title": "Release note : 0.5.0",
       "date": "2025-11-06",

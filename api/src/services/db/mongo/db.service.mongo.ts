@@ -7,12 +7,19 @@ import { BddServiceMuscleMongo } from '@services/db/mongo/repositories/muscle.re
 import { BddServiceSessionMongo } from '@services/db/mongo/repositories/session.repository';
 import { BddServiceProgramMongo } from '@services/db/mongo/repositories/program.repository';
 import { BddServiceCategoryMongo } from '@services/db/mongo/repositories/category.repository';
+import { BddServiceClientObjectiveMongo } from '@services/db/mongo/repositories/client/objective.repository';
+import { BddServiceClientActivityPreferenceMongo } from '@services/db/mongo/repositories/client/activity-preference.repository';
+import { BddServiceClientStatusMongo } from '@services/db/mongo/repositories/client/status.repository';
+import { BddServiceClientLevelMongo } from '@services/db/mongo/repositories/client/level.repository';
+import { BddServiceClientSourceMongo } from '@services/db/mongo/repositories/client/source.repository';
+import { BddServiceClientMongo } from '@services/db/mongo/repositories/client/client.repository';
 import { BddServiceMealTypeMongo } from '@services/db/mongo/repositories/meal-type.repository';
 import { BddServiceExerciseMongo } from '@services/db/mongo/repositories/exercise.repository';
 import { BddServiceEquipmentMongo } from '@services/db/mongo/repositories/equipment.repository';
 import { BddServiceMealMongo } from '@services/db/mongo/repositories/meal.repository';
 import { BddServiceMealDayMongo } from '@services/db/mongo/repositories/meal-day.repository';
 import { BddServiceMealPlanMongo } from '@services/db/mongo/repositories/meal-plan.repository';
+import { BddServiceCoachAthleteMongo } from '@services/db/mongo/repositories/coach-athlete.repository';
 
 interface InfraDeps { inversify: any; config: any }
 
@@ -25,6 +32,13 @@ export class BddServiceMongo {
   readonly session: BddServiceSessionMongo;
   readonly program: BddServiceProgramMongo;
   readonly category: BddServiceCategoryMongo;
+  readonly clientObjective: BddServiceClientObjectiveMongo;
+  readonly clientActivityPreference: BddServiceClientActivityPreferenceMongo;
+  readonly clientStatus: BddServiceClientStatusMongo;
+  readonly clientLevel: BddServiceClientLevelMongo;
+  readonly clientSource: BddServiceClientSourceMongo;
+  readonly client: BddServiceClientMongo;
+  readonly coachAthlete: BddServiceCoachAthleteMongo;
   readonly mealType: BddServiceMealTypeMongo;
   readonly mealDay: BddServiceMealDayMongo;
   readonly meal: BddServiceMealMongo;
@@ -39,6 +53,13 @@ export class BddServiceMongo {
     this.session = new BddServiceSessionMongo();
     this.program = new BddServiceProgramMongo();
     this.category = new BddServiceCategoryMongo();
+    this.clientObjective = new BddServiceClientObjectiveMongo();
+    this.clientActivityPreference = new BddServiceClientActivityPreferenceMongo();
+    this.clientStatus = new BddServiceClientStatusMongo();
+    this.clientLevel = new BddServiceClientLevelMongo();
+    this.clientSource = new BddServiceClientSourceMongo();
+    this.client = new BddServiceClientMongo();
+    this.coachAthlete = new BddServiceCoachAthleteMongo();
     this.mealType = new BddServiceMealTypeMongo();
     this.mealDay = new BddServiceMealDayMongo();
     this.meal = new BddServiceMealMongo();

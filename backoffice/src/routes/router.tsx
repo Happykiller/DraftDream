@@ -62,6 +62,20 @@ export const router = createBrowserRouter([
         },
       },
       {
+        path: '/prospects',
+        lazy: async () => {
+          const mod = await import('@src/pages/Prospects');
+          return { Component: mod.Prospects };
+        },
+      },
+      {
+        path: '/athletes',
+        lazy: async () => {
+          const mod = await import('@src/pages/Athletes');
+          return { Component: mod.Athletes };
+        },
+      },
+      {
         path: '/sandbox',
         // 👇 IMPORTANT: enfant index pour /sandbox
         children: [

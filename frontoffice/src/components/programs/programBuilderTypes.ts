@@ -1,12 +1,8 @@
-import type {
-  ExerciseLevel,
-  ExerciseVisibility,
-} from '@hooks/programs/useExercises';
+import type { ExerciseVisibility } from '@hooks/programs/useExercises';
 
 export type ExerciseLibraryItem = {
   id: string;
   label: string;
-  level: string;
   categoryIds: string[];
   categoryLabels: string[];
   type: ExerciseVisibility;
@@ -45,7 +41,6 @@ export type ProgramExercise = {
   label: string;
   description: string;
   instructions: string;
-  level: ExerciseLevel;
   series: string;
   repetitions: string;
   charge: string;
@@ -105,6 +100,7 @@ export type BuilderCopy = {
   templates_title: string;
   templates_subtitle: string;
   templates_limit_hint?: string;
+  templates_refresh_label?: string;
   structure: {
     title: string;
     summary: string;
@@ -131,6 +127,7 @@ export type BuilderCopy = {
     secondary_filter_label: string;
     secondary_filter_all: string;
     button_create: string;
+    refresh_label?: string;
     limit_hint?: string;
     type_private?: string;
     type_public?: string;

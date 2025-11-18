@@ -6,6 +6,8 @@ import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
+export type ProgramVisibility = 'PRIVATE' | 'PUBLIC';
+
 export interface ProgramCreator {
   id: string;
   email: string;
@@ -22,7 +24,6 @@ export interface ProgramSessionExercise {
   charge?: string | null;
   restSeconds?: number | null;
   videoUrl?: string | null;
-  level?: string | null;
   categoryIds?: string[] | null;
   muscleIds?: string[] | null;
   equipmentIds?: string[] | null;
@@ -54,6 +55,7 @@ export interface Program {
   createdAt: string;
   updatedAt: string;
   creator?: ProgramCreator | null;
+  visibility: ProgramVisibility;
   sessions: ProgramSession[];
 }
 
@@ -81,10 +83,11 @@ const LIST_Q = `
         duration
         frequency
         description
+        visibility
         sessions {
           id templateSessionId slug locale label durationMin description
           exercises {
-            id templateExerciseId label description instructions series repetitions charge restSeconds videoUrl level
+            id templateExerciseId label description instructions series repetitions charge restSeconds videoUrl
             categoryIds muscleIds equipmentIds tagIds
           }
         }
@@ -112,10 +115,11 @@ const CREATE_M = `
       duration
       frequency
       description
+      visibility
       sessions {
         id templateSessionId slug locale label durationMin description
         exercises {
-          id templateExerciseId label description instructions series repetitions charge restSeconds videoUrl level
+          id templateExerciseId label description instructions series repetitions charge restSeconds videoUrl
           categoryIds muscleIds equipmentIds tagIds
         }
       }
@@ -139,10 +143,11 @@ const UPDATE_M = `
       duration
       frequency
       description
+      visibility
       sessions {
         id templateSessionId slug locale label durationMin description
         exercises {
-          id templateExerciseId label description instructions series repetitions charge restSeconds videoUrl level
+          id templateExerciseId label description instructions series repetitions charge restSeconds videoUrl
           categoryIds muscleIds equipmentIds tagIds
         }
       }
@@ -222,6 +227,7 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
       sessionIds?: string[];
       sessions?: ProgramSession[];
       userId?: string | null;
+      visibility: ProgramVisibility;
     }) => {
       try {
         const { errors } = await execute(() =>
@@ -231,6 +237,7 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
             variables: {
               input: {
                 ...input,
+                visibility: input.visibility,
                 sessionIds: input.sessionIds?.filter(Boolean),
                 sessions: input.sessions?.map((session) => ({
                   ...session,
@@ -248,7 +255,6 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
                     charge: exercise.charge ?? undefined,
                     restSeconds: exercise.restSeconds ?? undefined,
                     videoUrl: exercise.videoUrl ?? undefined,
-                    level: exercise.level ?? undefined,
                   })),
                 })),
               },
@@ -278,6 +284,7 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
       sessionIds?: string[];
       sessions?: ProgramSession[];
       userId?: string | null;
+      visibility?: ProgramVisibility;
     }) => {
       try {
         const { errors } = await execute(() =>
@@ -287,6 +294,7 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
             variables: {
               input: {
                 ...input,
+                visibility: input.visibility ?? undefined,
                 description: input.description ?? undefined,
                 sessionIds: input.sessionIds?.filter(Boolean),
                 sessions: input.sessions?.map((session) => ({
@@ -305,7 +313,6 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
                     charge: exercise.charge ?? undefined,
                     restSeconds: exercise.restSeconds ?? undefined,
                     videoUrl: exercise.videoUrl ?? undefined,
-                    level: exercise.level ?? undefined,
                   })),
                 })),
               },
