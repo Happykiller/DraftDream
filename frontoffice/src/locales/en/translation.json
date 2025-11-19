@@ -47,24 +47,24 @@
     "placeholder": "Hello"
   },
   "clients": {
-    "title": "Clients",
-    "subtitle": "Manage all your clients.",
+    "title": "Prospects",
+    "subtitle": "Manage all your prospects.",
     "helper": "Create contacts, record their preferences, and stay aligned with your sales pipeline.",
     "actions": {
-      "create": "New client",
+      "create": "New prospect",
       "refresh": "Refresh",
       "back_to_list": "Back to the list"
     },
     "list": {
-      "search_placeholder": "Search a client...",
-      "search_aria": "Search clients",
-      "empty_title": "No clients yet",
-      "empty_description": "Create your first client to centralize their onboarding information.",
+      "search_placeholder": "Search a prospect...",
+      "search_aria": "Search prospects",
+      "empty_title": "No prospects yet",
+      "empty_description": "Create your first prospect to centralize their onboarding information.",
       "expand_details": "Show more details",
       "collapse_details": "Show fewer details",
       "actions": {
-        "edit": "Edit client",
-        "delete": "Delete client"
+        "edit": "Edit prospect",
+        "delete": "Delete prospect"
       },
       "card": {
         "contact": "Contact",
@@ -80,7 +80,7 @@
         "no_budget": "Budget not defined"
       },
       "delete_dialog": {
-        "title": "Delete client",
+        "title": "Delete prospect",
         "description": "Are you sure you want to delete “{{name}}”?",
         "helper": "This action cannot be undone.",
         "actions": {
@@ -91,13 +91,13 @@
       }
     },
     "form": {
-      "create_page_title": "Create client",
-      "edit_page_title": "Edit client",
-      "title": "Create a client",
-      "subtitle": "Record the key information before assigning programs or plans.",
-      "edit_title": "Edit client",
-      "edit_subtitle": "Update contact and onboarding information.",
-      "not_found": "This client could not be found.",
+      "create_page_title": "Create prospect",
+      "edit_page_title": "Edit prospect",
+      "title": "Create a prospect",
+      "subtitle": "Record the key information about a prospect before assigning programs or plans.",
+      "edit_title": "Edit prospect",
+      "edit_subtitle": "Update the prospect's contact and onboarding information.",
+      "not_found": "This prospect could not be found.",
       "sections": {
         "identity": "Identity",
         "profile": "Profile & preferences",
@@ -115,7 +115,7 @@
         "objectives": "Objectives",
         "objectivesHelper": "Select one or several objectives.",
         "activityPreferences": "Activity preferences",
-        "activityPreferencesHelper": "Select the sports or workouts the client enjoys.",
+        "activityPreferencesHelper": "Select the sports or workouts the prospect enjoys.",
         "medicalConditions": "Medical conditions",
         "allergies": "Allergies",
         "notes": "Notes",
@@ -123,18 +123,18 @@
         "dealDescription": "Deal description",
         "desiredStartDate": "Desired start date",
         "cancel": "Cancel",
-        "submitCreate": "Create client",
+        "submitCreate": "Create prospect",
         "submitEdit": "Save changes"
       }
     },
     "notifications": {
-      "load_failure": "Unable to load clients.",
-      "create_success": "Client created",
-      "create_failure": "Unable to create the client.",
-      "update_success": "Client updated",
-      "update_failure": "Unable to update the client.",
-      "delete_success": "Client deleted",
-      "delete_failure": "Unable to delete the client."
+      "load_failure": "Unable to load prospects.",
+      "create_success": "Prospect created",
+      "create_failure": "Unable to create the prospect.",
+      "update_success": "Prospect updated",
+      "update_failure": "Unable to update the prospect.",
+      "delete_success": "Prospect deleted",
+      "delete_failure": "Unable to delete the prospect."
     }
   },
   "athletes": {

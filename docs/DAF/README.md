@@ -27,11 +27,11 @@ Hors périmètre immédiat: facturation, analytics en temps réel, marketplace p
 
 ## 3. Personae et parcours utilisateurs
 ### Coach principal (frontoffice + mobile)
-- **Objectifs**: transformer un prospect en client, attribuer un programme, suivre l'adhésion.
+- **Objectifs**: transformer un prospect, attribuer un programme, suivre l'adhésion.
 - **Parcours clé**:
-  1. Consulte le module Clients, filtre par statut.
-  2. Crée/édite le client (objectifs, préférences, budget).
-  3. Passe l'état à « client » puis crée le lien Athlète ↔ Coach.
+  1. Consulte le module Prospects, filtre par statut.
+  2. Crée/édite la fiche prospect (objectifs, préférences, budget).
+  3. Passe l'état du prospect à « converti » puis crée le lien Athlète ↔ Coach.
   4. Construit un programme (sessions, exercices) et le partage.
   5. Suit les retours via la section Athlètes.
 - **Irritants adressés**: double saisie entre outils, perte de contexte sur les objectifs, manque de visibilité sur la disponibilité des contenus.
@@ -65,10 +65,11 @@ Hors périmètre immédiat: facturation, analytics en temps réel, marketplace p
 - **Nutrition**: un plan contient `n` jours, chaque jour `m` repas, et chaque repas référence des aliments ou macros. Les champs calories/macros doivent rester cohérents (somme des aliments = macros du repas).
 - **Localisation**: les interfaces doivent rester entièrement bilingues (FR/EN). Les formulaires valident la présence des clés i18n avant publication.
 - **Filtrage locale front/back office**: toutes les requêtes frontoffice (coach/athlète) vers les bibliothèques partagées (jours de repas, repas, types de repas, séances, exercices, etc.) doivent embarquer la langue active pour ne remonter que les contenus correspondant à cet utilisateur. Les formulaires de création/édition du backoffice doivent eux aussi restreindre les options proposées à la langue sélectionnée pour empêcher qu'un coach publie du contenu dans une langue non désirée.
+- **Terminologie frontoffice**: toute interface coach/athlète affiche la fiche commerciale sous l'intitulé « Prospect » (même si l'API conserve l'entité `Client`). La mention « client » n'apparaît que lors du reporting backoffice.
 - **Traçabilité**: toute création/édition supprime la possibilité de supprimer définitivement un enregistrement si celui-ci est référencé (ex: un exercice présent dans un programme ne peut être supprimé qu'après retrait du programme).
 
 Cas d'usage détaillés:
-1. **Onboarding d'un prospect**: depuis le backoffice, création d'une fiche avec informations commerciales → synchronisation frontoffice → le coach voit immédiatement le prospect dans Clients avec les champs configurés.
+1. **Onboarding d'un prospect**: depuis le backoffice, création d'une fiche avec informations commerciales → synchronisation frontoffice → le coach voit immédiatement le prospect dans Prospects avec les champs configurés.
 2. **Attribution d'un programme**: un coach sélectionne un athlète, clone un programme modèle, personnalise les séances puis confirme. Le système verrouille la version pour garantir la cohérence entre coach et athlète.
 3. **Publication d'un plan nutritionnel**: un responsable nutrition ajoute des jours/meals, assigne des icônes et définit la visibilité publique. Le plan devient disponible dans le frontoffice et mobile.
 4. **Consultation Athlète**: l'athlète ouvre son espace, filtre ses programmes actifs et consulte les détails, guidé par les instructions et vidéos fournies.
@@ -92,7 +93,7 @@ Contraintes fonctionnelles:
 - Les relations coach/athlète doivent avoir un statut `active` ou `inactive`, jamais `null`.
 
 ## 6. Interfaces et canaux
-- **Frontoffice (React, Vite)**: interface coaches/athlètes, modules Clients, Athletes, Programs, Nutrition, Profile, Login. Utilise React Router, Zustand pour l'état, i18next pour les langues, MUI pour l'UI.
+- **Frontoffice (React, Vite)**: interface coaches/athlètes, modules Prospects, Athletes, Programs, Nutrition, Profile, Login. Utilise React Router, Zustand pour l'état, i18next pour les langues, MUI pour l'UI.
 - **Backoffice (React, Vite)**: interface opérationnelle pour paramétrer les référentiels, gérer les comptes, contrôler la visibilité.
 - **Mobile PWA**: déclinaison légère ciblant l'accès athlète sur smartphone.
 - **API GraphQL (NestJS)**: exposée via Mercurius/Fastify, alimente front/back/mobile. Endpoints protégés par JWT.

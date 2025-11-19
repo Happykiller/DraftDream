@@ -47,24 +47,24 @@
     "placeholder": "Bonjour"
   },
   "clients": {
-    "title": "Clients",
-    "subtitle": "Gérer tous vos clients",
-    "helper": "Centralisez les informations, préférences et suivis commerciaux de chaque client.",
+    "title": "Prospects",
+    "subtitle": "Gérer tous vos prospects.",
+    "helper": "Créez des contacts, renseignez leurs préférences et restez aligné avec votre pipeline commercial.",
     "actions": {
-      "create": "Nouveau client",
+      "create": "Nouveau prospect",
       "refresh": "Rafraîchir",
       "back_to_list": "Retour à la liste"
     },
     "list": {
-      "search_placeholder": "Rechercher un client...",
-      "search_aria": "Rechercher des clients",
-      "empty_title": "Aucun client pour le moment",
-      "empty_description": "Ajoutez votre premier client pour suivre son onboarding.",
+      "search_placeholder": "Rechercher un prospect...",
+      "search_aria": "Rechercher des prospects",
+      "empty_title": "Aucun prospect pour l'instant",
+      "empty_description": "Créez votre premier prospect pour centraliser son onboarding.",
       "expand_details": "Afficher plus de détails",
       "collapse_details": "Afficher moins de détails",
       "actions": {
-        "edit": "Modifier le client",
-        "delete": "Supprimer le client"
+        "edit": "Modifier le prospect",
+        "delete": "Supprimer le prospect"
       },
       "card": {
         "contact": "Contact",
@@ -80,7 +80,7 @@
         "no_budget": "Budget non défini"
       },
       "delete_dialog": {
-        "title": "Supprimer le client",
+        "title": "Supprimer le prospect",
         "description": "Voulez-vous vraiment supprimer « {{name}} » ?",
         "helper": "Cette action est irréversible.",
         "actions": {
@@ -91,13 +91,13 @@
       }
     },
     "form": {
-      "create_page_title": "Créer un client",
-      "edit_page_title": "Modifier un client",
-      "title": "Créer un client",
-      "subtitle": "Renseignez les informations clés avant d'assigner un programme.",
-      "edit_title": "Modifier un client",
-      "edit_subtitle": "Mettez à jour les informations de suivi.",
-      "not_found": "Ce client est introuvable.",
+      "create_page_title": "Créer un prospect",
+      "edit_page_title": "Modifier un prospect",
+      "title": "Créer un prospect",
+      "subtitle": "Consignez les informations clés avant d'attribuer des programmes ou des plans.",
+      "edit_title": "Modifier le prospect",
+      "edit_subtitle": "Mettez à jour les informations de contact et d'onboarding du prospect.",
+      "not_found": "Ce prospect est introuvable.",
       "sections": {
         "identity": "Identité",
         "profile": "Profil & préférences",
@@ -115,7 +115,7 @@
         "objectives": "Objectifs",
         "objectivesHelper": "Sélectionnez un ou plusieurs objectifs.",
         "activityPreferences": "Préférences d'activité",
-        "activityPreferencesHelper": "Choisissez les sports ou disciplines appréciés.",
+        "activityPreferencesHelper": "Sélectionnez les sports ou entraînements appréciés par le prospect.",
         "medicalConditions": "Antécédents médicaux",
         "allergies": "Allergies",
         "notes": "Notes",
@@ -123,18 +123,18 @@
         "dealDescription": "Description de l'offre",
         "desiredStartDate": "Date de début souhaitée",
         "cancel": "Annuler",
-        "submitCreate": "Créer le client",
+        "submitCreate": "Créer le prospect",
         "submitEdit": "Enregistrer"
       }
     },
     "notifications": {
-      "load_failure": "Impossible de charger les clients.",
-      "create_success": "Client créé",
-      "create_failure": "Impossible de créer le client.",
-      "update_success": "Client mis à jour",
-      "update_failure": "Impossible de mettre à jour le client.",
-      "delete_success": "Client supprimé",
-      "delete_failure": "Impossible de supprimer le client."
+      "load_failure": "Impossible de charger les prospects.",
+      "create_success": "Prospect créé",
+      "create_failure": "Impossible de créer le prospect.",
+      "update_success": "Prospect mis à jour",
+      "update_failure": "Impossible de mettre à jour le prospect.",
+      "delete_success": "Prospect supprimé",
+      "delete_failure": "Impossible de supprimer le prospect."
     }
   },
   "athletes": {
