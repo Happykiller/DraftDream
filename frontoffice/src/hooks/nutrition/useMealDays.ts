@@ -28,6 +28,7 @@ export interface MealDayMealSnapshot {
     label: string;
     locale?: string | null;
     visibility?: MealVisibility | null;
+    icon?: string | null;
   } | null;
 }
 
@@ -88,7 +89,7 @@ const LIST_QUERY = `
           proteinGrams
           carbGrams
           fatGrams
-          type { id slug label locale visibility }
+          type { id slug label locale visibility icon }
         }
         visibility
         createdBy
@@ -123,7 +124,7 @@ const CREATE_MUTATION = `
         proteinGrams
         carbGrams
         fatGrams
-        type { id slug label locale visibility }
+        type { id slug label locale visibility icon }
       }
       visibility
       createdBy
@@ -154,7 +155,7 @@ const UPDATE_MUTATION = `
         proteinGrams
         carbGrams
         fatGrams
-        type { id slug label locale visibility }
+        type { id slug label locale visibility icon }
       }
       visibility
       createdBy

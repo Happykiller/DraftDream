@@ -419,6 +419,7 @@ export function useMealPlanBuilder(
                 locale: meal.type.locale ?? undefined,
                 label: meal.type.label,
                 visibility: meal.type.visibility ?? undefined,
+                icon: meal.type.icon ?? undefined,
               }
             : undefined,
           {
@@ -428,6 +429,7 @@ export function useMealPlanBuilder(
             slug: meal.type?.slug ?? undefined,
             locale: meal.type?.locale ?? meal.locale ?? undefined,
             visibility: meal.type?.visibility ?? meal.visibility ?? undefined,
+            icon: meal.type?.icon ?? undefined,
           },
         );
 
