@@ -110,6 +110,7 @@ export interface UseMealTypesParams {
   page: number; // 1-based
   limit: number;
   q: string;
+  locale: string;
 }
 
 export interface UseMealTypesResult {
@@ -138,7 +139,7 @@ export interface UseMealTypesResult {
 /**
  * Handles lifecycle of meal types to help build nutrition plan editors.
  */
-export function useMealTypes({ page, limit, q }: UseMealTypesParams): UseMealTypesResult {
+export function useMealTypes({ page, limit, q, locale }: UseMealTypesParams): UseMealTypesResult {
   const { t } = useTranslation();
   const [items, setItems] = React.useState<MealType[]>([]);
   const [total, setTotal] = React.useState(0);
@@ -152,10 +153,18 @@ export function useMealTypes({ page, limit, q }: UseMealTypesParams): UseMealTyp
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
+      const normalizedLocale = locale.trim();
       const { data, errors } = await execute(() =>
         gql.send<MealTypeListPayload>({
           query: LIST_QUERY,
-          variables: { input: { page, limit, q: q.trim() || undefined } },
+          variables: {
+            input: {
+              page,
+              limit,
+              q: q.trim() || undefined,
+              locale: normalizedLocale || undefined,
+            },
+          },
           operationName: 'ListMealTypes',
         }),
       );
@@ -173,7 +182,7 @@ export function useMealTypes({ page, limit, q }: UseMealTypesParams): UseMealTyp
     } finally {
       setLoading(false);
     }
-  }, [execute, flashError, gql, limit, page, q, t]);
+  }, [execute, flashError, gql, limit, locale, page, q, t]);
 
   React.useEffect(() => {
     void load();

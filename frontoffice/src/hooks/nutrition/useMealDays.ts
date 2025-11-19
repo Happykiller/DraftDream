@@ -175,7 +175,7 @@ export interface UseMealDaysParams {
   page: number; // 1-based
   limit: number;
   q: string;
-  locale?: string;
+  locale: string;
   visibility?: MealDayVisibility;
 }
 
@@ -227,11 +227,12 @@ export function useMealDays({
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
+      const normalizedLocale = locale.trim();
       const filters = {
         page,
         limit,
         q: q.trim() || undefined,
-        locale: locale?.trim() || undefined,
+        locale: normalizedLocale || undefined,
         visibility: visibility || undefined,
       };
       const { data, errors } = await execute(() =>

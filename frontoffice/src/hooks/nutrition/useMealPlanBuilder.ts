@@ -305,6 +305,7 @@ export function useMealPlanBuilder(
     page: 1,
     limit: 10,
     q: debouncedDaySearch,
+    locale: i18n.language,
   });
 
   const {
@@ -318,6 +319,7 @@ export function useMealPlanBuilder(
     page: 1,
     limit: 10,
     q: debouncedMealSearch,
+    locale: i18n.language,
     typeId: selectedMealTypeId ?? undefined,
   });
 
@@ -328,6 +330,7 @@ export function useMealPlanBuilder(
     page: 1,
     limit: 25,
     q: '',
+    locale: i18n.language,
   });
 
   const filteredMealTypes = React.useMemo(

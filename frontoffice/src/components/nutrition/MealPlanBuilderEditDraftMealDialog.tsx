@@ -89,13 +89,14 @@ export function MealPlanBuilderEditDraftMealDialog({
   onClose,
   onSubmit,
 }: MealPlanBuilderEditDraftMealDialogProps): React.JSX.Element {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [form, setForm] = React.useState<MealDraftFormState>(INITIAL_FORM_STATE);
 
   const { items: mealTypes, loading: mealTypesLoading } = useMealTypes({
     page: 1,
     limit: 50,
     q: '',
+    locale: i18n.language,
   });
 
   React.useEffect(() => {
