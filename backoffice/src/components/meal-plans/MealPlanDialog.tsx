@@ -226,6 +226,19 @@ export function MealPlanDialog({
   const [values, setValues] = React.useState<MealPlanDialogValues>(DEFAULT_VALUES);
   const [selectedDay, setSelectedDay] = React.useState<MealPlanDialogDayOption | null>(null);
   const [selectedMeals, setSelectedMeals] = React.useState<Record<string, MealPlanDialogMealOption | null>>({});
+  const filteredMealDayOptions = React.useMemo(
+    () => mealDayOptions.filter((option) => option.locale === values.locale),
+    [mealDayOptions, values.locale],
+  );
+  const mealOptionsByLocale = React.useMemo(() => {
+    return mealOptions.reduce<Record<string, MealPlanDialogMealOption[]>>((acc, option) => {
+      if (!acc[option.locale]) {
+        acc[option.locale] = [];
+      }
+      acc[option.locale].push(option);
+      return acc;
+    }, {} as Record<string, MealPlanDialogMealOption[]>);
+  }, [mealOptions]);
 
   React.useEffect(() => {
     if (open && isEdit && initial) {
@@ -241,6 +254,29 @@ export function MealPlanDialog({
       setSelectedMeals({});
     }
   }, [initial, isEdit, open, userOptions]);
+
+  React.useEffect(() => {
+    setSelectedDay((prev) => {
+      if (!prev) return prev;
+      return prev.locale === values.locale ? prev : null;
+    });
+  }, [values.locale]);
+
+  React.useEffect(() => {
+    setSelectedMeals((prev) => {
+      let changed = false;
+      const copy = { ...prev };
+      values.days.forEach((day) => {
+        const dayLocale = day.locale ?? values.locale;
+        const selected = prev[day.clientId];
+        if (selected && selected.locale !== dayLocale) {
+          copy[day.clientId] = null;
+          changed = true;
+        }
+      });
+      return changed ? copy : prev;
+    });
+  }, [values.days, values.locale]);
 
   const handleFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -537,9 +573,9 @@ export function MealPlanDialog({
                 <Autocomplete
                   value={selectedDay}
                   onChange={(_, option) => setSelectedDay(option)}
-                  options={mealDayOptions}
+                  options={filteredMealDayOptions}
                   loading={mealDayOptionsLoading}
-                getOptionLabel={(option) => option.label}
+                  getOptionLabel={(option) => option.label}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -672,11 +708,11 @@ export function MealPlanDialog({
                   </List>
 
                   <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems={{ xs: 'stretch', md: 'center' }}>
-                    <Autocomplete
-                      value={selectedMeals[day.clientId] ?? null}
-                      onChange={(_, option) => handleSelectedMealChange(day.clientId, option)}
-                      options={mealOptions}
-                      loading={mealOptionsLoading}
+                  <Autocomplete
+                    value={selectedMeals[day.clientId] ?? null}
+                    onChange={(_, option) => handleSelectedMealChange(day.clientId, option)}
+                    options={mealOptionsByLocale[day.locale ?? values.locale] ?? []}
+                    loading={mealOptionsLoading}
                       getOptionLabel={(option) => option.label}
                       renderInput={(params) => (
                         <TextField

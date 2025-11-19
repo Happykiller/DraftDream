@@ -64,7 +64,7 @@ Hors périmètre immédiat: facturation, analytics en temps réel, marketplace p
 - **Visibilité des contenus**: `private` limite l'accès à l'équipe propriétaire; `public` les expose dans les catalogues frontoffice/backoffice. Toute publication requiert un créateur identifié et une vérification de complétude (sessions ≥1, exercices ≥1).
 - **Nutrition**: un plan contient `n` jours, chaque jour `m` repas, et chaque repas référence des aliments ou macros. Les champs calories/macros doivent rester cohérents (somme des aliments = macros du repas).
 - **Localisation**: les interfaces doivent rester entièrement bilingues (FR/EN). Les formulaires valident la présence des clés i18n avant publication.
-- **Filtrage locale frontoffice**: toutes les requêtes frontoffice (coach/athlète) vers les bibliothèques partagées (jours de repas, repas, types de repas, séances, exercices, etc.) doivent embarquer la langue active pour ne remonter que les contenus correspondant à cet utilisateur.
+- **Filtrage locale front/back office**: toutes les requêtes frontoffice (coach/athlète) vers les bibliothèques partagées (jours de repas, repas, types de repas, séances, exercices, etc.) doivent embarquer la langue active pour ne remonter que les contenus correspondant à cet utilisateur. Les formulaires de création/édition du backoffice doivent eux aussi restreindre les options proposées à la langue sélectionnée pour empêcher qu'un coach publie du contenu dans une langue non désirée.
 - **Traçabilité**: toute création/édition supprime la possibilité de supprimer définitivement un enregistrement si celui-ci est référencé (ex: un exercice présent dans un programme ne peut être supprimé qu'après retrait du programme).
 
 Cas d'usage détaillés:

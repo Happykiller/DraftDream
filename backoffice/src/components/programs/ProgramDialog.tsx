@@ -96,6 +96,10 @@ export function ProgramDialog({
   const [values, setValues] = React.useState<ProgramDialogValues>(DEFAULT_VALUES);
   const isEdit = mode === 'edit';
   const { t } = useTranslation();
+  const filteredSessionOptions = React.useMemo(
+    () => sessionOptions.filter((session) => session.locale === values.locale),
+    [sessionOptions, values.locale],
+  );
 
   React.useEffect(() => {
     if (isEdit && initial) {
@@ -122,6 +126,17 @@ export function ProgramDialog({
       setValues(DEFAULT_VALUES);
     }
   }, [isEdit, initial, sessionOptions, userOptions, open]);
+
+  React.useEffect(() => {
+    setValues((prev) => {
+      const allowedIds = new Set(filteredSessionOptions.map((option) => option.id));
+      const filteredSessions = prev.sessions.filter((session) => allowedIds.has(session.id));
+      if (filteredSessions.length === prev.sessions.length) {
+        return prev;
+      }
+      return { ...prev, sessions: filteredSessions };
+    });
+  }, [filteredSessionOptions]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -240,7 +255,7 @@ export function ProgramDialog({
           {/* Sessions selection is mandatory to guarantee programs deliver real workouts. */}
           <Autocomplete
             multiple
-            options={sessionOptions}
+            options={filteredSessionOptions}
             getOptionLabel={(option) => option.label || option.slug}
             isOptionEqualToValue={(option, value) => option.id === value.id}
             value={values.sessions}

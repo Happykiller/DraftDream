@@ -77,6 +77,11 @@ export function MealDialog({
   const { t } = useTranslation();
   const isEdit = mode === 'edit';
 
+  const filteredMealTypes = React.useMemo(
+    () => mealTypes.filter((type) => type.locale === values.locale),
+    [mealTypes, values.locale],
+  );
+
   React.useEffect(() => {
     if (isEdit && initial) {
       setValues({
@@ -112,6 +117,18 @@ export function MealDialog({
           : value,
     }));
   };
+
+  React.useEffect(() => {
+    setValues((prev) => {
+      if (filteredMealTypes.length === 0) {
+        return prev.typeId ? { ...prev, typeId: '' } : prev;
+      }
+      if (filteredMealTypes.some((type) => type.id === prev.typeId)) {
+        return prev;
+      }
+      return { ...prev, typeId: filteredMealTypes[0].id };
+    });
+  }, [filteredMealTypes]);
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -181,7 +198,7 @@ export function MealDialog({
             fullWidth
             disabled={mealTypesLoading && mealTypes.length === 0}
           >
-            {mealTypes.map((type) => (
+            {filteredMealTypes.map((type) => (
               <MenuItem key={type.id} value={type.id}>
                 {`${type.label} (${type.locale.toUpperCase()})`}
               </MenuItem>
