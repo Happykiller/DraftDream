@@ -44,6 +44,7 @@ export interface ExerciseDialogValues {
 export interface ExerciseDialogProps {
   open: boolean;
   mode: 'create' | 'edit';
+  title?: string;
   initial?: Exercise;
   categoryOptions: RefEntity[];
   muscleOptions: RefEntity[];
@@ -74,6 +75,7 @@ const DEFAULTS: ExerciseDialogValues = {
 export function ExerciseDialog({
   open,
   mode,
+  title,
   initial,
   categoryOptions,
   muscleOptions,
@@ -122,7 +124,7 @@ export function ExerciseDialog({
   );
 
   React.useEffect(() => {
-    if (isEdit && initial) {
+    if (initial) {
       setValues(() => ({
         ...DEFAULTS,
         slug: initial.slug,
@@ -144,7 +146,7 @@ export function ExerciseDialog({
     } else {
       setValues(() => ({ ...DEFAULTS }));
     }
-  }, [isEdit, initial]);
+  }, [initial]);
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -187,7 +189,7 @@ export function ExerciseDialog({
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="exercise-dialog-title" fullWidth maxWidth="md">
       <DialogTitle id="exercise-dialog-title">
-        {isEdit ? t('programs.exercises.dialog.edit_title') : t('programs.exercises.dialog.create_title')}
+        {title ?? (isEdit ? t('programs.exercises.dialog.edit_title') : t('programs.exercises.dialog.create_title'))}
       </DialogTitle>
       <DialogContent>
         <Stack component="form" onSubmit={submit} spacing={2} sx={{ mt: 1 }}>

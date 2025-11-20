@@ -48,7 +48,18 @@ export function ExercisesPanel(): React.JSX.Element {
   const [openCreate, setOpenCreate] = React.useState(false);
   const [editId, setEditId] = React.useState<string | null>(null);
   const [deleteId, setDeleteId] = React.useState<string | null>(null);
+  const [duplicateId, setDuplicateId] = React.useState<string | null>(null);
   const editing = React.useMemo(() => items.find(i => i.id === editId), [items, editId]);
+  const duplicating = React.useMemo(() => {
+    if (!duplicateId) return undefined;
+    const original = items.find(i => i.id === duplicateId);
+    if (!original) return undefined;
+    return {
+      ...original,
+      slug: `${original.slug}-copy`,
+      label: `${original.label} (Copy)`,
+    };
+  }, [items, duplicateId]);
 
   const ids = (arr: RefEntity[]) => arr.map(x => x.id);
 
@@ -101,6 +112,7 @@ export function ExercisesPanel(): React.JSX.Element {
         loading={loading}
         onCreate={() => setOpenCreate(true)}
         onEdit={(row) => setEditId(row.id)}
+        onDuplicate={(row) => setDuplicateId(row.id)}
         onDelete={(row) => setDeleteId(row.id)}
         onQueryChange={setSearchInput}
         onPageChange={setPage}
@@ -128,6 +140,19 @@ export function ExercisesPanel(): React.JSX.Element {
         equipmentOptions={equipmentOptions}
         onClose={() => setEditId(null)}
         onSubmit={(v) => editId ? update(toUpdateInput(editId, v)) : undefined}
+      />
+
+      <ExerciseDialog
+        open={!!duplicateId}
+        mode="create"
+        title={t('programs.exercises.dialog.duplicate_title')}
+        initial={duplicating as any}
+        categoryOptions={categoryOptions}
+        muscleOptions={muscleOptions}
+        tagOptions={tagOptions}
+        equipmentOptions={equipmentOptions}
+        onClose={() => setDuplicateId(null)}
+        onSubmit={(v) => create(toCreateInput(v))}
       />
 
       <ConfirmDialog
