@@ -115,6 +115,7 @@ type SessionSportGql {
   createdAt: DateTime!
   updatedAt: DateTime!
   creator: UserGql
+  visibility: String!
 }
 
 type SessionListGql {
@@ -393,6 +394,41 @@ type ClientSourceListGql {
   limit: Int!
 }
 
+type ClientGql {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  email: String!
+  phone: String
+  statusId: String
+  levelId: String
+  objectiveIds: [ID!]!
+  activityPreferenceIds: [ID!]!
+  medicalConditions: String
+  allergies: String
+  notes: String
+  sourceId: String
+  budget: Float
+  dealDescription: String
+  desiredStartDate: DateTime
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creator: UserGql
+  status: ClientStatusGql
+  level: ClientLevelGql
+  source: ClientSourceGql
+  objectives: [ClientObjectiveGql]
+  activityPreferences: [ClientActivityPreferenceGql]
+}
+
+type ClientListGql {
+  items: [ClientGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
 type MealTypeGql {
   id: ID!
   slug: String!
@@ -542,6 +578,29 @@ type MealPlanListGql {
   limit: Int!
 }
 
+type CoachAthleteGql {
+  id: ID!
+  coachId: ID!
+  athleteId: ID!
+  startDate: DateTime!
+  endDate: DateTime
+  is_active: Boolean!
+  note: String
+  createdBy: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  coach: UserGql
+  athlete: UserGql
+}
+
+type CoachAthleteListGql {
+  items: [CoachAthleteGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
 type Query {
   tag_get(id: ID!): TagGql
   tag_list(input: ListTagsInput): TagListGql!
@@ -567,6 +626,8 @@ type Query {
   clientLevel_list(input: ListClientLevelsInput): ClientLevelListGql!
   clientSource_get(id: ID!): ClientSourceGql
   clientSource_list(input: ListClientSourcesInput): ClientSourceListGql!
+  client_get(id: ID!): ClientGql
+  client_list(input: ListClientsInput): ClientListGql!
   exercise_get(id: ID!): ExerciseGql
   exercise_list(input: ListExercisesInput): ExerciseListGql!
   equipment_get(id: ID!): EquipmentGql
@@ -579,6 +640,8 @@ type Query {
   meal_list(input: ListMealsInput): MealListGql!
   mealPlan_get(id: ID!): MealPlanGql
   mealPlan_list(input: ListMealPlansInput): MealPlanListGql!
+  coachAthlete_get(id: ID!): CoachAthleteGql
+  coachAthlete_list(input: ListCoachAthletesInput): CoachAthleteListGql!
 }
 
 input ListTagsInput {
@@ -685,6 +748,16 @@ input ListClientSourcesInput {
   page: Int
 }
 
+input ListClientsInput {
+  q: String
+  statusId: String
+  levelId: String
+  sourceId: String
+  createdBy: String
+  limit: Int
+  page: Int
+}
+
 input ListExercisesInput {
   q: String
   locale: String
@@ -742,6 +815,16 @@ input ListMealPlansInput {
   page: Int
 }
 
+input ListCoachAthletesInput {
+  coachId: ID
+  athleteId: ID
+  is_active: Boolean
+  createdBy: ID
+  limit: Int
+  page: Int
+  includeArchived: Boolean
+}
+
 type Mutation {
   tag_create(input: CreateTagInput!): TagGql
   tag_update(input: UpdateTagInput!): TagGql
@@ -778,6 +861,9 @@ type Mutation {
   clientSource_create(input: CreateClientSourceInput!): ClientSourceGql
   clientSource_update(input: UpdateClientSourceInput!): ClientSourceGql
   clientSource_delete(id: ID!): Boolean!
+  client_create(input: CreateClientInput!): ClientGql
+  client_update(input: UpdateClientInput!): ClientGql
+  client_delete(id: ID!): Boolean!
   exercise_create(input: CreateExerciseInput!): ExerciseGql
   exercise_update(input: UpdateExerciseInput!): ExerciseGql
   exercise_softDelete(id: ID!): Boolean!
@@ -798,10 +884,12 @@ type Mutation {
   mealPlan_update(input: UpdateMealPlanInput!): MealPlanGql
   mealPlan_softDelete(id: ID!): Boolean!
   mealPlan_delete(id: ID!): Boolean!
+  coachAthlete_create(input: CreateCoachAthleteInput!): CoachAthleteGql
+  coachAthlete_update(input: UpdateCoachAthleteInput!): CoachAthleteGql
+  coachAthlete_delete(id: ID!): Boolean!
 }
 
 input CreateTagInput {
-  slug: String!
   locale: String!
   label: String!
   visibility: TagVisibility!
@@ -809,7 +897,6 @@ input CreateTagInput {
 
 input UpdateTagInput {
   id: ID!
-  slug: String
   locale: String
   label: String
   visibility: TagVisibility
@@ -858,7 +945,6 @@ input UpdateUserInput {
 }
 
 input CreateMuscleInput {
-  slug: String!
   locale: String!
   label: String!
   visibility: MuscleVisibility!
@@ -866,13 +952,11 @@ input CreateMuscleInput {
 
 input UpdateMuscleInput {
   id: ID!
-  slug: String
   locale: String
   label: String
 }
 
 input CreateSessionInput {
-  slug: String!
   locale: String!
   label: String!
   durationMin: Int!
@@ -882,16 +966,15 @@ input CreateSessionInput {
 
 input UpdateSessionInput {
   id: ID!
-  slug: String
   locale: String
   label: String
   durationMin: Int
+  visibility: String
   description: String
   exerciseIds: [ID!]
 }
 
 input CreateProgramInput {
-  slug: String
   locale: String!
   label: String!
   visibility: ProgramVisibility
@@ -908,7 +991,6 @@ input CreateProgramInput {
 input ProgramSessionInput {
   id: String
   templateSessionId: String
-  slug: String
   locale: String
   label: String!
   durationMin: Int!
@@ -935,7 +1017,6 @@ input ProgramSessionExerciseInput {
 
 input UpdateProgramInput {
   id: ID!
-  slug: String
   locale: String
   label: String
   visibility: ProgramVisibility
@@ -950,7 +1031,6 @@ input UpdateProgramInput {
 }
 
 input CreateCategoryInput {
-  slug: String!
   locale: String!
   label: String!
   visibility: CategoryVisibility!
@@ -958,14 +1038,12 @@ input CreateCategoryInput {
 
 input UpdateCategoryInput {
   id: ID!
-  slug: String
   locale: String
   label: String
   visibility: CategoryVisibility
 }
 
 input CreateClientObjectiveInput {
-  slug: String!
   locale: String!
   label: String!
   visibility: ClientObjectiveVisibility!
@@ -973,14 +1051,12 @@ input CreateClientObjectiveInput {
 
 input UpdateClientObjectiveInput {
   id: ID!
-  slug: String
   locale: String
   label: String
   visibility: ClientObjectiveVisibility
 }
 
 input CreateClientActivityPreferenceInput {
-  slug: String!
   locale: String!
   label: String!
   visibility: ClientActivityPreferenceVisibility!
@@ -988,14 +1064,12 @@ input CreateClientActivityPreferenceInput {
 
 input UpdateClientActivityPreferenceInput {
   id: ID!
-  slug: String
   locale: String
   label: String
   visibility: ClientActivityPreferenceVisibility
 }
 
 input CreateClientStatusInput {
-  slug: String!
   locale: String!
   label: String!
   visibility: ClientStatusVisibility!
@@ -1003,14 +1077,12 @@ input CreateClientStatusInput {
 
 input UpdateClientStatusInput {
   id: ID!
-  slug: String
   locale: String
   label: String
   visibility: ClientStatusVisibility
 }
 
 input CreateClientLevelInput {
-  slug: String!
   locale: String!
   label: String!
   visibility: ClientLevelVisibility!
@@ -1018,14 +1090,12 @@ input CreateClientLevelInput {
 
 input UpdateClientLevelInput {
   id: ID!
-  slug: String
   locale: String
   label: String
   visibility: ClientLevelVisibility
 }
 
 input CreateClientSourceInput {
-  slug: String!
   locale: String!
   label: String!
   visibility: ClientSourceVisibility!
@@ -1033,14 +1103,49 @@ input CreateClientSourceInput {
 
 input UpdateClientSourceInput {
   id: ID!
-  slug: String
   locale: String
   label: String
   visibility: ClientSourceVisibility
 }
 
+input CreateClientInput {
+  firstName: String!
+  lastName: String!
+  email: String!
+  phone: String
+  statusId: String
+  levelId: String
+  objectiveIds: [ID!]
+  activityPreferenceIds: [ID!]
+  medicalConditions: String
+  allergies: String
+  notes: String
+  sourceId: String
+  budget: Float
+  dealDescription: String
+  desiredStartDate: DateTime
+}
+
+input UpdateClientInput {
+  id: ID!
+  firstName: String
+  lastName: String
+  email: String
+  phone: String
+  statusId: String
+  levelId: String
+  objectiveIds: [ID!]
+  activityPreferenceIds: [ID!]
+  medicalConditions: String
+  allergies: String
+  notes: String
+  sourceId: String
+  budget: Float
+  dealDescription: String
+  desiredStartDate: DateTime
+}
+
 input CreateExerciseInput {
-  slug: String!
   locale: String!
   label: String!
   series: String!
@@ -1059,7 +1164,6 @@ input CreateExerciseInput {
 
 input UpdateExerciseInput {
   id: ID!
-  slug: String
   locale: String
   label: String
   series: String
@@ -1077,7 +1181,6 @@ input UpdateExerciseInput {
 }
 
 input CreateEquipmentInput {
-  slug: String!
   locale: String!
   label: String!
   visibility: EquipmentVisibility!
@@ -1085,13 +1188,11 @@ input CreateEquipmentInput {
 
 input UpdateEquipmentInput {
   id: ID!
-  slug: String
   locale: String
   label: String
 }
 
 input CreateMealTypeInput {
-  slug: String!
   locale: String!
   label: String!
   icon: String
@@ -1100,7 +1201,6 @@ input CreateMealTypeInput {
 
 input UpdateMealTypeInput {
   id: ID!
-  slug: String
   locale: String
   label: String
   icon: String
@@ -1108,7 +1208,6 @@ input UpdateMealTypeInput {
 }
 
 input CreateMealDayInput {
-  slug: String!
   locale: String!
   label: String!
   description: String
@@ -1118,7 +1217,6 @@ input CreateMealDayInput {
 
 input UpdateMealDayInput {
   id: ID!
-  slug: String
   locale: String
   label: String
   description: String
@@ -1127,7 +1225,6 @@ input UpdateMealDayInput {
 }
 
 input CreateMealInput {
-  slug: String!
   locale: String!
   label: String!
   typeId: ID!
@@ -1141,7 +1238,6 @@ input CreateMealInput {
 
 input UpdateMealInput {
   id: ID!
-  slug: String
   locale: String
   label: String
   typeId: ID
@@ -1154,7 +1250,6 @@ input UpdateMealInput {
 }
 
 input CreateMealPlanInput {
-  slug: String
   locale: String!
   label: String!
   description: String
@@ -1171,7 +1266,6 @@ input CreateMealPlanInput {
 input MealPlanDayInput {
   id: ID
   templateMealDayId: ID
-  slug: String
   locale: String
   label: String!
   description: String
@@ -1181,7 +1275,6 @@ input MealPlanDayInput {
 input MealPlanMealInput {
   id: ID
   templateMealId: ID
-  slug: String
   locale: String
   label: String!
   description: String
@@ -1196,7 +1289,6 @@ input MealPlanMealInput {
 input MealPlanMealTypeInput {
   id: ID
   templateMealTypeId: ID
-  slug: String
   locale: String
   label: String!
   visibility: MealTypeVisibility
@@ -1204,7 +1296,6 @@ input MealPlanMealTypeInput {
 
 input UpdateMealPlanInput {
   id: ID!
-  slug: String
   locale: String
   label: String
   description: String
@@ -1216,4 +1307,23 @@ input UpdateMealPlanInput {
   days: [MealPlanDayInput!]
   dayIds: [ID!]
   userId: ID
+}
+
+input CreateCoachAthleteInput {
+  coachId: ID!
+  athleteId: ID!
+  startDate: DateTime!
+  endDate: DateTime
+  note: String
+  is_active: Boolean
+}
+
+input UpdateCoachAthleteInput {
+  id: ID!
+  coachId: ID
+  athleteId: ID
+  startDate: DateTime
+  endDate: DateTime
+  note: String
+  is_active: Boolean
 }
