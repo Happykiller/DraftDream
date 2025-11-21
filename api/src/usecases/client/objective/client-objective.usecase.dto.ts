@@ -1,6 +1,6 @@
 // src/usecases/client/objective/client-objective.usecase.dto.ts
 export interface CreateClientObjectiveUsecaseDto {
-  slug: string;
+  slug?: string;
   locale: string;
   label: string;
   visibility: 'private' | 'public';

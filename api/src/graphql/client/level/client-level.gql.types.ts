@@ -25,7 +25,7 @@ export class ClientLevelGql {
 
 @InputType()
 export class CreateClientLevelInput {
-  @Field() slug!: string;
+  @Field({ nullable: true }) slug?: string;
   @Field() locale!: string;
   @Field() label!: string;
   @Field(() => ClientLevelVisibility) visibility!: ClientLevelVisibility;

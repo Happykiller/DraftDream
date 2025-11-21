@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
+import * as slugUtil from '@src/common/slug.util';
 import { Inversify } from '@src/inversify/investify';
 import { BddServiceMongo } from '@services/db/mongo/db.service.mongo';
 import { BddServiceClientActivityPreferenceMongo } from '@services/db/mongo/repositories/client/activity-preference.repository';
@@ -53,20 +54,30 @@ describe('UpdateClientActivityPreferenceUsecase', () => {
     usecase = new UpdateClientActivityPreferenceUsecase(inversifyMock);
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('should build', () => {
     expect(usecase).toBeDefined();
   });
 
   it('should update client activity preference through the repository', async () => {
+    const buildSlugSpy = jest.spyOn(slugUtil, 'buildSlug').mockReturnValue('generated-hiit');
     repositoryMock.update.mockResolvedValue(preference);
 
     const result = await usecase.execute(dto);
 
     expect(repositoryMock.update).toHaveBeenCalledWith(dto.id, {
-      slug: dto.slug,
+      slug: 'generated-hiit',
       locale: dto.locale,
       label: dto.label,
       visibility: dto.visibility,
+    });
+    expect(buildSlugSpy).toHaveBeenCalledWith({
+      slug: dto.slug,
+      label: dto.label,
+      fallback: 'activity-preference',
     });
     expect(result).toEqual(preference);
   });

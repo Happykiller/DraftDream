@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
+import * as slugUtil from '@src/common/slug.util';
 import { Inversify } from '@src/inversify/investify';
 import { BddServiceMongo } from '@services/db/mongo/db.service.mongo';
 import { BddServiceClientSourceMongo } from '@services/db/mongo/repositories/client/source.repository';
@@ -46,10 +47,26 @@ describe('UpdateClientSourceUsecase', () => {
     usecase = new UpdateClientSourceUsecase(inversifyMock);
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('should update source through the repository', async () => {
+    const buildSlugSpy = jest.spyOn(slugUtil, 'buildSlug').mockReturnValue('generated-prospect');
     repositoryMock.update.mockResolvedValue(source);
 
     await expect(usecase.execute(dto)).resolves.toEqual(source);
+    expect(repositoryMock.update).toHaveBeenCalledWith(dto.id, {
+      slug: 'generated-prospect',
+      locale: dto.locale,
+      label: dto.label,
+      visibility: dto.visibility,
+    });
+    expect(buildSlugSpy).toHaveBeenCalledWith({
+      slug: dto.slug,
+      label: dto.label,
+      fallback: 'client-source',
+    });
   });
 
   it('should return null when update fails to find entity', async () => {

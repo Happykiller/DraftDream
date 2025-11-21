@@ -25,7 +25,7 @@ export class ClientObjectiveGql {
 
 @InputType()
 export class CreateClientObjectiveInput {
-  @Field() slug!: string;
+  @Field({ nullable: true }) slug?: string;
   @Field() locale!: string;
   @Field() label!: string;
   @Field(() => ClientObjectiveVisibility) visibility!: ClientObjectiveVisibility;

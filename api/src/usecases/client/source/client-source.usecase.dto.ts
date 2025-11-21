@@ -1,6 +1,6 @@
 // src/usecases/client/source/client-source.usecase.dto.ts
 export interface CreateClientSourceUsecaseDto {
-  slug: string;
+  slug?: string;
   locale: string;
   label: string;
   visibility: 'private' | 'public';

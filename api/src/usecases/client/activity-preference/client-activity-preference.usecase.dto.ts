@@ -1,6 +1,6 @@
 // src/usecases/client/activity-preference/client-activity-preference.usecase.dto.ts
 export interface CreateClientActivityPreferenceUsecaseDto {
-  slug: string;
+  slug?: string;
   locale: string;
   label: string;
   visibility: 'private' | 'public';

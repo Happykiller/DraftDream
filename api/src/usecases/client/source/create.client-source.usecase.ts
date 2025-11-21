@@ -1,5 +1,6 @@
 // src/usecases/client/source/create.client-source.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { buildSlug } from '@src/common/slug.util';
 import { Inversify } from '@src/inversify/investify';
 import { ClientSourceUsecaseModel } from '@usecases/client/source/client-source.usecase.model';
 import { CreateClientSourceUsecaseDto } from '@usecases/client/source/client-source.usecase.dto';
@@ -10,7 +11,11 @@ export class CreateClientSourceUsecase {
   async execute(dto: CreateClientSourceUsecaseDto): Promise<ClientSourceUsecaseModel | null> {
     try {
       const created = await this.inversify.bddService.clientSource.create({
-        slug: dto.slug,
+        slug: buildSlug({
+          slug: dto.slug,
+          label: dto.label,
+          fallback: 'client-source',
+        }),
         locale: dto.locale,
         label: dto.label,
         visibility: dto.visibility,

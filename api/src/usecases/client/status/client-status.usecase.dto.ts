@@ -1,6 +1,6 @@
 // src/usecases/client/status/client-status.usecase.dto.ts
 export interface CreateClientStatusUsecaseDto {
-  slug: string;
+  slug?: string;
   locale: string;
   label: string;
   visibility: 'private' | 'public';

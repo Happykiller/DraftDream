@@ -25,7 +25,7 @@ export class ClientSourceGql {
 
 @InputType()
 export class CreateClientSourceInput {
-  @Field() slug!: string;
+  @Field({ nullable: true }) slug?: string;
   @Field() locale!: string;
   @Field() label!: string;
   @Field(() => ClientSourceVisibility) visibility!: ClientSourceVisibility;

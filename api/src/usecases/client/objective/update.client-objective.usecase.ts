@@ -1,5 +1,6 @@
 // src/usecases/client/objective/update.client-objective.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { buildSlug } from '@src/common/slug.util';
 import { Inversify } from '@src/inversify/investify';
 import { ClientObjectiveUsecaseModel } from '@usecases/client/objective/client-objective.usecase.model';
 import { UpdateClientObjectiveUsecaseDto } from '@usecases/client/objective/client-objective.usecase.dto';
@@ -9,12 +10,26 @@ export class UpdateClientObjectiveUsecase {
 
   async execute(dto: UpdateClientObjectiveUsecaseDto): Promise<ClientObjectiveUsecaseModel | null> {
     try {
-      const updated = await this.inversify.bddService.clientObjective.update(dto.id, {
-        slug: dto.slug,
+      const payload: {
+        slug?: string;
+        locale?: string;
+        label?: string;
+        visibility?: 'private' | 'public';
+      } = {
         locale: dto.locale,
         label: dto.label,
         visibility: dto.visibility,
-      });
+      };
+
+      if (dto.slug !== undefined || dto.label !== undefined) {
+        payload.slug = buildSlug({
+          slug: dto.slug,
+          label: dto.label,
+          fallback: 'client-objective',
+        });
+      }
+
+      const updated = await this.inversify.bddService.clientObjective.update(dto.id, payload);
       return updated ? { ...updated } : null;
     } catch (error: any) {
       this.inversify.loggerService.error(`UpdateClientObjectiveUsecase#execute => ${error?.message ?? error}`);

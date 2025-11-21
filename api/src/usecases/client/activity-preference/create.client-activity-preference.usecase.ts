@@ -1,5 +1,6 @@
 // src/usecases/client/activity-preference/create.client-activity-preference.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { buildSlug } from '@src/common/slug.util';
 import { Inversify } from '@src/inversify/investify';
 import { ClientActivityPreferenceUsecaseModel } from '@usecases/client/activity-preference/client-activity-preference.usecase.model';
 import { CreateClientActivityPreferenceUsecaseDto } from '@usecases/client/activity-preference/client-activity-preference.usecase.dto';
@@ -10,7 +11,11 @@ export class CreateClientActivityPreferenceUsecase {
   async execute(dto: CreateClientActivityPreferenceUsecaseDto): Promise<ClientActivityPreferenceUsecaseModel | null> {
     try {
       const created = await this.inversify.bddService.clientActivityPreference.create({
-        slug: dto.slug,
+        slug: buildSlug({
+          slug: dto.slug,
+          label: dto.label,
+          fallback: 'activity-preference',
+        }),
         locale: dto.locale,
         label: dto.label,
         visibility: dto.visibility,

@@ -1,5 +1,6 @@
 // src/usecases/client/level/create.client-level.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { buildSlug } from '@src/common/slug.util';
 import { Inversify } from '@src/inversify/investify';
 import { ClientLevelUsecaseModel } from '@usecases/client/level/client-level.usecase.model';
 import { CreateClientLevelUsecaseDto } from '@usecases/client/level/client-level.usecase.dto';
@@ -10,7 +11,11 @@ export class CreateClientLevelUsecase {
   async execute(dto: CreateClientLevelUsecaseDto): Promise<ClientLevelUsecaseModel | null> {
     try {
       const created = await this.inversify.bddService.clientLevel.create({
-        slug: dto.slug,
+        slug: buildSlug({
+          slug: dto.slug,
+          label: dto.label,
+          fallback: 'client-level',
+        }),
         locale: dto.locale,
         label: dto.label,
         visibility: dto.visibility,

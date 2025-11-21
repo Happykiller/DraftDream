@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
+import * as slugUtil from '@src/common/slug.util';
 import { Inversify } from '@src/inversify/investify';
 import { BddServiceMongo } from '@services/db/mongo/db.service.mongo';
 import { BddServiceClientObjectiveMongo } from '@services/db/mongo/repositories/client/objective.repository';
@@ -21,7 +22,6 @@ describe('CreateClientObjectiveUsecase', () => {
   let usecase: CreateClientObjectiveUsecase;
 
   const dto: CreateClientObjectiveUsecaseDto = {
-    slug: 'weight-loss',
     locale: 'fr-FR',
     label: 'Perte de poids',
     visibility: 'public',
@@ -53,21 +53,31 @@ describe('CreateClientObjectiveUsecase', () => {
     usecase = new CreateClientObjectiveUsecase(inversifyMock);
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('should build', () => {
     expect(usecase).toBeDefined();
   });
 
   it('should create client objective through the repository', async () => {
+    const buildSlugSpy = jest.spyOn(slugUtil, 'buildSlug').mockReturnValue(clientObjective.slug);
     clientObjectiveRepositoryMock.create.mockResolvedValue(clientObjective);
 
     const result = await usecase.execute(dto);
 
     expect(clientObjectiveRepositoryMock.create).toHaveBeenCalledWith({
-      slug: dto.slug,
+      slug: clientObjective.slug,
       locale: dto.locale,
       label: dto.label,
       visibility: dto.visibility,
       createdBy: dto.createdBy,
+    });
+    expect(buildSlugSpy).toHaveBeenCalledWith({
+      slug: dto.slug,
+      label: dto.label,
+      fallback: 'client-objective',
     });
     expect(result).toEqual(clientObjective);
   });

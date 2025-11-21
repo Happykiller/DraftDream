@@ -1,6 +1,6 @@
 // src/usecases/client/level/client-level.usecase.dto.ts
 export interface CreateClientLevelUsecaseDto {
-  slug: string;
+  slug?: string;
   locale: string;
   label: string;
   visibility: 'private' | 'public';
