@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import type { Visibility, Category } from '@src/hooks/useCategories';
 
 export interface CategoryDialogValues {
-  slug: string;
   label: string;
   locale: string;
   visibility: Visibility;
@@ -20,7 +19,7 @@ export interface CategoryDialogProps {
   onSubmit: (values: CategoryDialogValues) => Promise<void> | void;
 }
 
-const DEFAULTS: CategoryDialogValues = { slug: '', label: '', locale: 'en', visibility: 'PRIVATE' };
+const DEFAULTS: CategoryDialogValues = { label: '', locale: 'en', visibility: 'PRIVATE' };
 
 export function CategoryDialog({ open, mode, initial, onClose, onSubmit }: CategoryDialogProps): React.JSX.Element {
   const [values, setValues] = React.useState<CategoryDialogValues>(DEFAULTS);
@@ -30,7 +29,6 @@ export function CategoryDialog({ open, mode, initial, onClose, onSubmit }: Categ
   React.useEffect(() => {
     if (isEdit && initial) {
       setValues({
-        slug: initial.slug,
         label: initial.label,
         locale: initial.locale,
         visibility: initial.visibility,
@@ -58,17 +56,6 @@ export function CategoryDialog({ open, mode, initial, onClose, onSubmit }: Categ
       </DialogTitle>
       <DialogContent>
         <Stack component="form" onSubmit={submit} spacing={2} sx={{ mt: 1 }}>
-          {/* Slug stays editable so admins can realign with upstream catalogue identifiers when needed. */}
-          <TextField
-            label={t('common.labels.slug')}
-            name="slug"
-            value={values.slug}
-            onChange={onChange}
-            inputProps={{ 'aria-label': 'category-slug' }}
-            required
-            fullWidth
-          />
-          {/* Label drives every public name, hence the dedicated control instead of reusing legacy title fields. */}
           <TextField
             label={t('common.labels.label')}
             name="label"

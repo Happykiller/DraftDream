@@ -25,7 +25,6 @@ export interface ProgramSessionOption {
 }
 
 export interface ProgramDialogValues {
-  slug: string;
   locale: string;
   label: string;
   duration: number;
@@ -47,7 +46,6 @@ export interface ProgramDialogProps {
 }
 
 const DEFAULT_VALUES: ProgramDialogValues = {
-  slug: '',
   locale: 'en',
   label: '',
   duration: 4,
@@ -104,7 +102,6 @@ export function ProgramDialog({
   React.useEffect(() => {
     if (isEdit && initial) {
       setValues({
-        slug: initial.slug,
         locale: initial.locale,
         label: initial.label,
         duration: initial.duration,
@@ -128,15 +125,35 @@ export function ProgramDialog({
   }, [isEdit, initial, sessionOptions, userOptions, open]);
 
   React.useEffect(() => {
-    setValues((prev) => {
-      const allowedIds = new Set(filteredSessionOptions.map((option) => option.id));
-      const filteredSessions = prev.sessions.filter((session) => allowedIds.has(session.id));
-      if (filteredSessions.length === prev.sessions.length) {
-        return prev;
-      }
-      return { ...prev, sessions: filteredSessions };
-    });
-  }, [filteredSessionOptions]);
+    // In edit mode, preserve initial sessions even if they don't match the locale filter
+    // Only filter out sessions that were added after opening the dialog
+    if (isEdit && initial && initial.sessions) {
+      const initialSessionIds = new Set(
+        initial.sessions.map((s) => s.templateSessionId ?? s.id)
+      );
+
+      setValues((prev) => {
+        const allowedIds = new Set(filteredSessionOptions.map((option) => option.id));
+        const filteredSessions = prev.sessions.filter(
+          (session) => allowedIds.has(session.id) || initialSessionIds.has(session.id)
+        );
+        if (filteredSessions.length === prev.sessions.length) {
+          return prev;
+        }
+        return { ...prev, sessions: filteredSessions };
+      });
+    } else {
+      // In create mode, strictly filter by locale
+      setValues((prev) => {
+        const allowedIds = new Set(filteredSessionOptions.map((option) => option.id));
+        const filteredSessions = prev.sessions.filter((session) => allowedIds.has(session.id));
+        if (filteredSessions.length === prev.sessions.length) {
+          return prev;
+        }
+        return { ...prev, sessions: filteredSessions };
+      });
+    }
+  }, [filteredSessionOptions, isEdit, initial]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -148,14 +165,12 @@ export function ProgramDialog({
 
   const submit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const trimmedSlug = values.slug.trim();
     const trimmedLabel = values.label.trim();
-    if (!trimmedSlug || !trimmedLabel) return;
+    if (!trimmedLabel) return;
     if (values.duration <= 0 || values.frequency <= 0) return;
     if (values.sessions.length === 0) return;
     await onSubmit({
       ...values,
-      slug: trimmedSlug,
       label: trimmedLabel,
       description: values.description.trim(),
     });
@@ -171,15 +186,6 @@ export function ProgramDialog({
         <Stack component="form" spacing={2} sx={{ mt: 1 }} onSubmit={submit}>
           {/* General information */}
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-            {/* Slug is used inside shareable URLs, so editors keep manual control over it. */}
-            <TextField
-              label={t('common.labels.slug')}
-              name="slug"
-              value={values.slug}
-              onChange={handleChange}
-              required
-              fullWidth
-            />
             {/* Locale is stored per program because content differs between regions. */}
             <TextField
               select

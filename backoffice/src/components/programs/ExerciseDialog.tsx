@@ -24,7 +24,6 @@ export interface RefEntity {
 }
 
 export interface ExerciseDialogValues {
-  slug: string;
   locale: string;
   label: string;
   series: string;
@@ -55,7 +54,6 @@ export interface ExerciseDialogProps {
 }
 
 const DEFAULTS: ExerciseDialogValues = {
-  slug: '',
   locale: 'en',
   label: '',
   series: '3',
@@ -127,7 +125,6 @@ export function ExerciseDialog({
     if (initial) {
       setValues(() => ({
         ...DEFAULTS,
-        slug: initial.slug,
         locale: initial.locale,
         label: initial.label,
         series: initial.series,
@@ -193,27 +190,14 @@ export function ExerciseDialog({
       </DialogTitle>
       <DialogContent>
         <Stack component="form" onSubmit={submit} spacing={2} sx={{ mt: 1 }}>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-            {/* Slug locks the video mapping, so editors must control it explicitly. */}
-            <TextField
-              label={t('common.labels.slug')}
-              name="slug"
-              value={values.slug}
-              onChange={onChange}
-              required
-              fullWidth
-              inputProps={{ 'aria-label': 'exercise-slug' }}
-            />
-            {/* Label is what trainees see, hence the dedicated field rather than inferring from slug. */}
-            <TextField
-              label={t('common.labels.label')}
-              name="label"
-              value={values.label}
-              onChange={onChange}
-              required
-              fullWidth
-            />
-          </Stack>
+          <TextField
+            label={t('common.labels.label')}
+            name="label"
+            value={values.label}
+            onChange={onChange}
+            required
+            fullWidth
+          />
 
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <TextField

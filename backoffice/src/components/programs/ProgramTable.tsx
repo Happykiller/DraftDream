@@ -56,7 +56,7 @@ export const ProgramTable = React.memo(function ProgramTable({
       field: 'visibility',
       headerName: t('common.labels.visibility'),
       width: 140,
-      valueFormatter: ({ value }) =>
+      renderCell: ({ value }) =>
         value === 'PUBLIC' ? t('common.visibility.public') : t('common.visibility.private'),
     },
     {

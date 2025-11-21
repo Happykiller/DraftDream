@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import type { Tag, TagVisibility } from '@src/hooks/useTags';
 
 export interface TagDialogValues {
-  slug: string;
   label: string;
   locale: string;
   visibility: TagVisibility;
@@ -19,7 +18,7 @@ export interface TagDialogProps {
   onSubmit: (values: TagDialogValues) => Promise<unknown> | void;
 }
 
-const DEFAULTS: TagDialogValues = { slug: '', label: '', locale: 'en', visibility: 'PRIVATE' };
+const DEFAULTS: TagDialogValues = { label: '', locale: 'en', visibility: 'PRIVATE' };
 
 export function TagDialog({ open, mode, initial, onClose, onSubmit }: TagDialogProps): React.JSX.Element {
   const [values, setValues] = React.useState<TagDialogValues>(DEFAULTS);
@@ -29,7 +28,6 @@ export function TagDialog({ open, mode, initial, onClose, onSubmit }: TagDialogP
   React.useEffect(() => {
     if (isEdit && initial) {
       setValues({
-        slug: initial.slug,
         label: initial.label,
         locale: initial.locale,
         visibility: initial.visibility,
@@ -57,17 +55,6 @@ export function TagDialog({ open, mode, initial, onClose, onSubmit }: TagDialogP
       </DialogTitle>
       <DialogContent>
         <Stack component="form" onSubmit={submit} spacing={2} sx={{ mt: 1 }}>
-          {/* Slug stays free-form so marketing can align public URLs without deployment cycles. */}
-          <TextField
-            label={t('common.labels.slug')}
-            name="slug"
-            value={values.slug}
-            onChange={onChange}
-            inputProps={{ 'aria-label': 'tag-slug' }}
-            required
-            fullWidth
-          />
-          {/* Label reflects end-user wording, therefore we avoid auto-generating it from the slug. */}
           <TextField
             label={t('common.labels.label')}
             name="label"

@@ -261,7 +261,6 @@ export interface UseMealPlansResult {
   total: number;
   loading: boolean;
   create: (input: {
-    slug?: string;
     locale: string;
     label: string;
     description?: string;
@@ -275,7 +274,6 @@ export interface UseMealPlansResult {
   }) => Promise<void>;
   update: (input: {
     id: string;
-    slug?: string;
     locale?: string;
     label?: string;
     description?: string;

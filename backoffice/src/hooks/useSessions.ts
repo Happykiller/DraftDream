@@ -121,7 +121,6 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
 
   const create = React.useCallback(
     async (input: {
-      slug: string;
       locale: string;
       label: string;
       durationMin: number;
@@ -150,7 +149,6 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
   const update = React.useCallback(
     async (input: {
       id: string;
-      slug?: string;
       locale?: string;
       label?: string;
       durationMin?: number;

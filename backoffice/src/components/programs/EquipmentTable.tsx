@@ -45,7 +45,13 @@ export const EquipmentTable = React.memo(function EquipmentTable({
     { field: 'slug', headerName: t('common.labels.slug'), flex: 1, minWidth: 150 },
     { field: 'label', headerName: t('common.labels.label'), flex: 1, minWidth: 150 },
     { field: 'locale', headerName: t('common.labels.locale'), width: 120 },
-    { field: 'visibility', headerName: t('common.labels.visibility'), width: 140 },
+    {
+      field: 'visibility',
+      headerName: t('common.labels.visibility'),
+      width: 140,
+      renderCell: ({ value }) =>
+        value === 'PUBLIC' ? t('common.visibility.public') : t('common.visibility.private'),
+    },
     {
       field: 'creator',
       headerName: t('common.labels.creator'),

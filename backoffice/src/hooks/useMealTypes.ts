@@ -147,7 +147,6 @@ export function useMealTypes({ page, limit, q }: UseMealTypesParams) {
 
   const create = React.useCallback(
     async (input: {
-      slug: string;
       label: string;
       locale: string;
       icon?: string | null;
@@ -175,7 +174,6 @@ export function useMealTypes({ page, limit, q }: UseMealTypesParams) {
   const update = React.useCallback(
     async (input: {
       id: string;
-      slug?: string;
       label?: string;
       locale?: string;
       icon?: string | null;

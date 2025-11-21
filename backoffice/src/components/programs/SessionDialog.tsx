@@ -23,7 +23,6 @@ export interface ExerciseOption {
 }
 
 export interface SessionDialogValues {
-  slug: string;
   locale: string;
   label: string;
   durationMin: number;
@@ -41,7 +40,6 @@ export interface SessionDialogProps {
 }
 
 const DEFAULTS: SessionDialogValues = {
-  slug: '',
   locale: 'en',
   label: '',
   durationMin: 30,
@@ -64,7 +62,6 @@ export function SessionDialog({
   React.useEffect(() => {
     if (isEdit && initial) {
       setValues({
-        slug: initial.slug,
         locale: initial.locale,
         label: initial.label,
         durationMin: initial.durationMin,
@@ -111,13 +108,11 @@ export function SessionDialog({
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const trimmedSlug = values.slug.trim();
     const trimmedLabel = values.label.trim();
-    if (!trimmedSlug || !trimmedLabel) return;
+    if (!trimmedLabel) return;
     if (!isEdit && values.exercises.length === 0) return;
     await onSubmit({
       ...values,
-      slug: trimmedSlug,
       label: trimmedLabel,
     });
     onClose();
@@ -130,27 +125,14 @@ export function SessionDialog({
       </DialogTitle>
       <DialogContent>
         <Stack component="form" spacing={2} sx={{ mt: 1 }} onSubmit={submit}>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-            {/* Slug stays editable so coaches can keep short gym codes stable. */}
-            <TextField
-              label={t('common.labels.slug')}
-              name="slug"
-              value={values.slug}
-              onChange={onChange}
-              required
-              fullWidth
-              inputProps={{ 'aria-label': 'session-slug' }}
-            />
-            {/* Label is the session headline in the app, so editors adjust tone per locale. */}
-            <TextField
-              label={t('common.labels.label')}
-              name="label"
-              value={values.label}
-              onChange={onChange}
-              required
-              fullWidth
-            />
-          </Stack>
+          <TextField
+            label={t('common.labels.label')}
+            name="label"
+            value={values.label}
+            onChange={onChange}
+            required
+            fullWidth
+          />
 
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <TextField
