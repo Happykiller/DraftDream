@@ -127,6 +127,7 @@
     "tooltips": {
       "edit": "Modifier",
       "delete": "Supprimer",
+      "duplicate": "Dupliquer",
       "version": "FitDesk CRM v{{version}} - 2025 - Tous droits réservés"
     },
     "messages": {
@@ -280,7 +281,8 @@
       "create": "Nouvel exercice",
       "dialog": {
         "create_title": "Nouvel exercice",
-        "edit_title": "Modifier l'exercice"
+        "edit_title": "Modifier l'exercice",
+        "duplicate_title": "Créer une copie"
       },
       "confirm": {
         "delete_title": "Supprimer l'exercice"

@@ -2,6 +2,7 @@
 import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Button, Stack, TextField, IconButton, Tooltip, Chip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +18,7 @@ export interface ExerciseTableProps {
   loading: boolean;
   onCreate: () => void;
   onEdit: (row: Exercise) => void;
+  onDuplicate: (row: Exercise) => void;
   onDelete: (row: Exercise) => void;
   onQueryChange: (q: string) => void;
   onPageChange: (page: number) => void; // 1-based
@@ -32,6 +34,7 @@ export const ExerciseTable = React.memo(function ExerciseTable({
   loading,
   onCreate,
   onEdit,
+  onDuplicate,
   onDelete,
   onQueryChange,
   onPageChange,
@@ -90,6 +93,11 @@ export const ExerciseTable = React.memo(function ExerciseTable({
               <EditIcon fontSize="small" />
             </IconButton>
           </Tooltip>
+          <Tooltip title={t('common.tooltips.duplicate')}>
+            <IconButton size="small" aria-label={`duplicate-${params.row.id}`} onClick={() => onDuplicate(params.row)}>
+              <ContentCopyIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
           <Tooltip title={t('common.tooltips.delete')}>
             <IconButton size="small" aria-label={`delete-${params.row.id}`} onClick={() => onDelete(params.row)}>
               <DeleteIcon fontSize="small" />
@@ -98,7 +106,7 @@ export const ExerciseTable = React.memo(function ExerciseTable({
         </Stack>
       ),
     },
-  ], [fmtDate, onDelete, onEdit, t]);
+  ], [fmtDate, onDelete, onEdit, onDuplicate, t]);
 
   return (
     <Box sx={{ width: '100%' }}>
