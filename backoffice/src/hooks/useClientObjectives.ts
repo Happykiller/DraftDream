@@ -135,7 +135,7 @@ export function useClientObjectives({ page, limit, q }: UseClientObjectivesParam
   }, [load]);
 
   const create = React.useCallback(
-    async (input: { slug: string; label: string; locale: string; visibility: ClientObjectiveVisibility }) => {
+    async (input: { label: string; locale: string; visibility: ClientObjectiveVisibility }) => {
       try {
         const { errors } = await execute(() =>
           gql.send<CreateClientObjectivePayload>({
@@ -158,7 +158,6 @@ export function useClientObjectives({ page, limit, q }: UseClientObjectivesParam
   const update = React.useCallback(
     async (input: {
       id: string;
-      slug?: string;
       label?: string;
       locale?: string;
       visibility?: ClientObjectiveVisibility;

@@ -60,7 +60,6 @@ export function StatusesPanel(): React.JSX.Element {
           editId
             ? update({
                 id: editId,
-                slug: values.slug,
                 label: values.label,
                 locale: values.locale,
                 visibility: values.visibility,

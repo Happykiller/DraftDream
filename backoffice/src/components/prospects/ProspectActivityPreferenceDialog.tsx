@@ -9,7 +9,6 @@ import type {
 } from '@hooks/useClientActivityPreferences';
 
 export interface ProspectActivityPreferenceDialogValues {
-  slug: string;
   label: string;
   locale: string;
   visibility: ClientActivityPreferenceVisibility;
@@ -23,7 +22,7 @@ export interface ProspectActivityPreferenceDialogProps {
   onSubmit: (values: ProspectActivityPreferenceDialogValues) => Promise<void> | void;
 }
 
-const DEFAULTS: ProspectActivityPreferenceDialogValues = { slug: '', label: '', locale: 'fr', visibility: 'PRIVATE' };
+const DEFAULTS: ProspectActivityPreferenceDialogValues = { label: '', locale: 'fr', visibility: 'PRIVATE' };
 
 export function ProspectActivityPreferenceDialog({ open, mode, initial, onClose, onSubmit }: ProspectActivityPreferenceDialogProps) {
   const [values, setValues] = React.useState<ProspectActivityPreferenceDialogValues>(DEFAULTS);
@@ -33,7 +32,6 @@ export function ProspectActivityPreferenceDialog({ open, mode, initial, onClose,
   React.useEffect(() => {
     if (isEdit && initial) {
       setValues({
-        slug: initial.slug,
         label: initial.label,
         locale: initial.locale,
         visibility: initial.visibility,
@@ -64,15 +62,6 @@ export function ProspectActivityPreferenceDialog({ open, mode, initial, onClose,
       <DialogContent>
         {/* General information */}
         <Stack component="form" onSubmit={submit} spacing={2} sx={{ mt: 1 }}>
-          <TextField
-            label={t('common.labels.slug')}
-            name="slug"
-            value={values.slug}
-            onChange={onChange}
-            inputProps={{ 'aria-label': 'activity-preference-slug' }}
-            required
-            fullWidth
-          />
           <TextField
             label={t('common.labels.label')}
             name="label"

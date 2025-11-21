@@ -135,7 +135,7 @@ export function useClientActivityPreferences({ page, limit, q }: UseClientActivi
   }, [load]);
 
   const create = React.useCallback(
-    async (input: { slug: string; label: string; locale: string; visibility: ClientActivityPreferenceVisibility }) => {
+    async (input: { label: string; locale: string; visibility: ClientActivityPreferenceVisibility }) => {
       try {
         const { errors } = await execute(() =>
           gql.send<CreateClientActivityPreferencePayload>({
@@ -158,7 +158,6 @@ export function useClientActivityPreferences({ page, limit, q }: UseClientActivi
   const update = React.useCallback(
     async (input: {
       id: string;
-      slug?: string;
       label?: string;
       locale?: string;
       visibility?: ClientActivityPreferenceVisibility;

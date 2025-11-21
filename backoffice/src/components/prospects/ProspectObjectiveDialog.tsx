@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import type { ClientObjective, ClientObjectiveVisibility } from '@hooks/useClientObjectives';
 
 export interface ProspectObjectiveDialogValues {
-  slug: string;
   label: string;
   locale: string;
   visibility: ClientObjectiveVisibility;
@@ -20,7 +19,7 @@ export interface ProspectObjectiveDialogProps {
   onSubmit: (values: ProspectObjectiveDialogValues) => Promise<void> | void;
 }
 
-const DEFAULTS: ProspectObjectiveDialogValues = { slug: '', label: '', locale: 'en', visibility: 'PRIVATE' };
+const DEFAULTS: ProspectObjectiveDialogValues = { label: '', locale: 'en', visibility: 'PRIVATE' };
 
 export function ProspectObjectiveDialog({ open, mode, initial, onClose, onSubmit }: ProspectObjectiveDialogProps) {
   const [values, setValues] = React.useState<ProspectObjectiveDialogValues>(DEFAULTS);
@@ -30,7 +29,6 @@ export function ProspectObjectiveDialog({ open, mode, initial, onClose, onSubmit
   React.useEffect(() => {
     if (isEdit && initial) {
       setValues({
-        slug: initial.slug,
         label: initial.label,
         locale: initial.locale,
         visibility: initial.visibility,
@@ -59,15 +57,6 @@ export function ProspectObjectiveDialog({ open, mode, initial, onClose, onSubmit
       <DialogContent>
         {/* General information */}
         <Stack component="form" onSubmit={submit} spacing={2} sx={{ mt: 1 }}>
-          <TextField
-            label={t('common.labels.slug')}
-            name="slug"
-            value={values.slug}
-            onChange={onChange}
-            inputProps={{ 'aria-label': 'objective-slug' }}
-            required
-            fullWidth
-          />
           <TextField
             label={t('common.labels.label')}
             name="label"

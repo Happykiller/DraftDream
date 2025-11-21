@@ -135,7 +135,7 @@ export function useClientLevels({ page, limit, q }: UseClientLevelsParams) {
   }, [load]);
 
   const create = React.useCallback(
-    async (input: { slug: string; label: string; locale: string; visibility: ClientLevelVisibility }) => {
+    async (input: { label: string; locale: string; visibility: ClientLevelVisibility }) => {
       try {
         const { errors } = await execute(() =>
           gql.send<CreateClientLevelPayload>({
@@ -158,7 +158,6 @@ export function useClientLevels({ page, limit, q }: UseClientLevelsParams) {
   const update = React.useCallback(
     async (input: {
       id: string;
-      slug?: string;
       label?: string;
       locale?: string;
       visibility?: ClientLevelVisibility;

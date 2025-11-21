@@ -48,9 +48,7 @@ export function ObjectivesPanel(): React.JSX.Element {
         open={openCreate}
         mode="create"
         onClose={() => setOpenCreate(false)}
-        onSubmit={(v) =>
-          create({ slug: v.slug, label: v.label, locale: v.locale, visibility: v.visibility })
-        }
+        onSubmit={(v) => create({ label: v.label, locale: v.locale, visibility: v.visibility })}
       />
       <ProspectObjectiveDialog
         open={!!editId}
@@ -61,7 +59,6 @@ export function ObjectivesPanel(): React.JSX.Element {
           editId
             ? update({
                 id: editId,
-                slug: v.slug,
                 label: v.label,
                 locale: v.locale,
                 visibility: v.visibility,

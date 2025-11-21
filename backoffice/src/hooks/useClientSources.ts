@@ -135,7 +135,7 @@ export function useClientSources({ page, limit, q }: UseClientSourcesParams) {
   }, [load]);
 
   const create = React.useCallback(
-    async (input: { slug: string; label: string; locale: string; visibility: ClientSourceVisibility }) => {
+    async (input: { label: string; locale: string; visibility: ClientSourceVisibility }) => {
       try {
         const { errors } = await execute(() =>
           gql.send<CreateClientSourcePayload>({
@@ -158,7 +158,6 @@ export function useClientSources({ page, limit, q }: UseClientSourcesParams) {
   const update = React.useCallback(
     async (input: {
       id: string;
-      slug?: string;
       label?: string;
       locale?: string;
       visibility?: ClientSourceVisibility;
