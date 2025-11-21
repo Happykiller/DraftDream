@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -8,6 +8,13 @@ import { BddServiceMealTypeMongo } from '@services/db/mongo/repositories/meal-ty
 import { UpdateMealTypeUsecase } from '@src/usecases/nutri/meal-type/update.meal-type.usecase';
 import { UpdateMealTypeUsecaseDto } from '@src/usecases/nutri/meal-type/meal-type.usecase.dto';
 import { MealTypeUsecaseModel } from '@src/usecases/nutri/meal-type/meal-type.usecase.model';
+
+jest.mock('@src/common/slug.util', () => ({
+  ...(jest.requireActual('@src/common/slug.util') as any),
+  buildSlug: jest.fn(({ label }) => {
+    return label ? label.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '';
+  }),
+}));
 
 interface LoggerMock {
   error: (message: string) => void;
@@ -22,7 +29,6 @@ describe('UpdateMealTypeUsecase', () => {
 
   const dto: UpdateMealTypeUsecaseDto = {
     id: 'meal-type-12',
-    slug: 'post-workout',
     locale: 'en-US',
     label: 'Post workout',
     icon: 'shaker',
@@ -65,11 +71,8 @@ describe('UpdateMealTypeUsecase', () => {
     const result = await usecase.execute(dto);
 
     expect(mealTypeRepositoryMock.update).toHaveBeenCalledWith(dto.id, {
-      slug: dto.slug,
-      locale: dto.locale,
-      label: dto.label,
-      icon: dto.icon,
-      visibility: dto.visibility,
+      ...dto,
+      slug: 'post-workout',
     });
     expect(result).toEqual(updatedMealType);
     expect(result).not.toBe(updatedMealType);

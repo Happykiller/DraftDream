@@ -25,7 +25,6 @@ export class ClientSourceGql {
 
 @InputType()
 export class CreateClientSourceInput {
-  @Field({ nullable: true }) slug?: string;
   @Field() locale!: string;
   @Field() label!: string;
   @Field(() => ClientSourceVisibility) visibility!: ClientSourceVisibility;
@@ -34,7 +33,6 @@ export class CreateClientSourceInput {
 @InputType()
 export class UpdateClientSourceInput {
   @Field(() => ID) id!: string;
-  @Field({ nullable: true }) slug?: string;
   @Field({ nullable: true }) locale?: string;
   @Field({ nullable: true }) label?: string;
   @Field(() => ClientSourceVisibility, { nullable: true }) visibility?: ClientSourceVisibility;

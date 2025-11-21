@@ -10,12 +10,9 @@ export class CreateClientSourceUsecase {
 
   async execute(dto: CreateClientSourceUsecaseDto): Promise<ClientSourceUsecaseModel | null> {
     try {
+      const slug = buildSlug({ label: dto.label, fallback: 'client-source' });
       const created = await this.inversify.bddService.clientSource.create({
-        slug: buildSlug({
-          slug: dto.slug,
-          label: dto.label,
-          fallback: 'client-source',
-        }),
+        slug,
         locale: dto.locale,
         label: dto.label,
         visibility: dto.visibility,

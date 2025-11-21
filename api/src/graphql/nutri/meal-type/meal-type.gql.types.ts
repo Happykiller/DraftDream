@@ -55,9 +55,6 @@ export class MealTypeGql {
 /** Input used to create a meal type. */
 export class CreateMealTypeInput {
   @Field()
-  slug!: string;
-
-  @Field()
   locale!: string;
 
   @Field()
@@ -75,9 +72,6 @@ export class CreateMealTypeInput {
 export class UpdateMealTypeInput {
   @Field(() => ID)
   id!: string;
-
-  @Field({ nullable: true })
-  slug?: string;
 
   @Field({ nullable: true })
   locale?: string;

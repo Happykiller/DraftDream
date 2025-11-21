@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { ERRORS } from '@src/common/ERROR';
 import { Inversify } from '@src/inversify/investify';
@@ -8,6 +8,14 @@ import { CreateCategoryUsecase } from '@src/usecases/sport/category/create.categ
 import { CreateCategoryUsecaseDto } from '@src/usecases/sport/category/category.usecase.dto';
 import { CategoryUsecaseModel } from '@src/usecases/sport/category/category.usecase.model';
 import { asMock, createMockFn } from '@src/test-utils/mock-helpers';
+
+jest.mock('@src/common/slug.util', () => ({
+  ...(jest.requireActual('@src/common/slug.util') as any),
+  buildSlug: jest.fn(({ label }) => {
+    // Simple slugify for testing purposes
+    return label ? label.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '';
+  }),
+}));
 
 interface LoggerMock {
   error: (message: string) => void;
@@ -21,7 +29,6 @@ describe('CreateCategoryUsecase', () => {
   let usecase: CreateCategoryUsecase;
 
   const dto: CreateCategoryUsecaseDto = {
-    slug: 'strength',
     locale: 'en-US',
     label: 'Strength',
     visibility: 'public',
@@ -72,7 +79,7 @@ describe('CreateCategoryUsecase', () => {
 
     expect(asMock(categoryRepositoryMock.create).mock.calls[0]).toEqual([
       {
-        slug: dto.slug,
+        slug: 'strength',
         locale: dto.locale,
         label: dto.label,
         visibility: dto.visibility,

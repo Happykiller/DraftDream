@@ -62,9 +62,6 @@ export class MealDayGql {
 @InputType()
 export class CreateMealDayInput {
   @Field()
-  slug!: string;
-
-  @Field()
   locale!: string;
 
   @Field()
@@ -84,9 +81,6 @@ export class CreateMealDayInput {
 export class UpdateMealDayInput {
   @Field(() => ID)
   id!: string;
-
-  @Field({ nullable: true })
-  slug?: string;
 
   @Field({ nullable: true })
   locale?: string;

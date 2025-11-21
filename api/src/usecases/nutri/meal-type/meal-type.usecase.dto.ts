@@ -1,7 +1,6 @@
 // src/usecases/meal-type/meal-type.usecase.dto.ts
 /** Payload to create a meal type. */
 export interface CreateMealTypeUsecaseDto {
-  slug: string;
   locale: string;
   label: string;
   icon?: string | null;
@@ -28,7 +27,6 @@ export interface ListMealTypesUsecaseDto {
 /** Patch data accepted when updating a meal type. */
 export interface UpdateMealTypeUsecaseDto {
   id: string;
-  slug?: string;
   locale?: string;
   label?: string;
   icon?: string | null;

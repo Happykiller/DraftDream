@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -8,6 +8,14 @@ import { BddServiceMuscleMongo } from '@services/db/mongo/repositories/muscle.re
 import { CreateMuscleUsecase } from '@src/usecases/sport/muscle/create.muscle.usecase';
 import { CreateMuscleUsecaseDto } from '@src/usecases/sport/muscle/muscle.usecase.dto';
 import { MuscleUsecaseModel } from '@src/usecases/sport/muscle/muscle.usecase.model';
+
+jest.mock('@src/common/slug.util', () => ({
+  ...(jest.requireActual('@src/common/slug.util') as any),
+  buildSlug: jest.fn(({ label }) => {
+    // Simple slugify for testing purposes
+    return label ? label.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '';
+  }),
+}));
 
 interface LoggerMock {
   error: (message: string) => void;
@@ -21,7 +29,6 @@ describe('CreateMuscleUsecase', () => {
   let usecase: CreateMuscleUsecase;
 
   const dto: CreateMuscleUsecaseDto = {
-    slug: 'biceps',
     locale: 'en-US',
     label: 'Biceps',
     visibility: 'public',
@@ -64,7 +71,7 @@ describe('CreateMuscleUsecase', () => {
     const result = await usecase.execute(dto);
 
     expect(muscleRepositoryMock.create).toHaveBeenCalledWith({
-      slug: dto.slug,
+      slug: 'biceps',
       locale: dto.locale,
       label: dto.label,
       visibility: dto.visibility,

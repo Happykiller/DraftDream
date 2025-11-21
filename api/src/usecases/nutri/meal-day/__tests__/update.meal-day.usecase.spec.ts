@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -9,6 +9,14 @@ import { BddServiceMealDayMongo } from '@services/db/mongo/repositories/meal-day
 import { UpdateMealDayUsecase } from '@src/usecases/nutri/meal-day/update.meal-day.usecase';
 import { UpdateMealDayUsecaseDto } from '@src/usecases/nutri/meal-day/meal-day.usecase.dto';
 import { mapMealDayToUsecase } from '@src/usecases/nutri/meal-day/meal-day.mapper';
+
+jest.mock('@src/common/slug.util', () => ({
+  ...(jest.requireActual('@src/common/slug.util') as any),
+  buildSlug: jest.fn(({ label }) => {
+    // Simple slugify for testing purposes
+    return label ? label.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '';
+  }),
+}));
 
 interface LoggerMock {
   error: (message: string) => void;
@@ -24,11 +32,11 @@ describe('UpdateMealDayUsecase', () => {
   const now = new Date('2024-04-04T00:00:00.000Z');
   const mealDay: MealDay = {
     id: 'meal-day-1',
-    slug: 'strength-day',
+    slug: 'updated-day',
     locale: 'en-us',
-    label: 'Strength Day',
-    description: 'High intensity focus',
-    mealIds: ['meal-1', 'meal-2'],
+    label: 'Updated Day',
+    description: 'New focus',
+    mealIds: ['meal-3'],
     visibility: 'public',
     createdBy: 'coach-123',
     createdAt: now,
@@ -62,7 +70,10 @@ describe('UpdateMealDayUsecase', () => {
 
     const result = await usecase.execute(mealDay.id, dto);
 
-    expect(mealDayRepositoryMock.update).toHaveBeenCalledWith(mealDay.id, dto);
+    expect(mealDayRepositoryMock.update).toHaveBeenCalledWith(mealDay.id, {
+      ...dto,
+      slug: 'updated-day',
+    });
     expect(result).toEqual(mapMealDayToUsecase(mealDay));
     expect(result?.mealIds).not.toBe(mealDay.mealIds);
   });

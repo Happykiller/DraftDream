@@ -21,12 +21,8 @@ export class UpdateClientActivityPreferenceUsecase {
         visibility: dto.visibility,
       };
 
-      if (dto.slug !== undefined || dto.label !== undefined) {
-        payload.slug = buildSlug({
-          slug: dto.slug,
-          label: dto.label,
-          fallback: 'activity-preference',
-        });
+      if (dto.label) {
+        payload.slug = buildSlug({ label: dto.label, fallback: 'activity-preference' });
       }
 
       const updated = await this.inversify.bddService.clientActivityPreference.update(dto.id, payload);

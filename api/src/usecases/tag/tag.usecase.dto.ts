@@ -1,6 +1,5 @@
 // src/usecases/tag/dto/create.tag.usecase.dto.ts
 export interface CreateTagUsecaseDto {
-  slug: string;
   locale: string;
   label: string;
   visibility: 'private' | 'public';
@@ -26,7 +25,6 @@ export interface ListTagsUsecaseDto {
 // src/usecases/tag/dto/update.tag.usecase.dto.ts
 export interface UpdateTagUsecaseDto {
   id: string;
-  slug?: string;
   locale?: string;
   label?: string;
   visibility?: 'private' | 'public';

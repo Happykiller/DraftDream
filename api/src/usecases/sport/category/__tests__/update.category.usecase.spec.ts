@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -8,6 +8,14 @@ import { BddServiceCategoryMongo } from '@services/db/mongo/repositories/categor
 import { UpdateCategoryUsecase } from '@src/usecases/sport/category/update.category.usecase';
 import { UpdateCategoryUsecaseDto } from '@src/usecases/sport/category/category.usecase.dto';
 import { CategoryUsecaseModel } from '@src/usecases/sport/category/category.usecase.model';
+
+jest.mock('@src/common/slug.util', () => ({
+  ...(jest.requireActual('@src/common/slug.util') as any),
+  buildSlug: jest.fn(({ label }) => {
+    // Simple slugify for testing purposes
+    return label ? label.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '';
+  }),
+}));
 
 interface LoggerMock {
   error: (message: string) => void;
@@ -22,7 +30,6 @@ describe('UpdateCategoryUsecase', () => {
 
   const dto: UpdateCategoryUsecaseDto = {
     id: 'category-789',
-    slug: 'flexibility',
     locale: 'en-US',
     label: 'Flexibility',
     visibility: 'public',
@@ -63,7 +70,7 @@ describe('UpdateCategoryUsecase', () => {
     const result = await usecase.execute(dto);
 
     expect(categoryRepositoryMock.update).toHaveBeenCalledWith(dto.id, {
-      slug: dto.slug,
+      slug: 'flexibility',
       locale: dto.locale,
       label: dto.label,
       visibility: dto.visibility,

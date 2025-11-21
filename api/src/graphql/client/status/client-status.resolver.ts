@@ -36,7 +36,6 @@ export class ClientStatusResolver {
     @Context('req') req: any,
   ): Promise<ClientStatusGql | null> {
     const created = await inversify.createClientStatusUsecase.execute({
-      slug: input.slug,
       locale: input.locale,
       label: input.label,
       visibility: input.visibility,
@@ -86,7 +85,6 @@ export class ClientStatusResolver {
   ): Promise<ClientStatusGql | null> {
     const updated = await inversify.updateClientStatusUsecase.execute({
       id: input.id,
-      slug: input.slug,
       locale: input.locale,
       label: input.label,
       visibility:

@@ -8,11 +8,11 @@ import {
 } from '@services/db/dtos/meal-day.dto';
 import type { UsecaseSession } from '@src/usecases/sport/program/program.usecase.dto';
 
-export type CreateMealDayUsecaseDto = CreateMealDayServiceDto;
+export type CreateMealDayUsecaseDto = Omit<CreateMealDayServiceDto, 'slug'>;
 export type GetMealDayRepositoryDto = GetMealDayServiceDto;
 export type GetMealDayUsecaseDto = GetMealDayRepositoryDto & { session: UsecaseSession };
 export type ListMealDaysRepositoryDto = ListMealDaysServiceDto;
 export type ListMealDaysUsecaseDto = ListMealDaysRepositoryDto & { session: UsecaseSession };
-export type UpdateMealDayUsecaseDto = UpdateMealDayServiceDto;
+export type UpdateMealDayUsecaseDto = Omit<UpdateMealDayServiceDto, 'slug'>;
 export interface DeleteMealDayUsecaseDto { id: string; session: UsecaseSession }
 

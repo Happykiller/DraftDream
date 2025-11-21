@@ -1,6 +1,7 @@
 // src/usecases/muscle/create.muscle.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
 import { Inversify } from '@src/inversify/investify';
+import { buildSlug } from '@src/common/slug.util';
 import { MuscleUsecaseModel } from '@src/usecases/sport/muscle/muscle.usecase.model';
 import { CreateMuscleUsecaseDto } from '@src/usecases/sport/muscle/muscle.usecase.dto';
 
@@ -9,8 +10,9 @@ export class CreateMuscleUsecase {
 
   async execute(dto: CreateMuscleUsecaseDto): Promise<MuscleUsecaseModel | null> {
     try {
+      const slug = buildSlug({ label: dto.label, fallback: 'muscle' });
       const created = await this.inversify.bddService.muscle.create({
-        slug: dto.slug,
+        slug,
         locale: dto.locale,
         label: dto.label,
         visibility: dto.visibility,

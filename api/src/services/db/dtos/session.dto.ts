@@ -7,6 +7,7 @@ export interface CreateSessionDto {
 
   label: string;
   durationMin: number;
+  visibility?: Visibility;
   description?: string;
 
   /** Ordered list of exercise IDs (order by array index). */
@@ -34,6 +35,7 @@ export type UpdateSessionDto = Partial<{
 
   label: string;
   durationMin: number;
+  visibility: Visibility;
   description: string;
 
   /** Replace the whole ordered list */

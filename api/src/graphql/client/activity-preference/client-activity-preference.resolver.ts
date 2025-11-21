@@ -36,7 +36,6 @@ export class ClientActivityPreferenceResolver {
     @Context('req') req: any,
   ): Promise<ClientActivityPreferenceGql | null> {
     const created = await inversify.createClientActivityPreferenceUsecase.execute({
-      slug: input.slug,
       locale: input.locale,
       label: input.label,
       visibility: input.visibility,
@@ -86,7 +85,6 @@ export class ClientActivityPreferenceResolver {
   ): Promise<ClientActivityPreferenceGql | null> {
     const updated = await inversify.updateClientActivityPreferenceUsecase.execute({
       id: input.id,
-      slug: input.slug,
       locale: input.locale,
       label: input.label,
       visibility:

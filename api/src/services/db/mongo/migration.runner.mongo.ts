@@ -17,6 +17,7 @@ import migration0012 from './migrations/0012_seeds_client_level';
 import migration0013 from './migrations/0013_seeds_client_source';
 import migration0014 from './migrations/0014_create_clients';
 import migration0015 from './migrations/0015_create_coach_athletes';
+import migration0016 from './migrations/0016_add_visibility_to_sessions';
 
 export interface Migration {
   id: string;
@@ -29,7 +30,7 @@ interface Inversify { mongo: mongoDB.Db, loggerService: { log: (lvl: string, msg
 export class MongoMigrationRunner {
   constructor(
     private readonly inversify: Inversify,
-  ) {}
+  ) { }
 
   private migrations(): Migration[] {
     return [
@@ -48,6 +49,7 @@ export class MongoMigrationRunner {
       migration0013,
       migration0014,
       migration0015,
+      migration0016,
     ];
   }
 

@@ -1,6 +1,7 @@
 // src/usecases/meal-type/create.meal-type.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
 import { Inversify } from '@src/inversify/investify';
+import { buildSlug } from '@src/common/slug.util';
 import { MealTypeUsecaseModel } from '@src/usecases/nutri/meal-type/meal-type.usecase.model';
 import { CreateMealTypeUsecaseDto } from '@src/usecases/nutri/meal-type/meal-type.usecase.dto';
 
@@ -15,8 +16,9 @@ export class CreateMealTypeUsecase {
    */
   async execute(dto: CreateMealTypeUsecaseDto): Promise<MealTypeUsecaseModel | null> {
     try {
+      const slug = buildSlug({ label: dto.label, fallback: 'meal-type' });
       const created = await this.inversify.bddService.mealType.create({
-        slug: dto.slug,
+        slug,
         locale: dto.locale,
         label: dto.label,
         icon: dto.icon,

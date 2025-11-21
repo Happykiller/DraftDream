@@ -35,7 +35,6 @@ export class MuscleResolver {
     @Context('req') req: any,
   ): Promise<MuscleGql | null> {
     const created = await inversify.createMuscleUsecase.execute({
-      slug: input.slug,
       locale: input.locale,
       label: input.label,
       visibility: input.visibility,
@@ -79,7 +78,6 @@ export class MuscleResolver {
   async muscle_update(@Args('input') input: UpdateMuscleInput): Promise<MuscleGql | null> {
     const updated = await inversify.updateMuscleUsecase.execute({
       id: input.id,
-      slug: input.slug,
       locale: input.locale,
       label: input.label,
     });

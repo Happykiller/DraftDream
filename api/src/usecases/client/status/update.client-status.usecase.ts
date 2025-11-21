@@ -21,12 +21,8 @@ export class UpdateClientStatusUsecase {
         visibility: dto.visibility,
       };
 
-      if (dto.slug !== undefined || dto.label !== undefined) {
-        payload.slug = buildSlug({
-          slug: dto.slug,
-          label: dto.label,
-          fallback: 'client-status',
-        });
+      if (dto.label) {
+        payload.slug = buildSlug({ label: dto.label, fallback: 'client-status' });
       }
 
       const updated = await this.inversify.bddService.clientStatus.update(dto.id, payload);

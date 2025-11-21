@@ -21,12 +21,8 @@ export class UpdateClientSourceUsecase {
         visibility: dto.visibility,
       };
 
-      if (dto.slug !== undefined || dto.label !== undefined) {
-        payload.slug = buildSlug({
-          slug: dto.slug,
-          label: dto.label,
-          fallback: 'client-source',
-        });
+      if (dto.label) {
+        payload.slug = buildSlug({ label: dto.label, fallback: 'client-source' });
       }
 
       const updated = await this.inversify.bddService.clientSource.update(dto.id, payload);

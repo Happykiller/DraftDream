@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -8,6 +8,14 @@ import { BddServiceEquipmentMongo } from '@services/db/mongo/repositories/equipm
 import { CreateEquipmentUsecase } from '@src/usecases/sport/equipment/create.equipment.usecase';
 import { CreateEquipmentUsecaseDto } from '@src/usecases/sport/equipment/equipment.usecase.dto';
 import { EquipmentUsecaseModel } from '@src/usecases/sport/equipment/equipment.usecase.model';
+
+jest.mock('@src/common/slug.util', () => ({
+  ...(jest.requireActual('@src/common/slug.util') as any),
+  buildSlug: jest.fn(({ label }) => {
+    // Simple slugify for testing purposes
+    return label ? label.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '';
+  }),
+}));
 
 interface LoggerMock {
   error: (message: string) => void;
@@ -21,7 +29,6 @@ describe('CreateEquipmentUsecase', () => {
   let usecase: CreateEquipmentUsecase;
 
   const dto: CreateEquipmentUsecaseDto = {
-    slug: 'barbell',
     locale: 'en-US',
     label: 'Barbell',
     visibility: 'public',
@@ -63,7 +70,7 @@ describe('CreateEquipmentUsecase', () => {
     const result = await usecase.execute(dto);
 
     expect(equipmentRepositoryMock.create).toHaveBeenCalledWith({
-      slug: dto.slug,
+      slug: 'barbell',
       locale: dto.locale,
       label: dto.label,
       visibility: dto.visibility,

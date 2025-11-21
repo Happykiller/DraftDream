@@ -1,6 +1,7 @@
 // src/usecases/tag/update.tag.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
 import { Inversify } from '@src/inversify/investify';
+import { buildSlug } from '@src/common/slug.util';
 import { TagUsecaseModel } from '@usecases/tag/tag.usecase.model';
 import { UpdateTagUsecaseDto } from '@usecases/tag/tag.usecase.dto';
 
@@ -9,12 +10,16 @@ export class UpdateTagUsecase {
 
   async execute(dto: UpdateTagUsecaseDto): Promise<TagUsecaseModel | null> {
     try {
-      const updated = await this.inversify.bddService.tag.update(dto.id, {
-        slug: dto.slug,
+      const toUpdate: any = {
         locale: dto.locale,
         label: dto.label,
         visibility: dto.visibility,
-      });
+      };
+
+      if (dto.label) {
+        toUpdate.slug = buildSlug({ label: dto.label, fallback: 'tag' });
+      }
+      const updated = await this.inversify.bddService.tag.update(dto.id, toUpdate);
       return updated ? { ...updated } : null;
     } catch (e: any) {
       this.inversify.loggerService.error(`UpdateTagUsecase#execute => ${e?.message ?? e}`);

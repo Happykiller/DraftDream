@@ -17,6 +17,7 @@ interface SessionDoc {
 
   label: string;
   durationMin: number;
+  visibility: 'private' | 'public';
   description?: string;
 
   exerciseIds: string[];
@@ -65,6 +66,7 @@ export class BddServiceSessionMongo {
 
       label: dto.label.trim(),
       durationMin: Math.trunc(dto.durationMin),
+      visibility: dto.visibility ?? 'public',
       description: dto.description,
 
       // Preserve order as provided
@@ -150,6 +152,7 @@ export class BddServiceSessionMongo {
     if (patch.locale !== undefined) $set.locale = patch.locale.toLowerCase().trim();
     if (patch.label !== undefined) $set.label = patch.label.trim();
     if (patch.durationMin !== undefined) $set.durationMin = Math.trunc(patch.durationMin);
+    if (patch.visibility !== undefined) $set.visibility = patch.visibility;
     if (patch.description !== undefined) $set.description = patch.description;
     if (patch.exerciseIds !== undefined) $set.exerciseIds = [...patch.exerciseIds];
 
@@ -198,6 +201,7 @@ export class BddServiceSessionMongo {
 
     label: doc.label,
     durationMin: doc.durationMin,
+    visibility: doc.visibility,
     description: doc.description,
 
     // Relations are represented minimally; hydrate elsewhere if needed.

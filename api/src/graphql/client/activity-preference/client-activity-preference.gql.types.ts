@@ -25,7 +25,6 @@ export class ClientActivityPreferenceGql {
 
 @InputType()
 export class CreateClientActivityPreferenceInput {
-  @Field({ nullable: true }) slug?: string;
   @Field() locale!: string;
   @Field() label!: string;
   @Field(() => ClientActivityPreferenceVisibility) visibility!: ClientActivityPreferenceVisibility;
@@ -34,7 +33,6 @@ export class CreateClientActivityPreferenceInput {
 @InputType()
 export class UpdateClientActivityPreferenceInput {
   @Field(() => ID) id!: string;
-  @Field({ nullable: true }) slug?: string;
   @Field({ nullable: true }) locale?: string;
   @Field({ nullable: true }) label?: string;
   @Field(() => ClientActivityPreferenceVisibility, { nullable: true }) visibility?: ClientActivityPreferenceVisibility;

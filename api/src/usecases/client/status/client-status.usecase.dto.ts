@@ -1,6 +1,5 @@
 // src/usecases/client/status/client-status.usecase.dto.ts
 export interface CreateClientStatusUsecaseDto {
-  slug?: string;
   locale: string;
   label: string;
   visibility: 'private' | 'public';
@@ -9,7 +8,6 @@ export interface CreateClientStatusUsecaseDto {
 
 export interface UpdateClientStatusUsecaseDto {
   id: string;
-  slug?: string;
   locale?: string;
   label?: string;
   visibility?: 'private' | 'public';

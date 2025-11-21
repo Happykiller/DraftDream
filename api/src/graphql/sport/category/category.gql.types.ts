@@ -25,7 +25,6 @@ export class CategoryGql {
 
 @InputType()
 export class CreateCategoryInput {
-  @Field() slug!: string;
   @Field() locale!: string;
   @Field() label!: string;
   @Field(() => CategoryVisibility) visibility!: CategoryVisibility;
@@ -34,7 +33,6 @@ export class CreateCategoryInput {
 @InputType()
 export class UpdateCategoryInput {
   @Field(() => ID) id!: string;
-  @Field({ nullable: true }) slug?: string;
   @Field({ nullable: true }) locale?: string;
   @Field({ nullable: true }) label?: string;
   @Field(() => CategoryVisibility, { nullable: true }) visibility?: CategoryVisibility;

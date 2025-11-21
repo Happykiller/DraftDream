@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -8,6 +8,15 @@ import { BddServiceEquipmentMongo } from '@services/db/mongo/repositories/equipm
 import { UpdateEquipmentUsecase } from '@src/usecases/sport/equipment/update.equipment.usecase';
 import { UpdateEquipmentUsecaseDto } from '@src/usecases/sport/equipment/equipment.usecase.dto';
 import { EquipmentUsecaseModel } from '@src/usecases/sport/equipment/equipment.usecase.model';
+
+jest.mock('@src/common/slug.util', () => ({
+  ...(jest.requireActual('@src/common/slug.util') as any),
+  buildSlug: jest.fn(({ label }) => {
+    // Simple slugify for testing purposes
+    if (label === 'Rack à squat') return 'rack-a-squat';
+    return label ? label.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '';
+  }),
+}));
 
 interface LoggerMock {
   error: (message: string) => void;
@@ -22,7 +31,6 @@ describe('UpdateEquipmentUsecase', () => {
 
   const dto: UpdateEquipmentUsecaseDto = {
     id: 'equipment-4',
-    slug: 'squat-rack',
     locale: 'fr-FR',
     label: 'Rack à squat',
   };
@@ -30,7 +38,7 @@ describe('UpdateEquipmentUsecase', () => {
   const now = new Date('2024-02-13T07:15:00.000Z');
   const equipment: EquipmentUsecaseModel = {
     id: 'equipment-4',
-    slug: 'squat-rack',
+    slug: 'rack-a-squat',
     locale: 'fr-fr',
     label: 'Rack à squat',
     visibility: 'private',
@@ -62,7 +70,7 @@ describe('UpdateEquipmentUsecase', () => {
     const result = await usecase.execute(dto);
 
     expect(equipmentRepositoryMock.update).toHaveBeenCalledWith(dto.id, {
-      slug: dto.slug,
+      slug: 'rack-a-squat',
       locale: dto.locale,
       label: dto.label,
     });

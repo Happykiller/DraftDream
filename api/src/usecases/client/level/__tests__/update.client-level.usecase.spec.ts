@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it, afterEach, jest } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -51,6 +51,10 @@ describe('UpdateClientLevelUsecase', () => {
     jest.restoreAllMocks();
   });
 
+  it('should build', () => {
+    expect(usecase).toBeDefined();
+  });
+
   it('should update level through the repository', async () => {
     const buildSlugSpy = jest.spyOn(slugUtil, 'buildSlug').mockReturnValue('generated-prospect');
     repositoryMock.update.mockResolvedValue(level);
@@ -63,7 +67,6 @@ describe('UpdateClientLevelUsecase', () => {
       visibility: dto.visibility,
     });
     expect(buildSlugSpy).toHaveBeenCalledWith({
-      slug: dto.slug,
       label: dto.label,
       fallback: 'client-level',
     });

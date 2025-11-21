@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest, afterEach } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -75,7 +75,6 @@ describe('CreateClientSourceUsecase', () => {
       createdBy: dto.createdBy,
     });
     expect(buildSlugSpy).toHaveBeenCalledWith({
-      slug: dto.slug,
       label: dto.label,
       fallback: 'client-source',
     });

@@ -25,7 +25,6 @@ export class TagGql {
 
 @InputType()
 export class CreateTagInput {
-  @Field() slug!: string;
   @Field() locale!: string;
   @Field() label!: string;
   @Field(() => TagVisibility) visibility!: TagVisibility;
@@ -34,7 +33,6 @@ export class CreateTagInput {
 @InputType()
 export class UpdateTagInput {
   @Field(() => ID) id!: string;
-  @Field({ nullable: true }) slug?: string;
   @Field({ nullable: true }) locale?: string;
   @Field({ nullable: true }) label?: string;
   @Field(() => TagVisibility, { nullable: true }) visibility?: TagVisibility;

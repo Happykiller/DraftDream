@@ -53,7 +53,6 @@ export class ExerciseGql {
 
 @InputType()
 export class CreateExerciseInput {
-  @Field() slug!: string;
   @Field() locale!: string;
   @Field() label!: string;
   @Field() series!: string;
@@ -73,7 +72,6 @@ export class CreateExerciseInput {
 @InputType()
 export class UpdateExerciseInput {
   @Field(() => ID) id!: string;
-  @Field({ nullable: true }) slug?: string;
   @Field({ nullable: true }) locale?: string;
   @Field({ nullable: true }) label?: string;
   @Field({ nullable: true }) series?: string;

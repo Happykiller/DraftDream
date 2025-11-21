@@ -1,6 +1,5 @@
 // src/usecases/equipment/dto/create.equipment.usecase.dto.ts
 export interface CreateEquipmentUsecaseDto {
-  slug: string;
   locale: string;
   label: string;
   visibility: 'private' | 'public';
@@ -26,7 +25,6 @@ export interface ListEquipmentUsecaseDto {
 // src/usecases/equipment/dto/update.equipment.usecase.dto.ts
 export interface UpdateEquipmentUsecaseDto {
   id: string;
-  slug?: string;
   locale?: string;
   label?: string;
 }

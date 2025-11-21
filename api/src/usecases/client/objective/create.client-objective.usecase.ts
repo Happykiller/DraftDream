@@ -10,12 +10,9 @@ export class CreateClientObjectiveUsecase {
 
   async execute(dto: CreateClientObjectiveUsecaseDto): Promise<ClientObjectiveUsecaseModel | null> {
     try {
+      const slug = buildSlug({ label: dto.label, fallback: 'client-objective' });
       const created = await this.inversify.bddService.clientObjective.create({
-        slug: buildSlug({
-          slug: dto.slug,
-          label: dto.label,
-          fallback: 'client-objective',
-        }),
+        slug,
         locale: dto.locale,
         label: dto.label,
         visibility: dto.visibility,

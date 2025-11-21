@@ -2,6 +2,7 @@
 import { ERRORS } from '@src/common/ERROR';
 import { normalizeError } from '@src/common/error.util';
 import { Role } from '@src/common/role.enum';
+import { buildSlug } from '@src/common/slug.util';
 import { Inversify } from '@src/inversify/investify';
 import { mapExerciseToUsecase } from '@src/usecases/sport/exercise/exercise.mapper';
 import { UpdateExerciseUsecaseDto } from '@src/usecases/sport/exercise/exercise.usecase.dto';
@@ -25,6 +26,9 @@ export class UpdateExerciseUsecase {
 
       if (!isAdmin && !isCreator) {
         throw new Error(ERRORS.UPDATE_EXERCISE_FORBIDDEN);
+      }
+      if (patch.label) {
+        (patch as any).slug = buildSlug({ label: patch.label, fallback: 'exercise' });
       }
 
       const res = await this.inversify.bddService.exercise.update(id, patch);

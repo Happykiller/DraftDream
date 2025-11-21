@@ -109,7 +109,6 @@ export class ProgramSessionExerciseInput {
 export class ProgramSessionInput {
   @Field({ nullable: true }) id?: string;
   @Field({ nullable: true }) templateSessionId?: string;
-  @Field({ nullable: true }) slug?: string;
   @Field({ nullable: true }) locale?: string;
   @Field() label!: string;
   @Field(() => Int) durationMin!: number;
@@ -119,7 +118,6 @@ export class ProgramSessionInput {
 
 @InputType()
 export class CreateProgramInput {
-  @Field({ nullable: true }) slug?: string;
   @Field() locale!: string;
   @Field() label!: string;
   @Field(() => ProgramVisibility, { nullable: true })
@@ -138,7 +136,6 @@ export class CreateProgramInput {
 @InputType()
 export class UpdateProgramInput {
   @Field(() => ID) id!: string;
-  @Field({ nullable: true }) slug?: string;
   @Field({ nullable: true }) locale?: string;
   @Field({ nullable: true }) label?: string;
   @Field(() => ProgramVisibility, { nullable: true })

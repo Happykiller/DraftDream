@@ -8,12 +8,12 @@ import {
 } from '@services/db/dtos/exercise.dto';
 import type { UsecaseSession } from '@src/usecases/sport/program/program.usecase.dto';
 
-export type CreateExerciseUsecaseDto = CreateExerciseServiceDto;
+export type CreateExerciseUsecaseDto = Omit<CreateExerciseServiceDto, 'slug'>;
 export type GetExerciseRepositoryDto = GetExerciseServiceDto;
 export type GetExerciseUsecaseDto = GetExerciseRepositoryDto & { session: UsecaseSession };
 export type ListExercisesRepositoryDto = ListExercisesServiceDto;
 export type ListExercisesUsecaseDto = ListExercisesRepositoryDto & { session: UsecaseSession };
-export type UpdateExerciseUsecaseDto = UpdateExerciseServiceDto & { session: UsecaseSession };
+export type UpdateExerciseUsecaseDto = Omit<UpdateExerciseServiceDto, 'slug'> & { session: UsecaseSession };
 
 export interface ArchiveExerciseUsecaseDto { id: string }
 export interface UnarchiveExerciseUsecaseDto { id: string }

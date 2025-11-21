@@ -34,7 +34,6 @@ export class TagResolver {
     @Context('req') req: any,
   ): Promise<TagGql | null> {
     const created = await inversify.createTagUsecase.execute({
-      slug: input.slug,
       locale: input.locale,
       label: input.label,
       visibility: input.visibility,
@@ -74,7 +73,6 @@ export class TagResolver {
   async tag_update(@Args('input') input: UpdateTagInput): Promise<TagGql | null> {
     const updated = await inversify.updateTagUsecase.execute({
       id: input.id,
-      slug: input.slug,
       locale: input.locale,
       label: input.label,
       visibility: input.visibility,

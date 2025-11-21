@@ -1,6 +1,7 @@
 // src/usecases/equipment/create.equipment.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
 import { Inversify } from '@src/inversify/investify';
+import { buildSlug } from '@src/common/slug.util';
 import { EquipmentUsecaseModel } from '@src/usecases/sport/equipment/equipment.usecase.model';
 import { CreateEquipmentUsecaseDto } from '@src/usecases/sport/equipment/equipment.usecase.dto';
 
@@ -9,8 +10,9 @@ export class CreateEquipmentUsecase {
 
   async execute(dto: CreateEquipmentUsecaseDto): Promise<EquipmentUsecaseModel | null> {
     try {
+      const slug = buildSlug({ label: dto.label, fallback: 'equipment' });
       const created = await this.inversify.bddService.equipment.create({
-        slug: dto.slug,
+        slug,
         locale: dto.locale,
         label: dto.label,
         visibility: dto.visibility,

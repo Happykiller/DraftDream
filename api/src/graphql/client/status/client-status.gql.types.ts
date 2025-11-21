@@ -25,7 +25,6 @@ export class ClientStatusGql {
 
 @InputType()
 export class CreateClientStatusInput {
-  @Field({ nullable: true }) slug?: string;
   @Field() locale!: string;
   @Field() label!: string;
   @Field(() => ClientStatusVisibility) visibility!: ClientStatusVisibility;
@@ -34,7 +33,6 @@ export class CreateClientStatusInput {
 @InputType()
 export class UpdateClientStatusInput {
   @Field(() => ID) id!: string;
-  @Field({ nullable: true }) slug?: string;
   @Field({ nullable: true }) locale?: string;
   @Field({ nullable: true }) label?: string;
   @Field(() => ClientStatusVisibility, { nullable: true }) visibility?: ClientStatusVisibility;

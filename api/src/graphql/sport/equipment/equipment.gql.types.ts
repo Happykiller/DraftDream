@@ -25,7 +25,6 @@ export class EquipmentGql {
 
 @InputType()
 export class CreateEquipmentInput {
-  @Field() slug!: string;
   @Field() locale!: string;
   @Field() label!: string;
   @Field(() => EquipmentVisibility) visibility!: EquipmentVisibility;
@@ -34,7 +33,6 @@ export class CreateEquipmentInput {
 @InputType()
 export class UpdateEquipmentInput {
   @Field(() => ID) id!: string;
-  @Field({ nullable: true }) slug?: string;
   @Field({ nullable: true }) locale?: string;
   @Field({ nullable: true }) label?: string;
 }

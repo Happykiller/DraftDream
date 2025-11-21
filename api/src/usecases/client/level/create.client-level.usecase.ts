@@ -10,12 +10,9 @@ export class CreateClientLevelUsecase {
 
   async execute(dto: CreateClientLevelUsecaseDto): Promise<ClientLevelUsecaseModel | null> {
     try {
+      const slug = buildSlug({ label: dto.label, fallback: 'client-level' });
       const created = await this.inversify.bddService.clientLevel.create({
-        slug: buildSlug({
-          slug: dto.slug,
-          label: dto.label,
-          fallback: 'client-level',
-        }),
+        slug,
         locale: dto.locale,
         label: dto.label,
         visibility: dto.visibility,

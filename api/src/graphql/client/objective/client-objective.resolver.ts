@@ -36,7 +36,6 @@ export class ClientObjectiveResolver {
     @Context('req') req: any,
   ): Promise<ClientObjectiveGql | null> {
     const created = await inversify.createClientObjectiveUsecase.execute({
-      slug: input.slug,
       locale: input.locale,
       label: input.label,
       visibility: input.visibility,
@@ -86,7 +85,6 @@ export class ClientObjectiveResolver {
   ): Promise<ClientObjectiveGql | null> {
     const updated = await inversify.updateClientObjectiveUsecase.execute({
       id: input.id,
-      slug: input.slug,
       locale: input.locale,
       label: input.label,
       visibility:

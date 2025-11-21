@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { ERRORS } from '@src/common/ERROR';
 import { Inversify } from '@src/inversify/investify';
@@ -9,6 +9,14 @@ import { UpdateSessionUsecaseDto } from '@src/usecases/sport/session/session.use
 import { SessionUsecaseModel } from '@src/usecases/sport/session/session.usecase.model';
 import { asMock, createMockFn } from '@src/test-utils/mock-helpers';
 
+jest.mock('@src/common/slug.util', () => ({
+  ...(jest.requireActual('@src/common/slug.util') as any),
+  buildSlug: jest.fn(({ label }) => {
+    // Simple slugify for testing purposes
+    return label ? label.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '';
+  }),
+}));
+
 interface LoggerMock {
   error: (message: string) => void;
 }
@@ -16,10 +24,11 @@ interface LoggerMock {
 const now = new Date('2024-01-01T00:00:00.000Z');
 const sessionEntity = {
   id: 'session-1',
-  slug: 'upper-body',
+  slug: 'updated-upper-body',
   locale: 'en-us',
   label: 'Updated Upper Body',
   durationMin: 75,
+  visibility: 'public' as const,
   description: 'Full body workout',
   exerciseIds: ['ex-1', 'ex-2'],
   createdBy: 'coach-1',
@@ -30,10 +39,11 @@ const sessionEntity = {
 
 const mapped: SessionUsecaseModel = {
   id: 'session-1',
-  slug: 'upper-body',
+  slug: 'updated-upper-body',
   locale: 'en-us',
   label: 'Updated Upper Body',
   durationMin: 75,
+  visibility: 'public',
   description: 'Full body workout',
   exerciseIds: ['ex-1', 'ex-2'],
   createdBy: 'coach-1',
@@ -86,7 +96,7 @@ describe('UpdateSessionUsecase', () => {
 
     expect(asMock(sessionRepositoryMock.update).mock.calls[0]).toEqual([
       'session-1',
-      patch,
+      { ...patch, slug: 'updated-upper-body' },
     ]);
     expect(result).toEqual(mapped);
   });

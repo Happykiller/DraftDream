@@ -15,6 +15,7 @@ describe('mapSessionToUsecase', () => {
       locale: 'fr-FR',
       label: 'Jour 1',
       durationMin: 45,
+      visibility: 'public',
       description: 'Warm-up and cardio',
       exerciseIds: ['ex-1', 'ex-2'],
       createdBy: {
@@ -43,6 +44,7 @@ describe('mapSessionToUsecase', () => {
       exerciseIds: ['ex-1', 'ex-2'],
       createdBy: 'coach-42',
       deletedAt: undefined,
+      visibility: 'public',
       createdAt,
       updatedAt,
     });
@@ -60,6 +62,7 @@ describe('mapSessionToUsecase', () => {
       createdBy: 'coach-7',
       createdAt: new Date('2024-08-01T10:00:00.000Z'),
       updatedAt: new Date('2024-08-02T10:00:00.000Z'),
+      visibility: 'public'
     };
 
     const result = mapSessionToUsecase(session);

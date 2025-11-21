@@ -21,12 +21,8 @@ export class UpdateClientLevelUsecase {
         visibility: dto.visibility,
       };
 
-      if (dto.slug !== undefined || dto.label !== undefined) {
-        payload.slug = buildSlug({
-          slug: dto.slug,
-          label: dto.label,
-          fallback: 'client-level',
-        });
+      if (dto.label) {
+        payload.slug = buildSlug({ label: dto.label, fallback: 'client-level' });
       }
 
       const updated = await this.inversify.bddService.clientLevel.update(dto.id, payload);

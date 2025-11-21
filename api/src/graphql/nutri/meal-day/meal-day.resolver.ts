@@ -76,7 +76,6 @@ export class MealDayResolver {
     @Context('req') req: any,
   ): Promise<MealDayGql | null> {
     const created = await inversify.createMealDayUsecase.execute({
-      slug: input.slug,
       locale: input.locale,
       label: input.label,
       description: input.description,
@@ -93,7 +92,6 @@ export class MealDayResolver {
     @Args('input') input: UpdateMealDayInput,
   ): Promise<MealDayGql | null> {
     const updated = await inversify.updateMealDayUsecase.execute(input.id, {
-      slug: input.slug,
       locale: input.locale,
       label: input.label,
       description: input.description,

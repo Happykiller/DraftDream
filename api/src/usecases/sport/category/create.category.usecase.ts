@@ -1,6 +1,7 @@
 // src/usecases/category/create.category.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
 import { Inversify } from '@src/inversify/investify';
+import { buildSlug } from '@src/common/slug.util';
 import { CategoryUsecaseModel } from '@src/usecases/sport/category/category.usecase.model';
 import { CreateCategoryUsecaseDto } from '@src/usecases/sport/category/category.usecase.dto';
 
@@ -9,8 +10,9 @@ export class CreateCategoryUsecase {
 
   async execute(dto: CreateCategoryUsecaseDto): Promise<CategoryUsecaseModel | null> {
     try {
+      const slug = buildSlug({ label: dto.label, fallback: 'category' });
       const created = await this.inversify.bddService.category.create({
-        slug: dto.slug,
+        slug,
         locale: dto.locale,
         label: dto.label,
         visibility: dto.visibility,

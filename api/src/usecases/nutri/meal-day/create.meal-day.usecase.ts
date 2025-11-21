@@ -2,6 +2,7 @@
 
 import { ERRORS } from '@src/common/ERROR';
 import { Inversify } from '@src/inversify/investify';
+import { buildSlug } from '@src/common/slug.util';
 import { mapMealDayToUsecase } from '@src/usecases/nutri/meal-day/meal-day.mapper';
 import { CreateMealDayUsecaseDto } from '@src/usecases/nutri/meal-day/meal-day.usecase.dto';
 import type { MealDayUsecaseModel } from '@src/usecases/nutri/meal-day/meal-day.usecase.model';
@@ -11,7 +12,11 @@ export class CreateMealDayUsecase {
 
   async execute(dto: CreateMealDayUsecaseDto): Promise<MealDayUsecaseModel | null> {
     try {
-      const created = await this.inversify.bddService.mealDay.create(dto);
+      const slug = buildSlug({ label: dto.label, fallback: 'meal-day' });
+      const created = await this.inversify.bddService.mealDay.create({
+        ...dto,
+        slug,
+      });
       return created ? mapMealDayToUsecase(created) : null;
     } catch (error: any) {
       this.inversify.loggerService.error(`CreateMealDayUsecase#execute => ${error?.message ?? error}`);

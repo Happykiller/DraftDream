@@ -1,6 +1,5 @@
 // src/usecases/category/dto/create.category.usecase.dto.ts
 export interface CreateCategoryUsecaseDto {
-  slug: string;
   locale: string;
   label: string;
   visibility: 'private' | 'public';
@@ -26,7 +25,6 @@ export interface ListCategoriesUsecaseDto {
 // src/usecases/category/dto/update.category.usecase.dto.ts
 export interface UpdateCategoryUsecaseDto {
   id: string;
-  slug?: string;
   locale?: string;
   label?: string;
   visibility?: 'private' | 'public';

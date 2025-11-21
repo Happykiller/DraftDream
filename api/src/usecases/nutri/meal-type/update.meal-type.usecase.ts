@@ -1,6 +1,7 @@
 // src/usecases/meal-type/update.meal-type.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
 import { Inversify } from '@src/inversify/investify';
+import { buildSlug } from '@src/common/slug.util';
 import { MealTypeUsecaseModel } from '@src/usecases/nutri/meal-type/meal-type.usecase.model';
 import { UpdateMealTypeUsecaseDto } from '@src/usecases/nutri/meal-type/meal-type.usecase.dto';
 
@@ -15,13 +16,11 @@ export class UpdateMealTypeUsecase {
    */
   async execute(dto: UpdateMealTypeUsecaseDto): Promise<MealTypeUsecaseModel | null> {
     try {
-      const updated = await this.inversify.bddService.mealType.update(dto.id, {
-        slug: dto.slug,
-        locale: dto.locale,
-        label: dto.label,
-        icon: dto.icon,
-        visibility: dto.visibility,
-      });
+      const toUpdate: any = { ...dto };
+      if (dto.label) {
+        toUpdate.slug = buildSlug({ label: dto.label, fallback: 'meal-type' });
+      }
+      const updated = await this.inversify.bddService.mealType.update(dto.id, toUpdate);
       return updated ? { ...updated } : null;
     } catch (e: any) {
       this.inversify.loggerService.error(`UpdateMealTypeUsecase#execute => ${e?.message ?? e}`);

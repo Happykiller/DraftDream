@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -8,6 +8,14 @@ import { BddServiceMealMongo } from '@services/db/mongo/repositories/meal.reposi
 import { CreateMealUsecase } from '@src/usecases/nutri/meal/create.meal.usecase';
 import { CreateMealUsecaseDto } from '@src/usecases/nutri/meal/meal.usecase.dto';
 import { MealUsecaseModel } from '@src/usecases/nutri/meal/meal.usecase.model';
+
+jest.mock('@src/common/slug.util', () => ({
+  ...(jest.requireActual('@src/common/slug.util') as any),
+  buildSlug: jest.fn(({ label }) => {
+    // Simple slugify for testing purposes
+    return label ? label.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '';
+  }),
+}));
 
 interface LoggerMock {
   error: (message: string) => void;
@@ -21,7 +29,6 @@ describe('CreateMealUsecase', () => {
   let usecase: CreateMealUsecase;
 
   const dto: CreateMealUsecaseDto = {
-    slug: 'balanced-meal',
     locale: 'en-US',
     label: 'Balanced Meal',
     typeId: 'type-1',
@@ -75,7 +82,7 @@ describe('CreateMealUsecase', () => {
     const result = await usecase.execute(dto);
 
     expect(mealRepositoryMock.create).toHaveBeenCalledWith({
-      slug: dto.slug,
+      slug: 'balanced-meal',
       locale: dto.locale,
       label: dto.label,
       typeId: dto.typeId,

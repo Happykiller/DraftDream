@@ -10,12 +10,9 @@ export class CreateClientActivityPreferenceUsecase {
 
   async execute(dto: CreateClientActivityPreferenceUsecaseDto): Promise<ClientActivityPreferenceUsecaseModel | null> {
     try {
+      const slug = buildSlug({ label: dto.label, fallback: 'activity-preference' });
       const created = await this.inversify.bddService.clientActivityPreference.create({
-        slug: buildSlug({
-          slug: dto.slug,
-          label: dto.label,
-          fallback: 'activity-preference',
-        }),
+        slug,
         locale: dto.locale,
         label: dto.label,
         visibility: dto.visibility,

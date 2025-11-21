@@ -14,4 +14,5 @@ export const mapSessionToUsecase = (s: Session): SessionUsecaseModel => ({
   deletedAt: s.deletedAt,
   createdAt: s.createdAt,
   updatedAt: s.updatedAt,
+  visibility: s.visibility
 });

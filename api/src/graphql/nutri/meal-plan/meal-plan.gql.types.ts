@@ -165,9 +165,6 @@ export class MealPlanMealTypeInput {
   templateMealTypeId?: string;
 
   @Field(() => String, { nullable: true })
-  slug?: string;
-
-  @Field(() => String, { nullable: true })
   locale?: string;
 
   @Field(() => String)
@@ -184,9 +181,6 @@ export class MealPlanMealInput {
 
   @Field(() => ID, { nullable: true })
   templateMealId?: string;
-
-  @Field(() => String, { nullable: true })
-  slug?: string;
 
   @Field(() => String, { nullable: true })
   locale?: string;
@@ -225,9 +219,6 @@ export class MealPlanDayInput {
   templateMealDayId?: string;
 
   @Field(() => String, { nullable: true })
-  slug?: string;
-
-  @Field(() => String, { nullable: true })
   locale?: string;
 
   @Field(() => String)
@@ -242,9 +233,6 @@ export class MealPlanDayInput {
 
 @InputType()
 export class CreateMealPlanInput {
-  @Field(() => String, { nullable: true })
-  slug?: string | null;
-
   @Field(() => String)
   locale!: string;
 
@@ -283,9 +271,6 @@ export class CreateMealPlanInput {
 export class UpdateMealPlanInput {
   @Field(() => ID)
   id!: string;
-
-  @Field(() => String, { nullable: true })
-  slug?: string;
 
   @Field(() => String, { nullable: true })
   locale?: string;

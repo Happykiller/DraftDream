@@ -1,6 +1,5 @@
 // src/usecases/client/objective/client-objective.usecase.dto.ts
 export interface CreateClientObjectiveUsecaseDto {
-  slug?: string;
   locale: string;
   label: string;
   visibility: 'private' | 'public';
@@ -23,7 +22,6 @@ export interface ListClientObjectivesUsecaseDto {
 
 export interface UpdateClientObjectiveUsecaseDto {
   id: string;
-  slug?: string;
   locale?: string;
   label?: string;
   visibility?: 'private' | 'public';
