@@ -28,6 +28,7 @@ export interface SessionDialogValues {
   durationMin: number;
   description?: string;
   exercises: ExerciseOption[];
+  visibility: 'PRIVATE' | 'PUBLIC';
 }
 
 export interface SessionDialogProps {
@@ -45,6 +46,7 @@ const DEFAULTS: SessionDialogValues = {
   durationMin: 30,
   description: '',
   exercises: [],
+  visibility: 'PUBLIC',
 };
 
 export function SessionDialog({
@@ -69,6 +71,7 @@ export function SessionDialog({
         exercises: exerciseOptions.filter(
           (opt) => opt.locale === initial.locale && initial.exerciseIds.includes(opt.id),
         ),
+        visibility: initial.visibility,
       });
     } else {
       setValues(DEFAULTS);
@@ -150,6 +153,20 @@ export function SessionDialog({
                 </MenuItem>
               ))}
             </TextField>
+
+            <TextField
+              select
+              label={t('common.labels.visibility')}
+              name="visibility"
+              value={values.visibility}
+              onChange={onChange}
+              required
+              fullWidth
+            >
+              <MenuItem value="PRIVATE">{t('common.visibility.private')}</MenuItem>
+              <MenuItem value="PUBLIC">{t('common.visibility.public')}</MenuItem>
+            </TextField>
+
             <TextField
               type="number"
               label={t('common.labels.duration_minutes')}

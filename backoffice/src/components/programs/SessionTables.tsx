@@ -48,7 +48,7 @@ export const SessionTables = React.memo(function SessionTables({
       field: 'durationMin',
       headerName: t('common.labels.duration_minutes'),
       width: 130,
-      valueFormatter: (value:any) => `${value}`,
+      valueFormatter: (value: any) => `${value}`,
     },
     {
       field: 'exerciseIds',
@@ -63,6 +63,15 @@ export const SessionTables = React.memo(function SessionTables({
           color={p.row.exerciseIds.length > 0 ? 'primary' : 'default'}
         />
       ),
+    },
+    {
+      field: 'visibility',
+      headerName: t('common.labels.visibility'),
+      width: 140,
+      renderCell: ({ value }) =>
+        value === 'PUBLIC'
+          ? t('common.visibility.public')
+          : t('common.visibility.private'),
     },
     {
       field: 'creator',
