@@ -1,5 +1,6 @@
 // src/usecases/prospect/level/create.prospect-level.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { ProspectLevel } from '@services/db/models/prospect/level.model';
 import { CreateProspectLevelUsecaseDto } from './prospect-level.usecase.dto';
@@ -21,7 +22,7 @@ export class CreateProspectLevelUsecase {
       return created ? { ...created } : null;
     } catch (error: any) {
       this.inversify.loggerService.error(`CreateProspectLevelUsecase#execute => ${error?.message ?? error}`);
-      throw new Error(ERRORS.CREATE_PROSPECT_LEVEL_USECASE);
+      throw normalizeError(error, ERRORS.CREATE_PROSPECT_LEVEL_USECASE);
     }
   }
 }

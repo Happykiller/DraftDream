@@ -1,5 +1,6 @@
 // src/usecases/meal-type/get.meal-type.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { MealTypeUsecaseModel } from '@src/usecases/nutri/meal-type/meal-type.usecase.model';
 import { GetMealTypeUsecaseDto } from '@src/usecases/nutri/meal-type/meal-type.usecase.dto';
@@ -8,7 +9,7 @@ import { GetMealTypeUsecaseDto } from '@src/usecases/nutri/meal-type/meal-type.u
  * Retrieves a meal type by identifier.
  */
 export class GetMealTypeUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   /**
    * Executes the lookup and returns the matching meal type if found.
@@ -19,7 +20,7 @@ export class GetMealTypeUsecase {
       return found ? { ...found } : null;
     } catch (e: any) {
       this.inversify.loggerService.error(`GetMealTypeUsecase#execute => ${e?.message ?? e}`);
-      throw new Error(ERRORS.GET_MEAL_TYPE_USECASE);
+      throw normalizeError(e, ERRORS.GET_MEAL_TYPE_USECASE);
     }
   }
 }

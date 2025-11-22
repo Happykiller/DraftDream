@@ -1,5 +1,6 @@
 // src/usecases/prospect/source/update.prospect-source.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { buildSlug } from '@src/common/slug.util';
 import { Inversify } from '@src/inversify/investify';
 import { ProspectSource } from '@services/db/models/prospect/source.model';
@@ -29,7 +30,7 @@ export class UpdateProspectSourceUsecase {
       return updated ? { ...updated } : null;
     } catch (error: any) {
       this.inversify.loggerService.error(`UpdateProspectSourceUsecase#execute => ${error?.message ?? error}`);
-      throw new Error(ERRORS.UPDATE_PROSPECT_SOURCE_USECASE);
+      throw normalizeError(error, ERRORS.UPDATE_PROSPECT_SOURCE_USECASE);
     }
   }
 }

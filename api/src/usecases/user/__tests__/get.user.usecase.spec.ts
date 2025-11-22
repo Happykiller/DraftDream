@@ -102,7 +102,7 @@ describe('GetUserUsecase', () => {
   it('should log and throw when the user is not found', async () => {
     asMock(userRepositoryMock.getUser).mockResolvedValue(null);
 
-    await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.GET_USER_USECASE);
+    await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.USER_NOT_FOUND);
 
     expect(asMock(loggerMock.error).mock.calls[0]).toEqual([
       `GetUserUsecase#execute=>${ERRORS.USER_NOT_FOUND}`,

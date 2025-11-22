@@ -1,11 +1,12 @@
 // src\\usecases\\program\\delete.program.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { DeleteProgramUsecaseDto } from '@src/usecases/sport/program/program.usecase.dto';
 
 export class DeleteProgramUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   async execute(dto: DeleteProgramUsecaseDto): Promise<boolean> {
     try {
@@ -30,7 +31,7 @@ export class DeleteProgramUsecase {
         throw e;
       }
       this.inversify.loggerService.error(`DeleteProgramUsecase#execute => ${e?.message ?? e}`);
-      throw new Error(ERRORS.DELETE_PROGRAM_USECASE);
+      throw normalizeError(e, ERRORS.DELETE_PROGRAM_USECASE);
     }
   }
 }

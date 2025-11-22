@@ -1,11 +1,11 @@
 // src/graphql/prospect/activity-preference/prospect-activity-preference.gql.types.ts
 import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 
-import { registerVisibilityEnum, Visibility } from '@graphql/common/visibility.enum';
+import { registerVisibilityEnum, Visibility as ProspectActivityPreferenceVisibility } from '@graphql/common/visibility.enum';
+export { ProspectActivityPreferenceVisibility };
 import { UserGql } from '@graphql/user/user.gql.types';
 
-export const ProspectActivityPreferenceVisibility = Visibility;
-export type ProspectActivityPreferenceVisibility = Visibility;
+
 
 registerVisibilityEnum('ProspectActivityPreferenceVisibility');
 

@@ -1,11 +1,11 @@
 // src/graphql/equipment/equipment.gql.types.ts
 import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 
-import { registerVisibilityEnum, Visibility } from '@graphql/common/visibility.enum';
+import { registerVisibilityEnum, Visibility as EquipmentVisibility } from '@graphql/common/visibility.enum';
+export { EquipmentVisibility };
 import { UserGql } from '@graphql/user/user.gql.types';
 
-export const EquipmentVisibility = Visibility;
-export type EquipmentVisibility = Visibility;
+
 
 registerVisibilityEnum('EquipmentVisibility');
 

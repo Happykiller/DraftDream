@@ -1,11 +1,11 @@
 ﻿// src/graphql/muscle/muscle.gql.types.ts
 import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 
-import { registerVisibilityEnum, Visibility } from '@graphql/common/visibility.enum';
+import { registerVisibilityEnum, Visibility as MuscleVisibility } from '@graphql/common/visibility.enum';
+export { MuscleVisibility };
 import { UserGql } from '@graphql/user/user.gql.types';
 
-export const MuscleVisibility = Visibility;
-export type MuscleVisibility = Visibility;
+
 
 registerVisibilityEnum('MuscleVisibility');
 

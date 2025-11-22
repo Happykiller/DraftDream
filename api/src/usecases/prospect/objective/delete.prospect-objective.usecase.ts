@@ -1,5 +1,6 @@
 // src/usecases/prospect/objective/delete.prospect-objective.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { GetProspectObjectiveDto } from '@services/db/dtos/prospect/objective.dto';
 
@@ -11,7 +12,7 @@ export class DeleteProspectObjectiveUsecase {
       return await this.inversify.bddService.prospectObjective.delete(dto.id);
     } catch (error: any) {
       this.inversify.loggerService.error(`DeleteProspectObjectiveUsecase#execute => ${error?.message ?? error}`);
-      throw new Error(ERRORS.DELETE_PROSPECT_OBJECTIVE_USECASE);
+      throw normalizeError(error, ERRORS.DELETE_PROSPECT_OBJECTIVE_USECASE);
     }
   }
 }

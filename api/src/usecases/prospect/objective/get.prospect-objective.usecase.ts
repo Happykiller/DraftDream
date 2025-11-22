@@ -1,5 +1,6 @@
 // src/usecases/prospect/objective/get.prospect-objective.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { ProspectObjective } from '@services/db/models/prospect/objective.model';
 import { GetProspectObjectiveDto } from '@services/db/dtos/prospect/objective.dto';
@@ -13,7 +14,7 @@ export class GetProspectObjectiveUsecase {
       return found ? { ...found } : null;
     } catch (error: any) {
       this.inversify.loggerService.error(`GetProspectObjectiveUsecase#execute => ${error?.message ?? error}`);
-      throw new Error(ERRORS.GET_PROSPECT_OBJECTIVE_USECASE);
+      throw normalizeError(error, ERRORS.GET_PROSPECT_OBJECTIVE_USECASE);
     }
   }
 }

@@ -1,5 +1,6 @@
 // src/usecases/athlete/coach-athlete/delete.coach-athlete.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 
 import { DeleteCoachAthleteUsecaseDto } from './coach-athlete.usecase.dto';
@@ -18,7 +19,7 @@ export class DeleteCoachAthleteUsecase {
       return await this.inversify.bddService.coachAthlete.delete(dto.id);
     } catch (error: any) {
       this.inversify.loggerService.error(`DeleteCoachAthleteUsecase#execute => ${error?.message ?? error}`);
-      throw new Error(ERRORS.DELETE_COACH_ATHLETE_USECASE);
+      throw normalizeError(error, ERRORS.DELETE_COACH_ATHLETE_USECASE);
     }
   }
 }

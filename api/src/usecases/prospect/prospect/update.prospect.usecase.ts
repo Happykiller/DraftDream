@@ -1,5 +1,6 @@
 // src/usecases/client/client/update.client.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 
 import { ProspectUsecaseModel } from './prospect.usecase.model';
@@ -30,7 +31,7 @@ export class UpdateProspectUsecase {
       return updated ? { ...updated } : null;
     } catch (error: any) {
       this.inversify.loggerService.error(`UpdateProspectUsecase#execute => ${error?.message ?? error}`);
-      throw new Error(ERRORS.UPDATE_PROSPECT_USECASE);
+      throw normalizeError(error, ERRORS.UPDATE_PROSPECT_USECASE);
     }
   }
 }

@@ -1,5 +1,6 @@
 // src/usecases/meal-type/delete.meal-type.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { DeleteMealTypeUsecaseDto } from '@src/usecases/nutri/meal-type/meal-type.usecase.dto';
 
@@ -7,7 +8,7 @@ import { DeleteMealTypeUsecaseDto } from '@src/usecases/nutri/meal-type/meal-typ
  * Deletes a meal type.
  */
 export class DeleteMealTypeUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   /**
    * Executes the deletion and returns true when the document is removed.
@@ -17,7 +18,7 @@ export class DeleteMealTypeUsecase {
       return await this.inversify.bddService.mealType.delete(dto.id);
     } catch (e: any) {
       this.inversify.loggerService.error(`DeleteMealTypeUsecase#execute => ${e?.message ?? e}`);
-      throw new Error(ERRORS.DELETE_MEAL_TYPE_USECASE);
+      throw normalizeError(e, ERRORS.DELETE_MEAL_TYPE_USECASE);
     }
   }
 }

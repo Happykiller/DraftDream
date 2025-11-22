@@ -1,5 +1,6 @@
 // src/usecases/prospect/activity-preference/update.prospect-activity-preference.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { buildSlug } from '@src/common/slug.util';
 import { Inversify } from '@src/inversify/investify';
 import { ProspectActivityPreference } from '@services/db/models/prospect/activity-preference.model';
@@ -29,7 +30,7 @@ export class UpdateProspectActivityPreferenceUsecase {
       return updated ? { ...updated } : null;
     } catch (error: any) {
       this.inversify.loggerService.error(`UpdateProspectActivityPreferenceUsecase#execute => ${error?.message ?? error}`);
-      throw new Error(ERRORS.UPDATE_PROSPECT_ACTIVITY_PREFERENCE_USECASE);
+      throw normalizeError(error, ERRORS.UPDATE_PROSPECT_ACTIVITY_PREFERENCE_USECASE);
     }
   }
 }

@@ -1,5 +1,6 @@
 // src\usecase\auth\auth.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { AuthUsecaseDto } from '@usecases/auth/dtos/auth.usecase.dto';
 import { SessionUsecaseModel } from '@usecases/auth/models/session.usecase.model';
@@ -32,14 +33,7 @@ export class AuthUsecase {
     } catch (e) {
       this.inversify.loggerService.error(`AuthUsecase#execute=>${e.message}`);
 
-      // Check if error message is in ERRORS values
-      const knownErrors = Object.values(ERRORS);
-      if (knownErrors.includes(e.message)) {
-        throw e; // rethrow as-is
-      }
-
-      // Fallback: standardize as AUTH_USECASE_FAIL
-      throw new Error(ERRORS.AUTH_USECASE_FAIL);
+      throw normalizeError(e, ERRORS.AUTH_USECASE_FAIL);
     }
   }
 }

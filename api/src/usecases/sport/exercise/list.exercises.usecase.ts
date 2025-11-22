@@ -1,5 +1,6 @@
 // src/usecases/exercise/list.exercises.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { mapExerciseToUsecase } from '@src/usecases/sport/exercise/exercise.mapper';
@@ -7,7 +8,7 @@ import { ListExercisesUsecaseDto } from '@src/usecases/sport/exercise/exercise.u
 import type { ExerciseUsecaseModel } from '@src/usecases/sport/exercise/exercise.usecase.model';
 
 export class ListExercisesUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   async execute(dto: ListExercisesUsecaseDto): Promise<{ items: ExerciseUsecaseModel[]; total: number; page: number; limit: number }> {
     try {
@@ -77,7 +78,7 @@ export class ListExercisesUsecase {
         throw e;
       }
       this.inversify.loggerService.error(`ListExercisesUsecase#execute => ${e?.message ?? e}`);
-      throw new Error(ERRORS.LIST_EXERCISES_USECASE);
+      throw normalizeError(e, ERRORS.LIST_EXERCISES_USECASE);
     }
   }
 }

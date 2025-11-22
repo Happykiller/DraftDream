@@ -1,11 +1,12 @@
 // src/usecases/exercise/delete.exercise.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { DeleteExerciseUsecaseDto } from '@src/usecases/sport/exercise/exercise.usecase.dto';
 
 export class DeleteExerciseUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   async execute(dto: DeleteExerciseUsecaseDto): Promise<boolean> {
     try {
@@ -30,7 +31,7 @@ export class DeleteExerciseUsecase {
         throw e;
       }
       this.inversify.loggerService.error(`DeleteExerciseUsecase#execute => ${e?.message ?? e}`);
-      throw new Error(ERRORS.DELETE_EXERCISE_USECASE);
+      throw normalizeError(e, ERRORS.DELETE_EXERCISE_USECASE);
     }
   }
 }

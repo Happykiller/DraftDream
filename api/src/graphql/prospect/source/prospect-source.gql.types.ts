@@ -1,11 +1,11 @@
 // src/graphql/prospect/source/prospect-source.gql.types.ts
 import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 
-import { registerVisibilityEnum, Visibility } from '@graphql/common/visibility.enum';
+import { registerVisibilityEnum, Visibility as ProspectSourceVisibility } from '@graphql/common/visibility.enum';
+export { ProspectSourceVisibility };
 import { UserGql } from '@graphql/user/user.gql.types';
 
-export const ProspectSourceVisibility = Visibility;
-export type ProspectSourceVisibility = Visibility;
+
 
 registerVisibilityEnum('ProspectSourceVisibility');
 

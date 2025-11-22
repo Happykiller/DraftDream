@@ -1,11 +1,11 @@
 // src/graphql/tag/tag.gql.types.ts
 import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 
-import { registerVisibilityEnum, Visibility } from '@graphql/common/visibility.enum';
+import { registerVisibilityEnum, Visibility as TagVisibility } from '@graphql/common/visibility.enum';
+export { TagVisibility };
 import { UserGql } from '@graphql/user/user.gql.types';
 
-export const TagVisibility = Visibility;
-export type TagVisibility = Visibility;
+
 
 registerVisibilityEnum('TagVisibility');
 

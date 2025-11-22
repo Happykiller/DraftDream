@@ -1,12 +1,13 @@
 // src/usecases/meal-day/delete.meal-day.usecase.ts
 
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { DeleteMealDayUsecaseDto } from '@src/usecases/nutri/meal-day/meal-day.usecase.dto';
 
 export class DeleteMealDayUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   async execute(dto: DeleteMealDayUsecaseDto): Promise<boolean> {
     try {
@@ -30,7 +31,7 @@ export class DeleteMealDayUsecase {
         throw error;
       }
       this.inversify.loggerService.error(`DeleteMealDayUsecase#execute => ${error?.message ?? error}`);
-      throw new Error(ERRORS.DELETE_MEAL_DAY_USECASE);
+      throw normalizeError(error, ERRORS.DELETE_MEAL_DAY_USECASE);
     }
   }
 }

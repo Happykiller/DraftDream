@@ -1,5 +1,6 @@
 // src/usecases/client/client/create.client.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 
 import { ProspectUsecaseModel } from './prospect.usecase.model';
@@ -31,7 +32,7 @@ export class CreateProspectUsecase {
       return created ? { ...created } : null;
     } catch (error: any) {
       this.inversify.loggerService.error(`CreateProspectUsecase#execute => ${error?.message ?? error}`);
-      throw new Error(ERRORS.CREATE_PROSPECT_USECASE);
+      throw normalizeError(error, ERRORS.CREATE_PROSPECT_USECASE);
     }
   }
 }

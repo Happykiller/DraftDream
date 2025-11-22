@@ -1,12 +1,13 @@
 // src/usecases/equipment/create.equipment.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { buildSlug } from '@src/common/slug.util';
 import { EquipmentUsecaseModel } from '@src/usecases/sport/equipment/equipment.usecase.model';
 import { CreateEquipmentUsecaseDto } from '@src/usecases/sport/equipment/equipment.usecase.dto';
 
 export class CreateEquipmentUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   async execute(dto: CreateEquipmentUsecaseDto): Promise<EquipmentUsecaseModel | null> {
     try {
@@ -21,7 +22,7 @@ export class CreateEquipmentUsecase {
       return created ? { ...created } : null;
     } catch (e: any) {
       this.inversify.loggerService.error(`CreateEquipmentUsecase#execute => ${e?.message ?? e}`);
-      throw new Error(ERRORS.CREATE_EQUIPMENT_USECASE);
+      throw normalizeError(e, ERRORS.CREATE_EQUIPMENT_USECASE);
     }
   }
 }

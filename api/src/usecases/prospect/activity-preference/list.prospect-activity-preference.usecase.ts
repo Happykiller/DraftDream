@@ -1,5 +1,6 @@
 // src/usecases/prospect/activity-preference/list.prospect-activity-preference.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { ProspectActivityPreference } from '@services/db/models/prospect/activity-preference.model';
 import { ListProspectActivityPreferencesDto } from '@services/db/dtos/prospect/activity-preference.dto';
@@ -25,7 +26,7 @@ export class ListProspectActivityPreferencesUsecase {
       };
     } catch (error: any) {
       this.inversify.loggerService.error(`ListProspectActivityPreferencesUsecase#execute => ${error?.message ?? error}`);
-      throw new Error(ERRORS.LIST_PROSPECT_ACTIVITY_PREFERENCES_USECASE);
+      throw normalizeError(error, ERRORS.LIST_PROSPECT_ACTIVITY_PREFERENCES_USECASE);
     }
   }
 }

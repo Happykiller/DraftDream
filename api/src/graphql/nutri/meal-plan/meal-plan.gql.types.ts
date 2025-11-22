@@ -8,12 +8,12 @@ import {
   ObjectType,
 } from '@nestjs/graphql';
 
-import { registerVisibilityEnum, Visibility } from '@graphql/common/visibility.enum';
+import { registerVisibilityEnum, Visibility as MealPlanVisibility } from '@graphql/common/visibility.enum';
+export { MealPlanVisibility };
 import { UserGql } from '@graphql/user/user.gql.types';
 import { MealTypeVisibility } from '@src/graphql/nutri/meal-type/meal-type.gql.types';
 
-export const MealPlanVisibility = Visibility;
-export type MealPlanVisibility = Visibility;
+
 
 registerVisibilityEnum('MealPlanVisibility');
 

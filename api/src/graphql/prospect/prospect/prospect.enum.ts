@@ -1,8 +1,6 @@
 import { registerEnumType } from '@nestjs/graphql';
 
-import { ProspectStatus } from '@src/common/prospect-status.enum';
-
-export type ProspectStatusEnum = ProspectStatus;
-export const ProspectStatusEnum = ProspectStatus;
+import { ProspectStatus as ProspectStatusEnum } from '@src/common/prospect-status.enum';
+export { ProspectStatusEnum };
 
 registerEnumType(ProspectStatusEnum, { name: 'ProspectStatusEnum' });

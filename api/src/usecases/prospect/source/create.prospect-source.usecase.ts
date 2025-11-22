@@ -1,5 +1,6 @@
 // src/usecases/prospect/source/create.prospect-source.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { ProspectSource } from '@services/db/models/prospect/source.model';
 import { buildSlug } from '@src/common/slug.util';
@@ -21,7 +22,7 @@ export class CreateProspectSourceUsecase {
       return created ? { ...created } : null;
     } catch (error: any) {
       this.inversify.loggerService.error(`CreateProspectSourceUsecase#execute => ${error?.message ?? error}`);
-      throw new Error(ERRORS.CREATE_PROSPECT_SOURCE_USECASE);
+      throw normalizeError(error, ERRORS.CREATE_PROSPECT_SOURCE_USECASE);
     }
   }
 }

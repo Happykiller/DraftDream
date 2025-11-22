@@ -1,5 +1,6 @@
 // src\usecases\session\list.sessions.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { mapSessionToUsecase } from '@src/usecases/sport/session/session.mapper';
@@ -7,7 +8,7 @@ import { ListSessionsUsecaseDto } from '@src/usecases/sport/session/session.usec
 import type { SessionUsecaseModel } from '@src/usecases/sport/session/session.usecase.model';
 
 export class ListSessionsUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   async execute(dto: ListSessionsUsecaseDto): Promise<{
     items: SessionUsecaseModel[];
@@ -66,7 +67,7 @@ export class ListSessionsUsecase {
         throw e;
       }
       this.inversify.loggerService.error(`ListSessionsUsecase#execute => ${e?.message ?? e}`);
-      throw new Error(ERRORS.LIST_SESSIONS_USECASE);
+      throw normalizeError(e, ERRORS.LIST_SESSIONS_USECASE);
     }
   }
 

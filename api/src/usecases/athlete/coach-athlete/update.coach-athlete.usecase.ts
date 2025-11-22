@@ -1,5 +1,6 @@
 // src/usecases/athlete/coach-athlete/update.coach-athlete.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 
 import { CoachAthleteUsecaseModel } from './coach-athlete.usecase.model';
@@ -9,7 +10,7 @@ import { UpdateCoachAthleteUsecaseDto } from './coach-athlete.usecase.dto';
  * Use case responsible for updating coach-athlete links.
  */
 export class UpdateCoachAthleteUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   /**
    * Applies the provided patch to the stored link.
@@ -27,7 +28,7 @@ export class UpdateCoachAthleteUsecase {
       return updated ? { ...updated } : null;
     } catch (error: any) {
       this.inversify.loggerService.error(`UpdateCoachAthleteUsecase#execute => ${error?.message ?? error}`);
-      throw new Error(ERRORS.UPDATE_COACH_ATHLETE_USECASE);
+      throw normalizeError(error, ERRORS.UPDATE_COACH_ATHLETE_USECASE);
     }
   }
 }

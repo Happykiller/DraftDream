@@ -1,5 +1,6 @@
 // src/usecases/athlete/coach-athlete/list.coach-athletes.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 
 import { CoachAthleteUsecaseModel } from './coach-athlete.usecase.model';
@@ -16,7 +17,7 @@ interface ListCoachAthletesResult {
  * Use case responsible for listing coach-athlete links.
  */
 export class ListCoachAthletesUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   /**
    * Returns paginated links matching the provided filters.
@@ -40,7 +41,7 @@ export class ListCoachAthletesUsecase {
       };
     } catch (error: any) {
       this.inversify.loggerService.error(`ListCoachAthletesUsecase#execute => ${error?.message ?? error}`);
-      throw new Error(ERRORS.LIST_COACH_ATHLETES_USECASE);
+      throw normalizeError(error, ERRORS.LIST_COACH_ATHLETES_USECASE);
     }
   }
 }

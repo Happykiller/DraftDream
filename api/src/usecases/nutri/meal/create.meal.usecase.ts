@@ -1,5 +1,6 @@
 // src/usecases/meal/create.meal.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { buildSlug } from '@src/common/slug.util';
 import { MealUsecaseModel } from '@src/usecases/nutri/meal/meal.usecase.model';
@@ -7,7 +8,7 @@ import { CreateMealUsecaseDto } from '@src/usecases/nutri/meal/meal.usecase.dto'
 
 /** Handles meal creation orchestration. */
 export class CreateMealUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   /**
    * Executes the creation flow and returns the persisted model when successful.
@@ -31,7 +32,7 @@ export class CreateMealUsecase {
       return created ? { ...created } : null;
     } catch (error: any) {
       this.inversify.loggerService.error(`CreateMealUsecase#execute => ${error?.message ?? error}`);
-      throw new Error(ERRORS.CREATE_MEAL_USECASE);
+      throw normalizeError(error, ERRORS.CREATE_MEAL_USECASE);
     }
   }
 }

@@ -1,5 +1,6 @@
 // src/usecases/prospect/source/list.prospect-source.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { ProspectSource } from '@services/db/models/prospect/source.model';
 import { ListProspectSourcesDto } from '@services/db/dtos/prospect/source.dto';
@@ -25,7 +26,7 @@ export class ListProspectSourcesUsecase {
       };
     } catch (error: any) {
       this.inversify.loggerService.error(`ListProspectSourcesUsecase#execute => ${error?.message ?? error}`);
-      throw new Error(ERRORS.LIST_PROSPECT_SOURCES_USECASE);
+      throw normalizeError(error, ERRORS.LIST_PROSPECT_SOURCES_USECASE);
     }
   }
 }

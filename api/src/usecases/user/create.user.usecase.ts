@@ -1,5 +1,6 @@
 // src\usecase\user\create.user.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { User } from '@services/db/models/user.model';
 import { UserUsecaseModel } from '@src/usecases/user/user.usecase.model';
@@ -16,7 +17,7 @@ export class CreateUserUsecase {
     try {
       const hashed = await this.inversify.cryptService.hash({ message: dto.password });
       const toCreate = { ...dto, password: hashed };
-      const user:User = await this.inversify.bddService.user.createUser(toCreate);
+      const user: User = await this.inversify.bddService.user.createUser(toCreate);
 
       return {
         id: user.id,
@@ -33,8 +34,8 @@ export class CreateUserUsecase {
         createdBy: user.createdBy,
       };
     } catch (e) {
-      this.inversify.loggerService.error(`CreateUserUsecase#execute=>${e.message}`);
-      throw new Error(ERRORS.CREATE_USER_USECASE);
+      this.inversify.loggerService.error(`CreateUserUsecase#execute=>${e?.message ?? e}`);
+      throw normalizeError(e, ERRORS.CREATE_USER_USECASE);
     }
   }
 }

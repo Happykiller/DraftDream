@@ -1,5 +1,6 @@
 // src/usecases/athlete/coach-athlete/get.coach-athlete.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 
 import { CoachAthleteUsecaseModel } from './coach-athlete.usecase.model';
@@ -9,7 +10,7 @@ import { GetCoachAthleteUsecaseDto } from './coach-athlete.usecase.dto';
  * Use case responsible for retrieving a specific link.
  */
 export class GetCoachAthleteUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   /**
    * Fetches a link by id.
@@ -20,7 +21,7 @@ export class GetCoachAthleteUsecase {
       return found ? { ...found } : null;
     } catch (error: any) {
       this.inversify.loggerService.error(`GetCoachAthleteUsecase#execute => ${error?.message ?? error}`);
-      throw new Error(ERRORS.GET_COACH_ATHLETE_USECASE);
+      throw normalizeError(error, ERRORS.GET_COACH_ATHLETE_USECASE);
     }
   }
 }

@@ -1,5 +1,6 @@
 // src/usecases/category/list.category.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { CategoryUsecaseModel } from '@src/usecases/sport/category/category.usecase.model';
 import { ListCategoriesUsecaseDto } from '@src/usecases/sport/category/category.usecase.dto';
@@ -12,7 +13,7 @@ export interface ListCategoriesUsecaseResult {
 }
 
 export class ListCategoriesUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   async execute(dto: ListCategoriesUsecaseDto = {}): Promise<ListCategoriesUsecaseResult> {
     try {
@@ -25,7 +26,7 @@ export class ListCategoriesUsecase {
       };
     } catch (e: any) {
       this.inversify.loggerService.error(`ListCategoriesUsecase#execute => ${e?.message ?? e}`);
-      throw new Error(ERRORS.LIST_CATEGORIES_USECASE);
+      throw normalizeError(e, ERRORS.LIST_CATEGORIES_USECASE);
     }
   }
 }

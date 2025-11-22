@@ -1,5 +1,6 @@
 // src/usecases/prospect/level/update.prospect-level.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { buildSlug } from '@src/common/slug.util';
 import { Inversify } from '@src/inversify/investify';
 import { ProspectLevel } from '@services/db/models/prospect/level.model';
@@ -29,7 +30,7 @@ export class UpdateProspectLevelUsecase {
       return updated ? { ...updated } : null;
     } catch (error: any) {
       this.inversify.loggerService.error(`UpdateProspectLevelUsecase#execute => ${error?.message ?? error}`);
-      throw new Error(ERRORS.UPDATE_PROSPECT_LEVEL_USECASE);
+      throw normalizeError(error, ERRORS.UPDATE_PROSPECT_LEVEL_USECASE);
     }
   }
 }

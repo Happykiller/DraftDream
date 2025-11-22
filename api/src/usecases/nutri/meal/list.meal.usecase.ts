@@ -1,5 +1,6 @@
 // src/usecases/meal/list.meal.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { MealUsecaseModel } from '@src/usecases/nutri/meal/meal.usecase.model';
 import { ListMealsUsecaseDto } from '@src/usecases/nutri/meal/meal.usecase.dto';
@@ -13,7 +14,7 @@ export interface ListMealsUsecaseResult {
 
 /** Lists meals using repository filters. */
 export class ListMealsUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   /**
    * Executes the list query with provided filters and pagination options.
@@ -29,7 +30,7 @@ export class ListMealsUsecase {
       };
     } catch (error: any) {
       this.inversify.loggerService.error(`ListMealsUsecase#execute => ${error?.message ?? error}`);
-      throw new Error(ERRORS.LIST_MEALS_USECASE);
+      throw normalizeError(error, ERRORS.LIST_MEALS_USECASE);
     }
   }
 }

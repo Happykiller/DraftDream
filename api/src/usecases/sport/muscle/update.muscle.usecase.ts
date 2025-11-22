@@ -1,12 +1,13 @@
 // src/usecases/muscle/update.muscle.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { buildSlug } from '@src/common/slug.util';
 import { MuscleUsecaseModel } from '@src/usecases/sport/muscle/muscle.usecase.model';
 import { UpdateMuscleUsecaseDto } from '@src/usecases/sport/muscle/muscle.usecase.dto';
 
 export class UpdateMuscleUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   async execute(dto: UpdateMuscleUsecaseDto): Promise<MuscleUsecaseModel | null> {
     try {
@@ -27,7 +28,7 @@ export class UpdateMuscleUsecase {
       this.inversify.loggerService.error(
         `UpdateMuscleUsecase#execute => ${e?.message ?? e}`,
       );
-      throw new Error(ERRORS.UPDATE_MUSCLE_USECASE);
+      throw normalizeError(e, ERRORS.UPDATE_MUSCLE_USECASE);
     }
   }
 }

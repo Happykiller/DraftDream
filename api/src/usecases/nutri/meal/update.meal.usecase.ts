@@ -1,5 +1,6 @@
 // src/usecases/meal/update.meal.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { buildSlug } from '@src/common/slug.util';
 import { MealUsecaseModel } from '@src/usecases/nutri/meal/meal.usecase.model';
@@ -7,7 +8,7 @@ import { UpdateMealUsecaseDto } from '@src/usecases/nutri/meal/meal.usecase.dto'
 
 /** Applies mutations to an existing meal. */
 export class UpdateMealUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   /**
    * Updates the target meal and returns the persisted version when successful.
@@ -22,7 +23,7 @@ export class UpdateMealUsecase {
       return updated ? { ...updated } : null;
     } catch (error: any) {
       this.inversify.loggerService.error(`UpdateMealUsecase#execute => ${error?.message ?? error}`);
-      throw new Error(ERRORS.UPDATE_MEAL_USECASE);
+      throw normalizeError(error, ERRORS.UPDATE_MEAL_USECASE);
     }
   }
 }

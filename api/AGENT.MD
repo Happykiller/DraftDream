@@ -22,6 +22,7 @@
 - Reuse the `Auth` decorator and guards for authorization. Add new role constants to `src/graphql/common/role.enum.ts` if required.
 - Centralize configuration keys in `src/config/defaults.ts` and document new variables in `README.md`.
 - When introducing migrations or seed data, place them under `src/services/db/migrations` and register them in the migration runner.
+- **Error Handling in Use Cases**: Always wrap the `execute` method logic in a `try/catch` block. In the `catch` block, log the error using `this.inversify.loggerService.error` and throw a normalized error using `normalizeError(error, ERRORS.YOUR_FALLBACK_ERROR)`.
 
 ## Testing & Quality Gates
 - Run `npm run build` as a smoke test; it type-checks and ensures Nest compiles.

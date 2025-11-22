@@ -1,5 +1,6 @@
 // src/usecases/athlete/coach-athlete/create.coach-athlete.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 
 import { CoachAthleteUsecaseModel } from './coach-athlete.usecase.model';
@@ -9,7 +10,7 @@ import { CreateCoachAthleteUsecaseDto } from './coach-athlete.usecase.dto';
  * Use case responsible for creating coach-athlete links.
  */
 export class CreateCoachAthleteUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   /**
    * Persists a new link and returns it.
@@ -28,7 +29,7 @@ export class CreateCoachAthleteUsecase {
       return created ? { ...created } : null;
     } catch (error: any) {
       this.inversify.loggerService.error(`CreateCoachAthleteUsecase#execute => ${error?.message ?? error}`);
-      throw new Error(ERRORS.CREATE_COACH_ATHLETE_USECASE);
+      throw normalizeError(error, ERRORS.CREATE_COACH_ATHLETE_USECASE);
     }
   }
 }
