@@ -1,0 +1,119 @@
+// src/pages/Prospects.tsx
+import * as React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { Add, Refresh } from '@mui/icons-material';
+import { Button, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+
+import {
+  ProspectDeleteDialog,
+  type ProspectDeleteDialogCopy,
+} from '@components/prospects/ProspectDeleteDialog';
+import { ProspectList } from '@components/prospects/ProspectList';
+
+import { useProspects } from '@hooks/prospects/useProspects';
+import { useDebouncedValue } from '@hooks/useDebouncedValue';
+
+import type { Prospect } from '@app-types/prospects';
+
+/** Prospect dashboard listing coach-owned contacts with quick actions. */
+export function Prospects(): React.JSX.Element {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const debouncedQuery = useDebouncedValue(searchQuery, 400);
+  const { items, loading, reload, remove } = useProspects({ page: 1, limit: 24, q: debouncedQuery });
+  const [prospectToDelete, setProspectToDelete] = React.useState<Prospect | null>(null);
+  const [deleteLoading, setDeleteLoading] = React.useState(false);
+
+  const deleteDialogCopy = React.useMemo(
+    () =>
+      t('prospects.list.delete_dialog', {
+        returnObjects: true,
+      }) as ProspectDeleteDialogCopy,
+    [t],
+  );
+
+  const handleCreateProspect = React.useCallback(() => {
+    navigate('/prospects/create');
+  }, [navigate]);
+
+  const handleEditProspect = React.useCallback(
+    (prospect: Prospect) => {
+      navigate(`/prospects/edit/${prospect.id}`);
+    },
+    [navigate],
+  );
+
+  const handleDeleteProspect = React.useCallback((prospect: Prospect) => {
+    setProspectToDelete(prospect);
+  }, []);
+
+  const handleConfirmDelete = React.useCallback(async () => {
+    if (!prospectToDelete) {
+      return;
+    }
+    setDeleteLoading(true);
+    try {
+      await remove(prospectToDelete.id);
+      setProspectToDelete(null);
+    } catch (error) {
+      console.error('[Prospects] Failed to delete prospect', error);
+    } finally {
+      setDeleteLoading(false);
+    }
+  }, [prospectToDelete, remove]);
+
+  const handleCancelDelete = React.useCallback(() => {
+    if (deleteLoading) return;
+    setProspectToDelete(null);
+  }, [deleteLoading]);
+
+  return (
+    <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
+      {/* General information */}
+      <Stack spacing={1}>
+        <Stack alignItems="center" direction="row" flexWrap="wrap" justifyContent="space-between" spacing={2}>
+          <Stack spacing={0.5}>
+            <Typography variant="h5">{t('prospects.subtitle')}</Typography>
+            <Typography color="text.secondary" variant="body2">
+              {t('prospects.helper')}
+            </Typography>
+          </Stack>
+          <Stack alignItems="center" direction="row" spacing={1} sx={{ ml: 'auto' }}>
+            <Tooltip title={t('prospects.actions.refresh')}>
+              <IconButton aria-label="refresh-prospects" color="primary" onClick={() => void reload()} size="small">
+                <Refresh fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Button color="primary" startIcon={<Add />} variant="contained" onClick={handleCreateProspect}>
+              {t('prospects.actions.create')}
+            </Button>
+          </Stack>
+        </Stack>
+      </Stack>
+
+      <ProspectList
+        prospects={items}
+        loading={loading}
+        searchQuery={searchQuery}
+        searchPlaceholder={t('prospects.list.search_placeholder')}
+        searchAriaLabel={t('prospects.list.search_aria')}
+        emptyTitle={t('prospects.list.empty_title')}
+        emptyDescription={t('prospects.list.empty_description')}
+        onSearchChange={setSearchQuery}
+        onEditProspect={handleEditProspect}
+        onDeleteProspect={handleDeleteProspect}
+      />
+
+      <ProspectDeleteDialog
+        prospect={prospectToDelete}
+        open={Boolean(prospectToDelete)}
+        loading={deleteLoading}
+        copy={deleteDialogCopy}
+        onCancel={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+      />
+    </Stack>
+  );
+}

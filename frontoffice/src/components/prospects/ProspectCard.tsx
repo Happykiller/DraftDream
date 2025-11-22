@@ -1,4 +1,4 @@
-// src/components/clients/ClientCard.tsx
+// src/components/prospects/ProspectCard.tsx
 import * as React from 'react';
 import { Delete, Edit, ExpandMoreOutlined, Phone } from '@mui/icons-material';
 import {
@@ -16,19 +16,20 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
+import { prospectStatusLabels } from '@src/commons/prospects/status';
 import { useDateFormatter } from '@hooks/useDateFormatter';
-import type { Client } from '@app-types/clients';
+import type { Prospect } from '@app-types/prospects';
 
-export interface ClientCardProps {
-  client: Client;
-  onEdit: (client: Client) => void;
-  onDelete: (client: Client) => void;
+export interface ProspectCardProps {
+  prospect: Prospect;
+  onEdit: (prospect: Prospect) => void;
+  onDelete: (prospect: Prospect) => void;
 }
 
 const COLLAPSED_CONTENT_MAX_HEIGHT = 360;
 
-/** Presentational card summarizing the key attributes for a client. */
-export function ClientCard({ client, onEdit, onDelete }: ClientCardProps): React.JSX.Element {
+/** Presentational card summarizing the key attributes for a prospect. */
+export function ProspectCard({ prospect, onEdit, onDelete }: ProspectCardProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
   const formatDate = useDateFormatter();
   const formatDesiredStartDate = useDateFormatter({
@@ -39,25 +40,27 @@ export function ClientCard({ client, onEdit, onDelete }: ClientCardProps): React
   const [isOverflowing, setIsOverflowing] = React.useState(false);
   const [isExpanded, setIsExpanded] = React.useState(false);
 
+  const statusLabel = prospect.status ? prospectStatusLabels[prospect.status] : null;
+
   const budgetLabel = React.useMemo(() => {
-    if (client.budget == null) {
-      return t('clients.list.card.no_budget');
+    if (prospect.budget == null) {
+      return t('prospects.list.card.no_budget');
     }
     return new Intl.NumberFormat(undefined, {
       style: 'currency',
       currency: 'EUR',
       maximumFractionDigits: 0,
-    }).format(client.budget);
-  }, [client.budget, t]);
+    }).format(prospect.budget);
+  }, [prospect.budget, t]);
 
-  const shouldShowStatusBadge = Boolean(client.status?.label);
-  const shouldShowObjectiveBadges = (client.objectives?.length ?? 0) > 0;
-  const shouldShowPreferenceBadges = (client.activityPreferences?.length ?? 0) > 0;
+  const shouldShowStatusBadge = Boolean(statusLabel);
+  const shouldShowObjectiveBadges = (prospect.objectives?.length ?? 0) > 0;
+  const shouldShowPreferenceBadges = (prospect.activityPreferences?.length ?? 0) > 0;
   const shouldShowMetadataBadges =
     shouldShowStatusBadge || shouldShowObjectiveBadges || shouldShowPreferenceBadges;
   const overflowToggleLabel = isExpanded
-    ? t('clients.list.collapse_details')
-    : t('clients.list.expand_details');
+    ? t('prospects.list.collapse_details')
+    : t('prospects.list.expand_details');
 
   React.useEffect(() => {
     const element = contentRef.current;
@@ -90,7 +93,7 @@ export function ClientCard({ client, onEdit, onDelete }: ClientCardProps): React
     }
 
     return undefined;
-  }, [client.id]);
+  }, [prospect.id]);
 
   React.useEffect(() => {
     if (!isOverflowing && isExpanded) {
@@ -100,7 +103,7 @@ export function ClientCard({ client, onEdit, onDelete }: ClientCardProps): React
 
   React.useEffect(() => {
     setIsExpanded(false);
-  }, [client.id]);
+  }, [prospect.id]);
 
   return (
     <Card variant="outlined" sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -132,29 +135,27 @@ export function ClientCard({ client, onEdit, onDelete }: ClientCardProps): React
         <CardHeader
           title={
             <Typography fontWeight={600} variant="subtitle1">
-              {`${client.firstName} ${client.lastName}`}
+              {`${prospect.firstName} ${prospect.lastName}`}
             </Typography>
           }
           subheader={
-            client.email || shouldShowMetadataBadges ? (
+            prospect.email || shouldShowMetadataBadges ? (
               <Stack spacing={0.75} sx={{ pt: 0.5 }}>
-                {client.email ? (
+                {prospect.email ? (
                   <Typography variant="body2" color="text.secondary">
-                    {client.email}
+                    {prospect.email}
                   </Typography>
                 ) : null}
                 {shouldShowMetadataBadges ? (
                   <Stack direction="row" spacing={0.5} flexWrap="wrap">
-                    {client.status?.label ? (
-                      <Chip label={client.status.label} size="small" color="primary" />
-                    ) : null}
+                    {statusLabel ? <Chip label={statusLabel} size="small" color="primary" /> : null}
                     {shouldShowObjectiveBadges
-                      ? client.objectives?.map((objective) => (
+                      ? prospect.objectives?.map((objective) => (
                           <Chip key={objective.id ?? objective.label} label={objective.label} size="small" />
                         ))
                       : null}
                     {shouldShowPreferenceBadges
-                      ? client.activityPreferences?.map((preference) => (
+                      ? prospect.activityPreferences?.map((preference) => (
                           <Chip key={preference.id ?? preference.label} label={preference.label} size="small" />
                         ))
                       : null}
@@ -165,13 +166,21 @@ export function ClientCard({ client, onEdit, onDelete }: ClientCardProps): React
           }
           action={
             <Stack direction="row" spacing={0.5}>
-              <Tooltip title={t('clients.list.actions.edit')}>
-                <IconButton aria-label={`edit-client-${client.id}`} onClick={() => onEdit(client)} size="small">
+              <Tooltip title={t('prospects.list.actions.edit')}>
+                <IconButton
+                  aria-label={`edit-prospect-${prospect.id}`}
+                  onClick={() => onEdit(prospect)}
+                  size="small"
+                >
                   <Edit fontSize="small" />
                 </IconButton>
               </Tooltip>
-              <Tooltip title={t('clients.list.actions.delete')}>
-                <IconButton aria-label={`delete-client-${client.id}`} onClick={() => onDelete(client)} size="small">
+              <Tooltip title={t('prospects.list.actions.delete')}>
+                <IconButton
+                  aria-label={`delete-prospect-${prospect.id}`}
+                  onClick={() => onDelete(prospect)}
+                  size="small"
+                >
                   <Delete fontSize="small" />
                 </IconButton>
               </Tooltip>
@@ -189,41 +198,45 @@ export function ClientCard({ client, onEdit, onDelete }: ClientCardProps): React
         >
           <Stack direction="row" spacing={1} alignItems="center">
             <Phone color="action" fontSize="small" />
-            <Typography variant="body2">{client.phone || t('clients.list.card.no_phone')}</Typography>
+            <Typography variant="body2">
+              {prospect.phone || t('prospects.list.card.no_phone')}
+            </Typography>
           </Stack>
 
-          {client.notes ? (
+          {prospect.notes ? (
             <Stack spacing={0.5}>
               <Typography variant="subtitle2" color="text.secondary">
-                {t('clients.list.card.notes')}
+                {t('prospects.list.card.notes')}
               </Typography>
-              <Typography variant="body2">{client.notes}</Typography>
+              <Typography variant="body2">{prospect.notes}</Typography>
             </Stack>
           ) : null}
 
           <Stack spacing={0.5}>
             <Typography variant="subtitle2" color="text.secondary">
-              {t('clients.list.card.budget')}
+              {t('prospects.list.card.budget')}
             </Typography>
             <Typography variant="body2">{budgetLabel}</Typography>
           </Stack>
 
-          {client.desiredStartDate ? (
+          {prospect.desiredStartDate ? (
             <Stack spacing={0.5}>
               <Typography variant="subtitle2" color="text.secondary">
-                {t('clients.list.card.start_date')}
+                {t('prospects.list.card.start_date')}
               </Typography>
-              <Typography variant="body2">{formatDesiredStartDate(client.desiredStartDate)}</Typography>
+              <Typography variant="body2">
+                {formatDesiredStartDate(prospect.desiredStartDate)}
+              </Typography>
             </Stack>
           ) : null}
 
-          {client.level?.label ? (
+          {prospect.level?.label ? (
             <Stack direction="row" justifyContent="space-between" alignItems="baseline">
               <Typography variant="subtitle2" color="text.secondary">
-                {t('clients.list.card.level')}
+                {t('prospects.list.card.level')}
               </Typography>
               <Typography variant="body2" fontWeight={600}>
-                {client.level.label}
+                {prospect.level.label}
               </Typography>
             </Stack>
           ) : null}
@@ -231,10 +244,10 @@ export function ClientCard({ client, onEdit, onDelete }: ClientCardProps): React
 
         <CardActions sx={{ justifyContent: 'space-between', px: 2, py: 1.5 }}>
           <Typography variant="caption" color="text.secondary">
-            {t('clients.list.card.created', { date: formatDate(client.createdAt) })}
+            {t('prospects.list.card.created', { date: formatDate(prospect.createdAt) })}
           </Typography>
           <Typography variant="caption" color="text.secondary">
-            {t('clients.list.card.updated', { date: formatDate(client.updatedAt) })}
+            {t('prospects.list.card.updated', { date: formatDate(prospect.updatedAt) })}
           </Typography>
         </CardActions>
       </Box>
@@ -242,28 +255,21 @@ export function ClientCard({ client, onEdit, onDelete }: ClientCardProps): React
       {isOverflowing ? (
         <>
           <Divider />
-          <Stack direction="row" justifyContent="center" sx={{ py: 1 }}>
-            <Tooltip title={overflowToggleLabel}>
-              <IconButton
-                size="small"
-                aria-label={overflowToggleLabel}
-                aria-expanded={isExpanded}
-                onClick={(event) => {
-                  event.stopPropagation();
-                  setIsExpanded((prev) => !prev);
-                }}
-                sx={(theme) => ({
-                  color: theme.palette.text.secondary,
-                  transition: theme.transitions.create('transform', {
-                    duration: theme.transitions.duration.shorter,
-                  }),
-                  transform: isExpanded ? 'rotate(180deg)' : 'none',
-                })}
-              >
-                <ExpandMoreOutlined fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </Stack>
+          <CardActions sx={{ justifyContent: 'center' }}>
+            <Stack
+              alignItems="center"
+              color="primary.main"
+              direction="row"
+              spacing={1}
+              sx={{ cursor: 'pointer' }}
+              onClick={() => setIsExpanded((prev) => !prev)}
+            >
+              <ExpandMoreOutlined fontSize="small" />
+              <Typography variant="body2" fontWeight={600}>
+                {overflowToggleLabel} {t('prospects.title').toLowerCase()}
+              </Typography>
+            </Stack>
+          </CardActions>
         </>
       ) : null}
     </Card>

@@ -1,4 +1,4 @@
-// src/components/clients/ClientDeleteDialog.tsx
+// src/components/prospects/ProspectDeleteDialog.tsx
 import * as React from 'react';
 
 import { DeleteOutline } from '@mui/icons-material';
@@ -11,9 +11,9 @@ import type { DialogProps } from '@mui/material/Dialog';
 
 import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
 
-import type { Client } from '@app-types/clients';
+import type { Prospect } from '@app-types/prospects';
 
-export interface ClientDeleteDialogCopy {
+export interface ProspectDeleteDialogCopy {
   title: string;
   description: string;
   helper: string;
@@ -24,34 +24,34 @@ export interface ClientDeleteDialogCopy {
   };
 }
 
-export interface ClientDeleteDialogProps {
-  client: Client | null;
+export interface ProspectDeleteDialogProps {
+  prospect: Prospect | null;
   open: boolean;
   loading: boolean;
-  copy: ClientDeleteDialogCopy;
+  copy: ProspectDeleteDialogCopy;
   onCancel: () => void;
   onConfirm: () => void | Promise<void>;
 }
 
-/** Confirmation dialog asking the user to validate client deletion. */
-export function ClientDeleteDialog({
-  client,
+/** Confirmation dialog asking the user to validate prospect deletion. */
+export function ProspectDeleteDialog({
+  prospect,
   open,
   loading,
   copy,
   onCancel,
   onConfirm,
-}: ClientDeleteDialogProps): React.JSX.Element {
-  const clientName = React.useMemo(() => {
-    if (!client) {
+}: ProspectDeleteDialogProps): React.JSX.Element {
+  const prospectName = React.useMemo(() => {
+    if (!prospect) {
       return '';
     }
-    return `${client.firstName} ${client.lastName}`;
-  }, [client]);
+    return `${prospect.firstName} ${prospect.lastName}`;
+  }, [prospect]);
 
   const description = React.useMemo(
-    () => copy.description.replace('{{name}}', clientName),
-    [clientName, copy.description],
+    () => copy.description.replace('{{name}}', prospectName),
+    [prospectName, copy.description],
   );
 
   const handleDialogClose = React.useCallback<NonNullable<DialogProps['onClose']>>(

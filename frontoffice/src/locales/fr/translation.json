@@ -46,7 +46,7 @@
     "title": "Tableau de bord",
     "placeholder": "Bonjour"
   },
-  "clients": {
+  "prospects": {
     "title": "Prospects",
     "subtitle": "Gérer tous vos prospects.",
     "helper": "Créez des contacts, renseignez leurs préférences et restez aligné avec votre pipeline commercial.",

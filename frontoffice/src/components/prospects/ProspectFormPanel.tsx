@@ -1,4 +1,4 @@
-// src/components/clients/ClientFormPanel.tsx
+// src/components/prospects/ProspectFormPanel.tsx
 import * as React from 'react';
 import { alpha, useTheme } from '@mui/material/styles';
 import { Add, Edit } from '@mui/icons-material';
@@ -16,11 +16,12 @@ import {
   Typography,
 } from '@mui/material';
 
-import type { ClientMetadataOption } from '@hooks/clients/useClientMetadataOptions';
+import type { ProspectStatusEnum, ProspectStatusOption } from '@src/commons/prospects/status';
+import type { ProspectMetadataOption } from '@hooks/prospects/useProspectMetadataOptions';
 
-import { DEFAULT_CLIENT_FORM_VALUES, type ClientFormValues } from './clientFormValues';
+import { DEFAULT_PROSPECT_FORM_VALUES, type ProspectFormValues } from './prospectFormValues';
 
-export interface ClientFormCopy {
+export interface ProspectFormCopy {
   title: string;
   subtitle: string;
   editTitle?: string;
@@ -61,39 +62,42 @@ export interface ClientFormCopy {
   };
 }
 
-export interface ClientFormPanelProps {
+export interface ProspectFormPanelProps {
   mode: 'create' | 'edit';
-  initialValues: ClientFormValues;
+  initialValues: ProspectFormValues;
   metadata: {
-    statuses: ClientMetadataOption[];
-    levels: ClientMetadataOption[];
-    sources: ClientMetadataOption[];
-    objectives: ClientMetadataOption[];
-    activityPreferences: ClientMetadataOption[];
+    levels: ProspectMetadataOption[];
+    sources: ProspectMetadataOption[];
+    objectives: ProspectMetadataOption[];
+    activityPreferences: ProspectMetadataOption[];
   };
+  statuses: ProspectStatusOption[];
   metadataLoading: boolean;
   submitting: boolean;
-  copy: ClientFormCopy;
+  copy: ProspectFormCopy;
   onCancel: () => void;
-  onSubmit: (values: ClientFormValues) => Promise<void> | void;
+  onSubmit: (values: ProspectFormValues) => Promise<void> | void;
 }
 
-/** Large form layout mirroring the nutrition/program builders for client workflows. */
-export function ClientFormPanel({
+/** Large form layout mirroring the nutrition/program builders for prospect workflows. */
+export function ProspectFormPanel({
   mode,
   initialValues,
   metadata,
+  statuses,
   metadataLoading,
   submitting,
   copy,
   onCancel,
   onSubmit,
-}: ClientFormPanelProps): React.JSX.Element {
-  const [values, setValues] = React.useState<ClientFormValues>(initialValues ?? DEFAULT_CLIENT_FORM_VALUES);
+}: ProspectFormPanelProps): React.JSX.Element {
+  const [values, setValues] = React.useState<ProspectFormValues>(
+    initialValues ?? DEFAULT_PROSPECT_FORM_VALUES,
+  );
   const theme = useTheme();
 
   React.useEffect(() => {
-    setValues(initialValues ?? DEFAULT_CLIENT_FORM_VALUES);
+    setValues(initialValues ?? DEFAULT_PROSPECT_FORM_VALUES);
   }, [initialValues]);
 
   const handleChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -253,18 +257,21 @@ export function ClientFormPanel({
                       <TextField
                         select
                         label={copy.fields.status}
-                        name="statusId"
-                        value={values.statusId ?? ''}
+                        name="status"
+                        value={values.status ?? ''}
                         onChange={(event) =>
-                          setValues((prev) => ({ ...prev, statusId: event.target.value || null }))
+                          setValues((prev) => ({
+                            ...prev,
+                            status: (event.target.value as ProspectStatusEnum | ''),
+                          }))
                         }
                         fullWidth
                       >
                         <MenuItem value="">
                           <em>—</em>
                         </MenuItem>
-                        {metadata.statuses.map((status) => (
-                          <MenuItem key={status.id} value={status.id}>
+                        {statuses.map((status) => (
+                          <MenuItem key={status.value} value={status.value}>
                             {status.label}
                           </MenuItem>
                         ))}

@@ -1,35 +1,37 @@
-// src/types/clients.ts
+// src/types/prospects.ts
 
-export interface ClientRelation {
+import type { ProspectStatusEnum } from '@src/commons/prospects/status';
+
+export interface ProspectRelation {
   id: string;
   label: string;
   slug?: string | null;
 }
 
-export interface ClientObjectiveRelation {
+export interface ProspectObjectiveRelation {
   id: string;
   label: string;
 }
 
-export interface ClientActivityPreferenceRelation {
+export interface ProspectActivityPreferenceRelation {
   id: string;
   label: string;
 }
 
-export interface ClientCreatorSummary {
+export interface ProspectCreatorSummary {
   id: string;
   email: string;
   first_name?: string | null;
   last_name?: string | null;
 }
 
-export interface Client {
+export interface Prospect {
   id: string;
   firstName: string;
   lastName: string;
   email: string;
   phone?: string | null;
-  statusId?: string | null;
+  status?: ProspectStatusEnum | null;
   levelId?: string | null;
   sourceId?: string | null;
   objectiveIds: string[];
@@ -43,16 +45,15 @@ export interface Client {
   createdBy: string;
   createdAt: string;
   updatedAt: string;
-  creator?: ClientCreatorSummary | null;
-  status?: ClientRelation | null;
-  level?: ClientRelation | null;
-  source?: ClientRelation | null;
-  objectives?: ClientObjectiveRelation[];
-  activityPreferences?: ClientActivityPreferenceRelation[];
+  creator?: ProspectCreatorSummary | null;
+  level?: ProspectRelation | null;
+  source?: ProspectRelation | null;
+  objectives?: ProspectObjectiveRelation[];
+  activityPreferences?: ProspectActivityPreferenceRelation[];
 }
 
-export interface ClientListResult {
-  items: Client[];
+export interface ProspectListResult {
+  items: Prospect[];
   total: number;
   page: number;
   limit: number;

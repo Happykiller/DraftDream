@@ -46,7 +46,7 @@
     "title": "Dashboard",
     "placeholder": "Hello"
   },
-  "clients": {
+  "prospects": {
     "title": "Prospects",
     "subtitle": "Manage all your prospects.",
     "helper": "Create contacts, record their preferences, and stay aligned with your sales pipeline.",

@@ -1,14 +1,14 @@
-// src/components/clients/ClientList.tsx
+// src/components/prospects/ProspectList.tsx
 import * as React from 'react';
 import { Search } from '@mui/icons-material';
 import { Box, Grid, InputAdornment, Skeleton, Stack, TextField, Typography } from '@mui/material';
 
-import { ClientCard } from './ClientCard';
+import { ProspectCard } from './ProspectCard';
 
-import type { Client } from '@app-types/clients';
+import type { Prospect } from '@app-types/prospects';
 
-export interface ClientListProps {
-  clients: Client[];
+export interface ProspectListProps {
+  prospects: Prospect[];
   loading: boolean;
   searchQuery: string;
   searchPlaceholder: string;
@@ -16,13 +16,13 @@ export interface ClientListProps {
   emptyTitle: string;
   emptyDescription: string;
   onSearchChange: (value: string) => void;
-  onEditClient: (client: Client) => void;
-  onDeleteClient: (client: Client) => void;
+  onEditProspect: (prospect: Prospect) => void;
+  onDeleteProspect: (prospect: Prospect) => void;
 }
 
-/** List wrapper exposing search and responsive card layout for clients. */
-export function ClientList({
-  clients,
+/** List wrapper exposing search and responsive card layout for prospects. */
+export function ProspectList({
+  prospects,
   loading,
   searchQuery,
   searchPlaceholder,
@@ -30,10 +30,10 @@ export function ClientList({
   emptyTitle,
   emptyDescription,
   onSearchChange,
-  onEditClient,
-  onDeleteClient,
-}: ClientListProps): React.JSX.Element {
-  const showEmpty = !loading && clients.length === 0;
+  onEditProspect,
+  onDeleteProspect,
+}: ProspectListProps): React.JSX.Element {
+  const showEmpty = !loading && prospects.length === 0;
 
   return (
     <Stack spacing={2} sx={{ width: '100%' }}>
@@ -79,9 +79,13 @@ export function ClientList({
         </Box>
       ) : (
         <Grid container spacing={2}>
-          {clients.map((client) => (
-            <Grid key={client.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-              <ClientCard client={client} onEdit={onEditClient} onDelete={onDeleteClient} />
+          {prospects.map((prospect) => (
+            <Grid key={prospect.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+              <ProspectCard
+                prospect={prospect}
+                onEdit={onEditProspect}
+                onDelete={onDeleteProspect}
+              />
             </Grid>
           ))}
         </Grid>

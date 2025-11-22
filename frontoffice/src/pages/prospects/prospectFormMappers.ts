@@ -1,12 +1,14 @@
-// src/pages/clients/clientFormMappers.ts
-import type { ClientFormValues } from '@components/clients/clientFormValues';
+// src/pages/prospects/prospectFormMappers.ts
+import type { ProspectFormValues } from '@components/prospects/prospectFormValues';
 
-import type { ClientCreateInput, ClientUpdateInput } from '@services/graphql/clients.service';
+import type { ProspectCreateInput, ProspectUpdateInput } from '@services/graphql/prospects.service';
 
-function sanitize(values: ClientFormValues): Omit<ClientCreateInput, 'firstName' | 'lastName' | 'email'> {
+function sanitize(
+  values: ProspectFormValues,
+): Omit<ProspectCreateInput, 'firstName' | 'lastName' | 'email'> {
   return {
     phone: values.phone.trim() || undefined,
-    statusId: values.statusId || undefined,
+    status: values.status || undefined,
     levelId: values.levelId || undefined,
     sourceId: values.sourceId || undefined,
     objectiveIds: values.objectiveIds.length ? values.objectiveIds : undefined,
@@ -22,18 +24,18 @@ function sanitize(values: ClientFormValues): Omit<ClientCreateInput, 'firstName'
   };
 }
 
-export function buildClientCreateInput(values: ClientFormValues): ClientCreateInput {
+export function buildProspectCreateInput(values: ProspectFormValues): ProspectCreateInput {
   return {
     firstName: values.firstName.trim(),
     lastName: values.lastName.trim(),
     email: values.email.trim(),
     ...sanitize(values),
-  } satisfies ClientCreateInput;
+  } satisfies ProspectCreateInput;
 }
 
-export function buildClientUpdateInput(id: string, values: ClientFormValues): ClientUpdateInput {
+export function buildProspectUpdateInput(id: string, values: ProspectFormValues): ProspectUpdateInput {
   return {
     id,
-    ...buildClientCreateInput(values),
-  } satisfies ClientUpdateInput;
+    ...buildProspectCreateInput(values),
+  } satisfies ProspectUpdateInput;
 }

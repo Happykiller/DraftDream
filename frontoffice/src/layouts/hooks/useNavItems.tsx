@@ -25,8 +25,8 @@ function createHomeItem(t: (key: string) => string): NavItem {
   return { label: t('home.title'), icon: <Home />, path: '/' };
 }
 
-function createClientsItem(t: (key: string) => string): NavItem {
-  return { label: t('clients.title'), icon: <Group />, path: '/clients' };
+function createProspectsItem(t: (key: string) => string): NavItem {
+  return { label: t('prospects.title'), icon: <Group />, path: '/prospects' };
 }
 
 function createAthletesItem(t: (key: string) => string): NavItem {
@@ -78,7 +78,7 @@ export function buildNavItems(role: Role, t: (key: string) => string): NavItem[]
   switch (role) {
     case UserType.Admin: {
       items.push(
-        createClientsItem(t),
+        createProspectsItem(t),
         createAthletesItem(t),
         createProgramsCoachItem(t),
         createProgramsAthleteItem(t),
@@ -90,7 +90,7 @@ export function buildNavItems(role: Role, t: (key: string) => string): NavItem[]
     }
     case UserType.Coach: {
       items.push(
-        createClientsItem(t),
+        createProspectsItem(t),
         createAthletesItem(t),
         createProgramsCoachItem(t),
         createNutritionCoachItem(t),
