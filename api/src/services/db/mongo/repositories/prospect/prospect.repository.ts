@@ -42,18 +42,18 @@ interface ProspectDoc {
 
 export class BddServiceProspectMongo {
   private col(): Collection<ProspectDoc> {
-    return inversify.mongo.collection<ProspectDoc>('clients');
+    return inversify.mongo.collection<ProspectDoc>('prospects');
   }
 
   async ensureIndexes(db?: Db): Promise<void> {
     try {
-      const collection = db ? db.collection<ProspectDoc>('clients') : this.col();
+      const collection = db ? db.collection<ProspectDoc>('prospects') : this.col();
       await collection.createIndexes([
-        { key: { email: 1 }, name: 'clients_email_unique', unique: true },
-        { key: { status: 1 }, name: 'clients_status' },
-        { key: { levelId: 1 }, name: 'clients_levelId' },
-        { key: { sourceId: 1 }, name: 'clients_sourceId' },
-        { key: { updatedAt: -1 }, name: 'clients_updatedAt' },
+        { key: { email: 1 }, name: 'prospects_email_unique', unique: true },
+        { key: { status: 1 }, name: 'prospects_status' },
+        { key: { levelId: 1 }, name: 'prospects_levelId' },
+        { key: { sourceId: 1 }, name: 'prospects_sourceId' },
+        { key: { updatedAt: -1 }, name: 'prospects_updatedAt' },
       ]);
     } catch (error) {
       this.handleError('ensureIndexes', error);
