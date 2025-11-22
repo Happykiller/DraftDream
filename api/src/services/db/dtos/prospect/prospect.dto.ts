@@ -1,12 +1,12 @@
 // src/services/db/dtos/client/client.dto.ts
-import { ProspectStatusEnum } from '@graphql/prospect/prospect/prospect.enum';
+import { ProspectStatus } from '@src/common/prospect-status.enum';
 
 export interface CreateProspectDto {
   firstName: string;
   lastName: string;
   email: string;
   phone?: string;
-  status?: ProspectStatusEnum;
+  status?: ProspectStatus;
   levelId?: string;
   objectiveIds?: string[];
   activityPreferenceIds?: string[];
@@ -26,7 +26,7 @@ export interface GetProspectDto { id: string }
 
 export interface ListProspectsDto {
   q?: string;
-  status?: ProspectStatusEnum;
+  status?: ProspectStatus;
   levelId?: string;
   sourceId?: string;
   createdBy?: string;

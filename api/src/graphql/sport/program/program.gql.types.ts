@@ -6,20 +6,19 @@ import {
   InputType,
   Int,
   ObjectType,
-  registerEnumType,
 } from '@nestjs/graphql';
 
+import { registerVisibilityEnum, Visibility } from '@graphql/common/visibility.enum';
 import { CategoryGql } from '@graphql/sport/category/category.gql.types';
-import { EquipmentGql } from '@src/graphql/sport/equipment/equipment.gql.types';
-import { MuscleGql } from '@src/graphql/sport/muscle/muscle.gql.types';
 import { TagGql } from '@graphql/tag/tag.gql.types';
 import { UserGql } from '@graphql/user/user.gql.types';
+import { EquipmentGql } from '@src/graphql/sport/equipment/equipment.gql.types';
+import { MuscleGql } from '@src/graphql/sport/muscle/muscle.gql.types';
 
-export enum ProgramVisibility {
-  PRIVATE = 'private',
-  PUBLIC = 'public',
-}
-registerEnumType(ProgramVisibility, { name: 'ProgramVisibility' });
+export const ProgramVisibility = Visibility;
+export type ProgramVisibility = Visibility;
+
+registerVisibilityEnum('ProgramVisibility');
 
 @ObjectType()
 export class ProgramSessionExerciseGql {

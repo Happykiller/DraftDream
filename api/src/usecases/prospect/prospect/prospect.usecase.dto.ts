@@ -1,12 +1,12 @@
 // src/usecases/client/client/client.usecase.dto.ts
-import { ProspectStatusEnum } from '@graphql/prospect/prospect/prospect.enum';
+import { ProspectStatus } from '@src/common/prospect-status.enum';
 
 export interface CreateProspectUsecaseDto {
   firstName: string;
   lastName: string;
   email: string;
   phone?: string;
-  status?: ProspectStatusEnum;
+  status?: ProspectStatus;
   levelId?: string;
   objectiveIds?: string[];
   activityPreferenceIds?: string[];
@@ -26,7 +26,7 @@ export interface UpdateProspectUsecaseDto {
   lastName?: string;
   email?: string;
   phone?: string;
-  status?: ProspectStatusEnum;
+  status?: ProspectStatus;
   levelId?: string;
   objectiveIds?: string[];
   activityPreferenceIds?: string[];
@@ -41,7 +41,7 @@ export interface UpdateProspectUsecaseDto {
 
 export interface ListProspectsUsecaseDto {
   q?: string;
-  status?: ProspectStatusEnum;
+  status?: ProspectStatus;
   levelId?: string;
   sourceId?: string;
   createdBy?: string;

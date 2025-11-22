@@ -1,13 +1,13 @@
 // src/graphql/prospect/level/prospect-level.gql.types.ts
-import { Field, ID, InputType, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 
+import { registerVisibilityEnum, Visibility } from '@graphql/common/visibility.enum';
 import { UserGql } from '@graphql/user/user.gql.types';
 
-export enum ProspectLevelVisibility {
-  PRIVATE = 'private',
-  PUBLIC = 'public',
-}
-registerEnumType(ProspectLevelVisibility, { name: 'ProspectLevelVisibility' });
+export const ProspectLevelVisibility = Visibility;
+export type ProspectLevelVisibility = Visibility;
+
+registerVisibilityEnum('ProspectLevelVisibility');
 
 @ObjectType()
 export class ProspectLevelGql {

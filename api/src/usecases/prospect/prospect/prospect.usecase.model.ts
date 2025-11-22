@@ -1,5 +1,5 @@
 // src/usecases/client/client/client.usecase.model.ts
-import { ProspectStatusEnum } from '@graphql/prospect/prospect/prospect.enum';
+import { ProspectStatus } from '@src/common/prospect-status.enum';
 
 export interface ProspectUsecaseModel {
   id: string;
@@ -7,7 +7,7 @@ export interface ProspectUsecaseModel {
   lastName: string;
   email: string;
   phone?: string;
-  status?: ProspectStatusEnum;
+  status?: ProspectStatus;
   levelId?: string;
   objectiveIds: string[];
   activityPreferenceIds: string[];

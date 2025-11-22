@@ -1,13 +1,13 @@
 // src/graphql/category/category.gql.types.ts
-import { Field, ID, InputType, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 
+import { registerVisibilityEnum, Visibility } from '@graphql/common/visibility.enum';
 import { UserGql } from '@graphql/user/user.gql.types';
 
-export enum CategoryVisibility {
-  PRIVATE = 'private',
-  PUBLIC = 'public',
-}
-registerEnumType(CategoryVisibility, { name: 'CategoryVisibility' });
+export const CategoryVisibility = Visibility;
+export type CategoryVisibility = Visibility;
+
+registerVisibilityEnum('CategoryVisibility');
 
 @ObjectType()
 export class CategoryGql {

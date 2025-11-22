@@ -1,16 +1,17 @@
 // src/graphql/exercise/exercise.gql.types.ts
+import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
+
+import { registerVisibilityEnum, Visibility } from '@graphql/common/visibility.enum';
 import { CategoryGql } from '@graphql/sport/category/category.gql.types';
-import { EquipmentGql } from '@src/graphql/sport/equipment/equipment.gql.types';
-import { MuscleGql } from '@src/graphql/sport/muscle/muscle.gql.types';
 import { TagGql } from '@graphql/tag/tag.gql.types';
 import { UserGql } from '@graphql/user/user.gql.types';
-import { Field, ID, InputType, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { EquipmentGql } from '@src/graphql/sport/equipment/equipment.gql.types';
+import { MuscleGql } from '@src/graphql/sport/muscle/muscle.gql.types';
 
-export enum ExerciseVisibility {
-  PRIVATE = 'private',
-  PUBLIC = 'public',
-}
-registerEnumType(ExerciseVisibility, { name: 'ExerciseVisibility' });
+export const ExerciseVisibility = Visibility;
+export type ExerciseVisibility = Visibility;
+
+registerVisibilityEnum('ExerciseVisibility');
 
 @ObjectType()
 export class ExerciseGql {

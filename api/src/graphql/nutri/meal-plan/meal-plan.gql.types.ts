@@ -6,17 +6,16 @@ import {
   InputType,
   Int,
   ObjectType,
-  registerEnumType,
 } from '@nestjs/graphql';
 
-import { MealTypeVisibility } from '@src/graphql/nutri/meal-type/meal-type.gql.types';
+import { registerVisibilityEnum, Visibility } from '@graphql/common/visibility.enum';
 import { UserGql } from '@graphql/user/user.gql.types';
+import { MealTypeVisibility } from '@src/graphql/nutri/meal-type/meal-type.gql.types';
 
-export enum MealPlanVisibility {
-  PRIVATE = 'private',
-  PUBLIC = 'public',
-}
-registerEnumType(MealPlanVisibility, { name: 'MealPlanVisibility' });
+export const MealPlanVisibility = Visibility;
+export type MealPlanVisibility = Visibility;
+
+registerVisibilityEnum('MealPlanVisibility');
 
 @ObjectType()
 export class MealPlanMealTypeSnapshotGql {

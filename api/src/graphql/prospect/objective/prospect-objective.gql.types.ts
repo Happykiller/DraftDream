@@ -1,13 +1,13 @@
 // src/graphql/prospect/objective/prospect-objective.gql.types.ts
-import { Field, ID, InputType, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 
+import { registerVisibilityEnum, Visibility } from '@graphql/common/visibility.enum';
 import { UserGql } from '@graphql/user/user.gql.types';
 
-export enum ProspectObjectiveVisibility {
-  PRIVATE = 'private',
-  PUBLIC = 'public',
-}
-registerEnumType(ProspectObjectiveVisibility, { name: 'ProspectObjectiveVisibility' });
+export const ProspectObjectiveVisibility = Visibility;
+export type ProspectObjectiveVisibility = Visibility;
+
+registerVisibilityEnum('ProspectObjectiveVisibility');
 
 @ObjectType()
 export class ProspectObjectiveGql {

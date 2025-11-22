@@ -1,5 +1,5 @@
 // src/services/db/models/client/client.model.ts
-import { ProspectStatusEnum } from '@graphql/prospect/prospect/prospect.enum';
+import { ProspectStatus } from '@src/common/prospect-status.enum';
 
 export interface Prospect {
   id: string;
@@ -7,7 +7,7 @@ export interface Prospect {
   lastName: string;
   email: string;
   phone?: string;
-  status?: ProspectStatusEnum;
+  status?: ProspectStatus;
   levelId?: string;
   objectiveIds: string[];
   activityPreferenceIds: string[];

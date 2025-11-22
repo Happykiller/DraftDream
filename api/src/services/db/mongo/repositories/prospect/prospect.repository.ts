@@ -14,7 +14,8 @@ import {
   ListProspectsDto,
   UpdateProspectDto,
 } from '@services/db/dtos/prospect/prospect.dto';
-import { ProspectStatusEnum } from '@graphql/prospect/prospect/prospect.enum';
+
+import { ProspectStatus } from '@src/common/prospect-status.enum';
 
 interface ProspectDoc {
   _id: ObjectId;
@@ -22,7 +23,7 @@ interface ProspectDoc {
   lastName: string;
   email: string;
   phone?: string;
-  status?: ProspectStatusEnum;
+  status?: ProspectStatus;
   levelId?: string;
   objectiveIds: string[];
   activityPreferenceIds: string[];
