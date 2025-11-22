@@ -3,6 +3,7 @@
 import * as React from 'react';
 
 import inversify from '@src/commons/inversify';
+import { ProspectStatusEnum } from '@src/commons/prospects/status';
 
 import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
@@ -30,6 +31,7 @@ export interface Prospect {
   lastName: string;
   email: string;
   phone?: string;
+  status?: ProspectStatusEnum | null;
   levelId?: string;
   sourceId?: string;
   objectiveIds: string[];
@@ -63,6 +65,7 @@ const PROSPECT_FIELDS = `
   lastName
   email
   phone
+  status
   levelId
   sourceId
   objectiveIds
@@ -127,6 +130,7 @@ export interface UseProspectsParams {
   page: number; // 1-based
   limit: number;
   q: string;
+  status?: ProspectStatusEnum | null;
   levelId?: string | null;
   sourceId?: string | null;
 }
@@ -136,6 +140,7 @@ export interface ProspectCreateInput {
   lastName: string;
   email: string;
   phone?: string;
+  status?: ProspectStatusEnum;
   levelId?: string;
   sourceId?: string;
   objectiveIds?: string[];
@@ -153,7 +158,7 @@ export interface ProspectUpdateInput extends Partial<ProspectCreateInput> {
 }
 
 export function useProspects(params: UseProspectsParams) {
-  const { page, limit, q, levelId, sourceId } = params;
+  const { page, limit, q, status, levelId, sourceId } = params;
   const [items, setItems] = React.useState<Prospect[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
@@ -174,6 +179,7 @@ export function useProspects(params: UseProspectsParams) {
               page,
               limit,
               q: q || undefined,
+              status: status || undefined,
               levelId: levelId || undefined,
               sourceId: sourceId || undefined,
             },
@@ -189,7 +195,7 @@ export function useProspects(params: UseProspectsParams) {
     } finally {
       setLoading(false);
     }
-  }, [execute, flashError, gql, levelId, limit, page, q, sourceId]);
+  }, [execute, flashError, gql, levelId, limit, page, q, sourceId, status]);
 
   React.useEffect(() => {
     void load();

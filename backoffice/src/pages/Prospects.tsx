@@ -13,7 +13,7 @@ import { SourcesPanel } from '@pages/prospects/SourcesPanel';
 export function Prospects(): React.JSX.Element {
   const { t } = useTranslation();
   const [params, setParams] = useSearchParams();
-  const tab = (params.get('tab') || 'objectives') as string;
+  const tab = (params.get('tab') || 'prospects') as string;
 
   const setTab = (val: string) =>
     setParams((prev) => {
@@ -32,14 +32,14 @@ export function Prospects(): React.JSX.Element {
         variant="scrollable"
         scrollButtons="auto"
       >
-        <Tab value="clients" label={t('prospects.tabs.clients')} />
+        <Tab value="prospects" label={t('prospects.tabs.prospects')} />
         <Tab value="objectives" label={t('prospects.tabs.objectives')} />
         <Tab value="activity-preferences" label={t('prospects.tabs.activity_preferences')} />
         <Tab value="levels" label={t('prospects.tabs.levels')} />
         <Tab value="sources" label={t('prospects.tabs.sources')} />
       </Tabs>
 
-      {tab === 'clients' && <ClientsPanel />}
+      {tab === 'prospects' && <ClientsPanel />}
       {tab === 'objectives' && <ObjectivesPanel />}
       {tab === 'activity-preferences' && <ActivityPreferencesPanel />}
       {tab === 'levels' && <LevelsPanel />}

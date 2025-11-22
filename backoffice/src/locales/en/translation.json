@@ -454,7 +454,7 @@
   "prospects": {
     "title": "Prospects",
     "tabs": {
-      "clients": "Clients",
+      "prospects": "Prospects",
       "objectives": "Objectives",
       "activity_preferences": "Activity preferences",
       "statuses": "Statuses",
@@ -462,16 +462,16 @@
       "sources": "Sources",
       "aria_label": "Prospect sections"
     },
-    "clients": {
-      "title": "Clients",
-      "search_placeholder": "Search clients...",
-      "create": "New client",
+    "list": {
+      "title": "Prospects",
+      "search_placeholder": "Search prospects...",
+      "create": "New prospect",
       "dialog": {
-        "create_title": "New client",
-        "edit_title": "Edit client"
+        "create_title": "New prospect",
+        "edit_title": "Edit prospect"
       },
       "confirm": {
-        "delete_title": "Delete client"
+        "delete_title": "Delete prospect"
       }
     },
     "objectives": {
@@ -508,6 +508,17 @@
       },
       "confirm": {
         "delete_title": "Delete status"
+      },
+      "values": {
+        "lead": "Lead",
+        "contacte": "Contacted",
+        "rdv_planifie": "Meeting scheduled",
+        "proposition": "Proposal",
+        "negociation": "Negotiation",
+        "gagne": "Won",
+        "perdus": "Lost",
+        "a_faire": "To do",
+        "client": "Client"
       }
     },
     "levels": {

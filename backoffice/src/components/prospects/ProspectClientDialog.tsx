@@ -16,6 +16,7 @@ import {
 import Grid from '@mui/material/Grid';
 import { useTranslation } from 'react-i18next';
 
+import { ProspectStatusEnum, type ProspectStatusOption } from '@commons/prospects/status';
 import type { Prospect } from '@hooks/useProspects';
 import type { ProspectMetadataOption } from '@hooks/useProspectMetadataOptions';
 
@@ -24,6 +25,7 @@ export interface ProspectClientDialogValues {
   lastName: string;
   email: string;
   phone?: string;
+  status: ProspectStatusEnum | '';
   levelId?: string | null;
   sourceId?: string | null;
   objectiveIds: string[];
@@ -41,6 +43,7 @@ const DEFAULT_VALUES: ProspectClientDialogValues = {
   lastName: '',
   email: '',
   phone: '',
+  status: '',
   levelId: null,
   sourceId: null,
   objectiveIds: [],
@@ -57,6 +60,7 @@ export interface ProspectClientDialogProps {
   open: boolean;
   mode: 'create' | 'edit';
   initial?: Prospect | null;
+  statuses: ProspectStatusOption[];
   levels: ProspectMetadataOption[];
   sources: ProspectMetadataOption[];
   objectives: ProspectMetadataOption[];
@@ -90,6 +94,7 @@ export function ProspectClientDialog({
         lastName: initial.lastName,
         email: initial.email,
         phone: initial.phone ?? '',
+        status: initial.status ?? '',
         levelId: initial.levelId ?? null,
         sourceId: initial.sourceId ?? null,
         objectiveIds: initial.objectiveIds ?? [],
@@ -128,7 +133,7 @@ export function ProspectClientDialog({
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="prospect-client-dialog" maxWidth="md" fullWidth>
       <DialogTitle id="prospect-client-dialog">
-        {isEdit ? t('prospects.clients.dialog.edit_title') : t('prospects.clients.dialog.create_title')}
+        {isEdit ? t('prospects.list.dialog.edit_title') : t('prospects.list.dialog.create_title')}
       </DialogTitle>
       <DialogContent dividers>
         {/* General information */}
@@ -178,11 +183,14 @@ export function ProspectClientDialog({
               <TextField
                 select
                 label={t('common.labels.status')}
+                name="status"
+                value={values.status ?? ''}
+                onChange={handleChange}
                 fullWidth
               >
                 <MenuItem value="">{t('common.placeholders.select')}</MenuItem>
                 {statuses.map((status) => (
-                  <MenuItem key={status.id} value={status.id}>
+                  <MenuItem key={status.value} value={status.value}>
                     {status.label}
                   </MenuItem>
                 ))}
