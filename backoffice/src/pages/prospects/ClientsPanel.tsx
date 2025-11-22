@@ -11,7 +11,7 @@ import {
 import { ProspectClientTable } from '@components/prospects/ProspectClientTable';
 import {
   ProspectStatusEnum,
-  prospectStatusTranslationKeys,
+  prospectStatusLabels,
   type ProspectStatusOption,
 } from '@commons/prospects/status';
 import { useProspectMetadataOptions } from '@hooks/useProspectMetadataOptions';
@@ -72,9 +72,9 @@ export function ClientsPanel(): React.JSX.Element {
     () =>
       Object.values(ProspectStatusEnum).map((value) => ({
         value,
-        label: t(prospectStatusTranslationKeys[value]),
+        label: prospectStatusLabels[value],
       })),
-    [t],
+    [],
   );
 
   return (
