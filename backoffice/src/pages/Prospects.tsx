@@ -9,7 +9,6 @@ import { ClientsPanel } from '@pages/prospects/ClientsPanel';
 import { LevelsPanel } from '@pages/prospects/LevelsPanel';
 import { ObjectivesPanel } from '@pages/prospects/ObjectivesPanel';
 import { SourcesPanel } from '@pages/prospects/SourcesPanel';
-import { StatusesPanel } from '@pages/prospects/StatusesPanel';
 
 export function Prospects(): React.JSX.Element {
   const { t } = useTranslation();
@@ -36,7 +35,6 @@ export function Prospects(): React.JSX.Element {
         <Tab value="clients" label={t('prospects.tabs.clients')} />
         <Tab value="objectives" label={t('prospects.tabs.objectives')} />
         <Tab value="activity-preferences" label={t('prospects.tabs.activity_preferences')} />
-        <Tab value="statuses" label={t('prospects.tabs.statuses')} />
         <Tab value="levels" label={t('prospects.tabs.levels')} />
         <Tab value="sources" label={t('prospects.tabs.sources')} />
       </Tabs>
@@ -44,7 +42,6 @@ export function Prospects(): React.JSX.Element {
       {tab === 'clients' && <ClientsPanel />}
       {tab === 'objectives' && <ObjectivesPanel />}
       {tab === 'activity-preferences' && <ActivityPreferencesPanel />}
-      {tab === 'statuses' && <StatusesPanel />}
       {tab === 'levels' && <LevelsPanel />}
       {tab === 'sources' && <SourcesPanel />}
     </Stack>

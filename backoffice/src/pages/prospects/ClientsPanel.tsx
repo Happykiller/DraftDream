@@ -9,8 +9,8 @@ import {
   type ProspectClientDialogValues,
 } from '@components/prospects/ProspectClientDialog';
 import { ProspectClientTable } from '@components/prospects/ProspectClientTable';
-import { useClientMetadataOptions } from '@hooks/useClientMetadataOptions';
-import { useClients } from '@hooks/useClients';
+import { useProspectMetadataOptions } from '@hooks/useProspectMetadataOptions';
+import { useProspects } from '@hooks/useProspects';
 import { useDebouncedValue } from '@hooks/useDebouncedValue';
 import { useTabParams } from '@hooks/useTabParams';
 
@@ -22,19 +22,17 @@ export function ClientsPanel(): React.JSX.Element {
     if (debounced !== q) setQ(debounced);
   }, [debounced, q, setQ]);
 
-  const [statusFilter, setStatusFilter] = React.useState<string | null>(null);
   const [levelFilter, setLevelFilter] = React.useState<string | null>(null);
   const [sourceFilter, setSourceFilter] = React.useState<string | null>(null);
 
-  const { items, total, loading, create, update, remove } = useClients({
+  const { items, total, loading, create, update, remove } = useProspects({
     page,
     limit,
     q,
-    statusId: statusFilter,
     levelId: levelFilter,
     sourceId: sourceFilter,
   });
-  const metadata = useClientMetadataOptions();
+  const metadata = useProspectMetadataOptions();
   const { t } = useTranslation();
 
   const [openCreate, setOpenCreate] = React.useState(false);
@@ -48,7 +46,6 @@ export function ClientsPanel(): React.JSX.Element {
       lastName: values.lastName,
       email: values.email,
       phone: values.phone || undefined,
-      statusId: values.statusId || undefined,
       levelId: values.levelId || undefined,
       sourceId: values.sourceId || undefined,
       objectiveIds: values.objectiveIds,
@@ -72,10 +69,8 @@ export function ClientsPanel(): React.JSX.Element {
         page={page}
         limit={limit}
         q={searchInput}
-        statusFilter={statusFilter}
         levelFilter={levelFilter}
         sourceFilter={sourceFilter}
-        statuses={metadata.statuses}
         levels={metadata.levels}
         sources={metadata.sources}
         loading={loading || metadata.loading}
@@ -85,7 +80,6 @@ export function ClientsPanel(): React.JSX.Element {
         onQueryChange={setSearchInput}
         onPageChange={setPage}
         onLimitChange={setLimit}
-        onStatusFilterChange={setStatusFilter}
         onLevelFilterChange={setLevelFilter}
         onSourceFilterChange={setSourceFilter}
       />
@@ -93,7 +87,6 @@ export function ClientsPanel(): React.JSX.Element {
       <ProspectClientDialog
         open={openCreate}
         mode="create"
-        statuses={metadata.statuses}
         levels={metadata.levels}
         sources={metadata.sources}
         objectives={metadata.objectives}
@@ -109,7 +102,6 @@ export function ClientsPanel(): React.JSX.Element {
         open={!!editId && !!editing}
         mode="edit"
         initial={editing ?? undefined}
-        statuses={metadata.statuses}
         levels={metadata.levels}
         sources={metadata.sources}
         objectives={metadata.objectives}

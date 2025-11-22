@@ -6,30 +6,27 @@ import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Button, IconButton, MenuItem, Stack, TextField, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import type { Client } from '@hooks/useClients';
-import type { ClientMetadataOption } from '@hooks/useClientMetadataOptions';
+import type { Prospect } from '@hooks/useProspects';
+import type { ProspectMetadataOption } from '@hooks/useProspectMetadataOptions';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 
 export interface ProspectClientTableProps {
-  rows: Client[];
+  rows: Prospect[];
   total: number;
   page: number; // 1-based
   limit: number;
   q: string;
-  statusFilter?: string | null;
   levelFilter?: string | null;
   sourceFilter?: string | null;
-  statuses: ClientMetadataOption[];
-  levels: ClientMetadataOption[];
-  sources: ClientMetadataOption[];
+  levels: ProspectMetadataOption[];
+  sources: ProspectMetadataOption[];
   loading: boolean;
   onCreate: () => void;
-  onEdit: (row: Client) => void;
-  onDelete: (row: Client) => void;
+  onEdit: (row: Prospect) => void;
+  onDelete: (row: Prospect) => void;
   onQueryChange: (value: string) => void;
   onPageChange: (page: number) => void;
   onLimitChange: (limit: number) => void;
-  onStatusFilterChange: (value: string | null) => void;
   onLevelFilterChange: (value: string | null) => void;
   onSourceFilterChange: (value: string | null) => void;
 }
@@ -66,7 +63,7 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
     return value.map((item) => item.label).join(', ');
   }, [t]);
 
-  const columns = React.useMemo<GridColDef<Client>[]>(
+  const columns = React.useMemo<GridColDef<Prospect>[]>(
     () => [
       { field: 'firstName', headerName: t('common.labels.first_name'), flex: 1, minWidth: 160 },
       { field: 'lastName', headerName: t('common.labels.last_name'), flex: 1, minWidth: 160 },

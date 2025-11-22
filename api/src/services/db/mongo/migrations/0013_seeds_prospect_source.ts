@@ -17,11 +17,11 @@ const FR_SOURCES = [
 ];
 
 const migration: Migration = {
-  id: '0013_seeds_client_source',
-  description: 'Seed default client sources (locale=fr) and link to admin user as createdBy',
+  id: '0013_seeds_prospect_source',
+  description: 'Seed default prospect sources (locale=fr) and link to admin user as createdBy',
 
   async up(db: Db, log) {
-    const col = db.collection('client_sources');
+    const col = db.collection('prospect_sources');
     await col.createIndexes([
       { key: { slug: 1, locale: 1 }, name: 'client_sources_slug_locale', unique: true },
       { key: { updatedAt: -1 }, name: 'client_sources_updatedAt' },

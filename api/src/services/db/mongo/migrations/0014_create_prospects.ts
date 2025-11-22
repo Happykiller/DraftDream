@@ -4,11 +4,11 @@ import { Db } from 'mongodb';
 import { Migration } from '@services/db/mongo/migration.runner.mongo';
 
 const migration: Migration = {
-  id: '0014_create_clients',
+  id: '0014_create_prospects',
   description: 'Ensure clients collection indexes',
 
   async up(db: Db, log) {
-    const col = db.collection('clients');
+    const col = db.collection('prospects');
     await col.createIndexes([
       { key: { email: 1 }, name: 'clients_email_unique', unique: true },
       { key: { statusId: 1 }, name: 'clients_statusId' },

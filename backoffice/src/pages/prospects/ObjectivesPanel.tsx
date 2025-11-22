@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { ConfirmDialog } from '@components/common/ConfirmDialog';
 import { ProspectObjectiveDialog } from '@components/prospects/ProspectObjectiveDialog';
 import { ProspectObjectiveTable } from '@components/prospects/ProspectObjectiveTable';
-import { useClientObjectives } from '@hooks/useClientObjectives';
+import { useProspectObjectives } from '@hooks/useProspectObjectives';
 import { useDebouncedValue } from '@hooks/useDebouncedValue';
 import { useTabParams } from '@hooks/useTabParams';
 
@@ -18,7 +18,7 @@ export function ObjectivesPanel(): React.JSX.Element {
     if (debounced !== q) setQ(debounced);
   }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update, remove } = useClientObjectives({ page, limit, q });
+  const { items, total, loading, create, update, remove } = useProspectObjectives({ page, limit, q });
   const { t } = useTranslation();
 
   const [openCreate, setOpenCreate] = React.useState(false);

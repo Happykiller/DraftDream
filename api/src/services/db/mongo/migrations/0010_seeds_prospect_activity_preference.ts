@@ -18,11 +18,11 @@ const FR_ACTIVITY_PREFERENCES = [
 ];
 
 const migration: Migration = {
-  id: '0010_seeds_client_activity_preference',
-  description: 'Seed default client activity preferences (locale=fr) and link to admin user as createdBy',
+  id: '0010_seeds_prospect_activity_preference',
+  description: 'Seed default prospect activity preferences (locale=fr) and link to admin user as createdBy',
 
   async up(db: Db, log) {
-    const col = db.collection('client_activity_preferences');
+    const col = db.collection('prospect_activity_preferences');
     await col.createIndexes([
       { key: { slug: 1, locale: 1 }, name: 'client_activity_preferences_slug_locale', unique: true },
       { key: { updatedAt: -1 }, name: 'client_activity_preferences_updatedAt' },

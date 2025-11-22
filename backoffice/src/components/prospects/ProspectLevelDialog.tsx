@@ -3,18 +3,18 @@ import * as React from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Stack, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import type { ClientLevel, ClientLevelVisibility } from '@hooks/useClientLevels';
+import type { ProspectLevel, ProspectLevelVisibility } from '@hooks/useProspectLevels';
 
 export interface ProspectLevelDialogValues {
   label: string;
   locale: string;
-  visibility: ClientLevelVisibility;
+  visibility: ProspectLevelVisibility;
 }
 
 export interface ProspectLevelDialogProps {
   open: boolean;
   mode: 'create' | 'edit';
-  initial?: ClientLevel;
+  initial?: ProspectLevel;
   onClose: () => void;
   onSubmit: (values: ProspectLevelDialogValues) => Promise<void> | void;
 }

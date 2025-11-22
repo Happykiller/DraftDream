@@ -32,3 +32,8 @@
 - Keep logging consistent via `common/logger.ts` helpers; avoid `console.log`.
 - Enforce English comments and staircase-style imports as defined in the root `AGENTS.md`.
 - Treat secrets (`JWT_SECRET`, database credentials) as sensitive—never print them in logs or commits.
+
+## Definition of Done
+- **Documentation**: If use cases are modified, update the corresponding documentation in `docs/features`.
+- **Testing**: Finish with unit tests; only use cases need to be tested.
+- **Linting**: Ensure the linter checks pass (`npm run lint`).

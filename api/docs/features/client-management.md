@@ -95,29 +95,25 @@ The client management feature allows coaches to track detailed information about
 
 ## Domain: Client Status
 
-### Scenario: Track client lifecycle status
+### Description
+Client status is tracked via a fixed set of states to monitor the lifecycle of a prospect/client.
 
-**Given** a client has been inactive for 60 days
-**And** no sessions were logged
+### Status Values
+- **LEAD**: Initial contact or potential client
+- **CONTACTE**: Contact has been made
+- **RDV_PLANIFIE**: Appointment scheduled
+- **PROPOSITION**: Proposal sent
+- **NEGOCIATION**: In negotiation
+- **GAGNE**: Client won / signed
+- **PERDUS**: Client lost
+- **A_FAIRE**: Action required
+- **CLIENT**: Active client
 
-**When** the system or coach updates status:
-```json
-{
-  "label": "Inactive",
-  "reason": "No activity for 60 days",
-  "statusDate": "2024-02-01",
-  "is_active": true,
-  "createdBy": "system"
-}
-```
+### Scenario: Update client status
 
-**Then** the system should:
-1. Update client status
-2. Generate slug: `inactive`
-3. Trigger retention workflows
-4. Update reporting metrics
-
-**And** status history should be maintained
+**Given** a client exists with status `LEAD`
+**When** the coach contacts the client
+**Then** the coach updates the client profile with status `CONTACTE`
 
 ---
 
@@ -202,10 +198,9 @@ The client management feature allows coaches to track detailed information about
 - **Impact**: Affects program difficulty and exercise selection
 
 ### Status Tracking
-- **Standard Statuses**: Active, inactive, paused, churned
-- **Automation**: Can be auto-updated based on activity
-- **History**: Maintain status change history
-- **Business Metrics**: Used for retention and churn analysis
+- **Enum Based**: Status is a fixed enum on the Client profile.
+- **Lifecycle**: Tracks progression from Lead to Client (or Lost).
+- **Business Metrics**: Used for conversion and pipeline analysis.
 
 ### Source Tracking
 - **Channels**: Organic, referral, paid ads, social media, etc.
@@ -326,10 +321,6 @@ mutation UpdateClientLevel($id: ID!, $input: UpdateClientLevelInput!) {
 - `UPDATE_CLIENT_LEVEL_USECASE` - Failed to update level
 - `DELETE_CLIENT_LEVEL_USECASE` - Failed to delete level
 
-### Status
-- `CREATE_CLIENT_STATUS_USECASE` - Failed to create status
-- `UPDATE_CLIENT_STATUS_USECASE` - Failed to update status
-- `DELETE_CLIENT_STATUS_USECASE` - Failed to delete status
 
 ### Sources
 - `CREATE_CLIENT_SOURCE_USECASE` - Failed to create source

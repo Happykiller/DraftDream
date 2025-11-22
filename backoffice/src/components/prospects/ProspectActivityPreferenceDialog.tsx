@@ -4,20 +4,20 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, St
 import { useTranslation } from 'react-i18next';
 
 import type {
-  ClientActivityPreference,
-  ClientActivityPreferenceVisibility,
-} from '@hooks/useClientActivityPreferences';
+  ProspectActivityPreference,
+  ProspectActivityPreferenceVisibility,
+} from '@hooks/useProspectActivityPreferences';
 
 export interface ProspectActivityPreferenceDialogValues {
   label: string;
   locale: string;
-  visibility: ClientActivityPreferenceVisibility;
+  visibility: ProspectActivityPreferenceVisibility;
 }
 
 export interface ProspectActivityPreferenceDialogProps {
   open: boolean;
   mode: 'create' | 'edit';
-  initial?: ClientActivityPreference;
+  initial?: ProspectActivityPreference;
   onClose: () => void;
   onSubmit: (values: ProspectActivityPreferenceDialogValues) => Promise<void> | void;
 }

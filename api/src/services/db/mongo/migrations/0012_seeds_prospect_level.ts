@@ -8,11 +8,11 @@ import { toSlug } from './0004_seeds_category';
 const FR_LEVELS = ['Débutant', 'Intermédiaire', 'Avancée'];
 
 const migration: Migration = {
-  id: '0012_seeds_client_level',
-  description: 'Seed default client levels (locale=fr) and link to admin user as createdBy',
+  id: '0012_seeds_prospect_level',
+  description: 'Seed default prospect levels (locale=fr) and link to admin user as createdBy',
 
   async up(db: Db, log) {
-    const col = db.collection('client_levels');
+    const col = db.collection('prospect_levels');
     await col.createIndexes([
       { key: { slug: 1, locale: 1 }, name: 'client_levels_slug_locale', unique: true },
       { key: { updatedAt: -1 }, name: 'client_levels_updatedAt' },

@@ -6,19 +6,19 @@ import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Button, IconButton, Stack, TextField, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import type { ClientLevel } from '@hooks/useClientLevels';
+import type { ProspectLevel } from '@hooks/useProspectLevels';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 
 export interface ProspectLevelTableProps {
-  rows: ClientLevel[];
+  rows: ProspectLevel[];
   total: number;
   page: number; // 1-based
   limit: number;
   q: string;
   loading: boolean;
   onCreate: () => void;
-  onEdit: (row: ClientLevel) => void;
-  onDelete: (row: ClientLevel) => void;
+  onEdit: (row: ProspectLevel) => void;
+  onDelete: (row: ProspectLevel) => void;
   onQueryChange: (q: string) => void;
   onPageChange: (page: number) => void; // 1-based
   onLimitChange: (limit: number) => void;
@@ -42,7 +42,7 @@ export function ProspectLevelTable(props: ProspectLevelTableProps): React.JSX.El
   const { t } = useTranslation();
   const fmtDate = useDateFormatter();
 
-  const columns = React.useMemo<GridColDef<ClientLevel>[]>(
+  const columns = React.useMemo<GridColDef<ProspectLevel>[]>(
     () => [
       { field: 'slug', headerName: t('common.labels.slug'), flex: 1 },
       { field: 'label', headerName: t('common.labels.label'), flex: 1 },

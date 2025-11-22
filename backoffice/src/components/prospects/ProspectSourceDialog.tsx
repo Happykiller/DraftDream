@@ -3,18 +3,18 @@ import * as React from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Stack, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import type { ClientSource, ClientSourceVisibility } from '@hooks/useClientSources';
+import type { ProspectSource, ProspectSourceVisibility } from '@hooks/useProspectSources';
 
 export interface ProspectSourceDialogValues {
   label: string;
   locale: string;
-  visibility: ClientSourceVisibility;
+  visibility: ProspectSourceVisibility;
 }
 
 export interface ProspectSourceDialogProps {
   open: boolean;
   mode: 'create' | 'edit';
-  initial?: ClientSource;
+  initial?: ProspectSource;
   onClose: () => void;
   onSubmit: (values: ProspectSourceDialogValues) => Promise<void> | void;
 }

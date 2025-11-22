@@ -274,133 +274,109 @@ type ExerciseListGql {
   limit: Int!
 }
 
-type ClientObjectiveGql {
+type ProspectObjectiveGql {
   id: ID!
   slug: String!
   locale: String!
   label: String!
-  visibility: ClientObjectiveVisibility!
+  visibility: ProspectObjectiveVisibility!
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   creator: UserGql
 }
 
-enum ClientObjectiveVisibility {
+enum ProspectObjectiveVisibility {
   PRIVATE
   PUBLIC
 }
 
-type ClientObjectiveListGql {
-  items: [ClientObjectiveGql!]!
+type ProspectObjectiveListGql {
+  items: [ProspectObjectiveGql!]!
   total: Int!
   page: Int!
   limit: Int!
 }
 
-type ClientActivityPreferenceGql {
+type ProspectActivityPreferenceGql {
   id: ID!
   slug: String!
   locale: String!
   label: String!
-  visibility: ClientActivityPreferenceVisibility!
+  visibility: ProspectActivityPreferenceVisibility!
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   creator: UserGql
 }
 
-enum ClientActivityPreferenceVisibility {
+enum ProspectActivityPreferenceVisibility {
   PRIVATE
   PUBLIC
 }
 
-type ClientActivityPreferenceListGql {
-  items: [ClientActivityPreferenceGql!]!
+type ProspectActivityPreferenceListGql {
+  items: [ProspectActivityPreferenceGql!]!
   total: Int!
   page: Int!
   limit: Int!
 }
 
-type ClientStatusGql {
+type ProspectLevelGql {
   id: ID!
   slug: String!
   locale: String!
   label: String!
-  visibility: ClientStatusVisibility!
+  visibility: ProspectLevelVisibility!
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   creator: UserGql
 }
 
-enum ClientStatusVisibility {
+enum ProspectLevelVisibility {
   PRIVATE
   PUBLIC
 }
 
-type ClientStatusListGql {
-  items: [ClientStatusGql!]!
+type ProspectLevelListGql {
+  items: [ProspectLevelGql!]!
   total: Int!
   page: Int!
   limit: Int!
 }
 
-type ClientLevelGql {
+type ProspectSourceGql {
   id: ID!
   slug: String!
   locale: String!
   label: String!
-  visibility: ClientLevelVisibility!
+  visibility: ProspectSourceVisibility!
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   creator: UserGql
 }
 
-enum ClientLevelVisibility {
+enum ProspectSourceVisibility {
   PRIVATE
   PUBLIC
 }
 
-type ClientLevelListGql {
-  items: [ClientLevelGql!]!
+type ProspectSourceListGql {
+  items: [ProspectSourceGql!]!
   total: Int!
   page: Int!
   limit: Int!
 }
 
-type ClientSourceGql {
-  id: ID!
-  slug: String!
-  locale: String!
-  label: String!
-  visibility: ClientSourceVisibility!
-  createdBy: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  creator: UserGql
-}
-
-enum ClientSourceVisibility {
-  PRIVATE
-  PUBLIC
-}
-
-type ClientSourceListGql {
-  items: [ClientSourceGql!]!
-  total: Int!
-  page: Int!
-  limit: Int!
-}
-
-type ClientGql {
+type ProspectGql {
   id: ID!
   firstName: String!
   lastName: String!
   email: String!
   phone: String
-  statusId: String
+  status: ProspectStatusEnum
   levelId: String
   objectiveIds: [ID!]!
   activityPreferenceIds: [ID!]!
@@ -415,15 +391,26 @@ type ClientGql {
   createdAt: DateTime!
   updatedAt: DateTime!
   creator: UserGql
-  status: ClientStatusGql
-  level: ClientLevelGql
-  source: ClientSourceGql
-  objectives: [ClientObjectiveGql]
-  activityPreferences: [ClientActivityPreferenceGql]
+  level: ProspectLevelGql
+  source: ProspectSourceGql
+  objectives: [ProspectObjectiveGql]
+  activityPreferences: [ProspectActivityPreferenceGql]
 }
 
-type ClientListGql {
-  items: [ClientGql!]!
+enum ProspectStatusEnum {
+  LEAD
+  CONTACTE
+  RDV_PLANIFIE
+  PROPOSITION
+  NEGOCIATION
+  GAGNE
+  PERDUS
+  A_FAIRE
+  CLIENT
+}
+
+type ProspectListGql {
+  items: [ProspectGql!]!
   total: Int!
   page: Int!
   limit: Int!
@@ -616,18 +603,16 @@ type Query {
   program_list(input: ListProgramsInput): ProgramListGql!
   category_get(id: ID!): CategoryGql
   category_list(input: ListCategoriesInput): CategoryListGql!
-  clientObjective_get(id: ID!): ClientObjectiveGql
-  clientObjective_list(input: ListClientObjectivesInput): ClientObjectiveListGql!
-  clientActivityPreference_get(id: ID!): ClientActivityPreferenceGql
-  clientActivityPreference_list(input: ListClientActivityPreferencesInput): ClientActivityPreferenceListGql!
-  clientStatus_get(id: ID!): ClientStatusGql
-  clientStatus_list(input: ListClientStatusesInput): ClientStatusListGql!
-  clientLevel_get(id: ID!): ClientLevelGql
-  clientLevel_list(input: ListClientLevelsInput): ClientLevelListGql!
-  clientSource_get(id: ID!): ClientSourceGql
-  clientSource_list(input: ListClientSourcesInput): ClientSourceListGql!
-  client_get(id: ID!): ClientGql
-  client_list(input: ListClientsInput): ClientListGql!
+  prospectObjective_get(id: ID!): ProspectObjectiveGql
+  prospectObjective_list(input: ListProspectObjectivesInput): ProspectObjectiveListGql!
+  prospectActivityPreference_get(id: ID!): ProspectActivityPreferenceGql
+  prospectActivityPreference_list(input: ListProspectActivityPreferencesInput): ProspectActivityPreferenceListGql!
+  prospectLevel_get(id: ID!): ProspectLevelGql
+  prospectLevel_list(input: ListProspectLevelsInput): ProspectLevelListGql!
+  prospectSource_get(id: ID!): ProspectSourceGql
+  prospectSource_list(input: ListProspectSourcesInput): ProspectSourceListGql!
+  prospect_get(id: ID!): ProspectGql
+  prospect_list(input: ListProspectsInput): ProspectListGql!
   exercise_get(id: ID!): ExerciseGql
   exercise_list(input: ListExercisesInput): ExerciseListGql!
   equipment_get(id: ID!): EquipmentGql
@@ -703,54 +688,45 @@ input ListCategoriesInput {
   page: Int
 }
 
-input ListClientObjectivesInput {
+input ListProspectObjectivesInput {
   q: String
   locale: String
   createdBy: String
-  visibility: ClientObjectiveVisibility
+  visibility: ProspectObjectiveVisibility
   limit: Int
   page: Int
 }
 
-input ListClientActivityPreferencesInput {
+input ListProspectActivityPreferencesInput {
   q: String
   locale: String
   createdBy: String
-  visibility: ClientActivityPreferenceVisibility
+  visibility: ProspectActivityPreferenceVisibility
   limit: Int
   page: Int
 }
 
-input ListClientStatusesInput {
+input ListProspectLevelsInput {
   q: String
   locale: String
   createdBy: String
-  visibility: ClientStatusVisibility
+  visibility: ProspectLevelVisibility
   limit: Int
   page: Int
 }
 
-input ListClientLevelsInput {
+input ListProspectSourcesInput {
   q: String
   locale: String
   createdBy: String
-  visibility: ClientLevelVisibility
+  visibility: ProspectSourceVisibility
   limit: Int
   page: Int
 }
 
-input ListClientSourcesInput {
+input ListProspectsInput {
   q: String
-  locale: String
-  createdBy: String
-  visibility: ClientSourceVisibility
-  limit: Int
-  page: Int
-}
-
-input ListClientsInput {
-  q: String
-  statusId: String
+  status: ProspectStatusEnum
   levelId: String
   sourceId: String
   createdBy: String
@@ -846,24 +822,21 @@ type Mutation {
   category_create(input: CreateCategoryInput!): CategoryGql
   category_update(input: UpdateCategoryInput!): CategoryGql
   category_delete(id: ID!): Boolean!
-  clientObjective_create(input: CreateClientObjectiveInput!): ClientObjectiveGql
-  clientObjective_update(input: UpdateClientObjectiveInput!): ClientObjectiveGql
-  clientObjective_delete(id: ID!): Boolean!
-  clientActivityPreference_create(input: CreateClientActivityPreferenceInput!): ClientActivityPreferenceGql
-  clientActivityPreference_update(input: UpdateClientActivityPreferenceInput!): ClientActivityPreferenceGql
-  clientActivityPreference_delete(id: ID!): Boolean!
-  clientStatus_create(input: CreateClientStatusInput!): ClientStatusGql
-  clientStatus_update(input: UpdateClientStatusInput!): ClientStatusGql
-  clientStatus_delete(id: ID!): Boolean!
-  clientLevel_create(input: CreateClientLevelInput!): ClientLevelGql
-  clientLevel_update(input: UpdateClientLevelInput!): ClientLevelGql
-  clientLevel_delete(id: ID!): Boolean!
-  clientSource_create(input: CreateClientSourceInput!): ClientSourceGql
-  clientSource_update(input: UpdateClientSourceInput!): ClientSourceGql
-  clientSource_delete(id: ID!): Boolean!
-  client_create(input: CreateClientInput!): ClientGql
-  client_update(input: UpdateClientInput!): ClientGql
-  client_delete(id: ID!): Boolean!
+  prospectObjective_create(input: CreateProspectObjectiveInput!): ProspectObjectiveGql
+  prospectObjective_update(input: UpdateProspectObjectiveInput!): ProspectObjectiveGql
+  prospectObjective_delete(id: ID!): Boolean!
+  prospectActivityPreference_create(input: CreateProspectActivityPreferenceInput!): ProspectActivityPreferenceGql
+  prospectActivityPreference_update(input: UpdateProspectActivityPreferenceInput!): ProspectActivityPreferenceGql
+  prospectActivityPreference_delete(id: ID!): Boolean!
+  prospectLevel_create(input: CreateProspectLevelInput!): ProspectLevelGql
+  prospectLevel_update(input: UpdateProspectLevelInput!): ProspectLevelGql
+  prospectLevel_delete(id: ID!): Boolean!
+  prospectSource_create(input: CreateProspectSourceInput!): ProspectSourceGql
+  prospectSource_update(input: UpdateProspectSourceInput!): ProspectSourceGql
+  prospectSource_delete(id: ID!): Boolean!
+  prospect_create(input: CreateProspectInput!): ProspectGql
+  prospect_update(input: UpdateProspectInput!): ProspectGql
+  prospect_delete(id: ID!): Boolean!
   exercise_create(input: CreateExerciseInput!): ExerciseGql
   exercise_update(input: UpdateExerciseInput!): ExerciseGql
   exercise_softDelete(id: ID!): Boolean!
@@ -1043,77 +1016,64 @@ input UpdateCategoryInput {
   visibility: CategoryVisibility
 }
 
-input CreateClientObjectiveInput {
+input CreateProspectObjectiveInput {
   locale: String!
   label: String!
-  visibility: ClientObjectiveVisibility!
+  visibility: ProspectObjectiveVisibility!
 }
 
-input UpdateClientObjectiveInput {
+input UpdateProspectObjectiveInput {
   id: ID!
   locale: String
   label: String
-  visibility: ClientObjectiveVisibility
+  visibility: ProspectObjectiveVisibility
 }
 
-input CreateClientActivityPreferenceInput {
+input CreateProspectActivityPreferenceInput {
   locale: String!
   label: String!
-  visibility: ClientActivityPreferenceVisibility!
+  visibility: ProspectActivityPreferenceVisibility!
 }
 
-input UpdateClientActivityPreferenceInput {
+input UpdateProspectActivityPreferenceInput {
   id: ID!
   locale: String
   label: String
-  visibility: ClientActivityPreferenceVisibility
+  visibility: ProspectActivityPreferenceVisibility
 }
 
-input CreateClientStatusInput {
+input CreateProspectLevelInput {
   locale: String!
   label: String!
-  visibility: ClientStatusVisibility!
+  visibility: ProspectLevelVisibility!
 }
 
-input UpdateClientStatusInput {
+input UpdateProspectLevelInput {
   id: ID!
   locale: String
   label: String
-  visibility: ClientStatusVisibility
+  visibility: ProspectLevelVisibility
 }
 
-input CreateClientLevelInput {
+input CreateProspectSourceInput {
   locale: String!
   label: String!
-  visibility: ClientLevelVisibility!
+  visibility: ProspectSourceVisibility!
 }
 
-input UpdateClientLevelInput {
+input UpdateProspectSourceInput {
   id: ID!
   locale: String
   label: String
-  visibility: ClientLevelVisibility
+  visibility: ProspectSourceVisibility
 }
 
-input CreateClientSourceInput {
-  locale: String!
-  label: String!
-  visibility: ClientSourceVisibility!
-}
-
-input UpdateClientSourceInput {
-  id: ID!
-  locale: String
-  label: String
-  visibility: ClientSourceVisibility
-}
-
-input CreateClientInput {
+input CreateProspectInput {
   firstName: String!
   lastName: String!
   email: String!
   phone: String
-  statusId: String
+  status: ProspectStatusEnum
   levelId: String
   objectiveIds: [ID!]
   activityPreferenceIds: [ID!]
@@ -1126,13 +1086,13 @@ input CreateClientInput {
   desiredStartDate: DateTime
 }
 
-input UpdateClientInput {
+input UpdateProspectInput {
   id: ID!
   firstName: String
   lastName: String
   email: String
   phone: String
-  statusId: String
+  status: ProspectStatusEnum
   levelId: String
   objectiveIds: [ID!]
   activityPreferenceIds: [ID!]

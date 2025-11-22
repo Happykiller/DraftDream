@@ -13,12 +13,11 @@ import { SessionModule } from '@src/graphql/sport/session/session.module';
 import { ProgramModule } from '@src/graphql/sport/program/program.module';
 import { ExerciseModule } from '@src/graphql/sport/exercise/exercise.module';
 import { CategoryModule } from '@graphql/sport/category/category.module';
-import { ClientObjectiveModule } from '@graphql/client/objective/client-objective.module';
-import { ClientActivityPreferenceModule } from '@graphql/client/activity-preference/client-activity-preference.module';
-import { ClientStatusModule } from '@graphql/client/status/client-status.module';
-import { ClientLevelModule } from '@graphql/client/level/client-level.module';
-import { ClientSourceModule } from '@graphql/client/source/client-source.module';
-import { ClientModule } from '@graphql/client/client/client.module';
+import { ProspectObjectiveModule } from '@graphql/prospect/objective/prospect-objective.module';
+import { ProspectActivityPreferenceModule } from '@graphql/prospect/activity-preference/prospect-activity-preference.module';
+import { ProspectLevelModule } from '@graphql/prospect/level/prospect-level.module';
+import { ProspectSourceModule } from '@graphql/prospect/source/prospect-source.module';
+import { ProspectModule } from '@graphql/prospect/prospect/prospect.module';
 import { EquipmentModule } from '@src/graphql/sport/equipment/equipment.module';
 import { MealTypeModule } from '@src/graphql/nutri/meal-type/meal-type.module';
 import { MealDayModule } from '@src/graphql/nutri/meal-day/meal-day.module';
@@ -37,12 +36,11 @@ import { CoachAthleteModule } from '@graphql/athlete/coach-athlete/coach-athlete
     SessionModule,
     ProgramModule,
     CategoryModule,
-    ClientObjectiveModule,
-    ClientActivityPreferenceModule,
-    ClientStatusModule,
-    ClientLevelModule,
-    ClientSourceModule,
-    ClientModule,
+    ProspectObjectiveModule,
+    ProspectActivityPreferenceModule,
+    ProspectLevelModule,
+    ProspectSourceModule,
+    ProspectModule,
     ExerciseModule,
     EquipmentModule,
     MealTypeModule,
@@ -56,4 +54,4 @@ import { CoachAthleteModule } from '@graphql/athlete/coach-athlete/coach-athlete
     })
   ],
 })
-export class AppModule {}
+export class AppModule { }

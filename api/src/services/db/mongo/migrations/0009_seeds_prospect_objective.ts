@@ -17,11 +17,11 @@ const FR_OBJECTIVES = [
 ];
 
 const migration: Migration = {
-  id: '0009_seeds_client_objective',
-  description: 'Seed default client objectives (locale=fr) and link to admin user as createdBy',
+  id: '0009_seeds_prospect_objective',
+  description: 'Seed default prospect objectives (locale=fr) and link to admin user as createdBy',
 
   async up(db: Db, log) {
-    const col = db.collection('client_objectives');
+    const col = db.collection('prospect_objectives');
     await col.createIndexes([
       { key: { slug: 1, locale: 1 }, name: 'uniq_slug_locale', unique: true },
       { key: { updatedAt: -1 }, name: 'by_updatedAt' },

@@ -16,15 +16,14 @@ import {
 import Grid from '@mui/material/Grid';
 import { useTranslation } from 'react-i18next';
 
-import type { Client } from '@hooks/useClients';
-import type { ClientMetadataOption } from '@hooks/useClientMetadataOptions';
+import type { Prospect } from '@hooks/useProspects';
+import type { ProspectMetadataOption } from '@hooks/useProspectMetadataOptions';
 
 export interface ProspectClientDialogValues {
   firstName: string;
   lastName: string;
   email: string;
   phone?: string;
-  statusId?: string | null;
   levelId?: string | null;
   sourceId?: string | null;
   objectiveIds: string[];
@@ -42,7 +41,6 @@ const DEFAULT_VALUES: ProspectClientDialogValues = {
   lastName: '',
   email: '',
   phone: '',
-  statusId: null,
   levelId: null,
   sourceId: null,
   objectiveIds: [],
@@ -58,12 +56,11 @@ const DEFAULT_VALUES: ProspectClientDialogValues = {
 export interface ProspectClientDialogProps {
   open: boolean;
   mode: 'create' | 'edit';
-  initial?: Client | null;
-  statuses: ClientMetadataOption[];
-  levels: ClientMetadataOption[];
-  sources: ClientMetadataOption[];
-  objectives: ClientMetadataOption[];
-  activityPreferences: ClientMetadataOption[];
+  initial?: Prospect | null;
+  levels: ProspectMetadataOption[];
+  sources: ProspectMetadataOption[];
+  objectives: ProspectMetadataOption[];
+  activityPreferences: ProspectMetadataOption[];
   loadingOptions: boolean;
   onClose: () => void;
   onSubmit: (values: ProspectClientDialogValues) => Promise<void> | void;
@@ -93,7 +90,6 @@ export function ProspectClientDialog({
         lastName: initial.lastName,
         email: initial.email,
         phone: initial.phone ?? '',
-        statusId: initial.statusId ?? null,
         levelId: initial.levelId ?? null,
         sourceId: initial.sourceId ?? null,
         objectiveIds: initial.objectiveIds ?? [],
@@ -182,9 +178,6 @@ export function ProspectClientDialog({
               <TextField
                 select
                 label={t('common.labels.status')}
-                name="statusId"
-                value={values.statusId ?? ''}
-                onChange={(event) => setValues((prev) => ({ ...prev, statusId: event.target.value || null }))}
                 fullWidth
               >
                 <MenuItem value="">{t('common.placeholders.select')}</MenuItem>
