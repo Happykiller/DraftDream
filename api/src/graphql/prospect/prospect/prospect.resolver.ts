@@ -110,7 +110,7 @@ export class ProspectResolver {
   @Query(() => ProspectListGql, { name: 'prospect_list' })
   @Auth(Role.ADMIN, Role.COACH)
   async prospect_list(
-    @Args('input', { nullable: true }) input: ListProspectsInput | null,
+    @Args('input', { type: () => ListProspectsInput, nullable: true }) input: ListProspectsInput | null,
     @Context('req') req: any,
   ): Promise<ProspectListGql> {
     const session = this.extractSession(req);
