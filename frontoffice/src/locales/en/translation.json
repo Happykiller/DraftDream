@@ -78,10 +78,14 @@
         "notes": "Notes",
         "budget": "Budget",
         "start_date": "Desired start date",
+        "created_label": "Start: {{date}}",
         "level": "Level :",
         "created": "Created on {{date}}",
         "updated": "Updated on {{date}}",
-        "no_budget": "Budget not defined"
+        "no_budget": "Budget not defined",
+        "stage_duration": "{{count}} days in this stage",
+        "stage_duration_one": "{{count}} day in this stage",
+        "stage_duration_other": "{{count}} days in this stage"
       },
       "delete_dialog": {
         "title": "Delete prospect",
