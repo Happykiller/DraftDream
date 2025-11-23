@@ -1,6 +1,7 @@
 // src/services/rest/prospects.service.ts
 import { env } from '@src/config/env';
 import { ProspectStatusEnum } from '@src/commons/prospects/status';
+import type { Prospect } from '@app-types/prospects';
 import { session } from '@stores/session';
 
 const JSON_HEADERS: Record<string, string> = {
@@ -22,21 +23,41 @@ function handleUnauthorized(): void {
   window.location.replace('/login');
 }
 
-/** Update a prospect status through the REST API. */
-export async function updateProspectStatus(
-  prospectId: string,
-  status: ProspectStatusEnum,
-): Promise<void> {
+function buildUpdateBody(prospect: Prospect, status: ProspectStatusEnum) {
+  return {
+    id: prospect.id,
+    firstName: prospect.firstName,
+    lastName: prospect.lastName,
+    email: prospect.email,
+    phone: prospect.phone ?? undefined,
+    status,
+    levelId: prospect.levelId ?? prospect.level?.id ?? undefined,
+    sourceId: prospect.sourceId ?? prospect.source?.id ?? undefined,
+    objectiveIds: prospect.objectiveIds?.length ? prospect.objectiveIds : undefined,
+    activityPreferenceIds: prospect.activityPreferenceIds?.length
+      ? prospect.activityPreferenceIds
+      : undefined,
+    medicalConditions: prospect.medicalConditions ?? undefined,
+    allergies: prospect.allergies ?? undefined,
+    notes: prospect.notes ?? undefined,
+    budget: prospect.budget ?? undefined,
+    dealDescription: prospect.dealDescription ?? undefined,
+    desiredStartDate: prospect.desiredStartDate ?? undefined,
+  } satisfies Record<string, unknown>;
+}
+
+/** Update a prospect status through the REST API using the standard update payload. */
+export async function updateProspectStatus(prospect: Prospect, status: ProspectStatusEnum): Promise<void> {
   const headers: Record<string, string> = { ...JSON_HEADERS };
   const token = session.getState().access_token;
   if (token) {
     headers.Authorization = `Bearer ${token}`;
   }
 
-  const response = await fetch(buildApiUrl(`/prospects/${encodeURIComponent(prospectId)}`), {
+  const response = await fetch(buildApiUrl(`/prospects/${encodeURIComponent(prospect.id)}`), {
     method: 'PATCH',
     headers,
-    body: JSON.stringify({ status }),
+    body: JSON.stringify(buildUpdateBody(prospect, status)),
   });
 
   if (response.status === 401) {

@@ -87,7 +87,7 @@ export function useProspectPipeline({ limit = 200, enabled = true }: UseProspect
       });
 
       try {
-        await execute(() => updateProspectStatus(prospect.id, toStatus));
+        await execute(() => updateProspectStatus(prospect, toStatus));
       } catch (error) {
         console.error('[useProspectPipeline] Failed to update prospect status', error);
         flashError(t('prospects.notifications.update_status_failure'));
