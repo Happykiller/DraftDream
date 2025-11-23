@@ -202,6 +202,8 @@ export function ProspectWorkflow({
     setColumns(normalizeColumns(prospectsByStatus));
   }, [normalizeColumns, prospectsByStatus]);
 
+  const dragContextRef = React.useRef<DragPayload | null>(null);
+
   const handleDragStart = React.useCallback(
     (prospect: Prospect, fromStatus: PipelineStatus, event: React.DragEvent<HTMLDivElement>) => {
       event.dataTransfer.effectAllowed = 'move';
@@ -209,6 +211,8 @@ export function ProspectWorkflow({
         'application/json',
         JSON.stringify({ prospectId: prospect.id, fromStatus } satisfies DragPayload),
       );
+      event.dataTransfer.setData('text/plain', prospect.id);
+      dragContextRef.current = { prospectId: prospect.id, fromStatus } satisfies DragPayload;
       setDraggedProspectId(prospect.id ?? null);
     },
     [],
@@ -217,6 +221,7 @@ export function ProspectWorkflow({
   const handleDragEnd = React.useCallback(() => {
     setDraggedProspectId(null);
     setActiveDropStage(null);
+    dragContextRef.current = null;
   }, []);
 
   const handleDragOver = React.useCallback(
@@ -238,18 +243,21 @@ export function ProspectWorkflow({
       setActiveDropStage(null);
 
       const rawPayload = event.dataTransfer.getData('application/json');
-      if (!rawPayload) {
-        return;
+      let payload: DragPayload | null = null;
+
+      if (rawPayload) {
+        try {
+          payload = JSON.parse(rawPayload) as DragPayload;
+        } catch {
+          payload = null;
+        }
       }
 
-      let payload: DragPayload;
-      try {
-        payload = JSON.parse(rawPayload) as DragPayload;
-      } catch {
-        return;
+      if (!payload && dragContextRef.current) {
+        payload = dragContextRef.current;
       }
 
-      if (!payload.prospectId) {
+      if (!payload?.prospectId) {
         return;
       }
 
