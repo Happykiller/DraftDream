@@ -153,6 +153,9 @@
         "card_helper": "Move prospects across the pipeline to visualise your progress.",
         "empty_title": "No prospect yet",
         "empty_description": "Create or move prospects to populate this stage.",
+        "actions": {
+          "create_at_stage": "Add a prospect in this stage"
+        },
         "help": {
           "title": "How to use the pipeline?",
           "items": [

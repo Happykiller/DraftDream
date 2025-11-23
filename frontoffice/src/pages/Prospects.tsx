@@ -2,8 +2,8 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Add, Refresh } from '@mui/icons-material';
-import { Button, IconButton, Stack, Tab, Tabs, Tooltip, Typography } from '@mui/material';
+import { Refresh } from '@mui/icons-material';
+import { IconButton, Stack, Tab, Tabs, Tooltip, Typography } from '@mui/material';
 
 import {
   ProspectDeleteDialog,
@@ -49,9 +49,13 @@ export function Prospects(): React.JSX.Element {
     [t],
   );
 
-  const handleCreateProspect = React.useCallback(() => {
-    navigate('/prospects/create');
-  }, [navigate]);
+  const handleCreateProspect = React.useCallback(
+    (status?: ProspectStatusEnum) => {
+      const url = status ? `/prospects/create?status=${status}` : '/prospects/create';
+      navigate(url);
+    },
+    [navigate],
+  );
 
   const handleEditProspect = React.useCallback(
     (prospect: Prospect) => {
@@ -159,9 +163,6 @@ export function Prospects(): React.JSX.Element {
                 <Refresh fontSize="small" />
               </IconButton>
             </Tooltip>
-            <Button color="primary" startIcon={<Add />} variant="contained" onClick={handleCreateProspect}>
-              {t('prospects.actions.create')}
-            </Button>
           </Stack>
         </Stack>
       </Stack>
@@ -185,6 +186,7 @@ export function Prospects(): React.JSX.Element {
         <ProspectWorkflow
           loading={pipelineLoading}
           prospectsByStatus={pipelineProspects}
+          onCreateProspect={handleCreateProspect}
           onEditProspect={handleEditProspect}
           onDeleteProspect={handleDeleteProspect}
           onMoveProspect={handleMoveProspect}

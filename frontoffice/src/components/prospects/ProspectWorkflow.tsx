@@ -3,8 +3,9 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { alpha, useTheme } from '@mui/material/styles';
 import {
-  Cancel,
+  Add,
   CalendarMonth,
+  Cancel,
   Chat,
   CheckCircle,
   Description,
@@ -16,9 +17,11 @@ import {
 } from '@mui/icons-material';
 import {
   Grid,
+  IconButton,
   Paper,
   Skeleton,
   Stack,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { orange } from '@mui/material/colors';
@@ -42,6 +45,7 @@ interface ProspectWorkflowStage {
 interface ProspectWorkflowProps {
   prospectsByStatus: Partial<Record<PipelineStatus, Prospect[]>>;
   loading: boolean;
+  onCreateProspect?: (status: PipelineStatus) => void;
   onEditProspect: (prospect: Prospect) => void;
   onDeleteProspect: (prospect: Prospect) => void;
   onMoveProspect?: (
@@ -134,6 +138,7 @@ const pipelineCopyKeys: Record<PipelineStatus, { title: string; description: str
 export function ProspectWorkflow({
   prospectsByStatus,
   loading,
+  onCreateProspect,
   onEditProspect,
   onDeleteProspect,
   onMoveProspect,
@@ -347,11 +352,26 @@ export function ProspectWorkflow({
                       gap: 1.5,
                     }}
                   >
-                    <Stack alignItems="center" direction="row" spacing={1.25}>
-                      <stage.Icon fontSize="small" sx={{ color: stage.accentColor }} />
-                      <Typography component="span" fontWeight={700} variant="body1">
-                        {stage.title}
-                      </Typography>
+                    <Stack alignItems="center" direction="row" justifyContent="space-between" spacing={1.25}>
+                      <Stack alignItems="center" direction="row" spacing={1.25}>
+                        <stage.Icon fontSize="small" sx={{ color: stage.accentColor }} />
+                        <Typography component="span" fontWeight={700} variant="body1">
+                          {stage.title}
+                        </Typography>
+                      </Stack>
+
+                      {onCreateProspect ? (
+                        <Tooltip title={t('prospects.workflow.actions.create_at_stage')}>
+                          <IconButton
+                            aria-label={`create-prospect-${stage.status}`}
+                            color="primary"
+                            size="small"
+                            onClick={() => onCreateProspect(stage.status)}
+                          >
+                            <Add fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      ) : null}
                     </Stack>
 
                     <Typography color="text.secondary" variant="body2">

@@ -153,6 +153,9 @@
         "card_helper": "Déplacez vos prospects dans la pipeline pour visualiser votre avancée.",
         "empty_title": "Aucun prospect",
         "empty_description": "Ajoutez ou déplacez des prospects pour remplir cette étape.",
+        "actions": {
+          "create_at_stage": "Ajouter un prospect dans cette étape"
+        },
         "help": {
           "title": "Comment utiliser la pipeline ?",
           "items": [
