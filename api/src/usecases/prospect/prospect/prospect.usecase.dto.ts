@@ -1,5 +1,11 @@
 // src/usecases/client/client/client.usecase.dto.ts
 import { ProspectStatus } from '@src/common/prospect-status.enum';
+import type { Role } from '@src/common/role.enum';
+
+export interface UsecaseSession {
+  userId: string;
+  role: Role;
+}
 
 export interface CreateProspectUsecaseDto {
   firstName: string;
@@ -47,8 +53,12 @@ export interface ListProspectsUsecaseDto {
   createdBy?: string;
   limit?: number;
   page?: number;
+  session: UsecaseSession;
 }
 
-export interface GetProspectUsecaseDto { id: string }
+export interface GetProspectUsecaseDto {
+  id: string;
+  session: UsecaseSession;
+}
 
 export interface DeleteProspectUsecaseDto { id: string }

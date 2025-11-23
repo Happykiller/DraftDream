@@ -1,3 +1,4 @@
+import { UnauthorizedException } from '@nestjs/common';
 import { Args, Context, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 
 import { Auth } from '@graphql/decorators/auth.decorator';
@@ -24,6 +25,7 @@ import {
 import { mapProspectUsecaseToGql } from './prospect.mapper';
 import { ProspectObjective } from '@services/db/models/prospect/objective.model';
 import { ProspectActivityPreference } from '@services/db/models/prospect/activity-preference.model';
+import type { UsecaseSession } from '@usecases/prospect/prospect/prospect.usecase.dto';
 
 @Resolver(() => ProspectGql)
 export class ProspectResolver {
@@ -96,14 +98,22 @@ export class ProspectResolver {
 
   @Query(() => ProspectGql, { name: 'prospect_get', nullable: true })
   @Auth(Role.ADMIN, Role.COACH)
-  async prospect_get(@Args('id', { type: () => ID }) id: string): Promise<ProspectGql | null> {
-    const found = await inversify.getProspectUsecase.execute({ id });
+  async prospect_get(
+    @Args('id', { type: () => ID }) id: string,
+    @Context('req') req: any,
+  ): Promise<ProspectGql | null> {
+    const session = this.extractSession(req);
+    const found = await inversify.getProspectUsecase.execute({ id, session });
     return found ? mapProspectUsecaseToGql(found) : null;
   }
 
   @Query(() => ProspectListGql, { name: 'prospect_list' })
   @Auth(Role.ADMIN, Role.COACH)
-  async prospect_list(@Args('input', { nullable: true }) input?: ListProspectsInput): Promise<ProspectListGql> {
+  async prospect_list(
+    @Args('input', { nullable: true }) input: ListProspectsInput | null,
+    @Context('req') req: any,
+  ): Promise<ProspectListGql> {
+    const session = this.extractSession(req);
     const res = await inversify.listProspectsUsecase.execute({
       q: input?.q,
       status: input?.status,
@@ -112,6 +122,7 @@ export class ProspectResolver {
       createdBy: input?.createdBy,
       limit: input?.limit,
       page: input?.page,
+      session,
     });
     return {
       items: res.items.map(mapProspectUsecaseToGql),
@@ -149,5 +160,17 @@ export class ProspectResolver {
   @Auth(Role.ADMIN, Role.COACH)
   async prospect_delete(@Args('id', { type: () => ID }) id: string): Promise<boolean> {
     return await inversify.deleteProspectUsecase.execute({ id });
+  }
+
+  private extractSession(req: any): UsecaseSession {
+    const user = req?.user;
+    if (!user?.id || !user?.role) {
+      throw new UnauthorizedException('Missing authenticated user in request context.');
+    }
+
+    return {
+      userId: String(user.id),
+      role: user.role as UsecaseSession['role'],
+    };
   }
 }
