@@ -140,15 +140,26 @@
       "delete_success": "Prospect deleted",
       "delete_failure": "Unable to delete the prospect."
     },
-    "workflow": {
-      "title": "Prospect workflow",
-      "description": "Organize your prospects by stage and clarify the next actions to take.",
-      "badge": "Stage: {{status}}",
-      "stages": {
-        "lead": {
-          "title": "Lead",
-          "description": "New contact to qualify before proposing a meeting."
+      "workflow": {
+        "title": "Prospect workflow",
+        "description": "Organize your prospects by stage and clarify the next actions to take.",
+        "card_helper": "Move prospects across the pipeline to visualise your progress.",
+        "empty_title": "No prospect yet",
+        "empty_description": "Create or move prospects to populate this stage.",
+        "help": {
+          "title": "How to use the pipeline?",
+          "items": [
+            "Drag and drop a prospect to the right stage to reflect its progress.",
+            "Each column groups prospects that share the same status for instant visibility.",
+            "You can add, edit, or delete a prospect directly from the dedicated actions."
+          ],
+          "footer": "A video guide will soon be available to walk you through the pipeline."
         },
+        "stages": {
+          "lead": {
+            "title": "Lead",
+            "description": "New contact to qualify before proposing a meeting."
+          },
         "contact": {
           "title": "Contacted",
           "description": "Initial exchange completed to validate interest and needs."

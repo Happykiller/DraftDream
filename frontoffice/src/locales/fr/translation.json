@@ -140,15 +140,26 @@
       "delete_success": "Prospect supprimé",
       "delete_failure": "Impossible de supprimer le prospect."
     },
-    "workflow": {
-      "title": "Pipeline prospects",
-      "description": "Organisez vos prospects par étape et cadrez les prochaines actions à mener.",
-      "badge": "Étape : {{status}}",
-      "stages": {
-        "lead": {
-          "title": "Lead",
-          "description": "Nouveau contact à qualifier avant de proposer un rendez-vous."
+      "workflow": {
+        "title": "Pipeline prospects",
+        "description": "Organisez vos prospects par étape et cadrez les prochaines actions à mener.",
+        "card_helper": "Déplacez vos prospects dans la pipeline pour visualiser votre avancée.",
+        "empty_title": "Aucun prospect",
+        "empty_description": "Ajoutez ou déplacez des prospects pour remplir cette étape.",
+        "help": {
+          "title": "Comment utiliser la pipeline ?",
+          "items": [
+            "Faites glisser un prospect vers l'étape correspondante pour refléter son avancement.",
+            "Chaque colonne regroupe les prospects partageant le même statut pour une visibilité immédiate.",
+            "Ajoutez, modifiez ou supprimez un prospect depuis les actions dédiées."
+          ],
+          "footer": "Un guide vidéo sera bientôt disponible pour vous accompagner."
         },
+        "stages": {
+          "lead": {
+            "title": "Lead",
+            "description": "Nouveau contact à qualifier avant de proposer un rendez-vous."
+          },
         "contact": {
           "title": "Contacté",
           "description": "Premier échange effectué pour valider l'intérêt et les besoins."

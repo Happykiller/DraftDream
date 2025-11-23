@@ -84,14 +84,14 @@ export function Prospects(): React.JSX.Element {
   return (
     <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
       {/* General information */}
-      <Stack spacing={1}>
+      <Stack alignItems="center" spacing={1}>
         <Tabs
           value={activeTab}
           onChange={handleTabChange}
           textColor="primary"
           indicatorColor="primary"
           sx={{
-            alignSelf: { xs: 'stretch', sm: 'flex-start' },
+            alignSelf: 'center',
             '.MuiTabs-indicator': { height: 3, borderRadius: 1 },
           }}
         >
