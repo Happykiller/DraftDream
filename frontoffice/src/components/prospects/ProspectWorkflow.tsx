@@ -15,15 +15,19 @@ import {
 import {
   Grid,
   Paper,
+  Skeleton,
   Stack,
   Typography,
 } from '@mui/material';
 import { orange } from '@mui/material/colors';
 
-import { ProspectStatusEnum } from '@src/commons/prospects/status';
+import type { Prospect } from '@app-types/prospects';
+import { pipelineStatuses, ProspectStatusEnum } from '@src/commons/prospects/status';
+
+type PipelineStatus = (typeof pipelineStatuses)[number];
 
 interface ProspectWorkflowStage {
-  status: ProspectStatusEnum;
+  status: PipelineStatus;
   title: string;
   description: string;
   accentColor: string;
@@ -31,14 +35,50 @@ interface ProspectWorkflowStage {
   Icon: SvgIconComponent;
 }
 
+interface ProspectWorkflowProps {
+  prospectsByStatus: Partial<Record<PipelineStatus, Prospect[]>>;
+  loading: boolean;
+}
+
+const pipelineCopyKeys: Record<PipelineStatus, { title: string; description: string }> = {
+  [ProspectStatusEnum.LEAD]: {
+    title: 'prospects.workflow.stages.lead.title',
+    description: 'prospects.workflow.stages.lead.description',
+  },
+  [ProspectStatusEnum.CONTACTE]: {
+    title: 'prospects.workflow.stages.contact.title',
+    description: 'prospects.workflow.stages.contact.description',
+  },
+  [ProspectStatusEnum.RDV_PLANIFIE]: {
+    title: 'prospects.workflow.stages.meeting.title',
+    description: 'prospects.workflow.stages.meeting.description',
+  },
+  [ProspectStatusEnum.PROPOSITION]: {
+    title: 'prospects.workflow.stages.proposal.title',
+    description: 'prospects.workflow.stages.proposal.description',
+  },
+  [ProspectStatusEnum.NEGOCIATION]: {
+    title: 'prospects.workflow.stages.negotiation.title',
+    description: 'prospects.workflow.stages.negotiation.description',
+  },
+  [ProspectStatusEnum.GAGNE]: {
+    title: 'prospects.workflow.stages.won.title',
+    description: 'prospects.workflow.stages.won.description',
+  },
+  [ProspectStatusEnum.PERDUS]: {
+    title: 'prospects.workflow.stages.lost.title',
+    description: 'prospects.workflow.stages.lost.description',
+  },
+} as const;
+
 /**
  * Displays the prospect pipeline to give coaches a quick overview of the workflow steps.
  */
-export function ProspectWorkflow(): React.JSX.Element {
+export function ProspectWorkflow({ prospectsByStatus, loading }: ProspectWorkflowProps): React.JSX.Element {
   const { t } = useTranslation();
   const theme = useTheme();
 
-  const stageStyles = React.useMemo<Record<ProspectStatusEnum, { accentColor: string; Icon: SvgIconComponent }>>(
+  const stageStyles = React.useMemo<Record<PipelineStatus, { accentColor: string; Icon: SvgIconComponent }>>(
     () => ({
       [ProspectStatusEnum.LEAD]: {
         accentColor: theme.palette.text.primary,
@@ -73,64 +113,15 @@ export function ProspectWorkflow(): React.JSX.Element {
   );
 
   const stages = React.useMemo<ProspectWorkflowStage[]>(
-    () => [
-      {
-        status: ProspectStatusEnum.LEAD,
-        title: t('prospects.workflow.stages.lead.title'),
-        description: t('prospects.workflow.stages.lead.description'),
-        accentColor: stageStyles[ProspectStatusEnum.LEAD].accentColor,
-        tintColor: alpha(stageStyles[ProspectStatusEnum.LEAD].accentColor, 0.06),
-        Icon: stageStyles[ProspectStatusEnum.LEAD].Icon,
-      },
-      {
-        status: ProspectStatusEnum.CONTACTE,
-        title: t('prospects.workflow.stages.contact.title'),
-        description: t('prospects.workflow.stages.contact.description'),
-        accentColor: stageStyles[ProspectStatusEnum.CONTACTE].accentColor,
-        tintColor: alpha(stageStyles[ProspectStatusEnum.CONTACTE].accentColor, 0.06),
-        Icon: stageStyles[ProspectStatusEnum.CONTACTE].Icon,
-      },
-      {
-        status: ProspectStatusEnum.RDV_PLANIFIE,
-        title: t('prospects.workflow.stages.meeting.title'),
-        description: t('prospects.workflow.stages.meeting.description'),
-        accentColor: stageStyles[ProspectStatusEnum.RDV_PLANIFIE].accentColor,
-        tintColor: alpha(stageStyles[ProspectStatusEnum.RDV_PLANIFIE].accentColor, 0.06),
-        Icon: stageStyles[ProspectStatusEnum.RDV_PLANIFIE].Icon,
-      },
-      {
-        status: ProspectStatusEnum.PROPOSITION,
-        title: t('prospects.workflow.stages.proposal.title'),
-        description: t('prospects.workflow.stages.proposal.description'),
-        accentColor: stageStyles[ProspectStatusEnum.PROPOSITION].accentColor,
-        tintColor: alpha(stageStyles[ProspectStatusEnum.PROPOSITION].accentColor, 0.06),
-        Icon: stageStyles[ProspectStatusEnum.PROPOSITION].Icon,
-      },
-      {
-        status: ProspectStatusEnum.NEGOCIATION,
-        title: t('prospects.workflow.stages.negotiation.title'),
-        description: t('prospects.workflow.stages.negotiation.description'),
-        accentColor: stageStyles[ProspectStatusEnum.NEGOCIATION].accentColor,
-        tintColor: alpha(stageStyles[ProspectStatusEnum.NEGOCIATION].accentColor, 0.06),
-        Icon: stageStyles[ProspectStatusEnum.NEGOCIATION].Icon,
-      },
-      {
-        status: ProspectStatusEnum.GAGNE,
-        title: t('prospects.workflow.stages.won.title'),
-        description: t('prospects.workflow.stages.won.description'),
-        accentColor: stageStyles[ProspectStatusEnum.GAGNE].accentColor,
-        tintColor: alpha(stageStyles[ProspectStatusEnum.GAGNE].accentColor, 0.06),
-        Icon: stageStyles[ProspectStatusEnum.GAGNE].Icon,
-      },
-      {
-        status: ProspectStatusEnum.PERDUS,
-        title: t('prospects.workflow.stages.lost.title'),
-        description: t('prospects.workflow.stages.lost.description'),
-        accentColor: stageStyles[ProspectStatusEnum.PERDUS].accentColor,
-        tintColor: alpha(stageStyles[ProspectStatusEnum.PERDUS].accentColor, 0.06),
-        Icon: stageStyles[ProspectStatusEnum.PERDUS].Icon,
-      },
-    ],
+    () =>
+      pipelineStatuses.map((status) => ({
+        status,
+        title: t(pipelineCopyKeys[status].title),
+        description: t(pipelineCopyKeys[status].description),
+        accentColor: stageStyles[status].accentColor,
+        tintColor: alpha(stageStyles[status].accentColor, 0.06),
+        Icon: stageStyles[status].Icon,
+      })),
     [stageStyles, t],
   );
 
@@ -194,12 +185,37 @@ export function ProspectWorkflow(): React.JSX.Element {
                       textAlign: 'center',
                     }}
                   >
-                    <Typography fontWeight={700} variant="body2">
-                      {t('prospects.workflow.empty_title')}
-                    </Typography>
-                    <Typography color="text.secondary" sx={{ mt: 0.5 }} variant="body2">
-                      {t('prospects.workflow.empty_description')}
-                    </Typography>
+                    {loading ? (
+                      <Stack spacing={1.25}>
+                        <Skeleton height={12} variant="text" />
+                        <Skeleton height={12} variant="text" />
+                        <Skeleton height={12} variant="text" />
+                      </Stack>
+                    ) : (prospectsByStatus[stage.status] ?? []).length === 0 ? (
+                      <>
+                        <Typography fontWeight={700} variant="body2">
+                          {t('prospects.workflow.empty_title')}
+                        </Typography>
+                        <Typography color="text.secondary" sx={{ mt: 0.5 }} variant="body2">
+                          {t('prospects.workflow.empty_description')}
+                        </Typography>
+                      </>
+                    ) : (
+                      <Stack spacing={1.25}>
+                        {(prospectsByStatus[stage.status] ?? []).map((prospect) => (
+                          <Stack key={prospect.id} spacing={0.25}>
+                            <Typography fontWeight={700} variant="body2">
+                              {prospect.firstName} {prospect.lastName}
+                            </Typography>
+                            {prospect.email ? (
+                              <Typography color="text.secondary" variant="caption">
+                                {prospect.email}
+                              </Typography>
+                            ) : null}
+                          </Stack>
+                        ))}
+                      </Stack>
+                    )}
                   </Paper>
                 </Paper>
               </Grid>

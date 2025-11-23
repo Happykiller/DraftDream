@@ -29,3 +29,14 @@ export interface ProspectStatusOption {
   value: ProspectStatusEnum;
   label: string;
 }
+
+/** Ordered list of statuses used to build the prospect pipeline. */
+export const pipelineStatuses: ProspectStatusEnum[] = [
+  ProspectStatusEnum.LEAD,
+  ProspectStatusEnum.CONTACTE,
+  ProspectStatusEnum.RDV_PLANIFIE,
+  ProspectStatusEnum.PROPOSITION,
+  ProspectStatusEnum.NEGOCIATION,
+  ProspectStatusEnum.GAGNE,
+  ProspectStatusEnum.PERDUS,
+];

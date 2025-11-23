@@ -13,6 +13,7 @@ import { ProspectList } from '@components/prospects/ProspectList';
 import { ProspectWorkflow } from '@components/prospects/ProspectWorkflow';
 
 import { useProspects } from '@hooks/prospects/useProspects';
+import { useProspectPipeline } from '@hooks/prospects/useProspectPipeline';
 import { useDebouncedValue } from '@hooks/useDebouncedValue';
 
 import { ProspectStatusEnum } from '@src/commons/prospects/status';
@@ -31,6 +32,11 @@ export function Prospects(): React.JSX.Element {
     q: debouncedQuery,
     status: ProspectStatusEnum.CLIENT,
   });
+  const {
+    prospectsByStatus: pipelineProspects,
+    loading: pipelineLoading,
+    reload: reloadPipeline,
+  } = useProspectPipeline({ enabled: activeTab === 'pipeline' });
   const [prospectToDelete, setProspectToDelete] = React.useState<Prospect | null>(null);
   const [deleteLoading, setDeleteLoading] = React.useState(false);
 
@@ -80,6 +86,14 @@ export function Prospects(): React.JSX.Element {
   const handleTabChange = React.useCallback((_: React.SyntheticEvent, value: 'list' | 'pipeline') => {
     setActiveTab(value);
   }, []);
+
+  const handleRefresh = React.useCallback(() => {
+    if (activeTab === 'pipeline') {
+      void reloadPipeline();
+      return;
+    }
+    void reload();
+  }, [activeTab, reload, reloadPipeline]);
 
   return (
     <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
@@ -133,7 +147,7 @@ export function Prospects(): React.JSX.Element {
           </Stack>
           <Stack alignItems="center" direction="row" spacing={1} sx={{ ml: 'auto' }}>
             <Tooltip title={t('prospects.actions.refresh')}>
-              <IconButton aria-label="refresh-prospects" color="primary" onClick={() => void reload()} size="small">
+              <IconButton aria-label="refresh-prospects" color="primary" onClick={handleRefresh} size="small">
                 <Refresh fontSize="small" />
               </IconButton>
             </Tooltip>
@@ -169,7 +183,7 @@ export function Prospects(): React.JSX.Element {
           />
         </>
       ) : (
-        <ProspectWorkflow />
+        <ProspectWorkflow loading={pipelineLoading} prospectsByStatus={pipelineProspects} />
       )}
     </Stack>
   );
