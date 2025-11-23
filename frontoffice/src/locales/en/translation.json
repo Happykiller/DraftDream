@@ -83,6 +83,8 @@
         "created": "Created on {{date}}",
         "updated": "Updated on {{date}}",
         "no_budget": "Budget not defined",
+        "updated_label": "Last updated on {{date}}",
+        "updated_unknown": "Last update date unknown",
         "stage_duration": "{{count}} days in this stage",
         "stage_duration_one": "{{count}} day in this stage",
         "stage_duration_other": "{{count}} days in this stage"

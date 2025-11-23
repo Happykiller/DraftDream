@@ -1,6 +1,12 @@
 // src/components/prospects/ProspectCard.tsx
 import * as React from 'react';
-import { AttachMoney, CalendarMonth, Delete, Edit, Phone } from '@mui/icons-material';
+import {
+  AttachMoney,
+  CalendarMonth,
+  Delete,
+  Edit,
+  Phone,
+} from '@mui/icons-material';
 import {
   Card,
   CardActions,
@@ -45,25 +51,22 @@ export function ProspectCard({ prospect, onEdit, onDelete }: ProspectCardProps):
     }).format(prospect.budget);
   }, [prospect.budget, t]);
 
-  const daysInCurrentStage = React.useMemo(() => {
+  const formattedUpdatedAt = React.useMemo(() => {
     if (!prospect.updatedAt) {
       return null;
     }
 
-    const updatedAt = new Date(prospect.updatedAt);
-    if (Number.isNaN(updatedAt.getTime())) {
+    const parsedDate = new Date(prospect.updatedAt);
+    if (Number.isNaN(parsedDate.getTime())) {
       return null;
     }
 
-    const now = new Date();
-    const diffInDays = Math.max(0, Math.floor((now.getTime() - updatedAt.getTime()) / 86_400_000));
+    return formatDate(prospect.updatedAt);
+  }, [formatDate, prospect.updatedAt]);
 
-    return diffInDays;
-  }, [prospect.updatedAt]);
-
-  const stageDurationLabel = daysInCurrentStage != null
-    ? t('prospects.list.card.stage_duration', { count: daysInCurrentStage })
-    : t('prospects.list.card.stage_duration', { count: 0 });
+  const lastUpdatedLabel = formattedUpdatedAt
+    ? t('prospects.list.card.updated_label', { date: formattedUpdatedAt })
+    : t('prospects.list.card.updated_unknown');
 
   const shouldShowStatusBadge = Boolean(statusLabel);
   const shouldShowObjectiveBadges = (prospect.objectives?.length ?? 0) > 0;
@@ -158,7 +161,7 @@ export function ProspectCard({ prospect, onEdit, onDelete }: ProspectCardProps):
 
       <CardActions sx={{ justifyContent: 'space-between', alignItems: 'center', px: 2, py: 1.5 }}>
         <Typography variant="caption" color="text.secondary">
-          {stageDurationLabel}
+          {lastUpdatedLabel}
         </Typography>
 
         {prospect.level?.label ? <Chip label={prospect.level.label} color="success" size="small" /> : null}

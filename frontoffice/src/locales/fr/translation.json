@@ -83,6 +83,8 @@
         "created": "Créé le {{date}}",
         "updated": "Mis à jour le {{date}}",
         "no_budget": "Budget non défini",
+        "updated_label": "Date de dernière mise à jour : {{date}}",
+        "updated_unknown": "Date de dernière mise à jour inconnue",
         "stage_duration": "{{count}} jours dans cette étape",
         "stage_duration_one": "{{count}} jour dans cette étape",
         "stage_duration_other": "{{count}} jours dans cette étape"
