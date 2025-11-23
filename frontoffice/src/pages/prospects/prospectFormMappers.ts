@@ -8,7 +8,6 @@ function sanitize(
 ): Omit<ProspectCreateInput, 'firstName' | 'lastName' | 'email'> {
   return {
     phone: values.phone.trim() || undefined,
-    status: values.status || undefined,
     levelId: values.levelId || undefined,
     sourceId: values.sourceId || undefined,
     objectiveIds: values.objectiveIds.length ? values.objectiveIds : undefined,

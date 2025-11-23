@@ -16,7 +16,6 @@ import {
   Typography,
 } from '@mui/material';
 
-import type { ProspectStatusEnum, ProspectStatusOption } from '@src/commons/prospects/status';
 import type { ProspectMetadataOption } from '@hooks/prospects/useProspectMetadataOptions';
 
 import { DEFAULT_PROSPECT_FORM_VALUES, type ProspectFormValues } from './prospectFormValues';
@@ -43,7 +42,6 @@ export interface ProspectFormCopy {
     lastName: string;
     email: string;
     phone: string;
-    status: string;
     level: string;
     source: string;
     objectives: string;
@@ -71,7 +69,6 @@ export interface ProspectFormPanelProps {
     objectives: ProspectMetadataOption[];
     activityPreferences: ProspectMetadataOption[];
   };
-  statuses: ProspectStatusOption[];
   metadataLoading: boolean;
   submitting: boolean;
   copy: ProspectFormCopy;
@@ -84,7 +81,6 @@ export function ProspectFormPanel({
   mode,
   initialValues,
   metadata,
-  statuses,
   metadataLoading,
   submitting,
   copy,
@@ -253,31 +249,7 @@ export function ProspectFormPanel({
                     {copy.sections.profile}
                   </Typography>
                   <Grid container spacing={2}>
-                    <Grid size={{ xs: 12, md: 4 }}>
-                      <TextField
-                        select
-                        label={copy.fields.status}
-                        name="status"
-                        value={values.status ?? ''}
-                        onChange={(event) =>
-                          setValues((prev) => ({
-                            ...prev,
-                            status: (event.target.value as ProspectStatusEnum | ''),
-                          }))
-                        }
-                        fullWidth
-                      >
-                        <MenuItem value="">
-                          <em>—</em>
-                        </MenuItem>
-                        {statuses.map((status) => (
-                          <MenuItem key={status.value} value={status.value}>
-                            {status.label}
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    </Grid>
-                    <Grid size={{ xs: 12, md: 4 }}>
+                    <Grid size={{ xs: 12, md: 6 }}>
                       <TextField
                         select
                         label={copy.fields.level}
@@ -298,7 +270,7 @@ export function ProspectFormPanel({
                         ))}
                       </TextField>
                     </Grid>
-                    <Grid size={{ xs: 12 }}>
+                    <Grid size={{ xs: 12, md: 6 }}>
                       <Autocomplete
                         multiple
                         options={metadata.objectives}

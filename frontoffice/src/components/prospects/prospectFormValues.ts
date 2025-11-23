@@ -2,14 +2,11 @@
 import * as React from 'react';
 
 import type { Prospect } from '@app-types/prospects';
-import type { ProspectStatusEnum } from '@src/commons/prospects/status';
-
 export interface ProspectFormValues {
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
-  status: ProspectStatusEnum | '';
   levelId: string | null;
   sourceId: string | null;
   objectiveIds: string[];
@@ -27,7 +24,6 @@ export const DEFAULT_PROSPECT_FORM_VALUES: ProspectFormValues = {
   lastName: '',
   email: '',
   phone: '',
-  status: '',
   levelId: null,
   sourceId: null,
   objectiveIds: [],
@@ -50,7 +46,6 @@ function normalizeProspect(prospect?: Prospect | null): ProspectFormValues {
     lastName: prospect.lastName,
     email: prospect.email,
     phone: prospect.phone ?? '',
-    status: prospect.status ?? '',
     levelId: prospect.levelId ?? null,
     sourceId: prospect.sourceId ?? null,
     objectiveIds: prospect.objectiveIds ?? [],

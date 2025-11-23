@@ -50,6 +50,10 @@
     "title": "Prospects",
     "subtitle": "Manage all your prospects.",
     "helper": "Create contacts, record their preferences, and stay aligned with your sales pipeline.",
+    "tabs": {
+      "list": "List",
+      "pipeline": "Pipeline"
+    },
     "actions": {
       "create": "New prospect",
       "refresh": "Refresh",
@@ -135,8 +139,51 @@
       "update_failure": "Unable to update the prospect.",
       "delete_success": "Prospect deleted",
       "delete_failure": "Unable to delete the prospect."
+    },
+    "workflow": {
+      "title": "Prospect workflow",
+      "description": "Organize your prospects by stage and clarify the next actions to take.",
+      "badge": "Stage: {{status}}",
+      "stages": {
+        "lead": {
+          "title": "Lead",
+          "description": "New contact to qualify before proposing a meeting."
+        },
+        "contact": {
+          "title": "Contacted",
+          "description": "Initial exchange completed to validate interest and needs."
+        },
+        "meeting": {
+          "title": "Meeting scheduled",
+          "description": "A meeting is booked; prepare the session and materials."
+        },
+        "proposal": {
+          "title": "Proposal",
+          "description": "A commercial proposal has been sent; collect feedback."
+        },
+        "negotiation": {
+          "title": "Negotiation",
+          "description": "Refine the offer based on the prospect's responses before final validation."
+        },
+        "won": {
+          "title": "Won",
+          "description": "The prospect accepted; prepare the contract and onboarding steps."
+        },
+        "lost": {
+          "title": "Lost",
+          "description": "The prospect will not move forward; archive and log the reasons."
+        },
+        "todo": {
+          "title": "To do",
+          "description": "Internal tasks to complete for follow-ups or finalization."
+        },
+        "client": {
+          "title": "Client",
+          "description": "Converted into an active client; ensure a smooth onboarding with the team."
+        }
+      }
     }
-  },
+    },
   "athletes": {
     "title": "Athletes",
     "subtitle": "Manage your athletes",

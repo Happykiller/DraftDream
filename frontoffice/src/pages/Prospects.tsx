@@ -3,17 +3,19 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Add, Refresh } from '@mui/icons-material';
-import { Button, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import { Button, IconButton, Stack, Tab, Tabs, Tooltip, Typography } from '@mui/material';
 
 import {
   ProspectDeleteDialog,
   type ProspectDeleteDialogCopy,
 } from '@components/prospects/ProspectDeleteDialog';
 import { ProspectList } from '@components/prospects/ProspectList';
+import { ProspectWorkflow } from '@components/prospects/ProspectWorkflow';
 
 import { useProspects } from '@hooks/prospects/useProspects';
 import { useDebouncedValue } from '@hooks/useDebouncedValue';
 
+import { ProspectStatusEnum } from '@src/commons/prospects/status';
 import type { Prospect } from '@app-types/prospects';
 
 /** Prospect dashboard listing coach-owned contacts with quick actions. */
@@ -21,8 +23,14 @@ export function Prospects(): React.JSX.Element {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = React.useState('');
+  const [activeTab, setActiveTab] = React.useState<'list' | 'pipeline'>('list');
   const debouncedQuery = useDebouncedValue(searchQuery, 400);
-  const { items, loading, reload, remove } = useProspects({ page: 1, limit: 24, q: debouncedQuery });
+  const { items, loading, reload, remove } = useProspects({
+    page: 1,
+    limit: 24,
+    q: debouncedQuery,
+    status: ProspectStatusEnum.CLIENT,
+  });
   const [prospectToDelete, setProspectToDelete] = React.useState<Prospect | null>(null);
   const [deleteLoading, setDeleteLoading] = React.useState(false);
 
@@ -69,10 +77,53 @@ export function Prospects(): React.JSX.Element {
     setProspectToDelete(null);
   }, [deleteLoading]);
 
+  const handleTabChange = React.useCallback((_: React.SyntheticEvent, value: 'list' | 'pipeline') => {
+    setActiveTab(value);
+  }, []);
+
   return (
     <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
       {/* General information */}
       <Stack spacing={1}>
+        <Tabs
+          value={activeTab}
+          onChange={handleTabChange}
+          textColor="primary"
+          indicatorColor="primary"
+          sx={{
+            alignSelf: { xs: 'stretch', sm: 'flex-start' },
+            '.MuiTabs-indicator': { height: 3, borderRadius: 1 },
+          }}
+        >
+          <Tab
+            value="list"
+            label={t('prospects.tabs.list')}
+            sx={{
+              textTransform: 'none',
+              fontWeight: 700,
+              minHeight: 40,
+              minWidth: 120,
+              '&.Mui-selected': {
+                color: 'primary.contrastText',
+                bgcolor: 'primary.main',
+              },
+            }}
+          />
+          <Tab
+            value="pipeline"
+            label={t('prospects.tabs.pipeline')}
+            sx={{
+              textTransform: 'none',
+              fontWeight: 700,
+              minHeight: 40,
+              minWidth: 120,
+              '&.Mui-selected': {
+                color: 'primary.contrastText',
+                bgcolor: 'primary.main',
+              },
+            }}
+          />
+        </Tabs>
         <Stack alignItems="center" direction="row" flexWrap="wrap" justifyContent="space-between" spacing={2}>
           <Stack spacing={0.5}>
             <Typography variant="h5">{t('prospects.subtitle')}</Typography>
@@ -93,27 +144,33 @@ export function Prospects(): React.JSX.Element {
         </Stack>
       </Stack>
 
-      <ProspectList
-        prospects={items}
-        loading={loading}
-        searchQuery={searchQuery}
-        searchPlaceholder={t('prospects.list.search_placeholder')}
-        searchAriaLabel={t('prospects.list.search_aria')}
-        emptyTitle={t('prospects.list.empty_title')}
-        emptyDescription={t('prospects.list.empty_description')}
-        onSearchChange={setSearchQuery}
-        onEditProspect={handleEditProspect}
-        onDeleteProspect={handleDeleteProspect}
-      />
+      {activeTab === 'list' ? (
+        <>
+          <ProspectList
+            prospects={items}
+            loading={loading}
+            searchQuery={searchQuery}
+            searchPlaceholder={t('prospects.list.search_placeholder')}
+            searchAriaLabel={t('prospects.list.search_aria')}
+            emptyTitle={t('prospects.list.empty_title')}
+            emptyDescription={t('prospects.list.empty_description')}
+            onSearchChange={setSearchQuery}
+            onEditProspect={handleEditProspect}
+            onDeleteProspect={handleDeleteProspect}
+          />
 
-      <ProspectDeleteDialog
-        prospect={prospectToDelete}
-        open={Boolean(prospectToDelete)}
-        loading={deleteLoading}
-        copy={deleteDialogCopy}
-        onCancel={handleCancelDelete}
-        onConfirm={handleConfirmDelete}
-      />
+          <ProspectDeleteDialog
+            prospect={prospectToDelete}
+            open={Boolean(prospectToDelete)}
+            loading={deleteLoading}
+            copy={deleteDialogCopy}
+            onCancel={handleCancelDelete}
+            onConfirm={handleConfirmDelete}
+          />
+        </>
+      ) : (
+        <ProspectWorkflow />
+      )}
     </Stack>
   );
 }

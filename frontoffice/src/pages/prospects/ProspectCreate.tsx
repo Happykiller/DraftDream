@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import { ProspectFormPanel, type ProspectFormCopy } from '@components/prospects/ProspectFormPanel';
 import { useProspectFormValues, type ProspectFormValues } from '@components/prospects/prospectFormValues';
 
-import { prospectStatusLabels, ProspectStatusEnum } from '@src/commons/prospects/status';
 import { useProspectMetadataOptions } from '@hooks/prospects/useProspectMetadataOptions';
 import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
@@ -32,15 +31,6 @@ export function ProspectCreate(): React.JSX.Element {
         returnObjects: true,
       }) as ProspectFormCopy,
     [t],
-  );
-
-  const statusOptions = React.useMemo(
-    () =>
-      Object.values(ProspectStatusEnum).map((value) => ({
-        value,
-        label: prospectStatusLabels[value],
-      })),
-    [],
   );
 
   const handleSubmit = React.useCallback(
@@ -74,7 +64,6 @@ export function ProspectCreate(): React.JSX.Element {
         objectives: metadata.objectives,
         activityPreferences: metadata.activityPreferences,
       }}
-      statuses={statusOptions}
       metadataLoading={metadata.loading}
       submitting={submitting}
       copy={copy}

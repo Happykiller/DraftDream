@@ -50,6 +50,10 @@
     "title": "Prospects",
     "subtitle": "Gérer tous vos prospects.",
     "helper": "Créez des contacts, renseignez leurs préférences et restez aligné avec votre pipeline commercial.",
+    "tabs": {
+      "list": "Liste",
+      "pipeline": "Pipeline"
+    },
     "actions": {
       "create": "Nouveau prospect",
       "refresh": "Rafraîchir",
@@ -135,8 +139,51 @@
       "update_failure": "Impossible de mettre à jour le prospect.",
       "delete_success": "Prospect supprimé",
       "delete_failure": "Impossible de supprimer le prospect."
+    },
+    "workflow": {
+      "title": "Pipeline prospects",
+      "description": "Organisez vos prospects par étape et cadrez les prochaines actions à mener.",
+      "badge": "Étape : {{status}}",
+      "stages": {
+        "lead": {
+          "title": "Lead",
+          "description": "Nouveau contact à qualifier avant de proposer un rendez-vous."
+        },
+        "contact": {
+          "title": "Contacté",
+          "description": "Premier échange effectué pour valider l'intérêt et les besoins."
+        },
+        "meeting": {
+          "title": "RDV planifié",
+          "description": "Un rendez-vous est programmé ; préparez la séance et les documents."
+        },
+        "proposal": {
+          "title": "Proposition",
+          "description": "Une proposition commerciale a été envoyée ; collectez les retours."
+        },
+        "negotiation": {
+          "title": "Négociation",
+          "description": "Affinez l'offre selon les retours du prospect avant la validation finale."
+        },
+        "won": {
+          "title": "Gagné",
+          "description": "Le prospect a accepté ; préparez la contractualisation et l'onboarding."
+        },
+        "lost": {
+          "title": "Perdu",
+          "description": "Le prospect n'ira pas plus loin ; archivez et notez les raisons."
+        },
+        "todo": {
+          "title": "À faire",
+          "description": "Actions internes à réaliser pour relancer ou finaliser une étape."
+        },
+        "client": {
+          "title": "Client",
+          "description": "Converti en client actif ; assurez un onboarding fluide avec l'équipe."
+        }
+      }
     }
-  },
+    },
   "athletes": {
     "title": "Athlètes",
     "subtitle": "Gérer vos athlètes",
