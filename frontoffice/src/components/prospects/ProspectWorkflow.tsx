@@ -2,7 +2,13 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { alpha, useTheme } from '@mui/material/styles';
-import { Box, Paper, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  Grid,
+  Paper,
+  Stack,
+  Typography,
+} from '@mui/material';
 
 import { ProspectStatusEnum } from '@src/commons/prospects/status';
 
@@ -110,14 +116,13 @@ export function ProspectWorkflow(): React.JSX.Element {
             {t('prospects.workflow.card_helper')}
           </Typography>
 
-          <Box sx={{ overflowX: 'auto', pb: 1 }}>
-            <Stack direction="row" spacing={2} sx={{ minWidth: stages.length * 240 }}>
-              {stages.map((stage) => (
+          <Grid columnSpacing={2} container rowSpacing={2}>
+            {stages.map((stage) => (
+              <Grid key={stage.status} size={{ xs: 12, lg: 6, xl: 4 }}>
                 <Paper
-                  key={stage.status}
                   elevation={0}
                   sx={{
-                    minWidth: 240,
+                    height: '100%',
                     border: '1px solid',
                     borderColor: stage.accentColor,
                     bgcolor: stage.tintColor,
@@ -166,9 +171,9 @@ export function ProspectWorkflow(): React.JSX.Element {
                     </Typography>
                   </Paper>
                 </Paper>
-              ))}
-            </Stack>
-          </Box>
+              </Grid>
+            ))}
+          </Grid>
         </Stack>
       </Paper>
 
