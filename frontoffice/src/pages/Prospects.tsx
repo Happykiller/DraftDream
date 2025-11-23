@@ -172,19 +172,24 @@ export function Prospects(): React.JSX.Element {
             onEditProspect={handleEditProspect}
             onDeleteProspect={handleDeleteProspect}
           />
-
-          <ProspectDeleteDialog
-            prospect={prospectToDelete}
-            open={Boolean(prospectToDelete)}
-            loading={deleteLoading}
-            copy={deleteDialogCopy}
-            onCancel={handleCancelDelete}
-            onConfirm={handleConfirmDelete}
-          />
         </>
       ) : (
-        <ProspectWorkflow loading={pipelineLoading} prospectsByStatus={pipelineProspects} />
+        <ProspectWorkflow
+          loading={pipelineLoading}
+          prospectsByStatus={pipelineProspects}
+          onEditProspect={handleEditProspect}
+          onDeleteProspect={handleDeleteProspect}
+        />
       )}
+
+      <ProspectDeleteDialog
+        prospect={prospectToDelete}
+        open={Boolean(prospectToDelete)}
+        loading={deleteLoading}
+        copy={deleteDialogCopy}
+        onCancel={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+      />
     </Stack>
   );
 }

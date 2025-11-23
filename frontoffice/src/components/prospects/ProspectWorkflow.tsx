@@ -21,6 +21,8 @@ import {
 } from '@mui/material';
 import { orange } from '@mui/material/colors';
 
+import { ProspectCard } from '@components/prospects/ProspectCard';
+
 import type { Prospect } from '@app-types/prospects';
 import { pipelineStatuses, ProspectStatusEnum } from '@src/commons/prospects/status';
 
@@ -38,6 +40,8 @@ interface ProspectWorkflowStage {
 interface ProspectWorkflowProps {
   prospectsByStatus: Partial<Record<PipelineStatus, Prospect[]>>;
   loading: boolean;
+  onEditProspect: (prospect: Prospect) => void;
+  onDeleteProspect: (prospect: Prospect) => void;
 }
 
 const pipelineCopyKeys: Record<PipelineStatus, { title: string; description: string }> = {
@@ -74,7 +78,12 @@ const pipelineCopyKeys: Record<PipelineStatus, { title: string; description: str
 /**
  * Displays the prospect pipeline to give coaches a quick overview of the workflow steps.
  */
-export function ProspectWorkflow({ prospectsByStatus, loading }: ProspectWorkflowProps): React.JSX.Element {
+export function ProspectWorkflow({
+  prospectsByStatus,
+  loading,
+  onEditProspect,
+  onDeleteProspect,
+}: ProspectWorkflowProps): React.JSX.Element {
   const { t } = useTranslation();
   const theme = useTheme();
 
@@ -180,16 +189,16 @@ export function ProspectWorkflow({ prospectsByStatus, loading }: ProspectWorkflo
                       borderColor: stage.accentColor,
                       bgcolor: alpha(stage.accentColor, 0.05),
                       borderRadius: 2,
-                      px: 2,
-                      py: 3,
+                      px: 1.25,
+                      py: 2,
                       textAlign: 'center',
                     }}
                   >
                     {loading ? (
                       <Stack spacing={1.25}>
-                        <Skeleton height={12} variant="text" />
-                        <Skeleton height={12} variant="text" />
-                        <Skeleton height={12} variant="text" />
+                        {Array.from({ length: 2 }).map((_, index) => (
+                          <Skeleton key={index} variant="rounded" height={220} />
+                        ))}
                       </Stack>
                     ) : (prospectsByStatus[stage.status] ?? []).length === 0 ? (
                       <>
@@ -203,16 +212,12 @@ export function ProspectWorkflow({ prospectsByStatus, loading }: ProspectWorkflo
                     ) : (
                       <Stack spacing={1.25}>
                         {(prospectsByStatus[stage.status] ?? []).map((prospect) => (
-                          <Stack key={prospect.id} spacing={0.25}>
-                            <Typography fontWeight={700} variant="body2">
-                              {prospect.firstName} {prospect.lastName}
-                            </Typography>
-                            {prospect.email ? (
-                              <Typography color="text.secondary" variant="caption">
-                                {prospect.email}
-                              </Typography>
-                            ) : null}
-                          </Stack>
+                          <ProspectCard
+                            key={prospect.id}
+                            prospect={prospect}
+                            onEdit={onEditProspect}
+                            onDelete={onDeleteProspect}
+                          />
                         ))}
                       </Stack>
                     )}
