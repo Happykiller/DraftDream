@@ -3,12 +3,22 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { alpha, useTheme } from '@mui/material/styles';
 import {
-  Box,
+  Cancel,
+  CalendarMonth,
+  Chat,
+  CheckCircle,
+  Description,
+  People,
+  Phone,
+  type SvgIconComponent,
+} from '@mui/icons-material';
+import {
   Grid,
   Paper,
   Stack,
   Typography,
 } from '@mui/material';
+import { orange } from '@mui/material/colors';
 
 import { ProspectStatusEnum } from '@src/commons/prospects/status';
 
@@ -18,6 +28,7 @@ interface ProspectWorkflowStage {
   description: string;
   accentColor: string;
   tintColor: string;
+  Icon: SvgIconComponent;
 }
 
 /**
@@ -27,15 +38,36 @@ export function ProspectWorkflow(): React.JSX.Element {
   const { t } = useTranslation();
   const theme = useTheme();
 
-  const stageAccents = React.useMemo(
+  const stageStyles = React.useMemo<Record<ProspectStatusEnum, { accentColor: string; Icon: SvgIconComponent }>>(
     () => ({
-      [ProspectStatusEnum.LEAD]: theme.palette.warning.main,
-      [ProspectStatusEnum.CONTACTE]: theme.palette.secondary.main,
-      [ProspectStatusEnum.RDV_PLANIFIE]: theme.palette.info.main,
-      [ProspectStatusEnum.PROPOSITION]: theme.palette.success.main,
-      [ProspectStatusEnum.NEGOCIATION]: theme.palette.purple?.main ?? theme.palette.secondary.dark,
-      [ProspectStatusEnum.GAGNE]: theme.palette.primary.main,
-      [ProspectStatusEnum.PERDUS]: theme.palette.error.main,
+      [ProspectStatusEnum.LEAD]: {
+        accentColor: theme.palette.text.primary,
+        Icon: People,
+      },
+      [ProspectStatusEnum.CONTACTE]: {
+        accentColor: theme.palette.primary.main,
+        Icon: Phone,
+      },
+      [ProspectStatusEnum.RDV_PLANIFIE]: {
+        accentColor: theme.palette.warning.main,
+        Icon: CalendarMonth,
+      },
+      [ProspectStatusEnum.PROPOSITION]: {
+        accentColor: theme.palette.secondary.main,
+        Icon: Description,
+      },
+      [ProspectStatusEnum.NEGOCIATION]: {
+        accentColor: orange[600],
+        Icon: Chat,
+      },
+      [ProspectStatusEnum.GAGNE]: {
+        accentColor: theme.palette.success.main,
+        Icon: CheckCircle,
+      },
+      [ProspectStatusEnum.PERDUS]: {
+        accentColor: theme.palette.error.main,
+        Icon: Cancel,
+      },
     }),
     [theme],
   );
@@ -46,53 +78,60 @@ export function ProspectWorkflow(): React.JSX.Element {
         status: ProspectStatusEnum.LEAD,
         title: t('prospects.workflow.stages.lead.title'),
         description: t('prospects.workflow.stages.lead.description'),
-        accentColor: stageAccents[ProspectStatusEnum.LEAD],
-        tintColor: alpha(stageAccents[ProspectStatusEnum.LEAD], 0.06),
+        accentColor: stageStyles[ProspectStatusEnum.LEAD].accentColor,
+        tintColor: alpha(stageStyles[ProspectStatusEnum.LEAD].accentColor, 0.06),
+        Icon: stageStyles[ProspectStatusEnum.LEAD].Icon,
       },
       {
         status: ProspectStatusEnum.CONTACTE,
         title: t('prospects.workflow.stages.contact.title'),
         description: t('prospects.workflow.stages.contact.description'),
-        accentColor: stageAccents[ProspectStatusEnum.CONTACTE],
-        tintColor: alpha(stageAccents[ProspectStatusEnum.CONTACTE], 0.06),
+        accentColor: stageStyles[ProspectStatusEnum.CONTACTE].accentColor,
+        tintColor: alpha(stageStyles[ProspectStatusEnum.CONTACTE].accentColor, 0.06),
+        Icon: stageStyles[ProspectStatusEnum.CONTACTE].Icon,
       },
       {
         status: ProspectStatusEnum.RDV_PLANIFIE,
         title: t('prospects.workflow.stages.meeting.title'),
         description: t('prospects.workflow.stages.meeting.description'),
-        accentColor: stageAccents[ProspectStatusEnum.RDV_PLANIFIE],
-        tintColor: alpha(stageAccents[ProspectStatusEnum.RDV_PLANIFIE], 0.06),
+        accentColor: stageStyles[ProspectStatusEnum.RDV_PLANIFIE].accentColor,
+        tintColor: alpha(stageStyles[ProspectStatusEnum.RDV_PLANIFIE].accentColor, 0.06),
+        Icon: stageStyles[ProspectStatusEnum.RDV_PLANIFIE].Icon,
       },
       {
         status: ProspectStatusEnum.PROPOSITION,
         title: t('prospects.workflow.stages.proposal.title'),
         description: t('prospects.workflow.stages.proposal.description'),
-        accentColor: stageAccents[ProspectStatusEnum.PROPOSITION],
-        tintColor: alpha(stageAccents[ProspectStatusEnum.PROPOSITION], 0.06),
+        accentColor: stageStyles[ProspectStatusEnum.PROPOSITION].accentColor,
+        tintColor: alpha(stageStyles[ProspectStatusEnum.PROPOSITION].accentColor, 0.06),
+        Icon: stageStyles[ProspectStatusEnum.PROPOSITION].Icon,
       },
       {
         status: ProspectStatusEnum.NEGOCIATION,
         title: t('prospects.workflow.stages.negotiation.title'),
         description: t('prospects.workflow.stages.negotiation.description'),
-        accentColor: stageAccents[ProspectStatusEnum.NEGOCIATION],
-        tintColor: alpha(stageAccents[ProspectStatusEnum.NEGOCIATION], 0.06),
+        accentColor: stageStyles[ProspectStatusEnum.NEGOCIATION].accentColor,
+        tintColor: alpha(stageStyles[ProspectStatusEnum.NEGOCIATION].accentColor, 0.06),
+        Icon: stageStyles[ProspectStatusEnum.NEGOCIATION].Icon,
       },
       {
         status: ProspectStatusEnum.GAGNE,
         title: t('prospects.workflow.stages.won.title'),
         description: t('prospects.workflow.stages.won.description'),
-        accentColor: stageAccents[ProspectStatusEnum.GAGNE],
-        tintColor: alpha(stageAccents[ProspectStatusEnum.GAGNE], 0.06),
+        accentColor: stageStyles[ProspectStatusEnum.GAGNE].accentColor,
+        tintColor: alpha(stageStyles[ProspectStatusEnum.GAGNE].accentColor, 0.06),
+        Icon: stageStyles[ProspectStatusEnum.GAGNE].Icon,
       },
       {
         status: ProspectStatusEnum.PERDUS,
         title: t('prospects.workflow.stages.lost.title'),
         description: t('prospects.workflow.stages.lost.description'),
-        accentColor: stageAccents[ProspectStatusEnum.PERDUS],
-        tintColor: alpha(stageAccents[ProspectStatusEnum.PERDUS], 0.06),
+        accentColor: stageStyles[ProspectStatusEnum.PERDUS].accentColor,
+        tintColor: alpha(stageStyles[ProspectStatusEnum.PERDUS].accentColor, 0.06),
+        Icon: stageStyles[ProspectStatusEnum.PERDUS].Icon,
       },
     ],
-    [stageAccents, t],
+    [stageStyles, t],
   );
 
   const helpItems = React.useMemo(
@@ -132,16 +171,8 @@ export function ProspectWorkflow(): React.JSX.Element {
                     gap: 1.5,
                   }}
                 >
-                  <Stack alignItems="center" direction="row" spacing={1}>
-                    <Box
-                      sx={{
-                        width: 10,
-                        height: 10,
-                        borderRadius: 1,
-                        bgcolor: stage.accentColor,
-                        flexShrink: 0,
-                      }}
-                    />
+                  <Stack alignItems="center" direction="row" spacing={1.25}>
+                    <stage.Icon fontSize="small" sx={{ color: stage.accentColor }} />
                     <Typography component="span" fontWeight={700} variant="body1">
                       {stage.title}
                     </Typography>
