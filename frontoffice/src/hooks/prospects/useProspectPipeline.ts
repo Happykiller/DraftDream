@@ -4,7 +4,10 @@ import { useTranslation } from 'react-i18next';
 
 import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
-import { prospectList } from '@services/graphql/prospects.service';
+import {
+  prospectList,
+  prospectUpdate,
+} from '@services/graphql/prospects.service';
 import type { Prospect } from '@app-types/prospects';
 import { pipelineStatuses } from '@src/commons/prospects/status';
 
@@ -58,6 +61,44 @@ export function useProspectPipeline({ limit = 200, enabled = true }: UseProspect
     }
   }, [enabled, execute, flashError, limit, t]);
 
+  const moveProspectToStatus = React.useCallback(
+    async (prospect: Prospect, toStatus: PipelineStatus, fromStatus?: PipelineStatus) => {
+      setState((prev) => {
+        const sourceStatus =
+          fromStatus ||
+          pipelineStatuses.find((status) =>
+            (prev.prospectsByStatus[status] ?? []).some((item) => item.id === prospect.id),
+          );
+
+        if (!sourceStatus || sourceStatus === toStatus) {
+          return prev;
+        }
+
+        const sourceList = prev.prospectsByStatus[sourceStatus] ?? [];
+        const movingProspect = sourceList.find((item) => item.id === prospect.id) ?? prospect;
+        const updatedProspect = { ...movingProspect, status: toStatus } as Prospect;
+
+        return {
+          ...prev,
+          prospectsByStatus: {
+            ...prev.prospectsByStatus,
+            [sourceStatus]: sourceList.filter((item) => item.id !== prospect.id),
+            [toStatus]: [...(prev.prospectsByStatus[toStatus] ?? []), updatedProspect],
+          },
+        };
+      });
+
+      try {
+        await execute(() => prospectUpdate({ id: prospect.id, status: toStatus }));
+      } catch (error) {
+        console.error('[useProspectPipeline] Failed to update prospect status', error);
+        flashError(t('prospects.notifications.update_status_failure'));
+        void load();
+      }
+    },
+    [execute, flashError, load, t],
+  );
+
   React.useEffect(() => {
     if (!enabled) {
       return;
@@ -69,5 +110,6 @@ export function useProspectPipeline({ limit = 200, enabled = true }: UseProspect
     prospectsByStatus,
     loading,
     reload: load,
+    moveProspectToStatus,
   } as const;
 }

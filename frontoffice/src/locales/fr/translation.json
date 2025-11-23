@@ -144,7 +144,8 @@
       "update_success": "Prospect mis à jour",
       "update_failure": "Impossible de mettre à jour le prospect.",
       "delete_success": "Prospect supprimé",
-      "delete_failure": "Impossible de supprimer le prospect."
+      "delete_failure": "Impossible de supprimer le prospect.",
+      "update_status_failure": "Impossible de mettre à jour le statut du prospect."
     },
       "workflow": {
         "title": "Pipeline prospects",

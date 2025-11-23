@@ -144,7 +144,8 @@
       "update_success": "Prospect updated",
       "update_failure": "Unable to update the prospect.",
       "delete_success": "Prospect deleted",
-      "delete_failure": "Unable to delete the prospect."
+      "delete_failure": "Unable to delete the prospect.",
+      "update_status_failure": "Unable to update the prospect status."
     },
       "workflow": {
         "title": "Prospect workflow",

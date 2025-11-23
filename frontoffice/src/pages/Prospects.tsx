@@ -36,6 +36,7 @@ export function Prospects(): React.JSX.Element {
     prospectsByStatus: pipelineProspects,
     loading: pipelineLoading,
     reload: reloadPipeline,
+    moveProspectToStatus,
   } = useProspectPipeline({ enabled: activeTab === 'pipeline' });
   const [prospectToDelete, setProspectToDelete] = React.useState<Prospect | null>(null);
   const [deleteLoading, setDeleteLoading] = React.useState(false);
@@ -82,6 +83,13 @@ export function Prospects(): React.JSX.Element {
     if (deleteLoading) return;
     setProspectToDelete(null);
   }, [deleteLoading]);
+
+  const handleMoveProspect = React.useCallback(
+    (prospect: Prospect, toStatus: ProspectStatusEnum, fromStatus: ProspectStatusEnum) => {
+      void moveProspectToStatus(prospect, toStatus, fromStatus);
+    },
+    [moveProspectToStatus],
+  );
 
   const handleTabChange = React.useCallback((_: React.SyntheticEvent, value: 'list' | 'pipeline') => {
     setActiveTab(value);
@@ -179,6 +187,7 @@ export function Prospects(): React.JSX.Element {
           prospectsByStatus={pipelineProspects}
           onEditProspect={handleEditProspect}
           onDeleteProspect={handleDeleteProspect}
+          onMoveProspect={handleMoveProspect}
         />
       )}
 

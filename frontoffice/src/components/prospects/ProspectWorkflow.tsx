@@ -42,7 +42,11 @@ interface ProspectWorkflowProps {
   loading: boolean;
   onEditProspect: (prospect: Prospect) => void;
   onDeleteProspect: (prospect: Prospect) => void;
-  onMoveProspect?: (prospect: Prospect, toStatus: PipelineStatus) => void;
+  onMoveProspect?: (
+    prospect: Prospect,
+    toStatus: PipelineStatus,
+    fromStatus: PipelineStatus,
+  ) => void;
 }
 
 interface DragPayload {
@@ -249,6 +253,8 @@ export function ProspectWorkflow({
         return;
       }
 
+      let moveRequest: { prospect: Prospect; fromStatus: PipelineStatus } | null = null;
+
       setColumns((currentColumns) => {
         const sourceStatus =
           (payload.fromStatus && currentColumns[payload.fromStatus] != null && payload.fromStatus) ||
@@ -275,10 +281,14 @@ export function ProspectWorkflow({
           [targetStatus]: [...(currentColumns[targetStatus] ?? []), updatedProspect],
         };
 
-        onMoveProspect?.(updatedProspect, targetStatus);
+        moveRequest = { prospect: updatedProspect, fromStatus: sourceStatus };
 
         return nextColumns;
       });
+
+      if (moveRequest) {
+        onMoveProspect?.(moveRequest.prospect, targetStatus, moveRequest.fromStatus);
+      }
     },
     [onMoveProspect],
   );
