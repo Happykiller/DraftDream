@@ -148,8 +148,7 @@
       "update_status_failure": "Unable to update the prospect status."
     },
       "workflow": {
-        "title": "Prospect workflow",
-        "description": "Organize your prospects by stage and clarify the next actions to take.",
+        "card_title": "Prospecting stages",
         "card_helper": "Move prospects across the pipeline to visualise your progress.",
         "empty_title": "No prospect yet",
         "empty_description": "Create or move prospects to populate this stage.",
@@ -162,8 +161,7 @@
             "Drag and drop a prospect to the right stage to reflect its progress.",
             "Each column groups prospects that share the same status for instant visibility.",
             "You can add, edit, or delete a prospect directly from the dedicated actions."
-          ],
-          "footer": "A video guide will soon be available to walk you through the pipeline."
+          ]
         },
         "stages": {
           "lead": {

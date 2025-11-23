@@ -110,7 +110,7 @@ export function Prospects(): React.JSX.Element {
   return (
     <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
       {/* General information */}
-      <Stack alignItems="center" spacing={1}>
+      <Stack alignItems="flex-start" spacing={1} width="100%">
         <Tabs
           value={activeTab}
           onChange={handleTabChange}

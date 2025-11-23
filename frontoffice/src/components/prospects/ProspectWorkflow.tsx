@@ -319,18 +319,14 @@ export function ProspectWorkflow({
   return (
     <Stack spacing={2} sx={{ width: '100%' }}>
       {/* General information */}
-      <Stack spacing={1}>
-        <Typography variant="h6">{t('prospects.workflow.title')}</Typography>
-        <Typography color="text.secondary" variant="body2">
-          {t('prospects.workflow.description')}
-        </Typography>
-      </Stack>
-
       <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', p: { xs: 2, md: 3 } }}>
         <Stack spacing={2}>
-          <Typography color="text.secondary" variant="body2">
-            {t('prospects.workflow.card_helper')}
-          </Typography>
+          <Stack spacing={0.5}>
+            <Typography variant="h6">{t('prospects.workflow.card_title')}</Typography>
+            <Typography color="text.secondary" variant="body2">
+              {t('prospects.workflow.card_helper')}
+            </Typography>
+          </Stack>
 
           <Grid columnSpacing={2} columns={{ xs: 1, lg: 4, xl: 8 }} container rowSpacing={2}>
             {stages.map((stage) => {
@@ -456,9 +452,6 @@ export function ProspectWorkflow({
               </Typography>
             ))}
           </Stack>
-          <Typography color="primary.main" variant="body2">
-            {t('prospects.workflow.help.footer')}
-          </Typography>
         </Stack>
       </Paper>
     </Stack>

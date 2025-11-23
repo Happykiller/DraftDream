@@ -114,16 +114,21 @@ export function ProspectCard({ prospect, onEdit, onDelete }: ProspectCardProps):
           </Stack>
         </Stack>
 
-        <Stack spacing={1.25}>
-          <Stack direction="row" spacing={1} alignItems="center">
+        <Stack columnGap={2} direction="row" flexWrap="wrap" rowGap={1.25} useFlexGap>
+          <Stack
+            alignItems="center"
+            direction="row"
+            spacing={1}
+            sx={{ flex: '1 1 220px', minWidth: 0 }}
+          >
             <Phone color="action" fontSize="small" />
-            <Typography variant="body2">
+            <Typography sx={{ minWidth: 0, wordBreak: 'break-word' }} variant="body2">
               {prospect.phone || t('prospects.list.card.no_phone')}
             </Typography>
           </Stack>
 
           {shouldShowMetadataBadges ? (
-            <Stack direction="row" spacing={0.75} flexWrap="wrap" useFlexGap>
+            <Stack direction="row" flexBasis="100%" flexWrap="wrap" spacing={0.75} useFlexGap>
               {shouldShowObjectiveBadges
                 ? prospect.objectives?.map((objective) => (
                     <Chip key={objective.id ?? objective.label} label={objective.label} size="small" />
@@ -137,12 +142,22 @@ export function ProspectCard({ prospect, onEdit, onDelete }: ProspectCardProps):
             </Stack>
           ) : null}
 
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack
+            alignItems="center"
+            direction="row"
+            spacing={1}
+            sx={{ flex: '1 1 220px', minWidth: 0 }}
+          >
             <AttachMoney color="action" fontSize="small" />
             <Typography variant="body2">{budgetLabel}</Typography>
           </Stack>
 
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack
+            alignItems="center"
+            direction="row"
+            spacing={1}
+            sx={{ flex: '1 1 220px', minWidth: 0 }}
+          >
             <CalendarMonth color="action" fontSize="small" />
             <Typography variant="body2">
               {t('prospects.list.card.created_label', { date: formatDate(prospect.createdAt) })}
