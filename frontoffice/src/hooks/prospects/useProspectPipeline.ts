@@ -4,12 +4,10 @@ import { useTranslation } from 'react-i18next';
 
 import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
-import {
-  prospectList,
-  prospectUpdate,
-} from '@services/graphql/prospects.service';
 import type { Prospect } from '@app-types/prospects';
 import { pipelineStatuses } from '@src/commons/prospects/status';
+import { prospectList } from '@services/graphql/prospects.service';
+import { updateProspectStatus } from '@services/rest/prospects.service';
 
 type PipelineStatus = (typeof pipelineStatuses)[number];
 
@@ -89,7 +87,7 @@ export function useProspectPipeline({ limit = 200, enabled = true }: UseProspect
       });
 
       try {
-        await execute(() => prospectUpdate({ id: prospect.id, status: toStatus }));
+        await execute(() => updateProspectStatus(prospect.id, toStatus));
       } catch (error) {
         console.error('[useProspectPipeline] Failed to update prospect status', error);
         flashError(t('prospects.notifications.update_status_failure'));

@@ -20,7 +20,6 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import { prospectStatusLabels } from '@src/commons/prospects/status';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 import type { Prospect } from '@app-types/prospects';
 
@@ -37,8 +36,6 @@ export function ProspectCard({ prospect, onEdit, onDelete }: ProspectCardProps):
     locale: i18n.language,
     options: { day: '2-digit', month: '2-digit', year: 'numeric' },
   });
-
-  const statusLabel = prospect.status ? prospectStatusLabels[prospect.status] : null;
 
   const budgetLabel = React.useMemo(() => {
     if (prospect.budget == null) {
@@ -68,11 +65,9 @@ export function ProspectCard({ prospect, onEdit, onDelete }: ProspectCardProps):
     ? t('prospects.list.card.updated_label', { date: formattedUpdatedAt })
     : t('prospects.list.card.updated_unknown');
 
-  const shouldShowStatusBadge = Boolean(statusLabel);
   const shouldShowObjectiveBadges = (prospect.objectives?.length ?? 0) > 0;
   const shouldShowPreferenceBadges = (prospect.activityPreferences?.length ?? 0) > 0;
-  const shouldShowMetadataBadges =
-    shouldShowStatusBadge || shouldShowObjectiveBadges || shouldShowPreferenceBadges;
+  const shouldShowMetadataBadges = shouldShowObjectiveBadges || shouldShowPreferenceBadges;
 
   return (
     <Card
@@ -129,7 +124,6 @@ export function ProspectCard({ prospect, onEdit, onDelete }: ProspectCardProps):
 
           {shouldShowMetadataBadges ? (
             <Stack direction="row" spacing={0.75} flexWrap="wrap" useFlexGap>
-              {statusLabel ? <Chip label={statusLabel} size="small" color="primary" /> : null}
               {shouldShowObjectiveBadges
                 ? prospect.objectives?.map((objective) => (
                     <Chip key={objective.id ?? objective.label} label={objective.label} size="small" />
