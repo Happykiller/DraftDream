@@ -91,7 +91,8 @@ export class MealDayResolver {
   async mealDay_update(
     @Args('input') input: UpdateMealDayInput,
   ): Promise<MealDayGql | null> {
-    const updated = await inversify.updateMealDayUsecase.execute(input.id, {
+    const updated = await inversify.updateMealDayUsecase.execute({
+      id: input.id,
       locale: input.locale,
       label: input.label,
       description: input.description,

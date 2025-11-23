@@ -133,11 +133,19 @@ export class BddServiceProspectSourceMongo {
   }
 
   // Delete a prospect source document
+  /**
+   * Soft delete: marks prospect source as deleted by setting deletedAt timestamp.
+   * Preserves data for audit trail and potential recovery.
+   */
   async delete(id: string): Promise<boolean> {
     try {
       const _id = this.toObjectId(id);
-      const res = await this.col().deleteOne({ _id });
-      return res.deletedCount === 1;
+      const now = new Date();
+      const res = await this.col().updateOne(
+        { _id, deletedAt: { $exists: false } },
+        { $set: { deletedAt: now, updatedAt: now } }
+      );
+      return res.modifiedCount === 1;
     } catch (error) {
       this.handleError('delete', error);
     }

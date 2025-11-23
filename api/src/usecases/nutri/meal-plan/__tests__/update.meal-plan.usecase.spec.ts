@@ -28,6 +28,7 @@ describe('UpdateMealPlanUsecase', () => {
     let usecase: UpdateMealPlanUsecase;
 
     const dto: UpdateMealPlanUsecaseDto = {
+        id: 'plan-1',
         label: 'Updated Plan',
         visibility: 'private',
     };
@@ -68,7 +69,7 @@ describe('UpdateMealPlanUsecase', () => {
     it('should update a meal plan and regenerate slug if label provided', async () => {
         mealPlanRepositoryMock.update.mockResolvedValue(updatedMealPlan);
 
-        const result = await usecase.execute('plan-1', dto);
+        const result = await usecase.execute({ ...dto, id: 'plan-1' });
 
         expect(mealPlanRepositoryMock.update).toHaveBeenCalledWith('plan-1', expect.objectContaining({
             label: dto.label,
@@ -80,7 +81,7 @@ describe('UpdateMealPlanUsecase', () => {
     it('should return null if update fails', async () => {
         mealPlanRepositoryMock.update.mockResolvedValue(null);
 
-        const result = await usecase.execute('plan-1', dto);
+        const result = await usecase.execute({ ...dto, id: 'plan-1' });
 
         expect(result).toBeNull();
     });
@@ -89,7 +90,7 @@ describe('UpdateMealPlanUsecase', () => {
         const error = new Error('DB Error');
         mealPlanRepositoryMock.update.mockRejectedValue(error);
 
-        await expect(usecase.execute('plan-1', dto)).rejects.toThrow(ERRORS.UPDATE_MEAL_PLAN_USECASE);
+        await expect(usecase.execute({ ...dto, id: 'plan-1' })).rejects.toThrow(ERRORS.UPDATE_MEAL_PLAN_USECASE);
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining(error.message));
     });
 });

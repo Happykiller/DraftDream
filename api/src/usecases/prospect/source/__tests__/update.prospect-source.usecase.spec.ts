@@ -59,7 +59,7 @@ describe('UpdateProspectSourceUsecase', () => {
     const buildSlugSpy = jest.spyOn(slugUtil, 'buildSlug').mockReturnValue('new-label');
     repositoryMock.update.mockResolvedValue(source);
 
-    const result = await usecase.execute(id, dto);
+    const result = await usecase.execute({ ...dto, id });
 
     expect(repositoryMock.update).toHaveBeenCalledWith(id, {
       label: dto.label,
@@ -69,7 +69,7 @@ describe('UpdateProspectSourceUsecase', () => {
     });
     expect(buildSlugSpy).toHaveBeenCalledWith({
       label: dto.label,
-      fallback: 'client-source',
+      fallback: 'source',
     });
     expect(result).toEqual(source);
   });
@@ -77,7 +77,7 @@ describe('UpdateProspectSourceUsecase', () => {
   it('should return null when repository update returns null', async () => {
     repositoryMock.update.mockResolvedValue(null);
 
-    const result = await usecase.execute(id, dto);
+    const result = await usecase.execute({ ...dto, id });
 
     expect(result).toBeNull();
   });
@@ -86,7 +86,7 @@ describe('UpdateProspectSourceUsecase', () => {
     const failure = new Error('update failure');
     repositoryMock.update.mockRejectedValue(failure);
 
-    await expect(usecase.execute(id, dto)).rejects.toThrow(ERRORS.UPDATE_PROSPECT_SOURCE_USECASE);
+    await expect(usecase.execute({ ...dto, id })).rejects.toThrow(ERRORS.UPDATE_PROSPECT_SOURCE_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(`UpdateProspectSourceUsecase#execute => ${failure.message}`);
   });
 });

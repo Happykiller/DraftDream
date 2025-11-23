@@ -90,7 +90,7 @@ describe('CreateProspectSourceUsecase', () => {
     });
     expect(buildSlugSpy).toHaveBeenCalledWith({
       label: dto.label,
-      fallback: 'activity-preference',
+      fallback: 'source',
     });
     expect(result).toEqual(source);
   });

@@ -60,7 +60,7 @@ describe('UpdateProspectLevelUsecase', () => {
     const buildSlugSpy = jest.spyOn(slugUtil, 'buildSlug').mockReturnValue('generated-prospect');
     repositoryMock.update.mockResolvedValue(level);
 
-    await expect(usecase.execute(id, dto)).resolves.toEqual(level);
+    await expect(usecase.execute({ ...dto, id })).resolves.toEqual(level);
     expect(repositoryMock.update).toHaveBeenCalledWith(id, {
       locale: dto.locale,
       label: dto.label,
@@ -69,21 +69,21 @@ describe('UpdateProspectLevelUsecase', () => {
     });
     expect(buildSlugSpy).toHaveBeenCalledWith({
       label: dto.label,
-      fallback: 'client-level',
+      fallback: 'level',
     });
   });
 
   it('should return null when update fails to find entity', async () => {
     repositoryMock.update.mockResolvedValue(null);
 
-    await expect(usecase.execute(id, dto)).resolves.toBeNull();
+    await expect(usecase.execute({ ...dto, id })).resolves.toBeNull();
   });
 
   it('should log and throw when repository update fails', async () => {
     const failure = new Error('update failure');
     repositoryMock.update.mockRejectedValue(failure);
 
-    await expect(usecase.execute(id, dto)).rejects.toThrow(ERRORS.UPDATE_PROSPECT_LEVEL_USECASE);
+    await expect(usecase.execute({ ...dto, id })).rejects.toThrow(ERRORS.UPDATE_PROSPECT_LEVEL_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(`UpdateProspectLevelUsecase#execute => ${failure.message}`);
   });
 });

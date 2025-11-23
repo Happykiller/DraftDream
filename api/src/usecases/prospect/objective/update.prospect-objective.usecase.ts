@@ -9,7 +9,7 @@ import { UpdateProspectObjectiveUsecaseDto } from './prospect-objective.usecase.
 export class UpdateProspectObjectiveUsecase {
   constructor(private readonly inversify: Inversify) { }
 
-  async execute(id: string, dto: UpdateProspectObjectiveUsecaseDto): Promise<ProspectObjective | null> {
+  async execute(dto: UpdateProspectObjectiveUsecaseDto): Promise<ProspectObjective | null> {
     try {
       const payload: {
         slug?: string;
@@ -23,10 +23,10 @@ export class UpdateProspectObjectiveUsecase {
       };
 
       if (dto.label) {
-        payload.slug = buildSlug({ label: dto.label, fallback: 'client-objective' });
+        payload.slug = buildSlug({ label: dto.label, fallback: 'objective' });
       }
 
-      const updated = await this.inversify.bddService.prospectObjective.update(id, payload);
+      const updated = await this.inversify.bddService.prospectObjective.update(dto.id, payload);
       return updated ? { ...updated } : null;
     } catch (error: any) {
       this.inversify.loggerService.error(`UpdateProspectObjectiveUsecase#execute => ${error?.message ?? error}`);

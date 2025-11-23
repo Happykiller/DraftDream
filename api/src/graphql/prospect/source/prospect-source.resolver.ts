@@ -83,7 +83,8 @@ export class ProspectSourceResolver {
   async prospectSource_update(
     @Args('input') input: UpdateProspectSourceInput,
   ): Promise<ProspectSourceGql | null> {
-    const updated = await inversify.updateClientSourceUsecase.execute(input.id, {
+    const updated = await inversify.updateClientSourceUsecase.execute({
+      id: input.id,
       locale: input.locale,
       label: input.label,
       visibility:

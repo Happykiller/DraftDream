@@ -3,7 +3,7 @@ import { ERRORS } from '@src/common/ERROR';
 import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { ProspectSource } from '@services/db/models/prospect/source.model';
-import { ListProspectSourcesDto } from '@services/db/dtos/prospect/source.dto';
+import { ListProspectSourcesUsecaseDto } from './prospect-source.usecase.dto';
 
 export interface ListProspectSourcesUsecaseResult {
   items: ProspectSource[];
@@ -15,7 +15,7 @@ export interface ListProspectSourcesUsecaseResult {
 export class ListProspectSourcesUsecase {
   constructor(private readonly inversify: Inversify) { }
 
-  async execute(dto: ListProspectSourcesDto = {}): Promise<ListProspectSourcesUsecaseResult> {
+  async execute(dto: ListProspectSourcesUsecaseDto = {}): Promise<ListProspectSourcesUsecaseResult> {
     try {
       const res = await this.inversify.bddService.prospectSource.list(dto);
       return {

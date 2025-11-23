@@ -2,12 +2,12 @@
 import { ERRORS } from '@src/common/ERROR';
 import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
-import { GetProspectSourceDto } from '@services/db/dtos/prospect/source.dto';
+import { DeleteProspectSourceUsecaseDto } from './prospect-source.usecase.dto';
 
 export class DeleteProspectSourceUsecase {
   constructor(private readonly inversify: Inversify) { }
 
-  async execute(dto: GetProspectSourceDto): Promise<boolean> {
+  async execute(dto: DeleteProspectSourceUsecaseDto): Promise<boolean> {
     try {
       return await this.inversify.bddService.prospectSource.delete(dto.id);
     } catch (error: any) {

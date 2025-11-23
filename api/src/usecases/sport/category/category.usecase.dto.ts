@@ -1,17 +1,20 @@
-// src/usecases/category/dto/create.category.usecase.dto.ts
+// src/usecases/sport/category/category.usecase.dto.ts
+
+/**
+ * Independent usecase DTO for creating categories.
+ * Decoupled from service layer - slug generation handled by use case.
+ */
 export interface CreateCategoryUsecaseDto {
   locale: string;
   label: string;
   visibility: 'private' | 'public';
-  createdBy: string; // comes from auth context
+  createdBy: string;
 }
 
-// src/usecases/category/dto/get.category.usecase.dto.ts
 export interface GetCategoryUsecaseDto {
   id: string;
 }
 
-// src/usecases/category/dto/list.category.usecase.dto.ts
 export interface ListCategoriesUsecaseDto {
   q?: string;
   locale?: string;
@@ -19,10 +22,12 @@ export interface ListCategoriesUsecaseDto {
   visibility?: 'private' | 'public';
   limit?: number;
   page?: number;
-  sort?: { updatedAt?: 1 | -1 } // extend if needed
 }
 
-// src/usecases/category/dto/update.category.usecase.dto.ts
+/**
+ * Independent usecase DTO for updating categories.
+ * Decoupled from service layer - slug regeneration handled by use case if label changes.
+ */
 export interface UpdateCategoryUsecaseDto {
   id: string;
   locale?: string;
@@ -30,7 +35,6 @@ export interface UpdateCategoryUsecaseDto {
   visibility?: 'private' | 'public';
 }
 
-// src/usecases/category/dto/delete.category.usecase.dto.ts
 export interface DeleteCategoryUsecaseDto {
   id: string;
 }

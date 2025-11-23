@@ -3,7 +3,7 @@ import { ERRORS } from '@src/common/ERROR';
 import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { ProspectActivityPreference } from '@services/db/models/prospect/activity-preference.model';
-import { ListProspectActivityPreferencesDto } from '@services/db/dtos/prospect/activity-preference.dto';
+import { ListProspectActivityPreferencesUsecaseDto } from './prospect-activity.usecase.dto';
 
 export interface ListProspectActivityPreferencesUsecaseResult {
   items: ProspectActivityPreference[];
@@ -15,7 +15,7 @@ export interface ListProspectActivityPreferencesUsecaseResult {
 export class ListProspectActivityPreferencesUsecase {
   constructor(private readonly inversify: Inversify) { }
 
-  async execute(dto: ListProspectActivityPreferencesDto = {}): Promise<ListProspectActivityPreferencesUsecaseResult> {
+  async execute(dto: ListProspectActivityPreferencesUsecaseDto = {}): Promise<ListProspectActivityPreferencesUsecaseResult> {
     try {
       const res = await this.inversify.bddService.prospectActivityPreference.list(dto);
       return {

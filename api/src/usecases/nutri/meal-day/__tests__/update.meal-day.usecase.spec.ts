@@ -63,12 +63,13 @@ describe('UpdateMealDayUsecase', () => {
   it('should update a meal day through the repository', async () => {
     mealDayRepositoryMock.update.mockResolvedValue(mealDay);
     const dto: UpdateMealDayUsecaseDto = {
+      id: mealDay.id,
       label: 'Updated Day',
       description: 'New focus',
       mealIds: ['meal-3'],
     };
 
-    const result = await usecase.execute(mealDay.id, dto);
+    const result = await usecase.execute(dto);
 
     expect(mealDayRepositoryMock.update).toHaveBeenCalledWith(mealDay.id, {
       ...dto,
@@ -81,7 +82,7 @@ describe('UpdateMealDayUsecase', () => {
   it('should return null when the repository returns null', async () => {
     mealDayRepositoryMock.update.mockResolvedValue(null);
 
-    const result = await usecase.execute('missing', {});
+    const result = await usecase.execute({ id: 'missing' });
 
     expect(result).toBeNull();
   });
@@ -90,7 +91,7 @@ describe('UpdateMealDayUsecase', () => {
     const failure = new Error('update failure');
     mealDayRepositoryMock.update.mockRejectedValue(failure);
 
-    await expect(usecase.execute(mealDay.id, {})).rejects.toThrow(ERRORS.UPDATE_MEAL_DAY_USECASE);
+    await expect(usecase.execute({ id: mealDay.id })).rejects.toThrow(ERRORS.UPDATE_MEAL_DAY_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(
       `UpdateMealDayUsecase#execute => ${failure.message}`,
     );

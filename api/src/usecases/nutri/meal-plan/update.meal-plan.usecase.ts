@@ -11,7 +11,7 @@ import type { MealPlanUsecaseModel } from '@src/usecases/nutri/meal-plan/meal-pl
 export class UpdateMealPlanUsecase {
   constructor(private readonly inversify: Inversify) { }
 
-  async execute(id: string, dto: UpdateMealPlanUsecaseDto): Promise<MealPlanUsecaseModel | null> {
+  async execute(dto: UpdateMealPlanUsecaseDto): Promise<MealPlanUsecaseModel | null> {
     try {
       const toUpdate: any = { ...dto };
       if (dto.label) {
@@ -27,7 +27,7 @@ export class UpdateMealPlanUsecase {
           })),
         }));
       }
-      const updated = await this.inversify.bddService.mealPlan.update(id, toUpdate);
+      const updated = await this.inversify.bddService.mealPlan.update(dto.id, toUpdate);
       return updated ? mapMealPlanToUsecase(updated) : null;
     } catch (error: any) {
       this.inversify.loggerService.error(`UpdateMealPlanUsecase#execute => ${error?.message ?? error}`);

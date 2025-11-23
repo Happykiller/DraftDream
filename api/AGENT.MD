@@ -38,3 +38,21 @@
 - **Documentation**: If use cases are modified, update the corresponding documentation in `docs/features`.
 - **Testing**: Finish with unit tests; only use cases need to be tested.
 - **Linting**: Ensure the linter checks pass (`npm run lint`).
+
+## Code Quality Standards
+- **Maintainability**: Write code that is easy to understand and modify. Prefer clarity over premature optimization.
+- **Reliability**: Ensure robust error handling and comprehensive testing.
+- **Separation of Concerns**: Keep business logic in use cases, infrastructure in services, and presentation in resolvers.
+- **Explicit Contracts**: Use distinct DTOs for input/output and Models for domain entities. Avoid sharing types across layers if it couples them tightly.
+- **Consistent Patterns**: Follow existing naming conventions and architectural patterns throughout the project.
+- **Conventions**: Use the same coding conventions (naming, structure, formatting) across the entire codebase.
+
+## Repository Delete Policy
+- **Soft Delete (Preferred)**: Set `deletedAt` timestamp, preserve data for audit/recovery
+  - Use for: All user-generated content (exercises, programs, meals, prospects, etc.)
+  - Implementation: Update `deletedAt` field instead of removing document
+  - Query filter: Always check `deletedAt: { $exists: false }` for active records
+- **Hard Delete (Exceptions)**: Permanently remove from database
+  - Use for: Only when explicitly required for data privacy/compliance
+  - Require: Admin-level authorization and explicit confirmation
+

@@ -9,7 +9,7 @@ import { UpdateProspectLevelUsecaseDto } from './prospect-level.usecase.dto';
 export class UpdateProspectLevelUsecase {
   constructor(private readonly inversify: Inversify) { }
 
-  async execute(id: string, dto: UpdateProspectLevelUsecaseDto): Promise<ProspectLevel | null> {
+  async execute(dto: UpdateProspectLevelUsecaseDto): Promise<ProspectLevel | null> {
     try {
       const payload: {
         slug?: string;
@@ -23,10 +23,10 @@ export class UpdateProspectLevelUsecase {
       };
 
       if (dto.label) {
-        payload.slug = buildSlug({ label: dto.label, fallback: 'client-level' });
+        payload.slug = buildSlug({ label: dto.label, fallback: 'level' });
       }
 
-      const updated = await this.inversify.bddService.prospectLevel.update(id, payload);
+      const updated = await this.inversify.bddService.prospectLevel.update(dto.id, payload);
       return updated ? { ...updated } : null;
     } catch (error: any) {
       this.inversify.loggerService.error(`UpdateProspectLevelUsecase#execute => ${error?.message ?? error}`);

@@ -83,7 +83,8 @@ export class ProspectLevelResolver {
   async prospectLevel_update(
     @Args('input') input: UpdateProspectLevelInput,
   ): Promise<ProspectLevelGql | null> {
-    const updated = await inversify.updateClientLevelUsecase.execute(input.id, {
+    const updated = await inversify.updateClientLevelUsecase.execute({
+      id: input.id,
       locale: input.locale,
       label: input.label,
       visibility:

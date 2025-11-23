@@ -3,12 +3,12 @@ import { ERRORS } from '@src/common/ERROR';
 import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { ProspectSource } from '@services/db/models/prospect/source.model';
-import { GetProspectSourceDto } from '@services/db/dtos/prospect/source.dto';
+import { GetProspectSourceUsecaseDto } from './prospect-source.usecase.dto';
 
 export class GetProspectSourceUsecase {
   constructor(private readonly inversify: Inversify) { }
 
-  async execute(dto: GetProspectSourceDto): Promise<ProspectSource | null> {
+  async execute(dto: GetProspectSourceUsecaseDto): Promise<ProspectSource | null> {
     try {
       const found = await this.inversify.bddService.prospectSource.get({ id: dto.id });
       return found ? { ...found } : null;

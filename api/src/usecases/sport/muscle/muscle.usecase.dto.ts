@@ -1,4 +1,9 @@
-// src/usecases/muscle/dto/create.muscle.usecase.dto.ts
+// src/usecases/sport/muscle/muscle.usecase.dto.ts
+
+/**
+ * Independent usecase DTO for creating muscles.
+ * Decoupled from service layer - slug generation handled by use case.
+ */
 export interface CreateMuscleUsecaseDto {
   locale: string;
   label: string;
@@ -6,13 +11,10 @@ export interface CreateMuscleUsecaseDto {
   createdBy: string;
 }
 
-// src/usecases/muscle/dto/get.muscle.usecase.dto.ts
-// We mirror BddService GetMuscleDto shape (id OR slug+locale).
 export interface GetMuscleUsecaseDto {
   id: string;
 }
 
-// src/usecases/muscle/dto/list.muscles.usecase.dto.ts
 export interface ListMusclesUsecaseDto {
   q?: string;
   locale?: string;
@@ -23,14 +25,17 @@ export interface ListMusclesUsecaseDto {
   sort?: { updatedAt?: 1 | -1 };
 }
 
-// src/usecases/muscle/dto/update.muscle.usecase.dto.ts
+/**
+ * Independent usecase DTO for updating muscles.
+ * Decoupled from service layer - slug regeneration handled by use case if label changes.
+ */
 export interface UpdateMuscleUsecaseDto {
   id: string;
   locale?: string;
   label?: string;
+  visibility?: 'private' | 'public';
 }
 
-// src/usecases/muscle/dto/delete.muscle.usecase.dto.ts
 export interface DeleteMuscleUsecaseDto {
   id: string;
 }

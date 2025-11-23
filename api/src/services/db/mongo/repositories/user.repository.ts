@@ -21,6 +21,7 @@ interface UserDoc {
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
+  deletedAt?: Date;
   schemaVersion: number;
 }
 
@@ -205,12 +206,16 @@ export class BddServiceUserMongo {
     }
   }
 
-  // --- Delete ---
+  // --- Delete (Soft Delete) ---
   async deleteUser(id: string): Promise<boolean> {
     try {
       const _id = this.toObjectId(id);
-      const res = await (this.col()).deleteOne({ _id });
-      return res.deletedCount === 1;
+      const now = new Date();
+      const res = await (this.col()).updateOne(
+        { _id, deletedAt: { $exists: false } },
+        { $set: { deletedAt: now, updatedAt: now } }
+      );
+      return res.modifiedCount === 1;
     } catch (error) {
       this.handleError('deleteUser', error);
     }
@@ -237,7 +242,7 @@ export class BddServiceUserMongo {
       address: doc.address as any,
       company: doc.company as any,
       is_active: !!doc.is_active,
-      createdBy: doc.createdBy??'',
+      createdBy: doc.createdBy ?? '',
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
       schemaVersion: doc.schemaVersion,

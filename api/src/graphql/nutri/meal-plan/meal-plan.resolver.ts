@@ -81,6 +81,7 @@ export class MealPlanResolver {
     @Args('input') input: UpdateMealPlanInput,
   ): Promise<MealPlanGql | null> {
     const updateDto: any = {
+      id: input.id,
       locale: input.locale,
       label: input.label,
       description: input.description ?? undefined,
@@ -92,7 +93,7 @@ export class MealPlanResolver {
       userId: input.userId === undefined ? undefined : input.userId,
     };
 
-    const updated = await inversify.updateMealPlanUsecase.execute(input.id, updateDto);
+    const updated = await inversify.updateMealPlanUsecase.execute(updateDto);
     return updated ? mapMealPlanUsecaseToGql(updated) : null;
   }
 

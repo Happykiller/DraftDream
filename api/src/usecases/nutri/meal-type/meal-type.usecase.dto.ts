@@ -1,5 +1,9 @@
-// src/usecases/meal-type/meal-type.usecase.dto.ts
-/** Payload to create a meal type. */
+// src/usecases/nutri/meal-type/meal-type.usecase.dto.ts
+
+/**
+ * Independent usecase DTO for creating meal types.
+ * Decoupled from service layer - slug generation handled by use case.
+ */
 export interface CreateMealTypeUsecaseDto {
   locale: string;
   label: string;
@@ -8,12 +12,10 @@ export interface CreateMealTypeUsecaseDto {
   createdBy: string;
 }
 
-/** Identifies a meal type to retrieve. */
 export interface GetMealTypeUsecaseDto {
   id: string;
 }
 
-/** Filters used when listing meal types. */
 export interface ListMealTypesUsecaseDto {
   q?: string;
   locale?: string;
@@ -24,7 +26,10 @@ export interface ListMealTypesUsecaseDto {
   sort?: { updatedAt?: 1 | -1 };
 }
 
-/** Patch data accepted when updating a meal type. */
+/**
+ * Independent usecase DTO for updating meal types.
+ * Decoupled from service layer - slug regeneration handled by use case if label changes.
+ */
 export interface UpdateMealTypeUsecaseDto {
   id: string;
   locale?: string;
@@ -33,7 +38,6 @@ export interface UpdateMealTypeUsecaseDto {
   visibility?: 'private' | 'public';
 }
 
-/** Identifies a meal type to delete. */
 export interface DeleteMealTypeUsecaseDto {
   id: string;
 }

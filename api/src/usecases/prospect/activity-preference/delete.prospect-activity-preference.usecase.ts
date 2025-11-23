@@ -2,12 +2,12 @@
 import { ERRORS } from '@src/common/ERROR';
 import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
-import { GetProspectActivityPreferenceDto } from '@services/db/dtos/prospect/activity-preference.dto';
+import { DeleteProspectActivityPreferenceUsecaseDto } from './prospect-activity.usecase.dto';
 
 export class DeleteProspectActivityPreferenceUsecase {
   constructor(private readonly inversify: Inversify) { }
 
-  async execute(dto: GetProspectActivityPreferenceDto): Promise<boolean> {
+  async execute(dto: DeleteProspectActivityPreferenceUsecaseDto): Promise<boolean> {
     try {
       return await this.inversify.bddService.prospectActivityPreference.delete(dto.id);
     } catch (error: any) {

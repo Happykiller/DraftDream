@@ -65,7 +65,7 @@ describe('UpdateProspectActivityPreferenceUsecase', () => {
     const buildSlugSpy = jest.spyOn(slugUtil, 'buildSlug').mockReturnValue('generated-hiit');
     repositoryMock.update.mockResolvedValue(preference);
 
-    const result = await usecase.execute(id, dto);
+    const result = await usecase.execute({ ...dto, id });
 
     expect(repositoryMock.update).toHaveBeenCalledWith(id, {
       locale: dto.locale,
@@ -83,7 +83,7 @@ describe('UpdateProspectActivityPreferenceUsecase', () => {
   it('should return null when repository update returns null', async () => {
     repositoryMock.update.mockResolvedValue(null);
 
-    const result = await usecase.execute(id, dto);
+    const result = await usecase.execute({ ...dto, id });
 
     expect(result).toBeNull();
   });
@@ -92,7 +92,7 @@ describe('UpdateProspectActivityPreferenceUsecase', () => {
     const failure = new Error('update failure');
     repositoryMock.update.mockRejectedValue(failure);
 
-    await expect(usecase.execute(id, dto)).rejects.toThrow(ERRORS.UPDATE_PROSPECT_ACTIVITY_PREFERENCE_USECASE);
+    await expect(usecase.execute({ ...dto, id })).rejects.toThrow(ERRORS.UPDATE_PROSPECT_ACTIVITY_PREFERENCE_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(`UpdateProspectActivityPreferenceUsecase#execute => ${failure.message}`);
   });
 });

@@ -1,5 +1,9 @@
-// src/usecases/meal/meal.usecase.dto.ts
-/** Payload used to create a meal. */
+// src/usecases/nutri/meal/meal.usecase.dto.ts
+
+/**
+ * Independent usecase DTO for creating meals.
+ * Decoupled from service layer - slug generation handled by use case.
+ */
 export interface CreateMealUsecaseDto {
   locale: string;
   label: string;
@@ -13,12 +17,10 @@ export interface CreateMealUsecaseDto {
   createdBy: string;
 }
 
-/** Identifies a meal to retrieve. */
 export interface GetMealUsecaseDto {
   id: string;
 }
 
-/** Filters used when listing meals. */
 export interface ListMealsUsecaseDto {
   q?: string;
   locale?: string;
@@ -30,7 +32,10 @@ export interface ListMealsUsecaseDto {
   sort?: { updatedAt?: 1 | -1 };
 }
 
-/** Patch data accepted when updating a meal. */
+/**
+ * Independent usecase DTO for updating meals.
+ * Decoupled from service layer - slug regeneration handled by use case if label changes.
+ */
 export interface UpdateMealUsecaseDto {
   id: string;
   locale?: string;
@@ -44,7 +49,6 @@ export interface UpdateMealUsecaseDto {
   visibility?: 'private' | 'public';
 }
 
-/** Identifies a meal to delete. */
 export interface DeleteMealUsecaseDto {
   id: string;
 }

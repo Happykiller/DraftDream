@@ -1,23 +1,102 @@
-// src/usecases/meal-plan/meal-plan.usecase.dto.ts
+// src/usecases/nutri/meal-plan/meal-plan.usecase.dto.ts
 
-import {
-  CreateMealPlanDto as CreateMealPlanServiceDto,
-  GetMealPlanDto as GetMealPlanServiceDto,
-  ListMealPlansDto as ListMealPlansServiceDto,
-  MealPlanDaySnapshotDto as MealPlanDaySnapshotServiceDto,
-  MealPlanMealSnapshotDto as MealPlanMealSnapshotServiceDto,
-  MealPlanMealTypeSnapshotDto as MealPlanMealTypeSnapshotServiceDto,
-  UpdateMealPlanDto as UpdateMealPlanServiceDto,
-} from '@services/db/dtos/meal-plan.dto';
-import type { UsecaseSession } from '@src/usecases/sport/program/program.usecase.dto';
+import { Role } from '@src/common/role.enum';
 
-export type CreateMealPlanUsecaseDto = Omit<CreateMealPlanServiceDto, 'slug'>;
-export type GetMealPlanRepositoryDto = GetMealPlanServiceDto;
-export type GetMealPlanUsecaseDto = GetMealPlanRepositoryDto & { session: UsecaseSession };
-export type ListMealPlansRepositoryDto = ListMealPlansServiceDto;
-export type ListMealPlansUsecaseDto = ListMealPlansRepositoryDto & { session: UsecaseSession };
-export type UpdateMealPlanUsecaseDto = Omit<UpdateMealPlanServiceDto, 'slug'>;
-export interface DeleteMealPlanUsecaseDto { id: string; session: UsecaseSession }
-export type MealPlanDaySnapshotUsecaseDto = MealPlanDaySnapshotServiceDto;
-export type MealPlanMealSnapshotUsecaseDto = MealPlanMealSnapshotServiceDto;
-export type MealPlanMealTypeSnapshotUsecaseDto = MealPlanMealTypeSnapshotServiceDto;
+export interface UsecaseSession {
+  userId: string;
+  role: Role;
+}
+
+export interface MealPlanMealTypeSnapshotUsecaseDto {
+  id?: string;
+  templateMealTypeId?: string;
+  slug?: string;
+  locale?: string;
+  label: string;
+  visibility?: 'private' | 'public';
+}
+
+export interface MealPlanMealSnapshotUsecaseDto {
+  id: string;
+  templateMealId?: string;
+  slug?: string;
+  locale?: string;
+  label: string;
+  description?: string;
+  foods: string;
+  calories: number;
+  proteinGrams: number;
+  carbGrams: number;
+  fatGrams: number;
+  type: MealPlanMealTypeSnapshotUsecaseDto;
+}
+
+export interface MealPlanDaySnapshotUsecaseDto {
+  id: string;
+  templateMealDayId?: string;
+  slug?: string;
+  locale?: string;
+  label: string;
+  description?: string;
+  meals: MealPlanMealSnapshotUsecaseDto[];
+}
+
+/**
+ * Independent usecase DTO for creating meal plans.
+ * Decoupled from service layer - slug generation handled by use case.
+ */
+export interface CreateMealPlanUsecaseDto {
+  locale: string;
+  label: string;
+  description?: string;
+  visibility?: 'private' | 'public';
+  calories: number;
+  proteinGrams: number;
+  carbGrams: number;
+  fatGrams: number;
+  days: MealPlanDaySnapshotUsecaseDto[];
+  userId?: string | null;
+  createdBy: string;
+}
+
+export interface GetMealPlanUsecaseDto {
+  id: string;
+  session: UsecaseSession;
+}
+
+export interface ListMealPlansUsecaseDto {
+  q?: string;
+  locale?: string;
+  createdBy?: string;
+  createdByIn?: string[];
+  visibility?: 'private' | 'public';
+  userId?: string;
+  includeArchived?: boolean;
+  limit?: number;
+  page?: number;
+  sort?: { updatedAt?: 1 | -1 };
+  session: UsecaseSession;
+}
+
+/**
+ * Independent usecase DTO for updating meal plans.
+ * Decoupled from service layer - slug regeneration handled by use case if label changes.
+ */
+export interface UpdateMealPlanUsecaseDto {
+  id: string;
+  locale?: string;
+  label?: string;
+  description?: string;
+  visibility?: 'private' | 'public';
+  calories?: number;
+  proteinGrams?: number;
+  carbGrams?: number;
+  fatGrams?: number;
+  days?: MealPlanDaySnapshotUsecaseDto[];
+  userId?: string | null;
+}
+
+export interface DeleteMealPlanUsecaseDto {
+  id: string;
+  session: UsecaseSession;
+}

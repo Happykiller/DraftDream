@@ -11,7 +11,7 @@ export class CreateProspectObjectiveUsecase {
 
   async execute(dto: CreateProspectObjectiveUsecaseDto): Promise<ProspectObjective | null> {
     try {
-      const slug = buildSlug({ label: dto.label, fallback: 'activity-preference' });
+      const slug = buildSlug({ label: dto.label, fallback: 'objective' });
       const created = await this.inversify.bddService.prospectObjective.create({
         locale: dto.locale,
         label: dto.label,

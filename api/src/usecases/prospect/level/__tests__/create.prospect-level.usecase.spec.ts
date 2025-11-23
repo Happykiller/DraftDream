@@ -77,7 +77,7 @@ describe('CreateProspectLevelUsecase', () => {
     });
     expect(buildSlugSpy).toHaveBeenCalledWith({
       label: dto.label,
-      fallback: 'activity-preference',
+      fallback: 'level',
     });
     expect(result).toEqual(level);
   });

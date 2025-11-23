@@ -83,7 +83,8 @@ export class ProspectActivityPreferenceResolver {
   async prospectActivityPreference_update(
     @Args('input') input: UpdateProspectActivityPreferenceInput,
   ): Promise<ProspectActivityPreferenceGql | null> {
-    const updated = await inversify.updateClientActivityPreferenceUsecase.execute(input.id, {
+    const updated = await inversify.updateClientActivityPreferenceUsecase.execute({
+      id: input.id,
       locale: input.locale,
       label: input.label,
       visibility:

@@ -3,7 +3,7 @@ import { ERRORS } from '@src/common/ERROR';
 import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { ProspectLevel } from '@services/db/models/prospect/level.model';
-import { ListProspectLevelsDto } from '@services/db/dtos/prospect/level.dto';
+import { ListProspectLevelsUsecaseDto } from './prospect-level.usecase.dto';
 
 export interface ListProspectLevelsUsecaseResult {
   items: ProspectLevel[];
@@ -15,7 +15,7 @@ export interface ListProspectLevelsUsecaseResult {
 export class ListProspectLevelsUsecase {
   constructor(private readonly inversify: Inversify) { }
 
-  async execute(dto: ListProspectLevelsDto = {}): Promise<ListProspectLevelsUsecaseResult> {
+  async execute(dto: ListProspectLevelsUsecaseDto = {}): Promise<ListProspectLevelsUsecaseResult> {
     try {
       const res = await this.inversify.bddService.prospectLevel.list(dto);
       return {

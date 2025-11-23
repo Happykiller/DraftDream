@@ -1,5 +1,33 @@
-import { CreateProspectObjectiveDto, UpdateProspectObjectiveDto } from "@src/services/db/dtos/prospect/objective.dto";
+// src/usecases/prospect/objective/prospect-objective.usecase.dto.ts
 
-export type CreateProspectObjectiveUsecaseDto = Omit<CreateProspectObjectiveDto, 'slug'>;
+export interface CreateProspectObjectiveUsecaseDto {
+    locale: string;
+    label: string;
+    visibility: 'private' | 'public';
+    createdBy: string;
+}
 
-export type UpdateProspectObjectiveUsecaseDto = Omit<UpdateProspectObjectiveDto, 'slug'>;
+export interface GetProspectObjectiveUsecaseDto {
+    id: string;
+}
+
+export interface ListProspectObjectivesUsecaseDto {
+    q?: string;
+    locale?: string;
+    createdBy?: string;
+    visibility?: 'private' | 'public';
+    limit?: number;
+    page?: number;
+    sort?: { updatedAt?: 1 | -1 };
+}
+
+export interface UpdateProspectObjectiveUsecaseDto {
+    id: string;
+    locale?: string;
+    label?: string;
+    visibility?: 'private' | 'public';
+}
+
+export interface DeleteProspectObjectiveUsecaseDto {
+    id: string;
+}

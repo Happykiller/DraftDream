@@ -77,7 +77,7 @@ describe('CreateProspectObjectiveUsecase', () => {
     });
     expect(buildSlugSpy).toHaveBeenCalledWith({
       label: dto.label,
-      fallback: 'activity-preference',
+      fallback: 'objective',
     });
     expect(result).toEqual(objective);
   });
