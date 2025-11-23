@@ -10,6 +10,8 @@ import {
   Description,
   People,
   Phone,
+  TaskAlt,
+  VerifiedUser,
   type SvgIconComponent,
 } from '@mui/icons-material';
 import {
@@ -116,6 +118,14 @@ const pipelineCopyKeys: Record<PipelineStatus, { title: string; description: str
     title: 'prospects.workflow.stages.lost.title',
     description: 'prospects.workflow.stages.lost.description',
   },
+  [ProspectStatusEnum.A_FAIRE]: {
+    title: 'prospects.workflow.stages.todo.title',
+    description: 'prospects.workflow.stages.todo.description',
+  },
+  [ProspectStatusEnum.CLIENT]: {
+    title: 'prospects.workflow.stages.client.title',
+    description: 'prospects.workflow.stages.client.description',
+  },
 } as const;
 
 /**
@@ -175,6 +185,14 @@ export function ProspectWorkflow({
       [ProspectStatusEnum.PERDUS]: {
         accentColor: theme.palette.error.main,
         Icon: Cancel,
+      },
+      [ProspectStatusEnum.A_FAIRE]: {
+        accentColor: theme.palette.info.main,
+        Icon: TaskAlt,
+      },
+      [ProspectStatusEnum.CLIENT]: {
+        accentColor: theme.palette.success.dark,
+        Icon: VerifiedUser,
       },
     }),
     [theme],
@@ -261,44 +279,36 @@ export function ProspectWorkflow({
         return;
       }
 
-      let moveRequest: { prospect: Prospect; fromStatus: PipelineStatus } | null = null;
+      const currentColumns = columns;
+      const sourceStatus =
+        (payload.fromStatus && currentColumns[payload.fromStatus] != null && payload.fromStatus) ||
+        pipelineStatuses.find((status) =>
+          (currentColumns[status] ?? []).some((item) => item.id === payload.prospectId),
+        );
 
-      setColumns((currentColumns) => {
-        const sourceStatus =
-          (payload.fromStatus && currentColumns[payload.fromStatus] != null && payload.fromStatus) ||
-          pipelineStatuses.find((status) =>
-            (currentColumns[status] ?? []).some((item) => item.id === payload.prospectId),
-          );
-
-        if (!sourceStatus || sourceStatus === targetStatus) {
-          return currentColumns;
-        }
-
-        const sourceList = currentColumns[sourceStatus] ?? [];
-        const movingIndex = sourceList.findIndex((item) => item.id === payload.prospectId);
-        if (movingIndex < 0) {
-          return currentColumns;
-        }
-
-        const movingProspect = sourceList[movingIndex];
-        const updatedProspect = { ...movingProspect, status: targetStatus };
-
-        const nextColumns: Record<PipelineStatus, Prospect[]> = {
-          ...currentColumns,
-          [sourceStatus]: [...sourceList.slice(0, movingIndex), ...sourceList.slice(movingIndex + 1)],
-          [targetStatus]: [...(currentColumns[targetStatus] ?? []), updatedProspect],
-        };
-
-        moveRequest = { prospect: updatedProspect, fromStatus: sourceStatus };
-
-        return nextColumns;
-      });
-
-      if (moveRequest) {
-        onMoveProspect?.(moveRequest.prospect, targetStatus, moveRequest.fromStatus);
+      if (!sourceStatus || sourceStatus === targetStatus) {
+        return;
       }
+
+      const sourceList = currentColumns[sourceStatus] ?? [];
+      const movingIndex = sourceList.findIndex((item) => item.id === payload.prospectId);
+      if (movingIndex < 0) {
+        return;
+      }
+
+      const movingProspect = sourceList[movingIndex];
+      const updatedProspect = { ...movingProspect, status: targetStatus };
+
+      const nextColumns: Record<PipelineStatus, Prospect[]> = {
+        ...currentColumns,
+        [sourceStatus]: [...sourceList.slice(0, movingIndex), ...sourceList.slice(movingIndex + 1)],
+        [targetStatus]: [...(currentColumns[targetStatus] ?? []), updatedProspect],
+      };
+
+      setColumns(nextColumns);
+      onMoveProspect?.(updatedProspect, targetStatus, sourceStatus);
     },
-    [onMoveProspect],
+    [columns, onMoveProspect],
   );
 
   return (

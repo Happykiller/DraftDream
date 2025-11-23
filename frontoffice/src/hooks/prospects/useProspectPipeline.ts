@@ -6,8 +6,7 @@ import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import type { Prospect } from '@app-types/prospects';
 import { pipelineStatuses } from '@src/commons/prospects/status';
-import { prospectList } from '@services/graphql/prospects.service';
-import { updateProspectStatus } from '@services/rest/prospects.service';
+import { prospectList, prospectUpdate } from '@services/graphql/prospects.service';
 
 type PipelineStatus = (typeof pipelineStatuses)[number];
 
@@ -87,7 +86,7 @@ export function useProspectPipeline({ limit = 200, enabled = true }: UseProspect
       });
 
       try {
-        await execute(() => updateProspectStatus(prospect, toStatus));
+        await execute(() => prospectUpdate({ id: prospect.id, status: toStatus }));
       } catch (error) {
         console.error('[useProspectPipeline] Failed to update prospect status', error);
         flashError(t('prospects.notifications.update_status_failure'));
