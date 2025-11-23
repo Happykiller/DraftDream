@@ -116,9 +116,9 @@ export function ProspectWorkflow(): React.JSX.Element {
             {t('prospects.workflow.card_helper')}
           </Typography>
 
-          <Grid columnSpacing={2} container rowSpacing={2}>
+          <Grid columnSpacing={2} columns={{ xs: 1, lg: 4, xl: 8 }} container rowSpacing={2}>
             {stages.map((stage) => (
-              <Grid key={stage.status} size={{ xs: 12, lg: 6, xl: 4 }}>
+              <Grid key={stage.status} size={1}>
                 <Paper
                   elevation={0}
                   sx={{
