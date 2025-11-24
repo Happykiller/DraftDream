@@ -4,3 +4,4 @@
 .showcase/node_modules
 .showcase/dist
 .vscode
+scripts/git_diffs/*
