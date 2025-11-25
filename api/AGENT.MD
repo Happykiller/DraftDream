@@ -38,6 +38,7 @@
 - **Documentation**: If use cases are modified, update the corresponding documentation in `docs/features`.
 - **Testing**: Finish with unit tests; only use cases need to be tested.
 - **Linting**: Ensure the linter checks pass (`npm run lint`).
+- **Build**: Run `npm run build` to ensure the project compiles successfully.
 
 ## Code Quality Standards
 - **Maintainability**: Write code that is easy to understand and modify. Prefer clarity over premature optimization.

@@ -293,7 +293,7 @@ export function MealPlanCard({
       await onDelete(mealPlan);
       setIsDeleteDialogOpen(false);
     } catch (error) {
-      console.log('[MealPlanCard] Failed to delete meal plan', error);
+      // console.log('[MealPlanCard] Failed to delete meal plan', error);
     } finally {
       setIsDeleteSubmitting(false);
     }
@@ -380,17 +380,17 @@ export function MealPlanCard({
         }}
       >
         <Box
-        ref={contentRef}
-        sx={(innerTheme) => ({
-          position: 'relative',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: innerTheme.spacing(2),
-          flexGrow: 1,
-          maxHeight: isExpanded ? 'none' : COLLAPSED_CONTENT_MAX_HEIGHT,
-          overflow: 'hidden',
-          ...(isOverflowing && !isExpanded
-            ? {
+          ref={contentRef}
+          sx={(innerTheme) => ({
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: innerTheme.spacing(2),
+            flexGrow: 1,
+            maxHeight: isExpanded ? 'none' : COLLAPSED_CONTENT_MAX_HEIGHT,
+            overflow: 'hidden',
+            ...(isOverflowing && !isExpanded
+              ? {
                 '&::after': {
                   content: '""',
                   position: 'absolute',
@@ -401,283 +401,283 @@ export function MealPlanCard({
                   backgroundImage: `linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, ${innerTheme.palette.background.paper} 75%)`,
                 },
               }
-            : {}),
-        })}
-      >
-        {/* General information */}
-        {/* Header */}
-        <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={1.5}>
-          <Stack spacing={0.75} flex={1} minWidth={0}>
-            <Typography variant="h6" sx={{ fontWeight: 600 }} noWrap>
-              {mealPlan.label}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" noWrap>
-              {planAssignmentLabel}
-            </Typography>
-          </Stack>
-          <Stack direction="row" spacing={0.5} sx={{ ml: 2 }}>
-            {availableActions.map(({ key, color, Icon }) => {
-              const label = t(`nutrition-coach.list.actions.${key}`);
-              const isDisabled =
-                (key === 'view' && !onView) ||
-                (key === 'copy' && (isCloneSubmitting || !onClone)) ||
-                (key === 'edit' && !onEdit) ||
-                (key === 'delete' && (!onDelete || isDeleteSubmitting));
-
-              return (
-                <Tooltip key={key} title={label}>
-                  <span>
-                    <IconButton
-                      size="small"
-                      aria-label={label}
-                      disabled={Boolean(isDisabled)}
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        handleActionClick(key);
-                      }}
-                      sx={(innerTheme) => ({
-                        color: innerTheme.palette.text.secondary,
-                        transition: innerTheme.transitions.create(
-                          ['color', 'background-color'],
-                          {
-                            duration: innerTheme.transitions.duration.shorter,
-                          },
-                        ),
-                        '&:hover': {
-                          bgcolor: alpha(innerTheme.palette[color].main, 0.12),
-                          color: innerTheme.palette[color].main,
-                        },
-                      })}
-                    >
-                      <Icon fontSize="small" />
-                    </IconButton>
-                  </span>
-                </Tooltip>
-              );
-            })}
-          </Stack>
-        </Stack>
-
-        {/* Nutrition goals */}
-        <Box
-          sx={{
-            borderRadius: 2,
-            backgroundColor: summaryBackground,
-            border: `1px solid ${summaryBorder}`,
-            px: { xs: 1.5, sm: 2 },
-            py: { xs: 1.5, sm: 2 },
-          }}
+              : {}),
+          })}
         >
-          <Stack spacing={1.5}>
-            <Stack direction="row" alignItems="center" spacing={1}>
-              <ModeStandbyIcon fontSize="small" color="primary" />
-              <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>
-                {t('nutrition-coach.list.sections.nutrition_goals')}
+          {/* General information */}
+          {/* Header */}
+          <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={1.5}>
+            <Stack spacing={0.75} flex={1} minWidth={0}>
+              <Typography variant="h6" sx={{ fontWeight: 600 }} noWrap>
+                {mealPlan.label}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" noWrap>
+                {planAssignmentLabel}
               </Typography>
             </Stack>
-            <Stack
-              direction={{ xs: 'column', sm: 'row' }}
-              spacing={{ xs: 1.25, sm: 3 }}
-              useFlexGap
-              flexWrap="wrap"
-            >
-              <Stack spacing={0.25}>
-                <Typography variant="h6" component="p" sx={{ fontWeight: 700, color: theme.palette.primary.main }}>
-                  {caloriesPerDay}
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  {caloriesPerDayLabel}
-                </Typography>
-              </Stack>
-              <Stack spacing={0.25}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                  {dayCountLabel}
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  {planLengthLabel}
-                </Typography>
-              </Stack>
-            </Stack>
-            <Stack
-              direction={{ xs: 'column', sm: 'row' }}
-              spacing={{ xs: 1.25, sm: 3 }}
-              useFlexGap
-              flexWrap="wrap"
-            >
-              {macroSummaries.map((macro) => (
-                <Stack key={macro.key} spacing={0.25} sx={{ minWidth: { sm: 96 } }}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 700, color: macro.color }}>
-                    {macro.value}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    {macro.label}
-                  </Typography>
-                </Stack>
-              ))}
-            </Stack>
-          </Stack>
-        </Box>
-
-        <Divider flexItem />
-
-        {/* Plan preview */}
-        <Stack spacing={1.5}>
-          <Stack direction="row" alignItems="center" spacing={1}>
-            <RestaurantIcon fontSize="small" color="primary" />
-            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-              {t('nutrition-coach.list.sections.plan_overview')}
-            </Typography>
-          </Stack>
-          {mealPlan.days.length > 0 ? (
-            <Stack spacing={1.5}>
-              {mealPlan.days.map((day, dayIndex) => {
-                const dayLabel = day.label?.trim() || `${dayPrefix} ${dayIndex + 1}`;
-                const mealCountLabel = t('nutrition-coach.list.day_meal_count', {
-                  count: day.meals.length,
-                });
-                const dayCalories = day.meals.reduce((total, meal) => total + meal.calories, 0);
-                const dayCalorieLabel = formatDayCalories(dayCalories);
+            <Stack direction="row" spacing={0.5} sx={{ ml: 2 }}>
+              {availableActions.map(({ key, color, Icon }) => {
+                const label = t(`nutrition-coach.list.actions.${key}`);
+                const isDisabled =
+                  (key === 'view' && !onView) ||
+                  (key === 'copy' && (isCloneSubmitting || !onClone)) ||
+                  (key === 'edit' && !onEdit) ||
+                  (key === 'delete' && (!onDelete || isDeleteSubmitting));
 
                 return (
-                  <Paper
-                    key={getDayKey(day, dayIndex)}
-                    variant="outlined"
-                    sx={{
-                      borderRadius: 2,
-                      px: { xs: 1.5, sm: 2 },
-                      py: { xs: 1.5, sm: 2 },
-                    }}
-                  >
-                    <Stack spacing={1.5}>
-                      <Stack spacing={0.5}>
-                        <Stack direction="row" alignItems="baseline" justifyContent="space-between" spacing={1}>
-                          <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                            {dayLabel}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>
-                            {dayCalorieLabel}
-                          </Typography>
-                        </Stack>
-                        <Typography variant="caption" color="text.secondary">
-                          {mealCountLabel}
-                        </Typography>
-                      </Stack>
-                      {day.meals.length > 0 ? (
-                        <Stack spacing={1}>
-                          {day.meals.slice(0, 3).map((meal, mealIndex) => (
-                            <MealPlanMealRow
-                              key={getMealKey(meal, mealIndex)}
-                              meal={meal}
-                              formatMealCalories={formatMealCalories}
-                            />
-                          ))}
-                          {day.meals.length > 3 ? (
-                            <Typography variant="caption" color="text.secondary">
-                              {t('nutrition-coach.list.more_meals', {
-                                count: day.meals.length - 3,
-                              })}
-                            </Typography>
-                          ) : null}
-                        </Stack>
-                      ) : (
-                        <Typography variant="body2" color="text.secondary">
-                          {t('nutrition-coach.list.no_meals')}
-                        </Typography>
-                      )}
-                    </Stack>
-                  </Paper>
+                  <Tooltip key={key} title={label}>
+                    <span>
+                      <IconButton
+                        size="small"
+                        aria-label={label}
+                        disabled={Boolean(isDisabled)}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleActionClick(key);
+                        }}
+                        sx={(innerTheme) => ({
+                          color: innerTheme.palette.text.secondary,
+                          transition: innerTheme.transitions.create(
+                            ['color', 'background-color'],
+                            {
+                              duration: innerTheme.transitions.duration.shorter,
+                            },
+                          ),
+                          '&:hover': {
+                            bgcolor: alpha(innerTheme.palette[color].main, 0.12),
+                            color: innerTheme.palette[color].main,
+                          },
+                        })}
+                      >
+                        <Icon fontSize="small" />
+                      </IconButton>
+                    </span>
+                  </Tooltip>
                 );
               })}
             </Stack>
-          ) : (
-            <Typography variant="body2" color="text.secondary">
-              {t('nutrition-coach.list.no_days')}
-            </Typography>
-          )}
-        </Stack>
+          </Stack>
 
-        {mealPlan.description ? (
-          <>
-            <Divider flexItem />
-            <Box
-              sx={{
-                borderRadius: 2,
-                backgroundColor: coachNotesBackground,
-                border: `1px solid ${coachNotesBorder}`,
-                px: { xs: 1.5, sm: 2 },
-                py: { xs: 1.5, sm: 2 },
-              }}
-            >
-              <Stack spacing={1}>
-                <Stack direction="row" alignItems="center" spacing={1}>
-                  <EditSquareIcon fontSize="small" color="info" />
-                  <Typography
-                    variant="subtitle2"
-                    sx={{ fontWeight: 600, color: theme.palette.info.main }}
-                  >
-                    {t('nutrition-coach.list.sections.coach_notes')}
+          {/* Nutrition goals */}
+          <Box
+            sx={{
+              borderRadius: 2,
+              backgroundColor: summaryBackground,
+              border: `1px solid ${summaryBorder}`,
+              px: { xs: 1.5, sm: 2 },
+              py: { xs: 1.5, sm: 2 },
+            }}
+          >
+            <Stack spacing={1.5}>
+              <Stack direction="row" alignItems="center" spacing={1}>
+                <ModeStandbyIcon fontSize="small" color="primary" />
+                <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>
+                  {t('nutrition-coach.list.sections.nutrition_goals')}
+                </Typography>
+              </Stack>
+              <Stack
+                direction={{ xs: 'column', sm: 'row' }}
+                spacing={{ xs: 1.25, sm: 3 }}
+                useFlexGap
+                flexWrap="wrap"
+              >
+                <Stack spacing={0.25}>
+                  <Typography variant="h6" component="p" sx={{ fontWeight: 700, color: theme.palette.primary.main }}>
+                    {caloriesPerDay}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {caloriesPerDayLabel}
                   </Typography>
                 </Stack>
-                <Typography variant="body2">{mealPlan.description}</Typography>
+                <Stack spacing={0.25}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                    {dayCountLabel}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {planLengthLabel}
+                  </Typography>
+                </Stack>
               </Stack>
-            </Box>
-          </>
-        ) : null}
+              <Stack
+                direction={{ xs: 'column', sm: 'row' }}
+                spacing={{ xs: 1.25, sm: 3 }}
+                useFlexGap
+                flexWrap="wrap"
+              >
+                {macroSummaries.map((macro) => (
+                  <Stack key={macro.key} spacing={0.25} sx={{ minWidth: { sm: 96 } }}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 700, color: macro.color }}>
+                      {macro.value}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {macro.label}
+                    </Typography>
+                  </Stack>
+                ))}
+              </Stack>
+            </Stack>
+          </Box>
 
-        <Divider flexItem />
+          <Divider flexItem />
 
-        {/* Metadata */}
-        <Stack
-          direction={{ xs: 'column', sm: 'row' }}
-          alignItems={{ xs: 'flex-start', sm: 'center' }}
-          justifyContent={{ xs: 'flex-start', sm: 'space-between' }}
-          spacing={{ xs: 1, sm: 3 }}
-          sx={{ width: '100%' }}
-        >
-          <Stack direction="row" spacing={1} alignItems="center">
-            <HistoryOutlined fontSize="small" color="action" />
-            <Typography variant="caption" color="text.secondary">
-              {t('nutrition-coach.list.metadata.created_on', { date: createdOn })}
-            </Typography>
-          </Stack>
-          {creatorLabel ? (
-            <Stack direction="row" spacing={1} alignItems="center" sx={{ ml: { xs: 0, sm: 'auto' } }}>
-              <PersonOutline fontSize="small" color="action" />
-              <Typography variant="caption" color="text.secondary">
-                {t('nutrition-coach.list.metadata.creator', { name: creatorLabel })}
+          {/* Plan preview */}
+          <Stack spacing={1.5}>
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <RestaurantIcon fontSize="small" color="primary" />
+              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                {t('nutrition-coach.list.sections.plan_overview')}
               </Typography>
             </Stack>
-          ) : null}
-        </Stack>
-      </Box>
+            {mealPlan.days.length > 0 ? (
+              <Stack spacing={1.5}>
+                {mealPlan.days.map((day, dayIndex) => {
+                  const dayLabel = day.label?.trim() || `${dayPrefix} ${dayIndex + 1}`;
+                  const mealCountLabel = t('nutrition-coach.list.day_meal_count', {
+                    count: day.meals.length,
+                  });
+                  const dayCalories = day.meals.reduce((total, meal) => total + meal.calories, 0);
+                  const dayCalorieLabel = formatDayCalories(dayCalories);
 
-      {isOverflowing ? (
-        <>
-          <Divider flexItem sx={{ mt: 2 }} />
-          <Stack direction="row" justifyContent="center" sx={{ pt: 1 }}>
-            <Tooltip title={overflowToggleLabel}>
-              <IconButton
-                size="small"
-                aria-label={overflowToggleLabel}
-                aria-expanded={isExpanded}
-                onClick={(event) => {
-                  event.stopPropagation();
-                  handleToggleExpand();
-                }}
+                  return (
+                    <Paper
+                      key={getDayKey(day, dayIndex)}
+                      variant="outlined"
+                      sx={{
+                        borderRadius: 2,
+                        px: { xs: 1.5, sm: 2 },
+                        py: { xs: 1.5, sm: 2 },
+                      }}
+                    >
+                      <Stack spacing={1.5}>
+                        <Stack spacing={0.5}>
+                          <Stack direction="row" alignItems="baseline" justifyContent="space-between" spacing={1}>
+                            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                              {dayLabel}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>
+                              {dayCalorieLabel}
+                            </Typography>
+                          </Stack>
+                          <Typography variant="caption" color="text.secondary">
+                            {mealCountLabel}
+                          </Typography>
+                        </Stack>
+                        {day.meals.length > 0 ? (
+                          <Stack spacing={1}>
+                            {day.meals.slice(0, 3).map((meal, mealIndex) => (
+                              <MealPlanMealRow
+                                key={getMealKey(meal, mealIndex)}
+                                meal={meal}
+                                formatMealCalories={formatMealCalories}
+                              />
+                            ))}
+                            {day.meals.length > 3 ? (
+                              <Typography variant="caption" color="text.secondary">
+                                {t('nutrition-coach.list.more_meals', {
+                                  count: day.meals.length - 3,
+                                })}
+                              </Typography>
+                            ) : null}
+                          </Stack>
+                        ) : (
+                          <Typography variant="body2" color="text.secondary">
+                            {t('nutrition-coach.list.no_meals')}
+                          </Typography>
+                        )}
+                      </Stack>
+                    </Paper>
+                  );
+                })}
+              </Stack>
+            ) : (
+              <Typography variant="body2" color="text.secondary">
+                {t('nutrition-coach.list.no_days')}
+              </Typography>
+            )}
+          </Stack>
+
+          {mealPlan.description ? (
+            <>
+              <Divider flexItem />
+              <Box
                 sx={{
-                  color: theme.palette.text.secondary,
-                  transition: theme.transitions.create('transform', {
-                    duration: theme.transitions.duration.shorter,
-                  }),
-                  transform: isExpanded ? 'rotate(180deg)' : 'none',
+                  borderRadius: 2,
+                  backgroundColor: coachNotesBackground,
+                  border: `1px solid ${coachNotesBorder}`,
+                  px: { xs: 1.5, sm: 2 },
+                  py: { xs: 1.5, sm: 2 },
                 }}
               >
-                <ExpandMoreOutlined fontSize="small" />
-              </IconButton>
-            </Tooltip>
+                <Stack spacing={1}>
+                  <Stack direction="row" alignItems="center" spacing={1}>
+                    <EditSquareIcon fontSize="small" color="info" />
+                    <Typography
+                      variant="subtitle2"
+                      sx={{ fontWeight: 600, color: theme.palette.info.main }}
+                    >
+                      {t('nutrition-coach.list.sections.coach_notes')}
+                    </Typography>
+                  </Stack>
+                  <Typography variant="body2">{mealPlan.description}</Typography>
+                </Stack>
+              </Box>
+            </>
+          ) : null}
+
+          <Divider flexItem />
+
+          {/* Metadata */}
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            alignItems={{ xs: 'flex-start', sm: 'center' }}
+            justifyContent={{ xs: 'flex-start', sm: 'space-between' }}
+            spacing={{ xs: 1, sm: 3 }}
+            sx={{ width: '100%' }}
+          >
+            <Stack direction="row" spacing={1} alignItems="center">
+              <HistoryOutlined fontSize="small" color="action" />
+              <Typography variant="caption" color="text.secondary">
+                {t('nutrition-coach.list.metadata.created_on', { date: createdOn })}
+              </Typography>
+            </Stack>
+            {creatorLabel ? (
+              <Stack direction="row" spacing={1} alignItems="center" sx={{ ml: { xs: 0, sm: 'auto' } }}>
+                <PersonOutline fontSize="small" color="action" />
+                <Typography variant="caption" color="text.secondary">
+                  {t('nutrition-coach.list.metadata.creator', { name: creatorLabel })}
+                </Typography>
+              </Stack>
+            ) : null}
           </Stack>
-        </>
-      ) : null}
+        </Box>
+
+        {isOverflowing ? (
+          <>
+            <Divider flexItem sx={{ mt: 2 }} />
+            <Stack direction="row" justifyContent="center" sx={{ pt: 1 }}>
+              <Tooltip title={overflowToggleLabel}>
+                <IconButton
+                  size="small"
+                  aria-label={overflowToggleLabel}
+                  aria-expanded={isExpanded}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleToggleExpand();
+                  }}
+                  sx={{
+                    color: theme.palette.text.secondary,
+                    transition: theme.transitions.create('transform', {
+                      duration: theme.transitions.duration.shorter,
+                    }),
+                    transform: isExpanded ? 'rotate(180deg)' : 'none',
+                  }}
+                >
+                  <ExpandMoreOutlined fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Stack>
+          </>
+        ) : null}
       </Paper>
 
       {allowedActions.includes('copy') && onClone && (

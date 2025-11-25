@@ -264,8 +264,8 @@ The meal plan management feature allows coaches and nutritionists to create pers
 
 ### Create Meal Plan
 ```graphql
-mutation CreateMealPlan($input: CreateMealPlanInput!) {
-  createMealPlan(input: $input) {
+mutation MealPlanCreate($input: CreateMealPlanInput!) {
+  meal_plan_create(input: $input) {
     id
     label
     slug
@@ -287,8 +287,8 @@ mutation CreateMealPlan($input: CreateMealPlanInput!) {
 
 ### Get Meal Plan
 ```graphql
-query GetMealPlan($id: ID!) {
-  getMealPlan(id: $id) {
+query MealPlanGet($id: ID!) {
+  meal_plan_get(id: $id) {
     id
     label
     description
@@ -314,14 +314,16 @@ query GetMealPlan($id: ID!) {
 
 ### List User's Meal Plans
 ```graphql
-query ListMealPlans($userId: ID!, $is_active: Boolean) {
-  listMealPlans(userId: $userId, is_active: $is_active) {
-    id
-    label
-    startDate
-    endDate
-    totalCalories
-    is_active
+query MealPlanList($userId: ID!, $is_active: Boolean) {
+  meal_plan_list(userId: $userId, is_active: $is_active) {
+    items {
+        id
+        label
+        startDate
+        endDate
+        totalCalories
+        is_active
+    }
   }
 }
 ```

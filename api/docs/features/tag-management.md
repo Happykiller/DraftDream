@@ -292,8 +292,8 @@ meal {
 
 ### Create Tag
 ```graphql
-mutation CreateTag($input: CreateTagInput!) {
-  createTag(input: $input) {
+mutation TagCreate($input: CreateTagInput!) {
+  tag_create(input: $input) {
     id
     label
     slug
@@ -307,12 +307,14 @@ mutation CreateTag($input: CreateTagInput!) {
 
 ### List Tags
 ```graphql
-query ListTags($locale: String, $category: String, $is_active: Boolean) {
-  listTags(locale: $locale, category: $category, is_active: $is_active) {
-    id
-    label
-    slug
-    category
+query TagList($locale: String, $category: String, $is_active: Boolean) {
+  tag_list(locale: $locale, category: $category, is_active: $is_active) {
+    items {
+        id
+        label
+        slug
+        category
+    }
   }
 }
 ```
