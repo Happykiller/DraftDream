@@ -148,7 +148,6 @@ export function useExercises({ page, limit, q }: UseExercisesParams) {
 
   const create = React.useCallback(
     async (input: {
-      slug: string; locale: string; label: string;
       series: string; repetitions: string; description?: string; instructions?: string;
       charge?: string; rest?: number; videoUrl?: string; visibility: ExerciseVisibility;
       categoryIds: string[];                        // required

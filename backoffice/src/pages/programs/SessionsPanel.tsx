@@ -39,7 +39,6 @@ export function SessionsPanel(): React.JSX.Element {
   const editing = React.useMemo(() => items.find(s => s.id === editId) ?? null, [items, editId]);
 
   const toCreateInput = (values: SessionDialogValues) => ({
-    slug: values.slug,
     locale: values.locale,
     label: values.label,
     durationMin: values.durationMin,
@@ -49,7 +48,6 @@ export function SessionsPanel(): React.JSX.Element {
 
   const toUpdateInput = (id: string, values: SessionDialogValues) => ({
     id,
-    slug: values.slug,
     locale: values.locale,
     label: values.label,
     durationMin: values.durationMin,

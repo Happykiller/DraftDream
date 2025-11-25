@@ -75,13 +75,14 @@ export function Prospects(): React.JSX.Element {
     setDeleteLoading(true);
     try {
       await remove(prospectToDelete.id);
+      await reloadPipeline();
       setProspectToDelete(null);
     } catch (error) {
       console.error('[Prospects] Failed to delete prospect', error);
     } finally {
       setDeleteLoading(false);
     }
-  }, [prospectToDelete, remove]);
+  }, [prospectToDelete, reloadPipeline, remove]);
 
   const handleCancelDelete = React.useCallback(() => {
     if (deleteLoading) return;

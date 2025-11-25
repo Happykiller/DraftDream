@@ -146,7 +146,6 @@ export function MealPlansPanel(): React.JSX.Element {
 
   const toCreateInput = React.useCallback(
     (values: MealPlanDialogValues) => ({
-      slug: values.slug,
       locale: values.locale,
       label: values.label,
       description: values.description ? values.description : undefined,
@@ -164,7 +163,6 @@ export function MealPlansPanel(): React.JSX.Element {
   const toUpdateInput = React.useCallback(
     (id: string, values: MealPlanDialogValues) => ({
       id,
-      slug: values.slug,
       locale: values.locale,
       label: values.label,
       description: values.description ? values.description : undefined,
