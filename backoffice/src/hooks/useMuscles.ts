@@ -130,7 +130,7 @@ export function useMuscles({ page, limit, q }: UseMusclesParams) {
   }, [load]);
 
   const create = React.useCallback(
-    async (input: { slug: string; label: string; locale: string; visibility: MuscleVisibility }) => {
+    async (input: { label: string; locale: string; visibility: MuscleVisibility }) => {
       try {
         const { errors } = await execute(() =>
           gql.send<CreatePayload>({
@@ -151,7 +151,7 @@ export function useMuscles({ page, limit, q }: UseMusclesParams) {
   );
 
   const update = React.useCallback(
-    async (input: { id: string; slug?: string; label?: string; locale?: string }) => {
+    async (input: { id: string; label?: string; locale?: string }) => {
       try {
         const { errors } = await execute(() =>
           gql.send<UpdatePayload>({

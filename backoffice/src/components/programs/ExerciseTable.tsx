@@ -77,7 +77,13 @@ export const ExerciseTable = React.memo(function ExerciseTable({
       minWidth: 170,
       valueFormatter: (value: any) => value?.email ?? '',
     },
-    { field: 'visibility', headerName: t('common.labels.visibility'), width: 130 },
+    {
+      field: 'visibility',
+      headerName: t('common.labels.visibility'),
+      width: 130,
+      renderCell: ({ value }) =>
+        value === 'PUBLIC' ? t('common.visibility.public') : t('common.visibility.private'),
+    },
     { field: 'createdAt', headerName: t('common.labels.created'), valueFormatter: (value: any) => fmtDate(value), flex: 1, minWidth: 170 },
     { field: 'updatedAt', headerName: t('common.labels.updated'), valueFormatter: (value: any) => fmtDate(value), flex: 1, minWidth: 170 },
     {

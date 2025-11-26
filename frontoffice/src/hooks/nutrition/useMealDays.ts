@@ -28,6 +28,7 @@ export interface MealDayMealSnapshot {
     label: string;
     locale?: string | null;
     visibility?: MealVisibility | null;
+    icon?: string | null;
   } | null;
 }
 
@@ -88,7 +89,7 @@ const LIST_QUERY = `
           proteinGrams
           carbGrams
           fatGrams
-          type { id slug label locale visibility }
+          type { id slug label locale visibility icon }
         }
         visibility
         createdBy
@@ -123,7 +124,7 @@ const CREATE_MUTATION = `
         proteinGrams
         carbGrams
         fatGrams
-        type { id slug label locale visibility }
+        type { id slug label locale visibility icon }
       }
       visibility
       createdBy
@@ -154,7 +155,7 @@ const UPDATE_MUTATION = `
         proteinGrams
         carbGrams
         fatGrams
-        type { id slug label locale visibility }
+        type { id slug label locale visibility icon }
       }
       visibility
       createdBy
@@ -175,7 +176,7 @@ export interface UseMealDaysParams {
   page: number; // 1-based
   limit: number;
   q: string;
-  locale?: string;
+  locale: string;
   visibility?: MealDayVisibility;
 }
 
@@ -227,11 +228,12 @@ export function useMealDays({
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
+      const normalizedLocale = locale.trim();
       const filters = {
         page,
         limit,
         q: q.trim() || undefined,
-        locale: locale?.trim() || undefined,
+        locale: normalizedLocale || undefined,
         visibility: visibility || undefined,
       };
       const { data, errors } = await execute(() =>

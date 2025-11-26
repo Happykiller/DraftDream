@@ -64,7 +64,6 @@ export function ExercisesPanel(): React.JSX.Element {
   const ids = (arr: RefEntity[]) => arr.map(x => x.id);
 
   const toCreateInput = (v: ExerciseDialogValues) => ({
-    slug: v.slug,
     locale: v.locale,
     label: v.label,
     series: v.series,
@@ -83,7 +82,6 @@ export function ExercisesPanel(): React.JSX.Element {
 
   const toUpdateInput = (id: string, v: ExerciseDialogValues) => ({
     id,
-    slug: v.slug,
     locale: v.locale,
     label: v.label,
     series: v.series,

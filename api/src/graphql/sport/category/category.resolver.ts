@@ -37,7 +37,6 @@ export class CategoryResolver {
     @Context('req') req: any,
   ): Promise<CategoryGql | null> {
     const created = await inversify.createCategoryUsecase.execute({
-      slug: input.slug,
       locale: input.locale,
       label: input.label,
       visibility: input.visibility,
@@ -84,7 +83,6 @@ export class CategoryResolver {
   ): Promise<CategoryGql | null> {
     const updated = await inversify.updateCategoryUsecase.execute({
       id: input.id,
-      slug: input.slug,
       locale: input.locale,
       label: input.label,
       visibility:

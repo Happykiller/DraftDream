@@ -77,7 +77,6 @@ export interface MealPlanDialogDay extends MealPlanDaySnapshot {
 }
 
 export interface MealPlanDialogValues {
-  slug: string;
   locale: string;
   label: string;
   description: string;
@@ -106,7 +105,6 @@ export interface MealPlanDialogProps {
 }
 
 const DEFAULT_VALUES: MealPlanDialogValues = {
-  slug: '',
   locale: 'en',
   label: '',
   description: '',
@@ -134,15 +132,15 @@ function cloneMeal(option: MealPlanDialogMealOption): MealPlanDialogMeal {
     fatGrams: option.fatGrams,
     type: option.type
       ? {
-          templateMealTypeId: option.type.templateMealTypeId ?? option.type.id,
-          slug: option.type.slug,
-          locale: option.type.locale,
-          label: option.type.label,
-          visibility: option.type.visibility ?? null,
-        }
+        templateMealTypeId: option.type.templateMealTypeId ?? option.type.id,
+        slug: option.type.slug,
+        locale: option.type.locale,
+        label: option.type.label,
+        visibility: option.type.visibility ?? null,
+      }
       : {
-          label: option.label,
-        },
+        label: option.label,
+      },
   };
 }
 
@@ -170,7 +168,6 @@ function toDialogValues(initial: MealPlan, userOptions: MealPlanDialogUserOption
   })();
 
   return {
-    slug: initial.slug,
     locale: initial.locale,
     label: initial.label,
     description: initial.description ?? '',
@@ -226,6 +223,19 @@ export function MealPlanDialog({
   const [values, setValues] = React.useState<MealPlanDialogValues>(DEFAULT_VALUES);
   const [selectedDay, setSelectedDay] = React.useState<MealPlanDialogDayOption | null>(null);
   const [selectedMeals, setSelectedMeals] = React.useState<Record<string, MealPlanDialogMealOption | null>>({});
+  const filteredMealDayOptions = React.useMemo(
+    () => mealDayOptions.filter((option) => option.locale === values.locale),
+    [mealDayOptions, values.locale],
+  );
+  const mealOptionsByLocale = React.useMemo(() => {
+    return mealOptions.reduce<Record<string, MealPlanDialogMealOption[]>>((acc, option) => {
+      if (!acc[option.locale]) {
+        acc[option.locale] = [];
+      }
+      acc[option.locale].push(option);
+      return acc;
+    }, {} as Record<string, MealPlanDialogMealOption[]>);
+  }, [mealOptions]);
 
   React.useEffect(() => {
     if (open && isEdit && initial) {
@@ -242,15 +252,38 @@ export function MealPlanDialog({
     }
   }, [initial, isEdit, open, userOptions]);
 
+  React.useEffect(() => {
+    setSelectedDay((prev) => {
+      if (!prev) return prev;
+      return prev.locale === values.locale ? prev : null;
+    });
+  }, [values.locale]);
+
+  React.useEffect(() => {
+    setSelectedMeals((prev) => {
+      let changed = false;
+      const copy = { ...prev };
+      values.days.forEach((day) => {
+        const dayLocale = day.locale ?? values.locale;
+        const selected = prev[day.clientId];
+        if (selected && selected.locale !== dayLocale) {
+          copy[day.clientId] = null;
+          changed = true;
+        }
+      });
+      return changed ? copy : prev;
+    });
+  }, [values.days, values.locale]);
+
   const handleFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setValues((prev) => ({
       ...prev,
       [name]:
         name === 'calories' ||
-        name === 'proteinGrams' ||
-        name === 'carbGrams' ||
-        name === 'fatGrams'
+          name === 'proteinGrams' ||
+          name === 'carbGrams' ||
+          name === 'fatGrams'
           ? Number(value)
           : value,
     }));
@@ -387,14 +420,12 @@ export function MealPlanDialog({
 
   const submit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const slug = values.slug.trim();
     const label = values.label.trim();
-    if (!slug || !label) return;
+    if (!label) return;
     if (values.calories < 0 || values.proteinGrams < 0 || values.carbGrams < 0 || values.fatGrams < 0) return;
 
     const sanitized: MealPlanDialogValues = {
       ...values,
-      slug,
       label,
       description: values.description.trim(),
       days: values.days.map((day) => ({
@@ -423,14 +454,6 @@ export function MealPlanDialog({
           <Stack spacing={3} sx={{ mt: 1 }}>
             {/* General information */}
             <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-              <TextField
-                label={t('common.labels.slug')}
-                name="slug"
-                value={values.slug}
-                onChange={handleFieldChange}
-                required
-                fullWidth
-              />
               <TextField
                 select
                 label={t('common.labels.locale')}
@@ -537,35 +560,35 @@ export function MealPlanDialog({
                 <Autocomplete
                   value={selectedDay}
                   onChange={(_, option) => setSelectedDay(option)}
-                  options={mealDayOptions}
+                  options={filteredMealDayOptions}
                   loading={mealDayOptionsLoading}
-                getOptionLabel={(option) => option.label}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label={t('meals.mealPlans.dialog.day_placeholder')}
-                    InputProps={{
-                      ...params.InputProps,
-                      endAdornment: (
-                        <React.Fragment>
-                          {params.InputProps.endAdornment}
-                          <IconButton
-                            size="small"
-                            aria-label="refresh-meal-days"
-                            onMouseDown={(event) => {
-                              event.preventDefault();
-                              event.stopPropagation();
-                            }}
-                            onClick={() => onRefreshMealDays?.()}
-                          >
-                            <RefreshIcon fontSize="small" />
-                          </IconButton>
-                        </React.Fragment>
-                      ),
-                    }}
-                  />
-                )}
-              />
+                  getOptionLabel={(option) => option.label}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label={t('meals.mealPlans.dialog.day_placeholder')}
+                      InputProps={{
+                        ...params.InputProps,
+                        endAdornment: (
+                          <React.Fragment>
+                            {params.InputProps.endAdornment}
+                            <IconButton
+                              size="small"
+                              aria-label="refresh-meal-days"
+                              onMouseDown={(event) => {
+                                event.preventDefault();
+                                event.stopPropagation();
+                              }}
+                              onClick={() => onRefreshMealDays?.()}
+                            >
+                              <RefreshIcon fontSize="small" />
+                            </IconButton>
+                          </React.Fragment>
+                        ),
+                      }}
+                    />
+                  )}
+                />
                 <Button variant="outlined" onClick={handleAddDay} disabled={!selectedDay}>
                   {t('meals.mealPlans.dialog.add_day')}
                 </Button>
@@ -583,137 +606,137 @@ export function MealPlanDialog({
                   <Box key={day.clientId} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 2 }}>
                     <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems={{ xs: 'stretch', md: 'flex-start' }}>
                       <Stack spacing={1} sx={{ flex: 1 }}>
-                      <TextField
-                        label={t('meals.mealPlans.dialog.day_label')}
-                        value={day.label}
-                        onChange={(event) => handleDayFieldChange(day.clientId, 'label', event.target.value)}
-                        required
-                      />
-                      <TextField
-                        label={t('common.labels.description')}
-                        value={day.description ?? ''}
-                        onChange={(event) => handleDayFieldChange(day.clientId, 'description', event.target.value)}
-                        multiline
-                        minRows={2}
-                      />
+                        <TextField
+                          label={t('meals.mealPlans.dialog.day_label')}
+                          value={day.label}
+                          onChange={(event) => handleDayFieldChange(day.clientId, 'label', event.target.value)}
+                          required
+                        />
+                        <TextField
+                          label={t('common.labels.description')}
+                          value={day.description ?? ''}
+                          onChange={(event) => handleDayFieldChange(day.clientId, 'description', event.target.value)}
+                          multiline
+                          minRows={2}
+                        />
+                      </Stack>
+                      <Stack direction="row" spacing={1}>
+                        <IconButton
+                          size="small"
+                          aria-label={`move-day-up-${day.clientId}`}
+                          onClick={() => handleMoveDay(dayIndex, 'up')}
+                        >
+                          <ArrowUpwardIcon fontSize="small" />
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          aria-label={`move-day-down-${day.clientId}`}
+                          onClick={() => handleMoveDay(dayIndex, 'down')}
+                        >
+                          <ArrowDownwardIcon fontSize="small" />
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          aria-label={`remove-day-${day.clientId}`}
+                          onClick={() => handleRemoveDay(day.clientId)}
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Stack>
                     </Stack>
-                    <Stack direction="row" spacing={1}>
-                      <IconButton
-                        size="small"
-                        aria-label={`move-day-up-${day.clientId}`}
-                        onClick={() => handleMoveDay(dayIndex, 'up')}
-                      >
-                        <ArrowUpwardIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        aria-label={`move-day-down-${day.clientId}`}
-                        onClick={() => handleMoveDay(dayIndex, 'down')}
-                      >
-                        <ArrowDownwardIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        aria-label={`remove-day-${day.clientId}`}
-                        onClick={() => handleRemoveDay(day.clientId)}
-                      >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </Stack>
-                  </Stack>
 
-                  <List dense>
-                    {day.meals.map((meal, mealIndex) => (
-                      <ListItem
-                        key={meal.clientId}
-                        secondaryAction={
-                          <Stack direction="row" spacing={0.5}>
-                            <IconButton
-                              size="small"
-                              aria-label={`move-meal-up-${meal.clientId}`}
-                              onClick={() => handleMoveMeal(day.clientId, mealIndex, 'up')}
-                            >
-                              <ArrowUpwardIcon fontSize="inherit" />
-                            </IconButton>
-                            <IconButton
-                              size="small"
-                              aria-label={`move-meal-down-${meal.clientId}`}
-                              onClick={() => handleMoveMeal(day.clientId, mealIndex, 'down')}
-                            >
-                              <ArrowDownwardIcon fontSize="inherit" />
-                            </IconButton>
-                            <IconButton
-                              size="small"
-                              aria-label={`remove-meal-${meal.clientId}`}
-                              onClick={() => handleRemoveMeal(day.clientId, mealIndex)}
-                            >
-                              <DeleteIcon fontSize="inherit" />
-                            </IconButton>
-                          </Stack>
-                        }
-                      >
-                        <ListItemText
-                          primary={
-                            <Stack direction="row" spacing={1} alignItems="center">
-                              <Typography variant="subtitle2">{meal.label}</Typography>
-                              <Chip size="small" label={`${meal.calories} kcal`} />
-                              <Chip size="small" label={t('meals.mealPlans.dialog.macros', {
-                                protein: meal.proteinGrams,
-                                carb: meal.carbGrams,
-                                fat: meal.fatGrams,
-                              })}
-                              />
+                    <List dense>
+                      {day.meals.map((meal, mealIndex) => (
+                        <ListItem
+                          key={meal.clientId}
+                          secondaryAction={
+                            <Stack direction="row" spacing={0.5}>
+                              <IconButton
+                                size="small"
+                                aria-label={`move-meal-up-${meal.clientId}`}
+                                onClick={() => handleMoveMeal(day.clientId, mealIndex, 'up')}
+                              >
+                                <ArrowUpwardIcon fontSize="inherit" />
+                              </IconButton>
+                              <IconButton
+                                size="small"
+                                aria-label={`move-meal-down-${meal.clientId}`}
+                                onClick={() => handleMoveMeal(day.clientId, mealIndex, 'down')}
+                              >
+                                <ArrowDownwardIcon fontSize="inherit" />
+                              </IconButton>
+                              <IconButton
+                                size="small"
+                                aria-label={`remove-meal-${meal.clientId}`}
+                                onClick={() => handleRemoveMeal(day.clientId, mealIndex)}
+                              >
+                                <DeleteIcon fontSize="inherit" />
+                              </IconButton>
                             </Stack>
                           }
-                          secondary={meal.foods}
-                        />
-                      </ListItem>
-                    ))}
-                  </List>
+                        >
+                          <ListItemText
+                            primary={
+                              <Stack direction="row" spacing={1} alignItems="center">
+                                <Typography variant="subtitle2">{meal.label}</Typography>
+                                <Chip size="small" label={`${meal.calories} kcal`} />
+                                <Chip size="small" label={t('meals.mealPlans.dialog.macros', {
+                                  protein: meal.proteinGrams,
+                                  carb: meal.carbGrams,
+                                  fat: meal.fatGrams,
+                                })}
+                                />
+                              </Stack>
+                            }
+                            secondary={meal.foods}
+                          />
+                        </ListItem>
+                      ))}
+                    </List>
 
-                  <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems={{ xs: 'stretch', md: 'center' }}>
-                    <Autocomplete
-                      value={selectedMeals[day.clientId] ?? null}
-                      onChange={(_, option) => handleSelectedMealChange(day.clientId, option)}
-                      options={mealOptions}
-                      loading={mealOptionsLoading}
-                      getOptionLabel={(option) => option.label}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label={t('meals.mealPlans.dialog.meal_placeholder')}
-                          InputProps={{
-                            ...params.InputProps,
-                            endAdornment: (
-                              <React.Fragment>
-                                {params.InputProps.endAdornment}
-                                <IconButton
-                                  size="small"
-                                  aria-label="refresh-meals"
-                                  onMouseDown={(event) => {
-                                    event.preventDefault();
-                                    event.stopPropagation();
-                                  }}
-                                  onClick={() => onRefreshMeals?.()}
-                                >
-                                  <RefreshIcon fontSize="small" />
-                                </IconButton>
-                              </React.Fragment>
-                            ),
-                          }}
-                        />
-                      )}
-                    />
-                    <Button
-                      variant="outlined"
-                      onClick={() => handleAddMealToDay(day.clientId)}
-                      disabled={!selectedMeals[day.clientId]}
-                    >
-                      {t('meals.mealPlans.dialog.add_meal')}
-                    </Button>
-                  </Stack>
-                </Box>
-              ))
+                    <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems={{ xs: 'stretch', md: 'center' }}>
+                      <Autocomplete
+                        value={selectedMeals[day.clientId] ?? null}
+                        onChange={(_, option) => handleSelectedMealChange(day.clientId, option)}
+                        options={mealOptionsByLocale[day.locale ?? values.locale] ?? []}
+                        loading={mealOptionsLoading}
+                        getOptionLabel={(option) => option.label}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label={t('meals.mealPlans.dialog.meal_placeholder')}
+                            InputProps={{
+                              ...params.InputProps,
+                              endAdornment: (
+                                <React.Fragment>
+                                  {params.InputProps.endAdornment}
+                                  <IconButton
+                                    size="small"
+                                    aria-label="refresh-meals"
+                                    onMouseDown={(event) => {
+                                      event.preventDefault();
+                                      event.stopPropagation();
+                                    }}
+                                    onClick={() => onRefreshMeals?.()}
+                                  >
+                                    <RefreshIcon fontSize="small" />
+                                  </IconButton>
+                                </React.Fragment>
+                              ),
+                            }}
+                          />
+                        )}
+                      />
+                      <Button
+                        variant="outlined"
+                        onClick={() => handleAddMealToDay(day.clientId)}
+                        disabled={!selectedMeals[day.clientId]}
+                      >
+                        {t('meals.mealPlans.dialog.add_meal')}
+                      </Button>
+                    </Stack>
+                  </Box>
+                ))
               )}
             </Stack>
           </Stack>

@@ -1,5 +1,6 @@
 // src/usecases/equipment/get.equipment.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { GetEquipmentUsecaseDto } from '@src/usecases/sport/equipment/equipment.usecase.dto';
 import { EquipmentUsecaseModel } from '@src/usecases/sport/equipment/equipment.usecase.model';
@@ -15,7 +16,7 @@ export class GetEquipmentUsecase {
       return eq ? { ...eq } : null;
     } catch (e: any) {
       this.inversify.loggerService.error(`GetEquipmentUsecase#execute => ${e?.message ?? e}`);
-      throw new Error(ERRORS.GET_EQUIPMENT_USECASE);
+      throw normalizeError(e, ERRORS.GET_EQUIPMENT_USECASE);
     }
   }
 }

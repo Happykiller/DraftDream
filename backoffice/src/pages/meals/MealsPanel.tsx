@@ -55,7 +55,6 @@ export function MealsPanel(): React.JSX.Element {
         onClose={() => setOpenCreate(false)}
         onSubmit={(values) =>
           create({
-            slug: values.slug,
             label: values.label,
             locale: values.locale,
             typeId: values.typeId,
@@ -80,7 +79,6 @@ export function MealsPanel(): React.JSX.Element {
           editId
             ? update({
               id: editId,
-              slug: values.slug,
               label: values.label,
               locale: values.locale,
               typeId: values.typeId,

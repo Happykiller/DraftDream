@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { ERRORS } from '@src/common/ERROR';
 import { Inversify } from '@src/inversify/investify';
@@ -9,6 +9,13 @@ import { CreateProgramUsecase } from '@src/usecases/sport/program/create.program
 import { CreateProgramUsecaseDto } from '@src/usecases/sport/program/program.usecase.dto';
 import { ProgramUsecaseModel } from '@src/usecases/sport/program/program.usecase.model';
 import { asMock, createMockFn } from '@src/test-utils/mock-helpers';
+
+jest.mock('@src/common/slug.util', () => ({
+  ...(jest.requireActual('@src/common/slug.util') as any),
+  buildSlug: jest.fn(({ label }) => {
+    return label ? label.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '';
+  }),
+}));
 
 interface LoggerMock {
   error: (message: string) => void;
@@ -22,14 +29,23 @@ describe('CreateProgramUsecase', () => {
   let usecase: CreateProgramUsecase;
 
   const dto: CreateProgramUsecaseDto = {
-    slug: 'strength',
     locale: 'en-US',
     label: 'Strength',
     visibility: 'private',
     duration: 6,
     frequency: 3,
     description: 'Program description',
-    sessions: [],
+    sessions: [
+      {
+        id: 'session-1',
+        templateSessionId: 'template-session-1',
+        locale: 'en-us',
+        label: 'Session 1',
+        durationMin: 45,
+        description: 'Session description',
+        exercises: [],
+      },
+    ],
     createdBy: 'coach-123',
   } as CreateProgramUsecaseDto;
 
@@ -152,7 +168,16 @@ describe('CreateProgramUsecase', () => {
 
     const result = await usecase.execute(dto);
 
-    expect(asMock(programRepositoryMock.create).mock.calls[0]).toEqual([dto]);
+    expect(asMock(programRepositoryMock.create).mock.calls[0][0]).toEqual({
+      ...dto,
+      slug: 'strength',
+      sessions: [
+        {
+          ...dto.sessions[0],
+          slug: 'session-1',
+        },
+      ],
+    });
     expect(result).toEqual(expectedProgram);
   });
 

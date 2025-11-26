@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import type { Equipment, EquipmentVisibility } from '@src/hooks/useEquipment';
 
 export interface EquipmentDialogValues {
-  slug: string;
   label: string;
   locale: string;
   visibility: EquipmentVisibility;
@@ -19,7 +18,7 @@ export interface EquipmentDialogProps {
   onSubmit: (values: EquipmentDialogValues) => Promise<unknown> | void;
 }
 
-const DEFAULTS: EquipmentDialogValues = { slug: '', label: '', locale: 'en', visibility: 'PRIVATE' };
+const DEFAULTS: EquipmentDialogValues = { label: '', locale: 'en', visibility: 'PRIVATE' };
 
 export function EquipmentDialog({ open, mode, initial, onClose, onSubmit }: EquipmentDialogProps): React.JSX.Element {
   const [values, setValues] = React.useState<EquipmentDialogValues>(DEFAULTS);
@@ -29,7 +28,6 @@ export function EquipmentDialog({ open, mode, initial, onClose, onSubmit }: Equi
   React.useEffect(() => {
     if (isEdit && initial) {
       setValues({
-        slug: initial.slug,
         label: initial.label,
         locale: initial.locale,
         visibility: initial.visibility,
@@ -57,17 +55,6 @@ export function EquipmentDialog({ open, mode, initial, onClose, onSubmit }: Equi
       </DialogTitle>
       <DialogContent>
         <Stack component="form" onSubmit={submit} spacing={2} sx={{ mt: 1 }}>
-          {/* Slug persists across locales because warehouses rely on it for equipment syncing. */}
-          <TextField
-            label={t('common.labels.slug')}
-            name="slug"
-            value={values.slug}
-            onChange={onChange}
-            inputProps={{ 'aria-label': 'equipment-slug' }}
-            required
-            fullWidth
-          />
-          {/* Label is stored per locale to surface human-readable names in client apps. */}
           <TextField
             label={t('common.labels.label')}
             name="label"

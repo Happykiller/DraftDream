@@ -1,11 +1,12 @@
 // src\usecases\session\delete.session.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { DeleteSessionUsecaseDto } from '@src/usecases/sport/session/session.usecase.dto';
 
 export class DeleteSessionUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   /** Soft delete (idempotent): true if newly deleted, false if already deleted or not found. */
   async execute(dto: DeleteSessionUsecaseDto): Promise<boolean> {
@@ -31,7 +32,7 @@ export class DeleteSessionUsecase {
         throw e;
       }
       this.inversify.loggerService.error(`DeleteSessionUsecase#execute => ${e?.message ?? e}`);
-      throw new Error(ERRORS.DELETE_SESSION_USECASE);
+      throw normalizeError(e, ERRORS.DELETE_SESSION_USECASE);
     }
   }
 }

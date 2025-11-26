@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next';
 import type { MealType, MealTypeVisibility } from '@hooks/useMealTypes';
 
 export interface MealTypeDialogValues {
-  slug: string;
   label: string;
   locale: string;
   icon: string;
@@ -23,7 +22,6 @@ export interface MealTypeDialogProps {
 }
 
 const DEFAULT_VALUES: MealTypeDialogValues = {
-  slug: '',
   label: '',
   locale: 'en',
   icon: '',
@@ -38,7 +36,6 @@ export function MealTypeDialog({ open, mode, initial, onClose, onSubmit }: MealT
   React.useEffect(() => {
     if (isEdit && initial) {
       setValues({
-        slug: initial.slug,
         label: initial.label,
         locale: initial.locale,
         icon: initial.icon ?? '',
@@ -75,15 +72,6 @@ export function MealTypeDialog({ open, mode, initial, onClose, onSubmit }: MealT
       <DialogContent>
         <Stack component="form" onSubmit={submit} spacing={2} sx={{ mt: 1 }}>
           {/* General information */}
-          <TextField
-            label={t('common.labels.slug')}
-            name="slug"
-            value={values.slug}
-            onChange={onChange}
-            inputProps={{ 'aria-label': 'meal-type-slug' }}
-            required
-            fullWidth
-          />
           <TextField
             label={t('common.labels.label')}
             name="label"

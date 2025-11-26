@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -9,6 +9,13 @@ import { Exercise } from '@services/db/models/exercise.model';
 import { CreateExerciseUsecase } from '@src/usecases/sport/exercise/create.exercise.usecase';
 import { CreateExerciseUsecaseDto } from '@src/usecases/sport/exercise/exercise.usecase.dto';
 import { ExerciseUsecaseModel } from '@src/usecases/sport/exercise/exercise.usecase.model';
+
+jest.mock('@src/common/slug.util', () => ({
+  ...(jest.requireActual('@src/common/slug.util') as any),
+  buildSlug: jest.fn(({ label }) => {
+    return label ? label.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '';
+  }),
+}));
 
 interface LoggerMock {
   error: (message: string) => void;
@@ -22,7 +29,6 @@ describe('CreateExerciseUsecase', () => {
   let usecase: CreateExerciseUsecase;
 
   const dto: CreateExerciseUsecaseDto = {
-    slug: 'push-up',
     locale: 'en-US',
     label: 'Push-up',
     description: 'A classic upper body exercise.',
@@ -149,7 +155,10 @@ describe('CreateExerciseUsecase', () => {
 
     const result = await usecase.execute(dto);
 
-    expect(exerciseRepositoryMock.create).toHaveBeenCalledWith(dto);
+    expect(exerciseRepositoryMock.create).toHaveBeenCalledWith({
+      ...dto,
+      slug: 'push-up',
+    });
     expect(result).toEqual(mappedExercise);
   });
 

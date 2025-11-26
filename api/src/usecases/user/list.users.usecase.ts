@@ -1,12 +1,13 @@
 // src/usecases/user/list.users.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import type { User } from '@services/db/models/user.model';
 import { ListUserUsecaseDto } from '@usecases/user/user.usecase.dto';
 import { UserUsecaseModel } from '@usecases/user/user.usecase.model';
 
 export class ListUsersUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   async execute(dto: ListUserUsecaseDto = {}): Promise<{ items: UserUsecaseModel[]; total: number; page: number; limit: number }> {
     try {
@@ -29,7 +30,7 @@ export class ListUsersUsecase {
       };
     } catch (e: any) {
       this.inversify.loggerService.error(`ListUsersUsecase#execute => ${e?.message ?? e}`);
-      throw new Error(ERRORS.LIST_USERS_USECASE);
+      throw normalizeError(e, ERRORS.LIST_USERS_USECASE);
     }
   }
 

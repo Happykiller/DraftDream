@@ -7,6 +7,7 @@ import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
 export interface Session {
+  visibility: "PRIVATE" | "PUBLIC";
   id: string;
   slug: string;
   locale: string;
@@ -38,7 +39,7 @@ const LIST_Q = `
     session_list(input: $input) {
       items {
         id slug locale label durationMin description exerciseIds
-        createdBy createdAt updatedAt
+        createdBy createdAt updatedAt visibility
         creator { id email }
       }
       total page limit
@@ -50,7 +51,7 @@ const CREATE_M = `
   mutation CreateSession($input: CreateSessionInput!) {
     session_create(input: $input) {
       id slug locale label durationMin description exerciseIds
-      createdBy createdAt updatedAt
+      createdBy createdAt updatedAt visibility
       creator { id email }
     }
   }
@@ -60,7 +61,7 @@ const UPDATE_M = `
   mutation UpdateSession($input: UpdateSessionInput!) {
     session_update(input: $input) {
       id slug locale label durationMin description exerciseIds
-      createdBy createdAt updatedAt
+      createdBy createdAt updatedAt visibility
       creator { id email }
     }
   }
@@ -121,7 +122,6 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
 
   const create = React.useCallback(
     async (input: {
-      slug: string;
       locale: string;
       label: string;
       durationMin: number;
@@ -150,7 +150,6 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
   const update = React.useCallback(
     async (input: {
       id: string;
-      slug?: string;
       locale?: string;
       label?: string;
       durationMin?: number;

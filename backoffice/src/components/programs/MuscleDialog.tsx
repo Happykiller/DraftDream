@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import type { Muscle, MuscleVisibility } from '@src/hooks/useMuscles';
 
 export interface MuscleDialogValues {
-  slug: string;
   label: string;
   locale: string;
   visibility: MuscleVisibility;
@@ -20,7 +19,7 @@ export interface MuscleDialogProps {
   onSubmit: (values: MuscleDialogValues) => Promise<unknown> | void;
 }
 
-const DEFAULTS: MuscleDialogValues = { slug: '', label: '', locale: 'en', visibility: 'PRIVATE' };
+const DEFAULTS: MuscleDialogValues = { label: '', locale: 'en', visibility: 'PRIVATE' };
 
 export function MuscleDialog({ open, mode, initial, onClose, onSubmit }: MuscleDialogProps): React.JSX.Element {
   const [values, setValues] = React.useState<MuscleDialogValues>(DEFAULTS);
@@ -30,7 +29,6 @@ export function MuscleDialog({ open, mode, initial, onClose, onSubmit }: MuscleD
   React.useEffect(() => {
     if (isEdit && initial) {
       setValues({
-        slug: initial.slug,
         label: initial.label,
         locale: initial.locale,
         visibility: initial.visibility,
@@ -58,17 +56,6 @@ export function MuscleDialog({ open, mode, initial, onClose, onSubmit }: MuscleD
       </DialogTitle>
       <DialogContent>
         <Stack component="form" onSubmit={submit} spacing={2} sx={{ mt: 1 }}>
-          {/* Keep slug editable to let coaches match existing workout plans without migrations. */}
-          <TextField
-            label={t('common.labels.slug')}
-            name="slug"
-            value={values.slug}
-            onChange={onChange}
-            inputProps={{ 'aria-label': 'muscle-slug' }}
-            required
-            fullWidth
-          />
-          {/* Label drives translations in the training app, so we gather it upfront. */}
           <TextField
             label={t('common.labels.label')}
             name="label"

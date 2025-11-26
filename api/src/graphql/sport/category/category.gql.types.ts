@@ -1,13 +1,13 @@
 // src/graphql/category/category.gql.types.ts
-import { Field, ID, InputType, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 
+import { registerVisibilityEnum, Visibility as CategoryVisibility } from '@graphql/common/visibility.enum';
+export { CategoryVisibility };
 import { UserGql } from '@graphql/user/user.gql.types';
 
-export enum CategoryVisibility {
-  PRIVATE = 'private',
-  PUBLIC = 'public',
-}
-registerEnumType(CategoryVisibility, { name: 'CategoryVisibility' });
+
+
+registerVisibilityEnum('CategoryVisibility');
 
 @ObjectType()
 export class CategoryGql {
@@ -25,7 +25,6 @@ export class CategoryGql {
 
 @InputType()
 export class CreateCategoryInput {
-  @Field() slug!: string;
   @Field() locale!: string;
   @Field() label!: string;
   @Field(() => CategoryVisibility) visibility!: CategoryVisibility;
@@ -34,7 +33,6 @@ export class CreateCategoryInput {
 @InputType()
 export class UpdateCategoryInput {
   @Field(() => ID) id!: string;
-  @Field({ nullable: true }) slug?: string;
   @Field({ nullable: true }) locale?: string;
   @Field({ nullable: true }) label?: string;
   @Field(() => CategoryVisibility, { nullable: true }) visibility?: CategoryVisibility;

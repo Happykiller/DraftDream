@@ -6,17 +6,16 @@ import {
   InputType,
   Int,
   ObjectType,
-  registerEnumType,
 } from '@nestjs/graphql';
 
-import { MealTypeVisibility } from '@src/graphql/nutri/meal-type/meal-type.gql.types';
+import { registerVisibilityEnum, Visibility as MealPlanVisibility } from '@graphql/common/visibility.enum';
+export { MealPlanVisibility };
 import { UserGql } from '@graphql/user/user.gql.types';
+import { MealTypeVisibility } from '@src/graphql/nutri/meal-type/meal-type.gql.types';
 
-export enum MealPlanVisibility {
-  PRIVATE = 'private',
-  PUBLIC = 'public',
-}
-registerEnumType(MealPlanVisibility, { name: 'MealPlanVisibility' });
+
+
+registerVisibilityEnum('MealPlanVisibility');
 
 @ObjectType()
 export class MealPlanMealTypeSnapshotGql {
@@ -165,9 +164,6 @@ export class MealPlanMealTypeInput {
   templateMealTypeId?: string;
 
   @Field(() => String, { nullable: true })
-  slug?: string;
-
-  @Field(() => String, { nullable: true })
   locale?: string;
 
   @Field(() => String)
@@ -184,9 +180,6 @@ export class MealPlanMealInput {
 
   @Field(() => ID, { nullable: true })
   templateMealId?: string;
-
-  @Field(() => String, { nullable: true })
-  slug?: string;
 
   @Field(() => String, { nullable: true })
   locale?: string;
@@ -225,9 +218,6 @@ export class MealPlanDayInput {
   templateMealDayId?: string;
 
   @Field(() => String, { nullable: true })
-  slug?: string;
-
-  @Field(() => String, { nullable: true })
   locale?: string;
 
   @Field(() => String)
@@ -242,9 +232,6 @@ export class MealPlanDayInput {
 
 @InputType()
 export class CreateMealPlanInput {
-  @Field(() => String, { nullable: true })
-  slug?: string | null;
-
   @Field(() => String)
   locale!: string;
 
@@ -283,9 +270,6 @@ export class CreateMealPlanInput {
 export class UpdateMealPlanInput {
   @Field(() => ID)
   id!: string;
-
-  @Field(() => String, { nullable: true })
-  slug?: string;
 
   @Field(() => String, { nullable: true })
   locale?: string;

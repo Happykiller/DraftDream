@@ -4,6 +4,7 @@ import {
   Button,
   CircularProgress,
   Container,
+  Fade,
   Stack,
   Typography
 } from '@mui/material';
@@ -140,24 +141,47 @@ const ReleaseNotesPage = (): JSX.Element => {
   };
 
   return (
-    <Box component="main" sx={{ backgroundColor: 'background.default' }}>
-      <Container maxWidth="lg" sx={{ py: { xs: 8, md: 12 } }}>
-        {/* General information */}
-        <Stack spacing={6}>
-          <Stack direction="row" justifyContent="flex-start">
-            <Button color="primary" onClick={handleBackToHome} variant="outlined">
-              {t('releaseNotes.backToHome')}
-            </Button>
-          </Stack>
-          <Stack spacing={3} sx={{ textAlign: 'center' }}>
-            <Stack spacing={1}>
-              <Typography sx={{ fontSize: { xs: '2.25rem', md: '3rem' }, fontWeight: 700 }}>
-                {t('releaseNotes.title')}
-              </Typography>
+    <Box component="main" sx={{ backgroundColor: 'background.default', minHeight: '100vh' }}>
+      <Container maxWidth="lg" sx={{ py: { xs: 6, md: 10 } }}>
+        <Fade in timeout={800}>
+          <Stack spacing={8}>
+            <Stack alignItems="center" spacing={4} sx={{ textAlign: 'center', position: 'relative' }}>
+              <Box sx={{ position: 'absolute', left: 0, top: 0, display: { xs: 'none', md: 'block' } }}>
+                <Button color="inherit" onClick={handleBackToHome} size="small" variant="text">
+                  ← {t('releaseNotes.backToHome')}
+                </Button>
+              </Box>
+
+              <Stack spacing={2} sx={{ maxWidth: 800 }}>
+                <Typography
+                  sx={{
+                    background: (theme) => `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                    backgroundClip: 'text',
+                    textFillColor: 'transparent',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    fontSize: { xs: '2.5rem', md: '3.5rem' },
+                    fontWeight: 800,
+                    letterSpacing: '-0.02em'
+                  }}
+                >
+                  {t('releaseNotes.title')}
+                </Typography>
+                <Typography color="text.secondary" sx={{ fontSize: '1.1rem', maxWidth: 600, mx: 'auto' }}>
+                  {t('releaseNotes.pageSubtitle')}
+                </Typography>
+              </Stack>
+
+              <Box sx={{ display: { xs: 'block', md: 'none' } }}>
+                <Button color="inherit" onClick={handleBackToHome} variant="outlined">
+                  {t('releaseNotes.backToHome')}
+                </Button>
+              </Box>
             </Stack>
+
+            {renderContent()}
           </Stack>
-          {renderContent()}
-        </Stack>
+        </Fade>
       </Container>
     </Box>
   );

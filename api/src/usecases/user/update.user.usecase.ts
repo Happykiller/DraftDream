@@ -1,12 +1,13 @@
 // src/usecases/user/update.user.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { User } from '@services/db/models/user.model';
 import { UserUsecaseModel } from '@usecases/user/user.usecase.model';
 import { UpdateUserUsecaseDto } from '@usecases/user/user.usecase.dto';
 
 export class UpdateUserUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   async execute(dto: UpdateUserUsecaseDto): Promise<UserUsecaseModel> {
     try {
@@ -39,7 +40,7 @@ export class UpdateUserUsecase {
       };
     } catch (e: any) {
       this.inversify.loggerService.error(`UpdateUserUsecase#execute => ${e?.message ?? e}`);
-      throw new Error(ERRORS.UPDATE_USER_USECASE);
+      throw normalizeError(e, ERRORS.UPDATE_USER_USECASE);
     }
   }
 }

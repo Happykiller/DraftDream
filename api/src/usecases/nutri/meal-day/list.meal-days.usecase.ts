@@ -1,6 +1,7 @@
 // src/usecases/meal-day/list.meal-days.usecase.ts
 
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { mapMealDayToUsecase } from '@src/usecases/nutri/meal-day/meal-day.mapper';
@@ -8,7 +9,7 @@ import { ListMealDaysUsecaseDto } from '@src/usecases/nutri/meal-day/meal-day.us
 import type { MealDayUsecaseModel } from '@src/usecases/nutri/meal-day/meal-day.usecase.model';
 
 export class ListMealDaysUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   async execute(dto: ListMealDaysUsecaseDto): Promise<{
     items: MealDayUsecaseModel[];
@@ -88,7 +89,7 @@ export class ListMealDaysUsecase {
         throw error;
       }
       this.inversify.loggerService.error(`ListMealDaysUsecase#execute => ${error?.message ?? error}`);
-      throw new Error(ERRORS.LIST_MEAL_DAYS_USECASE);
+      throw normalizeError(error, ERRORS.LIST_MEAL_DAYS_USECASE);
     }
   }
 

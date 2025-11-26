@@ -9,32 +9,37 @@ import {
   type ProspectClientDialogValues,
 } from '@components/prospects/ProspectClientDialog';
 import { ProspectClientTable } from '@components/prospects/ProspectClientTable';
-import { useClientMetadataOptions } from '@hooks/useClientMetadataOptions';
-import { useClients } from '@hooks/useClients';
+import {
+  ProspectStatusEnum,
+  prospectStatusLabels,
+  type ProspectStatusOption,
+} from '@commons/prospects/status';
+import { useProspectMetadataOptions } from '@hooks/useProspectMetadataOptions';
+import { useProspects } from '@hooks/useProspects';
 import { useDebouncedValue } from '@hooks/useDebouncedValue';
 import { useTabParams } from '@hooks/useTabParams';
 
 export function ClientsPanel(): React.JSX.Element {
-  const { page, limit, q, setPage, setLimit, setQ } = useTabParams('cli');
+  const { page, limit, q, setPage, setLimit, setQ } = useTabParams('pros');
   const [searchInput, setSearchInput] = React.useState(q);
   const debounced = useDebouncedValue(searchInput, 300);
   React.useEffect(() => {
     if (debounced !== q) setQ(debounced);
   }, [debounced, q, setQ]);
 
-  const [statusFilter, setStatusFilter] = React.useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = React.useState<ProspectStatusEnum | null>(null);
   const [levelFilter, setLevelFilter] = React.useState<string | null>(null);
   const [sourceFilter, setSourceFilter] = React.useState<string | null>(null);
 
-  const { items, total, loading, create, update, remove } = useClients({
+  const { items, total, loading, create, update, remove } = useProspects({
     page,
     limit,
     q,
-    statusId: statusFilter,
+    status: (statusFilter as ProspectStatusEnum | null) ?? undefined,
     levelId: levelFilter,
     sourceId: sourceFilter,
   });
-  const metadata = useClientMetadataOptions();
+  const metadata = useProspectMetadataOptions();
   const { t } = useTranslation();
 
   const [openCreate, setOpenCreate] = React.useState(false);
@@ -48,7 +53,7 @@ export function ClientsPanel(): React.JSX.Element {
       lastName: values.lastName,
       email: values.email,
       phone: values.phone || undefined,
-      statusId: values.statusId || undefined,
+      status: values.status as ProspectStatusEnum | undefined,
       levelId: values.levelId || undefined,
       sourceId: values.sourceId || undefined,
       objectiveIds: values.objectiveIds,
@@ -60,6 +65,15 @@ export function ClientsPanel(): React.JSX.Element {
       dealDescription: values.dealDescription || undefined,
       desiredStartDate: values.desiredStartDate || undefined,
     }),
+    [],
+  );
+
+  const statusOptions = React.useMemo<ProspectStatusOption[]>(
+    () =>
+      Object.values(ProspectStatusEnum).map((value) => ({
+        value,
+        label: prospectStatusLabels[value],
+      })),
     [],
   );
 
@@ -75,7 +89,7 @@ export function ClientsPanel(): React.JSX.Element {
         statusFilter={statusFilter}
         levelFilter={levelFilter}
         sourceFilter={sourceFilter}
-        statuses={metadata.statuses}
+        statuses={statusOptions}
         levels={metadata.levels}
         sources={metadata.sources}
         loading={loading || metadata.loading}
@@ -93,7 +107,7 @@ export function ClientsPanel(): React.JSX.Element {
       <ProspectClientDialog
         open={openCreate}
         mode="create"
-        statuses={metadata.statuses}
+        statuses={statusOptions}
         levels={metadata.levels}
         sources={metadata.sources}
         objectives={metadata.objectives}
@@ -109,7 +123,7 @@ export function ClientsPanel(): React.JSX.Element {
         open={!!editId && !!editing}
         mode="edit"
         initial={editing ?? undefined}
-        statuses={metadata.statuses}
+        statuses={statusOptions}
         levels={metadata.levels}
         sources={metadata.sources}
         objectives={metadata.objectives}
@@ -125,7 +139,7 @@ export function ClientsPanel(): React.JSX.Element {
 
       <ConfirmDialog
         open={!!deleteId}
-        title={t('prospects.clients.confirm.delete_title')}
+        title={t('prospects.list.confirm.delete_title')}
         message={t('common.messages.confirm_deletion_warning')}
         onClose={() => setDeleteId(null)}
         onConfirm={() => {

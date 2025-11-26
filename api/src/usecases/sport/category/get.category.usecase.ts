@@ -1,5 +1,6 @@
 // src/usecases/category/get.category.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { GetCategoryUsecaseDto } from '@src/usecases/sport/category/category.usecase.dto';
 import { CategoryUsecaseModel } from '@src/usecases/sport/category/category.usecase.model';
@@ -15,7 +16,7 @@ export class GetCategoryUsecase {
       return cat ? { ...cat } : null;
     } catch (e: any) {
       this.inversify.loggerService.error(`GetCategoryUsecase#execute => ${e?.message ?? e}`);
-      throw new Error(ERRORS.GET_CATEGORY_USECASE);
+      throw normalizeError(e, ERRORS.GET_CATEGORY_USECASE);
     }
   }
 }

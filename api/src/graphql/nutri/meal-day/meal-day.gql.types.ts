@@ -6,18 +6,16 @@ import {
   InputType,
   Int,
   ObjectType,
-  registerEnumType,
 } from '@nestjs/graphql';
 
-import { MealGql } from '@src/graphql/nutri/meal/meal.gql.types';
+import { registerVisibilityEnum, Visibility as MealDayVisibility } from '@graphql/common/visibility.enum';
+export { MealDayVisibility };
 import { UserGql } from '@graphql/user/user.gql.types';
+import { MealGql } from '@src/graphql/nutri/meal/meal.gql.types';
 
-export enum MealDayVisibility {
-  PRIVATE = 'private',
-  PUBLIC = 'public',
-}
 
-registerEnumType(MealDayVisibility, { name: 'MealDayVisibility' });
+
+registerVisibilityEnum('MealDayVisibility');
 
 @ObjectType()
 export class MealDayGql {
@@ -62,9 +60,6 @@ export class MealDayGql {
 @InputType()
 export class CreateMealDayInput {
   @Field()
-  slug!: string;
-
-  @Field()
   locale!: string;
 
   @Field()
@@ -84,9 +79,6 @@ export class CreateMealDayInput {
 export class UpdateMealDayInput {
   @Field(() => ID)
   id!: string;
-
-  @Field({ nullable: true })
-  slug?: string;
 
   @Field({ nullable: true })
   locale?: string;

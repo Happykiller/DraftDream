@@ -140,7 +140,7 @@ export interface UseMealsParams {
   page: number; // 1-based
   limit: number;
   q: string;
-  locale?: string;
+  locale: string;
   typeId?: string;
   visibility?: MealVisibility;
 }
@@ -202,11 +202,12 @@ export function useMeals({
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
+      const normalizedLocale = locale.trim();
       const filters = {
         page,
         limit,
         q: q.trim() || undefined,
-        locale: locale?.trim() || undefined,
+        locale: normalizedLocale || undefined,
         typeId: typeId || undefined,
         visibility: visibility || undefined,
       };

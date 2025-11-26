@@ -16,7 +16,6 @@ import type { Meal, MealVisibility } from '@hooks/useMeals';
 import type { MealType } from '@hooks/useMealTypes';
 
 export interface MealDialogSubmitValues {
-  slug: string;
   label: string;
   locale: string;
   typeId: string;
@@ -39,7 +38,6 @@ export interface MealDialogProps {
 }
 
 interface MealDialogState {
-  slug: string;
   label: string;
   locale: string;
   typeId: string;
@@ -52,7 +50,6 @@ interface MealDialogState {
 }
 
 const DEFAULT_STATE: MealDialogState = {
-  slug: '',
   label: '',
   locale: 'en',
   typeId: '',
@@ -77,10 +74,14 @@ export function MealDialog({
   const { t } = useTranslation();
   const isEdit = mode === 'edit';
 
+  const filteredMealTypes = React.useMemo(
+    () => mealTypes.filter((type) => type.locale === values.locale),
+    [mealTypes, values.locale],
+  );
+
   React.useEffect(() => {
     if (isEdit && initial) {
       setValues({
-        slug: initial.slug,
         label: initial.label,
         locale: initial.locale,
         typeId: initial.typeId,
@@ -113,10 +114,21 @@ export function MealDialog({
     }));
   };
 
+  React.useEffect(() => {
+    setValues((prev) => {
+      if (filteredMealTypes.length === 0) {
+        return prev.typeId ? { ...prev, typeId: '' } : prev;
+      }
+      if (filteredMealTypes.some((type) => type.id === prev.typeId)) {
+        return prev;
+      }
+      return { ...prev, typeId: filteredMealTypes[0].id };
+    });
+  }, [filteredMealTypes]);
+
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
     await onSubmit({
-      slug: values.slug,
       label: values.label,
       locale: values.locale,
       typeId: values.typeId,
@@ -138,15 +150,6 @@ export function MealDialog({
       <DialogContent>
         <Stack component="form" onSubmit={submit} spacing={2} sx={{ mt: 1 }}>
           {/* General information */}
-          <TextField
-            label={t('common.labels.slug')}
-            name="slug"
-            value={values.slug}
-            onChange={onChange}
-            inputProps={{ 'aria-label': 'meal-slug' }}
-            required
-            fullWidth
-          />
           <TextField
             label={t('common.labels.label')}
             name="label"
@@ -181,7 +184,7 @@ export function MealDialog({
             fullWidth
             disabled={mealTypesLoading && mealTypes.length === 0}
           >
-            {mealTypes.map((type) => (
+            {filteredMealTypes.map((type) => (
               <MenuItem key={type.id} value={type.id}>
                 {`${type.label} (${type.locale.toUpperCase()})`}
               </MenuItem>

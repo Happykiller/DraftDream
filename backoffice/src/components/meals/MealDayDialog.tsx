@@ -121,6 +121,11 @@ export function MealDayDialog({
   const { t } = useTranslation();
   const isEdit = mode === 'edit';
 
+  const filteredMealOptions = React.useMemo(
+    () => mealOptions.filter((option) => option.locale === values.locale),
+    [mealOptions, values.locale],
+  );
+
   React.useEffect(() => {
     if (open && isEdit && initial) {
       setValues({
@@ -148,6 +153,18 @@ export function MealDayDialog({
       [name]: name === 'visibility' ? (value as MealDayVisibility) : value,
     }));
   };
+
+  React.useEffect(() => {
+    setValues((prev) => {
+      const filteredMeals = prev.meals.filter((meal) => meal.locale === prev.locale);
+      if (filteredMeals.length === prev.meals.length) return prev;
+      return { ...prev, meals: filteredMeals };
+    });
+    setSelectedOption((prev) => {
+      if (!prev) return prev;
+      return prev.locale === values.locale ? prev : null;
+    });
+  }, [values.locale]);
 
   const handleAddMeal = () => {
     if (!selectedOption) return;
@@ -264,7 +281,7 @@ export function MealDayDialog({
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} alignItems={{ xs: 'stretch', sm: 'center' }}>
               <Autocomplete
                 fullWidth
-                options={mealOptions}
+                options={filteredMealOptions}
                 value={selectedOption}
                 loading={mealOptionsLoading}
                 onChange={(_, option) => setSelectedOption(option)}

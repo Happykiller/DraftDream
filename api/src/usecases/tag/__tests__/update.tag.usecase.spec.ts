@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { ERRORS } from '@src/common/ERROR';
 import { Inversify } from '@src/inversify/investify';
@@ -8,6 +8,14 @@ import { UpdateTagUsecase } from '@usecases/tag/update.tag.usecase';
 import { UpdateTagUsecaseDto } from '@usecases/tag/tag.usecase.dto';
 import { TagUsecaseModel } from '@usecases/tag/tag.usecase.model';
 import { asMock, createMockFn } from '@src/test-utils/mock-helpers';
+
+jest.mock('@src/common/slug.util', () => ({
+  ...(jest.requireActual('@src/common/slug.util') as any),
+  buildSlug: jest.fn(({ label }) => {
+    // Simple slugify for testing purposes
+    return label ? label.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '';
+  }),
+}));
 
 interface LoggerMock {
   error: (message: string) => void;
@@ -22,7 +30,6 @@ describe('UpdateTagUsecase', () => {
 
   const dto: UpdateTagUsecaseDto = {
     id: 'tag-789',
-    slug: 'flexibility',
     locale: 'en-US',
     label: 'Flexibility',
     visibility: 'private',
@@ -72,7 +79,7 @@ describe('UpdateTagUsecase', () => {
     expect(asMock(tagRepositoryMock.update).mock.calls[0]).toEqual([
       dto.id,
       {
-        slug: dto.slug,
+        slug: 'flexibility',
         locale: dto.locale,
         label: dto.label,
         visibility: dto.visibility,

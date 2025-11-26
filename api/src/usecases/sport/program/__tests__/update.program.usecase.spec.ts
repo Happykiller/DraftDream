@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest, afterEach } from '@jest/globals';
 
 import { ERRORS } from '@src/common/ERROR';
 import { Inversify } from '@src/inversify/investify';
@@ -9,6 +9,13 @@ import { UpdateProgramUsecase } from '@src/usecases/sport/program/update.program
 import { UpdateProgramUsecaseDto } from '@src/usecases/sport/program/program.usecase.dto';
 import { ProgramUsecaseModel } from '@src/usecases/sport/program/program.usecase.model';
 import { asMock, createMockFn } from '@src/test-utils/mock-helpers';
+
+jest.mock('@src/common/slug.util', () => ({
+  ...(jest.requireActual('@src/common/slug.util') as any),
+  buildSlug: jest.fn(({ label }) => {
+    return label ? label.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '';
+  }),
+}));
 
 interface LoggerMock {
   error: (message: string) => void;
@@ -25,18 +32,34 @@ describe('UpdateProgramUsecase', () => {
   const dto: UpdateProgramUsecaseDto = {
     label: 'Updated Program',
     duration: 8,
+    sessions: [
+      {
+        id: 'session-1',
+        label: 'Updated Session',
+        durationMin: 60,
+        exercises: [],
+      },
+    ],
   } as UpdateProgramUsecaseDto;
 
   const now = new Date('2024-01-01T00:00:00.000Z');
   const program: Program = {
     id,
-    slug: 'strength',
+    slug: 'updated-program',
     locale: 'en-us',
     label: 'Updated Program',
     visibility: 'private',
     duration: 8,
     frequency: 3,
-    sessions: [],
+    sessions: [
+      {
+        id: 'session-1',
+        slug: 'updated-session',
+        label: 'Updated Session',
+        durationMin: 60,
+        exercises: [],
+      },
+    ],
     createdBy: 'coach-123',
     createdAt: now,
     updatedAt: now,
@@ -44,13 +67,21 @@ describe('UpdateProgramUsecase', () => {
 
   const expected: ProgramUsecaseModel = {
     id,
-    slug: 'strength',
+    slug: 'updated-program',
     locale: 'en-us',
     label: 'Updated Program',
     visibility: 'private',
     duration: 8,
     frequency: 3,
-    sessions: [],
+    sessions: [
+      {
+        id: 'session-1',
+        slug: 'updated-session',
+        label: 'Updated Session',
+        durationMin: 60,
+        exercises: [],
+      },
+    ],
     createdBy: 'coach-123',
     createdAt: now,
     updatedAt: now,
@@ -86,7 +117,16 @@ describe('UpdateProgramUsecase', () => {
 
     const result = await usecase.execute(id, dto);
 
-    expect(asMock(programRepositoryMock.update).mock.calls[0]).toEqual([id, dto]);
+    expect(asMock(programRepositoryMock.update).mock.calls[0][1]).toEqual({
+      ...dto,
+      slug: 'updated-program',
+      sessions: dto.sessions ? [
+        {
+          ...dto.sessions[0],
+          slug: 'updated-session',
+        },
+      ] : undefined,
+    });
     expect(result).toEqual(expected);
   });
 

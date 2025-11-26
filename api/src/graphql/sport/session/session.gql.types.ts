@@ -37,11 +37,13 @@ export class SessionSportGql {
   // Relations (resolved lazily)
   @Field(() => UserGql, { nullable: true })
   creator?: UserGql | null;
+
+  @Field()
+  visibility!: string;
 }
 
 @InputType()
 export class CreateSessionInput {
-  @Field() slug!: string;
   @Field() locale!: string;
   @Field() label!: string;
   @Field(() => Int) durationMin!: number;
@@ -52,10 +54,10 @@ export class CreateSessionInput {
 @InputType()
 export class UpdateSessionInput {
   @Field(() => ID) id!: string;
-  @Field({ nullable: true }) slug?: string;
   @Field({ nullable: true }) locale?: string;
   @Field({ nullable: true }) label?: string;
   @Field(() => Int, { nullable: true }) durationMin?: number;
+  @Field({ nullable: true }) visibility?: string;
   @Field({ nullable: true }) description?: string;
   /** Replace the whole ordered list */
   @Field(() => [ID], { nullable: true }) exerciseIds?: string[];

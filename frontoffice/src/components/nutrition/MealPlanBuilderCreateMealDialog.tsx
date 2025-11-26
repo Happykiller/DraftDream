@@ -65,6 +65,7 @@ export function MealPlanBuilderCreateMealDialog({
     page: 1,
     limit: 50,
     q: '',
+    locale: i18n.language,
   });
 
   // Keep the local form state aligned with the selected meal when editing.

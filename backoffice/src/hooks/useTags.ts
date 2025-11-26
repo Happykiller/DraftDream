@@ -128,7 +128,7 @@ export function useTags({ page, limit, q }: UseTagsParams) {
   React.useEffect(() => { void load(); }, [load]);
 
   const create = React.useCallback(
-    async (input: { slug: string; label: string; locale: string; visibility: TagVisibility }) => {
+    async (input: { label: string; locale: string; visibility: TagVisibility }) => {
       try {
         const { errors } = await execute(() =>
           gql.send<CreatePayload>({
@@ -149,7 +149,7 @@ export function useTags({ page, limit, q }: UseTagsParams) {
   );
 
   const update = React.useCallback(
-    async (input: { id: string; slug?: string; label?: string; locale?: string }) => {
+    async (input: { id: string; label?: string; locale?: string }) => {
       try {
         const { errors } = await execute(() =>
           gql.send<UpdatePayload>({

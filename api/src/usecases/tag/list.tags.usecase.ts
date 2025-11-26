@@ -1,5 +1,6 @@
 // src/usecases/tag/list.tags.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { TagUsecaseModel } from '@usecases/tag/tag.usecase.model';
 import { ListTagsUsecaseDto } from '@usecases/tag/tag.usecase.dto';
@@ -12,7 +13,7 @@ export interface ListTagsUsecaseResult {
 }
 
 export class ListTagsUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   async execute(dto: ListTagsUsecaseDto = {}): Promise<ListTagsUsecaseResult> {
     try {
@@ -25,7 +26,7 @@ export class ListTagsUsecase {
       };
     } catch (e: any) {
       this.inversify.loggerService.error(`ListTagsUsecase#execute => ${e?.message ?? e}`);
-      throw new Error(ERRORS.LIST_TAGS_USECASE);
+      throw normalizeError(e, ERRORS.LIST_TAGS_USECASE);
     }
   }
 }

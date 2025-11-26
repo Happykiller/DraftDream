@@ -16,15 +16,16 @@ import {
 import Grid from '@mui/material/Grid';
 import { useTranslation } from 'react-i18next';
 
-import type { Client } from '@hooks/useClients';
-import type { ClientMetadataOption } from '@hooks/useClientMetadataOptions';
+import { ProspectStatusEnum, type ProspectStatusOption } from '@commons/prospects/status';
+import type { Prospect } from '@hooks/useProspects';
+import type { ProspectMetadataOption } from '@hooks/useProspectMetadataOptions';
 
 export interface ProspectClientDialogValues {
   firstName: string;
   lastName: string;
   email: string;
   phone?: string;
-  statusId?: string | null;
+  status: ProspectStatusEnum | '';
   levelId?: string | null;
   sourceId?: string | null;
   objectiveIds: string[];
@@ -42,7 +43,7 @@ const DEFAULT_VALUES: ProspectClientDialogValues = {
   lastName: '',
   email: '',
   phone: '',
-  statusId: null,
+  status: '',
   levelId: null,
   sourceId: null,
   objectiveIds: [],
@@ -58,12 +59,12 @@ const DEFAULT_VALUES: ProspectClientDialogValues = {
 export interface ProspectClientDialogProps {
   open: boolean;
   mode: 'create' | 'edit';
-  initial?: Client | null;
-  statuses: ClientMetadataOption[];
-  levels: ClientMetadataOption[];
-  sources: ClientMetadataOption[];
-  objectives: ClientMetadataOption[];
-  activityPreferences: ClientMetadataOption[];
+  initial?: Prospect | null;
+  statuses: ProspectStatusOption[];
+  levels: ProspectMetadataOption[];
+  sources: ProspectMetadataOption[];
+  objectives: ProspectMetadataOption[];
+  activityPreferences: ProspectMetadataOption[];
   loadingOptions: boolean;
   onClose: () => void;
   onSubmit: (values: ProspectClientDialogValues) => Promise<void> | void;
@@ -93,7 +94,7 @@ export function ProspectClientDialog({
         lastName: initial.lastName,
         email: initial.email,
         phone: initial.phone ?? '',
-        statusId: initial.statusId ?? null,
+        status: initial.status ?? '',
         levelId: initial.levelId ?? null,
         sourceId: initial.sourceId ?? null,
         objectiveIds: initial.objectiveIds ?? [],
@@ -132,7 +133,7 @@ export function ProspectClientDialog({
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="prospect-client-dialog" maxWidth="md" fullWidth>
       <DialogTitle id="prospect-client-dialog">
-        {isEdit ? t('prospects.clients.dialog.edit_title') : t('prospects.clients.dialog.create_title')}
+        {isEdit ? t('prospects.list.dialog.edit_title') : t('prospects.list.dialog.create_title')}
       </DialogTitle>
       <DialogContent dividers>
         {/* General information */}
@@ -182,14 +183,14 @@ export function ProspectClientDialog({
               <TextField
                 select
                 label={t('common.labels.status')}
-                name="statusId"
-                value={values.statusId ?? ''}
-                onChange={(event) => setValues((prev) => ({ ...prev, statusId: event.target.value || null }))}
+                name="status"
+                value={values.status ?? ''}
+                onChange={handleChange}
                 fullWidth
               >
                 <MenuItem value="">{t('common.placeholders.select')}</MenuItem>
                 {statuses.map((status) => (
-                  <MenuItem key={status.id} value={status.id}>
+                  <MenuItem key={status.value} value={status.value}>
                     {status.label}
                   </MenuItem>
                 ))}

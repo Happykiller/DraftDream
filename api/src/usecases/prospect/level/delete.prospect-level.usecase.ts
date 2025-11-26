@@ -1,0 +1,18 @@
+// src/usecases/prospect/level/delete.prospect-level.usecase.ts
+import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
+import { Inversify } from '@src/inversify/investify';
+import { DeleteProspectLevelUsecaseDto } from './prospect-level.usecase.dto';
+
+export class DeleteProspectLevelUsecase {
+  constructor(private readonly inversify: Inversify) { }
+
+  async execute(dto: DeleteProspectLevelUsecaseDto): Promise<boolean> {
+    try {
+      return await this.inversify.bddService.prospectLevel.delete(dto.id);
+    } catch (error: any) {
+      this.inversify.loggerService.error(`DeleteProspectLevelUsecase#execute => ${error?.message ?? error}`);
+      throw normalizeError(error, ERRORS.DELETE_PROSPECT_LEVEL_USECASE);
+    }
+  }
+}

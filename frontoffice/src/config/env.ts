@@ -4,6 +4,7 @@
 type Env = {
   VITE_GRAPHQL_ENDPOINT: string;
   VITE_ACCESS_TOKEN_STORAGE_KEY: string;
+  VITE_API_ENDPOINT?: string;
 };
 
 function requireEnv(name: keyof Env): string {
@@ -12,7 +13,20 @@ function requireEnv(name: keyof Env): string {
   return val as string;
 }
 
+function optionalEnv(name: keyof Env): string | undefined {
+  const val = import.meta.env[name];
+  if (!val) return undefined;
+  return val as string;
+}
+
+function deriveRestEndpoint(graphqlEndpoint: string): string {
+  return graphqlEndpoint.replace(/\/graphql\/?$/, '');
+}
+
+const graphqlEndpoint = requireEnv('VITE_GRAPHQL_ENDPOINT');
+
 export const env = {
-  graphqlEndpoint: requireEnv('VITE_GRAPHQL_ENDPOINT'),
+  graphqlEndpoint,
+  apiEndpoint: optionalEnv('VITE_API_ENDPOINT') ?? deriveRestEndpoint(graphqlEndpoint),
   accessTokenStorageKey: requireEnv('VITE_ACCESS_TOKEN_STORAGE_KEY'),
 };

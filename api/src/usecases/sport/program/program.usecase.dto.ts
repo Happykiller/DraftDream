@@ -14,12 +14,12 @@ export interface UsecaseSession {
   role: Role;
 }
 
-export type CreateProgramUsecaseDto = CreateProgramServiceDto;
+export type CreateProgramUsecaseDto = Omit<CreateProgramServiceDto, 'slug'>;
 export type GetProgramRepositoryDto = GetProgramServiceDto;
 export type GetProgramUsecaseDto = GetProgramRepositoryDto & { session: UsecaseSession };
 export type ListProgramsRepositoryDto = ListProgramsServiceDto;
 export type ListProgramsUsecaseDto = ListProgramsRepositoryDto & { session: UsecaseSession };
-export type UpdateProgramUsecaseDto = UpdateProgramServiceDto;
+export type UpdateProgramUsecaseDto = Omit<UpdateProgramServiceDto, 'slug'>;
 export interface DeleteProgramUsecaseDto { id: string; session: UsecaseSession }
 export type ProgramSessionSnapshotUsecaseDto = ProgramSessionSnapshotServiceDto;
 export type ProgramExerciseSnapshotUsecaseDto = ProgramExerciseSnapshotServiceDto;

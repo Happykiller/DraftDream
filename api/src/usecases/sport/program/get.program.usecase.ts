@@ -1,5 +1,6 @@
 // src\\usecases\\program\\get.program.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { GetProgramUsecaseDto } from '@src/usecases/sport/program/program.usecase.dto';
@@ -7,7 +8,7 @@ import { mapProgramToUsecase } from '@src/usecases/sport/program/program.mapper'
 import type { ProgramUsecaseModel } from '@src/usecases/sport/program/program.usecase.model';
 
 export class GetProgramUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   async execute(dto: GetProgramUsecaseDto): Promise<ProgramUsecaseModel | null> {
     try {
@@ -40,7 +41,7 @@ export class GetProgramUsecase {
         throw e;
       }
       this.inversify.loggerService.error(`GetProgramUsecase#execute => ${e?.message ?? e}`);
-      throw new Error(ERRORS.GET_PROGRAM_USECASE);
+      throw normalizeError(e, ERRORS.GET_PROGRAM_USECASE);
     }
   }
 

@@ -71,7 +71,6 @@ export class SessionResolver {
   ): Promise<SessionSportGql | null> {
     const session = this.extractSession(req);
     const created = await inversify.createSessionUsecase.execute({
-      slug: input.slug,
       locale: input.locale,
       label: input.label,
       durationMin: input.durationMin,
@@ -86,7 +85,6 @@ export class SessionResolver {
   @Auth(Role.ADMIN, Role.COACH)
   async session_update(@Args('input') input: UpdateSessionInput): Promise<SessionSportGql | null> {
     const updated = await inversify.updateSessionUsecase.execute(input.id, {
-      slug: input.slug,
       locale: input.locale,
       label: input.label,
       durationMin: input.durationMin,

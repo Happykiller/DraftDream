@@ -127,7 +127,7 @@ describe('UpdateUserUsecase', () => {
   it('should log and throw when the user does not exist', async () => {
     asMock(userRepositoryMock.updateUser).mockResolvedValue(null);
 
-    await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.UPDATE_USER_USECASE);
+    await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.USER_NOT_FOUND);
 
     expect(asMock(loggerMock.error).mock.calls[0]).toEqual([
       `UpdateUserUsecase#execute => ${ERRORS.USER_NOT_FOUND}`,

@@ -1,13 +1,13 @@
 ﻿// src/graphql/muscle/muscle.gql.types.ts
-import { Field, ID, InputType, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 
+import { registerVisibilityEnum, Visibility as MuscleVisibility } from '@graphql/common/visibility.enum';
+export { MuscleVisibility };
 import { UserGql } from '@graphql/user/user.gql.types';
 
-export enum MuscleVisibility {
-  PRIVATE = 'private',
-  PUBLIC = 'public',
-}
-registerEnumType(MuscleVisibility, { name: 'MuscleVisibility' });
+
+
+registerVisibilityEnum('MuscleVisibility');
 
 @ObjectType()
 export class MuscleGql {
@@ -25,7 +25,6 @@ export class MuscleGql {
 
 @InputType()
 export class CreateMuscleInput {
-  @Field() slug!: string;
   @Field() locale!: string;
   @Field() label!: string;
   @Field(() => MuscleVisibility) visibility!: MuscleVisibility;
@@ -34,7 +33,6 @@ export class CreateMuscleInput {
 @InputType()
 export class UpdateMuscleInput {
   @Field(() => ID) id!: string;
-  @Field({ nullable: true }) slug?: string;
   @Field({ nullable: true }) locale?: string;
   @Field({ nullable: true }) label?: string;
 }

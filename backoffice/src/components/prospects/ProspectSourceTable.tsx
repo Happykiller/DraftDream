@@ -6,19 +6,19 @@ import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Button, IconButton, Stack, TextField, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import type { ClientSource } from '@hooks/useClientSources';
+import type { ProspectSource } from '@hooks/useProspectSources';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 
 export interface ProspectSourceTableProps {
-  rows: ClientSource[];
+  rows: ProspectSource[];
   total: number;
   page: number; // 1-based
   limit: number;
   q: string;
   loading: boolean;
   onCreate: () => void;
-  onEdit: (row: ClientSource) => void;
-  onDelete: (row: ClientSource) => void;
+  onEdit: (row: ProspectSource) => void;
+  onDelete: (row: ProspectSource) => void;
   onQueryChange: (q: string) => void;
   onPageChange: (page: number) => void; // 1-based
   onLimitChange: (limit: number) => void;
@@ -42,7 +42,7 @@ export function ProspectSourceTable(props: ProspectSourceTableProps): React.JSX.
   const { t } = useTranslation();
   const fmtDate = useDateFormatter();
 
-  const columns = React.useMemo<GridColDef<ClientSource>[]>(
+  const columns = React.useMemo<GridColDef<ProspectSource>[]>(
     () => [
       { field: 'slug', headerName: t('common.labels.slug'), flex: 1 },
       { field: 'label', headerName: t('common.labels.label'), flex: 1 },

@@ -163,8 +163,27 @@ docker run --rm -p 3000:3000 --env-file .env draftdream-api
 Ensure the container can reach MongoDB (e.g., use `host.docker.internal` on Docker Desktop).
 
 ## Tests
-- No automated tests are included yet. Use the `docs/*.http` collection or GraphQL Playground to exercise resolvers.
-- Consider adding end-to-end tests with `@nestjs/testing` as the project evolves.
+The project has comprehensive test coverage using Jest 30 and ts-jest.
+
+### Running Tests
+```bash
+# Run all tests
+npm run test
+
+# Run tests with coverage report
+npm run test:coverage
+```
+
+### Test Statistics
+- **115 test suites** with **456 passing tests**
+- Test files located in `**/__tests__/**/*.spec.ts`
+- Coverage includes:
+  - **Use cases**: auth, athlete, client, nutri, sport modules
+  - **GraphQL mappers**: category, equipment, exercise, meal, muscle, program, session, tag, user
+  - **Common utilities**: error handling, slug generation
+
+### Manual Testing
+You can also use the `docs/*.http` collection or GraphQL Playground to manually exercise resolvers during development.
 
 ---
 

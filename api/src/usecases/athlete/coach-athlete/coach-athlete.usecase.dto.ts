@@ -10,16 +10,6 @@ export interface CreateCoachAthleteUsecaseDto {
   createdBy: string;
 }
 
-export interface UpdateCoachAthleteUsecaseDto {
-  id: string;
-  coachId?: string;
-  athleteId?: string;
-  startDate?: Date;
-  endDate?: Date | null;
-  is_active?: boolean;
-  note?: string | null;
-}
-
 export interface GetCoachAthleteUsecaseDto {
   id: string;
 }
@@ -29,9 +19,20 @@ export interface ListCoachAthletesUsecaseDto {
   athleteId?: string;
   is_active?: boolean;
   createdBy?: string;
+  includeArchived?: boolean;
   limit?: number;
   page?: number;
-  includeArchived?: boolean;
+  sort?: { updatedAt?: 1 | -1 };
+}
+
+export interface UpdateCoachAthleteUsecaseDto {
+  id: string;
+  coachId?: string;
+  athleteId?: string;
+  startDate?: Date;
+  endDate?: Date | null;
+  is_active?: boolean;
+  note?: string | null;
 }
 
 export interface DeleteCoachAthleteUsecaseDto {

@@ -6,30 +6,31 @@ import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Button, IconButton, MenuItem, Stack, TextField, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import type { Client } from '@hooks/useClients';
-import type { ClientMetadataOption } from '@hooks/useClientMetadataOptions';
+import type { ProspectStatusEnum, ProspectStatusOption } from '@commons/prospects/status';
+import type { Prospect } from '@hooks/useProspects';
+import type { ProspectMetadataOption } from '@hooks/useProspectMetadataOptions';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 
 export interface ProspectClientTableProps {
-  rows: Client[];
+  rows: Prospect[];
   total: number;
   page: number; // 1-based
   limit: number;
   q: string;
-  statusFilter?: string | null;
+  statusFilter?: ProspectStatusEnum | null;
   levelFilter?: string | null;
   sourceFilter?: string | null;
-  statuses: ClientMetadataOption[];
-  levels: ClientMetadataOption[];
-  sources: ClientMetadataOption[];
+  statuses: ProspectStatusOption[];
+  levels: ProspectMetadataOption[];
+  sources: ProspectMetadataOption[];
   loading: boolean;
   onCreate: () => void;
-  onEdit: (row: Client) => void;
-  onDelete: (row: Client) => void;
+  onEdit: (row: Prospect) => void;
+  onDelete: (row: Prospect) => void;
   onQueryChange: (value: string) => void;
   onPageChange: (page: number) => void;
   onLimitChange: (limit: number) => void;
-  onStatusFilterChange: (value: string | null) => void;
+  onStatusFilterChange: (value: ProspectStatusEnum | null) => void;
   onLevelFilterChange: (value: string | null) => void;
   onSourceFilterChange: (value: string | null) => void;
 }
@@ -60,13 +61,21 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
   } = props;
   const { t } = useTranslation();
   const fmtDate = useDateFormatter();
+  const statusLabels = React.useMemo<Record<ProspectStatusEnum, string>>(
+    () =>
+      Object.fromEntries(statuses.map((status) => [status.value, status.label])) as Record<
+        ProspectStatusEnum,
+        string
+      >,
+    [statuses],
+  );
 
   const renderList = React.useCallback((value?: { label?: string }[]) => {
     if (!value?.length) return t('common.messages.no_value');
     return value.map((item) => item.label).join(', ');
   }, [t]);
 
-  const columns = React.useMemo<GridColDef<Client>[]>(
+  const columns = React.useMemo<GridColDef<Prospect>[]>(
     () => [
       { field: 'firstName', headerName: t('common.labels.first_name'), flex: 1, minWidth: 160 },
       { field: 'lastName', headerName: t('common.labels.last_name'), flex: 1, minWidth: 160 },
@@ -75,7 +84,11 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
       {
         field: 'status',
         headerName: t('common.labels.status'),
-        renderCell: (params) => params.row.status?.label ?? t('common.messages.no_value'),
+        renderCell: (params) => {
+          const statusValue = params.row.status;
+          const label = statusValue ? statusLabels[statusValue] : undefined;
+          return label ?? t('common.messages.no_value');
+        },
         minWidth: 140,
         flex: 1,
       },
@@ -145,12 +158,12 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
         renderCell: (params) => (
           <Stack direction="row" spacing={0.5}>
             <Tooltip title={t('common.tooltips.edit')}>
-              <IconButton size="small" aria-label={`edit-client-${params.row.id}`} onClick={() => onEdit(params.row)}>
+              <IconButton size="small" aria-label={`edit-prospect-${params.row.id}`} onClick={() => onEdit(params.row)}>
                 <EditIcon fontSize="small" />
               </IconButton>
             </Tooltip>
             <Tooltip title={t('common.tooltips.delete')}>
-              <IconButton size="small" aria-label={`delete-client-${params.row.id}`} onClick={() => onDelete(params.row)}>
+              <IconButton size="small" aria-label={`delete-prospect-${params.row.id}`} onClick={() => onDelete(params.row)}>
                 <DeleteIcon fontSize="small" />
               </IconButton>
             </Tooltip>
@@ -168,16 +181,16 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
       <Stack spacing={1} sx={{ mb: 2 }}>
         <Stack direction={{ xs: 'column', md: 'row' }} spacing={1} alignItems={{ xs: 'stretch', md: 'center' }}>
           <TextField
-            placeholder={t('prospects.clients.search_placeholder')}
+            placeholder={t('prospects.list.search_placeholder')}
             value={q}
             onChange={(event) => onQueryChange(event.target.value)}
-            inputProps={{ 'aria-label': 'search-clients' }}
+            inputProps={{ 'aria-label': 'search-prospects' }}
             size="small"
             sx={{ maxWidth: 360 }}
           />
           <Box sx={{ flex: 1 }} />
           <Button variant="contained" onClick={onCreate} sx={{ alignSelf: { xs: 'stretch', md: 'flex-start' } }}>
-            {t('prospects.clients.create')}
+            {t('prospects.list.create')}
           </Button>
         </Stack>
 
@@ -187,12 +200,12 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
             size="small"
             label={t('common.labels.status')}
             value={statusFilter || ''}
-            onChange={(event) => onStatusFilterChange(event.target.value || null)}
+            onChange={(event) => onStatusFilterChange((event.target.value as ProspectStatusEnum) || null)}
             sx={{ minWidth: 180 }}
           >
             <MenuItem value="">{t('common.placeholders.select')}</MenuItem>
             {statuses.map((status) => (
-              <MenuItem key={status.id} value={status.id}>
+              <MenuItem key={status.value} value={status.value}>
                 {status.label}
               </MenuItem>
             ))}
@@ -244,7 +257,7 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
         }}
         disableRowSelectionOnClick
         autoHeight
-        aria-label="prospect-clients-table"
+        aria-label="prospect-list-table"
         pageSizeOptions={[5, 10, 25, 50]}
       />
     </Box>

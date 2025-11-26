@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -8,6 +8,13 @@ import { BddServiceMealDayMongo } from '@services/db/mongo/repositories/meal-day
 import { CreateMealDayUsecase } from '@src/usecases/nutri/meal-day/create.meal-day.usecase';
 import { CreateMealDayUsecaseDto } from '@src/usecases/nutri/meal-day/meal-day.usecase.dto';
 import { MealDayUsecaseModel } from '@src/usecases/nutri/meal-day/meal-day.usecase.model';
+
+jest.mock('@src/common/slug.util', () => ({
+  ...(jest.requireActual('@src/common/slug.util') as any),
+  buildSlug: jest.fn(({ label }) => {
+    return label ? label.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '';
+  }),
+}));
 
 interface LoggerMock {
   error: (message: string) => void;
@@ -21,7 +28,6 @@ describe('CreateMealDayUsecase', () => {
   let usecase: CreateMealDayUsecase;
 
   const dto: CreateMealDayUsecaseDto = {
-    slug: 'strength-day',
     locale: 'en-US',
     label: 'Strength Day',
     description: 'High intensity focus',
@@ -67,13 +73,8 @@ describe('CreateMealDayUsecase', () => {
     const result = await usecase.execute(dto);
 
     expect(mealDayRepositoryMock.create).toHaveBeenCalledWith({
-      slug: dto.slug,
-      locale: dto.locale,
-      label: dto.label,
-      description: dto.description,
-      mealIds: dto.mealIds,
-      visibility: dto.visibility,
-      createdBy: dto.createdBy,
+      ...dto,
+      slug: 'strength-day',
     });
     expect(result).toEqual(mealDay);
   });

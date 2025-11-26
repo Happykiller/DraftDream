@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { ConfirmDialog } from '@components/common/ConfirmDialog';
 import { ProspectLevelDialog } from '@components/prospects/ProspectLevelDialog';
 import { ProspectLevelTable } from '@components/prospects/ProspectLevelTable';
-import { useClientLevels } from '@hooks/useClientLevels';
+import { useProspectLevels } from '@hooks/useProspectLevels';
 import { useDebouncedValue } from '@hooks/useDebouncedValue';
 import { useTabParams } from '@hooks/useTabParams';
 
@@ -18,7 +18,7 @@ export function LevelsPanel(): React.JSX.Element {
     if (debounced !== q) setQ(debounced);
   }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update, remove } = useClientLevels({ page, limit, q });
+  const { items, total, loading, create, update, remove } = useProspectLevels({ page, limit, q });
   const { t } = useTranslation();
 
   const [openCreate, setOpenCreate] = React.useState(false);
@@ -60,7 +60,6 @@ export function LevelsPanel(): React.JSX.Element {
           editId
             ? update({
                 id: editId,
-                slug: values.slug,
                 label: values.label,
                 locale: values.locale,
                 visibility: values.visibility,

@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { ConfirmDialog } from '@components/common/ConfirmDialog';
 import { ProspectActivityPreferenceDialog } from '@components/prospects/ProspectActivityPreferenceDialog';
 import { ProspectActivityPreferenceTable } from '@components/prospects/ProspectActivityPreferenceTable';
-import { useClientActivityPreferences } from '@hooks/useClientActivityPreferences';
+import { useProspectActivityPreferences } from '@hooks/useProspectActivityPreferences';
 import { useDebouncedValue } from '@hooks/useDebouncedValue';
 import { useTabParams } from '@hooks/useTabParams';
 
@@ -18,7 +18,7 @@ export function ActivityPreferencesPanel(): React.JSX.Element {
     if (debounced !== q) setQ(debounced);
   }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update, remove } = useClientActivityPreferences({ page, limit, q });
+  const { items, total, loading, create, update, remove } = useProspectActivityPreferences({ page, limit, q });
   const { t } = useTranslation();
 
   const [openCreate, setOpenCreate] = React.useState(false);
@@ -60,7 +60,6 @@ export function ActivityPreferencesPanel(): React.JSX.Element {
           editId
             ? update({
                 id: editId,
-                slug: values.slug,
                 label: values.label,
                 locale: values.locale,
                 visibility: values.visibility,

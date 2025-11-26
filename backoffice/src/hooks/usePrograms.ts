@@ -218,7 +218,6 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
 
   const create = React.useCallback(
     async (input: {
-      slug: string;
       locale: string;
       label: string;
       duration: number;
@@ -275,7 +274,6 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
   const update = React.useCallback(
     async (input: {
       id: string;
-      slug?: string;
       locale?: string;
       label?: string;
       duration?: number;

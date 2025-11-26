@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { ConfirmDialog } from '@components/common/ConfirmDialog';
 import { ProspectSourceDialog } from '@components/prospects/ProspectSourceDialog';
 import { ProspectSourceTable } from '@components/prospects/ProspectSourceTable';
-import { useClientSources } from '@hooks/useClientSources';
+import { useProspectSources } from '@hooks/useProspectSources';
 import { useDebouncedValue } from '@hooks/useDebouncedValue';
 import { useTabParams } from '@hooks/useTabParams';
 
@@ -18,7 +18,7 @@ export function SourcesPanel(): React.JSX.Element {
     if (debounced !== q) setQ(debounced);
   }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update, remove } = useClientSources({ page, limit, q });
+  const { items, total, loading, create, update, remove } = useProspectSources({ page, limit, q });
   const { t } = useTranslation();
 
   const [openCreate, setOpenCreate] = React.useState(false);
@@ -60,7 +60,6 @@ export function SourcesPanel(): React.JSX.Element {
           editId
             ? update({
                 id: editId,
-                slug: values.slug,
                 label: values.label,
                 locale: values.locale,
                 visibility: values.visibility,

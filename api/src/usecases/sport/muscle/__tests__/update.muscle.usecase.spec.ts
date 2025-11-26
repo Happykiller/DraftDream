@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -8,6 +8,13 @@ import { BddServiceMuscleMongo } from '@services/db/mongo/repositories/muscle.re
 import { UpdateMuscleUsecase } from '@src/usecases/sport/muscle/update.muscle.usecase';
 import { UpdateMuscleUsecaseDto } from '@src/usecases/sport/muscle/muscle.usecase.dto';
 import { MuscleUsecaseModel } from '@src/usecases/sport/muscle/muscle.usecase.model';
+
+jest.mock('@src/common/slug.util', () => ({
+  ...(jest.requireActual('@src/common/slug.util') as any),
+  buildSlug: jest.fn(({ label }) => {
+    return label ? label.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '';
+  }),
+}));
 
 interface LoggerMock {
   error: (message: string) => void;
@@ -22,7 +29,6 @@ describe('UpdateMuscleUsecase', () => {
 
   const dto: UpdateMuscleUsecaseDto = {
     id: 'muscle-789',
-    slug: 'deltoids',
     locale: 'en-US',
     label: 'Deltoids',
   };
@@ -62,7 +68,7 @@ describe('UpdateMuscleUsecase', () => {
     const result = await usecase.execute(dto);
 
     expect(muscleRepositoryMock.update).toHaveBeenCalledWith(dto.id, {
-      slug: dto.slug,
+      slug: 'deltoids',
       locale: dto.locale,
       label: dto.label,
     });

@@ -5,17 +5,15 @@ import {
   InputType,
   Int,
   ObjectType,
-  registerEnumType,
 } from '@nestjs/graphql';
 
+import { registerVisibilityEnum, Visibility as MealTypeVisibility } from '@graphql/common/visibility.enum';
+export { MealTypeVisibility };
 import { UserGql } from '@graphql/user/user.gql.types';
 
-export enum MealTypeVisibility {
-  PRIVATE = 'private',
-  PUBLIC = 'public',
-}
 
-registerEnumType(MealTypeVisibility, { name: 'MealTypeVisibility' });
+
+registerVisibilityEnum('MealTypeVisibility');
 
 @ObjectType()
 /** GraphQL type describing a meal type entity. */
@@ -55,9 +53,6 @@ export class MealTypeGql {
 /** Input used to create a meal type. */
 export class CreateMealTypeInput {
   @Field()
-  slug!: string;
-
-  @Field()
   locale!: string;
 
   @Field()
@@ -75,9 +70,6 @@ export class CreateMealTypeInput {
 export class UpdateMealTypeInput {
   @Field(() => ID)
   id!: string;
-
-  @Field({ nullable: true })
-  slug?: string;
 
   @Field({ nullable: true })
   locale?: string;

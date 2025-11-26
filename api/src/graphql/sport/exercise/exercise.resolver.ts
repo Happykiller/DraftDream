@@ -87,7 +87,6 @@ export class ExerciseResolver {
   ): Promise<ExerciseGql | null> {
     const session = this.extractSession(req);
     const created = await inversify.createExerciseUsecase.execute({
-      slug: input.slug,
       locale: input.locale,
       label: input.label,
       description: input.description,
@@ -115,7 +114,6 @@ export class ExerciseResolver {
   ): Promise<ExerciseGql | null> {
     const session = this.extractSession(req);
     const updated = await inversify.updateExerciseUsecase.execute(input.id, {
-      slug: input.slug,
       locale: input.locale,
       label: input.label,
       description: input.description,

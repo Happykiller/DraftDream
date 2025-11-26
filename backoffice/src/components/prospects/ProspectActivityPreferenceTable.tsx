@@ -6,19 +6,19 @@ import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Button, IconButton, Stack, TextField, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import type { ClientActivityPreference } from '@hooks/useClientActivityPreferences';
+import type { ProspectActivityPreference } from '@hooks/useProspectActivityPreferences';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 
 export interface ProspectActivityPreferenceTableProps {
-  rows: ClientActivityPreference[];
+  rows: ProspectActivityPreference[];
   total: number;
   page: number; // 1-based
   limit: number;
   q: string;
   loading: boolean;
   onCreate: () => void;
-  onEdit: (row: ClientActivityPreference) => void;
-  onDelete: (row: ClientActivityPreference) => void;
+  onEdit: (row: ProspectActivityPreference) => void;
+  onDelete: (row: ProspectActivityPreference) => void;
   onQueryChange: (q: string) => void;
   onPageChange: (page: number) => void; // 1-based
   onLimitChange: (limit: number) => void;
@@ -42,7 +42,7 @@ export function ProspectActivityPreferenceTable(props: ProspectActivityPreferenc
   const { t } = useTranslation();
   const fmtDate = useDateFormatter();
 
-  const columns = React.useMemo<GridColDef<ClientActivityPreference>[]>(
+  const columns = React.useMemo<GridColDef<ProspectActivityPreference>[]>(
     () => [
       { field: 'slug', headerName: t('common.labels.slug'), flex: 1 },
       { field: 'label', headerName: t('common.labels.label'), flex: 1 },

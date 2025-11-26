@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -10,6 +10,14 @@ import { Exercise } from '@services/db/models/exercise.model';
 import { UpdateExerciseUsecase } from '@src/usecases/sport/exercise/update.exercise.usecase';
 import { UpdateExerciseUsecaseDto } from '@src/usecases/sport/exercise/exercise.usecase.dto';
 import { ExerciseUsecaseModel } from '@src/usecases/sport/exercise/exercise.usecase.model';
+
+jest.mock('@src/common/slug.util', () => ({
+  ...(jest.requireActual('@src/common/slug.util') as any),
+  buildSlug: jest.fn(({ label }) => {
+    // Simple slugify for testing purposes
+    return label ? label.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '';
+  }),
+}));
 
 interface LoggerMock {
   error: (message: string) => void;
@@ -144,6 +152,7 @@ describe('UpdateExerciseUsecase', () => {
     expect(exerciseRepositoryMock.update).toHaveBeenCalledWith(exercise.id, {
       label: 'Push-up Advanced',
       visibility: 'private',
+      slug: 'push-up-advanced',
     });
     expect(result).toEqual(mappedExercise);
   });
@@ -161,6 +170,7 @@ describe('UpdateExerciseUsecase', () => {
 
     expect(exerciseRepositoryMock.update).toHaveBeenCalledWith(exercise.id, {
       label: 'Push-up Elite',
+      slug: 'push-up-elite',
     });
   });
 

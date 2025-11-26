@@ -1,13 +1,13 @@
 // src/graphql/equipment/equipment.gql.types.ts
-import { Field, ID, InputType, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 
+import { registerVisibilityEnum, Visibility as EquipmentVisibility } from '@graphql/common/visibility.enum';
+export { EquipmentVisibility };
 import { UserGql } from '@graphql/user/user.gql.types';
 
-export enum EquipmentVisibility {
-  PRIVATE = 'private',
-  PUBLIC = 'public',
-}
-registerEnumType(EquipmentVisibility, { name: 'EquipmentVisibility' });
+
+
+registerVisibilityEnum('EquipmentVisibility');
 
 @ObjectType()
 export class EquipmentGql {
@@ -25,7 +25,6 @@ export class EquipmentGql {
 
 @InputType()
 export class CreateEquipmentInput {
-  @Field() slug!: string;
   @Field() locale!: string;
   @Field() label!: string;
   @Field(() => EquipmentVisibility) visibility!: EquipmentVisibility;
@@ -34,7 +33,6 @@ export class CreateEquipmentInput {
 @InputType()
 export class UpdateEquipmentInput {
   @Field(() => ID) id!: string;
-  @Field({ nullable: true }) slug?: string;
   @Field({ nullable: true }) locale?: string;
   @Field({ nullable: true }) label?: string;
 }

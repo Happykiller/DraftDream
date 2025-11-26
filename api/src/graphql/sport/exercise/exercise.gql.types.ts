@@ -1,16 +1,17 @@
 // src/graphql/exercise/exercise.gql.types.ts
+import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
+
+import { registerVisibilityEnum, Visibility as ExerciseVisibility } from '@graphql/common/visibility.enum';
+export { ExerciseVisibility };
 import { CategoryGql } from '@graphql/sport/category/category.gql.types';
-import { EquipmentGql } from '@src/graphql/sport/equipment/equipment.gql.types';
-import { MuscleGql } from '@src/graphql/sport/muscle/muscle.gql.types';
 import { TagGql } from '@graphql/tag/tag.gql.types';
 import { UserGql } from '@graphql/user/user.gql.types';
-import { Field, ID, InputType, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { EquipmentGql } from '@src/graphql/sport/equipment/equipment.gql.types';
+import { MuscleGql } from '@src/graphql/sport/muscle/muscle.gql.types';
 
-export enum ExerciseVisibility {
-  PRIVATE = 'private',
-  PUBLIC = 'public',
-}
-registerEnumType(ExerciseVisibility, { name: 'ExerciseVisibility' });
+
+
+registerVisibilityEnum('ExerciseVisibility');
 
 @ObjectType()
 export class ExerciseGql {
@@ -53,7 +54,6 @@ export class ExerciseGql {
 
 @InputType()
 export class CreateExerciseInput {
-  @Field() slug!: string;
   @Field() locale!: string;
   @Field() label!: string;
   @Field() series!: string;
@@ -73,7 +73,6 @@ export class CreateExerciseInput {
 @InputType()
 export class UpdateExerciseInput {
   @Field(() => ID) id!: string;
-  @Field({ nullable: true }) slug?: string;
   @Field({ nullable: true }) locale?: string;
   @Field({ nullable: true }) label?: string;
   @Field({ nullable: true }) series?: string;

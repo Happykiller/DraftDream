@@ -62,7 +62,6 @@ export class MealResolver {
     @Context('req') req: any,
   ): Promise<MealGql | null> {
     const created = await inversify.createMealUsecase.execute({
-      slug: input.slug,
       locale: input.locale,
       label: input.label,
       typeId: input.typeId,
@@ -123,7 +122,6 @@ export class MealResolver {
   ): Promise<MealGql | null> {
     const updated = await inversify.updateMealUsecase.execute({
       id: input.id,
-      slug: input.slug,
       locale: input.locale,
       label: input.label,
       typeId: input.typeId,

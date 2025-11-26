@@ -34,7 +34,6 @@ export class EquipmentResolver {
     @Context('req') req: any,
   ): Promise<EquipmentGql | null> {
     const created = await inversify.createEquipmentUsecase.execute({
-      slug: input.slug,
       locale: input.locale,
       label: input.label,
       visibility: input.visibility,
@@ -78,7 +77,6 @@ export class EquipmentResolver {
   ): Promise<EquipmentGql | null> {
     const updated = await inversify.updateEquipmentUsecase.execute({
       id: input.id,
-      slug: input.slug,
       locale: input.locale,
       label: input.label,
     });

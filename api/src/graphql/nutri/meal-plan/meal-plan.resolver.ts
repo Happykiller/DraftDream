@@ -21,14 +21,12 @@ import { MealTypeVisibility } from '@src/graphql/nutri/meal-type/meal-type.gql.t
 import { UserGql } from '@graphql/user/user.gql.types';
 import { mapUserUsecaseToGql } from '@graphql/user/user.mapper';
 import inversify from '@src/inversify/investify';
-import { buildSlug, slugifyCandidate } from '@src/common/slug.util';
 import type { UsecaseSession } from '@src/usecases/sport/program/program.usecase.dto';
 import type {
   MealPlanDaySnapshotUsecaseDto,
   MealPlanMealSnapshotUsecaseDto,
   MealPlanMealTypeSnapshotUsecaseDto,
 } from '@src/usecases/nutri/meal-plan/meal-plan.usecase.dto';
-import type { MealPlanUsecaseModel } from '@src/usecases/nutri/meal-plan/meal-plan.usecase.model';
 
 @Resolver(() => MealPlanGql)
 export class MealPlanResolver {
@@ -55,13 +53,11 @@ export class MealPlanResolver {
     @Context('req') req: any,
   ): Promise<MealPlanGql | null> {
     const session = this.extractSession(req);
-    const slug = buildSlug({ slug: input.slug, label: input.label, fallback: 'meal-plan' });
     const days = await this.resolveDays(session, input.days, input.dayIds, {
       defaultLocale: input.locale,
     });
 
     const payload = {
-      slug,
       locale: input.locale,
       label: input.label,
       description: input.description,
@@ -83,10 +79,9 @@ export class MealPlanResolver {
   @Auth(Role.ADMIN, Role.COACH)
   async mealPlan_update(
     @Args('input') input: UpdateMealPlanInput,
-    @Context('req') req: any,
   ): Promise<MealPlanGql | null> {
-    const session = this.extractSession(req);
     const updateDto: any = {
+      id: input.id,
       locale: input.locale,
       label: input.label,
       description: input.description ?? undefined,
@@ -98,44 +93,7 @@ export class MealPlanResolver {
       userId: input.userId === undefined ? undefined : input.userId,
     };
 
-    let cachedMealPlan: MealPlanUsecaseModel | null | undefined;
-    const getCurrentMealPlan = async (): Promise<MealPlanUsecaseModel | null> => {
-      if (cachedMealPlan === undefined) {
-        cachedMealPlan = await inversify.getMealPlanUsecase.execute({
-          id: input.id,
-          session,
-        });
-      }
-      return cachedMealPlan ?? null;
-    };
-
-    if (input.slug !== undefined) {
-      const normalized = slugifyCandidate(input.slug);
-      if (normalized) {
-        updateDto.slug = normalized;
-      } else {
-        let fallbackLabel = input.label;
-        if (!fallbackLabel?.trim()) {
-          const current = await getCurrentMealPlan();
-          fallbackLabel = current?.label;
-        }
-        updateDto.slug = buildSlug({ label: fallbackLabel, fallback: 'meal-plan' });
-      }
-    }
-
-    const resolveOptions = {
-      defaultLocale:
-        this.normalizeLocaleValue(input.locale) ??
-        this.normalizeLocaleValue((await getCurrentMealPlan())?.locale),
-    };
-
-    if (input.days !== undefined) {
-      updateDto.days = await this.resolveDays(session, input.days, undefined, resolveOptions);
-    } else if (input.dayIds !== undefined) {
-      updateDto.days = await this.resolveDays(session, undefined, input.dayIds, resolveOptions);
-    }
-
-    const updated = await inversify.updateMealPlanUsecase.execute(input.id, updateDto);
+    const updated = await inversify.updateMealPlanUsecase.execute(updateDto);
     return updated ? mapMealPlanUsecaseToGql(updated) : null;
   }
 
@@ -211,7 +169,6 @@ export class MealPlanResolver {
       return daysInput.map((day) => ({
         id: day.id ?? this.generateId(),
         templateMealDayId: day.templateMealDayId,
-        slug: buildSlug({ slug: day.slug, label: day.label, fallback: 'meal-day' }),
         locale: this.normalizeLocaleValue(day.locale) ?? defaultLocale,
         label: day.label.trim(),
         description: day.description ?? undefined,
@@ -261,7 +218,6 @@ export class MealPlanResolver {
         mealSnapshots.push({
           id: this.generateId(),
           templateMealId: meal.id,
-          slug: buildSlug({ slug: meal.slug, label: meal.label, fallback: 'meal' }),
           locale: this.normalizeLocaleValue(meal.locale) ?? defaultLocale,
           label: meal.label,
           description: undefined,
@@ -282,7 +238,6 @@ export class MealPlanResolver {
       resolved.push({
         id: this.generateId(),
         templateMealDayId: mealDay.id,
-        slug: buildSlug({ slug: mealDay.slug, label: mealDay.label, fallback: 'meal-day' }),
         locale: this.normalizeLocaleValue(mealDay.locale) ?? defaultLocale,
         label: mealDay.label,
         description: mealDay.description ?? undefined,
@@ -300,7 +255,6 @@ export class MealPlanResolver {
     return {
       id: meal.id ?? this.generateId(),
       templateMealId: meal.templateMealId,
-      slug: meal.slug ? buildSlug({ slug: meal.slug, label: meal.label, fallback: 'meal' }) : undefined,
       locale: this.normalizeLocaleValue(meal.locale) ?? defaultLocale,
       label: meal.label.trim(),
       description: meal.description ?? undefined,
@@ -325,7 +279,6 @@ export class MealPlanResolver {
     return {
       id: type?.id,
       templateMealTypeId: type?.templateMealTypeId ?? type?.id,
-      slug: type?.slug ?? undefined,
       locale: this.normalizeLocaleValue(type?.locale),
       label,
       visibility: this.normalizeMealTypeVisibility(type?.visibility),

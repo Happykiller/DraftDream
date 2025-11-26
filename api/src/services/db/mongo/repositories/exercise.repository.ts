@@ -10,6 +10,7 @@ import {
   UpdateExerciseDto,
 } from '@services/db/dtos/exercise.dto';
 import { ERRORS } from '@src/common/ERROR';
+import { slugifyCandidate } from '@src/common/slug.util';
 
 interface ExerciseDoc {
   _id: ObjectId;
@@ -62,7 +63,15 @@ export class BddServiceExerciseMongo {
     }
   }
 
-  /** Insert a new exercise. Automatically resolves slug collisions. */
+  /**
+   * Creates a new exercise with automatic slug collision resolution.
+   * Attempts up to 20 slug variants by appending incremental suffixes.
+   * Uses centralized slug normalization from slug.util.ts.
+   * 
+   * @param dto - Exercise creation data with pre-normalized slug
+   * @returns Created exercise or null if all slug candidates are taken (rare)
+   * @throws Error on validation failures or database errors
+   */
   async create(dto: CreateExerciseDto): Promise<Exercise | null> {
     const now = new Date();
 
@@ -93,7 +102,7 @@ export class BddServiceExerciseMongo {
       updatedAt: now,
     };
 
-    const baseSlug = this.normalizeSlug(dto.slug);
+    const baseSlug = slugifyCandidate(dto.slug) || 'exercise';
     const collection = this.col();
 
     for (let attempt = 0; attempt < 20; attempt += 1) {
@@ -278,17 +287,7 @@ export class BddServiceExerciseMongo {
     }
   };
 
-  private normalizeSlug = (input: string): string => {
-    const MAX_LENGTH = 60;
-    const normalized = (input ?? '')
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '')
-      .slice(0, MAX_LENGTH);
-    return normalized || 'exercise';
-  };
+
 
   private buildSlugCandidate = (base: string, attempt: number): string => {
     if (attempt === 0) {

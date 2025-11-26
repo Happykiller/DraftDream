@@ -3,24 +3,23 @@ import * as React from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Stack, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import type { ClientLevel, ClientLevelVisibility } from '@hooks/useClientLevels';
+import type { ProspectLevel, ProspectLevelVisibility } from '@hooks/useProspectLevels';
 
 export interface ProspectLevelDialogValues {
-  slug: string;
   label: string;
   locale: string;
-  visibility: ClientLevelVisibility;
+  visibility: ProspectLevelVisibility;
 }
 
 export interface ProspectLevelDialogProps {
   open: boolean;
   mode: 'create' | 'edit';
-  initial?: ClientLevel;
+  initial?: ProspectLevel;
   onClose: () => void;
   onSubmit: (values: ProspectLevelDialogValues) => Promise<void> | void;
 }
 
-const DEFAULTS: ProspectLevelDialogValues = { slug: '', label: '', locale: 'fr', visibility: 'PUBLIC' };
+const DEFAULTS: ProspectLevelDialogValues = { label: '', locale: 'fr', visibility: 'PUBLIC' };
 
 export function ProspectLevelDialog({ open, mode, initial, onClose, onSubmit }: ProspectLevelDialogProps) {
   const [values, setValues] = React.useState<ProspectLevelDialogValues>(DEFAULTS);
@@ -30,7 +29,6 @@ export function ProspectLevelDialog({ open, mode, initial, onClose, onSubmit }: 
   React.useEffect(() => {
     if (isEdit && initial) {
       setValues({
-        slug: initial.slug,
         label: initial.label,
         locale: initial.locale,
         visibility: initial.visibility,
@@ -59,15 +57,6 @@ export function ProspectLevelDialog({ open, mode, initial, onClose, onSubmit }: 
       <DialogContent>
         {/* General information */}
         <Stack component="form" onSubmit={submit} spacing={2} sx={{ mt: 1 }}>
-          <TextField
-            label={t('common.labels.slug')}
-            name="slug"
-            value={values.slug}
-            onChange={onChange}
-            inputProps={{ 'aria-label': 'level-slug' }}
-            required
-            fullWidth
-          />
           <TextField
             label={t('common.labels.label')}
             name="label"

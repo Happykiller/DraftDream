@@ -46,25 +46,29 @@
     "title": "Dashboard",
     "placeholder": "Hello"
   },
-  "clients": {
-    "title": "Clients",
-    "subtitle": "Manage all your clients.",
+  "prospects": {
+    "title": "Prospects",
+    "subtitle": "Manage all your prospects.",
     "helper": "Create contacts, record their preferences, and stay aligned with your sales pipeline.",
+    "tabs": {
+      "list": "List",
+      "pipeline": "Pipeline"
+    },
     "actions": {
-      "create": "New client",
+      "create": "New prospect",
       "refresh": "Refresh",
       "back_to_list": "Back to the list"
     },
     "list": {
-      "search_placeholder": "Search a client...",
-      "search_aria": "Search clients",
-      "empty_title": "No clients yet",
-      "empty_description": "Create your first client to centralize their onboarding information.",
+      "search_placeholder": "Search a prospect...",
+      "search_aria": "Search prospects",
+      "empty_title": "No prospects yet",
+      "empty_description": "Create your first prospect to centralize their onboarding information.",
       "expand_details": "Show more details",
       "collapse_details": "Show fewer details",
       "actions": {
-        "edit": "Edit client",
-        "delete": "Delete client"
+        "edit": "Edit prospect",
+        "delete": "Delete prospect"
       },
       "card": {
         "contact": "Contact",
@@ -74,13 +78,19 @@
         "notes": "Notes",
         "budget": "Budget",
         "start_date": "Desired start date",
+        "created_label": "Start: {{date}}",
         "level": "Level :",
         "created": "Created on {{date}}",
         "updated": "Updated on {{date}}",
-        "no_budget": "Budget not defined"
+        "no_budget": "Budget not defined",
+        "updated_label": "Last updated on {{date}}",
+        "updated_unknown": "Last update date unknown",
+        "stage_duration": "{{count}} days in this stage",
+        "stage_duration_one": "{{count}} day in this stage",
+        "stage_duration_other": "{{count}} days in this stage"
       },
       "delete_dialog": {
-        "title": "Delete client",
+        "title": "Delete prospect",
         "description": "Are you sure you want to delete “{{name}}”?",
         "helper": "This action cannot be undone.",
         "actions": {
@@ -91,13 +101,13 @@
       }
     },
     "form": {
-      "create_page_title": "Create client",
-      "edit_page_title": "Edit client",
-      "title": "Create a client",
-      "subtitle": "Record the key information before assigning programs or plans.",
-      "edit_title": "Edit client",
-      "edit_subtitle": "Update contact and onboarding information.",
-      "not_found": "This client could not be found.",
+      "create_page_title": "Create prospect",
+      "edit_page_title": "Edit prospect",
+      "title": "Create a prospect",
+      "subtitle": "Record the key information about a prospect before assigning programs or plans.",
+      "edit_title": "Edit prospect",
+      "edit_subtitle": "Update the prospect's contact and onboarding information.",
+      "not_found": "This prospect could not be found.",
       "sections": {
         "identity": "Identity",
         "profile": "Profile & preferences",
@@ -115,7 +125,7 @@
         "objectives": "Objectives",
         "objectivesHelper": "Select one or several objectives.",
         "activityPreferences": "Activity preferences",
-        "activityPreferencesHelper": "Select the sports or workouts the client enjoys.",
+        "activityPreferencesHelper": "Select the sports or workouts the prospect enjoys.",
         "medicalConditions": "Medical conditions",
         "allergies": "Allergies",
         "notes": "Notes",
@@ -123,20 +133,76 @@
         "dealDescription": "Deal description",
         "desiredStartDate": "Desired start date",
         "cancel": "Cancel",
-        "submitCreate": "Create client",
+        "submitCreate": "Create prospect",
         "submitEdit": "Save changes"
       }
     },
     "notifications": {
-      "load_failure": "Unable to load clients.",
-      "create_success": "Client created",
-      "create_failure": "Unable to create the client.",
-      "update_success": "Client updated",
-      "update_failure": "Unable to update the client.",
-      "delete_success": "Client deleted",
-      "delete_failure": "Unable to delete the client."
+      "load_failure": "Unable to load prospects.",
+      "create_success": "Prospect created",
+      "create_failure": "Unable to create the prospect.",
+      "update_success": "Prospect updated",
+      "update_failure": "Unable to update the prospect.",
+      "delete_success": "Prospect deleted",
+      "delete_failure": "Unable to delete the prospect.",
+      "update_status_failure": "Unable to update the prospect status."
+    },
+      "workflow": {
+        "card_title": "Prospecting stages",
+        "card_helper": "Move prospects across the pipeline to visualise your progress.",
+        "empty_title": "No prospect yet",
+        "empty_description": "Create or move prospects to populate this stage.",
+        "actions": {
+          "create_at_stage": "Add a prospect in this stage"
+        },
+        "help": {
+          "title": "How to use the pipeline?",
+          "items": [
+            "Drag and drop a prospect to the right stage to reflect its progress.",
+            "Each column groups prospects that share the same status for instant visibility.",
+            "You can add, edit, or delete a prospect directly from the dedicated actions."
+          ]
+        },
+        "stages": {
+          "lead": {
+            "title": "Lead",
+            "description": "New contact to qualify before proposing a meeting."
+          },
+        "contact": {
+          "title": "Contacted",
+          "description": "Initial exchange completed to validate interest and needs."
+        },
+        "meeting": {
+          "title": "Meeting scheduled",
+          "description": "A meeting is booked; prepare the session and materials."
+        },
+        "proposal": {
+          "title": "Proposal",
+          "description": "A commercial proposal has been sent; collect feedback."
+        },
+        "negotiation": {
+          "title": "Negotiation",
+          "description": "Refine the offer based on the prospect's responses before final validation."
+        },
+        "won": {
+          "title": "Won",
+          "description": "The prospect accepted; prepare the contract and onboarding steps."
+        },
+        "lost": {
+          "title": "Lost",
+          "description": "The prospect will not move forward; archive and log the reasons."
+        },
+        "todo": {
+          "title": "To do",
+          "description": "Internal tasks to complete for follow-ups or finalization."
+        },
+        "client": {
+          "title": "Client",
+          "description": "Converted into an active client; ensure a smooth onboarding with the team."
+        }
+      }
     }
-  },
+    },
   "athletes": {
     "title": "Athletes",
     "subtitle": "Manage your athletes",

@@ -18,12 +18,10 @@ import { mapProgramUsecaseToGql } from '@src/graphql/sport/program/program.mappe
 import { UserGql } from '@graphql/user/user.gql.types';
 import { mapUserUsecaseToGql } from '@graphql/user/user.mapper';
 import inversify from '@src/inversify/investify';
-import { buildSlug, slugifyCandidate } from '@src/common/slug.util';
 import type {
   ProgramSessionSnapshotUsecaseDto,
   UsecaseSession,
 } from '@src/usecases/sport/program/program.usecase.dto';
-import type { ProgramUsecaseModel } from '@src/usecases/sport/program/program.usecase.model';
 
 @Resolver(() => ProgramGql)
 export class ProgramResolver {
@@ -50,12 +48,10 @@ export class ProgramResolver {
     @Context('req') req: any,
   ): Promise<ProgramGql | null> {
     const session = this.extractSession(req);
-    const slug = buildSlug({ slug: input.slug, label: input.label, fallback: 'program' });
     const sessions = await this.resolveSessions(session, input.sessions, input.sessionIds, {
       defaultLocale: input.locale,
     });
     const payload = {
-      slug,
       locale: input.locale,
       label: input.label,
       visibility: this.normalizeProgramVisibility(input.visibility) ?? 'private',
@@ -75,9 +71,7 @@ export class ProgramResolver {
   @Auth(Role.ADMIN, Role.COACH)
   async program_update(
     @Args('input') input: UpdateProgramInput,
-    @Context('req') req: any,
   ): Promise<ProgramGql | null> {
-    const session = this.extractSession(req);
     const updateDto: any = {
       locale: input.locale,
       label: input.label,
@@ -87,49 +81,6 @@ export class ProgramResolver {
       description: input.description ?? undefined,
       userId: input.userId === undefined ? undefined : input.userId,
     };
-
-    let cachedProgram: ProgramUsecaseModel | null | undefined;
-    const getCurrentProgram = async (): Promise<ProgramUsecaseModel | null> => {
-      if (cachedProgram === undefined) {
-        cachedProgram = await inversify.getProgramUsecase.execute({
-          id: input.id,
-          session,
-        });
-      }
-      return cachedProgram ?? null;
-    };
-
-    if (input.slug !== undefined) {
-      const normalized = slugifyCandidate(input.slug);
-      if (normalized) {
-        updateDto.slug = normalized;
-      } else {
-        let fallbackLabel = input.label;
-        if (!fallbackLabel?.trim()) {
-          const current = await getCurrentProgram();
-          fallbackLabel = current?.label;
-        }
-        updateDto.slug = buildSlug({ label: fallbackLabel, fallback: 'program' });
-      }
-    }
-
-    if (input.sessions !== undefined) {
-      const defaultLocale =
-        this.normalizeLocaleValue(input.locale) ??
-        this.normalizeLocaleValue((await getCurrentProgram())?.locale);
-      const sessions = await this.resolveSessions(session, input.sessions, undefined, {
-        defaultLocale,
-      });
-      updateDto.sessions = sessions;
-    } else if (input.sessionIds !== undefined) {
-      const defaultLocale =
-        this.normalizeLocaleValue(input.locale) ??
-        this.normalizeLocaleValue((await getCurrentProgram())?.locale);
-      const sessions = await this.resolveSessions(session, undefined, input.sessionIds, {
-        defaultLocale,
-      });
-      updateDto.sessions = sessions;
-    }
 
     const updated = await inversify.updateProgramUsecase.execute(input.id, updateDto);
     return updated ? mapProgramUsecaseToGql(updated) : null;
@@ -207,7 +158,6 @@ export class ProgramResolver {
       return sessionsInput.map((session) => ({
         id: session.id ?? this.generateId(),
         templateSessionId: session.templateSessionId,
-        slug: buildSlug({ slug: session.slug, label: session.label, fallback: 'session' }),
         locale: this.normalizeLocaleValue(session.locale) ?? defaultLocale,
         label: session.label.trim(),
         durationMin: session.durationMin,
@@ -259,7 +209,6 @@ export class ProgramResolver {
       resolved.push({
         id: this.generateId(),
         templateSessionId: sessionModel.id,
-        slug: buildSlug({ slug: sessionModel.slug, label: sessionModel.label, fallback: 'session' }),
         locale: this.normalizeLocaleValue(sessionModel.locale) ?? defaultLocale,
         label: sessionModel.label,
         durationMin: sessionModel.durationMin,

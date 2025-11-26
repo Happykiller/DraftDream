@@ -305,6 +305,7 @@ export function useMealPlanBuilder(
     page: 1,
     limit: 10,
     q: debouncedDaySearch,
+    locale: i18n.language,
   });
 
   const {
@@ -318,6 +319,7 @@ export function useMealPlanBuilder(
     page: 1,
     limit: 10,
     q: debouncedMealSearch,
+    locale: i18n.language,
     typeId: selectedMealTypeId ?? undefined,
   });
 
@@ -328,6 +330,7 @@ export function useMealPlanBuilder(
     page: 1,
     limit: 25,
     q: '',
+    locale: i18n.language,
   });
 
   const filteredMealTypes = React.useMemo(
@@ -416,6 +419,7 @@ export function useMealPlanBuilder(
                 locale: meal.type.locale ?? undefined,
                 label: meal.type.label,
                 visibility: meal.type.visibility ?? undefined,
+                icon: meal.type.icon ?? undefined,
               }
             : undefined,
           {
@@ -425,6 +429,7 @@ export function useMealPlanBuilder(
             slug: meal.type?.slug ?? undefined,
             locale: meal.type?.locale ?? meal.locale ?? undefined,
             visibility: meal.type?.visibility ?? meal.visibility ?? undefined,
+            icon: meal.type?.icon ?? undefined,
           },
         );
 

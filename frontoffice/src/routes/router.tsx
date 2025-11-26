@@ -235,35 +235,34 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: '/clients',
+    path: '/prospects',
     element: <ProtectedLayout />,
     loader: requireAuthLoader,
     children: [
       {
-        // ProgramsCoach
         index: true,
         lazy: async () => {
-          const mod = await import('@src/pages/Clients');
-          return { Component: withTitle(mod.Clients, 'clients.title') };
+          const mod = await import('@src/pages/Prospects');
+          return { Component: withTitle(mod.Prospects, 'prospects.title') };
         },
       },
       {
         path: 'create',
         lazy: async () => {
-          const mod = await import('@src/pages/clients/ClientCreate');
-          return { Component: withTitle(mod.ClientCreate, 'clients.form.create_page_title') };
+          const mod = await import('@src/pages/prospects/ProspectCreate');
+          return { Component: withTitle(mod.ProspectCreate, 'prospects.form.create_page_title') };
         },
       },
       {
-        path: 'edit/:clientId',
+        path: 'edit/:prospectId',
         lazy: async () => {
           const [componentModule, loaderModule] = await Promise.all([
-            import('@src/pages/clients/ClientEdit'),
-            import('@src/pages/clients/ClientEdit.loader'),
+            import('@src/pages/prospects/ProspectEdit'),
+            import('@src/pages/prospects/ProspectEdit.loader'),
           ]);
           return {
-            Component: withTitle(componentModule.ClientEdit, 'clients.form.edit_page_title'),
-            loader: loaderModule.clientEditLoader,
+            Component: withTitle(componentModule.ProspectEdit, 'prospects.form.edit_page_title'),
+            loader: loaderModule.prospectEditLoader,
           };
         },
       },

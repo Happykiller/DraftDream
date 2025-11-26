@@ -1,20 +1,68 @@
 // src/usecases/exercise/exercise.usecase.dto.ts
 // Comments in English.
-import {
-  CreateExerciseDto as CreateExerciseServiceDto,
-  GetExerciseDto as GetExerciseServiceDto,
-  ListExercisesDto as ListExercisesServiceDto,
-  UpdateExerciseDto as UpdateExerciseServiceDto,
-} from '@services/db/dtos/exercise.dto';
 import type { UsecaseSession } from '@src/usecases/sport/program/program.usecase.dto';
 
-export type CreateExerciseUsecaseDto = CreateExerciseServiceDto;
-export type GetExerciseRepositoryDto = GetExerciseServiceDto;
-export type GetExerciseUsecaseDto = GetExerciseRepositoryDto & { session: UsecaseSession };
-export type ListExercisesRepositoryDto = ListExercisesServiceDto;
-export type ListExercisesUsecaseDto = ListExercisesRepositoryDto & { session: UsecaseSession };
-export type UpdateExerciseUsecaseDto = UpdateExerciseServiceDto & { session: UsecaseSession };
+/**
+ * Independent usecase DTO for creating exercises.
+ * Decoupled from service layer - slug generation handled by use case.
+ */
+export interface CreateExerciseUsecaseDto {
+  locale: string;
+  label: string;
+  description?: string;
+  instructions?: string;
+  series: string;
+  repetitions: string;
+  charge?: string;
+  rest?: number;
+  videoUrl?: string;
+  visibility: 'private' | 'public';
+  categoryIds: string[];
+  muscleIds: string[];
+  equipmentIds?: string[];
+  tagIds?: string[];
+  createdBy: string;
+}
 
-export interface ArchiveExerciseUsecaseDto { id: string }
-export interface UnarchiveExerciseUsecaseDto { id: string }
-export interface DeleteExerciseUsecaseDto { id: string; session: UsecaseSession }
+export interface GetExerciseUsecaseDto {
+  id: string;
+  session: UsecaseSession;
+}
+
+export interface ListExercisesUsecaseDto {
+  q?: string;
+  locale?: string;
+  createdBy?: string;
+  visibility?: 'private' | 'public';
+  categoryIds?: string[];
+  limit?: number;
+  page?: number;
+  session: UsecaseSession;
+}
+
+/**
+ * Independent usecase DTO for updating exercises.
+ * Decoupled from service layer - slug regeneration handled by use case if label changes.
+ */
+export interface UpdateExerciseUsecaseDto {
+  locale?: string;
+  label?: string;
+  description?: string;
+  instructions?: string;
+  series?: string;
+  repetitions?: string;
+  charge?: string;
+  rest?: number;
+  videoUrl?: string;
+  visibility?: 'private' | 'public';
+  categoryIds?: string[];
+  muscleIds?: string[];
+  equipmentIds?: string[];
+  tagIds?: string[];
+  session: UsecaseSession;
+}
+
+export interface DeleteExerciseUsecaseDto {
+  id: string;
+  session: UsecaseSession;
+}

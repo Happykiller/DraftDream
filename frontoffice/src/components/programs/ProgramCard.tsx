@@ -137,7 +137,7 @@ export function ProgramCard({
       await onDelete(program.id);
       setIsDeleteDialogOpen(false);
     } catch (error) {
-      console.log('[ProgramCard] Failed to delete program', error);
+      // console.log('[ProgramCard] Failed to delete program', error);
     } finally {
       setIsDeleteSubmitting(false);
     }

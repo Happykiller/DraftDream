@@ -149,7 +149,6 @@ export interface UseMealsResult {
   total: number;
   loading: boolean;
   create: (input: {
-    slug: string;
     label: string;
     locale: string;
     typeId: string;
@@ -162,7 +161,6 @@ export interface UseMealsResult {
   }) => Promise<void>;
   update: (input: {
     id: string;
-    slug?: string;
     label?: string;
     locale?: string;
     typeId?: string;

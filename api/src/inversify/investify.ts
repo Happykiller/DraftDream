@@ -43,36 +43,36 @@ import { DeleteExerciseUsecase } from '@src/usecases/sport/exercise/delete.exerc
 import { UpdateCategoryUsecase } from '@src/usecases/sport/category/update.category.usecase';
 import { CreateCategoryUsecase } from '@src/usecases/sport/category/create.category.usecase';
 import { DeleteCategoryUsecase } from '@src/usecases/sport/category/delete.category.usecase';
-import { GetClientObjectiveUsecase } from '@usecases/client/objective/get.client-objective.usecase';
-import { ListClientObjectivesUsecase } from '@usecases/client/objective/list.client-objective.usecase';
-import { CreateClientObjectiveUsecase } from '@usecases/client/objective/create.client-objective.usecase';
-import { UpdateClientObjectiveUsecase } from '@usecases/client/objective/update.client-objective.usecase';
-import { DeleteClientObjectiveUsecase } from '@usecases/client/objective/delete.client-objective.usecase';
-import { GetClientActivityPreferenceUsecase } from '@usecases/client/activity-preference/get.client-activity-preference.usecase';
-import { ListClientActivityPreferencesUsecase } from '@usecases/client/activity-preference/list.client-activity-preference.usecase';
-import { CreateClientActivityPreferenceUsecase } from '@usecases/client/activity-preference/create.client-activity-preference.usecase';
-import { UpdateClientActivityPreferenceUsecase } from '@usecases/client/activity-preference/update.client-activity-preference.usecase';
-import { DeleteClientActivityPreferenceUsecase } from '@usecases/client/activity-preference/delete.client-activity-preference.usecase';
-import { GetClientStatusUsecase } from '@usecases/client/status/get.client-status.usecase';
-import { ListClientStatusesUsecase } from '@usecases/client/status/list.client-status.usecase';
-import { CreateClientStatusUsecase } from '@usecases/client/status/create.client-status.usecase';
-import { UpdateClientStatusUsecase } from '@usecases/client/status/update.client-status.usecase';
-import { DeleteClientStatusUsecase } from '@usecases/client/status/delete.client-status.usecase';
-import { GetClientLevelUsecase } from '@usecases/client/level/get.client-level.usecase';
-import { ListClientLevelsUsecase } from '@usecases/client/level/list.client-level.usecase';
-import { CreateClientLevelUsecase } from '@usecases/client/level/create.client-level.usecase';
-import { UpdateClientLevelUsecase } from '@usecases/client/level/update.client-level.usecase';
-import { DeleteClientLevelUsecase } from '@usecases/client/level/delete.client-level.usecase';
-import { GetClientSourceUsecase } from '@usecases/client/source/get.client-source.usecase';
-import { ListClientSourcesUsecase } from '@usecases/client/source/list.client-source.usecase';
-import { CreateClientSourceUsecase } from '@usecases/client/source/create.client-source.usecase';
-import { UpdateClientSourceUsecase } from '@usecases/client/source/update.client-source.usecase';
-import { DeleteClientSourceUsecase } from '@usecases/client/source/delete.client-source.usecase';
-import { GetClientUsecase } from '@usecases/client/client/get.client.usecase';
-import { ListClientsUsecase } from '@usecases/client/client/list.clients.usecase';
-import { CreateClientUsecase } from '@usecases/client/client/create.client.usecase';
-import { UpdateClientUsecase } from '@usecases/client/client/update.client.usecase';
-import { DeleteClientUsecase } from '@usecases/client/client/delete.client.usecase';
+import { GetProspectObjectiveUsecase } from '@usecases/prospect/objective/get.prospect-objective.usecase';
+import { ListProspectObjectivesUsecase } from '@usecases/prospect/objective/list.prospect-objective.usecase';
+import { CreateProspectObjectiveUsecase } from '@usecases/prospect/objective/create.prospect-objective.usecase';
+import { UpdateProspectObjectiveUsecase } from '@usecases/prospect/objective/update.prospect-objective.usecase';
+import { DeleteProspectObjectiveUsecase } from '@usecases/prospect/objective/delete.prospect-objective.usecase';
+import { GetProspectActivityPreferenceUsecase } from '@usecases/prospect/activity-preference/get.prospect-activity-preference.usecase';
+import { ListProspectActivityPreferencesUsecase } from '@usecases/prospect/activity-preference/list.prospect-activity-preference.usecase';
+import { CreateProspectActivityPreferenceUsecase } from '@usecases/prospect/activity-preference/create.prospect-activity-preference.usecase';
+import { UpdateProspectActivityPreferenceUsecase } from '@usecases/prospect/activity-preference/update.prospect-activity-preference.usecase';
+import { DeleteProspectActivityPreferenceUsecase } from '@usecases/prospect/activity-preference/delete.prospect-activity-preference.usecase';
+// import { GetClientStatusUsecase } from '@usecases/prospect/status/get.client-status.usecase';
+// import { ListClientStatusesUsecase } from '@usecases/prospect/status/list.client-status.usecase';
+// import { CreateClientStatusUsecase } from '@usecases/prospect/status/create.client-status.usecase';
+// import { UpdateClientStatusUsecase } from '@usecases/prospect/status/update.client-status.usecase';
+// import { DeleteClientStatusUsecase } from '@usecases/prospect/status/delete.client-status.usecase';
+import { GetProspectLevelUsecase } from '@usecases/prospect/level/get.prospect-level.usecase';
+import { ListProspectLevelsUsecase } from '@usecases/prospect/level/list.prospect-level.usecase';
+import { CreateProspectLevelUsecase } from '@usecases/prospect/level/create.prospect-level.usecase';
+import { UpdateProspectLevelUsecase } from '@usecases/prospect/level/update.prospect-level.usecase';
+import { DeleteProspectLevelUsecase } from '@usecases/prospect/level/delete.prospect-level.usecase';
+import { GetProspectSourceUsecase } from '@usecases/prospect/source/get.prospect-source.usecase';
+import { ListProspectSourcesUsecase } from '@usecases/prospect/source/list.prospect-source.usecase';
+import { CreateProspectSourceUsecase } from '@usecases/prospect/source/create.prospect-source.usecase';
+import { UpdateProspectSourceUsecase } from '@usecases/prospect/source/update.prospect-source.usecase';
+import { DeleteProspectSourceUsecase } from '@usecases/prospect/source/delete.prospect-source.usecase';
+import { GetProspectUsecase } from '@usecases/prospect/prospect/get.prospect.usecase';
+import { ListProspectsUsecase } from '@usecases/prospect/prospect/list.prospects.usecase';
+import { CreateProspectUsecase } from '@usecases/prospect/prospect/create.prospect.usecase';
+import { UpdateProspectUsecase } from '@usecases/prospect/prospect/update.prospect.usecase';
+import { DeleteProspectUsecase } from '@usecases/prospect/prospect/delete.prospect.usecase';
 import { GetCoachAthleteUsecase } from '@usecases/athlete/coach-athlete/get.coach-athlete.usecase';
 import { ListCoachAthletesUsecase } from '@usecases/athlete/coach-athlete/list.coach-athletes.usecase';
 import { CreateCoachAthleteUsecase } from '@usecases/athlete/coach-athlete/create.coach-athlete.usecase';
@@ -103,6 +103,7 @@ import { ListMealPlansUsecase } from '@src/usecases/nutri/meal-plan/list.meal-pl
 import { CreateMealPlanUsecase } from '@src/usecases/nutri/meal-plan/create.meal-plan.usecase';
 import { UpdateMealPlanUsecase } from '@src/usecases/nutri/meal-plan/update.meal-plan.usecase';
 import { DeleteMealPlanUsecase } from '@src/usecases/nutri/meal-plan/delete.meal-plan.usecase';
+
 
 export class Inversify {
   mongo: Db;
@@ -145,36 +146,36 @@ export class Inversify {
   createCategoryUsecase: CreateCategoryUsecase;
   listCategoriesUsecase: ListCategoriesUsecase;
   deleteCategoryUsecase: DeleteCategoryUsecase;
-  getClientObjectiveUsecase: GetClientObjectiveUsecase;
-  createClientObjectiveUsecase: CreateClientObjectiveUsecase;
-  listClientObjectivesUsecase: ListClientObjectivesUsecase;
-  updateClientObjectiveUsecase: UpdateClientObjectiveUsecase;
-  deleteClientObjectiveUsecase: DeleteClientObjectiveUsecase;
-  getClientActivityPreferenceUsecase: GetClientActivityPreferenceUsecase;
-  createClientActivityPreferenceUsecase: CreateClientActivityPreferenceUsecase;
-  listClientActivityPreferencesUsecase: ListClientActivityPreferencesUsecase;
-  updateClientActivityPreferenceUsecase: UpdateClientActivityPreferenceUsecase;
-  deleteClientActivityPreferenceUsecase: DeleteClientActivityPreferenceUsecase;
-  getClientStatusUsecase: GetClientStatusUsecase;
-  createClientStatusUsecase: CreateClientStatusUsecase;
-  listClientStatusesUsecase: ListClientStatusesUsecase;
-  updateClientStatusUsecase: UpdateClientStatusUsecase;
-  deleteClientStatusUsecase: DeleteClientStatusUsecase;
-  getClientLevelUsecase: GetClientLevelUsecase;
-  createClientLevelUsecase: CreateClientLevelUsecase;
-  listClientLevelsUsecase: ListClientLevelsUsecase;
-  updateClientLevelUsecase: UpdateClientLevelUsecase;
-  deleteClientLevelUsecase: DeleteClientLevelUsecase;
-  getClientSourceUsecase: GetClientSourceUsecase;
-  createClientSourceUsecase: CreateClientSourceUsecase;
-  listClientSourcesUsecase: ListClientSourcesUsecase;
-  updateClientSourceUsecase: UpdateClientSourceUsecase;
-  deleteClientSourceUsecase: DeleteClientSourceUsecase;
-  getClientUsecase: GetClientUsecase;
-  createClientUsecase: CreateClientUsecase;
-  listClientsUsecase: ListClientsUsecase;
-  updateClientUsecase: UpdateClientUsecase;
-  deleteClientUsecase: DeleteClientUsecase;
+  getClientObjectiveUsecase: GetProspectObjectiveUsecase;
+  createClientObjectiveUsecase: CreateProspectObjectiveUsecase;
+  listClientObjectivesUsecase: ListProspectObjectivesUsecase;
+  updateClientObjectiveUsecase: UpdateProspectObjectiveUsecase;
+  deleteClientObjectiveUsecase: DeleteProspectObjectiveUsecase;
+  getClientActivityPreferenceUsecase: GetProspectActivityPreferenceUsecase;
+  createClientActivityPreferenceUsecase: CreateProspectActivityPreferenceUsecase;
+  listClientActivityPreferencesUsecase: ListProspectActivityPreferencesUsecase;
+  updateClientActivityPreferenceUsecase: UpdateProspectActivityPreferenceUsecase;
+  deleteClientActivityPreferenceUsecase: DeleteProspectActivityPreferenceUsecase;
+  // getClientStatusUsecase: GetClientStatusUsecase;
+  // createClientStatusUsecase: CreateClientStatusUsecase;
+  // listClientStatusesUsecase: ListClientStatusesUsecase;
+  // updateClientStatusUsecase: UpdateClientStatusUsecase;
+  // deleteClientStatusUsecase: DeleteClientStatusUsecase;
+  getClientLevelUsecase: GetProspectLevelUsecase;
+  createClientLevelUsecase: CreateProspectLevelUsecase;
+  listClientLevelsUsecase: ListProspectLevelsUsecase;
+  updateClientLevelUsecase: UpdateProspectLevelUsecase;
+  deleteClientLevelUsecase: DeleteProspectLevelUsecase;
+  getClientSourceUsecase: GetProspectSourceUsecase;
+  createClientSourceUsecase: CreateProspectSourceUsecase;
+  listClientSourcesUsecase: ListProspectSourcesUsecase;
+  updateClientSourceUsecase: UpdateProspectSourceUsecase;
+  deleteClientSourceUsecase: DeleteProspectSourceUsecase;
+  getProspectUsecase: GetProspectUsecase;
+  createProspectUsecase: CreateProspectUsecase;
+  listProspectsUsecase: ListProspectsUsecase;
+  updateProspectUsecase: UpdateProspectUsecase;
+  deleteProspectUsecase: DeleteProspectUsecase;
   getCoachAthleteUsecase: GetCoachAthleteUsecase;
   createCoachAthleteUsecase: CreateCoachAthleteUsecase;
   listCoachAthletesUsecase: ListCoachAthletesUsecase;
@@ -206,7 +207,7 @@ export class Inversify {
   listMealPlansUsecase: ListMealPlansUsecase;
   updateMealPlanUsecase: UpdateMealPlanUsecase;
   deleteMealPlanUsecase: DeleteMealPlanUsecase;
-  
+
 
   constructor() {
     /**
@@ -226,6 +227,12 @@ export class Inversify {
      */
     this.authUsecase = new AuthUsecase(this);
     this.dbTestUsecase = new DbTestUsecase(this);
+    // usecases tag
+    this.getTagUsecase = new GetTagUsecase(this);
+    this.listTagsUsecase = new ListTagsUsecase(this);
+    this.createTagUsecase = new CreateTagUsecase(this);
+    this.updateTagUsecase = new UpdateTagUsecase(this);
+    this.deleteTagUsecase = new DeleteTagUsecase(this);
     // usecases user
     this.getUserUsecase = new GetUserUsecase(this);
     this.createUserUsecase = new CreateUserUsecase(this);
@@ -237,42 +244,66 @@ export class Inversify {
     this.listCategoriesUsecase = new ListCategoriesUsecase(this);
     this.updateCategoryUsecase = new UpdateCategoryUsecase(this);
     this.deleteCategoryUsecase = new DeleteCategoryUsecase(this);
+    // usecases muscle
+    this.getMuscleUsecase = new GetMuscleUsecase(this);
+    this.listMusclesUsecase = new ListMusclesUsecase(this);
+    this.createMuscleUsecase = new CreateMuscleUsecase(this);
+    this.updateMuscleUsecase = new UpdateMuscleUsecase(this);
+    this.deleteMuscleUsecase = new DeleteMuscleUsecase(this);
+    // usecases equipment
+    this.getEquipmentUsecase = new GetEquipmentUsecase(this);
+    this.listEquipmentUsecase = new ListEquipmentUsecase(this);
+    this.createEquipmentUsecase = new CreateEquipmentUsecase(this);
+    this.updateEquipmentUsecase = new UpdateEquipmentUsecase(this);
+    this.deleteEquipmentUsecase = new DeleteEquipmentUsecase(this);
+    // usecases exercise
+    this.getExerciseUsecase = new GetExerciseUsecase(this);
+    this.listExercisesUsecase = new ListExercisesUsecase(this);
+    this.createExerciseUsecase = new CreateExerciseUsecase(this);
+    this.updateExerciseUsecase = new UpdateExerciseUsecase(this);
+    this.deleteExerciseUsecase = new DeleteExerciseUsecase(this);
+    // usecases session
+    this.getSessionUsecase = new GetSessionUsecase(this);
+    this.listSessionsUsecase = new ListSessionsUsecase(this);
+    this.createSessionUsecase = new CreateSessionUsecase(this);
+    this.updateSessionUsecase = new UpdateSessionUsecase(this);
+    this.deleteSessionUsecase = new DeleteSessionUsecase(this);
+    // usecases program
+    this.getProgramUsecase = new GetProgramUsecase(this);
+    this.listProgramsUsecase = new ListProgramsUsecase(this);
+    this.createProgramUsecase = new CreateProgramUsecase(this);
+    this.updateProgramUsecase = new UpdateProgramUsecase(this);
+    this.deleteProgramUsecase = new DeleteProgramUsecase(this);
     // usecases client objective
-    this.getClientObjectiveUsecase = new GetClientObjectiveUsecase(this);
-    this.createClientObjectiveUsecase = new CreateClientObjectiveUsecase(this);
-    this.listClientObjectivesUsecase = new ListClientObjectivesUsecase(this);
-    this.updateClientObjectiveUsecase = new UpdateClientObjectiveUsecase(this);
-    this.deleteClientObjectiveUsecase = new DeleteClientObjectiveUsecase(this);
+    this.getClientObjectiveUsecase = new GetProspectObjectiveUsecase(this);
+    this.createClientObjectiveUsecase = new CreateProspectObjectiveUsecase(this);
+    this.listClientObjectivesUsecase = new ListProspectObjectivesUsecase(this);
+    this.updateClientObjectiveUsecase = new UpdateProspectObjectiveUsecase(this);
+    this.deleteClientObjectiveUsecase = new DeleteProspectObjectiveUsecase(this);
     // usecases client activity preference
-    this.getClientActivityPreferenceUsecase = new GetClientActivityPreferenceUsecase(this);
-    this.createClientActivityPreferenceUsecase = new CreateClientActivityPreferenceUsecase(this);
-    this.listClientActivityPreferencesUsecase = new ListClientActivityPreferencesUsecase(this);
-    this.updateClientActivityPreferenceUsecase = new UpdateClientActivityPreferenceUsecase(this);
-    this.deleteClientActivityPreferenceUsecase = new DeleteClientActivityPreferenceUsecase(this);
-    // usecases client status
-    this.getClientStatusUsecase = new GetClientStatusUsecase(this);
-    this.createClientStatusUsecase = new CreateClientStatusUsecase(this);
-    this.listClientStatusesUsecase = new ListClientStatusesUsecase(this);
-    this.updateClientStatusUsecase = new UpdateClientStatusUsecase(this);
-    this.deleteClientStatusUsecase = new DeleteClientStatusUsecase(this);
+    this.getClientActivityPreferenceUsecase = new GetProspectActivityPreferenceUsecase(this);
+    this.createClientActivityPreferenceUsecase = new CreateProspectActivityPreferenceUsecase(this);
+    this.listClientActivityPreferencesUsecase = new ListProspectActivityPreferencesUsecase(this);
+    this.updateClientActivityPreferenceUsecase = new UpdateProspectActivityPreferenceUsecase(this);
+    this.deleteClientActivityPreferenceUsecase = new DeleteProspectActivityPreferenceUsecase(this);
     // usecases client level
-    this.getClientLevelUsecase = new GetClientLevelUsecase(this);
-    this.createClientLevelUsecase = new CreateClientLevelUsecase(this);
-    this.listClientLevelsUsecase = new ListClientLevelsUsecase(this);
-    this.updateClientLevelUsecase = new UpdateClientLevelUsecase(this);
-    this.deleteClientLevelUsecase = new DeleteClientLevelUsecase(this);
+    this.getClientLevelUsecase = new GetProspectLevelUsecase(this);
+    this.createClientLevelUsecase = new CreateProspectLevelUsecase(this);
+    this.listClientLevelsUsecase = new ListProspectLevelsUsecase(this);
+    this.updateClientLevelUsecase = new UpdateProspectLevelUsecase(this);
+    this.deleteClientLevelUsecase = new DeleteProspectLevelUsecase(this);
     // usecases client source
-    this.getClientSourceUsecase = new GetClientSourceUsecase(this);
-    this.createClientSourceUsecase = new CreateClientSourceUsecase(this);
-    this.listClientSourcesUsecase = new ListClientSourcesUsecase(this);
-    this.updateClientSourceUsecase = new UpdateClientSourceUsecase(this);
-    this.deleteClientSourceUsecase = new DeleteClientSourceUsecase(this);
-    // usecases client
-    this.getClientUsecase = new GetClientUsecase(this);
-    this.createClientUsecase = new CreateClientUsecase(this);
-    this.listClientsUsecase = new ListClientsUsecase(this);
-    this.updateClientUsecase = new UpdateClientUsecase(this);
-    this.deleteClientUsecase = new DeleteClientUsecase(this);
+    this.getClientSourceUsecase = new GetProspectSourceUsecase(this);
+    this.createClientSourceUsecase = new CreateProspectSourceUsecase(this);
+    this.listClientSourcesUsecase = new ListProspectSourcesUsecase(this);
+    this.updateClientSourceUsecase = new UpdateProspectSourceUsecase(this);
+    this.deleteClientSourceUsecase = new DeleteProspectSourceUsecase(this);
+    // usecases prospect
+    this.getProspectUsecase = new GetProspectUsecase(this);
+    this.createProspectUsecase = new CreateProspectUsecase(this);
+    this.listProspectsUsecase = new ListProspectsUsecase(this);
+    this.updateProspectUsecase = new UpdateProspectUsecase(this);
+    this.deleteProspectUsecase = new DeleteProspectUsecase(this);
     // usecases coach athlete
     this.getCoachAthleteUsecase = new GetCoachAthleteUsecase(this);
     this.createCoachAthleteUsecase = new CreateCoachAthleteUsecase(this);
@@ -303,42 +334,6 @@ export class Inversify {
     this.listMealPlansUsecase = new ListMealPlansUsecase(this);
     this.updateMealPlanUsecase = new UpdateMealPlanUsecase(this);
     this.deleteMealPlanUsecase = new DeleteMealPlanUsecase(this);
-    // usecases equipment
-    this.createEquipmentUsecase = new CreateEquipmentUsecase(this);
-    this.getEquipmentUsecase = new GetEquipmentUsecase(this);
-    this.listEquipmentUsecase = new ListEquipmentUsecase(this);
-    this.updateEquipmentUsecase = new UpdateEquipmentUsecase(this);
-    this.deleteEquipmentUsecase = new DeleteEquipmentUsecase(this);
-    // usecases muscle
-    this.createMuscleUsecase = new CreateMuscleUsecase(this);
-    this.getMuscleUsecase = new GetMuscleUsecase(this);
-    this.listMusclesUsecase = new ListMusclesUsecase(this);
-    this.updateMuscleUsecase = new UpdateMuscleUsecase(this);
-    this.deleteMuscleUsecase = new DeleteMuscleUsecase(this);
-    // usecases tag
-    this.createTagUsecase = new CreateTagUsecase(this);
-    this.getTagUsecase = new GetTagUsecase(this);
-    this.listTagsUsecase = new ListTagsUsecase(this);
-    this.updateTagUsecase = new UpdateTagUsecase(this);
-    this.deleteTagUsecase = new DeleteTagUsecase(this);
-    // usecase exercise
-    this.createExerciseUsecase = new CreateExerciseUsecase(this);
-    this.getExerciseUsecase = new GetExerciseUsecase(this);
-    this.listExercisesUsecase = new ListExercisesUsecase(this);
-    this.deleteExerciseUsecase = new DeleteExerciseUsecase(this);
-    this.updateExerciseUsecase = new UpdateExerciseUsecase(this);
-    // usecase session
-    this.createSessionUsecase = new CreateSessionUsecase(this);
-    this.getSessionUsecase = new GetSessionUsecase(this);
-    this.listSessionsUsecase = new ListSessionsUsecase(this);
-    this.deleteSessionUsecase = new DeleteSessionUsecase(this);
-    this.updateSessionUsecase = new UpdateSessionUsecase(this);
-    // usecase program
-    this.createProgramUsecase = new CreateProgramUsecase(this);
-    this.getProgramUsecase = new GetProgramUsecase(this);
-    this.listProgramsUsecase = new ListProgramsUsecase(this);
-    this.deleteProgramUsecase = new DeleteProgramUsecase(this);
-    this.updateProgramUsecase = new UpdateProgramUsecase(this);
   }
 }
 

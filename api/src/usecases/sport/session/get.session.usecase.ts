@@ -1,5 +1,6 @@
 // src\usecases\session\get.session.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { GetSessionUsecaseDto } from '@src/usecases/sport/session/session.usecase.dto';
@@ -7,7 +8,7 @@ import { mapSessionToUsecase } from '@src/usecases/sport/session/session.mapper'
 import type { SessionUsecaseModel } from '@src/usecases/sport/session/session.usecase.model';
 
 export class GetSessionUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   /** Returns a session or null (invalid id or not found). */
   async execute(dto: GetSessionUsecaseDto): Promise<SessionUsecaseModel | null> {
@@ -34,7 +35,7 @@ export class GetSessionUsecase {
         throw e;
       }
       this.inversify.loggerService.error(`GetSessionUsecase#execute => ${e?.message ?? e}`);
-      throw new Error(ERRORS.GET_SESSION_USECASE);
+      throw normalizeError(e, ERRORS.GET_SESSION_USECASE);
     }
   }
 

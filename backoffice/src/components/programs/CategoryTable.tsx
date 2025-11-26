@@ -47,7 +47,13 @@ export function CategoryTable(props: CategoryTableProps): React.JSX.Element {
       { field: 'slug', headerName: t('common.labels.slug'), flex: 1 },
       { field: 'label', headerName: t('common.labels.label'), flex: 1 },
       { field: 'locale', headerName: t('common.labels.locale'), width: 120 },
-      { field: 'visibility', headerName: t('common.labels.visibility'), width: 140 },
+      {
+        field: 'visibility',
+        headerName: t('common.labels.visibility'),
+        width: 140,
+        renderCell: ({ value }) =>
+          value === 'PUBLIC' ? t('common.visibility.public') : t('common.visibility.private'),
+      },
       {
         field: 'creator',
         headerName: t('common.labels.creator'),

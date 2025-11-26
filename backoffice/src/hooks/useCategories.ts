@@ -133,7 +133,7 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
   }, [load]);
 
   const create = React.useCallback(
-    async (input: { slug: string; label: string; locale: string; visibility: Visibility }) => {
+    async (input: { label: string; locale: string; visibility: Visibility }) => {
       try {
         const { errors } = await execute(() =>
           gql.send<CreateCategoryPayload>({
@@ -154,7 +154,7 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
   );
 
   const update = React.useCallback(
-    async (input: { id: string; slug?: string; label?: string; locale?: string; visibility?: Visibility }) => {
+    async (input: { id: string; label?: string; locale?: string; visibility?: Visibility }) => {
       try {
         const { errors } = await execute(() =>
           gql.send<UpdateCategoryPayload>({

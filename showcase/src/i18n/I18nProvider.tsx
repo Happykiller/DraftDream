@@ -50,7 +50,8 @@ const translations: TranslationResources = {
       releasedOn: 'Released on {{date}}',
       scopeLabel: 'Scope',
       subtitle: 'Release notes',
-      title: 'Release notes'
+      title: 'Release notes',
+      pageSubtitle: 'Discover the latest improvements, features, and fixes that make FitDesk better for you.'
     }
   },
   fr: {
@@ -77,7 +78,8 @@ const translations: TranslationResources = {
       releasedOn: 'Publié le {{date}}',
       scopeLabel: 'Périmètre',
       subtitle: 'Notes de version',
-      title: 'Notes de version'
+      title: 'Notes de version',
+      pageSubtitle: 'Découvrez les dernières améliorations, fonctionnalités et correctifs qui rendent FitDesk meilleur pour vous.'
     }
   }
 };

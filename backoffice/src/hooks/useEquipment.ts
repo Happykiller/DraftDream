@@ -57,7 +57,6 @@ const CREATE_M = `
   mutation CreateEquipment($input: CreateEquipmentInput!) {
     equipment_create(input: $input) {
       id
-      slug
       label
       locale
       visibility
@@ -73,7 +72,6 @@ const UPDATE_M = `
   mutation UpdateEquipment($input: UpdateEquipmentInput!) {
     equipment_update(input: $input) {
       id
-      slug
       label
       locale
       visibility
@@ -129,7 +127,7 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
   React.useEffect(() => { void load(); }, [load]);
 
   const create = React.useCallback(
-    async (input: { slug: string; label: string; locale: string; visibility: EquipmentVisibility }) => {
+    async (input: { label: string; locale: string; visibility: EquipmentVisibility }) => {
       try {
         const { errors } = await execute(() =>
           gql.send<CreatePayload>({
@@ -150,7 +148,7 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
   );
 
   const update = React.useCallback(
-    async (input: { id: string; slug?: string; label?: string; locale?: string }) => {
+    async (input: { id: string; label?: string; locale?: string }) => {
       try {
         const { errors } = await execute(() =>
           gql.send<UpdatePayload>({

@@ -1,5 +1,6 @@
 // src/usecases/tag/get.tag.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { GetTagUsecaseDto } from '@usecases/tag/tag.usecase.dto';
 import { TagUsecaseModel } from '@usecases/tag/tag.usecase.model';
@@ -15,7 +16,7 @@ export class GetTagUsecase {
       return found ? { ...found } : null;
     } catch (e: any) {
       this.inversify.loggerService.error(`GetTagUsecase#execute => ${e?.message ?? e}`);
-      throw new Error(ERRORS.GET_TAG_USECASE);
+      throw normalizeError(e, ERRORS.GET_TAG_USECASE);
     }
   }
 }
