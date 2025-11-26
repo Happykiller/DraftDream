@@ -296,8 +296,8 @@ The sport program management feature allows coaches and admins to create, organi
 
 ### Create Program
 ```graphql
-mutation CreateProgram($input: CreateProgramInput!) {
-  createProgram(input: $input) {
+mutation ProgramCreate($input: CreateProgramInput!) {
+  program_create(input: $input) {
     id
     label
     slug
@@ -319,8 +319,8 @@ mutation CreateProgram($input: CreateProgramInput!) {
 
 ### Get Program
 ```graphql
-query GetProgram($id: ID!) {
-  getProgram(id: $id) {
+query ProgramGet($id: ID!) {
+  program_get(id: $id) {
     id
     label
     slug
@@ -346,14 +346,19 @@ query GetProgram($id: ID!) {
 
 ### List Programs
 ```graphql
-query ListPrograms($locale: String, $is_active: Boolean) {
-  listPrograms(locale: $locale, is_active: $is_active) {
-    id
-    label
-    slug
-    weeks
-    difficulty
-    createdAt
+query ProgramList($input: ListProgramsInput) {
+  program_list(input: $input) {
+    items {
+      id
+      label
+      slug
+      weeks
+      difficulty
+      createdAt
+    }
+    total
+    page
+    limit
   }
 }
 ```

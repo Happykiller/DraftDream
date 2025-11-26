@@ -84,7 +84,11 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
       {
         field: 'status',
         headerName: t('common.labels.status'),
-        renderCell: (params) => statusLabels[params.row.status ?? ''] ?? t('common.messages.no_value'),
+        renderCell: (params) => {
+          const statusValue = params.row.status;
+          const label = statusValue ? statusLabels[statusValue] : undefined;
+          return label ?? t('common.messages.no_value');
+        },
         minWidth: 140,
         flex: 1,
       },

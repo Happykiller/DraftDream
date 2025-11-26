@@ -51,7 +51,6 @@ export function ProgramsPanel(): React.JSX.Element {
   const editing = React.useMemo(() => items.find((program) => program.id === editId) ?? null, [items, editId]);
 
   const toCreateInput = (values: ProgramDialogValues) => ({
-    slug: values.slug,
     locale: values.locale,
     label: values.label,
     duration: values.duration,
@@ -64,7 +63,6 @@ export function ProgramsPanel(): React.JSX.Element {
 
   const toUpdateInput = (id: string, values: ProgramDialogValues) => ({
     id,
-    slug: values.slug,
     locale: values.locale,
     label: values.label,
     duration: values.duration,

@@ -227,6 +227,12 @@ export class Inversify {
      */
     this.authUsecase = new AuthUsecase(this);
     this.dbTestUsecase = new DbTestUsecase(this);
+    // usecases tag
+    this.getTagUsecase = new GetTagUsecase(this);
+    this.listTagsUsecase = new ListTagsUsecase(this);
+    this.createTagUsecase = new CreateTagUsecase(this);
+    this.updateTagUsecase = new UpdateTagUsecase(this);
+    this.deleteTagUsecase = new DeleteTagUsecase(this);
     // usecases user
     this.getUserUsecase = new GetUserUsecase(this);
     this.createUserUsecase = new CreateUserUsecase(this);
@@ -238,6 +244,36 @@ export class Inversify {
     this.listCategoriesUsecase = new ListCategoriesUsecase(this);
     this.updateCategoryUsecase = new UpdateCategoryUsecase(this);
     this.deleteCategoryUsecase = new DeleteCategoryUsecase(this);
+    // usecases muscle
+    this.getMuscleUsecase = new GetMuscleUsecase(this);
+    this.listMusclesUsecase = new ListMusclesUsecase(this);
+    this.createMuscleUsecase = new CreateMuscleUsecase(this);
+    this.updateMuscleUsecase = new UpdateMuscleUsecase(this);
+    this.deleteMuscleUsecase = new DeleteMuscleUsecase(this);
+    // usecases equipment
+    this.getEquipmentUsecase = new GetEquipmentUsecase(this);
+    this.listEquipmentUsecase = new ListEquipmentUsecase(this);
+    this.createEquipmentUsecase = new CreateEquipmentUsecase(this);
+    this.updateEquipmentUsecase = new UpdateEquipmentUsecase(this);
+    this.deleteEquipmentUsecase = new DeleteEquipmentUsecase(this);
+    // usecases exercise
+    this.getExerciseUsecase = new GetExerciseUsecase(this);
+    this.listExercisesUsecase = new ListExercisesUsecase(this);
+    this.createExerciseUsecase = new CreateExerciseUsecase(this);
+    this.updateExerciseUsecase = new UpdateExerciseUsecase(this);
+    this.deleteExerciseUsecase = new DeleteExerciseUsecase(this);
+    // usecases session
+    this.getSessionUsecase = new GetSessionUsecase(this);
+    this.listSessionsUsecase = new ListSessionsUsecase(this);
+    this.createSessionUsecase = new CreateSessionUsecase(this);
+    this.updateSessionUsecase = new UpdateSessionUsecase(this);
+    this.deleteSessionUsecase = new DeleteSessionUsecase(this);
+    // usecases program
+    this.getProgramUsecase = new GetProgramUsecase(this);
+    this.listProgramsUsecase = new ListProgramsUsecase(this);
+    this.createProgramUsecase = new CreateProgramUsecase(this);
+    this.updateProgramUsecase = new UpdateProgramUsecase(this);
+    this.deleteProgramUsecase = new DeleteProgramUsecase(this);
     // usecases client objective
     this.getClientObjectiveUsecase = new GetProspectObjectiveUsecase(this);
     this.createClientObjectiveUsecase = new CreateProspectObjectiveUsecase(this);
@@ -250,12 +286,6 @@ export class Inversify {
     this.listClientActivityPreferencesUsecase = new ListProspectActivityPreferencesUsecase(this);
     this.updateClientActivityPreferenceUsecase = new UpdateProspectActivityPreferenceUsecase(this);
     this.deleteClientActivityPreferenceUsecase = new DeleteProspectActivityPreferenceUsecase(this);
-    // usecases client status
-    // this.getClientStatusUsecase = new GetClientStatusUsecase(this);
-    // this.createClientStatusUsecase = new CreateClientStatusUsecase(this);
-    // this.listClientStatusesUsecase = new ListClientStatusesUsecase(this);
-    // this.updateClientStatusUsecase = new UpdateClientStatusUsecase(this);
-    // this.deleteClientStatusUsecase = new DeleteClientStatusUsecase(this);
     // usecases client level
     this.getClientLevelUsecase = new GetProspectLevelUsecase(this);
     this.createClientLevelUsecase = new CreateProspectLevelUsecase(this);

@@ -1,8 +1,43 @@
 {
   "releases": [
     {
+      "version": "0.7.0",
+      "title": "Prospect Management & CRM Pipeline",
+      "date": "2025-11-24",
+      "global": [
+        "Complete overhaul of the Prospects module, with stage management and drag-and-drop.",
+        "Standardization of statuses and terminology across API, backoffice, and frontoffice.",
+        "Optimization of navigation and multilingual interfaces.",
+        "Improved design and readability on all views."
+      ],
+      "notes": "FitDesk 0.7.0 evolves the platform into a true CRM solution for coaches. The relationship between the coach and their prospects becomes visual, fluid, and manageable from a single space. This version unifies vocabulary, simplifies processes, and prepares for the next steps: converting prospects into active clients within a fully integrated journey.",
+      "projects": {
+        "/api": [
+          "Overhaul of internal prospect logic, with standardization of statuses and shared values.",
+          "Schema update to support pipeline states and transition management.",
+          "Use case documentation for better functional consistency.",
+          "Cleanup of old client concepts in favor of the unified prospect model."
+        ],
+        "/backoffice": [
+          "New Prospects module with visual stage pipeline (drag & drop).",
+          "Prospect tracking based on commercial status and last update.",
+          "Overhaul of prospect cards with more synthetic information.",
+          "Automatic adaptation to the coach's language for fluid multilingual management."
+        ],
+        "/frontoffice": [
+          "Replacement of the 'Clients' module with a redesigned Prospects module.",
+          "Integrated pipeline view with cards, statuses, and drag-and-drop interactions.",
+          "Automatic filtering according to the working language.",
+          "Better consistency of terms and design between sections (programs, nutrition, management)."
+        ],
+        "/showcase": [
+          "No functional changes, but content harmonization to match the new terminology (prospect instead of client) and preparation for future business-oriented evolutions."
+        ]
+      }
+    },
+    {
       "version": "0.6.0",
-      "title": "Release note : 0.6.0",
+      "title": "Coach-Athlete Relationship & Unified Tracking",
       "date": "2025-11-20",
       "global": [
         "[FEAT] End-to-end management for prospects, clients, and athletes with a unified tracking flow.",
@@ -38,7 +73,7 @@
     },
     {
       "version": "0.5.0",
-      "title": "Release note : 0.5.0",
+      "title": "Nutrition Plan Builder",
       "date": "2025-11-06",
       "global": [
         "[FEAT] Full nutrition plan builder available to coaches and athletes.",
@@ -74,7 +109,7 @@
     },
     {
       "version": "0.4.0",
-      "title": "Release note : 0.4.0",
+      "title": "Complete Nutrition Suite",
       "date": "2025-10-15",
       "global": [
         "[FEAT] Nutrition Suite: New end-to-end meal and plan management across apps.",
@@ -109,7 +144,7 @@
     },
     {
       "version": "0.3.0",
-      "title": "Release note : 0.3.0",
+      "title": "Role-Based Navigation & Profiles",
       "date": "2025-10-27",
       "global": [
         "[FEAT] Role-aware navigation and access across apps.",

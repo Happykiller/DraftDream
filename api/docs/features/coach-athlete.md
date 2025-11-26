@@ -254,8 +254,8 @@ The coach-athlete management feature allows coaches to establish and manage rela
 
 ### Create Coach-Athlete Link
 ```graphql
-mutation CreateCoachAthlete($input: CreateCoachAthleteInput!) {
-  createCoachAthlete(input: $input) {
+mutation CoachAthleteCreate($input: CreateCoachAthleteInput!) {
+  coach_athlete_create(input: $input) {
     id
     coachId
     athleteId
@@ -271,21 +271,23 @@ mutation CreateCoachAthlete($input: CreateCoachAthleteInput!) {
 
 ### List Coach's Athletes
 ```graphql
-query ListCoachAthletes($coachId: ID!, $is_active: Boolean) {
-  listCoachAthletes(coachId: $coachId, is_active: $is_active) {
-    id
-    athleteId
-    startDate
-    endDate
-    is_active
+query CoachAthleteList($coachId: ID!, $is_active: Boolean) {
+  coach_athlete_list(coachId: $coachId, is_active: $is_active) {
+    items {
+        id
+        athleteId
+        startDate
+        endDate
+        is_active
+    }
   }
 }
 ```
 
 ### Update Link
 ```graphql
-mutation UpdateCoachAthlete($id: ID!, $input: UpdateCoachAthleteInput!) {
-  updateCoachAthlete(id: $id, input: $input) {
+mutation CoachAthleteUpdate($id: ID!, $input: UpdateCoachAthleteInput!) {
+  coach_athlete_update(id: $id, input: $input) {
     id
     endDate
     note

@@ -252,8 +252,8 @@ includePassword: true
 
 ### Create User Mutation
 ```graphql
-mutation CreateUser($input: CreateUserInput!) {
-  createUser(input: $input) {
+mutation UserCreate($input: CreateUserInput!) {
+  user_create(input: $input) {
     id
     type
     first_name
@@ -278,8 +278,8 @@ mutation CreateUser($input: CreateUserInput!) {
 
 ### Get User Query
 ```graphql
-query GetUser($id: ID!) {
-  getUser(id: $id) {
+query UserGet($id: ID!) {
+  user_get(id: $id) {
     id
     type
     first_name
@@ -293,8 +293,8 @@ query GetUser($id: ID!) {
 
 ### Update User Mutation
 ```graphql
-mutation UpdateUser($id: ID!, $input: UpdateUserInput!) {
-  updateUser(id: $id, input: $input) {
+mutation UserUpdate($id: ID!, $input: UpdateUserInput!) {
+  user_update(id: $id, input: $input) {
     id
     first_name
     last_name
