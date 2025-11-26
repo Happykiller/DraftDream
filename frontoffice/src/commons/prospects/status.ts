@@ -40,5 +40,6 @@ export const pipelineStatuses: ProspectStatusEnum[] = [
   ProspectStatusEnum.PROPOSITION,
   ProspectStatusEnum.NEGOCIATION,
   ProspectStatusEnum.GAGNE,
+  ProspectStatusEnum.A_FAIRE,
   ProspectStatusEnum.PERDUS,
 ];

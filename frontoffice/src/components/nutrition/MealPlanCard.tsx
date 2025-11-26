@@ -292,7 +292,7 @@ export function MealPlanCard({
     try {
       await onDelete(mealPlan);
       setIsDeleteDialogOpen(false);
-    } catch (error) {
+    } catch (_error) {
       // console.log('[MealPlanCard] Failed to delete meal plan', error);
     } finally {
       setIsDeleteSubmitting(false);

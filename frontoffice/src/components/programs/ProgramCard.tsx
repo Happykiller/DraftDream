@@ -136,7 +136,7 @@ export function ProgramCard({
     try {
       await onDelete(program.id);
       setIsDeleteDialogOpen(false);
-    } catch (error) {
+    } catch (_error) {
       // console.log('[ProgramCard] Failed to delete program', error);
     } finally {
       setIsDeleteSubmitting(false);
@@ -274,16 +274,16 @@ export function ProgramCard({
             overflow: 'hidden',
             ...(isOverflowing && !isExpanded
               ? {
-                  '&::after': {
-                    content: '""',
-                    position: 'absolute',
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    height: theme.spacing(7),
-                    backgroundImage: `linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, ${theme.palette.background.paper} 75%)`,
-                  },
-                }
+                '&::after': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  height: theme.spacing(7),
+                  backgroundImage: `linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, ${theme.palette.background.paper} 75%)`,
+                },
+              }
               : {}),
           })}
         >

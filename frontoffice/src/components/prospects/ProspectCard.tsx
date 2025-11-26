@@ -8,6 +8,7 @@ import {
   Phone,
 } from '@mui/icons-material';
 import {
+  Button,
   Card,
   CardActions,
   CardContent,
@@ -25,12 +26,18 @@ import type { Prospect } from '@app-types/prospects';
 
 export interface ProspectCardProps {
   prospect: Prospect;
-  onEdit: (prospect: Prospect) => void;
-  onDelete: (prospect: Prospect) => void;
+  onEdit?: (prospect: Prospect) => void;
+  onDelete?: (prospect: Prospect) => void;
+  onValidate?: (prospect: Prospect) => void;
 }
 
 /** Presentational card summarizing the key attributes for a prospect. */
-export function ProspectCard({ prospect, onEdit, onDelete }: ProspectCardProps): React.JSX.Element {
+export function ProspectCard({
+  prospect,
+  onEdit,
+  onDelete,
+  onValidate,
+}: ProspectCardProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
   const formatDate = useDateFormatter({
     locale: i18n.language,
@@ -93,24 +100,28 @@ export function ProspectCard({ prospect, onEdit, onDelete }: ProspectCardProps):
           </Stack>
 
           <Stack direction="row" spacing={0.5}>
-            <Tooltip title={t('prospects.list.actions.edit')}>
-              <IconButton
-                aria-label={`edit-prospect-${prospect.id}`}
-                onClick={() => onEdit(prospect)}
-                size="small"
-              >
-                <Edit fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title={t('prospects.list.actions.delete')}>
-              <IconButton
-                aria-label={`delete-prospect-${prospect.id}`}
-                onClick={() => onDelete(prospect)}
-                size="small"
-              >
-                <Delete fontSize="small" />
-              </IconButton>
-            </Tooltip>
+            {onEdit ? (
+              <Tooltip title={t('prospects.list.actions.edit')}>
+                <IconButton
+                  aria-label={`edit-prospect-${prospect.id}`}
+                  onClick={() => onEdit(prospect)}
+                  size="small"
+                >
+                  <Edit fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            ) : null}
+            {onDelete ? (
+              <Tooltip title={t('prospects.list.actions.delete')}>
+                <IconButton
+                  aria-label={`delete-prospect-${prospect.id}`}
+                  onClick={() => onDelete(prospect)}
+                  size="small"
+                >
+                  <Delete fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            ) : null}
           </Stack>
         </Stack>
 
@@ -131,13 +142,13 @@ export function ProspectCard({ prospect, onEdit, onDelete }: ProspectCardProps):
             <Stack direction="row" flexBasis="100%" flexWrap="wrap" spacing={0.75} useFlexGap>
               {shouldShowObjectiveBadges
                 ? prospect.objectives?.map((objective) => (
-                    <Chip key={objective.id ?? objective.label} label={objective.label} size="small" />
-                  ))
+                  <Chip key={objective.id ?? objective.label} label={objective.label} size="small" />
+                ))
                 : null}
               {shouldShowPreferenceBadges
                 ? prospect.activityPreferences?.map((preference) => (
-                    <Chip key={preference.id ?? preference.label} label={preference.label} size="small" color="secondary" />
-                  ))
+                  <Chip key={preference.id ?? preference.label} label={preference.label} size="small" color="secondary" />
+                ))
                 : null}
             </Stack>
           ) : null}
@@ -173,7 +184,19 @@ export function ProspectCard({ prospect, onEdit, onDelete }: ProspectCardProps):
           {lastUpdatedLabel}
         </Typography>
 
-        {prospect.level?.label ? <Chip label={prospect.level.label} color="success" size="small" /> : null}
+        {onValidate ? (
+          <Button
+            color="error"
+            onClick={() => onValidate(prospect)}
+            size="small"
+            variant="contained"
+            sx={{ fontWeight: 700 }}
+          >
+            {t('prospects.list.actions.validate')}
+          </Button>
+        ) : (
+          prospect.level?.label ? <Chip label={prospect.level.label} color="success" size="small" /> : null
+        )}
       </CardActions>
     </Card>
   );

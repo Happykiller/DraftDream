@@ -53,6 +53,7 @@ interface ProspectWorkflowProps {
     toStatus: PipelineStatus,
     fromStatus: PipelineStatus,
   ) => void;
+  onValidateProspect?: (prospect: Prospect) => void;
 }
 
 interface DragPayload {
@@ -64,8 +65,9 @@ interface DraggableProspectCardProps {
   prospect: Prospect;
   stage: PipelineStatus;
   isDragging: boolean;
-  onEditProspect: (prospect: Prospect) => void;
-  onDeleteProspect: (prospect: Prospect) => void;
+  onEditProspect?: (prospect: Prospect) => void;
+  onDeleteProspect?: (prospect: Prospect) => void;
+  onValidateProspect?: (prospect: Prospect) => void;
   onDragStart: (prospect: Prospect, fromStatus: PipelineStatus, event: React.DragEvent<HTMLDivElement>) => void;
   onDragEnd: () => void;
 }
@@ -76,19 +78,37 @@ function DraggableProspectCard({
   isDragging,
   onEditProspect,
   onDeleteProspect,
+  onValidateProspect,
   onDragStart,
   onDragEnd,
 }: DraggableProspectCardProps): React.JSX.Element {
+  const isDraggable = stage !== ProspectStatusEnum.A_FAIRE;
+
   return (
     <Stack
       component="div"
-      draggable
-      onDragStart={(event) => onDragStart(prospect, stage, event)}
+      draggable={isDraggable}
+      onDragStart={(event) => {
+        if (isDraggable) {
+          onDragStart(prospect, stage, event);
+        } else {
+          event.preventDefault();
+        }
+      }}
       onDragEnd={onDragEnd}
-      sx={{ cursor: 'grab', opacity: isDragging ? 0.7 : 1, transition: 'opacity 150ms ease' }}
+      sx={{
+        cursor: isDraggable ? 'grab' : 'default',
+        opacity: isDragging ? 0.7 : 1,
+        transition: 'opacity 150ms ease',
+      }}
     >
       {/* General information */}
-      <ProspectCard prospect={prospect} onEdit={onEditProspect} onDelete={onDeleteProspect} />
+      <ProspectCard
+        prospect={prospect}
+        onEdit={onEditProspect}
+        onDelete={onDeleteProspect}
+        onValidate={onValidateProspect}
+      />
     </Stack>
   );
 }
@@ -142,6 +162,7 @@ export function ProspectWorkflow({
   onEditProspect,
   onDeleteProspect,
   onMoveProspect,
+  onValidateProspect,
 }: ProspectWorkflowProps): React.JSX.Element {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -356,7 +377,7 @@ export function ProspectWorkflow({
                         </Typography>
                       </Stack>
 
-                      {onCreateProspect ? (
+                      {onCreateProspect && stage.status !== ProspectStatusEnum.A_FAIRE ? (
                         <Tooltip title={t('prospects.workflow.actions.create_at_stage')}>
                           <IconButton
                             aria-label={`create-prospect-${stage.status}`}
@@ -376,9 +397,21 @@ export function ProspectWorkflow({
 
                     <Paper
                       elevation={0}
-                      onDragOver={(event) => handleDragOver(stage.status, event)}
-                      onDragLeave={() => handleDragLeave(stage.status)}
-                      onDrop={(event) => handleDrop(stage.status, event)}
+                      onDragOver={(event) => {
+                        if (stage.status !== ProspectStatusEnum.A_FAIRE) {
+                          handleDragOver(stage.status, event);
+                        }
+                      }}
+                      onDragLeave={() => {
+                        if (stage.status !== ProspectStatusEnum.A_FAIRE) {
+                          handleDragLeave(stage.status);
+                        }
+                      }}
+                      onDrop={(event) => {
+                        if (stage.status !== ProspectStatusEnum.A_FAIRE) {
+                          handleDrop(stage.status, event);
+                        }
+                      }}
                       sx={{
                         border: '1px dashed',
                         borderColor: isActiveDropZone ? stage.accentColor : alpha(stage.accentColor, 0.6),
@@ -415,8 +448,19 @@ export function ProspectWorkflow({
                               prospect={prospect}
                               stage={stage.status}
                               isDragging={draggedProspectId === prospect.id}
-                              onEditProspect={onEditProspect}
-                              onDeleteProspect={onDeleteProspect}
+                              onEditProspect={
+                                stage.status !== ProspectStatusEnum.A_FAIRE ? onEditProspect : undefined
+                              }
+                              onDeleteProspect={
+                                stage.status !== ProspectStatusEnum.A_FAIRE
+                                  ? onDeleteProspect
+                                  : undefined
+                              }
+                              onValidateProspect={
+                                stage.status === ProspectStatusEnum.GAGNE
+                                  ? onValidateProspect
+                                  : undefined
+                              }
                               onDragStart={handleDragStart}
                               onDragEnd={handleDragEnd}
                             />
