@@ -23,7 +23,7 @@ export const prospectStatusLabels: Record<ProspectStatusEnum, string> = {
   [ProspectStatusEnum.NEGOCIATION]: 'Négociation',
   [ProspectStatusEnum.GAGNE]: 'Gagné',
   [ProspectStatusEnum.PERDUS]: 'Perdus',
-  [ProspectStatusEnum.A_FAIRE]: 'À faire',
+  [ProspectStatusEnum.A_FAIRE]: 'Création athlète',
   [ProspectStatusEnum.CLIENT]: 'Client',
 };
 

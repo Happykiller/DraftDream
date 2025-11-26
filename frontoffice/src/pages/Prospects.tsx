@@ -96,6 +96,13 @@ export function Prospects(): React.JSX.Element {
     [moveProspectToStatus],
   );
 
+  const handleValidateProspect = React.useCallback(
+    (prospect: Prospect) => {
+      void moveProspectToStatus(prospect, ProspectStatusEnum.A_FAIRE, ProspectStatusEnum.GAGNE);
+    },
+    [moveProspectToStatus],
+  );
+
   const handleTabChange = React.useCallback((_: React.SyntheticEvent, value: 'list' | 'pipeline') => {
     setActiveTab(value);
   }, []);
@@ -191,6 +198,7 @@ export function Prospects(): React.JSX.Element {
           onEditProspect={handleEditProspect}
           onDeleteProspect={handleDeleteProspect}
           onMoveProspect={handleMoveProspect}
+          onValidateProspect={handleValidateProspect}
         />
       )}
 

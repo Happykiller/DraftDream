@@ -193,8 +193,8 @@
           "description": "The prospect will not move forward; archive and log the reasons."
         },
         "todo": {
-          "title": "To do",
-          "description": "Internal tasks to complete for follow-ups or finalization."
+          "title": "Athlete creation",
+          "description": "Fitdesk turns your won prospect into one of your athletes."
         },
         "client": {
           "title": "Client",
