@@ -113,7 +113,7 @@ export function ProspectCard({
               </Typography>
             </Tooltip>
             {prospect.email ? (
-              <Typography variant="body2" color="text.secondary">
+              <Typography sx={{ textAlign: 'left' }} variant="body2" color="text.secondary">
                 {prospect.email}
               </Typography>
             ) : null}
@@ -153,7 +153,10 @@ export function ProspectCard({
             sx={{ flex: '1 1 220px', minWidth: 0 }}
           >
             <Phone color="action" fontSize="small" />
-            <Typography sx={{ minWidth: 0, wordBreak: 'break-word' }} variant="body2">
+            <Typography
+              sx={{ minWidth: 0, textAlign: 'left', wordBreak: 'break-word' }}
+              variant="body2"
+            >
               {prospect.phone || t('prospects.list.card.no_phone')}
             </Typography>
           </Stack>
@@ -180,7 +183,9 @@ export function ProspectCard({
             sx={{ flex: '1 1 220px', minWidth: 0 }}
           >
             <AttachMoney color="action" fontSize="small" />
-            <Typography variant="body2">{budgetLabel}</Typography>
+            <Typography sx={{ textAlign: 'left' }} variant="body2">
+              {budgetLabel}
+            </Typography>
           </Stack>
 
           <Stack
@@ -190,7 +195,7 @@ export function ProspectCard({
             sx={{ flex: '1 1 220px', minWidth: 0 }}
           >
             <CalendarMonth color="action" fontSize="small" />
-            <Typography variant="body2">
+            <Typography sx={{ textAlign: 'left' }} variant="body2">
               {t('prospects.list.card.created_label', { date: formatDate(prospect.createdAt) })}
             </Typography>
           </Stack>
