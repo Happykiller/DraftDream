@@ -157,6 +157,9 @@
         "actions": {
           "create_at_stage": "Add a prospect in this stage"
         },
+        "stage_count": "{{count}} prospect",
+        "stage_count_plural": "{{count}} prospects",
+        "total_value_label": "Total value",
         "help": {
           "title": "How to use the pipeline?",
           "items": [

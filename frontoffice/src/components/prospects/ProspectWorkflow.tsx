@@ -164,8 +164,19 @@ export function ProspectWorkflow({
   onMoveProspect,
   onValidateProspect,
 }: ProspectWorkflowProps): React.JSX.Element {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const theme = useTheme();
+
+  const currencyFormatter = React.useMemo(
+    () =>
+      new Intl.NumberFormat(i18n.language, {
+        style: 'currency',
+        currency: 'EUR',
+        maximumFractionDigits: 0,
+        minimumFractionDigits: 0,
+      }),
+    [i18n.language],
+  );
 
   const normalizeColumns = React.useCallback(
     (input: Partial<Record<PipelineStatus, Prospect[]>>): Record<PipelineStatus, Prospect[]> =>
@@ -352,6 +363,12 @@ export function ProspectWorkflow({
           <Grid columnSpacing={2} columns={{ xs: 1, lg: 4, xl: 8 }} container rowSpacing={2}>
             {stages.map((stage) => {
               const prospectsForStage = columns[stage.status] ?? [];
+              const stageCount = prospectsForStage.length;
+              const totalBudget = prospectsForStage.reduce(
+                (sum, prospect) => sum + (prospect.budget ?? 0),
+                0,
+              );
+              const formattedTotalBudget = currencyFormatter.format(totalBudget || 0);
               const isActiveDropZone = activeDropStage === stage.status;
 
               return (
@@ -369,31 +386,61 @@ export function ProspectWorkflow({
                       gap: 1.5,
                     }}
                   >
-                    <Stack alignItems="center" direction="row" justifyContent="space-between" spacing={1.25}>
-                      <Stack alignItems="center" direction="row" spacing={1.25}>
-                        <stage.Icon fontSize="small" sx={{ color: stage.accentColor }} />
-                        <Typography component="span" fontWeight={700} variant="body1">
-                          {stage.title}
-                        </Typography>
+                    <Stack spacing={0.5}>
+                      <Stack
+                        alignItems="center"
+                        direction="row"
+                        justifyContent="space-between"
+                        spacing={1.25}
+                      >
+                        <Stack alignItems="center" direction="row" spacing={1.25}>
+                          <stage.Icon fontSize="small" sx={{ color: stage.accentColor }} />
+                          <Typography component="span" fontWeight={700} variant="body1">
+                            {stage.title}
+                          </Typography>
+                        </Stack>
+
+                        {onCreateProspect && stage.status !== ProspectStatusEnum.A_FAIRE ? (
+                          <Tooltip title={t('prospects.workflow.actions.create_at_stage')}>
+                            <IconButton
+                              aria-label={`create-prospect-${stage.status}`}
+                              color="primary"
+                              size="small"
+                              onClick={() => onCreateProspect(stage.status)}
+                            >
+                              <Add fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        ) : null}
                       </Stack>
 
-                      {onCreateProspect && stage.status !== ProspectStatusEnum.A_FAIRE ? (
-                        <Tooltip title={t('prospects.workflow.actions.create_at_stage')}>
-                          <IconButton
-                            aria-label={`create-prospect-${stage.status}`}
-                            color="primary"
-                            size="small"
-                            onClick={() => onCreateProspect(stage.status)}
-                          >
-                            <Add fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                      ) : null}
+                      <Typography color="text.secondary" variant="caption">
+                        {t('prospects.workflow.stage_count', { count: stageCount })}
+                      </Typography>
                     </Stack>
 
                     <Typography color="text.secondary" variant="body2">
                       {stage.description}
                     </Typography>
+
+                    <Paper
+                      elevation={0}
+                      sx={{
+                        border: '1px dashed',
+                        borderColor: alpha(stage.accentColor, 0.5),
+                        bgcolor: 'background.paper',
+                        borderRadius: 2,
+                        px: 1.25,
+                        py: 1,
+                      }}
+                    >
+                      <Typography color="text.secondary" variant="caption">
+                        {t('prospects.workflow.total_value_label')}
+                      </Typography>
+                      <Typography fontWeight={700} variant="body2">
+                        {formattedTotalBudget}
+                      </Typography>
+                    </Paper>
 
                     <Paper
                       elevation={0}
