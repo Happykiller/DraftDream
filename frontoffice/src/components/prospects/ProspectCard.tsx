@@ -179,7 +179,17 @@ export function ProspectCard({
 
       <Divider />
 
-      <CardActions sx={{ justifyContent: 'space-between', alignItems: 'center', px: 2, py: 1.5 }}>
+      <CardActions
+        sx={{
+          alignItems: 'center',
+          columnGap: 1.5,
+          flexWrap: 'wrap',
+          justifyContent: 'space-between',
+          px: 2,
+          py: 1.5,
+          rowGap: 1,
+        }}
+      >
         <Typography variant="caption" color="text.secondary">
           {lastUpdatedLabel}
         </Typography>

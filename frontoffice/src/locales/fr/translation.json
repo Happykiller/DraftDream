@@ -68,7 +68,8 @@
       "collapse_details": "Afficher moins de détails",
       "actions": {
         "edit": "Modifier le prospect",
-        "delete": "Supprimer le prospect"
+        "delete": "Supprimer le prospect",
+        "validate": "Valider"
       },
       "card": {
         "contact": "Contact",
