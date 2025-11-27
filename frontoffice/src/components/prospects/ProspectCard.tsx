@@ -102,7 +102,11 @@ export function ProspectCard({
               <Typography
                 fontWeight={700}
                 noWrap
-                sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
+                sx={{
+                  overflow: 'hidden',
+                  textAlign: 'left',
+                  textOverflow: 'ellipsis',
+                }}
                 variant="subtitle1"
               >
                 {displayName}
@@ -196,48 +200,37 @@ export function ProspectCard({
       <Divider />
 
       <CardActions sx={{ px: 2, py: 1.5 }}>
-        <Stack
-          alignItems="center"
-          columnGap={1.5}
-          direction="row"
-          flexWrap="wrap"
-          rowGap={1}
-          sx={{ width: '100%' }}
-        >
-          <Typography variant="caption" color="text.secondary" sx={{ flexGrow: 1 }}>
-            {lastUpdatedLabel}
-          </Typography>
+        <Stack spacing={1.25} sx={{ width: '100%' }}>
+          <Stack alignItems="center" direction="row" flexWrap="wrap" rowGap={0.75} columnGap={1.5}>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ flexGrow: 1, textAlign: 'left' }}
+            >
+              {lastUpdatedLabel}
+            </Typography>
+
+            {!onValidate && prospect.level?.label ? (
+              <Chip label={prospect.level.label} color="success" size="small" />
+            ) : null}
+          </Stack>
+
+          {onValidate ? <Divider flexItem /> : null}
 
           {onValidate ? (
-            <Stack
-              alignItems="center"
-              direction="row"
-              justifyContent="center"
-              sx={(theme) => ({
-                borderLeft: {
-                  xs: 'none',
-                  sm: `1px solid ${theme.palette.divider}`,
-                },
-                flexBasis: { xs: '100%', sm: 'auto' },
-                marginLeft: { xs: 0, sm: 1.5 },
-                paddingLeft: { xs: 0, sm: 1.5 },
-                width: { xs: '100%', sm: 'auto' },
-              })}
-            >
+            <Stack alignItems="center" direction="row" justifyContent="center" sx={{ width: '100%' }}>
               <Button
                 color="error"
                 fullWidth
                 onClick={() => onValidate(prospect)}
                 size="small"
                 variant="contained"
-                sx={{ fontWeight: 700, maxWidth: 220, minWidth: 140 }}
+                sx={{ fontWeight: 700, maxWidth: 220, minWidth: 160 }}
               >
                 {t('prospects.list.actions.validate')}
               </Button>
             </Stack>
-          ) : (
-            prospect.level?.label ? <Chip label={prospect.level.label} color="success" size="small" /> : null
-          )}
+          ) : null}
         </Stack>
       </CardActions>
     </Card>
