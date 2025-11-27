@@ -4,21 +4,30 @@ import { useTranslation } from 'react-i18next';
 import { alpha, useTheme } from '@mui/material/styles';
 import {
   Add,
+  AccountBalanceWallet,
   CalendarMonth,
   Cancel,
   Chat,
   CheckCircle,
   Description,
+  Equalizer,
   People,
   Phone,
+  Refresh,
   TaskAlt,
+  TrendingUp,
   VerifiedUser,
   type SvgIconComponent,
 } from '@mui/icons-material';
 import {
+  Button,
+  FormControl,
   Grid,
   IconButton,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
   Skeleton,
   Stack,
   Tooltip,
@@ -54,6 +63,7 @@ interface ProspectWorkflowProps {
     fromStatus: PipelineStatus,
   ) => void;
   onValidateProspect?: (prospect: Prospect) => void;
+  onRefreshPipeline?: () => void;
 }
 
 interface DragPayload {
@@ -163,6 +173,7 @@ export function ProspectWorkflow({
   onDeleteProspect,
   onMoveProspect,
   onValidateProspect,
+  onRefreshPipeline,
 }: ProspectWorkflowProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
@@ -174,6 +185,14 @@ export function ProspectWorkflow({
         currency: 'EUR',
         maximumFractionDigits: 0,
         minimumFractionDigits: 0,
+      }),
+    [i18n.language],
+  );
+
+  const integerFormatter = React.useMemo(
+    () =>
+      new Intl.NumberFormat(i18n.language, {
+        maximumFractionDigits: 0,
       }),
     [i18n.language],
   );
@@ -251,6 +270,62 @@ export function ProspectWorkflow({
   const helpItems = React.useMemo(
     () => t('prospects.workflow.help.items', { returnObjects: true }) as string[],
     [t],
+  );
+
+  const pipelineMetrics = React.useMemo(() => {
+    const stageLists = Object.values(columns);
+    const totalProspects = stageLists.reduce((count, items) => count + items.length, 0);
+    const totalValue = stageLists.reduce(
+      (sum, items) => sum + items.reduce((budgetSum, prospect) => budgetSum + (prospect.budget ?? 0), 0),
+      0,
+    );
+    const successfulProspects =
+      (columns[ProspectStatusEnum.GAGNE]?.length ?? 0) + (columns[ProspectStatusEnum.CLIENT]?.length ?? 0);
+    const conversionRate = totalProspects === 0 ? 0 : Math.round((successfulProspects / totalProspects) * 100);
+    const averageValue = totalProspects === 0 ? 0 : totalValue / totalProspects;
+
+    return {
+      totalProspects,
+      totalValue,
+      conversionRate,
+      averageValue,
+    };
+  }, [columns]);
+
+  const [sortOrder, setSortOrder] = React.useState<'updatedAsc' | 'updatedDesc'>('updatedAsc');
+
+  const kpiCards = React.useMemo(
+    () => [
+      {
+        key: 'totalProspects',
+        label: t('prospects.workflow.summary.metrics.total_prospects'),
+        value: integerFormatter.format(pipelineMetrics.totalProspects),
+        color: theme.palette.primary.main,
+        Icon: People,
+      },
+      {
+        key: 'pipelineValue',
+        label: t('prospects.workflow.summary.metrics.pipeline_value'),
+        value: currencyFormatter.format(pipelineMetrics.totalValue),
+        color: theme.palette.info.main,
+        Icon: AccountBalanceWallet,
+      },
+      {
+        key: 'conversionRate',
+        label: t('prospects.workflow.summary.metrics.conversion_rate'),
+        value: `${pipelineMetrics.conversionRate}%`,
+        color: theme.palette.success.main,
+        Icon: TrendingUp,
+      },
+      {
+        key: 'averageValue',
+        label: t('prospects.workflow.summary.metrics.average_value'),
+        value: currencyFormatter.format(pipelineMetrics.averageValue),
+        color: theme.palette.secondary.main,
+        Icon: Equalizer,
+      },
+    ],
+    [currencyFormatter, integerFormatter, pipelineMetrics, t, theme.palette.info.main, theme.palette.primary.main, theme.palette.secondary.main, theme.palette.success.main],
   );
 
   React.useEffect(() => {
@@ -351,6 +426,95 @@ export function ProspectWorkflow({
   return (
     <Stack spacing={2} sx={{ width: '100%' }}>
       {/* General information */}
+      <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', p: { xs: 2, md: 3 } }}>
+        <Stack spacing={2}>
+          <Stack alignItems="flex-start" direction="row" flexWrap="wrap" justifyContent="space-between" spacing={2}>
+            <Stack spacing={0.5} sx={{ minWidth: 0 }}>
+              <Typography variant="h6">{t('prospects.workflow.summary.title')}</Typography>
+              <Typography color="text.secondary" variant="body2">
+                {t('prospects.workflow.summary.helper')}
+              </Typography>
+            </Stack>
+
+            <Stack alignItems="center" direction="row" flexWrap="wrap" justifyContent="flex-end" spacing={1}>
+              <FormControl size="small" sx={{ minWidth: 180 }}>
+                <InputLabel id="prospects-order-label">
+                  {t('prospects.workflow.summary.order.label')}
+                </InputLabel>
+                <Select
+                  labelId="prospects-order-label"
+                  label={t('prospects.workflow.summary.order.label')}
+                  value={sortOrder}
+                  onChange={(event) => setSortOrder(event.target.value as 'updatedAsc' | 'updatedDesc')}
+                >
+                  <MenuItem value="updatedAsc">{t('prospects.workflow.summary.order.updated_asc')}</MenuItem>
+                  <MenuItem value="updatedDesc">{t('prospects.workflow.summary.order.updated_desc')}</MenuItem>
+                </Select>
+              </FormControl>
+
+              {onRefreshPipeline ? (
+                <Button
+                  color="error"
+                  onClick={onRefreshPipeline}
+                  startIcon={<Refresh fontSize="small" />}
+                  variant="contained"
+                >
+                  {t('prospects.workflow.summary.actions.refresh')}
+                </Button>
+              ) : null}
+            </Stack>
+          </Stack>
+
+          {loading ? (
+            <Grid columnSpacing={2} columns={{ xs: 1, sm: 2, lg: 4 }} container rowSpacing={1.5}>
+              {Array.from({ length: 4 }).map((_, index) => (
+                <Grid key={`kpi-skeleton-${index}`} size={1}>
+                  <Skeleton height={94} variant="rounded" />
+                </Grid>
+              ))}
+            </Grid>
+          ) : (
+            <Grid columnSpacing={2} columns={{ xs: 1, sm: 2, lg: 4 }} container rowSpacing={1.5}>
+              {kpiCards.map((card) => (
+                <Grid key={card.key} size={1}>
+                  <Paper
+                    elevation={0}
+                    sx={{
+                      height: '100%',
+                      bgcolor: alpha(card.color, 0.08),
+                      borderRadius: 2,
+                      px: 2,
+                      py: 1.5,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1.5,
+                    }}
+                  >
+                    <Stack
+                      alignItems="center"
+                      bgcolor={alpha(card.color, 0.18)}
+                      borderRadius={2}
+                      justifyContent="center"
+                      sx={{ height: 44, width: 44 }}
+                    >
+                      <card.Icon sx={{ color: card.color }} />
+                    </Stack>
+                    <Stack spacing={0.25} sx={{ minWidth: 0 }}>
+                      <Typography color="text.secondary" variant="body2">
+                        {card.label}
+                      </Typography>
+                      <Typography fontWeight={800} noWrap variant="h6">
+                        {card.value}
+                      </Typography>
+                    </Stack>
+                  </Paper>
+                </Grid>
+              ))}
+            </Grid>
+          )}
+        </Stack>
+      </Paper>
+
       <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', p: { xs: 2, md: 3 } }}>
         <Stack spacing={2}>
           <Stack spacing={0.5}>

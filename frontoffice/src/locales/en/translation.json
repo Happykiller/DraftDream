@@ -149,34 +149,52 @@
       "delete_failure": "Unable to delete the prospect.",
       "update_status_failure": "Unable to update the prospect status."
     },
-      "workflow": {
-        "card_title": "Prospecting stages",
-        "card_helper": "Move prospects across the pipeline to visualise your progress.",
-        "empty_title": "No prospect yet",
-        "empty_description": "Create or move prospects to populate this stage.",
+    "workflow": {
+      "card_title": "Prospecting stages",
+      "card_helper": "Move prospects across the pipeline to visualise your progress.",
+      "summary": {
+        "title": "Pilot your prospects",
+        "helper": "Review the key figures of your conversion pipeline at a glance.",
         "actions": {
-          "create_at_stage": "Add a prospect in this stage"
+          "refresh": "Refresh"
         },
-        "stage_count": "{{count}} prospect",
-        "stage_count_plural": "{{count}} prospects",
-        "total_value_label": "Total value",
-        "help": {
-          "title": "How to use the pipeline?",
-          "items": [
-            "Drag and drop a prospect to the right stage to reflect its progress.",
-            "Each column groups prospects that share the same status for instant visibility.",
-            "You can add, edit, or delete a prospect directly from the dedicated actions."
-          ]
+        "order": {
+          "label": "Order",
+          "updated_asc": "Date ascending",
+          "updated_desc": "Date descending"
         },
-        "stages": {
-          "lead": {
-            "title": "Lead",
-            "description": "New contact to qualify before proposing a meeting."
+        "metrics": {
+          "total_prospects": "Total prospects",
+          "pipeline_value": "Pipeline value",
+          "conversion_rate": "Conversion rate",
+          "average_value": "Average value"
+        }
+      },
+      "empty_title": "No prospect yet",
+      "empty_description": "Create or move prospects to populate this stage.",
+      "actions": {
+        "create_at_stage": "Add a prospect in this stage"
+      },
+      "stage_count": "{{count}} prospect",
+      "stage_count_plural": "{{count}} prospects",
+      "total_value_label": "Total value",
+      "help": {
+        "title": "How to use the pipeline?",
+        "items": [
+          "Drag and drop a prospect to the right stage to reflect its progress.",
+          "Each column groups prospects that share the same status for instant visibility.",
+          "You can add, edit, or delete a prospect directly from the dedicated actions."
+        ]
+      },
+      "stages": {
+        "lead": {
+          "title": "Lead",
+          "description": "New contact to qualify before proposing a meeting."
+        },
+          "contact": {
+            "title": "Contacted",
+            "description": "Initial exchange completed to validate interest and needs."
           },
-        "contact": {
-          "title": "Contacted",
-          "description": "Initial exchange completed to validate interest and needs."
-        },
         "meeting": {
           "title": "Meeting scheduled",
           "description": "A meeting is booked; prepare the session and materials."

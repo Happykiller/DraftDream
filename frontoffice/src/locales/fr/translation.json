@@ -149,34 +149,52 @@
       "delete_failure": "Impossible de supprimer le prospect.",
       "update_status_failure": "Impossible de mettre à jour le statut du prospect."
     },
-      "workflow": {
-        "card_title": "Étapes de prospection",
-        "card_helper": "Déplacez vos prospects dans la pipeline pour visualiser votre avancée.",
-        "empty_title": "Aucun prospect",
-        "empty_description": "Ajoutez ou déplacez des prospects pour remplir cette étape.",
+    "workflow": {
+      "card_title": "Étapes de prospection",
+      "card_helper": "Déplacez vos prospects dans la pipeline pour visualiser votre avancée.",
+      "summary": {
+        "title": "Pilotez vos prospects",
+        "helper": "Consultez en un clin d'œil les chiffres clés de votre pipeline de conversion.",
         "actions": {
-          "create_at_stage": "Ajouter un prospect dans cette étape"
+          "refresh": "Actualiser"
         },
-        "stage_count": "{{count}} prospect",
-        "stage_count_plural": "{{count}} prospects",
-        "total_value_label": "Valeur totale",
-        "help": {
-          "title": "Comment utiliser la pipeline ?",
-          "items": [
-            "Faites glisser un prospect vers l'étape correspondante pour refléter son avancement.",
-            "Chaque colonne regroupe les prospects partageant le même statut pour une visibilité immédiate.",
-            "Ajoutez, modifiez ou supprimez un prospect depuis les actions dédiées."
-          ]
+        "order": {
+          "label": "Ordre",
+          "updated_asc": "Date ascendante",
+          "updated_desc": "Date descendante"
         },
-        "stages": {
-          "lead": {
-            "title": "Lead",
-            "description": "Nouveau contact à qualifier avant de proposer un rendez-vous."
+        "metrics": {
+          "total_prospects": "Total prospects",
+          "pipeline_value": "Valeur pipeline",
+          "conversion_rate": "Taux de conversion",
+          "average_value": "Valeur moyenne"
+        }
+      },
+      "empty_title": "Aucun prospect",
+      "empty_description": "Ajoutez ou déplacez des prospects pour remplir cette étape.",
+      "actions": {
+        "create_at_stage": "Ajouter un prospect dans cette étape"
+      },
+      "stage_count": "{{count}} prospect",
+      "stage_count_plural": "{{count}} prospects",
+      "total_value_label": "Valeur totale",
+      "help": {
+        "title": "Comment utiliser la pipeline ?",
+        "items": [
+          "Faites glisser un prospect vers l'étape correspondante pour refléter son avancement.",
+          "Chaque colonne regroupe les prospects partageant le même statut pour une visibilité immédiate.",
+          "Ajoutez, modifiez ou supprimez un prospect depuis les actions dédiées."
+        ]
+      },
+      "stages": {
+        "lead": {
+          "title": "Lead",
+          "description": "Nouveau contact à qualifier avant de proposer un rendez-vous."
+        },
+          "contact": {
+            "title": "Contacté",
+            "description": "Premier échange effectué pour valider l'intérêt et les besoins."
           },
-        "contact": {
-          "title": "Contacté",
-          "description": "Premier échange effectué pour valider l'intérêt et les besoins."
-        },
         "meeting": {
           "title": "RDV planifié",
           "description": "Un rendez-vous est programmé ; préparez la séance et les documents."

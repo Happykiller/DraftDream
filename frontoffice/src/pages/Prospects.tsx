@@ -199,6 +199,7 @@ export function Prospects(): React.JSX.Element {
           onDeleteProspect={handleDeleteProspect}
           onMoveProspect={handleMoveProspect}
           onValidateProspect={handleValidateProspect}
+          onRefreshPipeline={reloadPipeline}
         />
       )}
 
