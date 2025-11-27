@@ -386,18 +386,28 @@ export function ProspectWorkflow({
                       gap: 1.5,
                     }}
                   >
-                    <Stack spacing={0.5}>
-                      <Stack
-                        alignItems="center"
-                        direction="row"
-                        justifyContent="space-between"
-                        spacing={1.25}
-                      >
-                        <Stack alignItems="center" direction="row" spacing={1.25}>
-                          <stage.Icon fontSize="small" sx={{ color: stage.accentColor }} />
-                          <Typography component="span" fontWeight={700} variant="body1">
-                            {stage.title}
-                          </Typography>
+                    <Stack spacing={0.75}>
+                      <Stack direction="row" justifyContent="space-between" spacing={1.25}>
+                        <Stack alignItems="flex-start" direction="row" spacing={1.25} sx={{ minWidth: 0 }}>
+                          <Stack
+                            alignItems="center"
+                            bgcolor={alpha(stage.accentColor, 0.1)}
+                            borderRadius={1}
+                            height={44}
+                            justifyContent="center"
+                            width={44}
+                          >
+                            <stage.Icon fontSize="small" sx={{ color: stage.accentColor }} />
+                          </Stack>
+
+                          <Stack spacing={0.25} sx={{ minWidth: 0 }}>
+                            <Typography component="span" fontWeight={700} variant="body1">
+                              {stage.title}
+                            </Typography>
+                            <Typography color="text.secondary" noWrap variant="caption">
+                              {t('prospects.workflow.stage_count', { count: stageCount })}
+                            </Typography>
+                          </Stack>
                         </Stack>
 
                         {onCreateProspect && stage.status !== ProspectStatusEnum.A_FAIRE ? (
@@ -413,10 +423,6 @@ export function ProspectWorkflow({
                           </Tooltip>
                         ) : null}
                       </Stack>
-
-                      <Typography color="text.secondary" variant="caption">
-                        {t('prospects.workflow.stage_count', { count: stageCount })}
-                      </Typography>
                     </Stack>
 
                     <Typography color="text.secondary" variant="body2">
@@ -426,18 +432,17 @@ export function ProspectWorkflow({
                     <Paper
                       elevation={0}
                       sx={{
-                        border: '1px dashed',
-                        borderColor: alpha(stage.accentColor, 0.5),
-                        bgcolor: 'background.paper',
+                        bgcolor: alpha(stage.accentColor, 0.08),
                         borderRadius: 2,
                         px: 1.25,
-                        py: 1,
+                        py: 1.25,
+                        textAlign: 'center',
                       }}
                     >
-                      <Typography color="text.secondary" variant="caption">
+                      <Typography color="text.secondary" textAlign="center" variant="caption">
                         {t('prospects.workflow.total_value_label')}
                       </Typography>
-                      <Typography fontWeight={700} variant="body2">
+                      <Typography fontWeight={700} textAlign="center" variant="body2">
                         {formattedTotalBudget}
                       </Typography>
                     </Paper>
