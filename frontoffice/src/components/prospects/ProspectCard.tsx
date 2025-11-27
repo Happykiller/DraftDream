@@ -44,6 +44,15 @@ export function ProspectCard({
     options: { day: '2-digit', month: '2-digit', year: 'numeric' },
   });
 
+  const displayName = React.useMemo(() => {
+    const parts = [prospect.firstName?.trim(), prospect.lastName?.trim()].filter(Boolean);
+    if (parts.length === 0) {
+      return t('prospects.list.card.no_name');
+    }
+
+    return parts.join(' ');
+  }, [prospect.firstName, prospect.lastName, t]);
+
   const budgetLabel = React.useMemo(() => {
     if (prospect.budget == null) {
       return t('prospects.list.card.no_budget');
@@ -88,10 +97,17 @@ export function ProspectCard({
       {/* General information */}
       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
         <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={1.5}>
-          <Stack spacing={0.25}>
-            <Typography fontWeight={700} variant="subtitle1">
-              {`${prospect.firstName} ${prospect.lastName}`}
-            </Typography>
+          <Stack spacing={0.25} sx={{ flexGrow: 1, minWidth: 0 }}>
+            <Tooltip title={displayName}>
+              <Typography
+                fontWeight={700}
+                noWrap
+                sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
+                variant="subtitle1"
+              >
+                {displayName}
+              </Typography>
+            </Tooltip>
             {prospect.email ? (
               <Typography variant="body2" color="text.secondary">
                 {prospect.email}
@@ -99,7 +115,7 @@ export function ProspectCard({
             ) : null}
           </Stack>
 
-          <Stack direction="row" spacing={0.5}>
+          <Stack direction="row" spacing={0.5} sx={{ flexShrink: 0 }}>
             {onEdit ? (
               <Tooltip title={t('prospects.list.actions.edit')}>
                 <IconButton
@@ -179,34 +195,50 @@ export function ProspectCard({
 
       <Divider />
 
-      <CardActions
-        sx={{
-          alignItems: 'center',
-          columnGap: 1.5,
-          flexWrap: 'wrap',
-          justifyContent: 'space-between',
-          px: 2,
-          py: 1.5,
-          rowGap: 1,
-        }}
-      >
-        <Typography variant="caption" color="text.secondary">
-          {lastUpdatedLabel}
-        </Typography>
+      <CardActions sx={{ px: 2, py: 1.5 }}>
+        <Stack
+          alignItems="center"
+          columnGap={1.5}
+          direction="row"
+          flexWrap="wrap"
+          rowGap={1}
+          sx={{ width: '100%' }}
+        >
+          <Typography variant="caption" color="text.secondary" sx={{ flexGrow: 1 }}>
+            {lastUpdatedLabel}
+          </Typography>
 
-        {onValidate ? (
-          <Button
-            color="error"
-            onClick={() => onValidate(prospect)}
-            size="small"
-            variant="contained"
-            sx={{ fontWeight: 700 }}
-          >
-            {t('prospects.list.actions.validate')}
-          </Button>
-        ) : (
-          prospect.level?.label ? <Chip label={prospect.level.label} color="success" size="small" /> : null
-        )}
+          {onValidate ? (
+            <Stack
+              alignItems="center"
+              direction="row"
+              justifyContent="center"
+              sx={(theme) => ({
+                borderLeft: {
+                  xs: 'none',
+                  sm: `1px solid ${theme.palette.divider}`,
+                },
+                flexBasis: { xs: '100%', sm: 'auto' },
+                marginLeft: { xs: 0, sm: 1.5 },
+                paddingLeft: { xs: 0, sm: 1.5 },
+                width: { xs: '100%', sm: 'auto' },
+              })}
+            >
+              <Button
+                color="error"
+                fullWidth
+                onClick={() => onValidate(prospect)}
+                size="small"
+                variant="contained"
+                sx={{ fontWeight: 700, maxWidth: 220, minWidth: 140 }}
+              >
+                {t('prospects.list.actions.validate')}
+              </Button>
+            </Stack>
+          ) : (
+            prospect.level?.label ? <Chip label={prospect.level.label} color="success" size="small" /> : null
+          )}
+        </Stack>
       </CardActions>
     </Card>
   );
