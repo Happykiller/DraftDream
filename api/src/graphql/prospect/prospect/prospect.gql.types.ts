@@ -16,6 +16,15 @@ import { ProspectSourceGql } from '@graphql/prospect/source/prospect-source.gql.
 import { ProspectStatusEnum } from './prospect.enum';
 
 @ObjectType()
+export class ProspectWorkflowEntryGql {
+  @Field()
+  status!: string;
+
+  @Field()
+  date!: Date;
+}
+
+@ObjectType()
 export class ProspectGql {
   @Field(() => ID) id!: string;
   @Field() firstName!: string;
@@ -33,6 +42,7 @@ export class ProspectGql {
   @Field(() => Float, { nullable: true }) budget?: number;
   @Field({ nullable: true }) dealDescription?: string;
   @Field({ nullable: true }) desiredStartDate?: Date;
+  @Field(() => [ProspectWorkflowEntryGql]) workflowHistory!: ProspectWorkflowEntryGql[];
   @Field() createdBy!: string;
   @Field() createdAt!: Date;
   @Field() updatedAt!: Date;

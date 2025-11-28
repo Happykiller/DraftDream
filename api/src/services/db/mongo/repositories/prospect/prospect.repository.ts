@@ -7,7 +7,7 @@ import {
 
 import inversify from '@src/inversify/investify';
 
-import { Prospect } from '@services/db/models/prospect/prospect.model';
+import { Prospect, ProspectWorkflowEntry } from '@services/db/models/prospect/prospect.model';
 import {
   CreateProspectDto,
   GetProspectDto,
@@ -34,6 +34,7 @@ interface ProspectDoc {
   budget?: number;
   dealDescription?: string;
   desiredStartDate?: Date;
+  workflowHistory: ProspectWorkflowEntry[];
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
@@ -62,6 +63,7 @@ export class BddServiceProspectMongo {
 
   async create(dto: CreateProspectDto): Promise<Prospect | null> {
     const now = new Date();
+    const workflowHistory = this.normalizeWorkflowHistory(dto.workflowHistory, now);
     const doc: Omit<ProspectDoc, '_id'> = {
       firstName: this.normalizeName(dto.firstName),
       lastName: this.normalizeName(dto.lastName),
@@ -78,6 +80,7 @@ export class BddServiceProspectMongo {
       budget: this.normalizeBudget(dto.budget),
       dealDescription: this.normalizeOptional(dto.dealDescription),
       desiredStartDate: this.normalizeDate(dto.desiredStartDate),
+      workflowHistory: workflowHistory?.length ? workflowHistory : [{ status: 'create', date: now }],
       createdBy: dto.createdBy,
       createdAt: now,
       updatedAt: now,
@@ -175,6 +178,9 @@ export class BddServiceProspectMongo {
     if (patch.desiredStartDate !== undefined) {
       $set.desiredStartDate = this.normalizeDate(patch.desiredStartDate);
     }
+    if (patch.workflowHistory !== undefined) {
+      $set.workflowHistory = this.normalizeWorkflowHistory(patch.workflowHistory) ?? [];
+    }
 
     try {
       const updatedDoc = await this.col().findOneAndUpdate(
@@ -270,11 +276,29 @@ export class BddServiceProspectMongo {
     budget: doc.budget,
     dealDescription: doc.dealDescription,
     desiredStartDate: doc.desiredStartDate,
+    workflowHistory: doc.workflowHistory ?? [],
     createdBy: doc.createdBy,
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt,
     deletedAt: doc.deletedAt,
   });
+
+  private normalizeWorkflowHistory(
+    entries?: ProspectWorkflowEntry[] | null,
+    fallbackDate?: Date,
+  ): ProspectWorkflowEntry[] | undefined {
+    if (entries === undefined) return undefined;
+    if (!entries) return [];
+
+    return entries
+      .map((entry) => {
+        const status = typeof entry.status === 'string' ? entry.status.trim() : '';
+        const date = this.normalizeDate(entry.date) ?? fallbackDate;
+        if (!status || !date) return null;
+        return { status: status as ProspectWorkflowEntry['status'], date };
+      })
+      .filter((entry): entry is ProspectWorkflowEntry => Boolean(entry));
+  }
 
   private isDuplicateError(error: unknown): boolean {
     return typeof error === 'object' && error !== null && (error as { code?: number }).code === 11000;

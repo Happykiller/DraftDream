@@ -11,6 +11,7 @@ export class CreateProspectUsecase {
 
   async execute(dto: CreateProspectUsecaseDto): Promise<ProspectUsecaseModel | null> {
     try {
+      const createdAt = new Date();
       const created = await this.inversify.bddService.prospect.create({
         firstName: dto.firstName,
         lastName: dto.lastName,
@@ -28,6 +29,7 @@ export class CreateProspectUsecase {
         dealDescription: dto.dealDescription,
         desiredStartDate: dto.desiredStartDate,
         createdBy: dto.createdBy,
+        workflowHistory: dto.workflowHistory ?? [{ status: 'create', date: createdAt }],
       });
       return created ? { ...created } : null;
     } catch (error: any) {
