@@ -65,6 +65,15 @@
       "search_aria": "Search prospects",
       "empty_title": "No prospects yet",
       "empty_description": "Create your first prospect to centralize their onboarding information.",
+      "metrics": {
+        "total": "Total",
+        "active_clients": "Active clients",
+        "active_clients_helper": "{{value}}% active",
+        "prospects": "Prospects",
+        "prospects_helper": "This month",
+        "new_clients": "Carios",
+        "new_clients_helper": "New client"
+      },
       "expand_details": "Show more details",
       "collapse_details": "Show fewer details",
       "actions": {

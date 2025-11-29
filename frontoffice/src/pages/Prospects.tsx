@@ -28,6 +28,7 @@ import { ProspectWorkflow } from '@components/prospects/ProspectWorkflow';
 import { useProspects } from '@hooks/prospects/useProspects';
 import { useProspectPipeline } from '@hooks/prospects/useProspectPipeline';
 import { useProspectMetadataOptions } from '@hooks/prospects/useProspectMetadataOptions';
+import { useProspectListMetrics } from '@hooks/prospects/useProspectListMetrics';
 import { useDebouncedValue } from '@hooks/useDebouncedValue';
 
 import { ProspectStatusEnum } from '@src/commons/prospects/status';
@@ -46,6 +47,7 @@ export function Prospects(): React.JSX.Element {
     limit: 24,
     q: debouncedQuery,
     status: ProspectStatusEnum.CLIENT,
+    sourceId: sourceFilter !== 'all' && sourceFilter !== 'none' ? sourceFilter : null,
   });
   const {
     prospectsByStatus: pipelineProspects,
@@ -53,6 +55,11 @@ export function Prospects(): React.JSX.Element {
     reload: reloadPipeline,
     moveProspectToStatus,
   } = useProspectPipeline({ enabled: activeTab === 'pipeline' });
+  const {
+    metrics: listMetrics,
+    loading: listMetricsLoading,
+    reload: reloadListMetrics,
+  } = useProspectListMetrics({ sourceFilter, enabled: activeTab === 'list' });
   const { sources: sourceMetadata } = useProspectMetadataOptions();
   const [prospectToDelete, setProspectToDelete] = React.useState<Prospect | null>(null);
   const [deleteLoading, setDeleteLoading] = React.useState(false);
@@ -123,7 +130,8 @@ export function Prospects(): React.JSX.Element {
   const handleRefresh = React.useCallback(() => {
     void reload();
     void reloadPipeline();
-  }, [reload, reloadPipeline]);
+    void reloadListMetrics();
+  }, [reload, reloadListMetrics, reloadPipeline]);
 
   const handleTabChange = React.useCallback((_: React.SyntheticEvent, value: 'list' | 'pipeline') => {
     setActiveTab(value);
@@ -311,6 +319,8 @@ export function Prospects(): React.JSX.Element {
           <ProspectList
             prospects={filteredListItems}
             loading={loading}
+            metrics={listMetrics}
+            metricsLoading={listMetricsLoading}
             searchQuery={searchQuery}
             searchPlaceholder={t('prospects.list.search_placeholder')}
             searchAriaLabel={t('prospects.list.search_aria')}

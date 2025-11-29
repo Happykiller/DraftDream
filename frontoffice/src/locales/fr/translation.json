@@ -65,6 +65,15 @@
       "search_aria": "Rechercher des prospects",
       "empty_title": "Aucun prospect pour l'instant",
       "empty_description": "Créez votre premier prospect pour centraliser son onboarding.",
+      "metrics": {
+        "total": "Total",
+        "active_clients": "Clients actifs",
+        "active_clients_helper": "{{value}}% actifs",
+        "prospects": "Prospects",
+        "prospects_helper": "Ce mois-ci",
+        "new_clients": "Cariós",
+        "new_clients_helper": "Nouveau client"
+      },
       "expand_details": "Afficher plus de détails",
       "collapse_details": "Afficher moins de détails",
       "actions": {
