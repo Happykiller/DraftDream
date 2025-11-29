@@ -71,7 +71,7 @@
         "active_clients_helper": "{{value}}% actifs",
         "prospects": "Prospects",
         "prospects_helper": "Ce mois-ci",
-        "new_clients": "Cariós",
+        "new_clients": "Ce mois",
         "new_clients_helper": "Nouveau client"
       },
       "expand_details": "Afficher plus de détails",
