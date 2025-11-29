@@ -56,6 +56,7 @@
     },
     "actions": {
       "create": "Nouveau prospect",
+      "create_lead": "Créer un nouveau prospect",
       "refresh": "Rafraîchir",
       "back_to_list": "Retour à la liste"
     },

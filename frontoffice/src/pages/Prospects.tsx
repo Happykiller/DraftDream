@@ -13,6 +13,7 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import QueryStatsOutlinedIcon from '@mui/icons-material/QueryStatsOutlined';
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -189,6 +190,16 @@ export function Prospects(): React.JSX.Element {
             spacing={1}
             width={{ xs: '100%', md: 'auto' }}
           >
+            <Button
+              color="error"
+              onClick={() => handleCreateProspect(ProspectStatusEnum.LEAD)}
+              startIcon={<AddIcon fontSize="small" />}
+              sx={{ alignSelf: { xs: 'stretch', sm: 'auto' }, flexShrink: 0 }}
+              variant="contained"
+            >
+              {t('prospects.actions.create_lead')}
+            </Button>
+
             <FormControl
               size="small"
               sx={{ minWidth: { xs: '100%', sm: 220 }, flexShrink: 0 }}
