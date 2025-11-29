@@ -209,7 +209,6 @@ export function ProspectListCard({
     t,
     displayName,
     budgetLabel,
-    lastUpdatedLabel,
     createdLabel,
     noPhoneLabel,
     showObjectiveBadges,
@@ -301,12 +300,28 @@ export function ProspectWorkflowCard({
     t,
     displayName,
     budgetLabel,
-    lastUpdatedLabel,
     createdLabel,
     noPhoneLabel,
     showObjectiveBadges,
     showPreferenceBadges,
   } = useProspectCardData(prospect);
+
+  const daysInStageLabel = React.useMemo(() => {
+    const latestEntry = prospect.workflowHistory?.[prospect.workflowHistory.length - 1];
+    if (!latestEntry) {
+      return t('prospects.list.card.stage_duration', { count: 0 });
+    }
+
+    const parsedDate = new Date(latestEntry.date);
+    if (Number.isNaN(parsedDate.getTime())) {
+      return t('prospects.list.card.stage_duration', { count: 0 });
+    }
+
+    const millisecondsPerDay = 1000 * 60 * 60 * 24;
+    const daysInStage = Math.max(0, Math.floor((Date.now() - parsedDate.getTime()) / millisecondsPerDay));
+
+    return t('prospects.list.card.stage_duration', { count: daysInStage });
+  }, [prospect.workflowHistory, t]);
 
   return (
     <Card
@@ -366,7 +381,7 @@ export function ProspectWorkflowCard({
         <Stack spacing={1.25} sx={{ width: '100%' }}>
           <Stack alignItems="center" direction="row" flexWrap="wrap" rowGap={0.75} columnGap={1.5}>
             <Typography variant="caption" color="text.secondary" sx={{ flexGrow: 1, textAlign: 'left' }}>
-              {lastUpdatedLabel}
+              {daysInStageLabel}
             </Typography>
 
             {!onValidate && prospect.level?.label ? <Chip label={prospect.level.label} color="success" size="small" /> : null}
