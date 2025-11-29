@@ -360,7 +360,7 @@ export function ProspectWorkflowCard({
         />
       </CardContent>
 
-      <Divider />
+      <Divider flexItem sx={{ mx: 2 }} />
 
       <CardActions sx={{ px: 2, py: 1.5 }}>
         <Stack spacing={1.25} sx={{ width: '100%' }}>
