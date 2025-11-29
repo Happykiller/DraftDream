@@ -153,15 +153,16 @@
       "card_title": "Prospecting stages",
       "card_helper": "Move prospects across the pipeline to visualise your progress.",
       "summary": {
-        "title": "Pilot your prospects",
-        "helper": "Review the key figures of your conversion pipeline at a glance.",
+        "title": "Prospecting pipeline",
+        "helper": "Manage your prospects across the conversion stages.",
         "actions": {
           "refresh": "Refresh"
         },
-        "order": {
-          "label": "Order",
-          "updated_asc": "Date ascending",
-          "updated_desc": "Date descending"
+        "filters": {
+          "label": "Source",
+          "all_sources": "All sources",
+          "none_source": "No source",
+          "unknown_source": "Unspecified source"
         },
         "metrics": {
           "total_prospects": "Total prospects",

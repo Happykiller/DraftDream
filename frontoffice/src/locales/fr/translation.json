@@ -153,15 +153,16 @@
       "card_title": "Étapes de prospection",
       "card_helper": "Déplacez vos prospects dans la pipeline pour visualiser votre avancée.",
       "summary": {
-        "title": "Pilotez vos prospects",
-        "helper": "Consultez en un clin d'œil les chiffres clés de votre pipeline de conversion.",
+        "title": "Pipeline de prospection",
+        "helper": "Gérez vos prospects à travers les étapes de conversion.",
         "actions": {
           "refresh": "Actualiser"
         },
-        "order": {
-          "label": "Ordre",
-          "updated_asc": "Date ascendante",
-          "updated_desc": "Date descendante"
+        "filters": {
+          "label": "Source",
+          "all_sources": "Toutes les sources",
+          "none_source": "Aucune source",
+          "unknown_source": "Source non renseignée"
         },
         "metrics": {
           "total_prospects": "Total prospects",

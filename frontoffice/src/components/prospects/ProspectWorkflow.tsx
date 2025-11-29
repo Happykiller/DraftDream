@@ -11,6 +11,7 @@ import {
   CheckCircle,
   Description,
   Equalizer,
+  GpsFixed,
   People,
   Phone,
   Refresh,
@@ -272,15 +273,68 @@ export function ProspectWorkflow({
     [t],
   );
 
+  const [sourceFilter, setSourceFilter] = React.useState<'all' | 'none' | string>('all');
+
+  const { options: sourceOptions, hasUnassignedSource } = React.useMemo(() => {
+    const sourceMap = new Map<string, string>();
+    let hasUnassigned = false;
+
+    Object.values(columns).forEach((items) => {
+      items?.forEach((prospect) => {
+        const resolvedSourceId = prospect.source?.id ?? prospect.sourceId ?? '';
+
+        if (!resolvedSourceId) {
+          hasUnassigned = true;
+          return;
+        }
+
+        if (!sourceMap.has(resolvedSourceId)) {
+          const resolvedLabel = prospect.source?.label ?? t('prospects.workflow.summary.filters.unknown_source');
+          sourceMap.set(resolvedSourceId, resolvedLabel);
+        }
+      });
+    });
+
+    const sortedOptions = Array.from(sourceMap.entries())
+      .map(([id, label]) => ({ id, label }))
+      .sort((first, second) => first.label.localeCompare(second.label, i18n.language));
+
+    return { options: sortedOptions, hasUnassignedSource: hasUnassigned };
+  }, [columns, i18n.language, t]);
+
+  const filteredColumns = React.useMemo(
+    () =>
+      pipelineStatuses.reduce((acc, status) => {
+        const prospectsForStage = columns[status] ?? [];
+
+        acc[status] =
+          sourceFilter === 'all'
+            ? prospectsForStage
+            : prospectsForStage.filter((prospect) => {
+                const resolvedSourceId = prospect.source?.id ?? prospect.sourceId ?? '';
+
+                if (sourceFilter === 'none') {
+                  return !resolvedSourceId;
+                }
+
+                return resolvedSourceId === sourceFilter;
+              });
+
+        return acc;
+      }, {} as Record<PipelineStatus, Prospect[]>),
+    [columns, sourceFilter],
+  );
+
   const pipelineMetrics = React.useMemo(() => {
-    const stageLists = Object.values(columns);
+    const stageLists = Object.values(filteredColumns);
     const totalProspects = stageLists.reduce((count, items) => count + items.length, 0);
     const totalValue = stageLists.reduce(
       (sum, items) => sum + items.reduce((budgetSum, prospect) => budgetSum + (prospect.budget ?? 0), 0),
       0,
     );
     const successfulProspects =
-      (columns[ProspectStatusEnum.GAGNE]?.length ?? 0) + (columns[ProspectStatusEnum.CLIENT]?.length ?? 0);
+      (filteredColumns[ProspectStatusEnum.GAGNE]?.length ?? 0) +
+      (filteredColumns[ProspectStatusEnum.CLIENT]?.length ?? 0);
     const conversionRate = totalProspects === 0 ? 0 : Math.round((successfulProspects / totalProspects) * 100);
     const averageValue = totalProspects === 0 ? 0 : totalValue / totalProspects;
 
@@ -290,9 +344,7 @@ export function ProspectWorkflow({
       conversionRate,
       averageValue,
     };
-  }, [columns]);
-
-  const [sortOrder, setSortOrder] = React.useState<'updatedAsc' | 'updatedDesc'>('updatedAsc');
+  }, [filteredColumns]);
 
   const kpiCards = React.useMemo(
     () => [
@@ -429,26 +481,46 @@ export function ProspectWorkflow({
       <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', p: { xs: 2, md: 3 } }}>
         <Stack spacing={2}>
           <Stack alignItems="flex-start" direction="row" flexWrap="wrap" justifyContent="space-between" spacing={2}>
-            <Stack spacing={0.5} sx={{ minWidth: 0 }}>
-              <Typography variant="h6">{t('prospects.workflow.summary.title')}</Typography>
-              <Typography color="text.secondary" variant="body2">
-                {t('prospects.workflow.summary.helper')}
-              </Typography>
+            <Stack alignItems="center" direction="row" spacing={1.5} sx={{ minWidth: 0 }}>
+              <Stack
+                alignItems="center"
+                bgcolor={alpha(theme.palette.error.main, 0.1)}
+                borderRadius={1.5}
+                height={48}
+                justifyContent="center"
+                width={48}
+              >
+                <GpsFixed sx={{ color: theme.palette.error.main }} />
+              </Stack>
+
+              <Stack spacing={0.5} sx={{ minWidth: 0 }}>
+                <Typography variant="h6">{t('prospects.workflow.summary.title')}</Typography>
+                <Typography color="text.secondary" variant="body2">
+                  {t('prospects.workflow.summary.helper')}
+                </Typography>
+              </Stack>
             </Stack>
 
             <Stack alignItems="center" direction="row" flexWrap="wrap" justifyContent="flex-end" spacing={1}>
               <FormControl size="small" sx={{ minWidth: 180 }}>
-                <InputLabel id="prospects-order-label">
-                  {t('prospects.workflow.summary.order.label')}
+                <InputLabel id="prospects-source-filter-label">
+                  {t('prospects.workflow.summary.filters.label')}
                 </InputLabel>
                 <Select
-                  labelId="prospects-order-label"
-                  label={t('prospects.workflow.summary.order.label')}
-                  value={sortOrder}
-                  onChange={(event) => setSortOrder(event.target.value as 'updatedAsc' | 'updatedDesc')}
+                  labelId="prospects-source-filter-label"
+                  label={t('prospects.workflow.summary.filters.label')}
+                  value={sourceFilter}
+                  onChange={(event) => setSourceFilter(event.target.value)}
                 >
-                  <MenuItem value="updatedAsc">{t('prospects.workflow.summary.order.updated_asc')}</MenuItem>
-                  <MenuItem value="updatedDesc">{t('prospects.workflow.summary.order.updated_desc')}</MenuItem>
+                  <MenuItem value="all">{t('prospects.workflow.summary.filters.all_sources')}</MenuItem>
+                  {hasUnassignedSource ? (
+                    <MenuItem value="none">{t('prospects.workflow.summary.filters.none_source')}</MenuItem>
+                  ) : null}
+                  {sourceOptions.map((option) => (
+                    <MenuItem key={option.id} value={option.id}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
 
@@ -526,7 +598,7 @@ export function ProspectWorkflow({
 
           <Grid columnSpacing={2} columns={{ xs: 1, lg: 4, xl: 8 }} container rowSpacing={2}>
             {stages.map((stage) => {
-              const prospectsForStage = columns[stage.status] ?? [];
+              const prospectsForStage = filteredColumns[stage.status] ?? [];
               const stageCount = prospectsForStage.length;
               const totalBudget = prospectsForStage.reduce(
                 (sum, prospect) => sum + (prospect.budget ?? 0),
