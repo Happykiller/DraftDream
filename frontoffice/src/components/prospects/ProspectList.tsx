@@ -66,6 +66,7 @@ export function ProspectList({
           'aria-label': searchAriaLabel,
         }}
         size="small"
+        sx={{ bgcolor: 'common.white' }}
       />
 
       {loading ? (
@@ -166,7 +167,7 @@ function ProspectListSummary({ metrics, loading }: ProspectListSummaryProps): Re
   ];
 
   return (
-    <Paper elevation={0} sx={{ borderRadius: 2, p: { xs: 1, sm: 1.5 }, bgcolor: 'background.paper' }}>
+    <Paper elevation={0} sx={{ borderRadius: 2, p: { xs: 1, sm: 1.5 }, bgcolor: 'transparent' }}>
       {/* General information */}
       {loading ? (
         <Grid columnSpacing={1} columns={{ xs: 1, sm: 2, lg: 4 }} container rowSpacing={1}>
