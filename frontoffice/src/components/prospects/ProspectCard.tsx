@@ -1,11 +1,11 @@
 // src/components/prospects/ProspectCard.tsx
 import * as React from 'react';
 import {
-  AttachMoney,
-  CalendarMonth,
-  Delete,
-  Edit,
-  Phone,
+  AttachMoneyOutlined,
+  CalendarMonthOutlined,
+  DeleteOutline,
+  EditOutlined,
+  PhoneOutlined,
 } from '@mui/icons-material';
 import {
   Button,
@@ -151,7 +151,7 @@ function ProspectDetails({
   return (
     <Stack columnGap={2} direction="row" flexWrap="wrap" rowGap={1.25} useFlexGap>
       <Stack alignItems="center" direction="row" spacing={1} sx={{ flex: '1 1 220px', minWidth: 0 }}>
-        <Phone color="action" fontSize="small" />
+        <PhoneOutlined color="action" fontSize="small" />
         <Typography sx={{ minWidth: 0, textAlign: 'left', wordBreak: 'break-word' }} variant="body2">
           {prospect.phone || noPhoneLabel}
         </Typography>
@@ -171,14 +171,14 @@ function ProspectDetails({
       ) : null}
 
       <Stack alignItems="center" direction="row" spacing={1} sx={{ flex: '1 1 220px', minWidth: 0 }}>
-        <AttachMoney color="action" fontSize="small" />
+        <AttachMoneyOutlined color="action" fontSize="small" />
         <Typography sx={{ textAlign: 'left' }} variant="body2">
           {budgetLabel}
         </Typography>
       </Stack>
 
       <Stack alignItems="center" direction="row" spacing={1} sx={{ flex: '1 1 220px', minWidth: 0 }}>
-        <CalendarMonth color="action" fontSize="small" />
+        <CalendarMonthOutlined color="action" fontSize="small" />
         <Typography sx={{ textAlign: 'left' }} variant="body2">
           {createdLabel}
         </Typography>
@@ -257,27 +257,27 @@ export function ProspectListCard({
           actions={
             <>
               {onEdit ? (
-                <Button
-                  aria-label={`edit-prospect-${prospect.id}`}
-                  onClick={() => onEdit(prospect)}
-                  size="small"
-                  startIcon={<Edit fontSize="small" />}
-                  variant="outlined"
-                >
-                  {t('prospects.list.actions.edit')}
-                </Button>
+                <Tooltip title={t('prospects.list.actions.edit')}>
+                  <IconButton
+                    aria-label={`edit-prospect-${prospect.id}`}
+                    onClick={() => onEdit(prospect)}
+                    size="small"
+                  >
+                    <EditOutlined fontSize="small" />
+                  </IconButton>
+                </Tooltip>
               ) : null}
               {onDelete ? (
-                <Button
-                  aria-label={`delete-prospect-${prospect.id}`}
-                  color="error"
-                  onClick={() => onDelete(prospect)}
-                  size="small"
-                  startIcon={<Delete fontSize="small" />}
-                  variant="outlined"
-                >
-                  {t('prospects.list.actions.delete')}
-                </Button>
+                <Tooltip title={t('prospects.list.actions.delete')}>
+                  <IconButton
+                    aria-label={`delete-prospect-${prospect.id}`}
+                    color="error"
+                    onClick={() => onDelete(prospect)}
+                    size="small"
+                  >
+                    <DeleteOutline fontSize="small" />
+                  </IconButton>
+                </Tooltip>
               ) : null}
             </>
           }
@@ -290,15 +290,18 @@ export function ProspectListCard({
         ) : null}
 
         <Stack alignItems="center" direction="row" spacing={1}>
-          <Phone color="action" fontSize="small" />
+          <PhoneOutlined color="action" fontSize="small" />
           <Typography sx={{ textAlign: 'left' }} variant="body2">
             {formattedPhone}
           </Typography>
         </Stack>
 
-        <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'left' }}>
-          {clientSinceLabel}
-        </Typography>
+        <Stack alignItems="center" direction="row" spacing={1}>
+          <CalendarMonthOutlined color="action" fontSize="small" />
+          <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'left' }}>
+            {clientSinceLabel}
+          </Typography>
+        </Stack>
 
         <Typography variant="body2" fontWeight={700} sx={{ textAlign: 'left' }}>
           {t('prospects.list.card.objectives')}
@@ -387,7 +390,7 @@ export function ProspectWorkflowCard({
                     onClick={() => onEdit(prospect)}
                     size="small"
                   >
-                    <Edit fontSize="small" />
+                    <EditOutlined fontSize="small" />
                   </IconButton>
                 </Tooltip>
               ) : null}
@@ -398,7 +401,7 @@ export function ProspectWorkflowCard({
                     onClick={() => onDelete(prospect)}
                     size="small"
                   >
-                    <Delete fontSize="small" />
+                    <DeleteOutline fontSize="small" />
                   </IconButton>
                 </Tooltip>
               ) : null}
