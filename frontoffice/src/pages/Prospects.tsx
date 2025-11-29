@@ -2,7 +2,14 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Stack, Tab, Tabs, Typography } from '@mui/material';
+import {
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
+} from '@mui/material';
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import QueryStatsOutlinedIcon from '@mui/icons-material/QueryStatsOutlined';
 
 import {
   ProspectDeleteDialog,
@@ -123,35 +130,58 @@ export function Prospects(): React.JSX.Element {
           textColor="primary"
           indicatorColor="primary"
           sx={{
-            alignSelf: 'flex-start',
-            '.MuiTabs-indicator': { height: 3, borderRadius: 1 },
+            alignSelf: 'center',
+            bgcolor: 'grey.100',
+            p: 0.5,
+            borderRadius: 2,
+            minHeight: 48,
+            '.MuiTabs-indicator': { display: 'none' },
           }}
+          centered
         >
           <Tab
             value="list"
+            icon={<PersonOutlineOutlinedIcon fontSize="small" />}
+            iconPosition="start"
             label={t('prospects.tabs.list')}
             sx={{
               textTransform: 'none',
               fontWeight: 700,
-              minHeight: 40,
-              minWidth: 120,
+              minHeight: 44,
+              minWidth: 140,
+              borderRadius: 1.5,
+              border: '1px solid',
+              borderColor: 'divider',
+              color: 'text.primary',
+              bgcolor: 'common.white',
+              '&:not(:last-of-type)': { mr: 0.5 },
               '&.Mui-selected': {
-                color: 'primary.contrastText',
-                bgcolor: 'primary.main',
+                color: 'common.white',
+                bgcolor: 'error.main',
+                borderColor: 'error.main',
               },
             }}
           />
           <Tab
             value="pipeline"
+            icon={<QueryStatsOutlinedIcon fontSize="small" />}
+            iconPosition="start"
             label={t('prospects.tabs.pipeline')}
             sx={{
               textTransform: 'none',
               fontWeight: 700,
-              minHeight: 40,
-              minWidth: 120,
+              minHeight: 44,
+              minWidth: 140,
+              borderRadius: 1.5,
+              border: '1px solid',
+              borderColor: 'divider',
+              color: 'text.primary',
+              bgcolor: 'common.white',
+              '&:not(:last-of-type)': { mr: 0.5 },
               '&.Mui-selected': {
-                color: 'primary.contrastText',
-                bgcolor: 'primary.main',
+                color: 'common.white',
+                bgcolor: 'error.main',
+                borderColor: 'error.main',
               },
             }}
           />
