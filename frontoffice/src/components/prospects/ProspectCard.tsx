@@ -209,6 +209,7 @@ export function ProspectListCard({
     t,
     displayName,
     budgetLabel,
+    lastUpdatedLabel,
     createdLabel,
     noPhoneLabel,
     showObjectiveBadges,
