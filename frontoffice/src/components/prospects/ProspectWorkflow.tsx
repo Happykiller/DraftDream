@@ -14,21 +14,15 @@ import {
   GpsFixed,
   People,
   Phone,
-  Refresh,
   TaskAlt,
   TrendingUp,
   VerifiedUser,
   type SvgIconComponent,
 } from '@mui/icons-material';
 import {
-  Button,
-  FormControl,
   Grid,
   IconButton,
-  InputLabel,
-  MenuItem,
   Paper,
-  Select,
   Skeleton,
   Stack,
   Tooltip,
@@ -38,8 +32,7 @@ import { orange } from '@mui/material/colors';
 
 import { ProspectWorkflowCard } from '@components/prospects/ProspectCard';
 
-import type { Prospect } from '@app-types/prospects';
-import { useProspectMetadataOptions } from '@hooks/prospects/useProspectMetadataOptions';
+import type { Prospect, ProspectSourceFilterValue } from '@app-types/prospects';
 import { pipelineStatuses, ProspectStatusEnum } from '@src/commons/prospects/status';
 
 type PipelineStatus = (typeof pipelineStatuses)[number];
@@ -65,7 +58,7 @@ interface ProspectWorkflowProps {
     fromStatus: PipelineStatus,
   ) => void;
   onValidateProspect?: (prospect: Prospect) => void;
-  onRefreshPipeline?: () => void;
+  sourceFilter: ProspectSourceFilterValue;
 }
 
 interface DragPayload {
@@ -175,11 +168,10 @@ export function ProspectWorkflow({
   onDeleteProspect,
   onMoveProspect,
   onValidateProspect,
-  onRefreshPipeline,
+  sourceFilter,
 }: ProspectWorkflowProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
-  const { sources: sourceMetadata } = useProspectMetadataOptions();
 
   const currencyFormatter = React.useMemo(
     () =>
@@ -273,27 +265,6 @@ export function ProspectWorkflow({
   const helpItems = React.useMemo(
     () => t('prospects.workflow.help.items', { returnObjects: true }) as string[],
     [t],
-  );
-
-  const [sourceFilter, setSourceFilter] = React.useState<'all' | 'none' | string>('all');
-
-  const hasUnassignedSource = React.useMemo(
-    () =>
-      Object.values(columns).some((items) =>
-        items?.some((prospect) => !(prospect.source?.id ?? prospect.sourceId)),
-      ),
-    [columns],
-  );
-
-  const sourceOptions = React.useMemo(
-    () =>
-      [...(sourceMetadata ?? [])]
-        .map((option) => ({
-          id: option.id,
-          label: option.label ?? t('prospects.workflow.summary.filters.unknown_source'),
-        }))
-        .sort((first, second) => first.label.localeCompare(second.label, i18n.language)),
-    [i18n.language, sourceMetadata, t],
   );
 
   const filteredColumns = React.useMemo(
@@ -474,7 +445,7 @@ export function ProspectWorkflow({
       {/* General information */}
       <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', p: { xs: 2, md: 3 } }}>
         <Stack spacing={2}>
-          <Stack alignItems="flex-start" direction="row" flexWrap="wrap" justifyContent="space-between" spacing={2}>
+          <Stack alignItems="flex-start" direction="row" flexWrap="wrap" spacing={2}>
             <Stack alignItems="center" direction="row" spacing={1.5} sx={{ minWidth: 0 }}>
               <Stack
                 alignItems="center"
@@ -495,40 +466,6 @@ export function ProspectWorkflow({
               </Stack>
             </Stack>
 
-            <Stack alignItems="center" direction="row" flexWrap="wrap" justifyContent="flex-end" spacing={1}>
-              <FormControl size="small" sx={{ minWidth: 180 }}>
-                <InputLabel id="prospects-source-filter-label">
-                  {t('prospects.workflow.summary.filters.label')}
-                </InputLabel>
-                <Select
-                  labelId="prospects-source-filter-label"
-                  label={t('prospects.workflow.summary.filters.label')}
-                  value={sourceFilter}
-                  onChange={(event) => setSourceFilter(event.target.value)}
-                >
-                  <MenuItem value="all">{t('prospects.workflow.summary.filters.all_sources')}</MenuItem>
-                  {hasUnassignedSource ? (
-                    <MenuItem value="none">{t('prospects.workflow.summary.filters.none_source')}</MenuItem>
-                  ) : null}
-                  {sourceOptions.map((option) => (
-                    <MenuItem key={option.id} value={option.id}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-              {onRefreshPipeline ? (
-                <Button
-                  color="error"
-                  onClick={onRefreshPipeline}
-                  startIcon={<Refresh fontSize="small" />}
-                  variant="contained"
-                >
-                  {t('prospects.workflow.summary.actions.refresh')}
-                </Button>
-              ) : null}
-            </Stack>
           </Stack>
 
           {loading ? (

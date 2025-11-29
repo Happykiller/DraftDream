@@ -64,3 +64,5 @@ export interface ProspectListResult {
   page: number;
   limit: number;
 }
+
+export type ProspectSourceFilterValue = 'all' | 'none' | string;

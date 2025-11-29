@@ -3,6 +3,11 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
   Stack,
   Tab,
   Tabs,
@@ -10,6 +15,7 @@ import {
 } from '@mui/material';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import QueryStatsOutlinedIcon from '@mui/icons-material/QueryStatsOutlined';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 import {
   ProspectDeleteDialog,
@@ -20,17 +26,19 @@ import { ProspectWorkflow } from '@components/prospects/ProspectWorkflow';
 
 import { useProspects } from '@hooks/prospects/useProspects';
 import { useProspectPipeline } from '@hooks/prospects/useProspectPipeline';
+import { useProspectMetadataOptions } from '@hooks/prospects/useProspectMetadataOptions';
 import { useDebouncedValue } from '@hooks/useDebouncedValue';
 
 import { ProspectStatusEnum } from '@src/commons/prospects/status';
-import type { Prospect } from '@app-types/prospects';
+import type { Prospect, ProspectSourceFilterValue } from '@app-types/prospects';
 
 /** Prospect dashboard listing coach-owned contacts with quick actions. */
 export function Prospects(): React.JSX.Element {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = React.useState('');
   const [activeTab, setActiveTab] = React.useState<'list' | 'pipeline'>('list');
+  const [sourceFilter, setSourceFilter] = React.useState<ProspectSourceFilterValue>('all');
   const debouncedQuery = useDebouncedValue(searchQuery, 400);
   const { items, loading, reload, remove } = useProspects({
     page: 1,
@@ -44,6 +52,7 @@ export function Prospects(): React.JSX.Element {
     reload: reloadPipeline,
     moveProspectToStatus,
   } = useProspectPipeline({ enabled: activeTab === 'pipeline' });
+  const { sources: sourceMetadata } = useProspectMetadataOptions();
   const [prospectToDelete, setProspectToDelete] = React.useState<Prospect | null>(null);
   const [deleteLoading, setDeleteLoading] = React.useState(false);
 
@@ -110,9 +119,50 @@ export function Prospects(): React.JSX.Element {
     [moveProspectToStatus],
   );
 
+  const handleRefresh = React.useCallback(() => {
+    void reload();
+    void reloadPipeline();
+  }, [reload, reloadPipeline]);
+
   const handleTabChange = React.useCallback((_: React.SyntheticEvent, value: 'list' | 'pipeline') => {
     setActiveTab(value);
   }, []);
+
+  const sourceOptions = React.useMemo(
+    () =>
+      [...(sourceMetadata ?? [])]
+        .map((option) => ({
+          id: option.id,
+          label: option.label ?? t('prospects.workflow.summary.filters.unknown_source'),
+        }))
+        .sort((first, second) => first.label.localeCompare(second.label, i18n.language)),
+    [i18n.language, sourceMetadata, t],
+  );
+
+  const hasUnassignedSource = React.useMemo(() => {
+    const listHasUnknown = items.some((prospect) => !(prospect.source?.id ?? prospect.sourceId));
+    const pipelineHasUnknown = Object.values(pipelineProspects ?? {}).some((prospects) =>
+      prospects.some((prospect) => !(prospect.source?.id ?? prospect.sourceId)),
+    );
+
+    return listHasUnknown || pipelineHasUnknown;
+  }, [items, pipelineProspects]);
+
+  const filteredListItems = React.useMemo(
+    () =>
+      sourceFilter === 'all'
+        ? items
+        : items.filter((prospect) => {
+            const resolvedSourceId = prospect.source?.id ?? prospect.sourceId ?? '';
+
+            if (sourceFilter === 'none') {
+              return !resolvedSourceId;
+            }
+
+            return resolvedSourceId === sourceFilter;
+          }),
+    [items, sourceFilter],
+  );
 
   return (
     <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
@@ -124,74 +174,118 @@ export function Prospects(): React.JSX.Element {
             {t('prospects.helper')}
           </Typography>
         </Stack>
-        <Tabs
-          value={activeTab}
-          onChange={handleTabChange}
-          textColor="primary"
-          indicatorColor="primary"
-          sx={{
-            alignSelf: 'center',
-            bgcolor: 'grey.100',
-            p: 0.5,
-            borderRadius: 2,
-            minHeight: 48,
-            '.MuiTabs-indicator': { display: 'none' },
-          }}
-          centered
-        >
-          <Tab
-            value="list"
-            icon={<PersonOutlineOutlinedIcon fontSize="small" />}
-            iconPosition="start"
-            label={t('prospects.tabs.list')}
+        <Stack alignItems="center" spacing={1} width="100%">
+          <Tabs
+            value={activeTab}
+            onChange={handleTabChange}
+            textColor="primary"
+            indicatorColor="primary"
             sx={{
-              textTransform: 'none',
-              fontWeight: 700,
-              minHeight: 44,
-              minWidth: 140,
-              borderRadius: 1.5,
-              border: '1px solid',
-              borderColor: 'divider',
-              color: 'text.primary',
-              bgcolor: 'common.white',
-              '&:not(:last-of-type)': { mr: 0.5 },
-              '&.Mui-selected': {
-                color: 'common.white',
-                bgcolor: 'error.main',
-                borderColor: 'error.main',
-              },
+              alignSelf: 'center',
+              bgcolor: 'grey.100',
+              p: 0.5,
+              borderRadius: 2,
+              minHeight: 48,
+              '.MuiTabs-indicator': { display: 'none' },
             }}
-          />
-          <Tab
-            value="pipeline"
-            icon={<QueryStatsOutlinedIcon fontSize="small" />}
-            iconPosition="start"
-            label={t('prospects.tabs.pipeline')}
-            sx={{
-              textTransform: 'none',
-              fontWeight: 700,
-              minHeight: 44,
-              minWidth: 140,
-              borderRadius: 1.5,
-              border: '1px solid',
-              borderColor: 'divider',
-              color: 'text.primary',
-              bgcolor: 'common.white',
-              '&:not(:last-of-type)': { mr: 0.5 },
-              '&.Mui-selected': {
-                color: 'common.white',
-                bgcolor: 'error.main',
-                borderColor: 'error.main',
-              },
-            }}
-          />
-        </Tabs>
+            centered
+          >
+            <Tab
+              value="list"
+              icon={<PersonOutlineOutlinedIcon fontSize="small" />}
+              iconPosition="start"
+              label={t('prospects.tabs.list')}
+              sx={{
+                textTransform: 'none',
+                fontWeight: 700,
+                minHeight: 44,
+                minWidth: 140,
+                borderRadius: 1.5,
+                border: '1px solid',
+                borderColor: 'divider',
+                color: 'text.primary',
+                bgcolor: 'common.white',
+                '&:not(:last-of-type)': { mr: 0.5 },
+                '&.Mui-selected': {
+                  color: 'common.white',
+                  bgcolor: 'error.main',
+                  borderColor: 'error.main',
+                },
+              }}
+            />
+            <Tab
+              value="pipeline"
+              icon={<QueryStatsOutlinedIcon fontSize="small" />}
+              iconPosition="start"
+              label={t('prospects.tabs.pipeline')}
+              sx={{
+                textTransform: 'none',
+                fontWeight: 700,
+                minHeight: 44,
+                minWidth: 140,
+                borderRadius: 1.5,
+                border: '1px solid',
+                borderColor: 'divider',
+                color: 'text.primary',
+                bgcolor: 'common.white',
+                '&:not(:last-of-type)': { mr: 0.5 },
+                '&.Mui-selected': {
+                  color: 'common.white',
+                  bgcolor: 'error.main',
+                  borderColor: 'error.main',
+                },
+              }}
+            />
+          </Tabs>
+
+          <Stack
+            alignItems="center"
+            direction={{ xs: 'column', sm: 'row' }}
+            justifyContent="center"
+            spacing={1}
+            width="100%"
+          >
+            <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 220 } }}>
+              <InputLabel id="prospects-source-filter-label">
+                {t('prospects.workflow.summary.filters.label')}
+              </InputLabel>
+              <Select
+                labelId="prospects-source-filter-label"
+                label={t('prospects.workflow.summary.filters.label')}
+                value={sourceFilter}
+                onChange={(event) =>
+                  setSourceFilter(event.target.value as ProspectSourceFilterValue)
+                }
+                fullWidth
+              >
+                <MenuItem value="all">{t('prospects.workflow.summary.filters.all_sources')}</MenuItem>
+                {hasUnassignedSource ? (
+                  <MenuItem value="none">{t('prospects.workflow.summary.filters.none_source')}</MenuItem>
+                ) : null}
+                {sourceOptions.map((option) => (
+                  <MenuItem key={option.id} value={option.id}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <Button
+              color="error"
+              onClick={handleRefresh}
+              startIcon={<RefreshIcon fontSize="small" />}
+              variant="contained"
+            >
+              {t('prospects.workflow.summary.actions.refresh')}
+            </Button>
+          </Stack>
+        </Stack>
       </Stack>
 
       {activeTab === 'list' ? (
         <>
           <ProspectList
-            prospects={items}
+            prospects={filteredListItems}
             loading={loading}
             searchQuery={searchQuery}
             searchPlaceholder={t('prospects.list.search_placeholder')}
@@ -212,7 +306,7 @@ export function Prospects(): React.JSX.Element {
           onDeleteProspect={handleDeleteProspect}
           onMoveProspect={handleMoveProspect}
           onValidateProspect={handleValidateProspect}
-          onRefreshPipeline={reloadPipeline}
+          sourceFilter={sourceFilter}
         />
       )}
 
