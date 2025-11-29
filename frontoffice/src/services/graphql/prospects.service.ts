@@ -23,6 +23,7 @@ const PROSPECT_FRAGMENT = `
   budget
   dealDescription
   desiredStartDate
+  workflowHistory { status date }
   createdBy
   createdAt
   updatedAt

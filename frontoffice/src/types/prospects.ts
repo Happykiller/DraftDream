@@ -25,6 +25,11 @@ export interface ProspectCreatorSummary {
   last_name?: string | null;
 }
 
+export interface ProspectWorkflowEntry {
+  status: string;
+  date: string;
+}
+
 export interface Prospect {
   id: string;
   firstName: string;
@@ -42,6 +47,7 @@ export interface Prospect {
   budget?: number | null;
   dealDescription?: string | null;
   desiredStartDate?: string | null;
+  workflowHistory: ProspectWorkflowEntry[];
   createdBy: string;
   createdAt: string;
   updatedAt: string;
