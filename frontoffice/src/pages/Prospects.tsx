@@ -2,8 +2,7 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Refresh } from '@mui/icons-material';
-import { IconButton, Stack, Tab, Tabs, Tooltip, Typography } from '@mui/material';
+import { Stack, Tab, Tabs, Typography } from '@mui/material';
 
 import {
   ProspectDeleteDialog,
@@ -75,6 +74,7 @@ export function Prospects(): React.JSX.Element {
     setDeleteLoading(true);
     try {
       await remove(prospectToDelete.id);
+      await reload();
       await reloadPipeline();
       setProspectToDelete(null);
     } catch (error) {
@@ -82,7 +82,7 @@ export function Prospects(): React.JSX.Element {
     } finally {
       setDeleteLoading(false);
     }
-  }, [prospectToDelete, reloadPipeline, remove]);
+  }, [prospectToDelete, reload, reloadPipeline, remove]);
 
   const handleCancelDelete = React.useCallback(() => {
     if (deleteLoading) return;
@@ -107,25 +107,23 @@ export function Prospects(): React.JSX.Element {
     setActiveTab(value);
   }, []);
 
-  const handleRefresh = React.useCallback(() => {
-    if (activeTab === 'pipeline') {
-      void reloadPipeline();
-      return;
-    }
-    void reload();
-  }, [activeTab, reload, reloadPipeline]);
-
   return (
     <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
       {/* General information */}
-      <Stack alignItems="flex-start" spacing={1} width="100%">
+      <Stack alignItems="flex-start" spacing={1.5} width="100%">
+        <Stack spacing={0.5} width="100%">
+          <Typography variant="h5">{t('prospects.subtitle')}</Typography>
+          <Typography color="text.secondary" variant="body2">
+            {t('prospects.helper')}
+          </Typography>
+        </Stack>
         <Tabs
           value={activeTab}
           onChange={handleTabChange}
           textColor="primary"
           indicatorColor="primary"
           sx={{
-            alignSelf: 'center',
+            alignSelf: 'flex-start',
             '.MuiTabs-indicator': { height: 3, borderRadius: 1 },
           }}
         >
@@ -158,21 +156,6 @@ export function Prospects(): React.JSX.Element {
             }}
           />
         </Tabs>
-        <Stack alignItems="center" direction="row" flexWrap="wrap" justifyContent="space-between" spacing={2}>
-          <Stack spacing={0.5}>
-            <Typography variant="h5">{t('prospects.subtitle')}</Typography>
-            <Typography color="text.secondary" variant="body2">
-              {t('prospects.helper')}
-            </Typography>
-          </Stack>
-          <Stack alignItems="center" direction="row" spacing={1} sx={{ ml: 'auto' }}>
-            <Tooltip title={t('prospects.actions.refresh')}>
-              <IconButton aria-label="refresh-prospects" color="primary" onClick={handleRefresh} size="small">
-                <Refresh fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </Stack>
-        </Stack>
       </Stack>
 
       {activeTab === 'list' ? (
