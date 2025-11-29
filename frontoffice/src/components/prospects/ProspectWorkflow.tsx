@@ -35,7 +35,7 @@ import {
 } from '@mui/material';
 import { orange } from '@mui/material/colors';
 
-import { ProspectCard } from '@components/prospects/ProspectCard';
+import { ProspectWorkflowCard } from '@components/prospects/ProspectCard';
 
 import type { Prospect } from '@app-types/prospects';
 import { pipelineStatuses, ProspectStatusEnum } from '@src/commons/prospects/status';
@@ -113,7 +113,7 @@ function DraggableProspectCard({
       }}
     >
       {/* General information */}
-      <ProspectCard
+      <ProspectWorkflowCard
         prospect={prospect}
         onEdit={onEditProspect}
         onDelete={onDeleteProspect}

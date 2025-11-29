@@ -24,20 +24,35 @@ import { useTranslation } from 'react-i18next';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 import type { Prospect } from '@app-types/prospects';
 
-export interface ProspectCardProps {
+interface ProspectCardSharedProps {
   prospect: Prospect;
-  onEdit?: (prospect: Prospect) => void;
-  onDelete?: (prospect: Prospect) => void;
-  onValidate?: (prospect: Prospect) => void;
+  displayName: string;
+  budgetLabel: string;
+  lastUpdatedLabel: string;
+  createdLabel: string;
+  noPhoneLabel: string;
+  showObjectiveBadges: boolean;
+  showPreferenceBadges: boolean;
 }
 
-/** Presentational card summarizing the key attributes for a prospect. */
-export function ProspectCard({
-  prospect,
-  onEdit,
-  onDelete,
-  onValidate,
-}: ProspectCardProps): React.JSX.Element {
+interface ProspectHeaderProps {
+  prospect: Prospect;
+  displayName: string;
+  actions?: React.ReactNode;
+}
+
+interface ProspectDetailsProps {
+  prospect: Prospect;
+  budgetLabel: string;
+  createdLabel: string;
+  noPhoneLabel: string;
+  showObjectiveBadges: boolean;
+  showPreferenceBadges: boolean;
+}
+
+function useProspectCardData(
+  prospect: Prospect,
+): ProspectCardSharedProps & { t: (key: string, params?: any) => string } {
   const { t, i18n } = useTranslation();
   const formatDate = useDateFormatter({
     locale: i18n.language,
@@ -81,9 +96,125 @@ export function ProspectCard({
     ? t('prospects.list.card.updated_label', { date: formattedUpdatedAt })
     : t('prospects.list.card.updated_unknown');
 
-  const shouldShowObjectiveBadges = (prospect.objectives?.length ?? 0) > 0;
-  const shouldShowPreferenceBadges = (prospect.activityPreferences?.length ?? 0) > 0;
-  const shouldShowMetadataBadges = shouldShowObjectiveBadges || shouldShowPreferenceBadges;
+  const createdLabel = t('prospects.list.card.created_label', { date: formatDate(prospect.createdAt) });
+  const noPhoneLabel = t('prospects.list.card.no_phone');
+  const showObjectiveBadges = (prospect.objectives?.length ?? 0) > 0;
+  const showPreferenceBadges = (prospect.activityPreferences?.length ?? 0) > 0;
+
+  return {
+    t,
+    prospect,
+    displayName,
+    budgetLabel,
+    lastUpdatedLabel,
+    createdLabel,
+    noPhoneLabel,
+    showObjectiveBadges,
+    showPreferenceBadges,
+  };
+}
+
+function ProspectHeader({ prospect, displayName, actions }: ProspectHeaderProps): React.JSX.Element {
+  return (
+    <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={1.5}>
+      <Stack spacing={0.25} sx={{ flexGrow: 1, minWidth: 0 }}>
+        <Tooltip title={displayName}>
+          <Typography
+            fontWeight={700}
+            noWrap
+            sx={{
+              overflow: 'hidden',
+              textAlign: 'left',
+              textOverflow: 'ellipsis',
+            }}
+            variant="subtitle1"
+          >
+            {displayName}
+          </Typography>
+        </Tooltip>
+        {prospect.email ? (
+          <Typography sx={{ textAlign: 'left' }} variant="body2" color="text.secondary">
+            {prospect.email}
+          </Typography>
+        ) : null}
+      </Stack>
+
+      {actions ? <Stack direction="row" spacing={0.5}>{actions}</Stack> : null}
+    </Stack>
+  );
+}
+
+function ProspectDetails({
+  prospect,
+  budgetLabel,
+  createdLabel,
+  noPhoneLabel,
+  showObjectiveBadges,
+  showPreferenceBadges,
+}: ProspectDetailsProps): React.JSX.Element {
+  const shouldShowMetadataBadges = showObjectiveBadges || showPreferenceBadges;
+
+  return (
+    <Stack columnGap={2} direction="row" flexWrap="wrap" rowGap={1.25} useFlexGap>
+      <Stack alignItems="center" direction="row" spacing={1} sx={{ flex: '1 1 220px', minWidth: 0 }}>
+        <Phone color="action" fontSize="small" />
+        <Typography sx={{ minWidth: 0, textAlign: 'left', wordBreak: 'break-word' }} variant="body2">
+          {prospect.phone || noPhoneLabel}
+        </Typography>
+      </Stack>
+
+      {shouldShowMetadataBadges ? (
+        <Stack direction="row" flexBasis="100%" flexWrap="wrap" spacing={0.75} useFlexGap>
+          {prospect.objectives?.map((objective) => (
+            <Chip key={objective.id ?? objective.label} label={objective.label} size="small" />
+          ))}
+          {showPreferenceBadges
+            ? prospect.activityPreferences?.map((preference) => (
+                <Chip key={preference.id ?? preference.label} label={preference.label} size="small" color="secondary" />
+              ))
+            : null}
+        </Stack>
+      ) : null}
+
+      <Stack alignItems="center" direction="row" spacing={1} sx={{ flex: '1 1 220px', minWidth: 0 }}>
+        <AttachMoney color="action" fontSize="small" />
+        <Typography sx={{ textAlign: 'left' }} variant="body2">
+          {budgetLabel}
+        </Typography>
+      </Stack>
+
+      <Stack alignItems="center" direction="row" spacing={1} sx={{ flex: '1 1 220px', minWidth: 0 }}>
+        <CalendarMonth color="action" fontSize="small" />
+        <Typography sx={{ textAlign: 'left' }} variant="body2">
+          {createdLabel}
+        </Typography>
+      </Stack>
+    </Stack>
+  );
+}
+
+export interface ProspectListCardProps {
+  prospect: Prospect;
+  onEdit?: (prospect: Prospect) => void;
+  onDelete?: (prospect: Prospect) => void;
+}
+
+/** Presentational card summarizing the key attributes for a prospect in list views. */
+export function ProspectListCard({
+  prospect,
+  onEdit,
+  onDelete,
+}: ProspectListCardProps): React.JSX.Element {
+  const {
+    t,
+    displayName,
+    budgetLabel,
+    lastUpdatedLabel,
+    createdLabel,
+    noPhoneLabel,
+    showObjectiveBadges,
+    showPreferenceBadges,
+  } = useProspectCardData(prospect);
 
   return (
     <Card
@@ -96,110 +227,137 @@ export function ProspectCard({
     >
       {/* General information */}
       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-        <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={1.5}>
-          <Stack spacing={0.25} sx={{ flexGrow: 1, minWidth: 0 }}>
-            <Tooltip title={displayName}>
-              <Typography
-                fontWeight={700}
-                noWrap
-                sx={{
-                  overflow: 'hidden',
-                  textAlign: 'left',
-                  textOverflow: 'ellipsis',
-                }}
-                variant="subtitle1"
-              >
-                {displayName}
-              </Typography>
-            </Tooltip>
-            {prospect.email ? (
-              <Typography sx={{ textAlign: 'left' }} variant="body2" color="text.secondary">
-                {prospect.email}
-              </Typography>
-            ) : null}
-          </Stack>
+        <ProspectHeader
+          prospect={prospect}
+          displayName={displayName}
+          actions={
+            <>
+              {onEdit ? (
+                <Tooltip title={t('prospects.list.actions.edit')}>
+                  <IconButton
+                    aria-label={`edit-prospect-${prospect.id}`}
+                    onClick={() => onEdit(prospect)}
+                    size="small"
+                  >
+                    <Edit fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              ) : null}
+              {onDelete ? (
+                <Tooltip title={t('prospects.list.actions.delete')}>
+                  <IconButton
+                    aria-label={`delete-prospect-${prospect.id}`}
+                    onClick={() => onDelete(prospect)}
+                    size="small"
+                  >
+                    <Delete fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              ) : null}
+            </>
+          }
+        />
 
-          <Stack direction="row" spacing={0.5} sx={{ flexShrink: 0 }}>
-            {onEdit ? (
-              <Tooltip title={t('prospects.list.actions.edit')}>
-                <IconButton
-                  aria-label={`edit-prospect-${prospect.id}`}
-                  onClick={() => onEdit(prospect)}
-                  size="small"
-                >
-                  <Edit fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            ) : null}
-            {onDelete ? (
-              <Tooltip title={t('prospects.list.actions.delete')}>
-                <IconButton
-                  aria-label={`delete-prospect-${prospect.id}`}
-                  onClick={() => onDelete(prospect)}
-                  size="small"
-                >
-                  <Delete fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            ) : null}
-          </Stack>
+        <ProspectDetails
+          prospect={prospect}
+          budgetLabel={budgetLabel}
+          createdLabel={createdLabel}
+          noPhoneLabel={noPhoneLabel}
+          showObjectiveBadges={showObjectiveBadges}
+          showPreferenceBadges={showPreferenceBadges}
+        />
+      </CardContent>
+
+      <Divider />
+
+      <CardActions sx={{ px: 2, py: 1.5 }}>
+        <Stack alignItems="center" direction="row" flexWrap="wrap" rowGap={0.75} columnGap={1.5}>
+          <Typography variant="caption" color="text.secondary" sx={{ flexGrow: 1, textAlign: 'left' }}>
+            {lastUpdatedLabel}
+          </Typography>
+
+          {prospect.level?.label ? <Chip label={prospect.level.label} color="success" size="small" /> : null}
         </Stack>
+      </CardActions>
+    </Card>
+  );
+}
 
-        <Stack columnGap={2} direction="row" flexWrap="wrap" rowGap={1.25} useFlexGap>
-          <Stack
-            alignItems="center"
-            direction="row"
-            spacing={1}
-            sx={{ flex: '1 1 220px', minWidth: 0 }}
-          >
-            <Phone color="action" fontSize="small" />
-            <Typography
-              sx={{ minWidth: 0, textAlign: 'left', wordBreak: 'break-word' }}
-              variant="body2"
-            >
-              {prospect.phone || t('prospects.list.card.no_phone')}
-            </Typography>
-          </Stack>
+export interface ProspectWorkflowCardProps {
+  prospect: Prospect;
+  onEdit?: (prospect: Prospect) => void;
+  onDelete?: (prospect: Prospect) => void;
+  onValidate?: (prospect: Prospect) => void;
+}
 
-          {shouldShowMetadataBadges ? (
-            <Stack direction="row" flexBasis="100%" flexWrap="wrap" spacing={0.75} useFlexGap>
-              {shouldShowObjectiveBadges
-                ? prospect.objectives?.map((objective) => (
-                  <Chip key={objective.id ?? objective.label} label={objective.label} size="small" />
-                ))
-                : null}
-              {shouldShowPreferenceBadges
-                ? prospect.activityPreferences?.map((preference) => (
-                  <Chip key={preference.id ?? preference.label} label={preference.label} size="small" color="secondary" />
-                ))
-                : null}
-            </Stack>
-          ) : null}
+/** Presentational card tuned for workflow interactions, including validation actions. */
+export function ProspectWorkflowCard({
+  prospect,
+  onEdit,
+  onDelete,
+  onValidate,
+}: ProspectWorkflowCardProps): React.JSX.Element {
+  const {
+    t,
+    displayName,
+    budgetLabel,
+    lastUpdatedLabel,
+    createdLabel,
+    noPhoneLabel,
+    showObjectiveBadges,
+    showPreferenceBadges,
+  } = useProspectCardData(prospect);
 
-          <Stack
-            alignItems="center"
-            direction="row"
-            spacing={1}
-            sx={{ flex: '1 1 220px', minWidth: 0 }}
-          >
-            <AttachMoney color="action" fontSize="small" />
-            <Typography sx={{ textAlign: 'left' }} variant="body2">
-              {budgetLabel}
-            </Typography>
-          </Stack>
+  return (
+    <Card
+      variant="outlined"
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+      }}
+    >
+      {/* General information */}
+      <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+        <ProspectHeader
+          prospect={prospect}
+          displayName={displayName}
+          actions={
+            <>
+              {onEdit ? (
+                <Tooltip title={t('prospects.list.actions.edit')}>
+                  <IconButton
+                    aria-label={`edit-prospect-${prospect.id}`}
+                    onClick={() => onEdit(prospect)}
+                    size="small"
+                  >
+                    <Edit fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              ) : null}
+              {onDelete ? (
+                <Tooltip title={t('prospects.list.actions.delete')}>
+                  <IconButton
+                    aria-label={`delete-prospect-${prospect.id}`}
+                    onClick={() => onDelete(prospect)}
+                    size="small"
+                  >
+                    <Delete fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              ) : null}
+            </>
+          }
+        />
 
-          <Stack
-            alignItems="center"
-            direction="row"
-            spacing={1}
-            sx={{ flex: '1 1 220px', minWidth: 0 }}
-          >
-            <CalendarMonth color="action" fontSize="small" />
-            <Typography sx={{ textAlign: 'left' }} variant="body2">
-              {t('prospects.list.card.created_label', { date: formatDate(prospect.createdAt) })}
-            </Typography>
-          </Stack>
-        </Stack>
+        <ProspectDetails
+          prospect={prospect}
+          budgetLabel={budgetLabel}
+          createdLabel={createdLabel}
+          noPhoneLabel={noPhoneLabel}
+          showObjectiveBadges={showObjectiveBadges}
+          showPreferenceBadges={showPreferenceBadges}
+        />
       </CardContent>
 
       <Divider />
@@ -207,17 +365,11 @@ export function ProspectCard({
       <CardActions sx={{ px: 2, py: 1.5 }}>
         <Stack spacing={1.25} sx={{ width: '100%' }}>
           <Stack alignItems="center" direction="row" flexWrap="wrap" rowGap={0.75} columnGap={1.5}>
-            <Typography
-              variant="caption"
-              color="text.secondary"
-              sx={{ flexGrow: 1, textAlign: 'left' }}
-            >
+            <Typography variant="caption" color="text.secondary" sx={{ flexGrow: 1, textAlign: 'left' }}>
               {lastUpdatedLabel}
             </Typography>
 
-            {!onValidate && prospect.level?.label ? (
-              <Chip label={prospect.level.label} color="success" size="small" />
-            ) : null}
+            {!onValidate && prospect.level?.label ? <Chip label={prospect.level.label} color="success" size="small" /> : null}
           </Stack>
 
           {onValidate ? <Divider flexItem /> : null}

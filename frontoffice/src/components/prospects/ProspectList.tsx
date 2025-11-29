@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Search } from '@mui/icons-material';
 import { Box, Grid, InputAdornment, Skeleton, Stack, TextField, Typography } from '@mui/material';
 
-import { ProspectCard } from './ProspectCard';
+import { ProspectListCard } from './ProspectCard';
 
 import type { Prospect } from '@app-types/prospects';
 
@@ -81,7 +81,7 @@ export function ProspectList({
         <Grid container spacing={2}>
           {prospects.map((prospect) => (
             <Grid key={prospect.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-              <ProspectCard
+              <ProspectListCard
                 prospect={prospect}
                 onEdit={onEditProspect}
                 onDelete={onDeleteProspect}
