@@ -168,12 +168,67 @@ export function Prospects(): React.JSX.Element {
     <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
       {/* General information */}
       <Stack alignItems="flex-start" spacing={1.5} width="100%">
-        <Stack spacing={0.5} width="100%">
-          <Typography variant="h5">{t('prospects.subtitle')}</Typography>
-          <Typography color="text.secondary" variant="body2">
-            {t('prospects.helper')}
-          </Typography>
+        <Stack
+          direction={{ xs: 'column', md: 'row' }}
+          alignItems={{ xs: 'flex-start', md: 'center' }}
+          justifyContent="space-between"
+          spacing={1.5}
+          width="100%"
+        >
+          <Stack spacing={0.5} width="100%">
+            <Typography variant="h5">{t('prospects.subtitle')}</Typography>
+            <Typography color="text.secondary" variant="body2">
+              {t('prospects.helper')}
+            </Typography>
+          </Stack>
+
+          <Stack
+            alignItems="center"
+            direction={{ xs: 'column', sm: 'row' }}
+            justifyContent="flex-end"
+            spacing={1}
+            width={{ xs: '100%', md: 'auto' }}
+          >
+            <FormControl
+              size="small"
+              sx={{ minWidth: { xs: '100%', sm: 220 }, flexShrink: 0 }}
+            >
+              <InputLabel id="prospects-source-filter-label">
+                {t('prospects.workflow.summary.filters.label')}
+              </InputLabel>
+              <Select
+                labelId="prospects-source-filter-label"
+                label={t('prospects.workflow.summary.filters.label')}
+                value={sourceFilter}
+                onChange={(event) =>
+                  setSourceFilter(event.target.value as ProspectSourceFilterValue)
+                }
+                fullWidth
+              >
+                <MenuItem value="all">{t('prospects.workflow.summary.filters.all_sources')}</MenuItem>
+                {hasUnassignedSource ? (
+                  <MenuItem value="none">{t('prospects.workflow.summary.filters.none_source')}</MenuItem>
+                ) : null}
+                {sourceOptions.map((option) => (
+                  <MenuItem key={option.id} value={option.id}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <Button
+              color="error"
+              onClick={handleRefresh}
+              startIcon={<RefreshIcon fontSize="small" />}
+              sx={{ alignSelf: { xs: 'stretch', sm: 'auto' }, flexShrink: 0 }}
+              variant="contained"
+            >
+              {t('prospects.workflow.summary.actions.refresh')}
+            </Button>
+          </Stack>
         </Stack>
+
         <Stack alignItems="center" spacing={1} width="100%">
           <Tabs
             value={activeTab}
@@ -237,48 +292,6 @@ export function Prospects(): React.JSX.Element {
               }}
             />
           </Tabs>
-
-          <Stack
-            alignItems="center"
-            direction={{ xs: 'column', sm: 'row' }}
-            justifyContent="center"
-            spacing={1}
-            width="100%"
-          >
-            <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 220 } }}>
-              <InputLabel id="prospects-source-filter-label">
-                {t('prospects.workflow.summary.filters.label')}
-              </InputLabel>
-              <Select
-                labelId="prospects-source-filter-label"
-                label={t('prospects.workflow.summary.filters.label')}
-                value={sourceFilter}
-                onChange={(event) =>
-                  setSourceFilter(event.target.value as ProspectSourceFilterValue)
-                }
-                fullWidth
-              >
-                <MenuItem value="all">{t('prospects.workflow.summary.filters.all_sources')}</MenuItem>
-                {hasUnassignedSource ? (
-                  <MenuItem value="none">{t('prospects.workflow.summary.filters.none_source')}</MenuItem>
-                ) : null}
-                {sourceOptions.map((option) => (
-                  <MenuItem key={option.id} value={option.id}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            <Button
-              color="error"
-              onClick={handleRefresh}
-              startIcon={<RefreshIcon fontSize="small" />}
-              variant="contained"
-            >
-              {t('prospects.workflow.summary.actions.refresh')}
-            </Button>
-          </Stack>
         </Stack>
       </Stack>
 
