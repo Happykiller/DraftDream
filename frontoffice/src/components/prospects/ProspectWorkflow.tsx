@@ -39,6 +39,7 @@ import { orange } from '@mui/material/colors';
 import { ProspectWorkflowCard } from '@components/prospects/ProspectCard';
 
 import type { Prospect } from '@app-types/prospects';
+import { useProspectMetadataOptions } from '@hooks/prospects/useProspectMetadataOptions';
 import { pipelineStatuses, ProspectStatusEnum } from '@src/commons/prospects/status';
 
 type PipelineStatus = (typeof pipelineStatuses)[number];
@@ -178,6 +179,7 @@ export function ProspectWorkflow({
 }: ProspectWorkflowProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
+  const { sources: sourceMetadata } = useProspectMetadataOptions();
 
   const currencyFormatter = React.useMemo(
     () =>
@@ -275,32 +277,24 @@ export function ProspectWorkflow({
 
   const [sourceFilter, setSourceFilter] = React.useState<'all' | 'none' | string>('all');
 
-  const { options: sourceOptions, hasUnassignedSource } = React.useMemo(() => {
-    const sourceMap = new Map<string, string>();
-    let hasUnassigned = false;
+  const hasUnassignedSource = React.useMemo(
+    () =>
+      Object.values(columns).some((items) =>
+        items?.some((prospect) => !(prospect.source?.id ?? prospect.sourceId)),
+      ),
+    [columns],
+  );
 
-    Object.values(columns).forEach((items) => {
-      items?.forEach((prospect) => {
-        const resolvedSourceId = prospect.source?.id ?? prospect.sourceId ?? '';
-
-        if (!resolvedSourceId) {
-          hasUnassigned = true;
-          return;
-        }
-
-        if (!sourceMap.has(resolvedSourceId)) {
-          const resolvedLabel = prospect.source?.label ?? t('prospects.workflow.summary.filters.unknown_source');
-          sourceMap.set(resolvedSourceId, resolvedLabel);
-        }
-      });
-    });
-
-    const sortedOptions = Array.from(sourceMap.entries())
-      .map(([id, label]) => ({ id, label }))
-      .sort((first, second) => first.label.localeCompare(second.label, i18n.language));
-
-    return { options: sortedOptions, hasUnassignedSource: hasUnassigned };
-  }, [columns, i18n.language, t]);
+  const sourceOptions = React.useMemo(
+    () =>
+      [...(sourceMetadata ?? [])]
+        .map((option) => ({
+          id: option.id,
+          label: option.label ?? t('prospects.workflow.summary.filters.unknown_source'),
+        }))
+        .sort((first, second) => first.label.localeCompare(second.label, i18n.language)),
+    [i18n.language, sourceMetadata, t],
+  );
 
   const filteredColumns = React.useMemo(
     () =>
