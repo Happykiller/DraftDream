@@ -22,6 +22,7 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { useDateFormatter } from '@hooks/useDateFormatter';
+import { usePhoneFormatter } from '@hooks/usePhoneFormatter';
 import type { Prospect } from '@app-types/prospects';
 
 interface ProspectCardSharedProps {
@@ -117,29 +118,22 @@ function useProspectCardData(
 function ProspectHeader({ prospect, displayName, actions }: ProspectHeaderProps): React.JSX.Element {
   return (
     <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={1.5}>
-      <Stack spacing={0.25} sx={{ flexGrow: 1, minWidth: 0 }}>
-        <Tooltip title={displayName}>
-          <Typography
-            fontWeight={700}
-            noWrap
-            sx={{
-              overflow: 'hidden',
-              textAlign: 'left',
-              textOverflow: 'ellipsis',
-            }}
-            variant="subtitle1"
-          >
-            {displayName}
-          </Typography>
-        </Tooltip>
-        {prospect.email ? (
-          <Typography sx={{ textAlign: 'left' }} variant="body2" color="text.secondary">
-            {prospect.email}
-          </Typography>
-        ) : null}
-      </Stack>
+      <Tooltip title={displayName} sx={{ flexGrow: 1, minWidth: 0 }}>
+        <Typography
+          fontWeight={700}
+          noWrap
+          sx={{
+            overflow: 'hidden',
+            textAlign: 'left',
+            textOverflow: 'ellipsis',
+          }}
+          variant="subtitle1"
+        >
+          {displayName}
+        </Typography>
+      </Tooltip>
 
-      {actions ? <Stack direction="row" spacing={0.5}>{actions}</Stack> : null}
+      {actions ? <Stack direction="row" spacing={1}>{actions}</Stack> : null}
     </Stack>
   );
 }
@@ -208,13 +202,43 @@ export function ProspectListCard({
   const {
     t,
     displayName,
-    budgetLabel,
-    lastUpdatedLabel,
-    createdLabel,
     noPhoneLabel,
     showObjectiveBadges,
-    showPreferenceBadges,
   } = useProspectCardData(prospect);
+  const formatPhone = usePhoneFormatter();
+  const { i18n } = useTranslation();
+  const formatDayMonthYear = useDateFormatter({
+    locale: i18n.language,
+    options: { day: '2-digit', month: '2-digit', year: 'numeric' },
+  });
+
+  const formattedPhone = React.useMemo(() => {
+    if (!prospect.phone) {
+      return noPhoneLabel;
+    }
+
+    const formatted = formatPhone(prospect.phone);
+    return formatted || prospect.phone || noPhoneLabel;
+  }, [formatPhone, noPhoneLabel, prospect.phone]);
+
+  const clientSinceLabel = React.useMemo(() => {
+    const history = prospect.workflowHistory ?? [];
+    const latestEntry = history[history.length - 1];
+    const candidateDate = latestEntry?.date ?? prospect.createdAt;
+    if (!candidateDate) {
+      return t('prospects.list.card.client_since_unknown');
+    }
+
+    const parsedDate = new Date(candidateDate);
+    if (Number.isNaN(parsedDate.getTime())) {
+      return t('prospects.list.card.client_since_unknown');
+    }
+
+    const formattedDate = formatDayMonthYear(candidateDate);
+    return t('prospects.list.card.client_since', { date: formattedDate });
+  }, [formatDayMonthYear, prospect.createdAt, prospect.workflowHistory, t]);
+
+  const levelLabel = prospect.level?.label || t('prospects.list.card.level_unknown');
 
   return (
     <Card
@@ -226,59 +250,75 @@ export function ProspectListCard({
       }}
     >
       {/* General information */}
-      <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+      <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.25 }}>
         <ProspectHeader
           prospect={prospect}
           displayName={displayName}
           actions={
             <>
               {onEdit ? (
-                <Tooltip title={t('prospects.list.actions.edit')}>
-                  <IconButton
-                    aria-label={`edit-prospect-${prospect.id}`}
-                    onClick={() => onEdit(prospect)}
-                    size="small"
-                  >
-                    <Edit fontSize="small" />
-                  </IconButton>
-                </Tooltip>
+                <Button
+                  aria-label={`edit-prospect-${prospect.id}`}
+                  onClick={() => onEdit(prospect)}
+                  size="small"
+                  startIcon={<Edit fontSize="small" />}
+                  variant="outlined"
+                >
+                  {t('prospects.list.actions.edit')}
+                </Button>
               ) : null}
               {onDelete ? (
-                <Tooltip title={t('prospects.list.actions.delete')}>
-                  <IconButton
-                    aria-label={`delete-prospect-${prospect.id}`}
-                    onClick={() => onDelete(prospect)}
-                    size="small"
-                  >
-                    <Delete fontSize="small" />
-                  </IconButton>
-                </Tooltip>
+                <Button
+                  aria-label={`delete-prospect-${prospect.id}`}
+                  color="error"
+                  onClick={() => onDelete(prospect)}
+                  size="small"
+                  startIcon={<Delete fontSize="small" />}
+                  variant="outlined"
+                >
+                  {t('prospects.list.actions.delete')}
+                </Button>
               ) : null}
             </>
           }
         />
 
-        <ProspectDetails
-          prospect={prospect}
-          budgetLabel={budgetLabel}
-          createdLabel={createdLabel}
-          noPhoneLabel={noPhoneLabel}
-          showObjectiveBadges={showObjectiveBadges}
-          showPreferenceBadges={showPreferenceBadges}
-        />
-      </CardContent>
-
-      <Divider />
-
-      <CardActions sx={{ px: 2, py: 1.5 }}>
-        <Stack alignItems="center" direction="row" flexWrap="wrap" rowGap={0.75} columnGap={1.5}>
-          <Typography variant="caption" color="text.secondary" sx={{ flexGrow: 1, textAlign: 'left' }}>
-            {lastUpdatedLabel}
+        {prospect.email ? (
+          <Typography sx={{ textAlign: 'left' }} variant="body2" color="text.secondary">
+            {prospect.email}
           </Typography>
+        ) : null}
 
-          {prospect.level?.label ? <Chip label={prospect.level.label} color="success" size="small" /> : null}
+        <Stack alignItems="center" direction="row" spacing={1}>
+          <Phone color="action" fontSize="small" />
+          <Typography sx={{ textAlign: 'left' }} variant="body2">
+            {formattedPhone}
+          </Typography>
         </Stack>
-      </CardActions>
+
+        <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'left' }}>
+          {clientSinceLabel}
+        </Typography>
+
+        <Typography variant="body2" fontWeight={700} sx={{ textAlign: 'left' }}>
+          {t('prospects.list.card.objectives')}
+        </Typography>
+
+        {showObjectiveBadges ? (
+          <Stack direction="row" flexWrap="wrap" spacing={0.75} useFlexGap>
+            {prospect.objectives?.map((objective) => (
+              <Chip key={objective.id ?? objective.label} label={objective.label} size="small" />
+            ))}
+          </Stack>
+        ) : null}
+
+        <Stack alignItems="center" direction="row" justifyContent="space-between" spacing={1}>
+          <Typography variant="body2">{t('prospects.list.card.level')}</Typography>
+          <Typography variant="body2" fontWeight={700} sx={{ textAlign: 'right' }}>
+            {levelLabel}
+          </Typography>
+        </Stack>
+      </CardContent>
     </Card>
   );
 }
