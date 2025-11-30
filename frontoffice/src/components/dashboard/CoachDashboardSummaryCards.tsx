@@ -8,14 +8,15 @@ import RestaurantMenuOutlinedIcon from '@mui/icons-material/RestaurantMenuOutlin
 import FitnessCenterOutlinedIcon from '@mui/icons-material/FitnessCenterOutlined';
 
 import { UserType } from '@src/commons/enums';
-import { useCoachAthletes } from '@hooks/athletes/useCoachAthletes';
-import { useProspects } from '@hooks/prospects/useProspects';
-import { usePrograms } from '@hooks/programs/usePrograms';
-import { useMealPlans } from '@hooks/nutrition/useMealPlans';
-import { session } from '@stores/session';
 import { ProspectStatusEnum } from '@src/commons/prospects/status';
+import { useCoachAthletes } from '@hooks/athletes/useCoachAthletes';
+import { useMealPlans } from '@hooks/nutrition/useMealPlans';
+import { usePrograms } from '@hooks/programs/usePrograms';
+import { useProspects } from '@hooks/prospects/useProspects';
+import { session } from '@stores/session';
 
-export function DashboardSummaryCards(): React.JSX.Element {
+/** Summary cards tailored for coaches and admins. */
+export function CoachDashboardSummaryCards(): React.JSX.Element {
   const { t } = useTranslation();
   const coachId = session((state) => state.id);
   const role = session((state) => state.role);
@@ -111,6 +112,7 @@ export function DashboardSummaryCards(): React.JSX.Element {
 
   return (
     <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} flexWrap="wrap" useFlexGap>
+      {/* General information */}
       {cards.map((card, index) => (
         <Card
           key={index}

@@ -49,6 +49,14 @@
   "dashboard": {
     "title": "Dashboard Coach",
     "subtitle": "Gérez vos clients et programmes d'entraînement",
+    "coach": {
+      "title": "Dashboard Coach",
+      "subtitle": "Gérez vos clients et programmes d'entraînement"
+    },
+    "athlete": {
+      "title": "Dashboard Athlète",
+      "subtitle": "Consultez vos programmes et vos plans nutritionnels."
+    },
     "summary": {
       "athletes": "Athlètes",
       "clients": "Clients",

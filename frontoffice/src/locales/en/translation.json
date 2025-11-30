@@ -46,6 +46,23 @@
     "title": "Dashboard",
     "placeholder": "Hello"
   },
+  "dashboard": {
+    "coach": {
+      "title": "Coach dashboard",
+      "subtitle": "Manage your clients and training programs."
+    },
+    "athlete": {
+      "title": "Athlete dashboard",
+      "subtitle": "Review your assigned programs and nutrition plans."
+    },
+    "summary": {
+      "athletes": "Athletes",
+      "clients": "Clients",
+      "prospects": "Prospects",
+      "programs": "Programs",
+      "nutrition": "Nutrition plans"
+    }
+  },
   "prospects": {
     "title": "Prospects",
     "subtitle": "Manage all your prospects.",
