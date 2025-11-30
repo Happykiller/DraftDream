@@ -30,6 +30,9 @@
     "connect_space": "Connectez-vous à votre espace",
     "success": "Connexion réussie : {{name}} !",
     "button": "Se connecter",
+    "redirect_reason": {
+      "unauthorized": "Votre session a expiré. Merci de vous reconnecter."
+    },
     "language_label": "Langue",
     "language_placeholder": "Changer la langue de l'interface",
     "hero": {

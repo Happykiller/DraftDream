@@ -1,5 +1,6 @@
 // src/services/graphql/graphql.service.fetch.ts
 import { env } from '@src/config/env';
+import { router } from '@src/routes/router';
 import { session } from '@stores/session';
 
 type GraphQLErrorExt = {
@@ -46,7 +47,10 @@ export class GraphqlServiceFetch {
       // ignore reset failures
     }
 
-    window.setTimeout(() => window.location.replace('/login'), 50);
+    const search = new URLSearchParams({ reason: 'unauthorized' }).toString();
+    router.navigate(`/login?${search}`, { replace: true }).catch(() => {
+      window.location.replace(`/login?${search}`);
+    });
   }
 
   /** Normalize strings for comparison */

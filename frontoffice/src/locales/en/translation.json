@@ -30,6 +30,9 @@
     "connect_space": "Log in to your account",
     "success": "Successfully logged in: {{name}}!",
     "button": "Sign in",
+    "redirect_reason": {
+      "unauthorized": "Your session expired. Please sign in again."
+    },
     "language_label": "Language",
     "language_placeholder": "Switch interface language",
     "hero": {
