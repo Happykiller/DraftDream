@@ -358,6 +358,7 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
     }): Promise<Program> => {
       try {
         const locale = (input.locale ?? i18n.language)?.trim() || i18n.language;
+        const { slug: _ignoreSlug, sessions, ...restInput } = input;
 
         const { data, errors } = await execute(() =>
           gql.send<CreateProgramPayload>({
@@ -365,26 +366,30 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
             operationName: 'CreateProgram',
             variables: {
               input: {
-                ...input,
+                ...restInput,
                 locale,
-                sessionIds: input.sessionIds?.filter(Boolean),
-                sessions: input.sessions?.map((session) => ({
-                  ...session,
-                  templateSessionId: session.templateSessionId || undefined,
-                  locale: session.locale || undefined,
-                  description: session.description ?? undefined,
-                  exercises: session.exercises.map((exercise) => ({
-                    ...exercise,
-                    templateExerciseId: exercise.templateExerciseId || undefined,
-                    description: exercise.description ?? undefined,
-                    instructions: exercise.instructions ?? undefined,
-                    series: exercise.series ?? undefined,
-                    repetitions: exercise.repetitions ?? undefined,
-                    charge: exercise.charge ?? undefined,
-                    restSeconds: exercise.restSeconds ?? undefined,
-                    videoUrl: exercise.videoUrl ?? undefined,
-                  })),
-                })),
+                sessionIds: restInput.sessionIds?.filter(Boolean),
+                sessions: sessions?.map(
+                  ({ slug: _ignoreSessionSlug, ...session }) => ({
+                    ...session,
+                    templateSessionId:
+                      session.templateSessionId || undefined,
+                    locale: session.locale || undefined,
+                    description: session.description ?? undefined,
+                    exercises: session.exercises.map((exercise) => ({
+                      ...exercise,
+                      templateExerciseId:
+                        exercise.templateExerciseId || undefined,
+                      description: exercise.description ?? undefined,
+                      instructions: exercise.instructions ?? undefined,
+                      series: exercise.series ?? undefined,
+                      repetitions: exercise.repetitions ?? undefined,
+                      charge: exercise.charge ?? undefined,
+                      restSeconds: exercise.restSeconds ?? undefined,
+                      videoUrl: exercise.videoUrl ?? undefined,
+                    })),
+                  }),
+                ),
               },
             },
           }),
@@ -432,6 +437,7 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
     }) => {
       try {
         const locale = (input.locale ?? i18n.language)?.trim() || i18n.language;
+        const { slug: _ignoreSlug, sessions, ...restInput } = input;
 
         const { errors } = await execute(() =>
           gql.send<UpdateProgramPayload>({
@@ -439,27 +445,31 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
             operationName: 'UpdateProgram',
             variables: {
               input: {
-                ...input,
+                ...restInput,
                 locale,
-                description: input.description ?? undefined,
-                sessionIds: input.sessionIds?.filter(Boolean),
-                sessions: input.sessions?.map((session) => ({
-                  ...session,
-                  templateSessionId: session.templateSessionId || undefined,
-                  locale: session.locale || undefined,
-                  description: session.description ?? undefined,
-                  exercises: session.exercises.map((exercise) => ({
-                    ...exercise,
-                    templateExerciseId: exercise.templateExerciseId || undefined,
-                    description: exercise.description ?? undefined,
-                    instructions: exercise.instructions ?? undefined,
-                    series: exercise.series ?? undefined,
-                    repetitions: exercise.repetitions ?? undefined,
-                    charge: exercise.charge ?? undefined,
-                    restSeconds: exercise.restSeconds ?? undefined,
-                    videoUrl: exercise.videoUrl ?? undefined,
-                  })),
-                })),
+                description: restInput.description ?? undefined,
+                sessionIds: restInput.sessionIds?.filter(Boolean),
+                sessions: sessions?.map(
+                  ({ slug: _ignoreSessionSlug, ...session }) => ({
+                    ...session,
+                    templateSessionId:
+                      session.templateSessionId || undefined,
+                    locale: session.locale || undefined,
+                    description: session.description ?? undefined,
+                    exercises: session.exercises.map((exercise) => ({
+                      ...exercise,
+                      templateExerciseId:
+                        exercise.templateExerciseId || undefined,
+                      description: exercise.description ?? undefined,
+                      instructions: exercise.instructions ?? undefined,
+                      series: exercise.series ?? undefined,
+                      repetitions: exercise.repetitions ?? undefined,
+                      charge: exercise.charge ?? undefined,
+                      restSeconds: exercise.restSeconds ?? undefined,
+                      videoUrl: exercise.videoUrl ?? undefined,
+                    })),
+                  }),
+                ),
               },
             },
           }),
