@@ -23,7 +23,7 @@ export class GetSessionUsecase {
       const isAdmin = session.role === Role.ADMIN;
       const isCreator = creatorId === session.userId;
       const isCoach = session.role === Role.COACH;
-      const isPublic = isCoach ? (s.visibility === 'public' || s.visibility === 'hybrid' || await this.isPublicTemplate(creatorId)) : false;
+      const isPublic = isCoach ? (s.visibility === 'public' || await this.isPublicTemplate(creatorId)) : false;
 
       if (!isAdmin && !isCreator && !(isCoach && isPublic)) {
         throw new Error(ERRORS.GET_SESSION_FORBIDDEN);

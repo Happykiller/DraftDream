@@ -142,11 +142,11 @@ describe('GetProgramUsecase', () => {
     expect(result).toEqual({ ...expectedProgram, createdBy: 'admin-1', visibility: 'public' });
   });
 
-  it('should allow a coach when the program is hybrid', async () => {
+  it('should allow a coach when the program is public', async () => {
     const program: Program = {
       ...baseProgram,
       createdBy: 'other-coach',
-      visibility: 'hybrid',
+      visibility: 'public',
     };
     asMock(programRepositoryMock.get).mockResolvedValue(program);
 
@@ -157,7 +157,7 @@ describe('GetProgramUsecase', () => {
 
     const result = await usecase.execute(dto);
 
-    expect(result).toEqual({ ...expectedProgram, createdBy: 'other-coach', visibility: 'hybrid' });
+    expect(result).toEqual({ ...expectedProgram, createdBy: 'other-coach', visibility: 'public' });
   });
 
   it('should allow an athlete assigned to the program', async () => {

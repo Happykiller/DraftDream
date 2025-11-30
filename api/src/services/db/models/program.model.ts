@@ -39,7 +39,7 @@ export interface Program {
   slug: string;
   locale: string;
   label: string;
-  visibility: 'private' | 'public' | 'hybrid';
+  visibility: 'private' | 'public';
   /** Duration in weeks; must be a positive integer. */
   duration: number;
   /** Number of training sessions per week. */

@@ -25,7 +25,7 @@ interface MealDoc {
   proteinGrams: number;
   carbGrams: number;
   fatGrams: number;
-  visibility: 'private' | 'public' | 'hybrid';
+  visibility: 'private' | 'public';
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
@@ -72,7 +72,7 @@ export class BddServiceMealMongo {
       proteinGrams: dto.proteinGrams,
       carbGrams: dto.carbGrams,
       fatGrams: dto.fatGrams,
-      visibility: dto.visibility === 'public' || dto.visibility === 'hybrid' ? dto.visibility : 'private',
+      visibility: dto.visibility === 'public' ? 'public' : 'private',
       createdBy: dto.createdBy,
       createdAt: now,
       updatedAt: now,
@@ -130,7 +130,7 @@ export class BddServiceMealMongo {
 
     if (visibility) {
       if (visibility === 'public') filter.visibility = 'public';
-      else if (visibility === 'hybrid') filter.visibility = 'hybrid';
+      
       else filter.visibility = 'private';
     }
 
@@ -174,7 +174,7 @@ export class BddServiceMealMongo {
     if (patch.fatGrams !== undefined) $set.fatGrams = patch.fatGrams;
     if (patch.visibility !== undefined) {
       if (patch.visibility === 'public') $set.visibility = 'public';
-      else if (patch.visibility === 'hybrid') $set.visibility = 'hybrid';
+      
       else $set.visibility = 'private';
     }
 

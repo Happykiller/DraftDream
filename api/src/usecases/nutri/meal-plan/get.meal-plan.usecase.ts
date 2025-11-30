@@ -25,7 +25,7 @@ export class GetMealPlanUsecase {
       const isCreator = creatorId === session.userId;
       const isCoach = session.role === Role.COACH;
       const isPublic = isCoach
-        ? mealPlan.visibility === 'public' || mealPlan.visibility === 'hybrid' || (await this.isPublicMealPlan(creatorId))
+        ? mealPlan.visibility === 'public' || (await this.isPublicMealPlan(creatorId))
         : false;
       const isAssignedAthlete = session.role === Role.ATHLETE && assigneeId === session.userId;
 

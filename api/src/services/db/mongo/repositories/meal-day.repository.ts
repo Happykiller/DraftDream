@@ -120,7 +120,7 @@ export class BddServiceMealDayMongo {
 
     if (visibility) {
       if (visibility === 'public') andConditions.push({ visibility: 'public' });
-      else if (visibility === 'hybrid') andConditions.push({ visibility: 'hybrid' });
+      
       else andConditions.push({ visibility: 'private' });
     }
 

@@ -3,7 +3,7 @@
 export interface CreateProspectLevelUsecaseDto {
     locale: string;
     label: string;
-    visibility: 'private' | 'public' | 'hybrid';
+    visibility: 'private' | 'public';
     createdBy: string;
 }
 

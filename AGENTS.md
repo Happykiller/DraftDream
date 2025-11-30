@@ -54,6 +54,17 @@ This document captures how the `fitdesk-devops` agent should operate the DraftDr
 - Update `codex.tasks.yml` when workflows change.
 - Reflect new services or runbooks in both this document and `codex.agent.yml`.
 
+## Data visibility and lifecycle rules
+- Visibility modes are limited to `public` and `private`; the deprecated `hybrid` mode must not be reintroduced.
+- Use cases own all authorization and confidentiality decisions; GraphQL layers only forward parameters and the user session.
+- Business rules to apply consistently across entities:
+  - **Create**: allowed for all authenticated roles. Admins may choose public or private; coaches and front-office flows must persist content as private.
+  - **Read / Get**: callable by all roles.
+  - **List**: public items are listable by anyone; private items are listable only by their creator or an admin. Athletes may list only the programs and nutrition plans where they are explicitly assigned.
+  - **Update**: only the creator or an admin may update.
+  - **Soft delete**: only the creator or an admin may soft-delete.
+  - **Hard delete**: reserved for admins.
+
 ## Coding Guidelines
 1. **Import structure**:
    - Use staircase-style formatting.

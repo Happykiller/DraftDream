@@ -13,7 +13,7 @@ export interface MealDay {
   /** Ordered list preserving the original meal sequence. */
   mealIds: string[];
 
-  visibility: 'private' | 'public' | 'hybrid';
+  visibility: 'private' | 'public';
   createdBy: string;
   deletedAt?: Date;
   createdAt: Date;

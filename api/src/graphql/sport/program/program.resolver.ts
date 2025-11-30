@@ -270,10 +270,10 @@ export class ProgramResolver {
    */
   private normalizeProgramVisibility(
     visibility?: ProgramVisibility | null,
-  ): 'private' | 'public' | 'hybrid' | undefined {
+  ): 'private' | 'public' | undefined {
     if (!visibility) {
       return undefined;
     }
-    return visibility === ProgramVisibility.PUBLIC ? 'public' : visibility === ProgramVisibility.HYBRID ? 'hybrid' : 'private';
+    return visibility === ProgramVisibility.PUBLIC ? 'public' : 'private';
   }
 }

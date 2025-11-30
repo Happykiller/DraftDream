@@ -166,14 +166,10 @@ export class SessionResolver {
 
   private normalizeSessionVisibility(
     visibility?: SessionVisibility | null,
-  ): 'private' | 'public' | 'hybrid' | undefined {
+  ): 'private' | 'public' | undefined {
     if (!visibility) {
       return undefined;
     }
-    return visibility === SessionVisibility.PUBLIC
-      ? 'public'
-      : visibility === SessionVisibility.HYBRID
-        ? 'hybrid'
-        : 'private';
+    return visibility === SessionVisibility.PUBLIC ? 'public' : 'private';
   }
 }

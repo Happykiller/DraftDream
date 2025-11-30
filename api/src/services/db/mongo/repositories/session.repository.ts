@@ -17,7 +17,7 @@ interface SessionDoc {
 
   label: string;
   durationMin: number;
-  visibility: 'private' | 'public' | 'hybrid';
+  visibility: 'private' | 'public';
   description?: string;
 
   exerciseIds: string[];

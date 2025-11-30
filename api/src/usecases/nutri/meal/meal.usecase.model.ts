@@ -11,7 +11,7 @@ export interface MealUsecaseModel {
   proteinGrams: number;
   carbGrams: number;
   fatGrams: number;
-  visibility: 'private' | 'public' | 'hybrid';
+  visibility: 'private' | 'public';
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;

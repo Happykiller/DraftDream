@@ -13,7 +13,7 @@ export interface MealPlanMealTypeSnapshotUsecaseDto {
   slug?: string;
   locale?: string;
   label: string;
-  visibility?: 'private' | 'public' | 'hybrid';
+  visibility?: 'private' | 'public';
 }
 
 export interface MealPlanMealSnapshotUsecaseDto {
@@ -49,7 +49,7 @@ export interface CreateMealPlanUsecaseDto {
   locale: string;
   label: string;
   description?: string;
-  visibility?: 'private' | 'public' | 'hybrid';
+  visibility?: 'private' | 'public';
   calories: number;
   proteinGrams: number;
   carbGrams: number;
@@ -69,7 +69,7 @@ export interface ListMealPlansUsecaseDto {
   locale?: string;
   createdBy?: string;
   createdByIn?: string[];
-  visibility?: 'private' | 'public' | 'hybrid';
+  visibility?: 'private' | 'public';
   userId?: string;
   includeArchived?: boolean;
   limit?: number;
@@ -87,7 +87,7 @@ export interface UpdateMealPlanUsecaseDto {
   locale?: string;
   label?: string;
   description?: string;
-  visibility?: 'private' | 'public' | 'hybrid';
+  visibility?: 'private' | 'public';
   calories?: number;
   proteinGrams?: number;
   carbGrams?: number;

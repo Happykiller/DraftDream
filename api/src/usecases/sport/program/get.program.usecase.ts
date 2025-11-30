@@ -27,7 +27,7 @@ export class GetProgramUsecase {
       let isPublic = false;
       if (isCoach) {
         const creatorIsAdmin = await this.isPublicProgram(creatorId);
-        isPublic = program.visibility === 'public' || program.visibility === 'hybrid' || creatorIsAdmin;
+        isPublic = program.visibility === 'public' || creatorIsAdmin;
       }
       const isAssignedAthlete = session.role === Role.ATHLETE && assigneeId === session.userId;
 

@@ -24,7 +24,7 @@ interface MealPlanMealTypeDoc {
   slug?: string;
   locale?: string;
   label: string;
-  visibility?: 'private' | 'public' | 'hybrid';
+  visibility?: 'private' | 'public';
 }
 
 interface MealPlanMealDoc {
@@ -58,7 +58,7 @@ interface MealPlanDoc {
   locale: string;
   label: string;
   description?: string;
-  visibility: 'private' | 'public' | 'hybrid';
+  visibility: 'private' | 'public';
   calories: number;
   proteinGrams: number;
   carbGrams: number;
@@ -107,7 +107,7 @@ export class BddServiceMealPlanMongo {
       locale: dto.locale.toLowerCase().trim(),
       label: dto.label.trim(),
       description: dto.description,
-      visibility: dto.visibility === 'public' || dto.visibility === 'hybrid' ? dto.visibility : 'private',
+      visibility: dto.visibility === 'public' ? 'public' : 'private',
       calories: Math.round(dto.calories),
       proteinGrams: Math.round(dto.proteinGrams),
       carbGrams: Math.round(dto.carbGrams),
@@ -185,7 +185,7 @@ export class BddServiceMealPlanMongo {
     }
 
     if (visibility) {
-      filter.visibility = visibility === 'public' || visibility === 'hybrid' ? visibility : 'private';
+      filter.visibility = visibility === 'public' ? 'public' : 'private';
     } else if (params.includePublicVisibility) {
       ownershipConditions.push({ visibility: 'public' });
     }
@@ -225,7 +225,7 @@ export class BddServiceMealPlanMongo {
     if (patch.description !== undefined) $set.description = patch.description;
     if (patch.visibility !== undefined) {
       if (patch.visibility === 'public') $set.visibility = 'public';
-      else if (patch.visibility === 'hybrid') $set.visibility = 'hybrid';
+      
       else $set.visibility = 'private';
     }
     if (patch.calories !== undefined) $set.calories = Math.round(patch.calories);

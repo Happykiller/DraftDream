@@ -11,7 +11,7 @@ interface EquipmentDoc {
   slug: string;
   locale: string;
   label: string;
-  visibility: 'private' | 'public' | 'hybrid';
+  visibility: 'private' | 'public';
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
@@ -44,7 +44,7 @@ export class BddServiceEquipmentMongo {
       slug: dto.slug.toLowerCase().trim(),
       locale: dto.locale.toLowerCase().trim(),
       label: dto.label.trim(),
-      visibility: dto.visibility === 'public' || dto.visibility === 'hybrid' ? dto.visibility : 'private',
+      visibility: dto.visibility === 'public' ? 'public' : 'private',
       createdBy: dto.createdBy,
       createdAt: now,
       updatedAt: now,
@@ -86,7 +86,7 @@ export class BddServiceEquipmentMongo {
 
     if (visibility) {
       if (visibility === 'public') filter.visibility = 'public';
-      else if (visibility === 'hybrid') filter.visibility = 'hybrid';
+      
       else filter.visibility = 'private';
     }
 
@@ -110,7 +110,7 @@ export class BddServiceEquipmentMongo {
     if (patch.label !== undefined) $set.label = patch.label.trim();
     if (patch.visibility !== undefined) {
       if (patch.visibility === 'public') $set.visibility = 'public';
-      else if (patch.visibility === 'hybrid') $set.visibility = 'hybrid';
+      
       else $set.visibility = 'private';
     }
 

@@ -3,7 +3,7 @@
 export interface CreateProspectObjectiveUsecaseDto {
     locale: string;
     label: string;
-    visibility: 'private' | 'public' | 'hybrid';
+    visibility: 'private' | 'public';
     createdBy: string;
 }
 

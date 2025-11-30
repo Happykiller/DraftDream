@@ -20,7 +20,7 @@ interface MealTypeDoc {
   locale: string;
   label: string;
   icon?: string | null;
-  visibility: 'private' | 'public' | 'hybrid';
+  visibility: 'private' | 'public';
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
@@ -62,7 +62,7 @@ export class BddServiceMealTypeMongo {
       locale: dto.locale.toLowerCase().trim(),
       label: dto.label.trim(),
       icon: icon ?? null,
-      visibility: dto.visibility === 'public' || dto.visibility === 'hybrid' ? dto.visibility : 'private',
+      visibility: dto.visibility === 'public' ? 'public' : 'private',
       createdBy: dto.createdBy,
       createdAt: now,
       updatedAt: now,
@@ -118,7 +118,7 @@ export class BddServiceMealTypeMongo {
 
     if (visibility) {
       if (visibility === 'public') filter.visibility = 'public';
-      else if (visibility === 'hybrid') filter.visibility = 'hybrid';
+      
       else filter.visibility = 'private';
     }
 
@@ -157,7 +157,7 @@ export class BddServiceMealTypeMongo {
     if (patch.icon !== undefined) $set.icon = this.normalizeIcon(patch.icon) ?? null;
     if (patch.visibility !== undefined) {
       if (patch.visibility === 'public') $set.visibility = 'public';
-      else if (patch.visibility === 'hybrid') $set.visibility = 'hybrid';
+      
       else $set.visibility = 'private';
     }
 

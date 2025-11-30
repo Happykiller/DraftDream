@@ -24,7 +24,7 @@ interface ExerciseDoc {
   charge?: string;
   rest?: number;
   videoUrl?: string;
-  visibility: 'private' | 'public' | 'hybrid';
+  visibility: 'private' | 'public';
 
   categories: ObjectId[];
   muscles: ObjectId[];
@@ -90,7 +90,7 @@ export class BddServiceExerciseMongo {
       charge: dto.charge?.trim(),
       rest: dto.rest,
       videoUrl: dto.videoUrl,
-      visibility: dto.visibility === 'public' || dto.visibility === 'hybrid' ? dto.visibility : 'private',
+      visibility: dto.visibility === 'public' ? 'public' : 'private',
 
       categories: normalizedCategoryIds.map(this.toObjectId),
       muscles: (dto.muscleIds ?? []).map(this.toObjectId),
@@ -180,9 +180,7 @@ export class BddServiceExerciseMongo {
     }
 
     if (visibility) {
-      if (visibility === 'public') filter.visibility = 'public';
-      else if (visibility === 'hybrid') filter.visibility = 'hybrid';
-      else filter.visibility = 'private';
+      filter.visibility = visibility === 'public' ? 'public' : 'private';
     } else if (includePublicVisibility) {
       ownershipConditions.push({ visibility: 'public' });
     }
@@ -233,9 +231,7 @@ export class BddServiceExerciseMongo {
     if (patch.rest !== undefined) $set.rest = patch.rest;
     if (patch.videoUrl !== undefined) $set.videoUrl = patch.videoUrl;
     if (patch.visibility !== undefined) {
-      if (patch.visibility === 'public') $set.visibility = 'public';
-      else if (patch.visibility === 'hybrid') $set.visibility = 'hybrid';
-      else $set.visibility = 'private';
+      $set.visibility = patch.visibility === 'public' ? 'public' : 'private';
     }
 
     if (patch.categoryIds !== undefined) {

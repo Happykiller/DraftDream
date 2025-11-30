@@ -14,7 +14,7 @@ export interface CreateMealDayUsecaseDto {
   label: string;
   description?: string;
   mealIds: string[];
-  visibility: 'private' | 'public' | 'hybrid';
+  visibility: 'private' | 'public';
   createdBy: string;
 }
 
@@ -26,7 +26,7 @@ export interface GetMealDayUsecaseDto {
 export interface ListMealDaysUsecaseDto {
   q?: string;
   locale?: string;
-  visibility?: 'private' | 'public' | 'hybrid';
+  visibility?: 'private' | 'public';
   createdBy?: string;
   createdByIn?: string[];
   accessibleFor?: { ownerId: string; includeCreatorIds?: string[] };
@@ -47,7 +47,7 @@ export interface UpdateMealDayUsecaseDto {
   label?: string;
   description?: string;
   mealIds?: string[];
-  visibility?: 'private' | 'public' | 'hybrid';
+  visibility?: 'private' | 'public';
 }
 
 export interface DeleteMealDayUsecaseDto {

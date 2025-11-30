@@ -8,7 +8,7 @@ export interface Session {
   label: string;
   /** Duration in minutes; must be a positive integer */
   durationMin: number;
-  visibility: 'private' | 'public' | 'hybrid';
+  visibility: 'private' | 'public';
 
   /** Optional long text */
   description?: string;

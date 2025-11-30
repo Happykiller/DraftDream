@@ -22,7 +22,7 @@ export class GetExerciseUsecase {
       const isAdmin = session.role === Role.ADMIN;
       const isCreator = creatorId === session.userId;
       const isCoach = session.role === Role.COACH;
-      const isPublic = res.visibility === 'public' || res.visibility === 'hybrid';
+      const isPublic = res.visibility === 'public';
 
       if (!isAdmin && !isCreator && !(isCoach && isPublic)) {
         throw new Error(ERRORS.GET_EXERCISE_FORBIDDEN);

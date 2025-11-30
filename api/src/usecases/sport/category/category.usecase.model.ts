@@ -4,7 +4,7 @@ export interface CategoryUsecaseModel {
   slug: string;
   locale: string;
   label: string;
-  visibility: 'private' | 'public' | 'hybrid';
+  visibility: 'private' | 'public';
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;

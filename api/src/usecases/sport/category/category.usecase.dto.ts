@@ -7,7 +7,7 @@
 export interface CreateCategoryUsecaseDto {
   locale: string;
   label: string;
-  visibility: 'private' | 'public' | 'hybrid';
+  visibility: 'private' | 'public';
   createdBy: string;
 }
 
@@ -19,7 +19,7 @@ export interface ListCategoriesUsecaseDto {
   q?: string;
   locale?: string;
   createdBy?: string;
-  visibility?: 'private' | 'public' | 'hybrid';
+  visibility?: 'private' | 'public';
   limit?: number;
   page?: number;
 }
@@ -32,7 +32,7 @@ export interface UpdateCategoryUsecaseDto {
   id: string;
   locale?: string;
   label?: string;
-  visibility?: 'private' | 'public' | 'hybrid';
+  visibility?: 'private' | 'public';
 }
 
 export interface DeleteCategoryUsecaseDto {

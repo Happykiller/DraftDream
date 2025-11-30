@@ -24,6 +24,17 @@
 - When introducing migrations or seed data, place them under `src/services/db/migrations` and register them in the migration runner.
 - **Error Handling in Use Cases**: Always wrap the `execute` method logic in a `try/catch` block. In the `catch` block, log the error using `this.inversify.loggerService.error` and throw a normalized error using `normalizeError(error, ERRORS.YOUR_FALLBACK_ERROR)`.
 
+## Authorization and visibility rules
+- The only valid visibility values are `public` and `private`; do not reintroduce `hybrid`.
+- Authorization must live inside use cases; GraphQL resolvers only pass input parameters and the authenticated session.
+- Apply these business rules consistently:
+  - **Create**: any authenticated role may create. Admins can choose public or private; coaches and front-office clients create private items only.
+  - **Read/Get**: callable by all roles.
+  - **List**: public items are listable by anyone; private items are listable only by their creator or an admin. Athletes may only list programs and nutrition plans where they are assigned as the athlete.
+  - **Update**: only the creator or an admin can update.
+  - **Soft delete**: only the creator or an admin can soft-delete.
+  - **Hard delete**: admins only.
+
 ## Testing & Quality Gates
 - Run `npm run build` as a smoke test; it type-checks and ensures Nest compiles.
 - Prefer adding targeted unit tests under a future `src/__tests__` structure when introducing complex domain logic.
