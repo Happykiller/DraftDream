@@ -9,7 +9,9 @@ import { useFlashStore } from '@hooks/useFlashStore';
 import type { MealCreator, MealVisibility } from '@hooks/useMeals';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
-export type MealDayVisibility = 'PRIVATE' | 'PUBLIC';
+import type { Visibility } from '@src/commons/visibility';
+
+export type MealDayVisibility = Visibility;
 
 export interface MealDayMealSnapshot {
   id: string;

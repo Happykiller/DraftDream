@@ -6,7 +6,7 @@ export interface MealPlanMealTypeSnapshotDto {
   slug?: string;
   locale?: string;
   label: string;
-  visibility?: 'private' | 'public';
+  visibility?: 'private' | 'public' | 'hybrid';
 }
 
 export interface MealPlanMealSnapshotDto {
@@ -39,7 +39,7 @@ export interface CreateMealPlanDto {
   locale: string;
   label: string;
   description?: string;
-  visibility?: 'private' | 'public';
+  visibility?: 'private' | 'public' | 'hybrid';
   calories: number;
   proteinGrams: number;
   carbGrams: number;
@@ -56,8 +56,9 @@ export interface ListMealPlansDto {
   locale?: string;
   createdBy?: string;
   createdByIn?: string[];
-  visibility?: 'private' | 'public';
+  visibility?: 'private' | 'public' | 'hybrid';
   userId?: string;
+  includePublicVisibility?: boolean;
   includeArchived?: boolean;
   limit?: number;
   page?: number;
@@ -69,7 +70,7 @@ export type UpdateMealPlanDto = Partial<{
   locale: string;
   label: string;
   description: string;
-  visibility: 'private' | 'public';
+  visibility: 'private' | 'public' | 'hybrid';
   calories: number;
   proteinGrams: number;
   carbGrams: number;

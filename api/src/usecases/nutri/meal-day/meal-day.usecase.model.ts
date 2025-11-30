@@ -10,7 +10,7 @@ export interface MealDayUsecaseModel {
 
   mealIds: string[];
 
-  visibility: 'private' | 'public';
+  visibility: 'private' | 'public' | 'hybrid';
   createdBy: string;
   deletedAt?: Date;
   createdAt: Date;

@@ -1,7 +1,7 @@
 // src/usecases/client/client/update.client.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
 import { normalizeError } from '@src/common/error.util';
-import { ProspectStatus } from '@src/common/prospect-status.enum';
+
 import { Inversify } from '@src/inversify/investify';
 
 import { ProspectUsecaseModel } from './prospect.usecase.model';
@@ -19,7 +19,7 @@ export class UpdateProspectUsecase {
 
       const shouldTrackStatusChange = dto.status !== undefined && dto.status !== existing.status;
       const workflowHistory = shouldTrackStatusChange
-        ? [...(existing.workflowHistory ?? []), { status: dto.status as ProspectStatus, date: new Date() }]
+        ? [...(existing.workflowHistory ?? []), { status: dto.status!, date: new Date() }]
         : undefined;
 
       const updated = await this.inversify.bddService.prospect.update(dto.id, {

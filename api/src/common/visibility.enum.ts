@@ -3,6 +3,7 @@
 export enum Visibility {
   PRIVATE = 'private',
   PUBLIC = 'public',
+  HYBRID = 'hybrid',
 }
 
 export type VisibilityValue = `${Visibility}`;

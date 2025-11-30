@@ -12,8 +12,9 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import type { Meal, MealVisibility } from '@hooks/useMeals';
+import type { Meal } from '@hooks/useMeals';
 import type { MealType } from '@hooks/useMealTypes';
+import { VISIBILITY_OPTIONS, type Visibility } from '@src/commons/visibility';
 
 export interface MealDialogSubmitValues {
   label: string;
@@ -24,7 +25,7 @@ export interface MealDialogSubmitValues {
   proteinGrams: number;
   carbGrams: number;
   fatGrams: number;
-  visibility: MealVisibility;
+  visibility: Visibility;
 }
 
 export interface MealDialogProps {
@@ -46,7 +47,7 @@ interface MealDialogState {
   proteinGrams: string;
   carbGrams: string;
   fatGrams: string;
-  visibility: MealVisibility;
+  visibility: Visibility;
 }
 
 const DEFAULT_STATE: MealDialogState = {
@@ -109,7 +110,7 @@ export function MealDialog({
       ...prev,
       [name]:
         name === 'visibility'
-          ? (value as MealVisibility)
+          ? (value as Visibility)
           : value,
     }));
   };
@@ -250,15 +251,18 @@ export function MealDialog({
             required
             fullWidth
           >
-            <MenuItem value="PRIVATE">{t('common.visibility.private')}</MenuItem>
-            <MenuItem value="PUBLIC">{t('common.visibility.public')}</MenuItem>
+            {VISIBILITY_OPTIONS.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {t(option.label)}
+              </MenuItem>
+            ))}
           </TextField>
 
           <DialogActions sx={{ px: 0 }}>
             <Button onClick={onClose} color="inherit">
               {t('common.buttons.cancel')}
             </Button>
-            <Button type="submit" variant="contained" disabled={!values.typeId}>
+            <Button type="submit" variant="contained">
               {isEdit ? t('common.buttons.save') : t('common.buttons.create')}
             </Button>
           </DialogActions>

@@ -17,7 +17,7 @@ interface SessionDoc {
 
   label: string;
   durationMin: number;
-  visibility: 'private' | 'public';
+  visibility: 'private' | 'public' | 'hybrid';
   description?: string;
 
   exerciseIds: string[];
@@ -105,6 +105,7 @@ export class BddServiceSessionMongo {
       locale,
       createdBy,
       createdByIn,
+      includePublicVisibility,
       includeArchived = false,
       limit = 20,
       page = 1,
@@ -126,10 +127,21 @@ export class BddServiceSessionMongo {
     if (createdBy && normalizedCreatedByIn.length) {
       throw new Error('Cannot combine createdBy and createdByIn filters.');
     }
-    if (createdBy) filter.createdBy = this.toObjectId(createdBy);
-    if (!createdBy && normalizedCreatedByIn.length) {
-      filter.createdBy = { $in: normalizedCreatedByIn.map(this.toObjectId) };
+    const ownershipConditions: Record<string, any>[] = [];
+    if (createdBy) {
+      ownershipConditions.push({ createdBy: this.toObjectId(createdBy) });
+    } else if (normalizedCreatedByIn.length) {
+      ownershipConditions.push({ createdBy: { $in: normalizedCreatedByIn.map(this.toObjectId) } });
     }
+
+    if (includePublicVisibility) {
+      ownershipConditions.push({ visibility: 'public' });
+    }
+
+    if (ownershipConditions.length) {
+      filter.$or = ownershipConditions;
+    }
+
     if (!includeArchived) filter.deletedAt = { $exists: false };
 
     try {

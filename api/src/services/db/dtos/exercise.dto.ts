@@ -1,5 +1,6 @@
 // src/services/db/dtos/exercise.dto.ts
-export type Visibility = 'private' | 'public';
+export type Visibility = 'private' | 'public' | 'hybrid';
+
 export interface CreateExerciseDto {
   slug: string;
   locale: string;
@@ -54,4 +55,4 @@ export type UpdateExerciseDto = Partial<{
   muscleIds: string[];
   equipmentIds: string[];
   tagIds: string[];
-}>; 
+}>;

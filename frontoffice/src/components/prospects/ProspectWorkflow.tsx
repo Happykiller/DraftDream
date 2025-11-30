@@ -77,7 +77,7 @@ interface DraggableProspectCardProps {
   onDragEnd: () => void;
 }
 
-function DraggableProspectCard({
+const DraggableProspectCard = React.memo(function DraggableProspectCard({
   prospect,
   stage,
   isDragging,
@@ -116,7 +116,7 @@ function DraggableProspectCard({
       />
     </Stack>
   );
-}
+});
 
 const pipelineCopyKeys: Record<PipelineStatus, { title: string; description: string }> = {
   [ProspectStatusEnum.LEAD]: {
@@ -160,7 +160,7 @@ const pipelineCopyKeys: Record<PipelineStatus, { title: string; description: str
 /**
  * Displays the prospect pipeline to give coaches a quick overview of the workflow steps.
  */
-export function ProspectWorkflow({
+export const ProspectWorkflow = React.memo(function ProspectWorkflow({
   prospectsByStatus,
   loading,
   onCreateProspect,
@@ -276,14 +276,14 @@ export function ProspectWorkflow({
           sourceFilter === 'all'
             ? prospectsForStage
             : prospectsForStage.filter((prospect) => {
-                const resolvedSourceId = prospect.source?.id ?? prospect.sourceId ?? '';
+              const resolvedSourceId = prospect.source?.id ?? prospect.sourceId ?? '';
 
-                if (sourceFilter === 'none') {
-                  return !resolvedSourceId;
-                }
+              if (sourceFilter === 'none') {
+                return !resolvedSourceId;
+              }
 
-                return resolvedSourceId === sourceFilter;
-              });
+              return resolvedSourceId === sourceFilter;
+            });
 
         return acc;
       }, {} as Record<PipelineStatus, Prospect[]>),
@@ -719,4 +719,4 @@ export function ProspectWorkflow({
       </Paper>
     </Stack>
   );
-}
+});

@@ -49,7 +49,7 @@ interface ProgramDoc {
   slug: string;
   locale: string;
   label: string;
-  visibility: 'private' | 'public';
+  visibility: 'private' | 'public' | 'hybrid';
   duration: number;
   frequency: number;
   description?: string;
@@ -96,7 +96,7 @@ export class BddServiceProgramMongo {
       slug: dto.slug.toLowerCase().trim(),
       locale: dto.locale.toLowerCase().trim(),
       label: dto.label.trim(),
-      visibility: dto.visibility === 'public' ? 'public' : 'private',
+      visibility: dto.visibility === 'public' || dto.visibility === 'hybrid' ? dto.visibility : 'private',
       duration: Math.trunc(dto.duration),
       frequency: Math.trunc(dto.frequency),
       description: dto.description,
@@ -135,6 +135,7 @@ export class BddServiceProgramMongo {
       createdByIn,
       visibility,
       userId,
+      includePublicVisibility,
       includeArchived = false,
       limit = 20,
       page = 1,
@@ -155,12 +156,21 @@ export class BddServiceProgramMongo {
     if (createdBy && normalizedCreatedByIn.length) {
       throw new Error('Cannot combine createdBy and createdByIn filters.');
     }
-    if (createdBy) filter.createdBy = this.toObjectId(createdBy);
-    if (!createdBy && normalizedCreatedByIn.length) {
-      filter.createdBy = { $in: normalizedCreatedByIn.map(this.toObjectId) };
+    const ownershipConditions: Record<string, any>[] = [];
+    if (createdBy) {
+      ownershipConditions.push({ createdBy: this.toObjectId(createdBy) });
+    } else if (normalizedCreatedByIn.length) {
+      ownershipConditions.push({ createdBy: { $in: normalizedCreatedByIn.map(this.toObjectId) } });
     }
+
     if (visibility) {
-      filter.visibility = visibility === 'public' ? 'public' : 'private';
+      filter.visibility = visibility === 'public' || visibility === 'hybrid' ? visibility : 'private';
+    } else if (params.includePublicVisibility) {
+      ownershipConditions.push({ visibility: 'public' });
+    }
+
+    if (ownershipConditions.length) {
+      filter.$or = ownershipConditions;
     }
     if (userId) filter.userId = this.toObjectId(userId);
     if (!includeArchived) filter.deletedAt = { $exists: false };
@@ -189,7 +199,7 @@ export class BddServiceProgramMongo {
     if (patch.frequency !== undefined) $set.frequency = Math.trunc(patch.frequency);
     if (patch.description !== undefined) $set.description = patch.description;
     if (patch.visibility !== undefined) {
-      $set.visibility = patch.visibility === 'public' ? 'public' : 'private';
+      $set.visibility = patch.visibility === 'public' || patch.visibility === 'hybrid' ? patch.visibility : 'private';
     }
     if (patch.sessions !== undefined) $set.sessions = patch.sessions.map(this.toSessionDoc);
     if (patch.userId !== undefined) {

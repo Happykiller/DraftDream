@@ -24,7 +24,7 @@ interface ExerciseDoc {
   charge?: string;
   rest?: number;
   videoUrl?: string;
-  visibility: 'private' | 'public';
+  visibility: 'private' | 'public' | 'hybrid';
 
   categories: ObjectId[];
   muscles: ObjectId[];
@@ -90,7 +90,7 @@ export class BddServiceExerciseMongo {
       charge: dto.charge?.trim(),
       rest: dto.rest,
       videoUrl: dto.videoUrl,
-      visibility: dto.visibility,
+      visibility: dto.visibility === 'public' || dto.visibility === 'hybrid' ? dto.visibility : 'private',
 
       categories: normalizedCategoryIds.map(this.toObjectId),
       muscles: (dto.muscleIds ?? []).map(this.toObjectId),
@@ -179,8 +179,10 @@ export class BddServiceExerciseMongo {
       ownershipConditions.push({ createdBy: { $in: normalizedCreatedByIn.map(this.toObjectId) } });
     }
 
-    if (visibility === 'public' || visibility === 'private') {
-      filter.visibility = visibility;
+    if (visibility) {
+      if (visibility === 'public') filter.visibility = 'public';
+      else if (visibility === 'hybrid') filter.visibility = 'hybrid';
+      else filter.visibility = 'private';
     } else if (includePublicVisibility) {
       ownershipConditions.push({ visibility: 'public' });
     }
@@ -230,7 +232,11 @@ export class BddServiceExerciseMongo {
     if (patch.charge !== undefined) $set.charge = patch.charge?.trim();
     if (patch.rest !== undefined) $set.rest = patch.rest;
     if (patch.videoUrl !== undefined) $set.videoUrl = patch.videoUrl;
-    if (patch.visibility !== undefined) $set.visibility = patch.visibility;
+    if (patch.visibility !== undefined) {
+      if (patch.visibility === 'public') $set.visibility = 'public';
+      else if (patch.visibility === 'hybrid') $set.visibility = 'hybrid';
+      else $set.visibility = 'private';
+    }
 
     if (patch.categoryIds !== undefined) {
       const normalized = Array.isArray(patch.categoryIds)
@@ -286,8 +292,6 @@ export class BddServiceExerciseMongo {
       throw new Error('InvalidObjectId');
     }
   };
-
-
 
   private buildSlugCandidate = (base: string, attempt: number): string => {
     if (attempt === 0) {
@@ -362,4 +366,3 @@ export class BddServiceExerciseMongo {
     throw error instanceof Error ? error : new Error(message);
   }
 }
-

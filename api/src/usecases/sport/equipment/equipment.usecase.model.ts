@@ -4,7 +4,7 @@ export interface EquipmentUsecaseModel {
   slug: string;
   locale: string;
   label: string;
-  visibility: 'private' | 'public';
+  visibility: 'private' | 'public' | 'hybrid';
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;

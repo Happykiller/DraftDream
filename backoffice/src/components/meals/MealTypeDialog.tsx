@@ -4,13 +4,14 @@ import * as React from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Stack, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import type { MealType, MealTypeVisibility } from '@hooks/useMealTypes';
+import type { MealType } from '@hooks/useMealTypes';
+import { VISIBILITY_OPTIONS, type Visibility } from '@src/commons/visibility';
 
 export interface MealTypeDialogValues {
   label: string;
   locale: string;
   icon: string;
-  visibility: MealTypeVisibility;
+  visibility: Visibility;
 }
 
 export interface MealTypeDialogProps {
@@ -50,7 +51,7 @@ export function MealTypeDialog({ open, mode, initial, onClose, onSubmit }: MealT
     const { name, value } = event.target;
     setValues((prev) => ({
       ...prev,
-      [name]: name === 'visibility' ? (value as MealTypeVisibility) : value,
+      [name]: name === 'visibility' ? (value as Visibility) : value,
     }));
   };
 
@@ -115,8 +116,11 @@ export function MealTypeDialog({ open, mode, initial, onClose, onSubmit }: MealT
             required
             fullWidth
           >
-            <MenuItem value="PRIVATE">{t('common.visibility.private')}</MenuItem>
-            <MenuItem value="PUBLIC">{t('common.visibility.public')}</MenuItem>
+            {VISIBILITY_OPTIONS.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {t(option.label)}
+              </MenuItem>
+            ))}
           </TextField>
 
           <DialogActions sx={{ px: 0 }}>

@@ -35,6 +35,7 @@ export class UpdateMuscleInput {
   @Field(() => ID) id!: string;
   @Field({ nullable: true }) locale?: string;
   @Field({ nullable: true }) label?: string;
+  @Field(() => MuscleVisibility, { nullable: true }) visibility?: MuscleVisibility;
 }
 
 @InputType()

@@ -6,8 +6,10 @@ import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
+import type { Visibility } from '@src/commons/visibility';
+
 export interface Session {
-  visibility: "PRIVATE" | "PUBLIC";
+  visibility: Visibility;
   id: string;
   slug: string;
   locale: string;

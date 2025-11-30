@@ -138,7 +138,10 @@ describe('GetSessionUsecase', () => {
 
   it('should reject unauthorized access attempts', async () => {
     const dto = buildDto(Role.COACH, 'coach-2');
-    asMock(sessionRepositoryMock.get).mockResolvedValue(sessionEntity);
+    asMock(sessionRepositoryMock.get).mockResolvedValue({
+      ...sessionEntity,
+      visibility: 'private',
+    });
     asMock(userRepositoryMock.getUser).mockResolvedValue(buildUser('coach-1', 'coach'));
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.GET_SESSION_FORBIDDEN);
@@ -161,6 +164,7 @@ describe('GetSessionUsecase', () => {
     const failure = new Error('user service down');
     asMock(sessionRepositoryMock.get).mockResolvedValue({
       ...sessionEntity,
+      visibility: 'private',
       createdBy: 'admin-1',
     });
     asMock(userRepositoryMock.getUser).mockRejectedValue(failure);

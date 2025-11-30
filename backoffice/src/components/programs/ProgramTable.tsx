@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 import type { Program } from '@hooks/usePrograms';
 import type { ProgramUserOption } from '@components/programs/ProgramDialog';
+import { getVisibilityLabel } from '../../commons/visibility';
 
 export interface ProgramTableProps {
   rows: Program[];
@@ -56,8 +57,7 @@ export const ProgramTable = React.memo(function ProgramTable({
       field: 'visibility',
       headerName: t('common.labels.visibility'),
       width: 140,
-      renderCell: ({ value }) =>
-        value === 'PUBLIC' ? t('common.visibility.public') : t('common.visibility.private'),
+      renderCell: ({ value }) => getVisibilityLabel(value, t),
     },
     {
       field: 'duration',

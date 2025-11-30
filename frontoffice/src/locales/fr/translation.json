@@ -46,6 +46,17 @@
     "title": "Tableau de bord",
     "placeholder": "Bonjour"
   },
+  "dashboard": {
+    "title": "Dashboard Coach",
+    "subtitle": "Gérez vos clients et programmes d'entraînement",
+    "summary": {
+      "athletes": "Athlètes",
+      "clients": "Clients",
+      "prospects": "Prospects",
+      "programs": "Programmes",
+      "nutrition": "Plans Nutrition"
+    }
+  },
   "prospects": {
     "title": "Prospects",
     "subtitle": "Gérer tous vos prospects.",
@@ -205,10 +216,10 @@
           "title": "Lead",
           "description": "Nouveau contact à qualifier avant de proposer un rendez-vous."
         },
-          "contact": {
-            "title": "Contacté",
-            "description": "Premier échange effectué pour valider l'intérêt et les besoins."
-          },
+        "contact": {
+          "title": "Contacté",
+          "description": "Premier échange effectué pour valider l'intérêt et les besoins."
+        },
         "meeting": {
           "title": "RDV planifié",
           "description": "Un rendez-vous est programmé ; préparez la séance et les documents."
@@ -239,7 +250,7 @@
         }
       }
     }
-    },
+  },
   "athletes": {
     "title": "Athlètes",
     "subtitle": "Gérer vos athlètes",
@@ -297,9 +308,6 @@
       "description": "Export JSON complet des valeurs stockées dans src/stores/session.ts.",
       "empty": "Aucune donnée de session disponible"
     }
-  },
-  "programs-athlete": {
-    "title": "Mes programmes"
   },
   "programs-coatch": {
     "title": "Programmes",

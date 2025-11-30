@@ -1,4 +1,3 @@
-// src/pages/nutrition/NutritionPlansAthlete.tsx
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Stack, Typography } from '@mui/material';
@@ -77,7 +76,7 @@ export function NutritionPlansAthlete(): React.JSX.Element {
         placeholderTitle={emptyState.title}
         placeholderSubtitle={emptyState.description}
         placeholderHelper={emptyState.helper}
-        onView={handleOpenMealPlan}
+        onViewMealPlan={handleOpenMealPlan}
         dayCountFormatter={(count) =>
           t('nutrition-athlete.list.day_count', {
             count,

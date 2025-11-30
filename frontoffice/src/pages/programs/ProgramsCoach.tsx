@@ -118,6 +118,16 @@ export function ProgramsCoach(): React.JSX.Element {
     setSearchQuery(value);
   }, []);
 
+  const handlePrefetch = React.useCallback((action: 'view' | 'edit') => {
+    if (action === 'edit') {
+      void import('@src/pages/programs/ProgramCoachEdit');
+      void import('@src/pages/programs/ProgramCoachEdit.loader');
+    } else if (action === 'view') {
+      void import('@src/pages/programs/ProgramDetails');
+      void import('@src/pages/programs/ProgramDetails.loader');
+    }
+  }, []);
+
   return (
     <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
       {/* General information */}
@@ -166,6 +176,7 @@ export function ProgramsCoach(): React.JSX.Element {
         onEditProgram={handleEditProgram}
         onCloneProgram={handleCloneProgram}
         onViewProgram={handleViewProgram}
+        onPrefetch={handlePrefetch}
         onSearchChange={handleSearchChange}
         searchPlaceholder={searchPlaceholder}
         searchAriaLabel={searchAriaLabel}

@@ -8,7 +8,7 @@ export interface CreateMealTypeUsecaseDto {
   locale: string;
   label: string;
   icon?: string | null;
-  visibility: 'private' | 'public';
+  visibility: 'private' | 'public' | 'hybrid';
   createdBy: string;
 }
 
@@ -20,7 +20,7 @@ export interface ListMealTypesUsecaseDto {
   q?: string;
   locale?: string;
   createdBy?: string;
-  visibility?: 'private' | 'public';
+  visibility?: 'private' | 'public' | 'hybrid';
   limit?: number;
   page?: number;
   sort?: { updatedAt?: 1 | -1 };
@@ -35,7 +35,7 @@ export interface UpdateMealTypeUsecaseDto {
   locale?: string;
   label?: string;
   icon?: string | null;
-  visibility?: 'private' | 'public';
+  visibility?: 'private' | 'public' | 'hybrid';
 }
 
 export interface DeleteMealTypeUsecaseDto {

@@ -29,8 +29,8 @@ import type {
   MealPlanDaySnapshot,
   MealPlanMealSnapshot,
   MealPlanMealTypeSnapshot,
-  MealPlanVisibility,
 } from '@hooks/useMealPlans';
+import { VISIBILITY_OPTIONS, type Visibility } from '@src/commons/visibility';
 
 function generateClientId(): string {
   if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
@@ -86,7 +86,7 @@ export interface MealPlanDialogValues {
   fatGrams: number;
   days: MealPlanDialogDay[];
   user: MealPlanDialogUserOption | null;
-  visibility: MealPlanVisibility;
+  visibility: Visibility;
 }
 
 export interface MealPlanDialogProps {
@@ -478,8 +478,11 @@ export function MealPlanDialog({
                 required
                 fullWidth
               >
-                <MenuItem value="PRIVATE">{t('common.visibility.private')}</MenuItem>
-                <MenuItem value="PUBLIC">{t('common.visibility.public')}</MenuItem>
+                {VISIBILITY_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {t(option.label)}
+                  </MenuItem>
+                ))}
               </TextField>
             </Stack>
 

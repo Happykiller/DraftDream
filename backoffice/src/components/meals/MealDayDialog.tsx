@@ -5,7 +5,6 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Autocomplete,
-  Box,
   Button,
   Dialog,
   DialogActions,
@@ -22,15 +21,15 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import type { MealVisibility } from '@hooks/useMeals';
-import type { MealDay, MealDayVisibility } from '@hooks/useMealDays';
+import type { MealDay } from '@hooks/useMealDays';
+import { VISIBILITY_OPTIONS, type Visibility } from '@src/commons/visibility';
 
 export interface MealDayDialogMealOption {
   id: string;
   slug: string;
   label: string;
   locale: string;
-  visibility: MealVisibility;
+  visibility: Visibility;
 }
 
 export interface MealDayDialogValues {
@@ -38,7 +37,7 @@ export interface MealDayDialogValues {
   locale: string;
   label: string;
   description: string;
-  visibility: MealDayVisibility;
+  visibility: Visibility;
   meals: MealDayDialogMealOption[];
 }
 
@@ -150,7 +149,7 @@ export function MealDayDialog({
     const { name, value } = event.target;
     setValues((prev) => ({
       ...prev,
-      [name]: name === 'visibility' ? (value as MealDayVisibility) : value,
+      [name]: name === 'visibility' ? (value as Visibility) : value,
     }));
   };
 
@@ -227,17 +226,6 @@ export function MealDayDialog({
               fullWidth
             />
             <TextField
-              label={t('common.labels.label')}
-              name="label"
-              value={values.label}
-              onChange={handleFieldChange}
-              required
-              fullWidth
-            />
-          </Stack>
-
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-            <TextField
               select
               label={t('common.labels.locale')}
               name="locale"
@@ -252,7 +240,6 @@ export function MealDayDialog({
                 </MenuItem>
               ))}
             </TextField>
-
             <TextField
               select
               label={t('common.labels.visibility')}
@@ -262,10 +249,22 @@ export function MealDayDialog({
               required
               fullWidth
             >
-              <MenuItem value="PRIVATE">{t('common.visibility.private')}</MenuItem>
-              <MenuItem value="PUBLIC">{t('common.visibility.public')}</MenuItem>
+              {VISIBILITY_OPTIONS.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {t(option.label)}
+                </MenuItem>
+              ))}
             </TextField>
           </Stack>
+
+          <TextField
+            label={t('common.labels.label')}
+            name="label"
+            value={values.label}
+            onChange={handleFieldChange}
+            required
+            fullWidth
+          />
 
           <TextField
             label={t('common.labels.description')}
@@ -273,94 +272,95 @@ export function MealDayDialog({
             value={values.description}
             onChange={handleFieldChange}
             multiline
-            minRows={3}
+            minRows={2}
             fullWidth
           />
 
-          <Stack spacing={1}>
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} alignItems={{ xs: 'stretch', sm: 'center' }}>
+          <Stack spacing={2}>
+            <Stack direction="row" spacing={2} alignItems="center">
               <Autocomplete
-                fullWidth
-                options={filteredMealOptions}
                 value={selectedOption}
-                loading={mealOptionsLoading}
                 onChange={(_, option) => setSelectedOption(option)}
-                getOptionLabel={(option) => option.label || option.slug}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
+                options={filteredMealOptions}
+                loading={mealOptionsLoading}
+                getOptionLabel={(option) => option.label}
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label={t('common.labels.meals')}
-                    placeholder={t('meals.mealDays.dialog.search_placeholder')}
+                    label={t('meals.mealDays.dialog.meal_placeholder')}
+                    InputProps={{
+                      ...params.InputProps,
+                      endAdornment: (
+                        <React.Fragment>
+                          {params.InputProps.endAdornment}
+                          <IconButton
+                            size="small"
+                            aria-label="refresh-meals"
+                            onMouseDown={(event) => {
+                              event.preventDefault();
+                              event.stopPropagation();
+                            }}
+                            onClick={() => onRefreshMeals?.()}
+                          >
+                            <RefreshIcon fontSize="small" />
+                          </IconButton>
+                        </React.Fragment>
+                      ),
+                    }}
                   />
                 )}
+                sx={{ flex: 1 }}
               />
-
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
-                <Button variant="outlined" onClick={handleAddMeal} disabled={!selectedOption}>
-                  {t('meals.mealDays.dialog.add_meal')}
-                </Button>
-                {onRefreshMeals ? (
-                  <Button variant="text" onClick={onRefreshMeals} disabled={mealOptionsLoading}>
-                    {t('meals.mealDays.dialog.refresh_meals')}
-                  </Button>
-                ) : null}
-              </Stack>
+              <Button variant="outlined" onClick={handleAddMeal} disabled={!selectedOption}>
+                {t('meals.mealDays.dialog.add_meal')}
+              </Button>
             </Stack>
 
-            <Box sx={{ border: (theme) => `1px solid ${theme.palette.divider}`, borderRadius: 1, p: 1 }}>
-              {values.meals.length === 0 ? (
-                <Typography variant="body2" color="text.secondary">
-                  {t('meals.mealDays.dialog.empty_list')}
-                </Typography>
-              ) : (
-                <List dense disablePadding>
-                  {values.meals.map((meal, index) => (
-                    <ListItem
-                      key={`${meal.id}-${index}`}
-                      secondaryAction={
-                        <Stack direction="row" spacing={0.5}>
-                          <IconButton
-                            size="small"
-                            aria-label={`move-meal-up-${index}`}
-                            onClick={() => handleMove(index, 'up')}
-                            disabled={index === 0}
-                          >
-                            <ArrowUpwardIcon fontSize="small" />
-                          </IconButton>
-                          <IconButton
-                            size="small"
-                            aria-label={`move-meal-down-${index}`}
-                            onClick={() => handleMove(index, 'down')}
-                            disabled={index === values.meals.length - 1}
-                          >
-                            <ArrowDownwardIcon fontSize="small" />
-                          </IconButton>
-                          <IconButton
-                            size="small"
-                            aria-label={`remove-meal-${index}`}
-                            onClick={() => handleRemove(index)}
-                          >
-                            <DeleteIcon fontSize="small" />
-                          </IconButton>
-                        </Stack>
-                      }
-                    >
-                      <ListItemText
-                        primary={`${index + 1}. ${meal.label || meal.slug}`}
-                        secondary={`${meal.slug}${meal.locale ? ` · ${meal.locale.toUpperCase()}` : ''}`}
-                      />
-                    </ListItem>
-                  ))}
-                </List>
-              )}
-            </Box>
+            {values.meals.length === 0 ? (
+              <Typography variant="body2" color="text.secondary">
+                {t('meals.mealDays.dialog.empty_meals')}
+              </Typography>
+            ) : (
+              <List dense>
+                {values.meals.map((meal, index) => (
+                  <ListItem
+                    key={`${meal.id}-${index}`}
+                    secondaryAction={
+                      <Stack direction="row" spacing={0.5}>
+                        <IconButton
+                          edge="end"
+                          aria-label="move-up"
+                          onClick={() => handleMove(index, 'up')}
+                          disabled={index === 0}
+                        >
+                          <ArrowUpwardIcon />
+                        </IconButton>
+                        <IconButton
+                          edge="end"
+                          aria-label="move-down"
+                          onClick={() => handleMove(index, 'down')}
+                          disabled={index === values.meals.length - 1}
+                        >
+                          <ArrowDownwardIcon />
+                        </IconButton>
+                        <IconButton edge="end" aria-label="delete" onClick={() => handleRemove(index)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </Stack>
+                    }
+                  >
+                    <ListItemText
+                      primary={meal.label}
+                      secondary={`${meal.slug} (${meal.locale.toUpperCase()})`}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            )}
           </Stack>
 
-          <DialogActions sx={{ px: 0 }}>
-            <Button onClick={onClose} color="inherit">
-              {t('common.buttons.cancel')}
-            </Button>
+          <DialogActions>
+            <Button onClick={onClose}>{t('common.buttons.cancel')}</Button>
             <Button type="submit" variant="contained">
               {isEdit ? t('common.buttons.save') : t('common.buttons.create')}
             </Button>
@@ -371,3 +371,24 @@ export function MealDayDialog({
   );
 }
 
+function RefreshIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+      <path d="M3 3v5h5" />
+      <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+      <path d="M16 16h5v5" />
+    </svg>
+  );
+}

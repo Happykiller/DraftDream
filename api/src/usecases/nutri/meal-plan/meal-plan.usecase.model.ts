@@ -6,7 +6,7 @@ export interface MealPlanMealTypeUsecaseModel {
   slug?: string;
   locale?: string;
   label: string;
-  visibility?: 'private' | 'public';
+  visibility?: 'private' | 'public' | 'hybrid';
 }
 
 export interface MealPlanMealUsecaseModel {
@@ -40,7 +40,7 @@ export interface MealPlanUsecaseModel {
   locale: string;
   label: string;
   description?: string;
-  visibility: 'private' | 'public';
+  visibility: 'private' | 'public' | 'hybrid';
   calories: number;
   proteinGrams: number;
   carbGrams: number;

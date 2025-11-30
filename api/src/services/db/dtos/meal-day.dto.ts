@@ -1,6 +1,6 @@
 // src/services/db/dtos/meal-day.dto.ts
 
-export type MealDayVisibility = 'private' | 'public';
+export type MealDayVisibility = 'private' | 'public' | 'hybrid';
 
 export interface CreateMealDayDto {
   slug: string;

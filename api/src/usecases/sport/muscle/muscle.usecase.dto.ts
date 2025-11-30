@@ -7,7 +7,7 @@
 export interface CreateMuscleUsecaseDto {
   locale: string;
   label: string;
-  visibility: 'private' | 'public';
+  visibility: 'private' | 'public' | 'hybrid';
   createdBy: string;
 }
 
@@ -19,7 +19,7 @@ export interface ListMusclesUsecaseDto {
   q?: string;
   locale?: string;
   createdBy?: string;
-  visibility?: 'private' | 'public';
+  visibility?: 'private' | 'public' | 'hybrid';
   limit?: number;
   page?: number;
   sort?: { updatedAt?: 1 | -1 };
@@ -33,7 +33,7 @@ export interface UpdateMuscleUsecaseDto {
   id: string;
   locale?: string;
   label?: string;
-  visibility?: 'private' | 'public';
+  visibility?: 'private' | 'public' | 'hybrid';
 }
 
 export interface DeleteMuscleUsecaseDto {

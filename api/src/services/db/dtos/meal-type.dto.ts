@@ -5,7 +5,7 @@ export interface CreateMealTypeDto {
   locale: string;
   label: string;
   icon?: string | null;
-  visibility: 'private' | 'public';
+  visibility: 'private' | 'public' | 'hybrid';
   createdBy: string;
 }
 
@@ -22,7 +22,7 @@ export interface ListMealTypesDto {
   q?: string;
   locale?: string;
   createdBy?: string;
-  visibility?: 'private' | 'public';
+  visibility?: 'private' | 'public' | 'hybrid';
   limit?: number;                 // default 20
   page?: number;                  // default 1
   sort?: Record<string, 1 | -1>;  // e.g. { updatedAt: -1 }

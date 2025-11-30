@@ -116,7 +116,7 @@ interface ProspectListSummaryProps {
 }
 
 /** Displays headline metrics for the prospect list. */
-function ProspectListSummary({ metrics, loading }: ProspectListSummaryProps): React.JSX.Element {
+const ProspectListSummary = React.memo(function ProspectListSummary({ metrics, loading }: ProspectListSummaryProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
 
@@ -216,4 +216,4 @@ function ProspectListSummary({ metrics, loading }: ProspectListSummaryProps): Re
       )}
     </Paper>
   );
-}
+});

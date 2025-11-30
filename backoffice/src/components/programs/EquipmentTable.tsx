@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { Equipment } from '@hooks/useEquipment';
 import { useDateFormatter } from '@hooks/useDateFormatter';
+import { getVisibilityLabel } from '../../commons/visibility';
 
 export interface EquipmentTableProps {
   rows: Equipment[];
@@ -49,8 +50,7 @@ export const EquipmentTable = React.memo(function EquipmentTable({
       field: 'visibility',
       headerName: t('common.labels.visibility'),
       width: 140,
-      renderCell: ({ value }) =>
-        value === 'PUBLIC' ? t('common.visibility.public') : t('common.visibility.private'),
+      renderCell: ({ value }) => getVisibilityLabel(value, t),
     },
     {
       field: 'creator',

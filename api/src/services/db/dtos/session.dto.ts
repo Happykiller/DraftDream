@@ -1,5 +1,5 @@
 // src\services\db\dtos\session.dto.ts
-export type Visibility = 'private' | 'public';
+export type Visibility = 'private' | 'public' | 'hybrid';
 
 export interface CreateSessionDto {
   slug: string;
@@ -23,6 +23,7 @@ export interface ListSessionsDto {
   locale?: string;
   createdBy?: string;
   createdByIn?: string[];
+  includePublicVisibility?: boolean;
   includeArchived?: boolean; // default false (exclude deleted items)
   limit?: number;            // default 20
   page?: number;             // default 1

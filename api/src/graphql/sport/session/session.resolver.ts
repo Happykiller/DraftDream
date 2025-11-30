@@ -11,6 +11,7 @@ import {
   SessionListGql,
   UpdateSessionInput,
   SessionExerciseSummaryGql,
+  SessionVisibility,
 } from '@src/graphql/sport/session/session.gql.types';
 import { UserGql } from '@graphql/user/user.gql.types';
 import { mapUserUsecaseToGql } from '@graphql/user/user.mapper';
@@ -76,6 +77,7 @@ export class SessionResolver {
       durationMin: input.durationMin,
       description: input.description,
       exerciseIds: input.exerciseIds,
+      visibility: this.normalizeSessionVisibility(input.visibility) ?? 'public',
       createdBy: session.userId,
     });
     return created ? mapSessionUsecaseToGql(created) : null; // null => slug/locale déjà pris
@@ -90,6 +92,7 @@ export class SessionResolver {
       durationMin: input.durationMin,
       description: input.description,
       exerciseIds: input.exerciseIds,
+      visibility: this.normalizeSessionVisibility(input.visibility),
     });
     return updated ? mapSessionUsecaseToGql(updated) : null;
   }
@@ -159,5 +162,18 @@ export class SessionResolver {
       userId: String(user.id),
       role: user.role as UsecaseSession['role'],
     };
+  }
+
+  private normalizeSessionVisibility(
+    visibility?: SessionVisibility | null,
+  ): 'private' | 'public' | 'hybrid' | undefined {
+    if (!visibility) {
+      return undefined;
+    }
+    return visibility === SessionVisibility.PUBLIC
+      ? 'public'
+      : visibility === SessionVisibility.HYBRID
+        ? 'hybrid'
+        : 'private';
   }
 }

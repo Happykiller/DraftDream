@@ -34,7 +34,7 @@ export interface CreateProgramDto {
   duration: number;
   frequency: number;
   description?: string;
-  visibility?: 'private' | 'public';
+  visibility?: 'private' | 'public' | 'hybrid';
   /** Snapshot of sessions attached to the program. */
   sessions: ProgramSessionSnapshotDto[];
   /** Optional assigned user id */
@@ -49,9 +49,10 @@ export interface ListProgramsDto {
   locale?: string;
   createdBy?: string;
   createdByIn?: string[];
-  visibility?: 'private' | 'public';
+  visibility?: 'private' | 'public' | 'hybrid';
   /** Filter by assigned user id */
   userId?: string;
+  includePublicVisibility?: boolean;
   includeArchived?: boolean; // default false (exclude deleted items)
   limit?: number;            // default 20
   page?: number;             // default 1
@@ -65,7 +66,7 @@ export type UpdateProgramDto = Partial<{
   duration: number;
   frequency: number;
   description: string;
-  visibility: 'private' | 'public';
+  visibility: 'private' | 'public' | 'hybrid';
   /** Replace the whole snapshot definition. */
   sessions: ProgramSessionSnapshotDto[];
   /** Set/replace the assigned user id */

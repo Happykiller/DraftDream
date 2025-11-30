@@ -44,6 +44,7 @@ export function SessionsPanel(): React.JSX.Element {
     durationMin: values.durationMin,
     description: values.description ? values.description : undefined,
     exerciseIds: values.exercises.map(ex => ex.id),
+    visibility: values.visibility,
   });
 
   const toUpdateInput = (id: string, values: SessionDialogValues) => ({
@@ -53,6 +54,7 @@ export function SessionsPanel(): React.JSX.Element {
     durationMin: values.durationMin,
     description: values.description ? values.description : undefined,
     exerciseIds: values.exercises.map(ex => ex.id),
+    visibility: values.visibility,
   });
 
   return (

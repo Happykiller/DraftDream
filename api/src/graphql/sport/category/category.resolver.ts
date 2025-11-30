@@ -90,7 +90,9 @@ export class CategoryResolver {
           ? undefined
           : input.visibility === CategoryVisibility.PUBLIC
             ? 'public'
-            : 'private',
+            : input.visibility === CategoryVisibility.HYBRID
+              ? 'hybrid'
+              : 'private',
     });
     return updated ? mapCategoryUsecaseToGql(updated) : null;
   }

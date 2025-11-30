@@ -7,6 +7,7 @@ import { Box, Button, Stack, TextField, IconButton, Tooltip } from '@mui/materia
 import { useTranslation } from 'react-i18next';
 import type { Tag } from '@src/hooks/useTags';
 import { useDateFormatter } from '@src/hooks/useDateFormatter';
+import { getVisibilityLabel } from '../../commons/visibility';
 
 export interface TagTableProps {
   rows: Tag[];
@@ -48,8 +49,7 @@ export const TagTable = React.memo(function TagTable({
       field: 'visibility',
       headerName: t('common.labels.visibility'),
       width: 140,
-      renderCell: ({ value }) =>
-        value === 'PUBLIC' ? t('common.visibility.public') : t('common.visibility.private'),
+      renderCell: ({ value }) => getVisibilityLabel(value, t),
     },
     {
       field: 'creator',

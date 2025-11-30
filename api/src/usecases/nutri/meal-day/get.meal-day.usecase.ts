@@ -23,7 +23,7 @@ export class GetMealDayUsecase {
       const isAdmin = session.role === Role.ADMIN;
       const isCreator = creatorId === session.userId;
       const isCoach = session.role === Role.COACH;
-      const isPublic = mealDay.visibility === 'public';
+      const isPublic = mealDay.visibility === 'public' || mealDay.visibility === 'hybrid';
 
       if (!isAdmin && !isCreator && !(isCoach && isPublic)) {
         throw new Error(ERRORS.GET_MEAL_DAY_FORBIDDEN);

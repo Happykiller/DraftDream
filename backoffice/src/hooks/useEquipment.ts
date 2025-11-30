@@ -6,7 +6,9 @@ import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
-export type EquipmentVisibility = 'PRIVATE' | 'PUBLIC';
+import type { Visibility } from '@src/commons/visibility';
+
+export type EquipmentVisibility = Visibility;
 export interface Creator { id: string; email: string; }
 
 export interface Equipment {
@@ -148,7 +150,7 @@ export function useEquipment({ page, limit, q }: UseEquipmentParams) {
   );
 
   const update = React.useCallback(
-    async (input: { id: string; label?: string; locale?: string }) => {
+    async (input: { id: string; label?: string; locale?: string; visibility?: EquipmentVisibility }) => {
       try {
         const { errors } = await execute(() =>
           gql.send<UpdatePayload>({

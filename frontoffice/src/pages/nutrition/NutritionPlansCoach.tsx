@@ -1,4 +1,3 @@
-// src/pages/nutrition/NutritionPlansCoach.tsx
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Add, Refresh } from '@mui/icons-material';
@@ -149,6 +148,16 @@ export function NutritionPlansCoach(): React.JSX.Element {
     setSearchQuery(value);
   }, []);
 
+  const handlePrefetch = React.useCallback((action: 'view' | 'edit') => {
+    if (action === 'edit') {
+      void import('@src/pages/nutrition/NutritionPlanCoachEdit');
+      void import('@src/pages/nutrition/NutritionPlanCoachEdit.loader');
+    } else if (action === 'view') {
+      void import('@src/pages/nutrition/NutritionPlanDetails');
+      void import('@src/pages/nutrition/NutritionPlanDetails.loader');
+    }
+  }, []);
+
   return (
     <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
       {/* General information */}
@@ -193,10 +202,11 @@ export function NutritionPlansCoach(): React.JSX.Element {
         placeholderTitle={emptyState.title}
         placeholderSubtitle={emptyState.description}
         placeholderHelper={emptyState.helper}
-        onView={handleOpenMealPlan}
-        onEdit={handleEditMealPlan}
-        onDelete={handleDeleteMealPlan}
-        onClone={handleCloneMealPlan}
+        onViewMealPlan={handleOpenMealPlan}
+        onEditMealPlan={handleEditMealPlan}
+        onDeleteMealPlan={handleDeleteMealPlan}
+        onCloneMealPlan={handleCloneMealPlan}
+        onPrefetch={handlePrefetch}
         dayCountFormatter={(count) =>
           t('nutrition-coach.list.day_count', {
             count,

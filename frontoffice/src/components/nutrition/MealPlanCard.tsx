@@ -46,6 +46,7 @@ interface MealPlanCardProps {
     mealPlan: MealPlan,
     payload: { label: string; athleteId: string | null; openBuilder: boolean },
   ) => Promise<void>;
+  onPrefetch?: (action: 'view' | 'edit') => void;
   allowedActions?: MealPlanActionKey[];
 }
 
@@ -107,7 +108,7 @@ function getDayKey(day: MealPlanDaySnapshot, index: number): string {
 /**
  * Displays a nutrition meal plan preview with macro highlights, plan structure and metadata.
  */
-export function MealPlanCard({
+export const MealPlanCard = React.memo(function MealPlanCard({
   mealPlan,
   dayCountFormatter,
   macroLabels,
@@ -115,6 +116,7 @@ export function MealPlanCard({
   onEdit,
   onDelete,
   onClone,
+  onPrefetch,
   allowedActions = DEFAULT_ALLOWED_ACTIONS,
 }: MealPlanCardProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
@@ -435,6 +437,11 @@ export function MealPlanCard({
                           event.stopPropagation();
                           handleActionClick(key);
                         }}
+                        onMouseEnter={() => {
+                          if (key === 'edit' || key === 'view') {
+                            onPrefetch?.(key);
+                          }
+                        }}
                         sx={(innerTheme) => ({
                           color: innerTheme.palette.text.secondary,
                           transition: innerTheme.transitions.create(
@@ -701,7 +708,7 @@ export function MealPlanCard({
       />
     </>
   );
-}
+});
 
 interface MealPlanMealRowProps {
   meal: MealPlanMealSnapshot;

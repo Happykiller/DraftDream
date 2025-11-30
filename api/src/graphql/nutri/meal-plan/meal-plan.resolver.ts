@@ -310,11 +310,11 @@ export class MealPlanResolver {
    */
   private normalizeMealPlanVisibility(
     visibility?: MealPlanVisibility | null,
-  ): 'private' | 'public' | undefined {
+  ): 'private' | 'public' | 'hybrid' | undefined {
     if (!visibility) {
       return undefined;
     }
-    return visibility === MealPlanVisibility.PUBLIC ? 'public' : 'private';
+    return visibility === MealPlanVisibility.PUBLIC ? 'public' : visibility === MealPlanVisibility.HYBRID ? 'hybrid' : 'private';
   }
 
   /**
@@ -322,10 +322,10 @@ export class MealPlanResolver {
    */
   private normalizeMealTypeVisibility(
     visibility?: MealTypeVisibility | null,
-  ): 'private' | 'public' | undefined {
+  ): 'private' | 'public' | 'hybrid' | undefined {
     if (!visibility) {
       return undefined;
     }
-    return visibility === MealTypeVisibility.PUBLIC ? 'public' : 'private';
+    return visibility === MealTypeVisibility.PUBLIC ? 'public' : visibility === MealTypeVisibility.HYBRID ? 'hybrid' : 'private';
   }
 }

@@ -6,7 +6,7 @@ export interface MealTypeUsecaseModel {
   locale: string;
   label: string;
   icon?: string | null;
-  visibility: 'private' | 'public';
+  visibility: 'private' | 'public' | 'hybrid';
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;

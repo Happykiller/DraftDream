@@ -17,7 +17,7 @@ export interface Exercise {
   charge?: string;
   rest?: number;
   videoUrl?: string;
-  visibility: 'private' | 'public';
+  visibility: 'private' | 'public' | 'hybrid';
 
   // Relations
   categories: Category[];

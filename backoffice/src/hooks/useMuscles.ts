@@ -6,7 +6,9 @@ import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
-export type MuscleVisibility = 'PRIVATE' | 'PUBLIC';
+import type { Visibility } from '@src/commons/visibility';
+
+export type MuscleVisibility = Visibility;
 
 export interface Muscle {
   id: string;
@@ -151,7 +153,7 @@ export function useMuscles({ page, limit, q }: UseMusclesParams) {
   );
 
   const update = React.useCallback(
-    async (input: { id: string; label?: string; locale?: string }) => {
+    async (input: { id: string; label?: string; locale?: string; visibility?: MuscleVisibility }) => {
       try {
         const { errors } = await execute(() =>
           gql.send<UpdatePayload>({

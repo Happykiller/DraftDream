@@ -25,7 +25,7 @@ interface MealDoc {
   proteinGrams: number;
   carbGrams: number;
   fatGrams: number;
-  visibility: 'private' | 'public';
+  visibility: 'private' | 'public' | 'hybrid';
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
@@ -72,7 +72,7 @@ export class BddServiceMealMongo {
       proteinGrams: dto.proteinGrams,
       carbGrams: dto.carbGrams,
       fatGrams: dto.fatGrams,
-      visibility: dto.visibility,
+      visibility: dto.visibility === 'public' || dto.visibility === 'hybrid' ? dto.visibility : 'private',
       createdBy: dto.createdBy,
       createdAt: now,
       updatedAt: now,
@@ -127,8 +127,11 @@ export class BddServiceMealMongo {
     if (locale) filter.locale = locale.toLowerCase().trim();
     if (typeId) filter.typeId = typeId.trim();
     if (createdBy) filter.createdBy = createdBy;
-    if (visibility === 'public' || visibility === 'private') {
-      filter.visibility = visibility;
+
+    if (visibility) {
+      if (visibility === 'public') filter.visibility = 'public';
+      else if (visibility === 'hybrid') filter.visibility = 'hybrid';
+      else filter.visibility = 'private';
     }
 
     try {
@@ -169,7 +172,11 @@ export class BddServiceMealMongo {
     if (patch.proteinGrams !== undefined) $set.proteinGrams = patch.proteinGrams;
     if (patch.carbGrams !== undefined) $set.carbGrams = patch.carbGrams;
     if (patch.fatGrams !== undefined) $set.fatGrams = patch.fatGrams;
-    if (patch.visibility !== undefined) $set.visibility = patch.visibility;
+    if (patch.visibility !== undefined) {
+      if (patch.visibility === 'public') $set.visibility = 'public';
+      else if (patch.visibility === 'hybrid') $set.visibility = 'hybrid';
+      else $set.visibility = 'private';
+    }
 
     try {
       const collection = this.col();
@@ -243,4 +250,3 @@ export class BddServiceMealMongo {
     throw error instanceof Error ? error : new Error(message);
   }
 }
-

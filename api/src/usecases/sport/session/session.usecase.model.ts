@@ -6,7 +6,7 @@ export interface SessionUsecaseModel {
 
   label: string;
   durationMin: number;
-  visibility: 'private' | 'public';
+  visibility: 'private' | 'public' | 'hybrid';
   description?: string;
 
   exerciseIds: string[];

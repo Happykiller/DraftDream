@@ -101,7 +101,8 @@
     },
     "visibility": {
       "private": "Private",
-      "public": "Public"
+      "public": "Public",
+      "hybrid": "Hybrid"
     },
     "placeholders": {
       "search": "Search...",

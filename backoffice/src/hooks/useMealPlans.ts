@@ -8,7 +8,9 @@ import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
-export type MealPlanVisibility = 'PRIVATE' | 'PUBLIC';
+import type { Visibility } from '@src/commons/visibility';
+
+export type MealPlanVisibility = Visibility;
 
 export interface MealPlanUserSummary {
   id: string;

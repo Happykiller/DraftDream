@@ -4,6 +4,7 @@ import * as React from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, MenuItem, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import type { Visibility, Category } from '@src/hooks/useCategories';
+import { VISIBILITY_OPTIONS } from '@src/commons/visibility';
 
 export interface CategoryDialogValues {
   label: string;
@@ -90,8 +91,11 @@ export function CategoryDialog({ open, mode, initial, onClose, onSubmit }: Categ
             required
             fullWidth
           >
-            <MenuItem value="PRIVATE">{t('common.visibility.private')}</MenuItem>
-            <MenuItem value="PUBLIC">{t('common.visibility.public')}</MenuItem>
+            {VISIBILITY_OPTIONS.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {t(option.label)}
+              </MenuItem>
+            ))}
           </TextField>
 
           <DialogActions sx={{ px: 0 }}>

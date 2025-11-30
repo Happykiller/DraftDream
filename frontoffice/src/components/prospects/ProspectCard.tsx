@@ -115,7 +115,7 @@ function useProspectCardData(
   };
 }
 
-function ProspectHeader({ prospect, displayName, actions }: ProspectHeaderProps): React.JSX.Element {
+function ProspectHeader({ displayName, actions }: ProspectHeaderProps): React.JSX.Element {
   return (
     <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={1.5}>
       <Tooltip title={displayName} sx={{ flexGrow: 1, minWidth: 0 }}>
@@ -164,8 +164,8 @@ function ProspectDetails({
           ))}
           {showPreferenceBadges
             ? prospect.activityPreferences?.map((preference) => (
-                <Chip key={preference.id ?? preference.label} label={preference.label} size="small" color="secondary" />
-              ))
+              <Chip key={preference.id ?? preference.label} label={preference.label} size="small" color="secondary" />
+            ))
             : null}
         </Stack>
       ) : null}
@@ -194,7 +194,7 @@ export interface ProspectListCardProps {
 }
 
 /** Presentational card summarizing the key attributes for a prospect in list views. */
-export function ProspectListCard({
+export const ProspectListCard = React.memo(function ProspectListCard({
   prospect,
   onEdit,
   onDelete,
@@ -324,7 +324,7 @@ export function ProspectListCard({
       </CardContent>
     </Card>
   );
-}
+});
 
 export interface ProspectWorkflowCardProps {
   prospect: Prospect;
@@ -334,7 +334,7 @@ export interface ProspectWorkflowCardProps {
 }
 
 /** Presentational card tuned for workflow interactions, including validation actions. */
-export function ProspectWorkflowCard({
+export const ProspectWorkflowCard = React.memo(function ProspectWorkflowCard({
   prospect,
   onEdit,
   onDelete,
@@ -451,4 +451,4 @@ export function ProspectWorkflowCard({
       </CardActions>
     </Card>
   );
-}
+});
