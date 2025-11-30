@@ -2,6 +2,7 @@
 import { createBrowserRouter, redirect } from 'react-router-dom';
 
 import { session } from '@stores/session';
+import { UserType } from '@src/commons/enums';
 import { withTitle } from '@src/routes/withTitle';
 import { PublicLayout } from '@layouts/PublicLayout';
 import { ProtectedLayout } from '@layouts/ProtectedLayout';
@@ -13,6 +14,25 @@ export async function requireAuthLoader() {
     throw redirect('/login');
   }
   return null;
+}
+
+/** Loader enforcing both authentication and role membership. */
+export function requireRoleLoader(allowedRoles: UserType[]) {
+  const allowed = new Set<UserType>(allowedRoles);
+
+  return () => {
+    const { access_token, role } = session.getState();
+    if (!access_token) {
+      throw redirect('/login');
+    }
+
+    const roleIsAllowed = role && allowed.has(role as UserType);
+    if (!roleIsAllowed) {
+      throw redirect('/');
+    }
+
+    return null;
+  };
 }
 
 /** Central route configuration shared by the application. */
@@ -237,7 +257,7 @@ export const router = createBrowserRouter([
   {
     path: '/prospects',
     element: <ProtectedLayout />,
-    loader: requireAuthLoader,
+    loader: requireRoleLoader([UserType.Admin, UserType.Coach]),
     children: [
       {
         index: true,
@@ -271,7 +291,7 @@ export const router = createBrowserRouter([
   {
     path: '/athletes',
     element: <ProtectedLayout />,
-    loader: requireAuthLoader,
+    loader: requireRoleLoader([UserType.Admin, UserType.Coach]),
     children: [
       {
         index: true,
