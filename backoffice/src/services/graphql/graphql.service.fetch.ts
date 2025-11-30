@@ -27,14 +27,26 @@ export class GraphqlServiceFetch {
     this.inversify = inversify ?? {};
   }
 
+  /**
+   * Clear the session and redirect to login while keeping the unauthorized reason for diagnostics.
+   */
   private handleUnauthorized(reason: string): void {
+    const message = `[GraphQL] Unauthorized → ${reason}`;
+    this.inversify?.loggerService?.error?.(message);
+
+    try {
+      sessionStorage.setItem('dd:last-unauthorized', message);
+    } catch {
+      // ignore storage failures
+    }
+
     try {
       session.getState().reset?.();
     } catch {
       // ignore reset failures
     }
-    this.inversify?.loggerService?.error?.(`[GraphQL] Unauthorized → ${reason}`);
-    window.location.replace('/login');
+
+    window.setTimeout(() => window.location.replace('/login'), 50);
   }
 
   /** Normalize strings for comparison */
