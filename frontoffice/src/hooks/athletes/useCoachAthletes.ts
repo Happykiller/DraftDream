@@ -12,6 +12,7 @@ import type { CoachAthleteListResult } from '@app-types/coachAthletes';
 
 export interface UseCoachAthletesParams extends Pick<CoachAthleteListInput, 'coachId' | 'page' | 'limit'> {
   includeArchived?: boolean;
+  enabled?: boolean;
 }
 
 interface UseCoachAthletesState extends CoachAthleteListResult {
@@ -27,6 +28,7 @@ export function useCoachAthletes({
   page = DEFAULT_PAGE,
   limit = DEFAULT_LIMIT,
   includeArchived = false,
+  enabled = true,
 }: UseCoachAthletesParams) {
   const [state, setState] = React.useState<UseCoachAthletesState>({
     items: [],
@@ -40,6 +42,16 @@ export function useCoachAthletes({
   const { t } = useTranslation();
 
   const load = React.useCallback(async () => {
+    if (!enabled) {
+      setState((prev) => ({
+        ...prev,
+        items: [],
+        total: 0,
+        loading: false,
+      }));
+      return;
+    }
+
     if (!coachId) {
       setState((prev) => ({ ...prev, items: [], total: 0 }));
       return;
@@ -56,7 +68,7 @@ export function useCoachAthletes({
       setState((prev) => ({ ...prev, loading: false }));
       flashError(t('athletes.notifications.load_failure'));
     }
-  }, [coachId, execute, flashError, includeArchived, limit, page, t]);
+  }, [coachId, enabled, execute, flashError, includeArchived, limit, page, t]);
 
   React.useEffect(() => {
     void load();
