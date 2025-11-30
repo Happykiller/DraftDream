@@ -6,7 +6,7 @@ import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
-export type ProgramVisibility = 'PRIVATE' | 'PUBLIC' | 'HYBRID';
+export type ProgramVisibility = 'PRIVATE' | 'PUBLIC';
 
 export interface ProgramCreator {
   id: string;

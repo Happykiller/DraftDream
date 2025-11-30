@@ -1,7 +1,6 @@
 export const VISIBILITY_OPTIONS = [
     { value: 'PRIVATE', label: 'common.visibility.private' },
     { value: 'PUBLIC', label: 'common.visibility.public' },
-    { value: 'HYBRID', label: 'common.visibility.hybrid' },
 ] as const;
 
 export type Visibility = (typeof VISIBILITY_OPTIONS)[number]['value'];
