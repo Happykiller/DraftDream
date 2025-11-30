@@ -19,7 +19,7 @@ export type GetProgramRepositoryDto = GetProgramServiceDto;
 export type GetProgramUsecaseDto = GetProgramRepositoryDto & { session: UsecaseSession };
 export type ListProgramsRepositoryDto = ListProgramsServiceDto;
 export type ListProgramsUsecaseDto = ListProgramsRepositoryDto & { session: UsecaseSession };
-export type UpdateProgramUsecaseDto = UpdateProgramServiceDto;
+export type UpdateProgramUsecaseDto = Omit<UpdateProgramServiceDto, 'slug'>;
 export interface DeleteProgramUsecaseDto { id: string; session: UsecaseSession }
 export type ProgramSessionSnapshotUsecaseDto = ProgramSessionSnapshotServiceDto;
 export type ProgramExerciseSnapshotUsecaseDto = ProgramExerciseSnapshotServiceDto;

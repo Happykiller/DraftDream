@@ -12,10 +12,8 @@ export class UpdateProgramUsecase {
 
   async execute(id: string, dto: UpdateProgramUsecaseDto): Promise<ProgramUsecaseModel | null> {
     try {
-      const toUpdate: any = { ...dto };
-      if (dto.slug) {
-        toUpdate.slug = buildSlug({ label: dto.slug, fallback: 'program' });
-      } else if (dto.label) {
+      const toUpdate: UpdateProgramUsecaseDto & { slug?: string } = { ...dto };
+      if (dto.label) {
         toUpdate.slug = buildSlug({ label: dto.label, fallback: 'program' });
       }
       if (dto.sessions) {

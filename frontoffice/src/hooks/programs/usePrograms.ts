@@ -347,7 +347,6 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
 
   const create = React.useCallback(
     async (input: {
-      slug?: string;
       locale?: string;
       label: string;
       duration: number;
@@ -359,7 +358,6 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
     }): Promise<Program> => {
       try {
         const locale = (input.locale ?? i18n.language)?.trim() || i18n.language;
-        const slug = input.slug?.trim();
 
         const { data, errors } = await execute(() =>
           gql.send<CreateProgramPayload>({
@@ -368,13 +366,11 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
             variables: {
               input: {
                 ...input,
-                slug: slug && slug.length ? slug : undefined,
                 locale,
                 sessionIds: input.sessionIds?.filter(Boolean),
                 sessions: input.sessions?.map((session) => ({
                   ...session,
                   templateSessionId: session.templateSessionId || undefined,
-                  slug: session.slug || undefined,
                   locale: session.locale || undefined,
                   description: session.description ?? undefined,
                   exercises: session.exercises.map((exercise) => ({
@@ -425,7 +421,6 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
   const update = React.useCallback(
     async (input: {
       id: string;
-      slug?: string;
       locale?: string;
       label?: string;
       duration?: number;
@@ -437,7 +432,6 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
     }) => {
       try {
         const locale = (input.locale ?? i18n.language)?.trim() || i18n.language;
-        const slug = input.slug?.trim();
 
         const { errors } = await execute(() =>
           gql.send<UpdateProgramPayload>({
@@ -446,14 +440,12 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
             variables: {
               input: {
                 ...input,
-                slug: slug && slug.length ? slug : undefined,
                 locale,
                 description: input.description ?? undefined,
                 sessionIds: input.sessionIds?.filter(Boolean),
                 sessions: input.sessions?.map((session) => ({
                   ...session,
                   templateSessionId: session.templateSessionId || undefined,
-                  slug: session.slug || undefined,
                   locale: session.locale || undefined,
                   description: session.description ?? undefined,
                   exercises: session.exercises.map((exercise) => ({

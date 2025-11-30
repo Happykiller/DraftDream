@@ -241,7 +241,6 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
                 sessions: input.sessions?.map((session) => ({
                   ...session,
                   templateSessionId: session.templateSessionId || undefined,
-                  slug: session.slug || undefined,
                   locale: session.locale || undefined,
                   description: session.description ?? undefined,
                   exercises: session.exercises.map((exercise) => ({
@@ -298,7 +297,6 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
                 sessions: input.sessions?.map((session) => ({
                   ...session,
                   templateSessionId: session.templateSessionId || undefined,
-                  slug: session.slug || undefined,
                   locale: session.locale || undefined,
                   description: session.description ?? undefined,
                   exercises: session.exercises.map((exercise) => ({

@@ -78,7 +78,6 @@ export class ProgramResolver {
       defaultLocale: input.locale,
     });
     const updateDto: any = {
-      slug: input.slug?.trim(),
       locale: input.locale,
       label: input.label,
       visibility: this.normalizeProgramVisibility(input.visibility),
