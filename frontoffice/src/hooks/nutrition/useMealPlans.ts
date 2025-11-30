@@ -250,7 +250,6 @@ function normalizeMealType(input: MealPlanMealTypeSnapshot) {
   return {
     id: input.id || undefined,
     templateMealTypeId: input.templateMealTypeId || undefined,
-    slug: input.slug || undefined,
     locale: input.locale || undefined,
     label: input.label,
     visibility: input.visibility || undefined,
@@ -261,7 +260,6 @@ function normalizeMeal(input: MealPlanMealSnapshot) {
   return {
     id: input.id || undefined,
     templateMealId: input.templateMealId || undefined,
-    slug: input.slug || undefined,
     locale: input.locale || undefined,
     label: input.label,
     description: input.description ?? undefined,
@@ -278,7 +276,6 @@ function normalizeDay(input: MealPlanDaySnapshot) {
   return {
     id: input.id || undefined,
     templateMealDayId: input.templateMealDayId || undefined,
-    slug: input.slug || undefined,
     locale: input.locale || undefined,
     label: input.label,
     description: input.description ?? undefined,
@@ -295,7 +292,6 @@ export interface UseMealPlansParams {
 }
 
 export interface MealPlanCreateInput {
-  slug?: string;
   locale?: string;
   label: string;
   description?: string | null;
@@ -386,10 +382,8 @@ export function useMealPlans({
   const create = React.useCallback<UseMealPlansResult['create']>(
     async (input) => {
       const locale = (input.locale ?? i18n.language)?.trim() || i18n.language;
-      const slug = input.slug?.trim();
       const payload = {
         ...input,
-        slug: slug && slug.length ? slug : undefined,
         locale,
         description: input.description ?? undefined,
         userId: input.userId ?? undefined,
@@ -433,10 +427,8 @@ export function useMealPlans({
   const update = React.useCallback<UseMealPlansResult['update']>(
     async (input) => {
       const locale = (input.locale ?? i18n.language)?.trim() || i18n.language;
-      const slug = input.slug?.trim();
       const payload = {
         ...input,
-        slug: slug && slug.length ? slug : undefined,
         locale,
         description: input.description ?? undefined,
         userId: input.userId ?? undefined,

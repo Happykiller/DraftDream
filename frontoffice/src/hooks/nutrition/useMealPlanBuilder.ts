@@ -6,7 +6,6 @@ import { UserType } from '@src/commons/enums';
 import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
 import { useCoachAthleteUsers } from '@hooks/athletes/useCoachAthleteUsers';
 import type { User } from '@src/hooks/useUsers';
-import { slugify } from '@src/utils/slugify';
 import { session } from '@stores/session';
 
 import {
@@ -149,7 +148,6 @@ function cloneMealSnapshot(meal: MealPlanMealSnapshot): MealPlanBuilderMeal {
     label: meal.type.label ?? meal.label,
     id: meal.type.id ?? undefined,
     templateMealTypeId: meal.type.templateMealTypeId ?? undefined,
-    slug: meal.type.slug ?? undefined,
     locale: meal.type.locale ?? meal.locale ?? undefined,
     visibility: meal.type.visibility ?? undefined,
     icon: meal.type.icon ?? undefined,
@@ -173,7 +171,6 @@ function normalizeMealForSubmission(meal: MealPlanBuilderMeal): MealPlanMealSnap
     label: meal.type?.label ?? meal.label,
     id: meal.type?.id ?? undefined,
     templateMealTypeId: meal.type?.templateMealTypeId ?? undefined,
-    slug: meal.type?.slug ?? undefined,
     locale: meal.type?.locale ?? meal.locale ?? undefined,
     visibility: meal.type?.visibility ?? undefined,
     icon: meal.type?.icon ?? undefined,
@@ -182,7 +179,6 @@ function normalizeMealForSubmission(meal: MealPlanBuilderMeal): MealPlanMealSnap
   return {
     id: meal.id ?? undefined,
     templateMealId: meal.templateMealId ?? undefined,
-    slug: meal.slug ?? undefined,
     locale: meal.locale ?? undefined,
     label: meal.label,
     description: meal.description ?? undefined,
@@ -210,7 +206,6 @@ function createMealFromTemplate(meal: Meal): MealPlanBuilderMeal {
       ? {
           id: meal.type.id ?? undefined,
           templateMealTypeId: meal.type.id ?? undefined,
-          slug: meal.type.slug ?? undefined,
           locale: meal.type.locale ?? undefined,
           label: meal.type.label,
           visibility: meal.type.visibility ?? undefined,
@@ -224,7 +219,6 @@ function createMealFromTemplate(meal: Meal): MealPlanBuilderMeal {
       label: meal.type?.label ?? meal.label,
       id: meal.type?.id ?? meal.typeId ?? undefined,
       templateMealTypeId: meal.type?.id ?? meal.typeId ?? undefined,
-      slug: meal.type?.slug ?? undefined,
       locale: meal.type?.locale ?? meal.locale ?? undefined,
       visibility: meal.type?.visibility ?? meal.visibility ?? undefined,
       icon: meal.type?.icon ?? undefined,
@@ -234,7 +228,6 @@ function createMealFromTemplate(meal: Meal): MealPlanBuilderMeal {
   const snapshot: MealPlanMealSnapshot = {
     id: undefined,
     templateMealId: meal.id,
-    slug: meal.slug,
     locale: meal.locale,
     label: meal.label,
     description: undefined,
@@ -642,7 +635,6 @@ export function useMealPlanBuilder(
       const payloadDays: MealPlanDaySnapshot[] = days.map((day, index) => ({
         id: day.id ?? undefined,
         templateMealDayId: day.templateMealDayId ?? undefined,
-        slug: day.slug ?? undefined,
         locale: day.locale ?? i18n.language,
         label: day.label ?? `${builderCopy.structure.day_prefix} ${index + 1}`,
         description: day.description ?? undefined,
@@ -650,7 +642,6 @@ export function useMealPlanBuilder(
       }));
 
       const submission = {
-        slug: slugify(form.planName, `${Date.now()}`),
         locale: i18n.language,
         label: form.planName.trim(),
         description: form.description?.trim() ?? '',
