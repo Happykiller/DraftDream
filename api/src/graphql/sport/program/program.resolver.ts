@@ -73,6 +73,7 @@ export class ProgramResolver {
     @Args('input') input: UpdateProgramInput,
   ): Promise<ProgramGql | null> {
     const updateDto: any = {
+      slug: input.slug?.trim(),
       locale: input.locale,
       label: input.label,
       visibility: this.normalizeProgramVisibility(input.visibility),

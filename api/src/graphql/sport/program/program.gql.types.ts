@@ -135,6 +135,7 @@ export class CreateProgramInput {
 @InputType()
 export class UpdateProgramInput {
   @Field(() => ID) id!: string;
+  @Field({ nullable: true }) slug?: string;
   @Field({ nullable: true }) locale?: string;
   @Field({ nullable: true }) label?: string;
   @Field(() => ProgramVisibility, { nullable: true })
