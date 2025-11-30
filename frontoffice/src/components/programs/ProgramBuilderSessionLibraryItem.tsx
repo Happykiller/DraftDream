@@ -8,7 +8,7 @@ import type { BuilderCopy, SessionTemplate } from './programBuilderTypes';
 type ProgramBuilderSessionTemplateItemProps = {
   template: SessionTemplate;
   builderCopy: BuilderCopy;
-  onAdd: () => void;
+  onAdd: () => void | Promise<void>;
 };
 
 export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuilderSessionLibraryItem({
