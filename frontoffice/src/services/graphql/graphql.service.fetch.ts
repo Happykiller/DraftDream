@@ -36,12 +36,6 @@ export class GraphqlServiceFetch {
     this.inversify?.loggerService?.error?.(message);
 
     try {
-      sessionStorage.setItem('dd:last-unauthorized', message);
-    } catch {
-      // ignore storage failures
-    }
-
-    try {
       session.getState().reset?.();
     } catch {
       // ignore reset failures
