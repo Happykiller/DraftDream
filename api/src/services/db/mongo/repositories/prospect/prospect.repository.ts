@@ -98,7 +98,7 @@ export class BddServiceProspectMongo {
   async get(dto: GetProspectDto): Promise<Prospect | null> {
     try {
       const _id = this.toObjectId(dto.id);
-      const doc = await this.col().findOne({ _id });
+      const doc = await this.col().findOne({ _id, deletedAt: { $exists: false } });
       return doc ? this.toModel(doc) : null;
     } catch (error) {
       this.handleError('get', error);
@@ -117,7 +117,7 @@ export class BddServiceProspectMongo {
       sort = { updatedAt: -1 },
     } = params;
 
-    const filter: Record<string, any> = {};
+    const filter: Record<string, any> = { deletedAt: { $exists: false } };
     if (q?.trim()) {
       const regex = new RegExp(q.trim(), 'i');
       filter.$or = [
@@ -184,7 +184,7 @@ export class BddServiceProspectMongo {
 
     try {
       const updatedDoc = await this.col().findOneAndUpdate(
-        { _id },
+        { _id, deletedAt: { $exists: false } },
         { $set },
         { returnDocument: 'after' },
       );
