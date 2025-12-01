@@ -59,7 +59,7 @@ export interface ProgramSessionExercise {
 export interface ProgramSession {
   id: string;
   templateSessionId?: string | null;
-  slug?: string | null;
+
   locale?: string | null;
   label: string;
   durationMin: number;
@@ -69,7 +69,7 @@ export interface ProgramSession {
 
 export interface Program {
   id: string;
-  slug: string;
+
   locale: string;
   label: string;
   duration: number;
@@ -102,7 +102,7 @@ const LIST_Q = `
     program_list(input: $input) {
       items {
         id
-        slug
+
         locale
         label
         duration
@@ -111,7 +111,7 @@ const LIST_Q = `
         sessions {
           id
           templateSessionId
-          slug
+
           locale
           label
           durationMin
@@ -167,7 +167,7 @@ const CREATE_M = `
   mutation CreateProgram($input: CreateProgramInput!) {
     program_create(input: $input) {
       id
-      slug
+
       locale
       label
       duration
@@ -176,7 +176,7 @@ const CREATE_M = `
       sessions {
         id
         templateSessionId
-        slug
+
         locale
         label
         durationMin
@@ -228,7 +228,7 @@ const UPDATE_M = `
   mutation UpdateProgram($input: UpdateProgramInput!) {
     program_update(input: $input) {
       id
-      slug
+
       locale
       label
       duration
@@ -237,7 +237,7 @@ const UPDATE_M = `
       sessions {
         id
         templateSessionId
-        slug
+
         locale
         label
         durationMin
@@ -358,7 +358,7 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
     }): Promise<Program> => {
       try {
         const locale = (input.locale ?? i18n.language)?.trim() || i18n.language;
-        const { slug: _ignoreSlug, sessions, ...restInput } = input;
+        const { sessions, ...restInput } = input;
 
         const { data, errors } = await execute(() =>
           gql.send<CreateProgramPayload>({
@@ -370,7 +370,7 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
                 locale,
                 sessionIds: restInput.sessionIds?.filter(Boolean),
                 sessions: sessions?.map(
-                  ({ slug: _ignoreSessionSlug, ...session }) => ({
+                  ({ ...session }) => ({
                     ...session,
                     templateSessionId:
                       session.templateSessionId || undefined,
@@ -437,7 +437,7 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
     }) => {
       try {
         const locale = (input.locale ?? i18n.language)?.trim() || i18n.language;
-        const { slug: _ignoreSlug, sessions, ...restInput } = input;
+        const { sessions, ...restInput } = input;
 
         const { errors } = await execute(() =>
           gql.send<UpdateProgramPayload>({
@@ -450,7 +450,7 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
                 description: restInput.description ?? undefined,
                 sessionIds: restInput.sessionIds?.filter(Boolean),
                 sessions: sessions?.map(
-                  ({ slug: _ignoreSessionSlug, ...session }) => ({
+                  ({ ...session }) => ({
                     ...session,
                     templateSessionId:
                       session.templateSessionId || undefined,

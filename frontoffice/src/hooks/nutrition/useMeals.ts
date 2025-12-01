@@ -14,7 +14,7 @@ export interface MealTypeSummary {
   id: string;
   label: string;
   locale: string;
-  slug?: string | null;
+
   visibility?: string | null;
   icon?: string | null;
 }
@@ -26,7 +26,7 @@ export interface MealCreator {
 
 export interface Meal {
   id: string;
-  slug: string;
+
   locale: string;
   label: string;
   typeId: string;
@@ -61,11 +61,11 @@ const LIST_QUERY = `
     meal_list(input: $input) {
       items {
         id
-        slug
+
         locale
         label
         typeId
-        type { id slug label locale visibility icon }
+        type { id label locale visibility icon }
         foods
         calories
         proteinGrams
@@ -88,11 +88,11 @@ const CREATE_MUTATION = `
   mutation CreateMeal($input: CreateMealInput!) {
     meal_create(input: $input) {
       id
-      slug
+
       locale
       label
       typeId
-      type { id slug label locale visibility icon }
+      type { id label locale visibility icon }
       foods
       calories
       proteinGrams
@@ -111,11 +111,11 @@ const UPDATE_MUTATION = `
   mutation UpdateMeal($input: UpdateMealInput!) {
     meal_update(input: $input) {
       id
-      slug
+
       locale
       label
       typeId
-      type { id slug label locale visibility icon }
+      type { id label locale visibility icon }
       foods
       calories
       proteinGrams
@@ -150,7 +150,7 @@ export interface UseMealsResult {
   total: number;
   loading: boolean;
   create: (input: {
-    slug: string;
+
     label: string;
     locale: string;
     typeId: string;
@@ -163,7 +163,7 @@ export interface UseMealsResult {
   }) => Promise<void>;
   update: (input: {
     id: string;
-    slug?: string;
+
     label?: string;
     locale?: string;
     typeId?: string;

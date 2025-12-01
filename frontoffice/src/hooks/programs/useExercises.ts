@@ -9,7 +9,7 @@ import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
 export type ExerciseVisibility = 'PRIVATE' | 'PUBLIC';
 export type CreateExerciseInput = {
-  slug: string;
+
   locale: string;
   label: string;
   series: string;
@@ -28,7 +28,7 @@ export type CreateExerciseInput = {
 
 export type UpdateExerciseInput = {
   id: string;
-  slug?: string;
+
   locale?: string;
   label?: string;
   series?: string;
@@ -49,7 +49,7 @@ export interface Creator { id: string; email: string; }
 
 export interface Exercise {
   id: string;
-  slug: string;
+
   locale: string;
   label: string;
   description?: string | null;
@@ -89,7 +89,7 @@ const LIST_Q = `
   query ListExercises($input: ListExercisesInput) {
     exercise_list(input: $input) {
       items {
-        id slug locale label description instructions series repetitions
+        id locale label description instructions series repetitions
         charge rest videoUrl visibility categoryIds createdBy createdAt updatedAt
         creator { id email }
         categories { id label }
@@ -105,7 +105,7 @@ const LIST_Q = `
 const CREATE_M = `
   mutation CreateExercise($input: CreateExerciseInput!) {
     exercise_create(input: $input) {
-      id slug locale label description instructions series repetitions
+      id locale label description instructions series repetitions
       charge rest videoUrl visibility categoryIds createdBy createdAt updatedAt
       creator { id email }
       categories { id label }
@@ -119,7 +119,7 @@ const CREATE_M = `
 const UPDATE_M = `
   mutation UpdateExercise($input: UpdateExerciseInput!) {
     exercise_update(input: $input) {
-      id slug locale label description instructions series repetitions
+      id locale label description instructions series repetitions
       charge rest videoUrl visibility categoryIds createdBy createdAt updatedAt
       creator { id email }
       categories { id label }
@@ -138,7 +138,7 @@ const GET_Q = `
   query GetExercise($id: ID!) {
     exercise_get(id: $id) {
       id
-      slug
+
       locale
       label
       description

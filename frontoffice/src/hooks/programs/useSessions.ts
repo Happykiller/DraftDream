@@ -7,7 +7,7 @@ import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
 export interface Session {
   id: string;
-  slug: string;
+
   locale: string;
   label: string;
   durationMin: number;
@@ -37,7 +37,7 @@ const LIST_Q = `
   query ListSessions($input: ListSessionsInput) {
     session_list(input: $input) {
       items {
-        id slug locale label durationMin description exerciseIds
+        id locale label durationMin description exerciseIds
         exercises { id label }
         createdBy createdAt updatedAt
         creator { id email }
@@ -50,7 +50,7 @@ const LIST_Q = `
 const CREATE_M = `
   mutation CreateSession($input: CreateSessionInput!) {
     session_create(input: $input) {
-      id slug locale label durationMin description exerciseIds
+      id locale label durationMin description exerciseIds
       exercises { id label }
       createdBy createdAt updatedAt
       creator { id email }
@@ -61,7 +61,7 @@ const CREATE_M = `
 const UPDATE_M = `
   mutation UpdateSession($input: UpdateSessionInput!) {
     session_update(input: $input) {
-      id slug locale label durationMin description exerciseIds
+      id locale label durationMin description exerciseIds
       exercises { id label }
       createdBy createdAt updatedAt
       creator { id email }
@@ -125,7 +125,7 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
 
   const create = React.useCallback(
     async (input: {
-      slug: string;
+
       locale: string;
       label: string;
       durationMin: number;
@@ -155,7 +155,7 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
   const update = React.useCallback(
     async (input: {
       id: string;
-      slug?: string;
+
       locale?: string;
       label?: string;
       durationMin?: number;

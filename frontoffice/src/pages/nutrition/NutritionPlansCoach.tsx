@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { MealPlanList } from '@components/nutrition/MealPlanList';
 import { useMealPlans, type MealPlan } from '@hooks/nutrition/useMealPlans';
-import { slugify } from '@src/utils/slugify';
+
 
 interface EmptyStateCopy {
   title: string;
@@ -89,14 +89,14 @@ export function NutritionPlansCoach(): React.JSX.Element {
       const daySnapshots = basePlan.days.map((day) => ({
         id: day.id ?? undefined,
         templateMealDayId: day.templateMealDayId ?? undefined,
-        slug: day.slug ?? undefined,
+
         locale: day.locale ?? locale,
         label: day.label,
         description: day.description ?? undefined,
         meals: day.meals.map((meal) => ({
           id: meal.id ?? undefined,
           templateMealId: meal.templateMealId ?? undefined,
-          slug: meal.slug ?? undefined,
+
           locale: meal.locale ?? locale,
           label: meal.label,
           description: meal.description ?? undefined,
@@ -108,7 +108,7 @@ export function NutritionPlansCoach(): React.JSX.Element {
           type: {
             id: meal.type.id ?? undefined,
             templateMealTypeId: meal.type.templateMealTypeId ?? undefined,
-            slug: meal.type.slug ?? undefined,
+
             locale: meal.type.locale ?? locale,
             label: meal.type.label,
             visibility: meal.type.visibility ?? undefined,
@@ -121,7 +121,7 @@ export function NutritionPlansCoach(): React.JSX.Element {
         .filter((identifier): identifier is string => Boolean(identifier));
 
       const cloned = await create({
-        slug: slugify(payload.label, String(Date.now()).slice(-5)),
+
         locale,
         label: payload.label,
         description: basePlan.description ?? '',
