@@ -1,6 +1,40 @@
 {
   "releases": [
     {
+      "version": "0.8.0",
+      "title": "Stronger Pipeline & Split Dashboards",
+      "date": "2025-12-05",
+      "global": [
+        "Full separation of coach and athlete dashboards for clearer reading.",
+        "Prospect pipeline upgraded with KPIs, unified filters, history, and per-column metrics.",
+        "Hardened navigation with stronger protections against unauthorized access.",
+        "Cleanup of legacy slugs on programs, plans, and clients for cleaner data."
+      ],
+      "notes": "FitDesk 0.8.0 doubles down on commercial steering: a richer pipeline, reliable metrics, and a clear split between coaches and athletes. Prospect tracking becomes a strategic tool, powered by a cleaner API and an elevated front.",
+      "projects": {
+        "/api": [
+          "Automatically exclude soft-deleted prospects from results.",
+          "Remove slugs from mutations across programs, nutrition plans, and clients.",
+          "Provide full pipeline step history, now exposed for the frontend.",
+          "Allow every role to browse exercises, simplifying imports and reuse."
+        ],
+        "/backoffice": [
+          "Coach and athlete dashboards are now split and better structured.",
+          "Controlled access to sensitive sections to avoid navigation mistakes.",
+          "Prospects module upgrades: unified filters, clearer cards, and consolidated indicators."
+        ],
+        "/frontoffice": [
+          "New KPI summary at the top of the pipeline (volume, sources, progression).",
+          "Transition history and time-in-stage visible directly on cards.",
+          "Prospect cards redesigned with highlighted filters for better readability.",
+          "Removed slugs from create/edit flows and aligned labels across the UI."
+        ],
+        "/showcase": [
+          "Editorial alignment to support upcoming commercial enhancements."
+        ]
+      }
+    },
+    {
       "version": "0.7.0",
       "title": "Prospect Management & CRM Pipeline",
       "date": "2025-11-24",

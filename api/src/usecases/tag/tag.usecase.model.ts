@@ -1,10 +1,11 @@
-// src/usecases/tag/model/tag.usecase.model.ts
+import { VisibilityValue } from '@src/common/visibility.enum';
+
 export interface TagUsecaseModel {
   id: string;
   slug: string;
   locale: string;
   label: string;
-  visibility: 'private' | 'public';
+  visibility: VisibilityValue;
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;

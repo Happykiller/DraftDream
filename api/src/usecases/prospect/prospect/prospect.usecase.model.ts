@@ -1,6 +1,11 @@
 // src/usecases/client/client/client.usecase.model.ts
 import { ProspectStatus } from '@src/common/prospect-status.enum';
 
+export interface ProspectWorkflowEntryModel {
+  status: ProspectStatus | 'create';
+  date: Date;
+}
+
 export interface ProspectUsecaseModel {
   id: string;
   firstName: string;
@@ -18,6 +23,7 @@ export interface ProspectUsecaseModel {
   budget?: number;
   dealDescription?: string;
   desiredStartDate?: Date;
+  workflowHistory: ProspectWorkflowEntryModel[];
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;

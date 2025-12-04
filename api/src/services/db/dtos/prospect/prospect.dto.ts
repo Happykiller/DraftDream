@@ -1,6 +1,8 @@
 // src/services/db/dtos/client/client.dto.ts
 import { ProspectStatus } from '@src/common/prospect-status.enum';
 
+import { ProspectWorkflowEntry } from '@services/db/models/prospect/prospect.model';
+
 export interface CreateProspectDto {
   firstName: string;
   lastName: string;
@@ -18,6 +20,7 @@ export interface CreateProspectDto {
   dealDescription?: string;
   desiredStartDate?: Date;
   createdBy: string;
+  workflowHistory?: ProspectWorkflowEntry[];
 }
 
 export type UpdateProspectDto = Partial<Omit<CreateProspectDto, 'createdBy'>>;

@@ -117,8 +117,11 @@ export class BddServiceMealDayMongo {
     if (locale) {
       andConditions.push({ locale: locale.toLowerCase().trim() });
     }
+
     if (visibility) {
-      andConditions.push({ visibility });
+      if (visibility === 'public') andConditions.push({ visibility: 'public' });
+      
+      else andConditions.push({ visibility: 'private' });
     }
 
     const normalizedCreatedByIn = Array.isArray(createdByIn)
@@ -249,5 +252,3 @@ export class BddServiceMealDayMongo {
     throw error instanceof Error ? error : new Error(message);
   }
 }
-
-

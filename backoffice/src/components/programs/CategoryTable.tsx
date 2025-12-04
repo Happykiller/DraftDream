@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { Category } from '@hooks/useCategories';
 import { useDateFormatter } from '@hooks/useDateFormatter';
+import { getVisibilityLabel } from '../../commons/visibility';
 
 export interface CategoryTableProps {
   rows: Category[];
@@ -51,8 +52,7 @@ export function CategoryTable(props: CategoryTableProps): React.JSX.Element {
         field: 'visibility',
         headerName: t('common.labels.visibility'),
         width: 140,
-        renderCell: ({ value }) =>
-          value === 'PUBLIC' ? t('common.visibility.public') : t('common.visibility.private'),
+        renderCell: ({ value }) => getVisibilityLabel(value, t),
       },
       {
         field: 'creator',

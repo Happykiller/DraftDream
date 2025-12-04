@@ -14,7 +14,7 @@ import { ProgramCard, type ProgramActionKey } from '@components/programs/Program
 
 import type { Program } from '@hooks/programs/usePrograms';
 
-interface ProgramListProps {
+export interface ProgramListProps {
   programs: Program[];
   loading: boolean;
   placeholderTitle: string;
@@ -28,6 +28,7 @@ interface ProgramListProps {
     payload: { label: string; athleteId: string | null; openBuilder: boolean },
   ) => Promise<void>;
   onViewProgram?: (program: Program) => void;
+  onPrefetch?: (action: 'view' | 'edit') => void;
   allowedActions?: ProgramActionKey[];
   onSearchChange?: (query: string) => void;
   searchPlaceholder?: string;
@@ -36,7 +37,7 @@ interface ProgramListProps {
   searchDebounceMs?: number;
 }
 
-export function ProgramList({
+export const ProgramList = React.memo(function ProgramList({
   programs,
   loading,
   placeholderTitle,
@@ -47,6 +48,7 @@ export function ProgramList({
   onEditProgram,
   onCloneProgram,
   onViewProgram,
+  onPrefetch,
   allowedActions,
   onSearchChange,
   searchPlaceholder,
@@ -111,6 +113,7 @@ export function ProgramList({
                   </InputAdornment>
                 ),
               }}
+              sx={{ bgcolor: 'common.white' }}
             />
           ) : null}
 
@@ -140,6 +143,7 @@ export function ProgramList({
                 onEdit={onEditProgram}
                 onClone={onCloneProgram}
                 onView={onViewProgram}
+                onPrefetch={onPrefetch}
               />
             </Grid>
           ))}
@@ -171,4 +175,4 @@ export function ProgramList({
       )}
     </Stack>
   );
-}
+});

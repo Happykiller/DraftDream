@@ -21,6 +21,7 @@ export const mapProspectUsecaseToGql = (model: ProspectUsecaseModel): ProspectGq
     budget: model.budget,
     dealDescription: model.dealDescription,
     desiredStartDate: model.desiredStartDate,
+    workflowHistory: model.workflowHistory ?? [],
     createdBy: model.createdBy,
     createdAt: model.createdAt,
     updatedAt: model.updatedAt,

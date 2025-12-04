@@ -18,7 +18,7 @@ import {
 } from '@hooks/programs/usePrograms';
 import { useFlashStore } from '@src/hooks/useFlashStore';
 import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
-import { slugify } from '@src/utils/slugify';
+
 import { session } from '@stores/session';
 
 import type {
@@ -117,7 +117,7 @@ type UseProgramBuilderResult = {
   ) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   updateProgramName: (value: string) => void;
   updateProgramDescription: (value: string) => void;
-  handleAddSessionFromTemplate: (templateId: string, position?: number) => void;
+  handleAddSessionFromTemplate: (templateId: string, position?: number) => Promise<void>;
   handleCreateEmptySession: () => void;
   handleRemoveSession: (sessionId: string) => void;
   handleRemoveExercise: (sessionId: string, exerciseId: string) => void;
@@ -386,7 +386,7 @@ export function useProgramBuilder(
       if (item.locale && item.locale !== i18n.language) {
         continue;
       }
-      const label = item.label || item.slug || item.locale;
+      const label = item.label || item.locale;
       if (!label) continue;
       dedup.set(item.id, { id: item.id, label });
     }
@@ -575,8 +575,9 @@ export function useProgramBuilder(
       builderExerciseId: string,
       exerciseId: string,
       overrides?: Partial<Omit<ProgramExercise, 'id' | 'exerciseId'>>,
+      fallbackExercise?: Exercise,
     ): ProgramExercise | null => {
-      const rawExercise = getRawExerciseById(exerciseId);
+      const rawExercise = fallbackExercise ?? getRawExerciseById(exerciseId);
       const libraryExercise = exerciseMap.get(exerciseId);
       if (!rawExercise && !libraryExercise) {
         return null;
@@ -810,7 +811,10 @@ export function useProgramBuilder(
   );
 
   const createSessionFromTemplate = React.useCallback(
-    (template: SessionTemplate): ProgramSession => {
+    (
+      template: SessionTemplate,
+      exerciseOverrides?: Map<string, Exercise>,
+    ): ProgramSession => {
       const exercises = template.exercises
         .map((exerciseRef) => {
           const overrides: Partial<Omit<ProgramExercise, 'id' | 'exerciseId'>> = {};
@@ -839,6 +843,7 @@ export function useProgramBuilder(
             nextId('exercise'),
             exerciseRef.exerciseId,
             overrides,
+            exerciseOverrides?.get(exerciseRef.exerciseId),
           );
 
           return programExercise;
@@ -872,13 +877,59 @@ export function useProgramBuilder(
   }, [builderCopy.structure.custom_session_label, nextId]);
 
   const handleAddSessionFromTemplate = React.useCallback(
-    (templateId: string, position?: number) => {
+    async (templateId: string, position?: number) => {
       const template = sessionTemplates.find((item) => item.id === templateId);
       if (!template) {
         return;
       }
 
-      const session = createSessionFromTemplate(template);
+      const missingExerciseIds = template.exercises
+        .map((exercise) => exercise.exerciseId.trim())
+        .filter(
+          (exerciseId) =>
+            exerciseId.length > 0 &&
+            !getRawExerciseById(exerciseId) &&
+            !exerciseMap.has(exerciseId),
+        );
+
+      let fetchedExercises: Exercise[] = [];
+      if (missingExerciseIds.length > 0) {
+        const resolvedExercises = await Promise.all(
+          missingExerciseIds.map(async (exerciseId) => {
+            try {
+              const exercise = await getExerciseById(exerciseId);
+              return exercise ?? null;
+            } catch (_error) {
+              return null;
+            }
+          }),
+        );
+
+        fetchedExercises = resolvedExercises.filter(
+          (exercise): exercise is Exercise => Boolean(exercise),
+        );
+
+        if (fetchedExercises.length > 0) {
+          setExerciseSnapshots((previous) => {
+            let mutated = false;
+            const next = new Map(previous);
+            fetchedExercises.forEach((exercise) => {
+              if (!next.has(exercise.id)) {
+                next.set(exercise.id, exercise);
+                mutated = true;
+              }
+            });
+            return mutated ? next : previous;
+          });
+        }
+      }
+
+      const exerciseOverrides =
+        fetchedExercises.length > 0
+          ? new Map(fetchedExercises.map((exercise) => [exercise.id, exercise]))
+          : undefined;
+
+      const session = createSessionFromTemplate(template, exerciseOverrides);
       setSessions((prev) => {
         const insertAt =
           position != null ? Math.min(Math.max(position, 0), prev.length) : prev.length;
@@ -887,7 +938,14 @@ export function useProgramBuilder(
         return next;
       });
     },
-    [createSessionFromTemplate, sessionTemplates],
+    [
+      createSessionFromTemplate,
+      exerciseMap,
+      getExerciseById,
+      getRawExerciseById,
+      sessionTemplates,
+      setExerciseSnapshots,
+    ],
   );
 
   const handleCreateEmptySession = React.useCallback(() => {
@@ -956,7 +1014,7 @@ export function useProgramBuilder(
         prev.map((session) => (session.id === sessionId ? { ...session, description } : session)),
       );
     },
-  []);
+    []);
 
   const handleSessionDurationChange = React.useCallback(
     (sessionId: string, duration: number) => {
@@ -964,7 +1022,7 @@ export function useProgramBuilder(
         prev.map((session) => (session.id === sessionId ? { ...session, duration } : session)),
       );
     },
-  []);
+    []);
 
   const handleExerciseLabelChange = React.useCallback(
     (sessionId: string, exerciseId: string, label: string) => {
@@ -1285,7 +1343,7 @@ export function useProgramBuilder(
         if (mode === 'edit' && program) {
           await updateProgram({
             id: program.id,
-            slug: program.slug,
+
             locale: program.locale,
             label: name,
             duration,
@@ -1298,7 +1356,7 @@ export function useProgramBuilder(
           onUpdated?.();
         } else {
           await createProgram({
-            slug: slugify(name, String(Date.now()).slice(-5)),
+
             locale: i18n.language,
             label: name,
             duration,
@@ -1429,7 +1487,7 @@ export function useProgramBuilder(
 
           snapshotExercises.set(baseExerciseId, {
             id: baseExerciseId,
-            slug: baseExerciseId,
+
             locale: program.locale,
             label: exerciseItem.label,
             description: exerciseItem.description ?? null,

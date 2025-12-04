@@ -30,6 +30,9 @@
     "connect_space": "Connectez-vous à votre espace",
     "success": "Connexion réussie : {{name}} !",
     "button": "Se connecter",
+    "redirect_reason": {
+      "unauthorized": "Votre session a expiré. Merci de vous reconnecter."
+    },
     "language_label": "Langue",
     "language_placeholder": "Changer la langue de l'interface",
     "hero": {
@@ -46,6 +49,25 @@
     "title": "Tableau de bord",
     "placeholder": "Bonjour"
   },
+  "dashboard": {
+    "title": "Dashboard Coach",
+    "subtitle": "Gérez vos clients et programmes d'entraînement",
+    "coach": {
+      "title": "Dashboard Coach",
+      "subtitle": "Gérez vos clients et programmes d'entraînement"
+    },
+    "athlete": {
+      "title": "Dashboard Athlète",
+      "subtitle": "Consultez vos programmes et vos plans nutritionnels."
+    },
+    "summary": {
+      "athletes": "Athlètes",
+      "clients": "Clients",
+      "prospects": "Prospects",
+      "programs": "Programmes",
+      "nutrition": "Plans Nutrition"
+    }
+  },
   "prospects": {
     "title": "Prospects",
     "subtitle": "Gérer tous vos prospects.",
@@ -56,6 +78,7 @@
     },
     "actions": {
       "create": "Nouveau prospect",
+      "create_lead": "Créer un nouveau prospect",
       "refresh": "Rafraîchir",
       "back_to_list": "Retour à la liste"
     },
@@ -64,11 +87,21 @@
       "search_aria": "Rechercher des prospects",
       "empty_title": "Aucun prospect pour l'instant",
       "empty_description": "Créez votre premier prospect pour centraliser son onboarding.",
+      "metrics": {
+        "total": "Total",
+        "active_clients": "Clients actifs",
+        "active_clients_helper": "{{value}}% actifs",
+        "prospects": "Prospects",
+        "prospects_helper": "Ce mois-ci",
+        "new_clients": "Ce mois",
+        "new_clients_helper": "Nouveau client"
+      },
       "expand_details": "Afficher plus de détails",
       "collapse_details": "Afficher moins de détails",
       "actions": {
         "edit": "Modifier le prospect",
-        "delete": "Supprimer le prospect"
+        "delete": "Supprimer le prospect",
+        "validate": "Valider"
       },
       "card": {
         "contact": "Contact",
@@ -80,9 +113,13 @@
         "start_date": "Date de début souhaitée",
         "created_label": "Début : {{date}}",
         "level": "Niveau :",
+        "level_unknown": "Non renseigné",
         "created": "Créé le {{date}}",
         "updated": "Mis à jour le {{date}}",
         "no_budget": "Budget non défini",
+        "no_name": "Nom non renseigné",
+        "client_since": "Client depuis {{date}}",
+        "client_since_unknown": "Client depuis —",
         "updated_label": "Date de dernière mise à jour : {{date}}",
         "updated_unknown": "Date de dernière mise à jour inconnue",
         "stage_duration": "{{count}} jours dans cette étape",
@@ -147,27 +184,49 @@
       "delete_failure": "Impossible de supprimer le prospect.",
       "update_status_failure": "Impossible de mettre à jour le statut du prospect."
     },
-      "workflow": {
-        "card_title": "Étapes de prospection",
-        "card_helper": "Déplacez vos prospects dans la pipeline pour visualiser votre avancée.",
-        "empty_title": "Aucun prospect",
-        "empty_description": "Ajoutez ou déplacez des prospects pour remplir cette étape.",
+    "workflow": {
+      "card_title": "Étapes de prospection",
+      "card_helper": "Déplacez vos prospects dans la pipeline pour visualiser votre avancée.",
+      "summary": {
+        "title": "Pipeline de prospection",
+        "helper": "Gérez vos prospects à travers les étapes de conversion.",
         "actions": {
-          "create_at_stage": "Ajouter un prospect dans cette étape"
+          "refresh": "Actualiser"
         },
-        "help": {
-          "title": "Comment utiliser la pipeline ?",
-          "items": [
-            "Faites glisser un prospect vers l'étape correspondante pour refléter son avancement.",
-            "Chaque colonne regroupe les prospects partageant le même statut pour une visibilité immédiate.",
-            "Ajoutez, modifiez ou supprimez un prospect depuis les actions dédiées."
-          ]
+        "filters": {
+          "label": "Source",
+          "all_sources": "Toutes les sources",
+          "none_source": "Aucune source",
+          "unknown_source": "Source non renseignée"
         },
-        "stages": {
-          "lead": {
-            "title": "Lead",
-            "description": "Nouveau contact à qualifier avant de proposer un rendez-vous."
-          },
+        "metrics": {
+          "total_prospects": "Total prospects",
+          "pipeline_value": "Valeur pipeline",
+          "conversion_rate": "Taux de conversion",
+          "average_value": "Valeur moyenne"
+        }
+      },
+      "empty_title": "Aucun prospect",
+      "empty_description": "Ajoutez ou déplacez des prospects pour remplir cette étape.",
+      "actions": {
+        "create_at_stage": "Ajouter un prospect dans cette étape"
+      },
+      "stage_count": "{{count}} prospect",
+      "stage_count_plural": "{{count}} prospects",
+      "total_value_label": "Valeur totale",
+      "help": {
+        "title": "Comment utiliser la pipeline ?",
+        "items": [
+          "Faites glisser un prospect vers l'étape correspondante pour refléter son avancement.",
+          "Chaque colonne regroupe les prospects partageant le même statut pour une visibilité immédiate.",
+          "Ajoutez, modifiez ou supprimez un prospect depuis les actions dédiées."
+        ]
+      },
+      "stages": {
+        "lead": {
+          "title": "Lead",
+          "description": "Nouveau contact à qualifier avant de proposer un rendez-vous."
+        },
         "contact": {
           "title": "Contacté",
           "description": "Premier échange effectué pour valider l'intérêt et les besoins."
@@ -193,8 +252,8 @@
           "description": "Le prospect n'ira pas plus loin ; archivez et notez les raisons."
         },
         "todo": {
-          "title": "À faire",
-          "description": "Actions internes à réaliser pour relancer ou finaliser une étape."
+          "title": "Création athlète",
+          "description": "Fitdesk transforme votre prospect gagné en un de vos athlètes."
         },
         "client": {
           "title": "Client",
@@ -202,7 +261,7 @@
         }
       }
     }
-    },
+  },
   "athletes": {
     "title": "Athlètes",
     "subtitle": "Gérer vos athlètes",
@@ -260,9 +319,6 @@
       "description": "Export JSON complet des valeurs stockées dans src/stores/session.ts.",
       "empty": "Aucune donnée de session disponible"
     }
-  },
-  "programs-athlete": {
-    "title": "Mes programmes"
   },
   "programs-coatch": {
     "title": "Programmes",

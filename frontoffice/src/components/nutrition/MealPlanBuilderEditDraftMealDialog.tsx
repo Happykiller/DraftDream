@@ -57,7 +57,7 @@ function buildTypeSnapshot(source: MealPlanMealTypeSnapshot | undefined, fallbac
     return {
       id: source.id ?? undefined,
       templateMealTypeId: source.templateMealTypeId ?? undefined,
-      slug: source.slug ?? undefined,
+
       locale: source.locale ?? undefined,
       label: source.label,
       visibility: source.visibility ?? undefined,
@@ -69,7 +69,7 @@ function buildTypeSnapshot(source: MealPlanMealTypeSnapshot | undefined, fallbac
     return {
       id: fallback.type.id ?? undefined,
       templateMealTypeId: fallback.type.templateMealTypeId ?? undefined,
-      slug: fallback.type.slug ?? undefined,
+
       locale: fallback.type.locale ?? undefined,
       label: fallback.type.label,
       visibility: fallback.type.visibility ?? undefined,
@@ -151,14 +151,13 @@ export function MealPlanBuilderEditDraftMealDialog({
       const nextTypeSnapshot = buildTypeSnapshot(
         selectedType
           ? {
-              id: selectedType.id,
-              templateMealTypeId: selectedType.id,
-              slug: selectedType.slug ?? undefined,
-              locale: selectedType.locale,
-              label: selectedType.label,
-              visibility: selectedType.visibility ?? undefined,
-              icon: selectedType.icon ?? undefined,
-            }
+            id: selectedType.id,
+            templateMealTypeId: selectedType.id,
+            locale: selectedType.locale,
+            label: selectedType.label,
+            visibility: selectedType.visibility ?? undefined,
+            icon: selectedType.icon ?? undefined,
+          }
           : undefined,
         meal,
       );

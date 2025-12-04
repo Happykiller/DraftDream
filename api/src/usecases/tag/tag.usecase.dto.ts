@@ -1,5 +1,7 @@
 // src/usecases/tag/tag.usecase.dto.ts
 
+import { VisibilityValue } from '@src/common/visibility.enum';
+
 /**
  * Independent usecase DTO for creating tags.
  * Decoupled from service layer - slug generation handled by use case.
@@ -7,7 +9,7 @@
 export interface CreateTagUsecaseDto {
   locale: string;
   label: string;
-  visibility: 'private' | 'public';
+  visibility: VisibilityValue;
   createdBy: string;
 }
 
@@ -19,7 +21,7 @@ export interface ListTagsUsecaseDto {
   q?: string;
   locale?: string;
   createdBy?: string;
-  visibility?: 'private' | 'public';
+  visibility?: VisibilityValue;
   limit?: number;
   page?: number;
 }
@@ -32,7 +34,7 @@ export interface UpdateTagUsecaseDto {
   id: string;
   locale?: string;
   label?: string;
-  visibility?: 'private' | 'public';
+  visibility?: VisibilityValue;
 }
 
 export interface DeleteTagUsecaseDto {

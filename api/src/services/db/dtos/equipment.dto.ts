@@ -7,7 +7,7 @@ export interface CreateEquipmentDto {
   createdBy: string;
 }
 
-export type UpdateEquipmentDto = Partial<Pick<CreateEquipmentDto, 'slug' | 'locale' | 'label'>>;
+export type UpdateEquipmentDto = Partial<Pick<CreateEquipmentDto, 'slug' | 'locale' | 'label' | 'visibility'>>;
 
 export interface GetEquipmentDto { id: string }
 

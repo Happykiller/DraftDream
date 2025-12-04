@@ -21,6 +21,7 @@ export interface UseProspectsParams extends Pick<ProspectListInput, 'page' | 'li
   status?: ProspectStatusEnum | null;
   levelId?: string | null;
   sourceId?: string | null;
+  enabled?: boolean;
 }
 
 interface UseProspectsState extends ProspectListResult {
@@ -28,7 +29,15 @@ interface UseProspectsState extends ProspectListResult {
 }
 
 /** Centralized CRUD hook for prospect listings inside the front office. */
-export function useProspects({ page, limit, q, status, levelId, sourceId }: UseProspectsParams) {
+export function useProspects({
+  page,
+  limit,
+  q,
+  status,
+  levelId,
+  sourceId,
+  enabled = true,
+}: UseProspectsParams) {
   const [{ items, total, loading }, setState] = React.useState<UseProspectsState>({
     items: [],
     total: 0,
@@ -42,6 +51,16 @@ export function useProspects({ page, limit, q, status, levelId, sourceId }: UseP
   const { t } = useTranslation();
 
   const load = React.useCallback(async () => {
+    if (!enabled) {
+      setState((prev) => ({
+        ...prev,
+        items: [],
+        total: 0,
+        loading: false,
+      }));
+      return;
+    }
+
     setState((prev) => ({ ...prev, loading: true }));
     try {
       const result = await execute(() =>
@@ -53,7 +72,7 @@ export function useProspects({ page, limit, q, status, levelId, sourceId }: UseP
       setState((prev) => ({ ...prev, loading: false }));
       flashError(t('prospects.notifications.load_failure'));
     }
-  }, [execute, flashError, levelId, limit, page, q, sourceId, status, t]);
+  }, [enabled, execute, flashError, levelId, limit, page, q, sourceId, status, t]);
 
   React.useEffect(() => {
     void load();

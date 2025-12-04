@@ -135,6 +135,7 @@ export class BddServiceProgramMongo {
       createdByIn,
       visibility,
       userId,
+      includePublicVisibility,
       includeArchived = false,
       limit = 20,
       page = 1,
@@ -155,12 +156,21 @@ export class BddServiceProgramMongo {
     if (createdBy && normalizedCreatedByIn.length) {
       throw new Error('Cannot combine createdBy and createdByIn filters.');
     }
-    if (createdBy) filter.createdBy = this.toObjectId(createdBy);
-    if (!createdBy && normalizedCreatedByIn.length) {
-      filter.createdBy = { $in: normalizedCreatedByIn.map(this.toObjectId) };
+    const ownershipConditions: Record<string, any>[] = [];
+    if (createdBy) {
+      ownershipConditions.push({ createdBy: this.toObjectId(createdBy) });
+    } else if (normalizedCreatedByIn.length) {
+      ownershipConditions.push({ createdBy: { $in: normalizedCreatedByIn.map(this.toObjectId) } });
     }
+
     if (visibility) {
       filter.visibility = visibility === 'public' ? 'public' : 'private';
+    } else if (params.includePublicVisibility) {
+      ownershipConditions.push({ visibility: 'public' });
+    }
+
+    if (ownershipConditions.length) {
+      filter.$or = ownershipConditions;
     }
     if (userId) filter.userId = this.toObjectId(userId);
     if (!includeArchived) filter.deletedAt = { $exists: false };

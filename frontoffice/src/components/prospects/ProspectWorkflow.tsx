@@ -4,14 +4,18 @@ import { useTranslation } from 'react-i18next';
 import { alpha, useTheme } from '@mui/material/styles';
 import {
   Add,
+  AccountBalanceWallet,
   CalendarMonth,
   Cancel,
   Chat,
   CheckCircle,
   Description,
+  Equalizer,
+  GpsFixed,
   People,
   Phone,
   TaskAlt,
+  TrendingUp,
   VerifiedUser,
   type SvgIconComponent,
 } from '@mui/icons-material';
@@ -26,9 +30,9 @@ import {
 } from '@mui/material';
 import { orange } from '@mui/material/colors';
 
-import { ProspectCard } from '@components/prospects/ProspectCard';
+import { ProspectWorkflowCard } from '@components/prospects/ProspectCard';
 
-import type { Prospect } from '@app-types/prospects';
+import type { Prospect, ProspectSourceFilterValue } from '@app-types/prospects';
 import { pipelineStatuses, ProspectStatusEnum } from '@src/commons/prospects/status';
 
 type PipelineStatus = (typeof pipelineStatuses)[number];
@@ -53,6 +57,8 @@ interface ProspectWorkflowProps {
     toStatus: PipelineStatus,
     fromStatus: PipelineStatus,
   ) => void;
+  onValidateProspect?: (prospect: Prospect) => void;
+  sourceFilter: ProspectSourceFilterValue;
 }
 
 interface DragPayload {
@@ -64,34 +70,53 @@ interface DraggableProspectCardProps {
   prospect: Prospect;
   stage: PipelineStatus;
   isDragging: boolean;
-  onEditProspect: (prospect: Prospect) => void;
-  onDeleteProspect: (prospect: Prospect) => void;
+  onEditProspect?: (prospect: Prospect) => void;
+  onDeleteProspect?: (prospect: Prospect) => void;
+  onValidateProspect?: (prospect: Prospect) => void;
   onDragStart: (prospect: Prospect, fromStatus: PipelineStatus, event: React.DragEvent<HTMLDivElement>) => void;
   onDragEnd: () => void;
 }
 
-function DraggableProspectCard({
+const DraggableProspectCard = React.memo(function DraggableProspectCard({
   prospect,
   stage,
   isDragging,
   onEditProspect,
   onDeleteProspect,
+  onValidateProspect,
   onDragStart,
   onDragEnd,
 }: DraggableProspectCardProps): React.JSX.Element {
+  const isDraggable = stage !== ProspectStatusEnum.A_FAIRE;
+
   return (
     <Stack
       component="div"
-      draggable
-      onDragStart={(event) => onDragStart(prospect, stage, event)}
+      draggable={isDraggable}
+      onDragStart={(event) => {
+        if (isDraggable) {
+          onDragStart(prospect, stage, event);
+        } else {
+          event.preventDefault();
+        }
+      }}
       onDragEnd={onDragEnd}
-      sx={{ cursor: 'grab', opacity: isDragging ? 0.7 : 1, transition: 'opacity 150ms ease' }}
+      sx={{
+        cursor: isDraggable ? 'grab' : 'default',
+        opacity: isDragging ? 0.7 : 1,
+        transition: 'opacity 150ms ease',
+      }}
     >
       {/* General information */}
-      <ProspectCard prospect={prospect} onEdit={onEditProspect} onDelete={onDeleteProspect} />
+      <ProspectWorkflowCard
+        prospect={prospect}
+        onEdit={onEditProspect}
+        onDelete={onDeleteProspect}
+        onValidate={onValidateProspect}
+      />
     </Stack>
   );
-}
+});
 
 const pipelineCopyKeys: Record<PipelineStatus, { title: string; description: string }> = {
   [ProspectStatusEnum.LEAD]: {
@@ -135,16 +160,37 @@ const pipelineCopyKeys: Record<PipelineStatus, { title: string; description: str
 /**
  * Displays the prospect pipeline to give coaches a quick overview of the workflow steps.
  */
-export function ProspectWorkflow({
+export const ProspectWorkflow = React.memo(function ProspectWorkflow({
   prospectsByStatus,
   loading,
   onCreateProspect,
   onEditProspect,
   onDeleteProspect,
   onMoveProspect,
+  onValidateProspect,
+  sourceFilter,
 }: ProspectWorkflowProps): React.JSX.Element {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const theme = useTheme();
+
+  const currencyFormatter = React.useMemo(
+    () =>
+      new Intl.NumberFormat(i18n.language, {
+        style: 'currency',
+        currency: 'EUR',
+        maximumFractionDigits: 0,
+        minimumFractionDigits: 0,
+      }),
+    [i18n.language],
+  );
+
+  const integerFormatter = React.useMemo(
+    () =>
+      new Intl.NumberFormat(i18n.language, {
+        maximumFractionDigits: 0,
+      }),
+    [i18n.language],
+  );
 
   const normalizeColumns = React.useCallback(
     (input: Partial<Record<PipelineStatus, Prospect[]>>): Record<PipelineStatus, Prospect[]> =>
@@ -219,6 +265,84 @@ export function ProspectWorkflow({
   const helpItems = React.useMemo(
     () => t('prospects.workflow.help.items', { returnObjects: true }) as string[],
     [t],
+  );
+
+  const filteredColumns = React.useMemo(
+    () =>
+      pipelineStatuses.reduce((acc, status) => {
+        const prospectsForStage = columns[status] ?? [];
+
+        acc[status] =
+          sourceFilter === 'all'
+            ? prospectsForStage
+            : prospectsForStage.filter((prospect) => {
+              const resolvedSourceId = prospect.source?.id ?? prospect.sourceId ?? '';
+
+              if (sourceFilter === 'none') {
+                return !resolvedSourceId;
+              }
+
+              return resolvedSourceId === sourceFilter;
+            });
+
+        return acc;
+      }, {} as Record<PipelineStatus, Prospect[]>),
+    [columns, sourceFilter],
+  );
+
+  const pipelineMetrics = React.useMemo(() => {
+    const stageLists = Object.values(filteredColumns);
+    const totalProspects = stageLists.reduce((count, items) => count + items.length, 0);
+    const totalValue = stageLists.reduce(
+      (sum, items) => sum + items.reduce((budgetSum, prospect) => budgetSum + (prospect.budget ?? 0), 0),
+      0,
+    );
+    const successfulProspects =
+      (filteredColumns[ProspectStatusEnum.GAGNE]?.length ?? 0) +
+      (filteredColumns[ProspectStatusEnum.CLIENT]?.length ?? 0);
+    const conversionRate = totalProspects === 0 ? 0 : Math.round((successfulProspects / totalProspects) * 100);
+    const averageValue = totalProspects === 0 ? 0 : totalValue / totalProspects;
+
+    return {
+      totalProspects,
+      totalValue,
+      conversionRate,
+      averageValue,
+    };
+  }, [filteredColumns]);
+
+  const kpiCards = React.useMemo(
+    () => [
+      {
+        key: 'totalProspects',
+        label: t('prospects.workflow.summary.metrics.total_prospects'),
+        value: integerFormatter.format(pipelineMetrics.totalProspects),
+        color: theme.palette.primary.main,
+        Icon: People,
+      },
+      {
+        key: 'pipelineValue',
+        label: t('prospects.workflow.summary.metrics.pipeline_value'),
+        value: currencyFormatter.format(pipelineMetrics.totalValue),
+        color: theme.palette.info.main,
+        Icon: AccountBalanceWallet,
+      },
+      {
+        key: 'conversionRate',
+        label: t('prospects.workflow.summary.metrics.conversion_rate'),
+        value: `${pipelineMetrics.conversionRate}%`,
+        color: theme.palette.success.main,
+        Icon: TrendingUp,
+      },
+      {
+        key: 'averageValue',
+        label: t('prospects.workflow.summary.metrics.average_value'),
+        value: currencyFormatter.format(pipelineMetrics.averageValue),
+        color: theme.palette.secondary.main,
+        Icon: Equalizer,
+      },
+    ],
+    [currencyFormatter, integerFormatter, pipelineMetrics, t, theme.palette.info.main, theme.palette.primary.main, theme.palette.secondary.main, theme.palette.success.main],
   );
 
   React.useEffect(() => {
@@ -321,6 +445,81 @@ export function ProspectWorkflow({
       {/* General information */}
       <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', p: { xs: 2, md: 3 } }}>
         <Stack spacing={2}>
+          <Stack alignItems="flex-start" direction="row" flexWrap="wrap" spacing={2}>
+            <Stack alignItems="center" direction="row" spacing={1.5} sx={{ minWidth: 0 }}>
+              <Stack
+                alignItems="center"
+                bgcolor={alpha(theme.palette.error.main, 0.1)}
+                borderRadius={1.5}
+                height={48}
+                justifyContent="center"
+                width={48}
+              >
+                <GpsFixed sx={{ color: theme.palette.error.main }} />
+              </Stack>
+
+              <Stack spacing={0.5} sx={{ minWidth: 0 }}>
+                <Typography variant="h6">{t('prospects.workflow.summary.title')}</Typography>
+                <Typography color="text.secondary" variant="body2">
+                  {t('prospects.workflow.summary.helper')}
+                </Typography>
+              </Stack>
+            </Stack>
+
+          </Stack>
+
+          {loading ? (
+            <Grid columnSpacing={2} columns={{ xs: 1, sm: 2, lg: 4 }} container rowSpacing={1.5}>
+              {Array.from({ length: 4 }).map((_, index) => (
+                <Grid key={`kpi-skeleton-${index}`} size={1}>
+                  <Skeleton height={94} variant="rounded" />
+                </Grid>
+              ))}
+            </Grid>
+          ) : (
+            <Grid columnSpacing={2} columns={{ xs: 1, sm: 2, lg: 4 }} container rowSpacing={1.5}>
+              {kpiCards.map((card) => (
+                <Grid key={card.key} size={1}>
+                  <Paper
+                    elevation={0}
+                    sx={{
+                      height: '100%',
+                      bgcolor: alpha(card.color, 0.08),
+                      borderRadius: 2,
+                      px: 2,
+                      py: 1.5,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1.5,
+                    }}
+                  >
+                    <Stack
+                      alignItems="center"
+                      bgcolor={alpha(card.color, 0.18)}
+                      borderRadius={2}
+                      justifyContent="center"
+                      sx={{ height: 44, width: 44 }}
+                    >
+                      <card.Icon sx={{ color: card.color }} />
+                    </Stack>
+                    <Stack spacing={0.25} sx={{ minWidth: 0 }}>
+                      <Typography color="text.secondary" variant="body2">
+                        {card.label}
+                      </Typography>
+                      <Typography fontWeight={800} noWrap variant="h6">
+                        {card.value}
+                      </Typography>
+                    </Stack>
+                  </Paper>
+                </Grid>
+              ))}
+            </Grid>
+          )}
+        </Stack>
+      </Paper>
+
+      <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', p: { xs: 2, md: 3 } }}>
+        <Stack spacing={2}>
           <Stack spacing={0.5}>
             <Typography variant="h6">{t('prospects.workflow.card_title')}</Typography>
             <Typography color="text.secondary" variant="body2">
@@ -330,7 +529,13 @@ export function ProspectWorkflow({
 
           <Grid columnSpacing={2} columns={{ xs: 1, lg: 4, xl: 8 }} container rowSpacing={2}>
             {stages.map((stage) => {
-              const prospectsForStage = columns[stage.status] ?? [];
+              const prospectsForStage = filteredColumns[stage.status] ?? [];
+              const stageCount = prospectsForStage.length;
+              const totalBudget = prospectsForStage.reduce(
+                (sum, prospect) => sum + (prospect.budget ?? 0),
+                0,
+              );
+              const formattedTotalBudget = currencyFormatter.format(totalBudget || 0);
               const isActiveDropZone = activeDropStage === stage.status;
 
               return (
@@ -348,26 +553,43 @@ export function ProspectWorkflow({
                       gap: 1.5,
                     }}
                   >
-                    <Stack alignItems="center" direction="row" justifyContent="space-between" spacing={1.25}>
-                      <Stack alignItems="center" direction="row" spacing={1.25}>
-                        <stage.Icon fontSize="small" sx={{ color: stage.accentColor }} />
-                        <Typography component="span" fontWeight={700} variant="body1">
-                          {stage.title}
-                        </Typography>
-                      </Stack>
-
-                      {onCreateProspect ? (
-                        <Tooltip title={t('prospects.workflow.actions.create_at_stage')}>
-                          <IconButton
-                            aria-label={`create-prospect-${stage.status}`}
-                            color="primary"
-                            size="small"
-                            onClick={() => onCreateProspect(stage.status)}
+                    <Stack spacing={0.75}>
+                      <Stack direction="row" justifyContent="space-between" spacing={1.25}>
+                        <Stack alignItems="flex-start" direction="row" spacing={1.25} sx={{ minWidth: 0 }}>
+                          <Stack
+                            alignItems="center"
+                            bgcolor={alpha(stage.accentColor, 0.1)}
+                            borderRadius={1}
+                            height={44}
+                            justifyContent="center"
+                            width={44}
                           >
-                            <Add fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                      ) : null}
+                            <stage.Icon fontSize="small" sx={{ color: stage.accentColor }} />
+                          </Stack>
+
+                          <Stack spacing={0.25} sx={{ minWidth: 0 }}>
+                            <Typography component="span" fontWeight={700} variant="body1">
+                              {stage.title}
+                            </Typography>
+                            <Typography color="text.secondary" noWrap variant="caption">
+                              {t('prospects.workflow.stage_count', { count: stageCount })}
+                            </Typography>
+                          </Stack>
+                        </Stack>
+
+                        {onCreateProspect && stage.status !== ProspectStatusEnum.A_FAIRE ? (
+                          <Tooltip title={t('prospects.workflow.actions.create_at_stage')}>
+                            <IconButton
+                              aria-label={`create-prospect-${stage.status}`}
+                              color="primary"
+                              size="small"
+                              onClick={() => onCreateProspect(stage.status)}
+                            >
+                              <Add fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        ) : null}
+                      </Stack>
                     </Stack>
 
                     <Typography color="text.secondary" variant="body2">
@@ -376,9 +598,39 @@ export function ProspectWorkflow({
 
                     <Paper
                       elevation={0}
-                      onDragOver={(event) => handleDragOver(stage.status, event)}
-                      onDragLeave={() => handleDragLeave(stage.status)}
-                      onDrop={(event) => handleDrop(stage.status, event)}
+                      sx={{
+                        bgcolor: alpha(stage.accentColor, 0.08),
+                        borderRadius: 2,
+                        px: 1.25,
+                        py: 1.25,
+                        textAlign: 'center',
+                      }}
+                    >
+                      <Typography color="text.secondary" textAlign="center" variant="caption">
+                        {t('prospects.workflow.total_value_label')}
+                      </Typography>
+                      <Typography fontWeight={700} textAlign="center" variant="body2">
+                        {formattedTotalBudget}
+                      </Typography>
+                    </Paper>
+
+                    <Paper
+                      elevation={0}
+                      onDragOver={(event) => {
+                        if (stage.status !== ProspectStatusEnum.A_FAIRE) {
+                          handleDragOver(stage.status, event);
+                        }
+                      }}
+                      onDragLeave={() => {
+                        if (stage.status !== ProspectStatusEnum.A_FAIRE) {
+                          handleDragLeave(stage.status);
+                        }
+                      }}
+                      onDrop={(event) => {
+                        if (stage.status !== ProspectStatusEnum.A_FAIRE) {
+                          handleDrop(stage.status, event);
+                        }
+                      }}
                       sx={{
                         border: '1px dashed',
                         borderColor: isActiveDropZone ? stage.accentColor : alpha(stage.accentColor, 0.6),
@@ -415,8 +667,19 @@ export function ProspectWorkflow({
                               prospect={prospect}
                               stage={stage.status}
                               isDragging={draggedProspectId === prospect.id}
-                              onEditProspect={onEditProspect}
-                              onDeleteProspect={onDeleteProspect}
+                              onEditProspect={
+                                stage.status !== ProspectStatusEnum.A_FAIRE ? onEditProspect : undefined
+                              }
+                              onDeleteProspect={
+                                stage.status !== ProspectStatusEnum.A_FAIRE
+                                  ? onDeleteProspect
+                                  : undefined
+                              }
+                              onValidateProspect={
+                                stage.status === ProspectStatusEnum.GAGNE
+                                  ? onValidateProspect
+                                  : undefined
+                              }
                               onDragStart={handleDragStart}
                               onDragEnd={handleDragEnd}
                             />
@@ -456,4 +719,4 @@ export function ProspectWorkflow({
       </Paper>
     </Stack>
   );
-}
+});

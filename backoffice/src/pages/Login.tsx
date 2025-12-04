@@ -1,9 +1,10 @@
 // src/pages/Login.tsx
 import * as React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import {
+  Alert,
   Box,
   Button,
   Stack,
@@ -37,10 +38,15 @@ export function Login(): React.JSX.Element {
   const flashError = useFlashStore((state) => state.error);
   const flashSuccess = useFlashStore((state) => state.success);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { execute: auth } = useAuthReq();
   const { execute: runTask } = useAsyncTask();
   const { t } = useTranslation();
   const version = import.meta.env.VITE_APP_VERSION ?? '';
+
+  const redirectReason = searchParams.get('reason');
+  const unauthorizedMessage =
+    redirectReason === 'unauthorized' ? t('login.redirect_reason.unauthorized') : null;
 
   // Local state
   const [formEntities, setFormEntities] = React.useState<{
@@ -191,6 +197,11 @@ export function Login(): React.JSX.Element {
 
             {/* Form (full-width, no Paper) */}
             <Box component="form" onSubmit={onSubmit} noValidate>
+              {unauthorizedMessage ? (
+                <Alert severity="warning" sx={{ mb: 2 }}>
+                  {unauthorizedMessage}
+                </Alert>
+              ) : null}
               {FormContent}
             </Box>
           </Container>
@@ -231,6 +242,11 @@ export function Login(): React.JSX.Element {
 
             {/* Form */}
             <Box component="form" onSubmit={onSubmit} noValidate>
+              {unauthorizedMessage ? (
+                <Alert severity="warning" sx={{ mb: 2 }}>
+                  {unauthorizedMessage}
+                </Alert>
+              ) : null}
               {FormContent}
             </Box>
           </Paper>

@@ -8,6 +8,7 @@ import { Box, Button, Stack, TextField, IconButton, Tooltip, Chip } from '@mui/m
 import { useTranslation } from 'react-i18next';
 import type { Exercise } from '@hooks/useExercises';
 import { useDateFormatter } from '@hooks/useDateFormatter';
+import { getVisibilityLabel } from '../../commons/visibility';
 
 export interface ExerciseTableProps {
   rows: Exercise[];
@@ -81,8 +82,7 @@ export const ExerciseTable = React.memo(function ExerciseTable({
       field: 'visibility',
       headerName: t('common.labels.visibility'),
       width: 130,
-      renderCell: ({ value }) =>
-        value === 'PUBLIC' ? t('common.visibility.public') : t('common.visibility.private'),
+      renderCell: ({ value }) => getVisibilityLabel(value, t),
     },
     { field: 'createdAt', headerName: t('common.labels.created'), valueFormatter: (value: any) => fmtDate(value), flex: 1, minWidth: 170 },
     { field: 'updatedAt', headerName: t('common.labels.updated'), valueFormatter: (value: any) => fmtDate(value), flex: 1, minWidth: 170 },

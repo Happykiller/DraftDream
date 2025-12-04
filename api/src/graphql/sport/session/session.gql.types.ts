@@ -1,6 +1,9 @@
-// src\graphql\session\session.gql.types.ts
 import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { UserGql } from '@graphql/user/user.gql.types';
+import { registerVisibilityEnum, Visibility as SessionVisibility } from '@graphql/common/visibility.enum';
+export { SessionVisibility };
+
+registerVisibilityEnum('SessionVisibility');
 
 @ObjectType()
 export class SessionExerciseSummaryGql {
@@ -38,8 +41,8 @@ export class SessionSportGql {
   @Field(() => UserGql, { nullable: true })
   creator?: UserGql | null;
 
-  @Field()
-  visibility!: string;
+  @Field(() => SessionVisibility)
+  visibility!: SessionVisibility;
 }
 
 @InputType()
@@ -49,6 +52,8 @@ export class CreateSessionInput {
   @Field(() => Int) durationMin!: number;
   @Field({ nullable: true }) description?: string;
   @Field(() => [ID]) exerciseIds!: string[];
+  @Field(() => SessionVisibility, { nullable: true })
+  visibility?: SessionVisibility;
 }
 
 @InputType()
@@ -57,7 +62,8 @@ export class UpdateSessionInput {
   @Field({ nullable: true }) locale?: string;
   @Field({ nullable: true }) label?: string;
   @Field(() => Int, { nullable: true }) durationMin?: number;
-  @Field({ nullable: true }) visibility?: string;
+  @Field(() => SessionVisibility, { nullable: true })
+  visibility?: SessionVisibility;
   @Field({ nullable: true }) description?: string;
   /** Replace the whole ordered list */
   @Field(() => [ID], { nullable: true }) exerciseIds?: string[];

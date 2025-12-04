@@ -90,7 +90,7 @@ export class BddServiceExerciseMongo {
       charge: dto.charge?.trim(),
       rest: dto.rest,
       videoUrl: dto.videoUrl,
-      visibility: dto.visibility,
+      visibility: dto.visibility === 'public' ? 'public' : 'private',
 
       categories: normalizedCategoryIds.map(this.toObjectId),
       muscles: (dto.muscleIds ?? []).map(this.toObjectId),
@@ -179,8 +179,8 @@ export class BddServiceExerciseMongo {
       ownershipConditions.push({ createdBy: { $in: normalizedCreatedByIn.map(this.toObjectId) } });
     }
 
-    if (visibility === 'public' || visibility === 'private') {
-      filter.visibility = visibility;
+    if (visibility) {
+      filter.visibility = visibility === 'public' ? 'public' : 'private';
     } else if (includePublicVisibility) {
       ownershipConditions.push({ visibility: 'public' });
     }
@@ -230,7 +230,9 @@ export class BddServiceExerciseMongo {
     if (patch.charge !== undefined) $set.charge = patch.charge?.trim();
     if (patch.rest !== undefined) $set.rest = patch.rest;
     if (patch.videoUrl !== undefined) $set.videoUrl = patch.videoUrl;
-    if (patch.visibility !== undefined) $set.visibility = patch.visibility;
+    if (patch.visibility !== undefined) {
+      $set.visibility = patch.visibility === 'public' ? 'public' : 'private';
+    }
 
     if (patch.categoryIds !== undefined) {
       const normalized = Array.isArray(patch.categoryIds)
@@ -286,8 +288,6 @@ export class BddServiceExerciseMongo {
       throw new Error('InvalidObjectId');
     }
   };
-
-
 
   private buildSlugCandidate = (base: string, attempt: number): string => {
     if (attempt === 0) {
@@ -362,4 +362,3 @@ export class BddServiceExerciseMongo {
     throw error instanceof Error ? error : new Error(message);
   }
 }
-

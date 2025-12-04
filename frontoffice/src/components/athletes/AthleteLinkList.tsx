@@ -19,7 +19,7 @@ export interface AthleteLinkListProps {
 }
 
 /** Athlete list with search input and responsive card layout. */
-export function AthleteLinkList({
+export const AthleteLinkList = React.memo(function AthleteLinkList({
   links,
   loading,
   searchQuery,
@@ -61,6 +61,7 @@ export function AthleteLinkList({
           'aria-label': searchAriaLabel,
         }}
         size="small"
+        sx={{ bgcolor: 'common.white' }}
       />
 
       {loading ? (
@@ -98,4 +99,4 @@ export function AthleteLinkList({
       )}
     </Stack>
   );
-}
+});

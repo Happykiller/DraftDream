@@ -35,7 +35,7 @@ function formatFullName(link: CoachAthleteLink): string {
 }
 
 /** Card summarizing a coach-athlete relation for the coach portal. */
-export function AthleteLinkCard({ link }: AthleteLinkCardProps): React.JSX.Element {
+export const AthleteLinkCard = React.memo(function AthleteLinkCard({ link }: AthleteLinkCardProps): React.JSX.Element {
   const { t } = useTranslation();
   const formatDate = useDateFormatter({ options: { day: '2-digit', month: '2-digit', year: 'numeric' } });
   const athleteName = React.useMemo(() => formatFullName(link), [link]);
@@ -91,4 +91,4 @@ export function AthleteLinkCard({ link }: AthleteLinkCardProps): React.JSX.Eleme
       </CardContent>
     </Card>
   );
-}
+});

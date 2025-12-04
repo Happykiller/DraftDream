@@ -1,4 +1,3 @@
-// src/components/nutrition/MealPlanList.tsx
 import * as React from 'react';
 import { Search } from '@mui/icons-material';
 import {
@@ -23,13 +22,14 @@ export interface MealPlanListProps {
   placeholderSubtitle?: string;
   placeholderHelper?: string;
   actionSlot?: React.ReactNode;
-  onView?: (mealPlan: MealPlan) => void;
-  onEdit?: (mealPlan: MealPlan) => void;
-  onDelete?: (mealPlan: MealPlan) => Promise<void> | void;
-  onClone?: (
+  onViewMealPlan?: (mealPlan: MealPlan) => void;
+  onEditMealPlan?: (mealPlan: MealPlan) => void;
+  onDeleteMealPlan?: (mealPlan: MealPlan) => Promise<void> | void;
+  onCloneMealPlan?: (
     mealPlan: MealPlan,
     payload: { label: string; athleteId: string | null; openBuilder: boolean },
   ) => Promise<void>;
+  onPrefetch?: (action: 'view' | 'edit') => void;
   dayCountFormatter: (dayCount: number) => string;
   macroLabels: {
     calories: string;
@@ -48,17 +48,18 @@ export interface MealPlanListProps {
 /**
  * Displays nutrition meal plans with macro highlights using a grid layout similar to program cards.
  */
-export function MealPlanList({
+export const MealPlanList = React.memo(function MealPlanList({
   mealPlans,
   loading,
   placeholderTitle,
   placeholderSubtitle,
   placeholderHelper,
   actionSlot,
-  onView,
-  onEdit,
-  onDelete,
-  onClone,
+  onViewMealPlan,
+  onEditMealPlan,
+  onDeleteMealPlan,
+  onCloneMealPlan,
+  onPrefetch,
   dayCountFormatter,
   macroLabels,
   allowedActions,
@@ -124,6 +125,7 @@ export function MealPlanList({
                   </InputAdornment>
                 ),
               }}
+              sx={{ bgcolor: 'common.white' }}
             />
           ) : null}
 
@@ -153,10 +155,11 @@ export function MealPlanList({
                 mealPlan={plan}
                 dayCountFormatter={dayCountFormatter}
                 macroLabels={macroLabels}
-                onView={onView}
-                onEdit={onEdit}
-                onDelete={onDelete}
-                onClone={onClone}
+                onView={onViewMealPlan}
+                onEdit={onEditMealPlan}
+                onDelete={onDeleteMealPlan}
+                onClone={onCloneMealPlan}
+                onPrefetch={onPrefetch}
                 allowedActions={allowedActions}
               />
             </Grid>
@@ -190,4 +193,4 @@ export function MealPlanList({
       ) : null}
     </Stack>
   );
-}
+});

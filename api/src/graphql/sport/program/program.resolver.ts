@@ -71,7 +71,12 @@ export class ProgramResolver {
   @Auth(Role.ADMIN, Role.COACH)
   async program_update(
     @Args('input') input: UpdateProgramInput,
+    @Context('req') req: any,
   ): Promise<ProgramGql | null> {
+    const session = this.extractSession(req);
+    const sessions = await this.resolveSessions(session, input.sessions, input.sessionIds, {
+      defaultLocale: input.locale,
+    });
     const updateDto: any = {
       locale: input.locale,
       label: input.label,
@@ -79,6 +84,7 @@ export class ProgramResolver {
       duration: input.duration,
       frequency: input.frequency,
       description: input.description ?? undefined,
+      sessions,
       userId: input.userId === undefined ? undefined : input.userId,
     };
 

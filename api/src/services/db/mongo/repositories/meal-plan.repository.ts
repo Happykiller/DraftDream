@@ -148,6 +148,7 @@ export class BddServiceMealPlanMongo {
       createdByIn,
       visibility,
       userId,
+      includePublicVisibility,
       includeArchived = false,
       limit = 20,
       page = 1,
@@ -176,16 +177,21 @@ export class BddServiceMealPlanMongo {
       throw new Error('Cannot combine createdBy and createdByIn filters.');
     }
 
+    const ownershipConditions: Record<string, any>[] = [];
     if (createdBy) {
-      filter.createdBy = this.toObjectId(createdBy);
-    }
-
-    if (!createdBy && normalizedCreatedByIn.length) {
-      filter.createdBy = { $in: normalizedCreatedByIn.map(this.toObjectId) };
+      ownershipConditions.push({ createdBy: this.toObjectId(createdBy) });
+    } else if (normalizedCreatedByIn.length) {
+      ownershipConditions.push({ createdBy: { $in: normalizedCreatedByIn.map(this.toObjectId) } });
     }
 
     if (visibility) {
       filter.visibility = visibility === 'public' ? 'public' : 'private';
+    } else if (params.includePublicVisibility) {
+      ownershipConditions.push({ visibility: 'public' });
+    }
+
+    if (ownershipConditions.length) {
+      filter.$or = ownershipConditions;
     }
 
     if (userId) {
@@ -218,7 +224,9 @@ export class BddServiceMealPlanMongo {
     if (patch.label !== undefined) $set.label = patch.label.trim();
     if (patch.description !== undefined) $set.description = patch.description;
     if (patch.visibility !== undefined) {
-      $set.visibility = patch.visibility === 'public' ? 'public' : 'private';
+      if (patch.visibility === 'public') $set.visibility = 'public';
+      
+      else $set.visibility = 'private';
     }
     if (patch.calories !== undefined) $set.calories = Math.round(patch.calories);
     if (patch.proteinGrams !== undefined) $set.proteinGrams = Math.round(patch.proteinGrams);
@@ -371,4 +379,3 @@ export class BddServiceMealPlanMongo {
     throw error instanceof Error ? error : new Error(message);
   }
 }
-

@@ -12,7 +12,7 @@ export class UpdateProgramUsecase {
 
   async execute(id: string, dto: UpdateProgramUsecaseDto): Promise<ProgramUsecaseModel | null> {
     try {
-      const toUpdate: any = { ...dto };
+      const toUpdate: UpdateProgramUsecaseDto & { slug?: string } = { ...dto };
       if (dto.label) {
         toUpdate.slug = buildSlug({ label: dto.label, fallback: 'program' });
       }

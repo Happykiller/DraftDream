@@ -3,12 +3,13 @@ import * as React from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Stack, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import type { ProspectSource, ProspectSourceVisibility } from '@hooks/useProspectSources';
+import type { ProspectSource } from '@hooks/useProspectSources';
+import { VISIBILITY_OPTIONS, type Visibility } from '@src/commons/visibility';
 
 export interface ProspectSourceDialogValues {
   label: string;
   locale: string;
-  visibility: ProspectSourceVisibility;
+  visibility: Visibility;
 }
 
 export interface ProspectSourceDialogProps {
@@ -91,8 +92,11 @@ export function ProspectSourceDialog({ open, mode, initial, onClose, onSubmit }:
             required
             fullWidth
           >
-            <MenuItem value="PRIVATE">{t('common.visibility.private')}</MenuItem>
-            <MenuItem value="PUBLIC">{t('common.visibility.public')}</MenuItem>
+            {VISIBILITY_OPTIONS.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {t(option.label)}
+              </MenuItem>
+            ))}
           </TextField>
 
           <DialogActions sx={{ px: 0 }}>

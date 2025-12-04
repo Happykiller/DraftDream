@@ -58,6 +58,7 @@ export interface ListMealPlansDto {
   createdByIn?: string[];
   visibility?: 'private' | 'public';
   userId?: string;
+  includePublicVisibility?: boolean;
   includeArchived?: boolean;
   limit?: number;
   page?: number;

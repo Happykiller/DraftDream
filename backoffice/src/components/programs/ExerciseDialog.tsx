@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import type { Exercise, ExerciseVisibility } from '@hooks/useExercises';
+import { VISIBILITY_OPTIONS } from '@src/commons/visibility';
 
 // Minimal ref entity for selects
 export interface RefEntity {
@@ -290,8 +291,11 @@ export function ExerciseDialog({
             required
             fullWidth
           >
-            <MenuItem value="PRIVATE">{t('common.visibility.private')}</MenuItem>
-            <MenuItem value="PUBLIC">{t('common.visibility.public')}</MenuItem>
+            {VISIBILITY_OPTIONS.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {t(option.label)}
+              </MenuItem>
+            ))}
           </TextField>
 
           {/* Category anchors taxonomy, so we fail submission when it is missing. */}

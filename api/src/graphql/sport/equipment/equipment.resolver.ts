@@ -79,6 +79,7 @@ export class EquipmentResolver {
       id: input.id,
       locale: input.locale,
       label: input.label,
+      visibility: input.visibility,
     });
     return updated ? mapEquipmentUsecaseToGql(updated) : null;
   }

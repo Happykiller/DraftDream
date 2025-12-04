@@ -6,7 +6,6 @@ import { UserType } from '@src/commons/enums';
 import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
 import { useCoachAthleteUsers } from '@hooks/athletes/useCoachAthleteUsers';
 import type { User } from '@src/hooks/useUsers';
-import { slugify } from '@src/utils/slugify';
 import { session } from '@stores/session';
 
 import {
@@ -98,7 +97,7 @@ type MealTypeFallback = {
   label: string;
   id?: string | null;
   templateMealTypeId?: string | null;
-  slug?: string | null;
+
   locale?: string | null;
   visibility?: string | null;
   icon?: string | null;
@@ -115,7 +114,7 @@ function coerceMealTypeSnapshot(
   return {
     id,
     templateMealTypeId,
-    slug: input?.slug ?? fallback.slug ?? undefined,
+
     locale: input?.locale ?? fallback.locale ?? undefined,
     label: input?.label ?? fallback.label,
     visibility: input?.visibility ?? fallback.visibility ?? undefined,
@@ -149,7 +148,6 @@ function cloneMealSnapshot(meal: MealPlanMealSnapshot): MealPlanBuilderMeal {
     label: meal.type.label ?? meal.label,
     id: meal.type.id ?? undefined,
     templateMealTypeId: meal.type.templateMealTypeId ?? undefined,
-    slug: meal.type.slug ?? undefined,
     locale: meal.type.locale ?? meal.locale ?? undefined,
     visibility: meal.type.visibility ?? undefined,
     icon: meal.type.icon ?? undefined,
@@ -173,7 +171,6 @@ function normalizeMealForSubmission(meal: MealPlanBuilderMeal): MealPlanMealSnap
     label: meal.type?.label ?? meal.label,
     id: meal.type?.id ?? undefined,
     templateMealTypeId: meal.type?.templateMealTypeId ?? undefined,
-    slug: meal.type?.slug ?? undefined,
     locale: meal.type?.locale ?? meal.locale ?? undefined,
     visibility: meal.type?.visibility ?? undefined,
     icon: meal.type?.icon ?? undefined,
@@ -182,7 +179,6 @@ function normalizeMealForSubmission(meal: MealPlanBuilderMeal): MealPlanMealSnap
   return {
     id: meal.id ?? undefined,
     templateMealId: meal.templateMealId ?? undefined,
-    slug: meal.slug ?? undefined,
     locale: meal.locale ?? undefined,
     label: meal.label,
     description: meal.description ?? undefined,
@@ -208,23 +204,21 @@ function createMealFromTemplate(meal: Meal): MealPlanBuilderMeal {
   const type = coerceMealTypeSnapshot(
     meal.type
       ? {
-          id: meal.type.id ?? undefined,
-          templateMealTypeId: meal.type.id ?? undefined,
-          slug: meal.type.slug ?? undefined,
-          locale: meal.type.locale ?? undefined,
-          label: meal.type.label,
-          visibility: meal.type.visibility ?? undefined,
-          icon: meal.type.icon ?? undefined,
-        }
+        id: meal.type.id ?? undefined,
+        templateMealTypeId: meal.type.id ?? undefined,
+        locale: meal.type.locale ?? undefined,
+        label: meal.type.label,
+        visibility: meal.type.visibility ?? undefined,
+        icon: meal.type.icon ?? undefined,
+      }
       : {
-          id: meal.typeId ?? undefined,
-          templateMealTypeId: meal.typeId ?? undefined,
-        },
+        id: meal.typeId ?? undefined,
+        templateMealTypeId: meal.typeId ?? undefined,
+      },
     {
       label: meal.type?.label ?? meal.label,
       id: meal.type?.id ?? meal.typeId ?? undefined,
       templateMealTypeId: meal.type?.id ?? meal.typeId ?? undefined,
-      slug: meal.type?.slug ?? undefined,
       locale: meal.type?.locale ?? meal.locale ?? undefined,
       visibility: meal.type?.visibility ?? meal.visibility ?? undefined,
       icon: meal.type?.icon ?? undefined,
@@ -234,7 +228,6 @@ function createMealFromTemplate(meal: Meal): MealPlanBuilderMeal {
   const snapshot: MealPlanMealSnapshot = {
     id: undefined,
     templateMealId: meal.id,
-    slug: meal.slug,
     locale: meal.locale,
     label: meal.label,
     description: undefined,
@@ -405,7 +398,7 @@ export function useMealPlanBuilder(
     const daySnapshot: MealPlanDaySnapshot = {
       id: undefined,
       templateMealDayId: template.id,
-      slug: template.slug,
+
       locale: template.locale,
       label: template.label,
       description: template.description ?? undefined,
@@ -413,20 +406,20 @@ export function useMealPlanBuilder(
         const type = coerceMealTypeSnapshot(
           meal.type
             ? {
-                id: meal.type.id ?? undefined,
-                templateMealTypeId: meal.type.id ?? undefined,
-                slug: meal.type.slug ?? undefined,
-                locale: meal.type.locale ?? undefined,
-                label: meal.type.label,
-                visibility: meal.type.visibility ?? undefined,
-                icon: meal.type.icon ?? undefined,
-              }
+              id: meal.type.id ?? undefined,
+              templateMealTypeId: meal.type.id ?? undefined,
+
+              locale: meal.type.locale ?? undefined,
+              label: meal.type.label,
+              visibility: meal.type.visibility ?? undefined,
+              icon: meal.type.icon ?? undefined,
+            }
             : undefined,
           {
             label: meal.type?.label ?? meal.label,
             id: meal.type?.id ?? undefined,
             templateMealTypeId: meal.type?.id ?? undefined,
-            slug: meal.type?.slug ?? undefined,
+
             locale: meal.type?.locale ?? meal.locale ?? undefined,
             visibility: meal.type?.visibility ?? meal.visibility ?? undefined,
             icon: meal.type?.icon ?? undefined,
@@ -436,7 +429,7 @@ export function useMealPlanBuilder(
         return {
           id: meal.id,
           templateMealId: meal.id,
-          slug: meal.slug,
+
           locale: meal.locale,
           label: meal.label,
           description: undefined,
@@ -458,7 +451,7 @@ export function useMealPlanBuilder(
     const emptyDay: MealPlanDaySnapshot = {
       id: undefined,
       templateMealDayId: undefined,
-      slug: undefined,
+
       locale: i18n.language,
       label: `${builderCopy.structure.day_prefix} ${days.length + 1}`,
       description: '',
@@ -504,9 +497,9 @@ export function useMealPlanBuilder(
       prev.map((day) =>
         day.uiId === dayId
           ? {
-              ...day,
-              ...patch,
-            }
+            ...day,
+            ...patch,
+          }
           : day,
       ),
     );
@@ -524,9 +517,9 @@ export function useMealPlanBuilder(
       return prev.map((day) =>
         day.uiId === dayId
           ? {
-              ...day,
-              meals: [...day.meals, nextMeal],
-            }
+            ...day,
+            meals: [...day.meals, nextMeal],
+          }
           : day,
       );
     });
@@ -537,9 +530,9 @@ export function useMealPlanBuilder(
       prev.map((day) =>
         day.uiId === dayId
           ? {
-              ...day,
-              meals: day.meals.filter((meal) => meal.uiId !== mealUiId),
-            }
+            ...day,
+            meals: day.meals.filter((meal) => meal.uiId !== mealUiId),
+          }
           : day,
       ),
     );
@@ -591,16 +584,16 @@ export function useMealPlanBuilder(
         prev.map((day) =>
           day.uiId === dayId
             ? {
-                ...day,
-                meals: day.meals.map((meal) =>
-                  meal.uiId === mealUiId
-                    ? {
-                        ...meal,
-                        ...patch,
-                      }
-                    : meal,
-                ),
-              }
+              ...day,
+              meals: day.meals.map((meal) =>
+                meal.uiId === mealUiId
+                  ? {
+                    ...meal,
+                    ...patch,
+                  }
+                  : meal,
+              ),
+            }
             : day,
         ),
       );
@@ -642,7 +635,6 @@ export function useMealPlanBuilder(
       const payloadDays: MealPlanDaySnapshot[] = days.map((day, index) => ({
         id: day.id ?? undefined,
         templateMealDayId: day.templateMealDayId ?? undefined,
-        slug: day.slug ?? undefined,
         locale: day.locale ?? i18n.language,
         label: day.label ?? `${builderCopy.structure.day_prefix} ${index + 1}`,
         description: day.description ?? undefined,
@@ -650,7 +642,6 @@ export function useMealPlanBuilder(
       }));
 
       const submission = {
-        slug: slugify(form.planName, `${Date.now()}`),
         locale: i18n.language,
         label: form.planName.trim(),
         description: form.description?.trim() ?? '',

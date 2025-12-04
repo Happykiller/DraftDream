@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { MealPlan } from '@hooks/useMealPlans';
 import { useDateFormatter } from '@hooks/useDateFormatter';
+import { getVisibilityLabel } from '../../commons/visibility';
 
 export interface MealPlanTableProps {
   rows: MealPlan[];
@@ -38,8 +39,7 @@ export function MealPlanTable(props: MealPlanTableProps): React.JSX.Element {
         field: 'visibility',
         headerName: t('common.labels.visibility'),
         width: 140,
-        valueFormatter: ({ value }) =>
-          value === 'PUBLIC' ? t('common.visibility.public') : t('common.visibility.private'),
+        valueFormatter: ({ value }) => getVisibilityLabel(value, t),
       },
       {
         field: 'description',

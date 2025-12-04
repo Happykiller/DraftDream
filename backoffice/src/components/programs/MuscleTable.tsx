@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { Muscle } from '@hooks/useMuscles';
 import { useDateFormatter } from '@hooks/useDateFormatter';
+import { getVisibilityLabel } from '../../commons/visibility';
 
 export interface MuscleTableProps {
   rows: Muscle[];
@@ -50,8 +51,7 @@ export const MuscleTable = React.memo(function MuscleTable(props: MuscleTablePro
       field: 'visibility',
       headerName: t('common.labels.visibility'),
       width: 140,
-      renderCell: ({ value }) =>
-        value === 'PUBLIC' ? t('common.visibility.public') : t('common.visibility.private'),
+      renderCell: ({ value }) => getVisibilityLabel(value, t),
     },
     {
       field: 'creator',

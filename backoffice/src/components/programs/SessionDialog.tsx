@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import type { Session } from '@hooks/useSessions';
+import { VISIBILITY_OPTIONS, type Visibility } from '@src/commons/visibility';
 
 export interface ExerciseOption {
   id: string;
@@ -28,7 +29,7 @@ export interface SessionDialogValues {
   durationMin: number;
   description?: string;
   exercises: ExerciseOption[];
-  visibility: 'PRIVATE' | 'PUBLIC';
+  visibility: Visibility;
 }
 
 export interface SessionDialogProps {
@@ -163,8 +164,11 @@ export function SessionDialog({
               required
               fullWidth
             >
-              <MenuItem value="PRIVATE">{t('common.visibility.private')}</MenuItem>
-              <MenuItem value="PUBLIC">{t('common.visibility.public')}</MenuItem>
+              {VISIBILITY_OPTIONS.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {t(option.label)}
+                </MenuItem>
+              ))}
             </TextField>
 
             <TextField

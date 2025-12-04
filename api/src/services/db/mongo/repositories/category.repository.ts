@@ -41,7 +41,7 @@ export class BddServiceCategoryMongo {
       slug: dto.slug.toLowerCase().trim(),
       locale: dto.locale.toLowerCase().trim(),
       label: dto.label.trim(),
-      visibility: dto.visibility,
+      visibility: dto.visibility === 'public' ? 'public' : 'private',
       createdBy: dto.createdBy,
       createdAt: now,
       updatedAt: now,
@@ -78,8 +78,11 @@ export class BddServiceCategoryMongo {
     }
     if (locale) filter.locale = locale.toLowerCase().trim();
     if (createdBy) filter.createdBy = createdBy;
-    if (visibility === 'public' || visibility === 'private') {
-      filter.visibility = visibility;
+
+    if (visibility) {
+      if (visibility === 'public') filter.visibility = 'public';
+      
+      else filter.visibility = 'private';
     }
 
     try {
@@ -99,7 +102,11 @@ export class BddServiceCategoryMongo {
     if (patch.slug !== undefined) $set.slug = patch.slug.toLowerCase().trim();
     if (patch.locale !== undefined) $set.locale = patch.locale.toLowerCase().trim();
     if (patch.label !== undefined) $set.label = patch.label.trim();
-    if (patch.visibility !== undefined) $set.visibility = patch.visibility;
+    if (patch.visibility !== undefined) {
+      if (patch.visibility === 'public') $set.visibility = 'public';
+      
+      else $set.visibility = 'private';
+    }
 
     try {
       const res: any = await (this.col()).findOneAndUpdate(
@@ -156,4 +163,3 @@ export class BddServiceCategoryMongo {
     throw error instanceof Error ? error : new Error(message);
   }
 }
-

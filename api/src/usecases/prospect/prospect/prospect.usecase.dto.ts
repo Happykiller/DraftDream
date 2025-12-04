@@ -2,6 +2,8 @@
 import { ProspectStatus } from '@src/common/prospect-status.enum';
 import type { Role } from '@src/common/role.enum';
 
+import { ProspectWorkflowEntryModel } from './prospect.usecase.model';
+
 export interface UsecaseSession {
   userId: string;
   role: Role;
@@ -24,6 +26,7 @@ export interface CreateProspectUsecaseDto {
   dealDescription?: string;
   desiredStartDate?: Date;
   createdBy: string;
+  workflowHistory?: ProspectWorkflowEntryModel[];
 }
 
 export interface UpdateProspectUsecaseDto {
@@ -43,6 +46,7 @@ export interface UpdateProspectUsecaseDto {
   budget?: number;
   dealDescription?: string;
   desiredStartDate?: Date;
+  workflowHistory?: ProspectWorkflowEntryModel[];
 }
 
 export interface ListProspectsUsecaseDto {

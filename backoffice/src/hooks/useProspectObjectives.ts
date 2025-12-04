@@ -8,7 +8,9 @@ import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
-export type ProspectObjectiveVisibility = 'PRIVATE' | 'PUBLIC';
+import type { Visibility } from '@src/commons/visibility';
+
+export type ProspectObjectiveVisibility = Visibility;
 
 export interface ProspectObjective {
   id: string;

@@ -8,7 +8,9 @@ import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
-export type MealPlanVisibility = 'PRIVATE' | 'PUBLIC';
+import type { Visibility } from '@src/commons/visibility';
+
+export type MealPlanVisibility = Visibility;
 
 export interface MealPlanUserSummary {
   id: string;
@@ -81,6 +83,43 @@ type MealPlanListPayload = {
 type CreateMealPlanPayload = { mealPlan_create: MealPlan | null };
 type UpdateMealPlanPayload = { mealPlan_update: MealPlan | null };
 type DeleteMealPlanPayload = { mealPlan_delete: boolean };
+
+function normalizeMealType(input: MealPlanMealTypeSnapshot) {
+  return {
+    id: input.id ?? undefined,
+    templateMealTypeId: input.templateMealTypeId ?? undefined,
+    locale: input.locale ?? undefined,
+    label: input.label,
+    visibility: input.visibility ?? undefined,
+  };
+}
+
+function normalizeMeal(input: MealPlanMealSnapshot) {
+  return {
+    id: input.id ?? undefined,
+    templateMealId: input.templateMealId ?? undefined,
+    locale: input.locale ?? undefined,
+    label: input.label,
+    description: input.description ?? undefined,
+    foods: input.foods,
+    calories: input.calories,
+    proteinGrams: input.proteinGrams,
+    carbGrams: input.carbGrams,
+    fatGrams: input.fatGrams,
+    type: normalizeMealType(input.type),
+  };
+}
+
+function normalizeDay(input: MealPlanDaySnapshot) {
+  return {
+    id: input.id ?? undefined,
+    templateMealDayId: input.templateMealDayId ?? undefined,
+    locale: input.locale ?? undefined,
+    label: input.label,
+    description: input.description ?? undefined,
+    meals: input.meals.map(normalizeMeal),
+  };
+}
 
 const LIST_QUERY = `
   query ListMealPlans($input: ListMealPlansInput) {
@@ -337,7 +376,14 @@ export function useMealPlans({ page, limit, q, userId }: UseMealPlansParams): Us
           gql.send<CreateMealPlanPayload>({
             query: CREATE_MUTATION,
             operationName: 'CreateMealPlan',
-            variables: { input: { ...input, description: input.description ?? undefined, visibility: input.visibility } },
+            variables: {
+              input: {
+                ...input,
+                description: input.description ?? undefined,
+                visibility: input.visibility,
+                days: input.days?.map(normalizeDay),
+              },
+            },
           }),
         );
         if (errors?.length) throw new Error(errors[0].message);
@@ -363,6 +409,7 @@ export function useMealPlans({ page, limit, q, userId }: UseMealPlansParams): Us
                 ...input,
                 description: input.description ?? undefined,
                 visibility: input.visibility ?? undefined,
+                days: input.days?.map(normalizeDay),
               },
             },
           }),

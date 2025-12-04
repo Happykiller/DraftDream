@@ -9,7 +9,7 @@ export type TagVisibility = 'PRIVATE' | 'PUBLIC';
 
 export interface Tag {
   id: string;
-  slug: string;
+
   locale: string;
   label: string;
   visibility: TagVisibility;
@@ -34,7 +34,7 @@ type DeletePayload = { tag_delete: boolean };
 const LIST_Q = `
   query ListTags($input: ListTagsInput) {
     tag_list(input: $input) {
-      items { id slug locale label visibility createdBy createdAt updatedAt }
+      items { id locale label visibility createdBy createdAt updatedAt }
       total page limit
     }
   }
@@ -43,7 +43,7 @@ const LIST_Q = `
 const CREATE_M = `
   mutation CreateTag($input: CreateTagInput!) {
     tag_create(input: $input) {
-      id slug locale label visibility createdBy createdAt updatedAt
+      id locale label visibility createdBy createdAt updatedAt
     }
   }
 `;
@@ -51,7 +51,7 @@ const CREATE_M = `
 const UPDATE_M = `
   mutation UpdateTag($input: UpdateTagInput!) {
     tag_update(input: $input) {
-      id slug locale label visibility createdBy createdAt updatedAt
+      id locale label visibility createdBy createdAt updatedAt
     }
   }
 `;
@@ -102,7 +102,7 @@ export function useTags({ page, limit, q }: UseTagsParams) {
 
   const create = React.useCallback(
     async (input: {
-      slug: string;
+
       locale: string;
       label: string;
       visibility: TagVisibility;
@@ -133,7 +133,7 @@ export function useTags({ page, limit, q }: UseTagsParams) {
   const update = React.useCallback(
     async (input: {
       id: string;
-      slug?: string;
+
       locale?: string;
       label?: string;
       visibility?: TagVisibility;

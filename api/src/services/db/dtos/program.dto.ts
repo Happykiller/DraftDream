@@ -52,6 +52,7 @@ export interface ListProgramsDto {
   visibility?: 'private' | 'public';
   /** Filter by assigned user id */
   userId?: string;
+  includePublicVisibility?: boolean;
   includeArchived?: boolean; // default false (exclude deleted items)
   limit?: number;            // default 20
   page?: number;             // default 1

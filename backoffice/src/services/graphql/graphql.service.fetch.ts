@@ -1,5 +1,6 @@
 // src/services/graphql/graphql.service.fetch.ts
 import { env } from '@src/config/env';
+import { router } from '@src/routes/router';
 import { session } from '@stores/session';
 
 type GraphQLErrorExt = {
@@ -27,14 +28,29 @@ export class GraphqlServiceFetch {
     this.inversify = inversify ?? {};
   }
 
+  /**
+   * Clear the session and redirect to login while keeping the unauthorized reason for diagnostics.
+   */
   private handleUnauthorized(reason: string): void {
+    const message = `[GraphQL] Unauthorized → ${reason}`;
+    this.inversify?.loggerService?.error?.(message);
+
+    try {
+      sessionStorage.setItem('dd:last-unauthorized', message);
+    } catch {
+      // ignore storage failures
+    }
+
     try {
       session.getState().reset?.();
     } catch {
       // ignore reset failures
     }
-    this.inversify?.loggerService?.error?.(`[GraphQL] Unauthorized → ${reason}`);
-    window.location.replace('/login');
+
+    const search = new URLSearchParams({ reason: 'unauthorized' }).toString();
+    router.navigate(`/login?${search}`, { replace: true }).catch(() => {
+      window.location.replace(`/login?${search}`);
+    });
   }
 
   /** Normalize strings for comparison */

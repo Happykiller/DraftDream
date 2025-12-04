@@ -7,6 +7,7 @@ import { Box, Button, Chip, IconButton, Stack, TextField, Tooltip } from '@mui/m
 import { useTranslation } from 'react-i18next';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 import type { Session } from '@hooks/useSessions';
+import { getVisibilityLabel } from '../../commons/visibility';
 
 export interface SessionTablesProps {
   rows: Session[];
@@ -68,10 +69,7 @@ export const SessionTables = React.memo(function SessionTables({
       field: 'visibility',
       headerName: t('common.labels.visibility'),
       width: 140,
-      renderCell: ({ value }) =>
-        value === 'PUBLIC'
-          ? t('common.visibility.public')
-          : t('common.visibility.private'),
+      renderCell: ({ value }) => getVisibilityLabel(value, t),
     },
     {
       field: 'creator',

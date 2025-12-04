@@ -15,6 +15,7 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import type { Program, ProgramVisibility } from '@hooks/usePrograms';
+import { VISIBILITY_OPTIONS } from '@src/commons/visibility';
 
 export interface ProgramSessionOption {
   id: string;
@@ -211,8 +212,11 @@ export function ProgramDialog({
               required
               fullWidth
             >
-              <MenuItem value="PRIVATE">{t('common.visibility.private')}</MenuItem>
-              <MenuItem value="PUBLIC">{t('common.visibility.public')}</MenuItem>
+              {VISIBILITY_OPTIONS.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {t(option.label)}
+                </MenuItem>
+              ))}
             </TextField>
           </Stack>
 

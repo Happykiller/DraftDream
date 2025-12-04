@@ -1,6 +1,6 @@
 // src/services/db/models/meal-day.model.ts
 
-import type { MealDayVisibility } from '@services/db/dtos/meal-day.dto';
+
 
 export interface MealDay {
   id: string;
@@ -13,10 +13,9 @@ export interface MealDay {
   /** Ordered list preserving the original meal sequence. */
   mealIds: string[];
 
-  visibility: MealDayVisibility;
+  visibility: 'private' | 'public';
   createdBy: string;
   deletedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
-

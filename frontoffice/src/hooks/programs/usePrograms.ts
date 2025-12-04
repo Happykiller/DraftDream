@@ -59,7 +59,7 @@ export interface ProgramSessionExercise {
 export interface ProgramSession {
   id: string;
   templateSessionId?: string | null;
-  slug?: string | null;
+
   locale?: string | null;
   label: string;
   durationMin: number;
@@ -69,7 +69,7 @@ export interface ProgramSession {
 
 export interface Program {
   id: string;
-  slug: string;
+
   locale: string;
   label: string;
   duration: number;
@@ -102,7 +102,7 @@ const LIST_Q = `
     program_list(input: $input) {
       items {
         id
-        slug
+
         locale
         label
         duration
@@ -111,7 +111,7 @@ const LIST_Q = `
         sessions {
           id
           templateSessionId
-          slug
+
           locale
           label
           durationMin
@@ -167,7 +167,7 @@ const CREATE_M = `
   mutation CreateProgram($input: CreateProgramInput!) {
     program_create(input: $input) {
       id
-      slug
+
       locale
       label
       duration
@@ -176,7 +176,7 @@ const CREATE_M = `
       sessions {
         id
         templateSessionId
-        slug
+
         locale
         label
         durationMin
@@ -228,7 +228,7 @@ const UPDATE_M = `
   mutation UpdateProgram($input: UpdateProgramInput!) {
     program_update(input: $input) {
       id
-      slug
+
       locale
       label
       duration
@@ -237,7 +237,7 @@ const UPDATE_M = `
       sessions {
         id
         templateSessionId
-        slug
+
         locale
         label
         durationMin
@@ -347,7 +347,6 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
 
   const create = React.useCallback(
     async (input: {
-      slug?: string;
       locale?: string;
       label: string;
       duration: number;
@@ -359,7 +358,7 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
     }): Promise<Program> => {
       try {
         const locale = (input.locale ?? i18n.language)?.trim() || i18n.language;
-        const slug = input.slug?.trim();
+        const { sessions, ...restInput } = input;
 
         const { data, errors } = await execute(() =>
           gql.send<CreateProgramPayload>({
@@ -367,28 +366,30 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
             operationName: 'CreateProgram',
             variables: {
               input: {
-                ...input,
-                slug: slug && slug.length ? slug : undefined,
+                ...restInput,
                 locale,
-                sessionIds: input.sessionIds?.filter(Boolean),
-                sessions: input.sessions?.map((session) => ({
-                  ...session,
-                  templateSessionId: session.templateSessionId || undefined,
-                  slug: session.slug || undefined,
-                  locale: session.locale || undefined,
-                  description: session.description ?? undefined,
-                  exercises: session.exercises.map((exercise) => ({
-                    ...exercise,
-                    templateExerciseId: exercise.templateExerciseId || undefined,
-                    description: exercise.description ?? undefined,
-                    instructions: exercise.instructions ?? undefined,
-                    series: exercise.series ?? undefined,
-                    repetitions: exercise.repetitions ?? undefined,
-                    charge: exercise.charge ?? undefined,
-                    restSeconds: exercise.restSeconds ?? undefined,
-                    videoUrl: exercise.videoUrl ?? undefined,
-                  })),
-                })),
+                sessionIds: restInput.sessionIds?.filter(Boolean),
+                sessions: sessions?.map(
+                  ({ ...session }) => ({
+                    ...session,
+                    templateSessionId:
+                      session.templateSessionId || undefined,
+                    locale: session.locale || undefined,
+                    description: session.description ?? undefined,
+                    exercises: session.exercises.map((exercise) => ({
+                      ...exercise,
+                      templateExerciseId:
+                        exercise.templateExerciseId || undefined,
+                      description: exercise.description ?? undefined,
+                      instructions: exercise.instructions ?? undefined,
+                      series: exercise.series ?? undefined,
+                      repetitions: exercise.repetitions ?? undefined,
+                      charge: exercise.charge ?? undefined,
+                      restSeconds: exercise.restSeconds ?? undefined,
+                      videoUrl: exercise.videoUrl ?? undefined,
+                    })),
+                  }),
+                ),
               },
             },
           }),
@@ -425,7 +426,6 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
   const update = React.useCallback(
     async (input: {
       id: string;
-      slug?: string;
       locale?: string;
       label?: string;
       duration?: number;
@@ -437,7 +437,7 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
     }) => {
       try {
         const locale = (input.locale ?? i18n.language)?.trim() || i18n.language;
-        const slug = input.slug?.trim();
+        const { sessions, ...restInput } = input;
 
         const { errors } = await execute(() =>
           gql.send<UpdateProgramPayload>({
@@ -445,29 +445,31 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
             operationName: 'UpdateProgram',
             variables: {
               input: {
-                ...input,
-                slug: slug && slug.length ? slug : undefined,
+                ...restInput,
                 locale,
-                description: input.description ?? undefined,
-                sessionIds: input.sessionIds?.filter(Boolean),
-                sessions: input.sessions?.map((session) => ({
-                  ...session,
-                  templateSessionId: session.templateSessionId || undefined,
-                  slug: session.slug || undefined,
-                  locale: session.locale || undefined,
-                  description: session.description ?? undefined,
-                  exercises: session.exercises.map((exercise) => ({
-                    ...exercise,
-                    templateExerciseId: exercise.templateExerciseId || undefined,
-                    description: exercise.description ?? undefined,
-                    instructions: exercise.instructions ?? undefined,
-                    series: exercise.series ?? undefined,
-                    repetitions: exercise.repetitions ?? undefined,
-                    charge: exercise.charge ?? undefined,
-                    restSeconds: exercise.restSeconds ?? undefined,
-                    videoUrl: exercise.videoUrl ?? undefined,
-                  })),
-                })),
+                description: restInput.description ?? undefined,
+                sessionIds: restInput.sessionIds?.filter(Boolean),
+                sessions: sessions?.map(
+                  ({ ...session }) => ({
+                    ...session,
+                    templateSessionId:
+                      session.templateSessionId || undefined,
+                    locale: session.locale || undefined,
+                    description: session.description ?? undefined,
+                    exercises: session.exercises.map((exercise) => ({
+                      ...exercise,
+                      templateExerciseId:
+                        exercise.templateExerciseId || undefined,
+                      description: exercise.description ?? undefined,
+                      instructions: exercise.instructions ?? undefined,
+                      series: exercise.series ?? undefined,
+                      repetitions: exercise.repetitions ?? undefined,
+                      charge: exercise.charge ?? undefined,
+                      restSeconds: exercise.restSeconds ?? undefined,
+                      videoUrl: exercise.videoUrl ?? undefined,
+                    })),
+                  }),
+                ),
               },
             },
           }),

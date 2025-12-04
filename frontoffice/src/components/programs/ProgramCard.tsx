@@ -44,6 +44,7 @@ interface ProgramCardProps {
     payload: { label: string; athleteId: string | null; openBuilder: boolean },
   ) => Promise<void>;
   onView?: (program: Program) => void;
+  onPrefetch?: (action: 'view' | 'edit') => void;
 }
 
 export type ProgramActionKey = 'view' | 'copy' | 'edit' | 'delete';
@@ -65,13 +66,14 @@ const PROGRAM_ACTIONS: ProgramAction[] = [
 
 const COLLAPSED_CONTENT_MAX_HEIGHT = 480;
 
-export function ProgramCard({
+export const ProgramCard = React.memo(function ProgramCard({
   program,
   allowedActions = DEFAULT_ALLOWED_ACTIONS,
   onDelete,
   onEdit,
   onClone,
   onView,
+  onPrefetch,
 }: ProgramCardProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
   const role = session((state) => state.role);
@@ -136,7 +138,7 @@ export function ProgramCard({
     try {
       await onDelete(program.id);
       setIsDeleteDialogOpen(false);
-    } catch (error) {
+    } catch (_error) {
       // console.log('[ProgramCard] Failed to delete program', error);
     } finally {
       setIsDeleteSubmitting(false);
@@ -274,16 +276,16 @@ export function ProgramCard({
             overflow: 'hidden',
             ...(isOverflowing && !isExpanded
               ? {
-                  '&::after': {
-                    content: '""',
-                    position: 'absolute',
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    height: theme.spacing(7),
-                    backgroundImage: `linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, ${theme.palette.background.paper} 75%)`,
-                  },
-                }
+                '&::after': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  height: theme.spacing(7),
+                  backgroundImage: `linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, ${theme.palette.background.paper} 75%)`,
+                },
+              }
               : {}),
           })}
         >
@@ -349,6 +351,11 @@ export function ProgramCard({
                       size="small"
                       aria-label={label}
                       onClick={() => handleActionClick(key)}
+                      onMouseEnter={() => {
+                        if (key === 'edit' || key === 'view') {
+                          onPrefetch?.(key);
+                        }
+                      }}
                       disabled={Boolean(isDisabled)}
                       sx={(theme) => ({
                         color: theme.palette.text.secondary,
@@ -533,4 +540,4 @@ export function ProgramCard({
       )}
     </>
   );
-}
+});
