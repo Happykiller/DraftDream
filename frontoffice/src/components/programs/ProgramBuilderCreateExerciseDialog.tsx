@@ -19,7 +19,7 @@ import type {
   ProgramExercisePatch,
 } from '@components/programs/programBuilderTypes';
 import { parseSeriesCount } from '@components/programs/programBuilderUtils';
-import { slugify } from '@src/utils/slugify';
+
 
 type Option = { id: string; label: string };
 
@@ -93,21 +93,21 @@ export function ProgramBuilderCreateExerciseDialog({
   const muscleOptions = React.useMemo<CreatableOption[]>(() => {
     return muscles
       .filter((muscle) => !muscle.locale || muscle.locale === locale)
-      .map((muscle) => ({ id: muscle.id, label: muscle.label || muscle.slug }))
+      .map((muscle) => ({ id: muscle.id, label: muscle.label }))
       .sort((a, b) => collator.compare(a.label, b.label));
   }, [collator, locale, muscles]);
 
   const equipmentOptions = React.useMemo<CreatableOption[]>(() => {
     return equipment
       .filter((item) => !item.locale || item.locale === locale)
-      .map((item) => ({ id: item.id, label: item.label || item.slug }))
+      .map((item) => ({ id: item.id, label: item.label }))
       .sort((a, b) => collator.compare(a.label, b.label));
   }, [collator, equipment, locale]);
 
   const tagOptions = React.useMemo<CreatableOption[]>(() => {
     return tags
       .filter((item) => !item.locale || item.locale === locale)
-      .map((item) => ({ id: item.id, label: item.label || item.slug }))
+      .map((item) => ({ id: item.id, label: item.label }))
       .sort((a, b) => collator.compare(a.label, b.label));
   }, [collator, locale, tags]);
 
@@ -205,7 +205,7 @@ export function ProgramBuilderCreateExerciseDialog({
       }
       try {
         const created = await createMuscle({
-          slug: slugify(trimmed),
+
           locale,
           label: trimmed,
           visibility: 'PRIVATE',
@@ -226,7 +226,7 @@ export function ProgramBuilderCreateExerciseDialog({
       }
       try {
         const created = await createEquipment({
-          slug: slugify(trimmed),
+
           locale,
           label: trimmed,
           visibility: 'PRIVATE',
@@ -247,7 +247,7 @@ export function ProgramBuilderCreateExerciseDialog({
       }
       try {
         const created = await createTag({
-          slug: slugify(trimmed),
+
           locale,
           label: trimmed,
           visibility: 'PRIVATE',
@@ -521,10 +521,7 @@ export function ProgramBuilderCreateExerciseDialog({
           payload.locale = locale;
         }
 
-        const nextSlug = slugify(trimmedLabel);
-        if (nextSlug !== exercise.slug) {
-          payload.slug = nextSlug;
-        }
+
 
         const trimmedDescription = description.trim();
         payload.description = trimmedDescription ? trimmedDescription : null;
@@ -545,7 +542,7 @@ export function ProgramBuilderCreateExerciseDialog({
         }
       } else {
         const payload: CreateExerciseInput = {
-          slug: slugify(label.trim()),
+
           locale,
           label: label.trim(),
           series: series.trim(),

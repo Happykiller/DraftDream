@@ -13,7 +13,7 @@ import {
 import { useMealTypes } from '@hooks/nutrition/useMealTypes';
 import type { Meal, UseMealsResult } from '@hooks/nutrition/useMeals';
 
-import { slugify } from '@src/utils/slugify';
+
 import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
 
 interface MealPlanBuilderCreateMealDialogProps {
@@ -120,7 +120,7 @@ export function MealPlanBuilderCreateMealDialog({
           // Persist updates to the existing meal template.
           await updateMeal({
             id: meal.id,
-            slug: meal.slug,
+
             label: form.label.trim(),
             typeId: form.typeId,
             foods: form.foods.trim(),
@@ -138,7 +138,7 @@ export function MealPlanBuilderCreateMealDialog({
         }
 
         await createMeal({
-          slug: slugify(form.label, `${Date.now()}`),
+
           label: form.label.trim(),
           locale: i18n.language,
           typeId: form.typeId,

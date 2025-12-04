@@ -1,6 +1,40 @@
 {
   "releases": [
     {
+      "version": "0.8.0",
+      "title": "Pipeline Commercial Renforcé & Dashboards Séparés",
+      "date": "2025-12-05",
+      "global": [
+        "Séparation complète des dashboards coach et athlète pour une lecture plus claire.",
+        "Pipeline prospects enrichi avec KPIs, filtres unifiés, historique et métriques par colonne.",
+        "Navigation renforcée avec protections accrues contre les accès non autorisés.",
+        "Nettoyage des slugs obsolètes sur les programmes, plans et clients pour des données plus propres."
+      ],
+      "notes": "FitDesk 0.8.0 renforce fortement le pilotage commercial : pipeline plus riche, métriques fiables et segmentation claire entre coachs et athlètes. Le suivi prospect devient un outil stratégique soutenu par une API plus propre et un front revalorisé.",
+      "projects": {
+        "/api": [
+          "Exclusion automatique des prospects supprimés des résultats.",
+          "Suppression des slugs dans les mutations des programmes, plans nutritionnels et clients.",
+          "Support complet de l'historique des étapes du pipeline, exposé pour le front.",
+          "Consultation des exercices ouverte à tous les rôles pour simplifier les imports."
+        ],
+        "/backoffice": [
+          "Dashboards coach et athlète désormais séparés et mieux structurés.",
+          "Accès contrôlé aux sections sensibles pour éviter les erreurs de navigation.",
+          "Module Prospects amélioré : filtres unifiés, cartes structurées et indicateurs consolidés."
+        ],
+        "/frontoffice": [
+          "Nouveau résumé KPI en haut du pipeline (volumes, sources, progression).",
+          "Historique des transitions et nombre de jours dans chaque étape visibles sur les cartes.",
+          "Refonte des cartes prospects et filtres mis en avant pour une lisibilité accrue.",
+          "Suppression des slugs côté création/édition et alignement des libellés."
+        ],
+        "/showcase": [
+          "Alignement éditorial global pour suivre les évolutions commerciales à venir."
+        ]
+      }
+    },
+    {
       "version": "0.7.0",
       "title": "Gestion des Prospects & Pipeline CRM",
       "date": "2025-11-24",

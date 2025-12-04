@@ -9,7 +9,7 @@ import { ProgramList } from '@components/programs/ProgramList';
 import { type BuilderCopy } from '@components/programs/ProgramBuilderPanel';
 
 import { usePrograms, type Program } from '@hooks/programs/usePrograms';
-import { slugify } from '@src/utils/slugify';
+
 
 /** Coach-facing program management dashboard. */
 export function ProgramsCoach(): React.JSX.Element {
@@ -93,7 +93,7 @@ export function ProgramsCoach(): React.JSX.Element {
       }));
 
       const cloned = await create({
-        slug: slugify(payload.label, String(Date.now()).slice(-5)),
+
         locale: baseProgram.locale || i18n.language,
         label: payload.label,
         duration: baseProgram.duration,

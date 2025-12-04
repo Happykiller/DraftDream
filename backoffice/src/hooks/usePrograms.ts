@@ -229,7 +229,7 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
       visibility: ProgramVisibility;
     }) => {
       try {
-        const { slug: _ignoreSlug, sessions, ...restInput } = input;
+        const { sessions, ...restInput } = input;
         const { errors } = await execute(() =>
           gql.send<CreateProgramPayload>({
             query: CREATE_M,
@@ -289,7 +289,7 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
       visibility?: ProgramVisibility;
     }) => {
       try {
-        const { slug: _ignoreSlug, sessions, ...restInput } = input;
+        const { sessions, ...restInput } = input;
         const { errors } = await execute(() =>
           gql.send<UpdateProgramPayload>({
             query: UPDATE_M,

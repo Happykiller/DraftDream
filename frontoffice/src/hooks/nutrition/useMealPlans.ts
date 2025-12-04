@@ -18,7 +18,7 @@ export interface MealPlanUserSummary {
 export interface MealPlanMealTypeSnapshot {
   id?: string | null;
   templateMealTypeId?: string | null;
-  slug?: string | null;
+
   locale?: string | null;
   label: string;
   visibility?: string | null;
@@ -28,7 +28,7 @@ export interface MealPlanMealTypeSnapshot {
 export interface MealPlanMealSnapshot {
   id?: string | null;
   templateMealId?: string | null;
-  slug?: string | null;
+
   locale?: string | null;
   label: string;
   description?: string | null;
@@ -43,7 +43,7 @@ export interface MealPlanMealSnapshot {
 export interface MealPlanDaySnapshot {
   id?: string | null;
   templateMealDayId?: string | null;
-  slug?: string | null;
+
   locale?: string | null;
   label: string;
   description?: string | null;
@@ -52,7 +52,7 @@ export interface MealPlanDaySnapshot {
 
 export interface MealPlan {
   id: string;
-  slug: string;
+
   locale: string;
   label: string;
   description?: string | null;
@@ -87,7 +87,7 @@ const LIST_QUERY = `
     mealPlan_list(input: $input) {
       items {
         id
-        slug
+
         locale
         label
         description
@@ -98,14 +98,14 @@ const LIST_QUERY = `
         days {
           id
           templateMealDayId
-          slug
+
           locale
           label
           description
           meals {
             id
             templateMealId
-            slug
+
             locale
             label
             description
@@ -117,7 +117,7 @@ const LIST_QUERY = `
             type {
               id
               templateMealTypeId
-              slug
+
               locale
               label
               visibility
@@ -142,7 +142,7 @@ const CREATE_MUTATION = `
   mutation CreateMealPlan($input: CreateMealPlanInput!) {
     mealPlan_create(input: $input) {
       id
-      slug
+
       locale
       label
       description
@@ -153,14 +153,14 @@ const CREATE_MUTATION = `
       days {
         id
         templateMealDayId
-        slug
+
         locale
         label
         description
         meals {
           id
           templateMealId
-          slug
+
           locale
           label
           description
@@ -172,7 +172,7 @@ const CREATE_MUTATION = `
           type {
             id
             templateMealTypeId
-            slug
+
             locale
             label
             visibility
@@ -193,7 +193,7 @@ const UPDATE_MUTATION = `
   mutation UpdateMealPlan($input: UpdateMealPlanInput!) {
     mealPlan_update(input: $input) {
       id
-      slug
+
       locale
       label
       description
@@ -204,14 +204,14 @@ const UPDATE_MUTATION = `
       days {
         id
         templateMealDayId
-        slug
+
         locale
         label
         description
         meals {
           id
           templateMealId
-          slug
+
           locale
           label
           description
@@ -223,7 +223,7 @@ const UPDATE_MUTATION = `
           type {
             id
             templateMealTypeId
-            slug
+
             locale
             label
             visibility

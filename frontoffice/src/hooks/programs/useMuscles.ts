@@ -9,7 +9,7 @@ export type MuscleVisibility = 'PRIVATE' | 'PUBLIC';
 
 export interface Muscle {
   id: string;
-  slug: string;
+
   locale: string;
   label: string;
   visibility: MuscleVisibility;
@@ -34,7 +34,7 @@ type DeletePayload = { muscle_delete: boolean };
 const LIST_Q = `
   query ListMuscles($input: ListMusclesInput) {
     muscle_list(input: $input) {
-      items { id slug locale label visibility creator { id email } createdAt updatedAt }
+      items { id locale label visibility creator { id email } createdAt updatedAt }
       total page limit
     }
   }
@@ -43,7 +43,7 @@ const LIST_Q = `
 const CREATE_M = `
   mutation CreateMuscle($input: CreateMuscleInput!) {
     muscle_create(input: $input) {
-      id slug locale label visibility creator { id email } createdAt updatedAt
+      id locale label visibility creator { id email } createdAt updatedAt
     }
   }
 `;
@@ -51,7 +51,7 @@ const CREATE_M = `
 const UPDATE_M = `
   mutation UpdateMuscle($input: UpdateMuscleInput!) {
     muscle_update(input: $input) {
-      id slug locale label visibility creator { id email } createdAt updatedAt
+      id locale label visibility creator { id email } createdAt updatedAt
     }
   }
 `;
@@ -104,7 +104,7 @@ export function useMuscles({ page, limit, q }: UseMusclesParams) {
 
   const create = React.useCallback(
     async (input: {
-      slug: string;
+
       locale: string;
       label: string;
       visibility: MuscleVisibility;
@@ -135,7 +135,7 @@ export function useMuscles({ page, limit, q }: UseMusclesParams) {
   const update = React.useCallback(
     async (input: {
       id: string;
-      slug?: string;
+
       locale?: string;
       label?: string;
       visibility?: MuscleVisibility;

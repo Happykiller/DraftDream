@@ -10,7 +10,7 @@ export type Visibility = 'PRIVATE' | 'PUBLIC';
 
 export interface Category {
   id: string;
-  slug: string;
+
   locale: string;
   label: string;
   visibility: Visibility;
@@ -35,7 +35,7 @@ type DeleteCategoryPayload = { category_delete: boolean };
 const LIST_Q = `
   query ListCategories($input: ListCategoriesInput) {
     category_list(input: $input) {
-      items { id slug locale label visibility creator { id email } createdAt updatedAt }
+      items { id locale label visibility creator { id email } createdAt updatedAt }
       total page limit
     }
   }
@@ -44,7 +44,7 @@ const LIST_Q = `
 const CREATE_M = `
   mutation CreateCategory($input: CreateCategoryInput!) {
     category_create(input: $input) {
-      id slug locale label visibility creator { id email } createdAt updatedAt
+      id locale label visibility creator { id email } createdAt updatedAt
     }
   }
 `;
@@ -52,7 +52,7 @@ const CREATE_M = `
 const UPDATE_M = `
   mutation UpdateCategory($input: UpdateCategoryInput!) {
     category_update(input: $input) {
-      id slug locale label visibility creator { id email } createdAt updatedAt
+      id locale label visibility creator { id email } createdAt updatedAt
     }
   }
 `;
@@ -107,7 +107,7 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
 
   const create = React.useCallback(
     async (input: {
-      slug: string;
+
       locale: string;
       label: string;
       visibility: Visibility;
@@ -133,7 +133,7 @@ export function useCategories({ page, limit, q }: UseCategoriesParams) {
   );
 
   const update = React.useCallback(
-    async (input: { id: string; slug?: string; locale?: string; label?: string; visibility?: Visibility }) => {
+    async (input: { id: string; locale?: string; label?: string; visibility?: Visibility }) => {
       try {
         const { errors } = await execute(() =>
           gql.send<UpdateCategoryPayload>({

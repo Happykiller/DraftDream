@@ -13,7 +13,7 @@ export type MealDayVisibility = 'PRIVATE' | 'PUBLIC';
 
 export interface MealDayMealSnapshot {
   id: string;
-  slug: string;
+
   label: string;
   locale: string;
   visibility: MealVisibility;
@@ -24,7 +24,7 @@ export interface MealDayMealSnapshot {
   fatGrams?: number | null;
   type?: {
     id?: string | null;
-    slug?: string | null;
+
     label: string;
     locale?: string | null;
     visibility?: MealVisibility | null;
@@ -34,7 +34,7 @@ export interface MealDayMealSnapshot {
 
 export interface MealDay {
   id: string;
-  slug: string;
+
   locale: string;
   label: string;
   description?: string | null;
@@ -73,14 +73,14 @@ const LIST_QUERY = `
     mealDay_list(input: $input) {
       items {
         id
-        slug
+
         locale
         label
         description
         mealIds
         meals {
           id
-          slug
+
           label
           locale
           visibility
@@ -89,7 +89,7 @@ const LIST_QUERY = `
           proteinGrams
           carbGrams
           fatGrams
-          type { id slug label locale visibility icon }
+          type { id label locale visibility icon }
         }
         visibility
         createdBy
@@ -108,14 +108,14 @@ const CREATE_MUTATION = `
   mutation CreateMealDay($input: CreateMealDayInput!) {
     mealDay_create(input: $input) {
       id
-      slug
+
       locale
       label
       description
       mealIds
       meals {
         id
-        slug
+
         label
         locale
         visibility
@@ -124,7 +124,7 @@ const CREATE_MUTATION = `
         proteinGrams
         carbGrams
         fatGrams
-        type { id slug label locale visibility icon }
+        type { id label locale visibility icon }
       }
       visibility
       createdBy
@@ -139,14 +139,14 @@ const UPDATE_MUTATION = `
   mutation UpdateMealDay($input: UpdateMealDayInput!) {
     mealDay_update(input: $input) {
       id
-      slug
+
       locale
       label
       description
       mealIds
       meals {
         id
-        slug
+
         label
         locale
         visibility
@@ -155,7 +155,7 @@ const UPDATE_MUTATION = `
         proteinGrams
         carbGrams
         fatGrams
-        type { id slug label locale visibility icon }
+        type { id label locale visibility icon }
       }
       visibility
       createdBy
@@ -185,7 +185,7 @@ export interface UseMealDaysResult {
   total: number;
   loading: boolean;
   create: (input: {
-    slug: string;
+
     locale: string;
     label: string;
     description?: string;
@@ -194,7 +194,7 @@ export interface UseMealDaysResult {
   }) => Promise<void>;
   update: (input: {
     id: string;
-    slug?: string;
+
     locale?: string;
     label?: string;
     description?: string;

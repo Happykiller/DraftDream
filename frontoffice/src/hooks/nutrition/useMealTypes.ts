@@ -12,7 +12,7 @@ export type MealTypeVisibility = 'PRIVATE' | 'PUBLIC';
 
 export interface MealType {
   id: string;
-  slug: string;
+
   label: string;
   locale: string;
   visibility: MealTypeVisibility;
@@ -49,7 +49,7 @@ const LIST_QUERY = `
     mealType_list(input: $input) {
       items {
         id
-        slug
+
         label
         locale
         visibility
@@ -70,7 +70,7 @@ const CREATE_MUTATION = `
   mutation CreateMealType($input: CreateMealTypeInput!) {
     mealType_create(input: $input) {
       id
-      slug
+
       label
       locale
       visibility
@@ -87,7 +87,7 @@ const UPDATE_MUTATION = `
   mutation UpdateMealType($input: UpdateMealTypeInput!) {
     mealType_update(input: $input) {
       id
-      slug
+
       label
       locale
       visibility
@@ -118,7 +118,7 @@ export interface UseMealTypesResult {
   total: number;
   loading: boolean;
   create: (input: {
-    slug: string;
+
     label: string;
     locale: string;
     visibility: MealTypeVisibility;
@@ -126,7 +126,7 @@ export interface UseMealTypesResult {
   }) => Promise<void>;
   update: (input: {
     id: string;
-    slug?: string;
+
     label?: string;
     locale?: string;
     visibility?: MealTypeVisibility;

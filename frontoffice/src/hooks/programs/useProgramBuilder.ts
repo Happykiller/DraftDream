@@ -18,7 +18,7 @@ import {
 } from '@hooks/programs/usePrograms';
 import { useFlashStore } from '@src/hooks/useFlashStore';
 import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
-import { slugify } from '@src/utils/slugify';
+
 import { session } from '@stores/session';
 
 import type {
@@ -386,7 +386,7 @@ export function useProgramBuilder(
       if (item.locale && item.locale !== i18n.language) {
         continue;
       }
-      const label = item.label || item.slug || item.locale;
+      const label = item.label || item.locale;
       if (!label) continue;
       dedup.set(item.id, { id: item.id, label });
     }
@@ -1014,7 +1014,7 @@ export function useProgramBuilder(
         prev.map((session) => (session.id === sessionId ? { ...session, description } : session)),
       );
     },
-  []);
+    []);
 
   const handleSessionDurationChange = React.useCallback(
     (sessionId: string, duration: number) => {
@@ -1022,7 +1022,7 @@ export function useProgramBuilder(
         prev.map((session) => (session.id === sessionId ? { ...session, duration } : session)),
       );
     },
-  []);
+    []);
 
   const handleExerciseLabelChange = React.useCallback(
     (sessionId: string, exerciseId: string, label: string) => {
@@ -1343,7 +1343,7 @@ export function useProgramBuilder(
         if (mode === 'edit' && program) {
           await updateProgram({
             id: program.id,
-            slug: program.slug,
+
             locale: program.locale,
             label: name,
             duration,
@@ -1356,7 +1356,7 @@ export function useProgramBuilder(
           onUpdated?.();
         } else {
           await createProgram({
-            slug: slugify(name, String(Date.now()).slice(-5)),
+
             locale: i18n.language,
             label: name,
             duration,
@@ -1487,7 +1487,7 @@ export function useProgramBuilder(
 
           snapshotExercises.set(baseExerciseId, {
             id: baseExerciseId,
-            slug: baseExerciseId,
+
             locale: program.locale,
             label: exerciseItem.label,
             description: exerciseItem.description ?? null,
