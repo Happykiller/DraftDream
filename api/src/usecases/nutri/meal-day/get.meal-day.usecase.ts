@@ -12,7 +12,8 @@ export class GetMealDayUsecase {
 
   async execute(dto: GetMealDayUsecaseDto): Promise<MealDayUsecaseModel | null> {
     try {
-      const { session: _session, ...payload } = dto;
+      const { session, ...payload } = dto;
+      void session;
       const mealDay = await this.inversify.bddService.mealDay.get(payload);
       if (!mealDay) {
         return null;

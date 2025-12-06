@@ -17,4 +17,6 @@ export const mapAthleteInfoUsecaseToGql = (info: AthleteInfoUsecaseModel): Athle
   updatedAt: info.updatedAt,
   deletedAt: info.deletedAt,
   schemaVersion: info.schemaVersion,
+  objectives: [],
+  activityPreferences: [],
 });

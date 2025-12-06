@@ -11,7 +11,8 @@ export class GetExerciseUsecase {
 
   async execute(dto: GetExerciseUsecaseDto): Promise<ExerciseUsecaseModel | null> {
     try {
-      const { session: _session, ...payload } = dto;
+      const { session, ...payload } = dto;
+      void session;
       const res = await this.inversify.bddService.exercise.get(payload);
       if (!res) {
         return null;
