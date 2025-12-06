@@ -53,11 +53,6 @@ import { ListProspectActivityPreferencesUsecase } from '@usecases/prospect/activ
 import { CreateProspectActivityPreferenceUsecase } from '@usecases/prospect/activity-preference/create.prospect-activity-preference.usecase';
 import { UpdateProspectActivityPreferenceUsecase } from '@usecases/prospect/activity-preference/update.prospect-activity-preference.usecase';
 import { DeleteProspectActivityPreferenceUsecase } from '@usecases/prospect/activity-preference/delete.prospect-activity-preference.usecase';
-// import { GetClientStatusUsecase } from '@usecases/prospect/status/get.client-status.usecase';
-// import { ListClientStatusesUsecase } from '@usecases/prospect/status/list.client-status.usecase';
-// import { CreateClientStatusUsecase } from '@usecases/prospect/status/create.client-status.usecase';
-// import { UpdateClientStatusUsecase } from '@usecases/prospect/status/update.client-status.usecase';
-// import { DeleteClientStatusUsecase } from '@usecases/prospect/status/delete.client-status.usecase';
 import { GetProspectLevelUsecase } from '@usecases/prospect/level/get.prospect-level.usecase';
 import { ListProspectLevelsUsecase } from '@usecases/prospect/level/list.prospect-level.usecase';
 import { CreateProspectLevelUsecase } from '@usecases/prospect/level/create.prospect-level.usecase';
@@ -162,11 +157,6 @@ export class Inversify {
   listClientActivityPreferencesUsecase: ListProspectActivityPreferencesUsecase;
   updateClientActivityPreferenceUsecase: UpdateProspectActivityPreferenceUsecase;
   deleteClientActivityPreferenceUsecase: DeleteProspectActivityPreferenceUsecase;
-  // getClientStatusUsecase: GetClientStatusUsecase;
-  // createClientStatusUsecase: CreateClientStatusUsecase;
-  // listClientStatusesUsecase: ListClientStatusesUsecase;
-  // updateClientStatusUsecase: UpdateClientStatusUsecase;
-  // deleteClientStatusUsecase: DeleteClientStatusUsecase;
   getClientLevelUsecase: GetProspectLevelUsecase;
   createClientLevelUsecase: CreateProspectLevelUsecase;
   listClientLevelsUsecase: ListProspectLevelsUsecase;

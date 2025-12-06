@@ -79,9 +79,11 @@ This document captures how the `fitdesk-devops` agent should operate the DraftDr
    - Do not rely on translation `defaultValue` fallbacks; keep localization dictionaries up to date for every supported language.
 5. **Async workflows**:
    - Route every asynchronous workflow (GraphQL fetches, mutations, loaders, service calls) through `src/hooks/useAsyncTask.ts` so `useLoaderStore` fuels the global overlay. For example, the login form wraps its authentication mutation inside `useAsyncTask` to keep the overlay synchronized.
-Add this compact section near the end of your **Coding Guidelines** block:
+ Add this compact section near the end of your **Coding Guidelines** block:
 6. **MUI Grid syntax (v6+)**
    Use the new prop `size` instead of `item` and `xs`/`md`.
    **Deprecated:** `<Grid item xs={12} md={5}>`
    **Correct:** `<Grid size={{ xs: 12, md: 5 }}>`
    Keep `container` for parent grids, and use `spacing`, `rowSpacing`, or `columnSpacing` as usual.
+7. **Dead code**:
+   - Do not leave commented-out code in the repository. Remove unused code instead of commenting it.
