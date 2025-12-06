@@ -32,6 +32,13 @@ Manage coaching relationships between coaches and athletes
 - Manage coaching notes
 - Relationship lifecycle
 
+#### [Athlete Info Management](./athlete-info.md)
+Maintain athlete-specific intake files derived from prospect data
+- Level, objectives, and activity preferences
+- Medical conditions and allergies
+- Creation, update, and listing per athlete
+- Soft and hard deletion with audit fields
+
 ---
 
 ### 🏋️ Sport Domain
