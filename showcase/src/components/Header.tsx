@@ -21,17 +21,7 @@ const ariaLabelByLanguage: Record<Language, string> = {
 /**
  * Renders the global showcase header with branding and language selector.
  */
-const Header = (): JSX.Element => {
-  const { language, setLanguage } = useI18n();
-
-  const handleLanguageChange = (_event: MouseEvent<HTMLElement>, newLanguage: Language | null): void => {
-    if (!newLanguage || newLanguage === language) {
-      return;
-    }
-
-    setLanguage(newLanguage);
-  };
-
+const Header = () => {
   return (
     <Box
       component="header"
@@ -42,38 +32,63 @@ const Header = (): JSX.Element => {
         display: 'flex',
         gap: 2,
         justifyContent: 'space-between',
-        px: { xs: 2, sm: 3 },
-        py: 2
+        px: { xs: 2, md: 4 },
+        py: 2,
+        backgroundColor: 'background.default',
+        position: 'sticky',
+        top: 0,
+        zIndex: 1100, // Ensure it stays on top
       }}
     >
-      {/* General information */}
-      <Typography component="span" fontWeight={700} variant="h6">
-        FitDesk Showcase
-      </Typography>
-      <ToggleButtonGroup
-        aria-label="Select interface language"
-        exclusive
-        onChange={handleLanguageChange}
-        sx={{
-          marginLeft: 'auto',
-          '& .MuiToggleButton-root': {
-            px: 1.5
-          }
-        }}
-        value={language}
-      >
-        {supportedLanguages.map((supportedLanguage) => (
-          <ToggleButton
-            aria-label={ariaLabelByLanguage[supportedLanguage]}
-            key={supportedLanguage}
-            value={supportedLanguage}
-          >
-            <Box aria-hidden component="span" sx={{ fontSize: 20 }}>
-              {flagByLanguage[supportedLanguage]}
-            </Box>
-          </ToggleButton>
-        ))}
-      </ToggleButtonGroup>
+      {/* Brand / Logo */}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+        <Box
+          component="img"
+          src="/Logo.webp"
+          alt="FitDesk Logo"
+          sx={{
+            width: 40,
+            height: 40,
+            objectFit: 'contain'
+          }}
+        />
+        <Typography component="span" fontWeight={700} variant="h6" sx={{ color: 'text.primary' }}>
+          FitDesk
+        </Typography>
+        <Typography component="span" fontWeight={400} variant="body2" sx={{ color: 'text.secondary', ml: -0.5, pt: 0.5 }}>
+          CRM
+        </Typography>
+      </Box>
+
+      {/* Navigation Links - Hidden on mobile for simplicity, or we can use a basic stack */}
+      <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 4, alignItems: 'center' }}>
+        <Typography
+          component="a"
+          href="#features"
+          sx={{ textDecoration: 'none', color: 'text.primary', fontWeight: 500, '&:hover': { color: 'primary.main' } }}
+        >
+          Fonctionnalités
+        </Typography>
+        <Typography
+          component="a"
+          href="#pricing"
+          sx={{ textDecoration: 'none', color: 'text.primary', fontWeight: 500, '&:hover': { color: 'primary.main' } }}
+        >
+          Tarifs
+        </Typography>
+        <Typography
+          component="a"
+          href="#testimonials"
+          sx={{ textDecoration: 'none', color: 'text.primary', fontWeight: 500, '&:hover': { color: 'primary.main' } }}
+        >
+          Témoignages
+        </Typography>
+      </Box>
+
+      {/* CTA Button - Optional "Voir la démo" as per plan? The prompt said "pas question de reproduire 'connecter vous', 'essai gratuit'" */}
+      {/* Keeping distinct logic: If 'Connect/FreeTrial' are excluded, maybe just an empty box or a 'Contact' if logic requires balance, but prompt implies simple header */}
+      {/* For now, leaving the right side empty or just ensuring space */}
+      <Box />
     </Box>
   );
 };
