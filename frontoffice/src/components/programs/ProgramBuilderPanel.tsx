@@ -164,6 +164,26 @@ export function ProgramBuilderPanel({
 
   const addExerciseFallbackLabel = t('programs-coatch.builder.library.no_sessions_warning');
 
+  const sessionResultCountLabel = React.useMemo(
+    () =>
+      sessionsLoading
+        ? undefined
+        : t('programs-coatch.builder.templates_result_count', {
+            count: sessionTemplates.length,
+          }),
+    [sessionTemplates.length, sessionsLoading, t],
+  );
+
+  const exerciseResultCountLabel = React.useMemo(
+    () =>
+      exercisesLoading
+        ? undefined
+        : t('programs-coatch.builder.library.result_count', {
+            count: filteredExercises.length,
+          }),
+    [exercisesLoading, filteredExercises.length, t],
+  );
+
   const [exerciseMenuAnchor, setExerciseMenuAnchor] = React.useState<{
     anchor: HTMLElement;
     exerciseId: string;
@@ -902,6 +922,21 @@ export function ProgramBuilderPanel({
                                 <Search fontSize="small" color="disabled" />
                               </InputAdornment>
                             ),
+                            endAdornment:
+                              sessionResultCountLabel && sessionResultCountLabel.length > 0 ? (
+                                <InputAdornment
+                                  position="end"
+                                  sx={{ pointerEvents: 'none', color: 'text.disabled' }}
+                                >
+                                  <Typography
+                                    color="inherit"
+                                    sx={{ fontSize: 13, whiteSpace: 'nowrap' }}
+                                    variant="body2"
+                                  >
+                                    {sessionResultCountLabel}
+                                  </Typography>
+                                </InputAdornment>
+                              ) : undefined,
                           }}
                           sx={{ backgroundColor: theme.palette.background.default }}
                         />
@@ -1187,6 +1222,22 @@ export function ProgramBuilderPanel({
                                 <Search fontSize="small" color="disabled" />
                               </InputAdornment>
                             ),
+                            endAdornment:
+                              exerciseResultCountLabel &&
+                              exerciseResultCountLabel.length > 0 ? (
+                                <InputAdornment
+                                  position="end"
+                                  sx={{ pointerEvents: 'none', color: 'text.disabled' }}
+                                >
+                                  <Typography
+                                    color="inherit"
+                                    sx={{ fontSize: 13, whiteSpace: 'nowrap' }}
+                                    variant="body2"
+                                  >
+                                    {exerciseResultCountLabel}
+                                  </Typography>
+                                </InputAdornment>
+                              ) : undefined,
                           }}
                           sx={{ backgroundColor: theme.palette.background.default }}
                         />

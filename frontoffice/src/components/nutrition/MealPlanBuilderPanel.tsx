@@ -1,5 +1,6 @@
 // src/components/nutrition/MealPlanBuilderPanel.tsx
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import { alpha, useTheme } from '@mui/material/styles';
 import {
   Autocomplete,
@@ -70,6 +71,7 @@ export function MealPlanBuilderPanel({
   onUpdated,
   mealPlan,
 }: MealPlanBuilderPanelProps): React.JSX.Element {
+  const { t } = useTranslation();
   const theme = useTheme();
 
   const {
@@ -180,6 +182,24 @@ export function MealPlanBuilderPanel({
   const summaryBorder = React.useMemo(
     () => alpha(theme.palette.primary.main, 0.16),
     [theme.palette.primary.main],
+  );
+  const dayResultCountLabel = React.useMemo(
+    () =>
+      dayLibraryLoading
+        ? undefined
+        : t('nutrition-coach.builder.day_library.result_count', {
+            count: dayLibrary.length,
+          }),
+    [dayLibrary.length, dayLibraryLoading, t],
+  );
+  const mealResultCountLabel = React.useMemo(
+    () =>
+      mealLibraryLoading
+        ? undefined
+        : t('nutrition-coach.builder.meal_library.result_count', {
+            count: mealLibrary.length,
+          }),
+    [mealLibrary.length, mealLibraryLoading, t],
   );
   const macroFormatter = React.useMemo(
     () =>
@@ -626,6 +646,21 @@ export function MealPlanBuilderPanel({
                                 <Search fontSize="small" color="disabled" />
                               </InputAdornment>
                             ),
+                            endAdornment:
+                              dayResultCountLabel && dayResultCountLabel.length > 0 ? (
+                                <InputAdornment
+                                  position="end"
+                                  sx={{ pointerEvents: 'none', color: 'text.disabled' }}
+                                >
+                                  <Typography
+                                    color="inherit"
+                                    sx={{ fontSize: 13, whiteSpace: 'nowrap' }}
+                                    variant="body2"
+                                  >
+                                    {dayResultCountLabel}
+                                  </Typography>
+                                </InputAdornment>
+                              ) : undefined,
                           }}
                         />
                         {builderCopy.day_library.limit_hint ? (
@@ -859,6 +894,21 @@ export function MealPlanBuilderPanel({
                                 <Search fontSize="small" color="disabled" />
                               </InputAdornment>
                             ),
+                            endAdornment:
+                              mealResultCountLabel && mealResultCountLabel.length > 0 ? (
+                                <InputAdornment
+                                  position="end"
+                                  sx={{ pointerEvents: 'none', color: 'text.disabled' }}
+                                >
+                                  <Typography
+                                    color="inherit"
+                                    sx={{ fontSize: 13, whiteSpace: 'nowrap' }}
+                                    variant="body2"
+                                  >
+                                    {mealResultCountLabel}
+                                  </Typography>
+                                </InputAdornment>
+                              ) : undefined,
                           }}
                         />
                         <Button
