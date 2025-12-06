@@ -1,27 +1,11 @@
-import {
-  Box,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography
-} from '@mui/material';
-import { type MouseEvent } from 'react';
+import { Box, Button, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
-import { supportedLanguages, useI18n, type Language } from '../i18n/I18nProvider';
+// ... existing imports ...
 
-const flagByLanguage: Record<Language, string> = {
-  en: '🇬🇧',
-  fr: '🇫🇷'
-};
-
-const ariaLabelByLanguage: Record<Language, string> = {
-  en: 'English language',
-  fr: 'Langue française'
-};
-
-/**
- * Renders the global showcase header with branding and language selector.
- */
 const Header = () => {
+  const navigate = useNavigate();
+
   return (
     <Box
       component="header"
@@ -41,7 +25,16 @@ const Header = () => {
       }}
     >
       {/* Brand / Logo */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+      <Box
+        onClick={() => navigate('/')}
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1.5,
+          cursor: 'pointer',
+          userSelect: 'none'
+        }}
+      >
         <Box
           component="img"
           src="/Logo.webp"
@@ -60,35 +53,71 @@ const Header = () => {
         </Typography>
       </Box>
 
-      {/* Navigation Links - Hidden on mobile for simplicity, or we can use a basic stack */}
-      <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 4, alignItems: 'center' }}>
+      {/* Navigation Links */}
+      <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 5, alignItems: 'center' }}>
         <Typography
-          component="a"
-          href="#features"
-          sx={{ textDecoration: 'none', color: 'text.primary', fontWeight: 500, '&:hover': { color: 'primary.main' } }}
+          onClick={() => {
+            document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+          }}
+          sx={{
+            cursor: 'pointer',
+            fontSize: '0.95rem',
+            fontWeight: 500,
+            color: 'text.secondary',
+            transition: 'color 0.2s',
+            '&:hover': { color: 'primary.main' }
+          }}
         >
           Fonctionnalités
         </Typography>
         <Typography
-          component="a"
-          href="#pricing"
-          sx={{ textDecoration: 'none', color: 'text.primary', fontWeight: 500, '&:hover': { color: 'primary.main' } }}
+          onClick={() => {
+            document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
+          }}
+          sx={{
+            cursor: 'pointer',
+            fontSize: '0.95rem',
+            fontWeight: 500,
+            color: 'text.secondary',
+            transition: 'color 0.2s',
+            '&:hover': { color: 'primary.main' }
+          }}
         >
           Tarifs
         </Typography>
         <Typography
-          component="a"
-          href="#testimonials"
-          sx={{ textDecoration: 'none', color: 'text.primary', fontWeight: 500, '&:hover': { color: 'primary.main' } }}
+          onClick={() => {
+            document.getElementById('testimonials')?.scrollIntoView({ behavior: 'smooth' });
+          }}
+          sx={{
+            cursor: 'pointer',
+            fontSize: '0.95rem',
+            fontWeight: 500,
+            color: 'text.secondary',
+            transition: 'color 0.2s',
+            '&:hover': { color: 'primary.main' }
+          }}
         >
           Témoignages
         </Typography>
       </Box>
 
-      {/* CTA Button - Optional "Voir la démo" as per plan? The prompt said "pas question de reproduire 'connecter vous', 'essai gratuit'" */}
-      {/* Keeping distinct logic: If 'Connect/FreeTrial' are excluded, maybe just an empty box or a 'Contact' if logic requires balance, but prompt implies simple header */}
-      {/* For now, leaving the right side empty or just ensuring space */}
-      <Box />
+      {/* Release Notes Button */}
+      <Box>
+        <Button
+          onClick={() => navigate('/changelog')}
+          variant="text"
+          color="inherit"
+          sx={{
+            color: 'text.secondary',
+            textTransform: 'none',
+            fontWeight: 500,
+            '&:hover': { color: 'primary.main', bgcolor: 'transparent' }
+          }}
+        >
+          Nouveautés
+        </Button>
+      </Box>
     </Box>
   );
 };
