@@ -16,7 +16,7 @@ import {
 import Grid from '@mui/material/Grid';
 import { useTranslation } from 'react-i18next';
 
-import { ProspectStatusEnum, type ProspectStatusOption } from '@commons/prospects/status';
+import { ProspectStatus, type ProspectStatusOption } from '@commons/prospects/status';
 import type { Prospect } from '@hooks/useProspects';
 import type { ProspectMetadataOption } from '@hooks/useProspectMetadataOptions';
 
@@ -25,7 +25,7 @@ export interface ProspectClientDialogValues {
   lastName: string;
   email: string;
   phone?: string;
-  status: ProspectStatusEnum | '';
+  status: ProspectStatus | '';
   levelId?: string | null;
   sourceId?: string | null;
   objectiveIds: string[];

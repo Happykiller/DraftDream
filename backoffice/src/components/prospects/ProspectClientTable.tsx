@@ -6,7 +6,7 @@ import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Button, IconButton, MenuItem, Stack, TextField, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import type { ProspectStatusEnum, ProspectStatusOption } from '@commons/prospects/status';
+import { ProspectStatus, type ProspectStatusOption } from '@commons/prospects/status';
 import type { Prospect } from '@hooks/useProspects';
 import type { ProspectMetadataOption } from '@hooks/useProspectMetadataOptions';
 import { useDateFormatter } from '@hooks/useDateFormatter';
@@ -17,7 +17,7 @@ export interface ProspectClientTableProps {
   page: number; // 1-based
   limit: number;
   q: string;
-  statusFilter?: ProspectStatusEnum | null;
+  statusFilter?: ProspectStatus | null;
   levelFilter?: string | null;
   sourceFilter?: string | null;
   statuses: ProspectStatusOption[];
@@ -30,7 +30,7 @@ export interface ProspectClientTableProps {
   onQueryChange: (value: string) => void;
   onPageChange: (page: number) => void;
   onLimitChange: (limit: number) => void;
-  onStatusFilterChange: (value: ProspectStatusEnum | null) => void;
+  onStatusFilterChange: (value: ProspectStatus | null) => void;
   onLevelFilterChange: (value: string | null) => void;
   onSourceFilterChange: (value: string | null) => void;
 }
@@ -61,10 +61,10 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
   } = props;
   const { t } = useTranslation();
   const fmtDate = useDateFormatter();
-  const statusLabels = React.useMemo<Record<ProspectStatusEnum, string>>(
+  const statusLabels = React.useMemo<Record<ProspectStatus, string>>(
     () =>
       Object.fromEntries(statuses.map((status) => [status.value, status.label])) as Record<
-        ProspectStatusEnum,
+        ProspectStatus,
         string
       >,
     [statuses],
@@ -200,7 +200,7 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
             size="small"
             label={t('common.labels.status')}
             value={statusFilter || ''}
-            onChange={(event) => onStatusFilterChange((event.target.value as ProspectStatusEnum) || null)}
+            onChange={(event) => onStatusFilterChange((event.target.value as ProspectStatus) || null)}
             sx={{ minWidth: 180 }}
           >
             <MenuItem value="">{t('common.placeholders.select')}</MenuItem>

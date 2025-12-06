@@ -3,7 +3,7 @@
 import * as React from 'react';
 
 import inversify from '@src/commons/inversify';
-import { ProspectStatusEnum } from '@src/commons/prospects/status';
+import { ProspectStatus } from '@src/commons/prospects/status';
 
 import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
@@ -31,7 +31,7 @@ export interface Prospect {
   lastName: string;
   email: string;
   phone?: string;
-  status?: ProspectStatusEnum | null;
+  status?: ProspectStatus | null;
   levelId?: string;
   sourceId?: string;
   objectiveIds: string[];
@@ -130,7 +130,7 @@ export interface UseProspectsParams {
   page: number; // 1-based
   limit: number;
   q: string;
-  status?: ProspectStatusEnum | null;
+  status?: ProspectStatus | null;
   levelId?: string | null;
   sourceId?: string | null;
 }
@@ -140,7 +140,7 @@ export interface ProspectCreateInput {
   lastName: string;
   email: string;
   phone?: string;
-  status?: ProspectStatusEnum;
+  status?: ProspectStatus;
   levelId?: string;
   sourceId?: string;
   objectiveIds?: string[];

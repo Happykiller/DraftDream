@@ -146,6 +146,7 @@ describe('ListProgramsUsecase', () => {
         page: 1,
         limit: 10,
         createdByIn: expect.arrayContaining(['coach-1', 'admin-1']),
+        includePublicVisibility: true,
       },
     ]);
     expect(result).toEqual({
@@ -208,6 +209,7 @@ describe('ListProgramsUsecase', () => {
           'admin-3',
           'admin-51',
         ]),
+        includePublicVisibility: true,
       }),
     );
     const listCallArgs = asMock(programRepositoryMock.list).mock.calls[0][0];

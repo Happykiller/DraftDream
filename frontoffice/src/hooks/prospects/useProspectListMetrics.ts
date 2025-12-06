@@ -6,7 +6,7 @@ import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 
 import type { Prospect, ProspectSourceFilterValue } from '@app-types/prospects';
-import { pipelineStatuses, ProspectStatusEnum } from '@src/commons/prospects/status';
+import { pipelineStatuses, ProspectStatus } from '@src/commons/prospects/status';
 import { prospectList } from '@services/graphql/prospects.service';
 
 const PAGE_SIZE = 200;
@@ -42,7 +42,7 @@ function isWithinLastDays(date: string, days: number): boolean {
 }
 
 async function collectAllProspectsByStatus(
-  status: ProspectStatusEnum | null,
+  status: ProspectStatus | null,
   sourceId?: string | null,
 ): Promise<Prospect[]> {
   const pages: Prospect[] = [];
@@ -62,14 +62,14 @@ async function collectAllProspectsByStatus(
   return pages;
 }
 
-async function collectMissingSourceByStatus(status: ProspectStatusEnum | null): Promise<Prospect[]> {
+async function collectMissingSourceByStatus(status: ProspectStatus | null): Promise<Prospect[]> {
   const items = await collectAllProspectsByStatus(status, null);
 
   return items.filter((prospect) => !(prospect.source?.id ?? prospect.sourceId));
 }
 
 async function sumTotalsByStatuses(
-  statuses: ProspectStatusEnum[],
+  statuses: ProspectStatus[],
   sourceId?: string | null,
 ): Promise<number> {
   const results = await Promise.all(
@@ -112,7 +112,7 @@ export function useProspectListMetrics({
       const nextMetrics = await execute(async () => {
         const [clientItems, totalProspects, pipelineProspects] = await (async () => {
           if (sourceFilter === 'none') {
-            const statuses = [...pipelineStatuses, ProspectStatusEnum.CLIENT];
+            const statuses = [...pipelineStatuses, ProspectStatus.CLIENT];
             const statusCollections = await Promise.all(statuses.map((status) => collectMissingSourceByStatus(status)));
             const clientCollection = statusCollections[statusCollections.length - 1];
             const pipelineCollection = statusCollections.slice(0, -1).flat();
@@ -120,7 +120,7 @@ export function useProspectListMetrics({
             return [clientCollection, statusCollections.flat(), pipelineCollection.length];
           }
 
-          const clients = await collectAllProspectsByStatus(ProspectStatusEnum.CLIENT, resolveSourceId);
+          const clients = await collectAllProspectsByStatus(ProspectStatus.CLIENT, resolveSourceId);
           const totalProspectsResult = await prospectList({
             page: 1,
             limit: 1,

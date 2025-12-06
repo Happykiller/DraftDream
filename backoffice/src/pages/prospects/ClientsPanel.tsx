@@ -10,7 +10,7 @@ import {
 } from '@components/prospects/ProspectClientDialog';
 import { ProspectClientTable } from '@components/prospects/ProspectClientTable';
 import {
-  ProspectStatusEnum,
+  ProspectStatus,
   prospectStatusLabels,
   type ProspectStatusOption,
 } from '@commons/prospects/status';
@@ -27,7 +27,7 @@ export function ClientsPanel(): React.JSX.Element {
     if (debounced !== q) setQ(debounced);
   }, [debounced, q, setQ]);
 
-  const [statusFilter, setStatusFilter] = React.useState<ProspectStatusEnum | null>(null);
+  const [statusFilter, setStatusFilter] = React.useState<ProspectStatus | null>(null);
   const [levelFilter, setLevelFilter] = React.useState<string | null>(null);
   const [sourceFilter, setSourceFilter] = React.useState<string | null>(null);
 
@@ -35,7 +35,7 @@ export function ClientsPanel(): React.JSX.Element {
     page,
     limit,
     q,
-    status: (statusFilter as ProspectStatusEnum | null) ?? undefined,
+    status: (statusFilter as ProspectStatus | null) ?? undefined,
     levelId: levelFilter,
     sourceId: sourceFilter,
   });
@@ -53,7 +53,7 @@ export function ClientsPanel(): React.JSX.Element {
       lastName: values.lastName,
       email: values.email,
       phone: values.phone || undefined,
-      status: values.status as ProspectStatusEnum | undefined,
+      status: values.status as ProspectStatus | undefined,
       levelId: values.levelId || undefined,
       sourceId: values.sourceId || undefined,
       objectiveIds: values.objectiveIds,
@@ -70,7 +70,7 @@ export function ClientsPanel(): React.JSX.Element {
 
   const statusOptions = React.useMemo<ProspectStatusOption[]>(
     () =>
-      Object.values(ProspectStatusEnum).map((value) => ({
+      Object.values(ProspectStatus).map((value) => ({
         value,
         label: prospectStatusLabels[value],
       })),

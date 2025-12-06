@@ -14,11 +14,11 @@ import {
   type ProspectUpdateInput,
 } from '@services/graphql/prospects.service';
 import type { ProspectListResult } from '@app-types/prospects';
-import type { ProspectStatusEnum } from '@src/commons/prospects/status';
+import type { ProspectStatus } from '@src/commons/prospects/status';
 
 export interface UseProspectsParams extends Pick<ProspectListInput, 'page' | 'limit'> {
   q?: string;
-  status?: ProspectStatusEnum | null;
+  status?: ProspectStatus | null;
   levelId?: string | null;
   sourceId?: string | null;
   enabled?: boolean;

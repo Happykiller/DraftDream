@@ -58,6 +58,7 @@
 - **Explicit Contracts**: Use distinct DTOs for input/output and Models for domain entities. Avoid sharing types across layers if it couples them tightly.
 - **Consistent Patterns**: Follow existing naming conventions and architectural patterns throughout the project.
 - **Conventions**: Use the same coding conventions (naming, structure, formatting) across the entire codebase.
+- **Language**: English is mandatory for all code elements, including variable names, functions, classes, and keys. French is strictly forbidden in code.
 
 ## Repository Delete Policy
 - **Soft Delete (Preferred)**: Set `deletedAt` timestamp, preserve data for audit/recovery

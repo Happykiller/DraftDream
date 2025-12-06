@@ -772,6 +772,7 @@
         "total_meals_one": "{{count}} repas au total",
         "total_meals_other": "{{count}} repas au total",
         "nutrition_title": "Résumé nutritionnel",
+        "average_title": "Moyenne / jour",
         "calories_label": "Calories",
         "calories_unit": "kcal",
         "protein_label": "Protéines",

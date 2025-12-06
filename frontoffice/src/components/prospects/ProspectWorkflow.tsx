@@ -33,7 +33,7 @@ import { orange } from '@mui/material/colors';
 import { ProspectWorkflowCard } from '@components/prospects/ProspectCard';
 
 import type { Prospect, ProspectSourceFilterValue } from '@app-types/prospects';
-import { pipelineStatuses, ProspectStatusEnum } from '@src/commons/prospects/status';
+import { pipelineStatuses, ProspectStatus } from '@src/commons/prospects/status';
 
 type PipelineStatus = (typeof pipelineStatuses)[number];
 
@@ -87,7 +87,7 @@ const DraggableProspectCard = React.memo(function DraggableProspectCard({
   onDragStart,
   onDragEnd,
 }: DraggableProspectCardProps): React.JSX.Element {
-  const isDraggable = stage !== ProspectStatusEnum.A_FAIRE;
+  const isDraggable = stage !== ProspectStatus.TODO;
 
   return (
     <Stack
@@ -119,39 +119,39 @@ const DraggableProspectCard = React.memo(function DraggableProspectCard({
 });
 
 const pipelineCopyKeys: Record<PipelineStatus, { title: string; description: string }> = {
-  [ProspectStatusEnum.LEAD]: {
+  [ProspectStatus.LEAD]: {
     title: 'prospects.workflow.stages.lead.title',
     description: 'prospects.workflow.stages.lead.description',
   },
-  [ProspectStatusEnum.CONTACTE]: {
+  [ProspectStatus.CONTACTED]: {
     title: 'prospects.workflow.stages.contact.title',
     description: 'prospects.workflow.stages.contact.description',
   },
-  [ProspectStatusEnum.RDV_PLANIFIE]: {
+  [ProspectStatus.MEETING_SCHEDULED]: {
     title: 'prospects.workflow.stages.meeting.title',
     description: 'prospects.workflow.stages.meeting.description',
   },
-  [ProspectStatusEnum.PROPOSITION]: {
+  [ProspectStatus.OFFER]: {
     title: 'prospects.workflow.stages.proposal.title',
     description: 'prospects.workflow.stages.proposal.description',
   },
-  [ProspectStatusEnum.NEGOCIATION]: {
+  [ProspectStatus.NEGOTIATION]: {
     title: 'prospects.workflow.stages.negotiation.title',
     description: 'prospects.workflow.stages.negotiation.description',
   },
-  [ProspectStatusEnum.GAGNE]: {
+  [ProspectStatus.WON]: {
     title: 'prospects.workflow.stages.won.title',
     description: 'prospects.workflow.stages.won.description',
   },
-  [ProspectStatusEnum.PERDUS]: {
+  [ProspectStatus.LOST]: {
     title: 'prospects.workflow.stages.lost.title',
     description: 'prospects.workflow.stages.lost.description',
   },
-  [ProspectStatusEnum.A_FAIRE]: {
+  [ProspectStatus.TODO]: {
     title: 'prospects.workflow.stages.todo.title',
     description: 'prospects.workflow.stages.todo.description',
   },
-  [ProspectStatusEnum.CLIENT]: {
+  [ProspectStatus.CLIENT]: {
     title: 'prospects.workflow.stages.client.title',
     description: 'prospects.workflow.stages.client.description',
   },
@@ -209,39 +209,39 @@ export const ProspectWorkflow = React.memo(function ProspectWorkflow({
 
   const stageStyles = React.useMemo<Record<PipelineStatus, { accentColor: string; Icon: SvgIconComponent }>>(
     () => ({
-      [ProspectStatusEnum.LEAD]: {
+      [ProspectStatus.LEAD]: {
         accentColor: theme.palette.text.primary,
         Icon: People,
       },
-      [ProspectStatusEnum.CONTACTE]: {
+      [ProspectStatus.CONTACTED]: {
         accentColor: theme.palette.primary.main,
         Icon: Phone,
       },
-      [ProspectStatusEnum.RDV_PLANIFIE]: {
+      [ProspectStatus.MEETING_SCHEDULED]: {
         accentColor: theme.palette.warning.main,
         Icon: CalendarMonth,
       },
-      [ProspectStatusEnum.PROPOSITION]: {
+      [ProspectStatus.OFFER]: {
         accentColor: theme.palette.secondary.main,
         Icon: Description,
       },
-      [ProspectStatusEnum.NEGOCIATION]: {
+      [ProspectStatus.NEGOTIATION]: {
         accentColor: orange[600],
         Icon: Chat,
       },
-      [ProspectStatusEnum.GAGNE]: {
+      [ProspectStatus.WON]: {
         accentColor: theme.palette.success.main,
         Icon: CheckCircle,
       },
-      [ProspectStatusEnum.PERDUS]: {
+      [ProspectStatus.LOST]: {
         accentColor: theme.palette.error.main,
         Icon: Cancel,
       },
-      [ProspectStatusEnum.A_FAIRE]: {
+      [ProspectStatus.TODO]: {
         accentColor: theme.palette.info.main,
         Icon: TaskAlt,
       },
-      [ProspectStatusEnum.CLIENT]: {
+      [ProspectStatus.CLIENT]: {
         accentColor: theme.palette.success.dark,
         Icon: VerifiedUser,
       },
@@ -298,8 +298,8 @@ export const ProspectWorkflow = React.memo(function ProspectWorkflow({
       0,
     );
     const successfulProspects =
-      (filteredColumns[ProspectStatusEnum.GAGNE]?.length ?? 0) +
-      (filteredColumns[ProspectStatusEnum.CLIENT]?.length ?? 0);
+      (filteredColumns[ProspectStatus.WON]?.length ?? 0) +
+      (filteredColumns[ProspectStatus.CLIENT]?.length ?? 0);
     const conversionRate = totalProspects === 0 ? 0 : Math.round((successfulProspects / totalProspects) * 100);
     const averageValue = totalProspects === 0 ? 0 : totalValue / totalProspects;
 
@@ -577,7 +577,7 @@ export const ProspectWorkflow = React.memo(function ProspectWorkflow({
                           </Stack>
                         </Stack>
 
-                        {onCreateProspect && stage.status !== ProspectStatusEnum.A_FAIRE ? (
+                        {onCreateProspect && stage.status !== ProspectStatus.TODO ? (
                           <Tooltip title={t('prospects.workflow.actions.create_at_stage')}>
                             <IconButton
                               aria-label={`create-prospect-${stage.status}`}
@@ -617,17 +617,17 @@ export const ProspectWorkflow = React.memo(function ProspectWorkflow({
                     <Paper
                       elevation={0}
                       onDragOver={(event) => {
-                        if (stage.status !== ProspectStatusEnum.A_FAIRE) {
+                        if (stage.status !== ProspectStatus.TODO) {
                           handleDragOver(stage.status, event);
                         }
                       }}
                       onDragLeave={() => {
-                        if (stage.status !== ProspectStatusEnum.A_FAIRE) {
+                        if (stage.status !== ProspectStatus.TODO) {
                           handleDragLeave(stage.status);
                         }
                       }}
                       onDrop={(event) => {
-                        if (stage.status !== ProspectStatusEnum.A_FAIRE) {
+                        if (stage.status !== ProspectStatus.TODO) {
                           handleDrop(stage.status, event);
                         }
                       }}
@@ -668,15 +668,15 @@ export const ProspectWorkflow = React.memo(function ProspectWorkflow({
                               stage={stage.status}
                               isDragging={draggedProspectId === prospect.id}
                               onEditProspect={
-                                stage.status !== ProspectStatusEnum.A_FAIRE ? onEditProspect : undefined
+                                stage.status !== ProspectStatus.TODO ? onEditProspect : undefined
                               }
                               onDeleteProspect={
-                                stage.status !== ProspectStatusEnum.A_FAIRE
+                                stage.status !== ProspectStatus.TODO
                                   ? onDeleteProspect
                                   : undefined
                               }
                               onValidateProspect={
-                                stage.status === ProspectStatusEnum.GAGNE
+                                stage.status === ProspectStatus.WON
                                   ? onValidateProspect
                                   : undefined
                               }

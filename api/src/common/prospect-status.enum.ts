@@ -2,13 +2,13 @@
 // Centralized prospect status values to ensure consistent usage across layers.
 export enum ProspectStatus {
   LEAD = 'lead',
-  CONTACTE = 'contacté',
-  RDV_PLANIFIE = 'rdv planifié',
-  PROPOSITION = 'proposition',
-  NEGOCIATION = 'négociation',
-  GAGNE = 'gagné',
-  PERDUS = 'perdus',
-  A_FAIRE = 'à faire',
+  CONTACTED = 'contacted',
+  MEETING_SCHEDULED = 'meeting_scheduled',
+  OFFER = 'offer',
+  NEGOTIATION = 'negotiation',
+  WON = 'won',
+  LOST = 'lost',
+  TODO = 'todo',
   CLIENT = 'client',
 }
 

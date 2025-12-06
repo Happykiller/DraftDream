@@ -1,6 +1,6 @@
 // src/types/prospects.ts
 
-import type { ProspectStatusEnum } from '@src/commons/prospects/status';
+import type { ProspectStatus } from '@src/commons/prospects/status';
 
 export interface ProspectRelation {
   id: string;
@@ -36,7 +36,7 @@ export interface Prospect {
   lastName: string;
   email: string;
   phone?: string | null;
-  status?: ProspectStatusEnum | null;
+  status?: ProspectStatus | null;
   levelId?: string | null;
   sourceId?: string | null;
   objectiveIds: string[];

@@ -2,7 +2,7 @@
 import inversify from '@src/commons/inversify';
 
 import type { Prospect, ProspectListResult } from '@app-types/prospects';
-import type { ProspectStatusEnum } from '@src/commons/prospects/status';
+import type { ProspectStatus } from '@src/commons/prospects/status';
 
 import { GraphqlServiceFetch } from './graphql.service.fetch';
 
@@ -87,7 +87,7 @@ export interface ProspectListInput {
   page: number;
   limit: number;
   q?: string;
-  status?: ProspectStatusEnum | null;
+  status?: ProspectStatus | null;
   levelId?: string | null;
   sourceId?: string | null;
 }
@@ -97,7 +97,7 @@ export interface ProspectCreateInput {
   lastName: string;
   email: string;
   phone?: string;
-  status?: ProspectStatusEnum | null;
+  status?: ProspectStatus | null;
   levelId?: string | null;
   sourceId?: string | null;
   objectiveIds?: string[];

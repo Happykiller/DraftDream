@@ -1,45 +1,45 @@
 // src/commons/prospects/status.ts
 // Comment in English: Prospect status constants and helpers for UI bindings.
 
-export const ProspectStatusEnum = {
-  LEAD: 'LEAD',
-  CONTACTE: 'CONTACTE',
-  RDV_PLANIFIE: 'RDV_PLANIFIE',
-  PROPOSITION: 'PROPOSITION',
-  NEGOCIATION: 'NEGOCIATION',
-  GAGNE: 'GAGNE',
-  PERDUS: 'PERDUS',
-  A_FAIRE: 'A_FAIRE',
-  CLIENT: 'CLIENT',
+export const ProspectStatus = {
+  LEAD: 'lead',
+  CONTACTED: 'contacted',
+  MEETING_SCHEDULED: 'meeting_scheduled',
+  OFFER: 'offer',
+  NEGOTIATION: 'negotiation',
+  WON: 'won',
+  LOST: 'lost',
+  TODO: 'todo',
+  CLIENT: 'client',
 } as const;
 
-export type ProspectStatusEnum = (typeof ProspectStatusEnum)[keyof typeof ProspectStatusEnum];
+export type ProspectStatus = (typeof ProspectStatus)[keyof typeof ProspectStatus];
 
-export const prospectStatusLabels: Record<ProspectStatusEnum, string> = {
-  [ProspectStatusEnum.LEAD]: 'Lead',
-  [ProspectStatusEnum.CONTACTE]: 'Contacté',
-  [ProspectStatusEnum.RDV_PLANIFIE]: 'RDV planifié',
-  [ProspectStatusEnum.PROPOSITION]: 'Proposition',
-  [ProspectStatusEnum.NEGOCIATION]: 'Négociation',
-  [ProspectStatusEnum.GAGNE]: 'Gagné',
-  [ProspectStatusEnum.PERDUS]: 'Perdus',
-  [ProspectStatusEnum.A_FAIRE]: 'Création athlète',
-  [ProspectStatusEnum.CLIENT]: 'Client',
+export const prospectStatusLabels: Record<ProspectStatus, string> = {
+  [ProspectStatus.LEAD]: 'Lead',
+  [ProspectStatus.CONTACTED]: 'Contacté',
+  [ProspectStatus.MEETING_SCHEDULED]: 'RDV planifié',
+  [ProspectStatus.OFFER]: 'Proposition',
+  [ProspectStatus.NEGOTIATION]: 'Négociation',
+  [ProspectStatus.WON]: 'Gagné',
+  [ProspectStatus.LOST]: 'Perdus',
+  [ProspectStatus.TODO]: 'Création athlète',
+  [ProspectStatus.CLIENT]: 'Client',
 };
 
 export interface ProspectStatusOption {
-  value: ProspectStatusEnum;
+  value: ProspectStatus;
   label: string;
 }
 
 /** Ordered list of statuses used to build the prospect pipeline. */
-export const pipelineStatuses: ProspectStatusEnum[] = [
-  ProspectStatusEnum.LEAD,
-  ProspectStatusEnum.CONTACTE,
-  ProspectStatusEnum.RDV_PLANIFIE,
-  ProspectStatusEnum.PROPOSITION,
-  ProspectStatusEnum.NEGOCIATION,
-  ProspectStatusEnum.GAGNE,
-  ProspectStatusEnum.A_FAIRE,
-  ProspectStatusEnum.PERDUS,
+export const pipelineStatuses: ProspectStatus[] = [
+  ProspectStatus.LEAD,
+  ProspectStatus.CONTACTED,
+  ProspectStatus.MEETING_SCHEDULED,
+  ProspectStatus.OFFER,
+  ProspectStatus.NEGOTIATION,
+  ProspectStatus.WON,
+  ProspectStatus.TODO,
+  ProspectStatus.LOST,
 ];

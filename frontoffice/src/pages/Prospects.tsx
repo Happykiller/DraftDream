@@ -31,7 +31,7 @@ import { useProspectMetadataOptions } from '@hooks/prospects/useProspectMetadata
 import { useProspectListMetrics } from '@hooks/prospects/useProspectListMetrics';
 import { useDebouncedValue } from '@hooks/useDebouncedValue';
 
-import { ProspectStatusEnum } from '@src/commons/prospects/status';
+import { ProspectStatus } from '@src/commons/prospects/status';
 import type { Prospect, ProspectSourceFilterValue } from '@app-types/prospects';
 
 /** Prospect dashboard listing coach-owned contacts with quick actions. */
@@ -46,7 +46,7 @@ export function Prospects(): React.JSX.Element {
     page: 1,
     limit: 24,
     q: debouncedQuery,
-    status: ProspectStatusEnum.CLIENT,
+    status: ProspectStatus.CLIENT,
     sourceId: sourceFilter !== 'all' && sourceFilter !== 'none' ? sourceFilter : null,
   });
   const {
@@ -73,7 +73,7 @@ export function Prospects(): React.JSX.Element {
   );
 
   const handleCreateProspect = React.useCallback(
-    (status?: ProspectStatusEnum) => {
+    (status?: ProspectStatus) => {
       const url = status ? `/prospects/create?status=${status}` : '/prospects/create';
       navigate(url);
     },
@@ -114,7 +114,7 @@ export function Prospects(): React.JSX.Element {
   }, [deleteLoading]);
 
   const handleMoveProspect = React.useCallback(
-    (prospect: Prospect, toStatus: ProspectStatusEnum, fromStatus: ProspectStatusEnum) => {
+    (prospect: Prospect, toStatus: ProspectStatus, fromStatus: ProspectStatus) => {
       void moveProspectToStatus(prospect, toStatus, fromStatus);
     },
     [moveProspectToStatus],
@@ -122,7 +122,7 @@ export function Prospects(): React.JSX.Element {
 
   const handleValidateProspect = React.useCallback(
     (prospect: Prospect) => {
-      void moveProspectToStatus(prospect, ProspectStatusEnum.A_FAIRE, ProspectStatusEnum.GAGNE);
+      void moveProspectToStatus(prospect, ProspectStatus.TODO, ProspectStatus.WON);
     },
     [moveProspectToStatus],
   );
@@ -162,14 +162,14 @@ export function Prospects(): React.JSX.Element {
       sourceFilter === 'all'
         ? items
         : items.filter((prospect) => {
-            const resolvedSourceId = prospect.source?.id ?? prospect.sourceId ?? '';
+          const resolvedSourceId = prospect.source?.id ?? prospect.sourceId ?? '';
 
-            if (sourceFilter === 'none') {
-              return !resolvedSourceId;
-            }
+          if (sourceFilter === 'none') {
+            return !resolvedSourceId;
+          }
 
-            return resolvedSourceId === sourceFilter;
-          }),
+          return resolvedSourceId === sourceFilter;
+        }),
     [items, sourceFilter],
   );
 
@@ -200,7 +200,7 @@ export function Prospects(): React.JSX.Element {
           >
             <Button
               color="error"
-              onClick={() => handleCreateProspect(ProspectStatusEnum.LEAD)}
+              onClick={() => handleCreateProspect(ProspectStatus.LEAD)}
               startIcon={<AddIcon fontSize="small" />}
               sx={{ alignSelf: { xs: 'stretch', sm: 'auto' }, flexShrink: 0 }}
               variant="contained"

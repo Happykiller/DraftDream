@@ -190,9 +190,9 @@ export function MealPlanBuilderPanel({
       dayLibraryLoading
         ? undefined
         : t('nutrition-coach.builder.day_library.result_count', {
-            count: dayLibrary.length,
-            total: dayLibraryTotal,
-          }),
+          count: dayLibrary.length,
+          total: dayLibraryTotal,
+        }),
     [dayLibrary.length, dayLibraryLoading, dayLibraryTotal, t],
   );
   const mealResultCountLabel = React.useMemo(
@@ -200,9 +200,9 @@ export function MealPlanBuilderPanel({
       mealLibraryLoading
         ? undefined
         : t('nutrition-coach.builder.meal_library.result_count', {
-            count: mealLibrary.length,
-            total: mealLibraryTotal,
-          }),
+          count: mealLibrary.length,
+          total: mealLibraryTotal,
+        }),
     [mealLibrary.length, mealLibraryLoading, mealLibraryTotal, t],
   );
   const macroFormatter = React.useMemo(
@@ -757,6 +757,9 @@ export function MealPlanBuilderPanel({
                                 border: `1px solid ${summaryBorder}`,
                                 px: { xs: 1.25, md: 1.5 },
                                 py: { xs: 1.25, md: 1.5 },
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: 1.5,
                               }}
                             >
                               <Stack spacing={1}>
@@ -775,6 +778,61 @@ export function MealPlanBuilderPanel({
                                     const displayValue = entry.unit
                                       ? `${entry.value}\u00a0${entry.unit}`
                                       : entry.value;
+
+                                    return (
+                                      <Stack key={entry.key} spacing={0.25} sx={{ minWidth: { sm: 88 } }}>
+                                        <Typography variant="subtitle1" sx={{ fontWeight: 700, color: entry.color }}>
+                                          {displayValue}
+                                        </Typography>
+                                        <Typography variant="caption" color="text.secondary">
+                                          {entry.label}
+                                        </Typography>
+                                      </Stack>
+                                    );
+                                  })}
+                                </Stack>
+                              </Stack>
+
+                              <Divider />
+
+                              <Stack spacing={1}>
+                                <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>
+                                  {t('nutrition-coach.builder.summary.average_title')}
+                                </Typography>
+                                <Stack
+                                  direction={{ xs: 'column', sm: 'row' }}
+                                  spacing={{ xs: 1.5, sm: 3 }}
+                                  useFlexGap
+                                  flexWrap="wrap"
+                                >
+                                  {nutritionSummaryEntries.map((entry) => {
+                                    const totalDays = Math.max(days.length, 1);
+                                    // Parse back the formatted value (removing unit if attached, though value field here is formatted string)
+                                    // It's cleaner to re-calculate from raw numbers, but let's access raw validation first.
+                                    // Actually we can map over keys 'calories', 'protein', 'carbs', 'fats'
+
+                                    let rawValue = 0;
+                                    switch (entry.key) {
+                                      case 'calories':
+                                        rawValue = nutritionSummary.calories;
+                                        break;
+                                      case 'protein':
+                                        rawValue = nutritionSummary.proteinGrams;
+                                        break;
+                                      case 'carbs':
+                                        rawValue = nutritionSummary.carbGrams;
+                                        break;
+                                      case 'fats':
+                                        rawValue = nutritionSummary.fatGrams;
+                                        break;
+                                    }
+
+                                    const average = rawValue / totalDays;
+                                    const formattedAverage = macroFormatter.format(average);
+
+                                    const displayValue = entry.unit
+                                      ? `${formattedAverage}\u00a0${entry.unit}`
+                                      : formattedAverage;
 
                                     return (
                                       <Stack key={entry.key} spacing={0.25} sx={{ minWidth: { sm: 88 } }}>

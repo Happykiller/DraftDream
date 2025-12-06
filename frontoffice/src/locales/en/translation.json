@@ -225,10 +225,10 @@
           "title": "Lead",
           "description": "New contact to qualify before proposing a meeting."
         },
-          "contact": {
-            "title": "Contacted",
-            "description": "Initial exchange completed to validate interest and needs."
-          },
+        "contact": {
+          "title": "Contacted",
+          "description": "Initial exchange completed to validate interest and needs."
+        },
         "meeting": {
           "title": "Meeting scheduled",
           "description": "A meeting is booked; prepare the session and materials."
@@ -259,7 +259,7 @@
         }
       }
     }
-    },
+  },
   "athletes": {
     "title": "Athletes",
     "subtitle": "Manage your athletes",
@@ -317,9 +317,6 @@
       "description": "Complete JSON export of the values stored in src/stores/session.ts.",
       "empty": "No session data available"
     }
-  },
-  "programs-athlete": {
-    "title": "My programs"
   },
   "programs-coatch": {
     "title": "Programs",
@@ -771,6 +768,7 @@
         "total_meals_one": "{{count}} meal in total",
         "total_meals_other": "{{count}} meals in total",
         "nutrition_title": "Nutrition summary",
+        "average_title": "Average / day",
         "calories_label": "Calories",
         "calories_unit": "kcal",
         "protein_label": "Protein",
