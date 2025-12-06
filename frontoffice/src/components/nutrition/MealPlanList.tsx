@@ -132,14 +132,27 @@ export const MealPlanList = React.memo(function MealPlanList({
                       <Search color="action" fontSize="small" />
                     </InputAdornment>
                   ),
+                  endAdornment:
+                    resultCountLabel && resultCountLabel.length > 0 ? (
+                      <InputAdornment
+                        position="end"
+                        sx={{
+                          pointerEvents: 'none',
+                          color: 'text.disabled',
+                        }}
+                      >
+                        <Typography
+                          color="inherit"
+                          sx={{ fontSize: 13, whiteSpace: 'nowrap' }}
+                          variant="body2"
+                        >
+                          {resultCountLabel}
+                        </Typography>
+                      </InputAdornment>
+                    ) : undefined,
                 }}
                 sx={{ bgcolor: 'common.white' }}
               />
-              {resultCountLabel ? (
-                <Typography color="text.secondary" variant="body2">
-                  {resultCountLabel}
-                </Typography>
-              ) : null}
             </Stack>
           ) : null}
 
