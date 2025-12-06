@@ -53,11 +53,6 @@ import { ListProspectActivityPreferencesUsecase } from '@usecases/prospect/activ
 import { CreateProspectActivityPreferenceUsecase } from '@usecases/prospect/activity-preference/create.prospect-activity-preference.usecase';
 import { UpdateProspectActivityPreferenceUsecase } from '@usecases/prospect/activity-preference/update.prospect-activity-preference.usecase';
 import { DeleteProspectActivityPreferenceUsecase } from '@usecases/prospect/activity-preference/delete.prospect-activity-preference.usecase';
-// import { GetClientStatusUsecase } from '@usecases/prospect/status/get.client-status.usecase';
-// import { ListClientStatusesUsecase } from '@usecases/prospect/status/list.client-status.usecase';
-// import { CreateClientStatusUsecase } from '@usecases/prospect/status/create.client-status.usecase';
-// import { UpdateClientStatusUsecase } from '@usecases/prospect/status/update.client-status.usecase';
-// import { DeleteClientStatusUsecase } from '@usecases/prospect/status/delete.client-status.usecase';
 import { GetProspectLevelUsecase } from '@usecases/prospect/level/get.prospect-level.usecase';
 import { ListProspectLevelsUsecase } from '@usecases/prospect/level/list.prospect-level.usecase';
 import { CreateProspectLevelUsecase } from '@usecases/prospect/level/create.prospect-level.usecase';
@@ -83,6 +78,12 @@ import { ListMealTypesUsecase } from '@src/usecases/nutri/meal-type/list.meal-ty
 import { CreateMealTypeUsecase } from '@src/usecases/nutri/meal-type/create.meal-type.usecase';
 import { UpdateMealTypeUsecase } from '@src/usecases/nutri/meal-type/update.meal-type.usecase';
 import { DeleteMealTypeUsecase } from '@src/usecases/nutri/meal-type/delete.meal-type.usecase';
+import { GetAthleteInfoUsecase } from '@usecases/athlete/athlete-info/get.athlete-info.usecase';
+import { ListAthleteInfosUsecase } from '@usecases/athlete/athlete-info/list.athlete-infos.usecase';
+import { CreateAthleteInfoUsecase } from '@usecases/athlete/athlete-info/create.athlete-info.usecase';
+import { UpdateAthleteInfoUsecase } from '@usecases/athlete/athlete-info/update.athlete-info.usecase';
+import { DeleteAthleteInfoUsecase } from '@usecases/athlete/athlete-info/delete.athlete-info.usecase';
+import { HardDeleteAthleteInfoUsecase } from '@usecases/athlete/athlete-info/hard-delete.athlete-info.usecase';
 import { CreateExerciseUsecase } from '@src/usecases/sport/exercise/create.exercise.usecase';
 import { UpdateExerciseUsecase } from '@src/usecases/sport/exercise/update.exercise.usecase';
 import { CreateEquipmentUsecase } from '@src/usecases/sport/equipment/create.equipment.usecase';
@@ -156,11 +157,6 @@ export class Inversify {
   listClientActivityPreferencesUsecase: ListProspectActivityPreferencesUsecase;
   updateClientActivityPreferenceUsecase: UpdateProspectActivityPreferenceUsecase;
   deleteClientActivityPreferenceUsecase: DeleteProspectActivityPreferenceUsecase;
-  // getClientStatusUsecase: GetClientStatusUsecase;
-  // createClientStatusUsecase: CreateClientStatusUsecase;
-  // listClientStatusesUsecase: ListClientStatusesUsecase;
-  // updateClientStatusUsecase: UpdateClientStatusUsecase;
-  // deleteClientStatusUsecase: DeleteClientStatusUsecase;
   getClientLevelUsecase: GetProspectLevelUsecase;
   createClientLevelUsecase: CreateProspectLevelUsecase;
   listClientLevelsUsecase: ListProspectLevelsUsecase;
@@ -181,6 +177,12 @@ export class Inversify {
   listCoachAthletesUsecase: ListCoachAthletesUsecase;
   updateCoachAthleteUsecase: UpdateCoachAthleteUsecase;
   deleteCoachAthleteUsecase: DeleteCoachAthleteUsecase;
+  getAthleteInfoUsecase: GetAthleteInfoUsecase;
+  createAthleteInfoUsecase: CreateAthleteInfoUsecase;
+  listAthleteInfosUsecase: ListAthleteInfosUsecase;
+  updateAthleteInfoUsecase: UpdateAthleteInfoUsecase;
+  deleteAthleteInfoUsecase: DeleteAthleteInfoUsecase;
+  hardDeleteAthleteInfoUsecase: HardDeleteAthleteInfoUsecase;
   getMealTypeUsecase: GetMealTypeUsecase;
   listMealTypesUsecase: ListMealTypesUsecase;
   createMealTypeUsecase: CreateMealTypeUsecase;
@@ -310,6 +312,13 @@ export class Inversify {
     this.listCoachAthletesUsecase = new ListCoachAthletesUsecase(this);
     this.updateCoachAthleteUsecase = new UpdateCoachAthleteUsecase(this);
     this.deleteCoachAthleteUsecase = new DeleteCoachAthleteUsecase(this);
+    // usecases athlete info
+    this.getAthleteInfoUsecase = new GetAthleteInfoUsecase(this);
+    this.createAthleteInfoUsecase = new CreateAthleteInfoUsecase(this);
+    this.listAthleteInfosUsecase = new ListAthleteInfosUsecase(this);
+    this.updateAthleteInfoUsecase = new UpdateAthleteInfoUsecase(this);
+    this.deleteAthleteInfoUsecase = new DeleteAthleteInfoUsecase(this);
+    this.hardDeleteAthleteInfoUsecase = new HardDeleteAthleteInfoUsecase(this);
     // usecases meal type
     this.createMealTypeUsecase = new CreateMealTypeUsecase(this);
     this.getMealTypeUsecase = new GetMealTypeUsecase(this);

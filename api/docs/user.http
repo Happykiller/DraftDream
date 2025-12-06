@@ -1,4 +1,6 @@
-// docs\user.http
+# docs/user.http
+@page = 1
+@limit = 10
 
 ### User: create coach (admin only)
 POST {{host}}
@@ -6,7 +8,8 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "query": "mutation CreateUser($input: CreateUserInput!) { user_create(input: $input) { id type first_name last_name email phone createdAt updatedAt } }",
+  "query":
+    "mutation($input: CreateUserInput!){ user_create(input: $input) { id type first_name last_name email phone is_active createdBy createdAt updatedAt } }",
   "variables": {
     "input": {
       "type": "coach",
@@ -15,6 +18,7 @@ Content-Type: application/json
       "email": "alex.martin@example.com",
       "phone": "+33612345678",
       "password": "SuperSecret123!",
+      "confirm_password": "SuperSecret123!",
       "address": {
         "name": "12 rue des Fleurs",
         "city": "Lyon",

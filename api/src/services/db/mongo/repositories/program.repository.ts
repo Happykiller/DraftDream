@@ -165,7 +165,7 @@ export class BddServiceProgramMongo {
 
     if (visibility) {
       filter.visibility = visibility === 'public' ? 'public' : 'private';
-    } else if (params.includePublicVisibility) {
+    } else if (includePublicVisibility) {
       ownershipConditions.push({ visibility: 'public' });
     }
 
