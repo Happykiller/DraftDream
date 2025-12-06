@@ -92,7 +92,9 @@ type UseProgramBuilderResult = {
   exerciseCategory: string;
   exerciseType: 'all' | ExerciseVisibility;
   sessionTemplates: SessionTemplate[];
+  sessionTemplatesTotal: number;
   filteredExercises: ExerciseLibraryItem[];
+  exerciseLibraryTotal: number;
   exerciseCategoryOptions: ExerciseCategoryOption[];
   exerciseTypeOptions: ExerciseTypeOption[];
   exerciseMap: Map<string, ExerciseLibraryItem>;
@@ -242,6 +244,7 @@ export function useProgramBuilder(
 
   const {
     items: sessionItems,
+    total: sessionTemplatesTotal,
     loading: sessionsLoading,
     reload: reloadSessions,
   } = useSessions({
@@ -260,6 +263,7 @@ export function useProgramBuilder(
 
   const {
     items: exerciseItems,
+    total: exerciseLibraryTotal,
     loading: exercisesLoading,
     create: createExercise,
     update: updateExercise,
@@ -1715,7 +1719,9 @@ export function useProgramBuilder(
     exerciseCategory,
     exerciseType,
     sessionTemplates,
+    sessionTemplatesTotal,
     filteredExercises,
+    exerciseLibraryTotal,
     exerciseCategoryOptions,
     exerciseTypeOptions,
     exerciseMap,

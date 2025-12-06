@@ -85,8 +85,10 @@ export function MealPlanBuilderPanel({
     mealSearch,
     setMealSearch,
     dayLibrary,
+    dayLibraryTotal,
     dayLibraryLoading,
     mealLibrary,
+    mealLibraryTotal,
     mealLibraryLoading,
     mealTypes,
     mealTypesLoading,
@@ -189,8 +191,9 @@ export function MealPlanBuilderPanel({
         ? undefined
         : t('nutrition-coach.builder.day_library.result_count', {
             count: dayLibrary.length,
+            total: dayLibraryTotal,
           }),
-    [dayLibrary.length, dayLibraryLoading, t],
+    [dayLibrary.length, dayLibraryLoading, dayLibraryTotal, t],
   );
   const mealResultCountLabel = React.useMemo(
     () =>
@@ -198,8 +201,9 @@ export function MealPlanBuilderPanel({
         ? undefined
         : t('nutrition-coach.builder.meal_library.result_count', {
             count: mealLibrary.length,
+            total: mealLibraryTotal,
           }),
-    [mealLibrary.length, mealLibraryLoading, t],
+    [mealLibrary.length, mealLibraryLoading, mealLibraryTotal, t],
   );
   const macroFormatter = React.useMemo(
     () =>

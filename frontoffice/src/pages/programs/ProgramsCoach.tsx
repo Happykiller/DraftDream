@@ -25,7 +25,14 @@ export function ProgramsCoach(): React.JSX.Element {
     [t],
   );
 
-  const { items: programs, loading, reload, remove, create } = usePrograms({
+  const {
+    items: programs,
+    total: totalPrograms,
+    loading,
+    reload,
+    remove,
+    create,
+  } = usePrograms({
     page: 1,
     limit: 12,
     q: searchQuery,
@@ -40,8 +47,9 @@ export function ProgramsCoach(): React.JSX.Element {
         ? undefined
         : t('programs-coatch.list.result_count', {
             count: programs.length,
+            total: totalPrograms,
           }),
-    [loading, programs.length, t],
+    [loading, programs.length, t, totalPrograms],
   );
 
   const handleRefresh = React.useCallback(() => {

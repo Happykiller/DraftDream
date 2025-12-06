@@ -39,7 +39,7 @@ export function NutritionPlansAthlete(): React.JSX.Element {
 
   const athleteActions = React.useMemo<MealPlanActionKey[]>(() => ['view'], []);
 
-  const { items: mealPlans, loading } = useMealPlans({
+  const { items: mealPlans, total: totalMealPlans, loading } = useMealPlans({
     page: 1,
     limit: 12,
     q: searchQuery,
@@ -55,8 +55,9 @@ export function NutritionPlansAthlete(): React.JSX.Element {
         ? undefined
         : t('nutrition-athlete.list.result_count', {
             count: mealPlans.length,
+            total: totalMealPlans,
           }),
-    [loading, mealPlans.length, t],
+    [loading, mealPlans.length, t, totalMealPlans],
   );
 
   const handleOpenMealPlan = React.useCallback(

@@ -42,7 +42,7 @@ export function NutritionPlansCoach(): React.JSX.Element {
     returnObjects: true,
   }) as MacroCopy;
 
-  const { items: mealPlans, loading, reload, remove, create } = useMealPlans({
+  const { items: mealPlans, total: totalMealPlans, loading, reload, remove, create } = useMealPlans({
     page: 1,
     limit: 12,
     q: searchQuery,
@@ -57,8 +57,9 @@ export function NutritionPlansCoach(): React.JSX.Element {
         ? undefined
         : t('nutrition-coach.list.result_count', {
             count: mealPlans.length,
+            total: totalMealPlans,
           }),
-    [loading, mealPlans.length, t],
+    [loading, mealPlans.length, t, totalMealPlans],
   );
 
   const handleOpenMealPlan = React.useCallback(

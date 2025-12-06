@@ -66,7 +66,9 @@ export function ProgramBuilderPanel({
     exerciseCategory,
     exerciseType,
     sessionTemplates,
+    sessionTemplatesTotal,
     filteredExercises,
+    exerciseLibraryTotal,
     exerciseCategoryOptions,
     exerciseTypeOptions,
     exerciseMap,
@@ -170,8 +172,9 @@ export function ProgramBuilderPanel({
         ? undefined
         : t('programs-coatch.builder.templates_result_count', {
             count: sessionTemplates.length,
+            total: sessionTemplatesTotal,
           }),
-    [sessionTemplates.length, sessionsLoading, t],
+    [sessionTemplates.length, sessionTemplatesTotal, sessionsLoading, t],
   );
 
   const exerciseResultCountLabel = React.useMemo(
@@ -180,8 +183,9 @@ export function ProgramBuilderPanel({
         ? undefined
         : t('programs-coatch.builder.library.result_count', {
             count: filteredExercises.length,
+            total: exerciseLibraryTotal,
           }),
-    [exercisesLoading, filteredExercises.length, t],
+    [exerciseLibraryTotal, exercisesLoading, filteredExercises.length, t],
   );
 
   const [exerciseMenuAnchor, setExerciseMenuAnchor] = React.useState<{
