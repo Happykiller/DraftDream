@@ -51,6 +51,16 @@ export function NutritionPlansCoach(): React.JSX.Element {
   const searchPlaceholder = t('nutrition-coach.list.search_placeholder');
   const searchAriaLabel = t('nutrition-coach.list.search_aria_label');
 
+  const resultCountLabel = React.useMemo(
+    () =>
+      loading
+        ? undefined
+        : t('nutrition-coach.list.result_count', {
+            count: mealPlans.length,
+          }),
+    [loading, mealPlans.length, t],
+  );
+
   const handleOpenMealPlan = React.useCallback(
     (plan: MealPlan) => {
       navigate(`/nutrition-coach/view/${plan.id}`);
@@ -217,6 +227,7 @@ export function NutritionPlansCoach(): React.JSX.Element {
         searchPlaceholder={searchPlaceholder}
         searchAriaLabel={searchAriaLabel}
         searchQuery={searchQuery}
+        resultCountLabel={resultCountLabel}
       />
     </Stack>
   );

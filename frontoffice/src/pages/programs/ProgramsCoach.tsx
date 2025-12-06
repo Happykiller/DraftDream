@@ -34,6 +34,16 @@ export function ProgramsCoach(): React.JSX.Element {
   const searchPlaceholder = t('programs-coatch.list.search_placeholder');
   const searchAriaLabel = t('programs-coatch.list.search_aria_label');
 
+  const resultCountLabel = React.useMemo(
+    () =>
+      loading
+        ? undefined
+        : t('programs-coatch.list.result_count', {
+            count: programs.length,
+          }),
+    [loading, programs.length, t],
+  );
+
   const handleRefresh = React.useCallback(() => {
     void reload();
   }, [reload]);
@@ -181,6 +191,7 @@ export function ProgramsCoach(): React.JSX.Element {
         searchPlaceholder={searchPlaceholder}
         searchAriaLabel={searchAriaLabel}
         searchQuery={searchQuery}
+        resultCountLabel={resultCountLabel}
       />
     </Stack>
   );

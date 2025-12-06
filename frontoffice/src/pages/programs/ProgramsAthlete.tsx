@@ -36,6 +36,16 @@ export function ProgramsAthlete(): React.JSX.Element {
   const searchPlaceholder = t('programs-athlete.list.search_placeholder');
   const searchAriaLabel = t('programs-athlete.list.search_aria_label');
 
+  const resultCountLabel = React.useMemo(
+    () =>
+      listLoading
+        ? undefined
+        : t('programs-athlete.list.result_count', {
+            count: programs.length,
+          }),
+    [listLoading, programs.length, t],
+  );
+
   const handleNavigateToProgram = React.useCallback(
     (nextProgram: Program) => {
       navigate(`/programs-athlete/view/${nextProgram.id}`);
@@ -68,6 +78,7 @@ export function ProgramsAthlete(): React.JSX.Element {
           searchPlaceholder={searchPlaceholder}
           searchAriaLabel={searchAriaLabel}
           searchQuery={searchQuery}
+          resultCountLabel={resultCountLabel}
         />
       </Stack>
     </Stack>

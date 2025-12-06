@@ -491,6 +491,9 @@
     "list": {
       "search_placeholder": "Rechercher des programmes...",
       "search_aria_label": "Rechercher des programmes",
+      "result_count": "{{count}} résultat",
+      "result_count_one": "{{count}} résultat",
+      "result_count_other": "{{count}} résultats",
       "created_by": "Créé par {{name}}",
       "created_by_unknown": "Coach inconnu",
       "no_description": "Aucune description fournie.",
@@ -694,7 +697,10 @@
     },
     "list": {
       "search_placeholder": "Rechercher un programme...",
-      "search_aria_label": "Rechercher un programme"
+      "search_aria_label": "Rechercher un programme",
+      "result_count": "{{count}} résultat",
+      "result_count_one": "{{count}} résultat",
+      "result_count_other": "{{count}} résultats"
     },
     "errors": {
       "not_found": "Ce programme n'est plus disponible.",
@@ -851,6 +857,9 @@
     "list": {
       "search_placeholder": "Rechercher un plan nutritionnel...",
       "search_aria_label": "Rechercher un plan nutritionnel",
+      "result_count": "{{count}} résultat",
+      "result_count_one": "{{count}} résultat",
+      "result_count_other": "{{count}} résultats",
       "day_count": "{{count}} jour",
       "day_count_one": "{{count}} jour",
       "day_count_other": "{{count}} jours",
@@ -939,6 +948,9 @@
     "list": {
       "search_placeholder": "Rechercher un plan nutritionnel...",
       "search_aria_label": "Rechercher un plan nutritionnel",
+      "result_count": "{{count}} résultat",
+      "result_count_one": "{{count}} résultat",
+      "result_count_other": "{{count}} résultats",
       "day_count": "{{count}} jour",
       "day_count_one": "{{count}} jour",
       "day_count_other": "{{count}} jours"

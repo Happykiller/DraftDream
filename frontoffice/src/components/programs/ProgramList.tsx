@@ -35,6 +35,7 @@ export interface ProgramListProps {
   searchAriaLabel?: string;
   searchQuery?: string;
   searchDebounceMs?: number;
+  resultCountLabel?: string;
 }
 
 export const ProgramList = React.memo(function ProgramList({
@@ -55,6 +56,7 @@ export const ProgramList = React.memo(function ProgramList({
   searchAriaLabel,
   searchQuery,
   searchDebounceMs = 400,
+  resultCountLabel,
 }: ProgramListProps): React.JSX.Element {
   const theme = useTheme();
   const showPlaceholder = !loading && programs.length === 0;
@@ -97,24 +99,36 @@ export const ProgramList = React.memo(function ProgramList({
           sx={{ width: '100%' }}
         >
           {onSearchChange ? (
-            <TextField
-              fullWidth
-              inputProps={{ 'aria-label': searchAriaLabel ?? searchPlaceholder }}
-              onChange={(event) => {
-                setSearchValue(event.target.value);
-              }}
-              placeholder={searchPlaceholder}
-              size="small"
-              value={searchValue}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Search color="action" fontSize="small" />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{ bgcolor: 'common.white' }}
-            />
+            <Stack
+              alignItems={{ xs: 'flex-start', sm: 'center' }}
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={0.5}
+              sx={{ flex: 1, minWidth: 0 }}
+            >
+              <TextField
+                fullWidth
+                inputProps={{ 'aria-label': searchAriaLabel ?? searchPlaceholder }}
+                onChange={(event) => {
+                  setSearchValue(event.target.value);
+                }}
+                placeholder={searchPlaceholder}
+                size="small"
+                value={searchValue}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Search color="action" fontSize="small" />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{ bgcolor: 'common.white' }}
+              />
+              {resultCountLabel ? (
+                <Typography color="text.secondary" variant="body2">
+                  {resultCountLabel}
+                </Typography>
+              ) : null}
+            </Stack>
           ) : null}
 
           {actionSlot ? (

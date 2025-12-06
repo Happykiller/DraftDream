@@ -490,6 +490,9 @@
     "list": {
       "search_placeholder": "Search programs...",
       "search_aria_label": "Search programs",
+      "result_count": "{{count}} result",
+      "result_count_one": "{{count}} result",
+      "result_count_other": "{{count}} results",
       "created_by": "Created by {{name}}",
       "created_by_unknown": "Unknown coach",
       "no_description": "No description provided.",
@@ -693,7 +696,10 @@
     },
     "list": {
       "search_placeholder": "Search programs...",
-      "search_aria_label": "Search programs"
+      "search_aria_label": "Search programs",
+      "result_count": "{{count}} result",
+      "result_count_one": "{{count}} result",
+      "result_count_other": "{{count}} results"
     },
     "errors": {
       "not_found": "This program is no longer available.",
@@ -850,6 +856,9 @@
     "list": {
       "search_placeholder": "Search nutrition plans...",
       "search_aria_label": "Search nutrition plans",
+      "result_count": "{{count}} result",
+      "result_count_one": "{{count}} result",
+      "result_count_other": "{{count}} results",
       "day_count": "{{count}} day",
       "day_count_one": "{{count}} day",
       "day_count_other": "{{count}} days",
@@ -938,6 +947,9 @@
     "list": {
       "search_placeholder": "Search nutrition plans...",
       "search_aria_label": "Search nutrition plans",
+      "result_count": "{{count}} result",
+      "result_count_one": "{{count}} result",
+      "result_count_other": "{{count}} results",
       "day_count": "{{count}} day",
       "day_count_one": "{{count}} day",
       "day_count_other": "{{count}} days"
