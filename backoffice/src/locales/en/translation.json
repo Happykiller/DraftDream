@@ -362,7 +362,9 @@
         "create_title": "New meal day",
         "edit_title": "Edit meal day",
         "add_meal": "Add meal",
+        "meal_placeholder": "Select a meal to add",
         "refresh_meals": "Refresh meals",
+        "empty_meals": "No meals selected yet.",
         "empty_list": "No meals selected yet.",
         "search_placeholder": "Search meals..."
       },

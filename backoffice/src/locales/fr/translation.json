@@ -362,7 +362,9 @@
         "create_title": "Nouvelle journée de repas",
         "edit_title": "Modifier la journée de repas",
         "add_meal": "Ajouter un repas",
+        "meal_placeholder": "Sélectionner un repas à ajouter",
         "refresh_meals": "Rafraîchir les repas",
+        "empty_meals": "Aucun repas sélectionné pour le moment.",
         "empty_list": "Aucun repas sélectionné pour le moment.",
         "search_placeholder": "Rechercher des repas..."
       },

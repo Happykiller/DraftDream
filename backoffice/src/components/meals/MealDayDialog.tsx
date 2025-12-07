@@ -271,6 +271,12 @@ export function MealDayDialog({
                 options={filteredMealOptions}
                 loading={mealOptionsLoading}
                 getOptionLabel={(option) => option.label}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                renderOption={(props, option) => (
+                  <li {...props} key={option.id}>
+                    {option.label} ({option.locale.toUpperCase()})
+                  </li>
+                )}
                 renderInput={(params) => (
                   <TextField
                     {...params}
