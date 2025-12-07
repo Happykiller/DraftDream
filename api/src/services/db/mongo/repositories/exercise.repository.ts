@@ -11,7 +11,8 @@ import {
 } from '@services/db/dtos/exercise.dto';
 import { ERRORS } from '@src/common/ERROR';
 import { slugifyCandidate } from '@src/common/slug.util';
-import { normalizeVisibility } from '@src/common/enum.util';
+import { toVisibility } from '@src/common/enum.util';
+import { Visibility } from '@src/common/visibility.enum';
 
 interface ExerciseDoc {
   _id: ObjectId;
@@ -25,7 +26,7 @@ interface ExerciseDoc {
   charge?: string;
   rest?: number;
   videoUrl?: string;
-  visibility: 'PRIVATE' | 'PUBLIC';
+  visibility: Visibility;
 
   categories: ObjectId[];
   muscles: ObjectId[];
@@ -91,7 +92,7 @@ export class BddServiceExerciseMongo {
       charge: dto.charge?.trim(),
       rest: dto.rest,
       videoUrl: dto.videoUrl,
-      visibility: normalizeVisibility(dto.visibility) ?? 'PRIVATE',
+      visibility: toVisibility(dto.visibility) ?? Visibility.PRIVATE,
 
       categories: normalizedCategoryIds.map(this.toObjectId),
       muscles: (dto.muscleIds ?? []).map(this.toObjectId),
@@ -181,9 +182,10 @@ export class BddServiceExerciseMongo {
     }
 
     if (visibility) {
-      filter.visibility = normalizeVisibility(visibility) ?? 'PRIVATE';
+      const normalizedVisibility = toVisibility(visibility) ?? Visibility.PRIVATE;
+      filter.visibility = normalizedVisibility;
     } else if (includePublicVisibility) {
-      ownershipConditions.push({ visibility: 'PUBLIC' });
+      ownershipConditions.push({ visibility: Visibility.PUBLIC });
     }
 
     if (ownershipConditions.length) {
@@ -232,7 +234,7 @@ export class BddServiceExerciseMongo {
     if (patch.rest !== undefined) $set.rest = patch.rest;
     if (patch.videoUrl !== undefined) $set.videoUrl = patch.videoUrl;
     if (patch.visibility !== undefined) {
-      $set.visibility = normalizeVisibility(patch.visibility) ?? 'PRIVATE';
+      $set.visibility = toVisibility(patch.visibility) ?? Visibility.PRIVATE;
     }
 
     if (patch.categoryIds !== undefined) {
@@ -315,7 +317,7 @@ export class BddServiceExerciseMongo {
     charge: doc.charge,
     rest: doc.rest,
     videoUrl: doc.videoUrl,
-    visibility: doc.visibility,
+    visibility: toVisibility(doc.visibility) ?? Visibility.PRIVATE,
 
     // Relations are represented minimally; hydrate at service/usecase layer if needed.
     categories: (doc.categories ?? []).map((oid) => ({
@@ -323,24 +325,24 @@ export class BddServiceExerciseMongo {
       slug: '',
       locale: doc.locale,
       label: '',
-      visibility: 'PRIVATE',
+      visibility: Visibility.PRIVATE,
       createdBy: '',
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     })),
     muscles: (doc.muscles ?? []).map((oid) => ({
       id: oid.toHexString(),
-      slug: '', locale: doc.locale, label: '', visibility: 'PRIVATE',
+      slug: '', locale: doc.locale, label: '', visibility: Visibility.PRIVATE,
       createdBy: '', createdAt: doc.createdAt, updatedAt: doc.updatedAt,
     })),
     equipment: (doc.equipment ?? []).map((oid) => ({
       id: oid.toHexString(),
-      slug: '', locale: doc.locale, label: '', visibility: 'PRIVATE',
+      slug: '', locale: doc.locale, label: '', visibility: Visibility.PRIVATE,
       createdBy: '', createdAt: doc.createdAt, updatedAt: doc.updatedAt,
     })),
     tags: (doc.tags ?? []).map((oid) => ({
       id: oid.toHexString(),
-      slug: '', locale: doc.locale, label: '', visibility: 'PRIVATE',
+      slug: '', locale: doc.locale, label: '', visibility: Visibility.PRIVATE,
       createdBy: '', createdAt: doc.createdAt, updatedAt: doc.updatedAt,
     })),
 

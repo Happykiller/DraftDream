@@ -9,7 +9,8 @@ import {
   ListSessionsDto,
   UpdateSessionDto,
 } from '@services/db/dtos/session.dto';
-import { normalizeVisibility } from '@src/common/enum.util';
+import { toVisibility } from '@src/common/enum.util';
+import { Visibility } from '@src/common/visibility.enum';
 
 interface SessionDoc {
   _id: ObjectId;
@@ -18,7 +19,7 @@ interface SessionDoc {
 
   label: string;
   durationMin: number;
-  visibility: 'PRIVATE' | 'PUBLIC';
+  visibility: Visibility;
   description?: string;
 
   exerciseIds: string[];
@@ -67,7 +68,7 @@ export class BddServiceSessionMongo {
 
       label: dto.label.trim(),
       durationMin: Math.trunc(dto.durationMin),
-      visibility: normalizeVisibility(dto.visibility) ?? 'PUBLIC',
+      visibility: toVisibility(dto.visibility) ?? Visibility.PUBLIC,
       description: dto.description,
 
       // Preserve order as provided
@@ -136,7 +137,7 @@ export class BddServiceSessionMongo {
     }
 
     if (includePublicVisibility) {
-      ownershipConditions.push({ visibility: 'PUBLIC' });
+      ownershipConditions.push({ visibility: Visibility.PUBLIC });
     }
 
     if (ownershipConditions.length) {
@@ -165,7 +166,7 @@ export class BddServiceSessionMongo {
     if (patch.locale !== undefined) $set.locale = patch.locale.toLowerCase().trim();
     if (patch.label !== undefined) $set.label = patch.label.trim();
     if (patch.durationMin !== undefined) $set.durationMin = Math.trunc(patch.durationMin);
-    if (patch.visibility !== undefined) $set.visibility = normalizeVisibility(patch.visibility) ?? 'PRIVATE';
+    if (patch.visibility !== undefined) $set.visibility = toVisibility(patch.visibility) ?? Visibility.PRIVATE;
     if (patch.description !== undefined) $set.description = patch.description;
     if (patch.exerciseIds !== undefined) $set.exerciseIds = [...patch.exerciseIds];
 
@@ -214,7 +215,7 @@ export class BddServiceSessionMongo {
 
     label: doc.label,
     durationMin: doc.durationMin,
-    visibility: doc.visibility,
+    visibility: toVisibility(doc.visibility) ?? Visibility.PRIVATE,
     description: doc.description,
 
     // Relations are represented minimally; hydrate elsewhere if needed.

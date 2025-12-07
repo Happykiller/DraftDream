@@ -15,7 +15,7 @@ import {
   UpdateProspectDto,
 } from '@services/db/dtos/prospect/prospect.dto';
 
-import { normalizeProspectStatus } from '@src/common/enum.util';
+import { toProspectStatus } from '@src/common/enum.util';
 import { ProspectStatus } from '@src/common/prospect-status.enum';
 
 interface ProspectDoc {
@@ -70,7 +70,7 @@ export class BddServiceProspectMongo {
       lastName: this.normalizeName(dto.lastName),
       email: this.normalizeEmail(dto.email),
       phone: this.normalizeOptional(dto.phone),
-      status: this.normalizeStatus(dto.status),
+      status: this.toStatus(dto.status),
       levelId: this.normalizeOptional(dto.levelId),
       objectiveIds: this.normalizeIds(dto.objectiveIds) ?? [],
       activityPreferenceIds: this.normalizeIds(dto.activityPreferenceIds) ?? [],
@@ -128,7 +128,10 @@ export class BddServiceProspectMongo {
         { phone: { $regex: regex } },
       ];
     }
-    if (status) filter.status = this.buildStatusFilter(status);
+    if (status) {
+      const normalizedStatus = this.toStatus(status);
+      if (normalizedStatus) filter.status = normalizedStatus;
+    }
     if (levelId) filter.levelId = levelId;
     if (sourceId) filter.sourceId = sourceId;
     if (createdBy) filter.createdBy = createdBy;
@@ -154,7 +157,7 @@ export class BddServiceProspectMongo {
     if (patch.lastName !== undefined) $set.lastName = this.normalizeName(patch.lastName);
     if (patch.email !== undefined) $set.email = this.normalizeEmail(patch.email);
     if (patch.phone !== undefined) $set.phone = this.normalizeOptional(patch.phone);
-    if (patch.status !== undefined) $set.status = this.normalizeStatus(patch.status);
+    if (patch.status !== undefined) $set.status = this.toStatus(patch.status);
     if (patch.levelId !== undefined) $set.levelId = this.normalizeOptional(patch.levelId);
     if (patch.objectiveIds !== undefined) {
       $set.objectiveIds = this.normalizeIds(patch.objectiveIds) ?? [];
@@ -266,7 +269,7 @@ export class BddServiceProspectMongo {
     lastName: doc.lastName,
     email: doc.email,
     phone: doc.phone,
-    status: this.normalizeStatus(doc.status),
+    status: this.toStatus(doc.status),
     levelId: doc.levelId,
     objectiveIds: doc.objectiveIds ?? [],
     activityPreferenceIds: doc.activityPreferenceIds ?? [],
@@ -277,7 +280,7 @@ export class BddServiceProspectMongo {
     budget: doc.budget,
     dealDescription: doc.dealDescription,
     desiredStartDate: doc.desiredStartDate,
-    workflowHistory: doc.workflowHistory ?? [],
+    workflowHistory: this.normalizeWorkflowHistory(doc.workflowHistory) ?? [],
     createdBy: doc.createdBy,
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt,
@@ -293,10 +296,11 @@ export class BddServiceProspectMongo {
 
     return entries
       .map((entry) => {
-        const status = typeof entry.status === 'string' ? entry.status.trim() : '';
+        const normalizedStatus =
+          entry.status === 'create' ? 'create' : this.toStatus(entry.status);
         const date = this.normalizeDate(entry.date) ?? fallbackDate;
-        if (!status || !date) return null;
-        return { status: status as ProspectWorkflowEntry['status'], date };
+        if (!normalizedStatus || !date) return null;
+        return { status: normalizedStatus as ProspectWorkflowEntry['status'], date };
       })
       .filter((entry): entry is ProspectWorkflowEntry => Boolean(entry));
   }
@@ -312,22 +316,9 @@ export class BddServiceProspectMongo {
   }
 
   /**
-   * Normalizes prospect status values to uppercase enum constants.
-   * Ensures legacy lower/underscore values are converted before persisting or returning.
+   * Returns a clean prospect status enum value when provided.
    */
-  private normalizeStatus(value?: ProspectStatus | string | null): ProspectStatus | undefined {
-    return normalizeProspectStatus(value ?? undefined);
-  }
-
-  /**
-   * Builds a case-insensitive filter for prospect status to support legacy data values.
-   */
-  private buildStatusFilter(value: ProspectStatus | string): ProspectStatus | RegExp {
-    const normalized = this.normalizeStatus(value);
-    if (!normalized) {
-      return new RegExp(`^${value}$`, 'i');
-    }
-
-    return new RegExp(`^${normalized}$`, 'i');
+  private toStatus(value?: ProspectStatus | string | null): ProspectStatus | undefined {
+    return toProspectStatus(value ?? undefined);
   }
 }
