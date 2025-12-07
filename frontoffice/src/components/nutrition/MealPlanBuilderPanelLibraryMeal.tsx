@@ -51,6 +51,7 @@ export const MealPlanBuilderPanelLibraryMeal = React.memo(function MealPlanBuild
   const MealIcon = useMealTypeIcon(meal.type?.icon);
 
   return (
+    {/* General information */}
     <Card
       variant="outlined"
       sx={{
@@ -96,18 +97,21 @@ export const MealPlanBuilderPanelLibraryMeal = React.memo(function MealPlanBuild
                 </span>
               </Tooltip>
             ) : null}
-            <Typography
-              variant="subtitle2"
-              sx={{
-                fontWeight: 600,
-                overflowWrap: 'anywhere',
-                wordBreak: 'break-word',
-                flex: 1,
-                minWidth: 0,
-              }}
-            >
-              {meal.label}
-            </Typography>
+            <Tooltip title={meal.label ?? ''} arrow>
+              <Typography
+                variant="subtitle2"
+                noWrap
+                sx={{
+                  fontWeight: 600,
+                  flex: 1,
+                  minWidth: 0,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {meal.label}
+              </Typography>
+            </Tooltip>
           </Stack>
           <Typography variant="caption" color="text.secondary">
             {formatMealSummary(meal)}
