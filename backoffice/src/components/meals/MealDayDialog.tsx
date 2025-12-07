@@ -33,7 +33,6 @@ export interface MealDayDialogMealOption {
 }
 
 export interface MealDayDialogValues {
-  slug: string;
   locale: string;
   label: string;
   description: string;
@@ -53,7 +52,6 @@ export interface MealDayDialogProps {
 }
 
 const DEFAULT_VALUES: MealDayDialogValues = {
-  slug: '',
   locale: 'en',
   label: '',
   description: '',
@@ -128,7 +126,6 @@ export function MealDayDialog({
   React.useEffect(() => {
     if (open && isEdit && initial) {
       setValues({
-        slug: initial.slug,
         locale: initial.locale,
         label: initial.label,
         description: initial.description ?? '',
@@ -195,13 +192,11 @@ export function MealDayDialog({
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const trimmedSlug = values.slug.trim();
     const trimmedLabel = values.label.trim();
-    if (!trimmedSlug || !trimmedLabel) return;
+    if (!trimmedLabel) return;
 
     await onSubmit({
       ...values,
-      slug: trimmedSlug,
       label: trimmedLabel,
       description: values.description.trim(),
     });
@@ -217,14 +212,6 @@ export function MealDayDialog({
         <Stack component="form" spacing={3} sx={{ mt: 1 }} onSubmit={submit}>
           {/* General information */}
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-            <TextField
-              label={t('common.labels.slug')}
-              name="slug"
-              value={values.slug}
-              onChange={handleFieldChange}
-              required
-              fullWidth
-            />
             <TextField
               select
               label={t('common.labels.locale')}

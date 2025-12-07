@@ -187,7 +187,6 @@ export interface UseMealDaysResult {
   total: number;
   loading: boolean;
   create: (input: {
-    slug: string;
     locale: string;
     label: string;
     description?: string;
@@ -196,7 +195,6 @@ export interface UseMealDaysResult {
   }) => Promise<void>;
   update: (input: {
     id: string;
-    slug?: string;
     locale?: string;
     label?: string;
     description?: string;
