@@ -17,7 +17,7 @@ export class UpdateMuscleUsecase {
       };
 
       if (dto.label) {
-        toUpdate.slug = buildSlug({ label: dto.label, fallback: 'muscle' });
+        toUpdate.slug = buildSlug({ label: dto.label, fallback: 'muscle', locale: dto.locale });
       }
       const updated = await this.inversify.bddService.muscle.update(
         dto.id,

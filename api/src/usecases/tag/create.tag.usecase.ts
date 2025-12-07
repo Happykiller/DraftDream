@@ -11,7 +11,7 @@ export class CreateTagUsecase {
 
   async execute(dto: CreateTagUsecaseDto): Promise<TagUsecaseModel | null> {
     try {
-      const slug = buildSlug({ label: dto.label, fallback: 'tag' });
+      const slug = buildSlug({ label: dto.label, fallback: 'tag', locale: dto.locale });
       const created = await this.inversify.bddService.tag.create({
         slug: slug,
         locale: dto.locale,

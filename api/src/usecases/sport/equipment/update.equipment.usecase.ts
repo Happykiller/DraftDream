@@ -17,7 +17,7 @@ export class UpdateEquipmentUsecase {
       };
 
       if (dto.label) {
-        toUpdate.slug = buildSlug({ label: dto.label, fallback: 'equipment' });
+        toUpdate.slug = buildSlug({ label: dto.label, fallback: 'equipment', locale: dto.locale });
       }
       const updated = await this.inversify.bddService.equipment.update(
         dto.id,

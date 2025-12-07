@@ -15,15 +15,15 @@ export class UpdateMealPlanUsecase {
     try {
       const toUpdate: any = { ...dto };
       if (dto.label) {
-        toUpdate.slug = buildSlug({ label: dto.label, fallback: 'meal-plan' });
+        toUpdate.slug = buildSlug({ label: dto.label, fallback: 'meal-plan', locale: dto.locale });
       }
       if (dto.days) {
         toUpdate.days = dto.days.map((day) => ({
           ...day,
-          slug: buildSlug({ label: day.label, fallback: 'meal-day' }),
+          slug: buildSlug({ label: day.label, fallback: 'meal-day', locale: day.locale ?? dto.locale }),
           meals: day.meals.map((meal) => ({
             ...meal,
-            slug: buildSlug({ label: meal.label, fallback: 'meal' }),
+            slug: buildSlug({ label: meal.label, fallback: 'meal', locale: meal.locale ?? dto.locale }),
           })),
         }));
       }

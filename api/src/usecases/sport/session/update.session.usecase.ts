@@ -15,7 +15,7 @@ export class UpdateSessionUsecase {
     try {
       const toUpdate: any = { ...dto };
       if (dto.label) {
-        toUpdate.slug = buildSlug({ label: dto.label, fallback: 'session' });
+        toUpdate.slug = buildSlug({ label: dto.label, fallback: 'session', locale: dto.locale });
       }
       const updated = await this.inversify.bddService.session.update(id, toUpdate);
       return updated ? mapSessionToUsecase(updated) : null;

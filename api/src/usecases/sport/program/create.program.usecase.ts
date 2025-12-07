@@ -13,11 +13,11 @@ export class CreateProgramUsecase {
   /** Creates a new program; returns null on duplicate slug/locale (active docs). */
   async execute(dto: CreateProgramUsecaseDto): Promise<ProgramUsecaseModel | null> {
     try {
-      const slug = buildSlug({ label: dto.label, fallback: 'program' });
+      const slug = buildSlug({ label: dto.label, fallback: 'program', locale: dto.locale });
       const sessions = dto.sessions.map((session) => {
         return {
           ...session,
-          slug: buildSlug({ label: session.label, fallback: 'session' }),
+          slug: buildSlug({ label: session.label, fallback: 'session', locale: session.locale ?? dto.locale }),
         };
       });
 

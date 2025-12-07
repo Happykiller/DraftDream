@@ -18,7 +18,7 @@ export class UpdateTagUsecase {
       };
 
       if (dto.label) {
-        toUpdate.slug = buildSlug({ label: dto.label, fallback: 'tag' });
+        toUpdate.slug = buildSlug({ label: dto.label, fallback: 'tag', locale: dto.locale });
       }
       const updated = await this.inversify.bddService.tag.update(dto.id, toUpdate);
       return updated ? { ...updated } : null;

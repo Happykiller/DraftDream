@@ -11,7 +11,7 @@ export class CreateMuscleUsecase {
 
   async execute(dto: CreateMuscleUsecaseDto): Promise<MuscleUsecaseModel | null> {
     try {
-      const slug = buildSlug({ label: dto.label, fallback: 'muscle' });
+      const slug = buildSlug({ label: dto.label, fallback: 'muscle', locale: dto.locale });
       const created = await this.inversify.bddService.muscle.create({
         slug,
         locale: dto.locale,

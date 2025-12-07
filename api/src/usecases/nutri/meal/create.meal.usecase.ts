@@ -15,7 +15,7 @@ export class CreateMealUsecase {
    */
   async execute(dto: CreateMealUsecaseDto): Promise<MealUsecaseModel | null> {
     try {
-      const slug = buildSlug({ label: dto.label, fallback: 'meal' });
+      const slug = buildSlug({ label: dto.label, fallback: 'meal', locale: dto.locale });
       const created = await this.inversify.bddService.meal.create({
         slug,
         locale: dto.locale,

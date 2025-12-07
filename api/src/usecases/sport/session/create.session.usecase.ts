@@ -13,7 +13,7 @@ export class CreateSessionUsecase {
   /** Creates a new session; returns null on slug/locale conflict. */
   async execute(dto: CreateSessionUsecaseDto): Promise<SessionUsecaseModel | null> {
     try {
-      const slug = buildSlug({ label: dto.label, fallback: 'session' });
+      const slug = buildSlug({ label: dto.label, fallback: 'session', locale: dto.locale });
       const created = await this.inversify.bddService.session.create({
         ...dto,
         slug,

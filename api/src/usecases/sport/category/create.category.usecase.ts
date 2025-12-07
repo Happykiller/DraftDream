@@ -11,7 +11,7 @@ export class CreateCategoryUsecase {
 
   async execute(dto: CreateCategoryUsecaseDto): Promise<CategoryUsecaseModel | null> {
     try {
-      const slug = buildSlug({ label: dto.label, fallback: 'category' });
+      const slug = buildSlug({ label: dto.label, fallback: 'category', locale: dto.locale });
       const created = await this.inversify.bddService.category.create({
         slug,
         locale: dto.locale,

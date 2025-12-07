@@ -42,6 +42,15 @@ describe('slugifyCandidate', () => {
   it('should handle numbers', () => {
     expect(slugifyCandidate('Item 123')).toBe('item-123');
   });
+
+  it('should respect locale-specific lowercasing when provided', () => {
+    expect(slugifyCandidate('IĞDIR', 'tr')).toBe('gd-r');
+    expect(slugifyCandidate('IĞDIR', 'en-US')).toBe('igdir');
+  });
+
+  it('should fallback gracefully when locale is invalid', () => {
+    expect(slugifyCandidate('Hello', 'invalid-locale')).toBe('hello');
+  });
 });
 
 describe('buildSlug', () => {
