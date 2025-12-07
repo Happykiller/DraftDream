@@ -43,14 +43,21 @@ export const MealPlanBuilderPanelLibraryDay = React.memo(function MealPlanBuilde
         },
       }}
     >
+      {/* General information */}
       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
         <Stack direction="row" alignItems="flex-start" spacing={1}>
           <Box sx={{ flexGrow: 1, minWidth: 0 }}>
             <Stack direction="row" spacing={1} alignItems="center">
               <CalendarMonth fontSize="small" sx={{ color: alpha(theme.palette.secondary.main, 0.5) }} />
-              <Typography variant="subtitle2" sx={{ fontWeight: 600 }} noWrap>
-                {day.label}
-              </Typography>
+              <Tooltip title={day.label} arrow>
+                <Typography
+                  variant="subtitle2"
+                  sx={{ fontWeight: 600, minWidth: 0 }}
+                  noWrap
+                >
+                  {day.label}
+                </Typography>
+              </Tooltip>
             </Stack>
             <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'pre-wrap' }}>
               {day.description || builderCopy.structure.description_placeholder}
