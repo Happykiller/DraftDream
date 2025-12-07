@@ -67,7 +67,12 @@ export const MealPlanBuilderPanelLibraryMeal = React.memo(function MealPlanBuild
     >
       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
         <Stack spacing={0.75}>
-          <Stack direction="row" spacing={0.75} alignItems="center">
+          <Stack
+            direction="row"
+            spacing={0.75}
+            alignItems="center"
+            sx={{ flexWrap: 'wrap', rowGap: 0.5 }}
+          >
             {meal.type?.label ? (
               <Tooltip title={meal.type.label}>
                 <span style={{ display: 'inline-flex' }}>
@@ -91,7 +96,16 @@ export const MealPlanBuilderPanelLibraryMeal = React.memo(function MealPlanBuild
                 </span>
               </Tooltip>
             ) : null}
-            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+            <Typography
+              variant="subtitle2"
+              sx={{
+                fontWeight: 600,
+                overflowWrap: 'anywhere',
+                wordBreak: 'break-word',
+                flex: 1,
+                minWidth: 0,
+              }}
+            >
               {meal.label}
             </Typography>
           </Stack>
