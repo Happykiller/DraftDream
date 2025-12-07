@@ -51,7 +51,6 @@ export const MealPlanBuilderPanelLibraryMeal = React.memo(function MealPlanBuild
   const MealIcon = useMealTypeIcon(meal.type?.icon);
 
   return (
-    {/* General information */}
     <Card
       variant="outlined"
       sx={{
@@ -75,7 +74,7 @@ export const MealPlanBuilderPanelLibraryMeal = React.memo(function MealPlanBuild
             sx={{ flexWrap: 'wrap', rowGap: 0.5 }}
           >
             {meal.type?.label ? (
-              <Tooltip title={meal.type.label}>
+              <Tooltip title={meal.type.label} placement="bottom-start" arrow>
                 <span style={{ display: 'inline-flex' }}>
                   <MealIcon fontSize="small" sx={{ color: mealIconColor }} />
                 </span>
@@ -84,7 +83,7 @@ export const MealPlanBuilderPanelLibraryMeal = React.memo(function MealPlanBuild
               <MealIcon fontSize="small" sx={{ color: mealIconColor }} />
             )}
             {isOwnedByCurrentUser && onEdit ? (
-              <Tooltip title={builderCopy.meal_library.edit_tooltip ?? ''} arrow>
+              <Tooltip title={builderCopy.meal_library.edit_tooltip ?? ''} arrow placement="bottom-start">
                 <span style={{ display: 'inline-flex' }}>
                   <IconButton
                     size="small"
@@ -97,7 +96,7 @@ export const MealPlanBuilderPanelLibraryMeal = React.memo(function MealPlanBuild
                 </span>
               </Tooltip>
             ) : null}
-            <Tooltip title={meal.label ?? ''} arrow>
+            <Tooltip title={meal.label ?? ''} arrow placement="bottom-start">
               <Typography
                 variant="subtitle2"
                 noWrap
@@ -176,6 +175,6 @@ export const MealPlanBuilderPanelLibraryMeal = React.memo(function MealPlanBuild
           </span>
         </Tooltip>
       </Box>
-    </Card>
+    </Card >
   );
 });
