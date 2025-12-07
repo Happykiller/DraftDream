@@ -15,6 +15,7 @@ import {
   UpdateProspectDto,
 } from '@services/db/dtos/prospect/prospect.dto';
 
+import { normalizeProspectStatus } from '@src/common/enum.util';
 import { ProspectStatus } from '@src/common/prospect-status.enum';
 
 interface ProspectDoc {
@@ -69,7 +70,7 @@ export class BddServiceProspectMongo {
       lastName: this.normalizeName(dto.lastName),
       email: this.normalizeEmail(dto.email),
       phone: this.normalizeOptional(dto.phone),
-      status: dto.status,
+      status: this.normalizeStatus(dto.status),
       levelId: this.normalizeOptional(dto.levelId),
       objectiveIds: this.normalizeIds(dto.objectiveIds) ?? [],
       activityPreferenceIds: this.normalizeIds(dto.activityPreferenceIds) ?? [],
@@ -127,7 +128,7 @@ export class BddServiceProspectMongo {
         { phone: { $regex: regex } },
       ];
     }
-    if (status) filter.status = status;
+    if (status) filter.status = this.buildStatusFilter(status);
     if (levelId) filter.levelId = levelId;
     if (sourceId) filter.sourceId = sourceId;
     if (createdBy) filter.createdBy = createdBy;
@@ -153,7 +154,7 @@ export class BddServiceProspectMongo {
     if (patch.lastName !== undefined) $set.lastName = this.normalizeName(patch.lastName);
     if (patch.email !== undefined) $set.email = this.normalizeEmail(patch.email);
     if (patch.phone !== undefined) $set.phone = this.normalizeOptional(patch.phone);
-    if (patch.status !== undefined) $set.status = patch.status;
+    if (patch.status !== undefined) $set.status = this.normalizeStatus(patch.status);
     if (patch.levelId !== undefined) $set.levelId = this.normalizeOptional(patch.levelId);
     if (patch.objectiveIds !== undefined) {
       $set.objectiveIds = this.normalizeIds(patch.objectiveIds) ?? [];
@@ -265,7 +266,7 @@ export class BddServiceProspectMongo {
     lastName: doc.lastName,
     email: doc.email,
     phone: doc.phone,
-    status: doc.status,
+    status: this.normalizeStatus(doc.status),
     levelId: doc.levelId,
     objectiveIds: doc.objectiveIds ?? [],
     activityPreferenceIds: doc.activityPreferenceIds ?? [],
@@ -308,5 +309,25 @@ export class BddServiceProspectMongo {
     const message = error instanceof Error ? error.message : String(error);
     inversify.loggerService.error(`BddServiceProspectMongo#${method} => ${message}`);
     throw error instanceof Error ? error : new Error(message);
+  }
+
+  /**
+   * Normalizes prospect status values to uppercase enum constants.
+   * Ensures legacy lower/underscore values are converted before persisting or returning.
+   */
+  private normalizeStatus(value?: ProspectStatus | string | null): ProspectStatus | undefined {
+    return normalizeProspectStatus(value ?? undefined);
+  }
+
+  /**
+   * Builds a case-insensitive filter for prospect status to support legacy data values.
+   */
+  private buildStatusFilter(value: ProspectStatus | string): ProspectStatus | RegExp {
+    const normalized = this.normalizeStatus(value);
+    if (!normalized) {
+      return new RegExp(`^${value}$`, 'i');
+    }
+
+    return new RegExp(`^${normalized}$`, 'i');
   }
 }
