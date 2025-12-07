@@ -114,15 +114,23 @@ export class BddServiceSessionMongo {
       sort = { updatedAt: -1 },
     } = params;
 
-    const filter: Record<string, any> = {};
+    // Combine search, locale, ownership, and archival filters so they apply together.
+    const conditions: Record<string, any>[] = [];
+
     if (q?.trim()) {
-      filter.$or = [
-        { slug: { $regex: new RegExp(q.trim(), 'i') } },
-        { label: { $regex: new RegExp(q.trim(), 'i') } },
-        { description: { $regex: new RegExp(q.trim(), 'i') } },
-      ];
+      const regex = new RegExp(q.trim(), 'i');
+      conditions.push({
+        $or: [
+          { slug: { $regex: regex } },
+          { label: { $regex: regex } },
+          { description: { $regex: regex } },
+        ],
+      });
     }
-    if (locale) filter.locale = locale.toLowerCase().trim();
+
+    if (locale) {
+      conditions.push({ locale: locale.toLowerCase().trim() });
+    }
     const normalizedCreatedByIn = Array.isArray(createdByIn)
       ? createdByIn.map((id) => id?.trim()).filter((id): id is string => Boolean(id))
       : [];
@@ -141,10 +149,14 @@ export class BddServiceSessionMongo {
     }
 
     if (ownershipConditions.length) {
-      filter.$or = ownershipConditions;
+      conditions.push({ $or: ownershipConditions });
     }
 
-    if (!includeArchived) filter.deletedAt = { $exists: false };
+    if (!includeArchived) {
+      conditions.push({ deletedAt: { $exists: false } });
+    }
+
+    const filter: Record<string, any> = conditions.length ? { $and: conditions } : {};
 
     try {
       const collection = this.col();
