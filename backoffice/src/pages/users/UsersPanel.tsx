@@ -9,12 +9,17 @@ import { UserDialog, type UserDialogValues } from '@components/users/UserDialog'
 import { ConfirmDialog } from '@components/common/ConfirmDialog';
 
 export function UsersPanel(): React.JSX.Element {
-  const { page, limit, q, setPage, setLimit, setQ } = useTabParams('usr');
+  const { page, limit, q, type, setPage, setLimit, setQ, setType } = useTabParams('usr');
   const [searchInput, setSearchInput] = React.useState(q);
   const debounced = useDebouncedValue(searchInput, 300);
   React.useEffect(() => { if (debounced !== q) setQ(debounced); }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update } = useUsers({ page, limit, q });
+  const { items, total, loading, create, update } = useUsers({
+    page,
+    limit,
+    q,
+    type: type as 'athlete' | 'coach' | 'admin' | undefined
+  });
 
   // Dialog states
   const [openCreate, setOpenCreate] = React.useState(false);
@@ -35,11 +40,11 @@ export function UsersPanel(): React.JSX.Element {
       company: v.company_name ? { name: v.company_name } : undefined,
       address: v.address_name || v.address_city || v.address_code || v.address_country
         ? {
-            name: v.address_name || '',
-            city: v.address_city || '',
-            code: v.address_code || '',
-            country: v.address_country || '',
-          }
+          name: v.address_name || '',
+          city: v.address_city || '',
+          code: v.address_code || '',
+          country: v.address_country || '',
+        }
         : undefined,
     });
   };
@@ -58,11 +63,11 @@ export function UsersPanel(): React.JSX.Element {
       company: v.company_name ? { name: v.company_name } : undefined,
       address: v.address_name || v.address_city || v.address_code || v.address_country
         ? {
-            name: v.address_name || '',
-            city: v.address_city || '',
-            code: v.address_code || '',
-            country: v.address_country || '',
-          }
+          name: v.address_name || '',
+          city: v.address_city || '',
+          code: v.address_code || '',
+          country: v.address_country || '',
+        }
         : undefined,
     });
   };
@@ -75,10 +80,12 @@ export function UsersPanel(): React.JSX.Element {
         page={page}
         limit={limit}
         q={searchInput}
+        type={type}
         loading={loading}
         onCreate={() => setOpenCreate(true)}
         onEdit={(row) => setEditId(row.id)}
         onQueryChange={setSearchInput}
+        onTypeChange={setType}
         onPageChange={setPage}
         onLimitChange={setLimit}
       />

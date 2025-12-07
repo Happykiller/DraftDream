@@ -11,7 +11,7 @@ interface CategoryDoc {
   slug: string;
   locale: string;
   label: string;
-  visibility: 'private' | 'public';
+  visibility: 'PRIVATE' | 'PUBLIC';
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
@@ -41,7 +41,7 @@ export class BddServiceCategoryMongo {
       slug: dto.slug.toLowerCase().trim(),
       locale: dto.locale.toLowerCase().trim(),
       label: dto.label.trim(),
-      visibility: dto.visibility === 'public' ? 'public' : 'private',
+      visibility: dto.visibility === 'PUBLIC' ? 'PUBLIC' : 'PRIVATE',
       createdBy: dto.createdBy,
       createdAt: now,
       updatedAt: now,
@@ -80,9 +80,7 @@ export class BddServiceCategoryMongo {
     if (createdBy) filter.createdBy = createdBy;
 
     if (visibility) {
-      if (visibility === 'public') filter.visibility = 'public';
-      
-      else filter.visibility = 'private';
+      filter.visibility = visibility;
     }
 
     try {
@@ -103,9 +101,7 @@ export class BddServiceCategoryMongo {
     if (patch.locale !== undefined) $set.locale = patch.locale.toLowerCase().trim();
     if (patch.label !== undefined) $set.label = patch.label.trim();
     if (patch.visibility !== undefined) {
-      if (patch.visibility === 'public') $set.visibility = 'public';
-      
-      else $set.visibility = 'private';
+      $set.visibility = patch.visibility;
     }
 
     try {
@@ -147,7 +143,7 @@ export class BddServiceCategoryMongo {
     slug: doc.slug,
     locale: doc.locale,
     label: doc.label,
-    visibility: doc.visibility,
+    visibility: (doc.visibility as string).toUpperCase() as 'PRIVATE' | 'PUBLIC',
     createdBy: doc.createdBy,
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt,

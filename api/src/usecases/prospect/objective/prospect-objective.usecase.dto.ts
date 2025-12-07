@@ -3,7 +3,7 @@
 export interface CreateProspectObjectiveUsecaseDto {
     locale: string;
     label: string;
-    visibility: 'private' | 'public';
+    visibility: 'PRIVATE' | 'PUBLIC';
     createdBy: string;
 }
 
@@ -15,7 +15,7 @@ export interface ListProspectObjectivesUsecaseDto {
     q?: string;
     locale?: string;
     createdBy?: string;
-    visibility?: 'private' | 'public';
+    visibility?: 'PRIVATE' | 'PUBLIC';
     limit?: number;
     page?: number;
     sort?: { updatedAt?: 1 | -1 };
@@ -25,7 +25,7 @@ export interface UpdateProspectObjectiveUsecaseDto {
     id: string;
     locale?: string;
     label?: string;
-    visibility?: 'private' | 'public';
+    visibility?: 'PRIVATE' | 'PUBLIC';
 }
 
 export interface DeleteProspectObjectiveUsecaseDto {

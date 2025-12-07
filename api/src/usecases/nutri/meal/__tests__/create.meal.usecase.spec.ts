@@ -37,7 +37,7 @@ describe('CreateMealUsecase', () => {
     proteinGrams: 45,
     carbGrams: 60,
     fatGrams: 20,
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'coach-1',
   };
 
@@ -53,7 +53,7 @@ describe('CreateMealUsecase', () => {
     proteinGrams: 45,
     carbGrams: 60,
     fatGrams: 20,
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'coach-1',
     createdAt: now,
     updatedAt: now,

@@ -43,14 +43,14 @@ describe('UpdateExerciseUsecase', () => {
     charge: 'bodyweight',
     rest: 60,
     videoUrl: 'https://cdn.local/push-up.mp4',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     categories: [
       {
         id: 'category-1',
         slug: 'cat',
         locale: 'en-us',
         label: 'Category',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -62,7 +62,7 @@ describe('UpdateExerciseUsecase', () => {
         slug: 'muscle',
         locale: 'en-us',
         label: 'Muscle',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -74,7 +74,7 @@ describe('UpdateExerciseUsecase', () => {
         slug: 'equipment',
         locale: 'en-us',
         label: 'Equipment',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -86,7 +86,7 @@ describe('UpdateExerciseUsecase', () => {
         slug: 'tag',
         locale: 'en-us',
         label: 'Tag',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -109,7 +109,7 @@ describe('UpdateExerciseUsecase', () => {
     charge: 'bodyweight',
     rest: 60,
     videoUrl: 'https://cdn.local/push-up.mp4',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     categoryIds: ['category-1'],
     muscleIds: ['muscle-1'],
     equipmentIds: ['equipment-1'],
@@ -142,7 +142,7 @@ describe('UpdateExerciseUsecase', () => {
 
     const patch: UpdateExerciseUsecaseDto = {
       label: 'Push-up Advanced',
-      visibility: 'private',
+      visibility: 'PRIVATE',
       session: { userId: 'user-456', role: Role.COACH },
     };
 
@@ -151,7 +151,7 @@ describe('UpdateExerciseUsecase', () => {
     expect(exerciseRepositoryMock.get).toHaveBeenCalledWith({ id: exercise.id });
     expect(exerciseRepositoryMock.update).toHaveBeenCalledWith(exercise.id, {
       label: 'Push-up Advanced',
-      visibility: 'private',
+      visibility: 'PRIVATE',
       slug: 'push-up-advanced',
     });
     expect(result).toEqual(mappedExercise);

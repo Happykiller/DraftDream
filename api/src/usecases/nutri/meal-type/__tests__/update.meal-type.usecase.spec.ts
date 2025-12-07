@@ -32,7 +32,7 @@ describe('UpdateMealTypeUsecase', () => {
     locale: 'en-US',
     label: 'Post workout',
     icon: 'shaker',
-    visibility: 'public',
+    visibility: 'PUBLIC',
   };
 
   const updatedMealType: MealTypeUsecaseModel = {
@@ -41,7 +41,7 @@ describe('UpdateMealTypeUsecase', () => {
     locale: 'en-us',
     label: 'Post workout',
     icon: 'shaker',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'coach-11',
     createdAt: new Date('2024-02-01T10:00:00.000Z'),
     updatedAt: new Date('2024-04-01T10:00:00.000Z'),

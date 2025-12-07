@@ -4,7 +4,7 @@ export interface ProspectSource {
   slug: string;
   locale: string;
   label: string;
-  visibility: 'private' | 'public';
+  visibility: 'PRIVATE' | 'PUBLIC';
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;

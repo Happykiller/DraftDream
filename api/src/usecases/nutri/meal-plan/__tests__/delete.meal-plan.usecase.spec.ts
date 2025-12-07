@@ -39,7 +39,7 @@ describe('DeleteMealPlanUsecase', () => {
         carbGrams: 200,
         fatGrams: 70,
         days: [],
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-1',
         createdAt: new Date(),
         updatedAt: new Date(),

@@ -1,5 +1,5 @@
 // src\services\db\dtos\session.dto.ts
-export type Visibility = 'private' | 'public';
+export type Visibility = 'PRIVATE' | 'PUBLIC';
 
 export interface CreateSessionDto {
   slug: string;

@@ -60,8 +60,8 @@ export class ProspectObjectiveResolver {
       input?.visibility === undefined
         ? undefined
         : input.visibility === ProspectObjectiveVisibility.PUBLIC
-          ? 'public'
-          : 'private';
+          ? 'PUBLIC'
+          : 'PRIVATE';
     const res = await inversify.listClientObjectivesUsecase.execute({
       q: input?.q,
       locale: input?.locale,
@@ -91,8 +91,8 @@ export class ProspectObjectiveResolver {
         input.visibility === undefined
           ? undefined
           : input.visibility === ProspectObjectiveVisibility.PUBLIC
-            ? 'public'
-            : 'private',
+            ? 'PUBLIC'
+            : 'PRIVATE',
     });
     return updated ? mapProspectObjectiveUsecaseToGql(updated) : null;
   }

@@ -1,4 +1,3 @@
-// src/pages/prospects/ClientsPanel.tsx
 import * as React from 'react';
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -9,11 +8,7 @@ import {
   type ProspectClientDialogValues,
 } from '@components/prospects/ProspectClientDialog';
 import { ProspectClientTable } from '@components/prospects/ProspectClientTable';
-import {
-  ProspectStatus,
-  prospectStatusLabels,
-  type ProspectStatusOption,
-} from '@commons/prospects/status';
+import { ProspectStatus } from '@commons/prospects/status';
 import { useProspectMetadataOptions } from '@hooks/useProspectMetadataOptions';
 import { useProspects } from '@hooks/useProspects';
 import { useDebouncedValue } from '@hooks/useDebouncedValue';
@@ -68,14 +63,15 @@ export function ClientsPanel(): React.JSX.Element {
     [],
   );
 
-  const statusOptions = React.useMemo<ProspectStatusOption[]>(
+  const statusOptions = React.useMemo(
     () =>
       Object.values(ProspectStatus).map((value) => ({
         value,
-        label: prospectStatusLabels[value],
+        label: t(`prospects.statuses.values.${value.toLowerCase()}`),
       })),
-    [],
+    [t],
   );
+
 
   return (
     <Box>

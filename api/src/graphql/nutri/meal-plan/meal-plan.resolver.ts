@@ -61,7 +61,7 @@ export class MealPlanResolver {
       locale: input.locale,
       label: input.label,
       description: input.description,
-      visibility: this.normalizeMealPlanVisibility(input.visibility) ?? 'private',
+      visibility: this.normalizeMealPlanVisibility(input.visibility) ?? 'PRIVATE',
       calories: input.calories,
       proteinGrams: input.proteinGrams,
       carbGrams: input.carbGrams,
@@ -310,11 +310,11 @@ export class MealPlanResolver {
    */
   private normalizeMealPlanVisibility(
     visibility?: MealPlanVisibility | null,
-  ): 'private' | 'public' | undefined {
+  ): 'PRIVATE' | 'PUBLIC' | undefined {
     if (!visibility) {
       return undefined;
     }
-    return visibility === MealPlanVisibility.PUBLIC ? 'public' : 'private';
+    return visibility === MealPlanVisibility.PUBLIC ? 'PUBLIC' : 'PRIVATE';
   }
 
   /**
@@ -322,10 +322,10 @@ export class MealPlanResolver {
    */
   private normalizeMealTypeVisibility(
     visibility?: MealTypeVisibility | null,
-  ): 'private' | 'public' | undefined {
+  ): 'PRIVATE' | 'PUBLIC' | undefined {
     if (!visibility) {
       return undefined;
     }
-    return visibility === MealTypeVisibility.PUBLIC ? 'public' : 'private';
+    return visibility === MealTypeVisibility.PUBLIC ? 'PUBLIC' : 'PRIVATE';
   }
 }

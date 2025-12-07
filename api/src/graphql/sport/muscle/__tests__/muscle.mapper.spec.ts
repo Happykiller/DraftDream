@@ -14,7 +14,7 @@ describe('mapMuscleUsecaseToGql', () => {
       slug: 'quadriceps',
       locale: 'fr-FR',
       label: 'Quadriceps',
-      visibility: 'private',
+      visibility: 'PRIVATE',
       createdBy: 'coach-13',
       createdAt,
       updatedAt,

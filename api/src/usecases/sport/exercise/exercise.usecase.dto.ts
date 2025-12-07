@@ -16,7 +16,7 @@ export interface CreateExerciseUsecaseDto {
   charge?: string;
   rest?: number;
   videoUrl?: string;
-  visibility: 'private' | 'public';
+  visibility: 'PRIVATE' | 'PUBLIC';
   categoryIds: string[];
   muscleIds: string[];
   equipmentIds?: string[];
@@ -33,7 +33,7 @@ export interface ListExercisesUsecaseDto {
   q?: string;
   locale?: string;
   createdBy?: string;
-  visibility?: 'private' | 'public';
+  visibility?: 'PRIVATE' | 'PUBLIC';
   categoryIds?: string[];
   limit?: number;
   page?: number;
@@ -54,7 +54,7 @@ export interface UpdateExerciseUsecaseDto {
   charge?: string;
   rest?: number;
   videoUrl?: string;
-  visibility?: 'private' | 'public';
+  visibility?: 'PRIVATE' | 'PUBLIC';
   categoryIds?: string[];
   muscleIds?: string[];
   equipmentIds?: string[];

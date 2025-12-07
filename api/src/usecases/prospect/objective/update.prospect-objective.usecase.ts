@@ -15,7 +15,7 @@ export class UpdateProspectObjectiveUsecase {
         slug?: string;
         locale?: string;
         label?: string;
-        visibility?: 'private' | 'public';
+        visibility?: 'PRIVATE' | 'PUBLIC';
       } = {
         locale: dto.locale,
         label: dto.label,

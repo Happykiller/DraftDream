@@ -24,7 +24,7 @@ describe('CreateProspectObjectiveUsecase', () => {
   const dto: CreateProspectObjectiveDto = {
     locale: 'fr-FR',
     label: 'Perte de poids',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'admin-1',
     slug: 'test-slug',
   };
@@ -35,7 +35,7 @@ describe('CreateProspectObjectiveUsecase', () => {
     id: 'objective-1',
     locale: 'fr-fr',
     label: 'Perte de poids',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'admin-1',
     createdAt: now,
     updatedAt: now,

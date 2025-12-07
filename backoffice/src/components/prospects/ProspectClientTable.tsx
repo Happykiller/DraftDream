@@ -6,7 +6,7 @@ import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Button, IconButton, MenuItem, Stack, TextField, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import { ProspectStatus, type ProspectStatusOption } from '@commons/prospects/status';
+import { ProspectStatus } from '@commons/prospects/status';
 import type { Prospect } from '@hooks/useProspects';
 import type { ProspectMetadataOption } from '@hooks/useProspectMetadataOptions';
 import { useDateFormatter } from '@hooks/useDateFormatter';
@@ -20,7 +20,7 @@ export interface ProspectClientTableProps {
   statusFilter?: ProspectStatus | null;
   levelFilter?: string | null;
   sourceFilter?: string | null;
-  statuses: ProspectStatusOption[];
+  statuses: Array<{ value: ProspectStatus; label: string }>;
   levels: ProspectMetadataOption[];
   sources: ProspectMetadataOption[];
   loading: boolean;
@@ -69,6 +69,7 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
       >,
     [statuses],
   );
+
 
   const renderList = React.useCallback((value?: { label?: string }[]) => {
     if (!value?.length) return t('common.messages.no_value');

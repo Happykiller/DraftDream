@@ -50,7 +50,7 @@ export class UpdateAthleteInfoUsecase {
       throw new Error(ERRORS.USER_NOT_FOUND);
     }
     if (user.type !== 'athlete') {
-      throw new Error('TARGET_NOT_ATHLETE');
+      throw new Error(ERRORS.TARGET_NOT_ATHLETE);
     }
   }
 }

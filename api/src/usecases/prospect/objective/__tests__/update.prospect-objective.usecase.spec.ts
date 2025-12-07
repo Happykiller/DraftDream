@@ -24,7 +24,7 @@ describe('UpdateProspectObjectiveUsecase', () => {
   const dto: UpdateProspectObjectiveDto = {
     locale: 'es-ES',
     label: 'Mantener',
-    visibility: 'private',
+    visibility: 'PRIVATE',
   };
   const id = 'objective-4';
 
@@ -34,7 +34,7 @@ describe('UpdateProspectObjectiveUsecase', () => {
     id: 'objective-4',
     locale: 'es-es',
     label: 'Mantener',
-    visibility: 'private',
+    visibility: 'PRIVATE',
     createdBy: 'coach-9',
     createdAt: now,
     updatedAt: now,

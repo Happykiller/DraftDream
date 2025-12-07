@@ -20,7 +20,7 @@ interface ProspectLevelDoc {
   slug: string;
   locale: string;
   label: string;
-  visibility: 'private' | 'public';
+  visibility: 'PRIVATE' | 'PUBLIC';
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
@@ -92,7 +92,7 @@ export class BddServiceProspectLevelMongo {
     }
     if (locale) filter.locale = locale.toLowerCase().trim();
     if (createdBy) filter.createdBy = createdBy;
-    if (visibility === 'public' || visibility === 'private') {
+    if (visibility === 'PUBLIC' || visibility === 'PRIVATE') {
       filter.visibility = visibility;
     }
 

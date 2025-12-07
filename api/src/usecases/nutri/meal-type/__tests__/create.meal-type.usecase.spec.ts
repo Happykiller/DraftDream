@@ -31,7 +31,7 @@ describe('CreateMealTypeUsecase', () => {
     locale: 'en-US',
     label: 'Breakfast',
     icon: 'coffee',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'coach-42',
   };
 
@@ -41,7 +41,7 @@ describe('CreateMealTypeUsecase', () => {
     slug: 'breakfast',
     locale: 'en-us',
     label: 'Breakfast',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     icon: 'coffee',
     createdBy: 'coach-42',
     createdAt: timestamp,

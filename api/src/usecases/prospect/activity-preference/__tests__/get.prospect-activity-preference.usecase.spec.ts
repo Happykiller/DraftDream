@@ -26,7 +26,7 @@ describe('GetProspectActivityPreferenceUsecase', () => {
     id: 'preference-1',
     locale: 'fr-fr',
     label: 'Musculation',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'admin-1',
     createdAt: now,
     updatedAt: now,

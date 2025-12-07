@@ -5,6 +5,7 @@ import { Inversify } from '@src/inversify/investify';
 import { Role } from '@src/common/role.enum';
 import { mapExerciseToUsecase } from '@src/usecases/sport/exercise/exercise.mapper';
 import { GetExerciseUsecaseDto } from '@src/usecases/sport/exercise/exercise.usecase.dto';
+import { enumEquals } from '@src/common/enum.util';
 import type { ExerciseUsecaseModel } from '@src/usecases/sport/exercise/exercise.usecase.model';
 
 export class GetExerciseUsecase {
@@ -20,7 +21,7 @@ export class GetExerciseUsecase {
       }
 
       // Read access is allowed for all roles according to business rules.
-      if (session.role === Role.ADMIN || res.createdBy === session.userId || res.visibility === 'public') {
+      if (session.role === Role.ADMIN || res.createdBy === session.userId || enumEquals(res.visibility, 'PUBLIC')) {
         return mapExerciseToUsecase(res);
       }
 

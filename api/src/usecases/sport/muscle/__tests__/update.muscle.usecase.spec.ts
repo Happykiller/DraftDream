@@ -38,7 +38,7 @@ describe('UpdateMuscleUsecase', () => {
     slug: 'deltoids',
     locale: 'en-US',
     label: 'Deltoids',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'coach-3',
     createdAt: new Date('2024-03-01T00:00:00.000Z'),
     updatedAt: new Date('2024-04-01T00:00:00.000Z'),

@@ -11,7 +11,7 @@ export interface ExerciseUsecaseModel {
   charge?: string;
   rest?: number;
   videoUrl?: string;
-  visibility: 'private' | 'public';
+  visibility: 'PRIVATE' | 'PUBLIC';
 
   categoryIds: string[];
   muscleIds: string[];

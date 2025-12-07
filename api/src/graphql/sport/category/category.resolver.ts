@@ -89,8 +89,8 @@ export class CategoryResolver {
         input.visibility === undefined
           ? undefined
           : input.visibility === CategoryVisibility.PUBLIC
-            ? 'public'
-            : 'private',
+            ? 'PUBLIC'
+            : 'PRIVATE',
     });
     return updated ? mapCategoryUsecaseToGql(updated) : null;
   }

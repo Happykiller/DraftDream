@@ -515,13 +515,13 @@
       },
       "values": {
         "lead": "Lead",
-        "contacte": "Contacté",
-        "rdv_planifie": "RDV planifié",
-        "proposition": "Proposition",
-        "negociation": "Négociation",
-        "gagne": "Gagné",
-        "perdus": "Perdu",
-        "a_faire": "À faire",
+        "contacted": "Contacté",
+        "meeting_scheduled": "RDV planifié",
+        "offer": "Proposition",
+        "negotiation": "Négociation",
+        "won": "Gagné",
+        "lost": "Perdu",
+        "todo": "À faire",
         "client": "Client"
       }
     },

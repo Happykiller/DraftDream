@@ -24,7 +24,7 @@ interface MealPlanMealTypeDoc {
   slug?: string;
   locale?: string;
   label: string;
-  visibility?: 'private' | 'public';
+  visibility?: 'PRIVATE' | 'PUBLIC';
 }
 
 interface MealPlanMealDoc {
@@ -58,7 +58,7 @@ interface MealPlanDoc {
   locale: string;
   label: string;
   description?: string;
-  visibility: 'private' | 'public';
+  visibility: 'PRIVATE' | 'PUBLIC';
   calories: number;
   proteinGrams: number;
   carbGrams: number;
@@ -107,7 +107,7 @@ export class BddServiceMealPlanMongo {
       locale: dto.locale.toLowerCase().trim(),
       label: dto.label.trim(),
       description: dto.description,
-      visibility: dto.visibility === 'public' ? 'public' : 'private',
+      visibility: dto.visibility === 'PUBLIC' ? 'PUBLIC' : 'PRIVATE',
       calories: Math.round(dto.calories),
       proteinGrams: Math.round(dto.proteinGrams),
       carbGrams: Math.round(dto.carbGrams),
@@ -185,9 +185,9 @@ export class BddServiceMealPlanMongo {
     }
 
     if (visibility) {
-      filter.visibility = visibility === 'public' ? 'public' : 'private';
+      filter.visibility = visibility;
     } else if (includePublicVisibility) {
-      ownershipConditions.push({ visibility: 'public' });
+      ownershipConditions.push({ visibility: 'PUBLIC' });
     }
 
     if (ownershipConditions.length) {
@@ -224,9 +224,7 @@ export class BddServiceMealPlanMongo {
     if (patch.label !== undefined) $set.label = patch.label.trim();
     if (patch.description !== undefined) $set.description = patch.description;
     if (patch.visibility !== undefined) {
-      if (patch.visibility === 'public') $set.visibility = 'public';
-      
-      else $set.visibility = 'private';
+      $set.visibility = patch.visibility;
     }
     if (patch.calories !== undefined) $set.calories = Math.round(patch.calories);
     if (patch.proteinGrams !== undefined) $set.proteinGrams = Math.round(patch.proteinGrams);
@@ -322,7 +320,7 @@ export class BddServiceMealPlanMongo {
     locale: doc.locale,
     label: doc.label,
     description: doc.description,
-    visibility: doc.visibility ?? 'private',
+    visibility: (doc.visibility?.toUpperCase() as 'PRIVATE' | 'PUBLIC') ?? 'PRIVATE',
     calories: doc.calories,
     proteinGrams: doc.proteinGrams,
     carbGrams: doc.carbGrams,
@@ -366,7 +364,7 @@ export class BddServiceMealPlanMongo {
     slug: type.slug,
     locale: type.locale,
     label: type.label,
-    visibility: type.visibility,
+    visibility: (type.visibility?.toUpperCase() as 'PRIVATE' | 'PUBLIC'),
   });
 
   private isDuplicateError(error: unknown): boolean {

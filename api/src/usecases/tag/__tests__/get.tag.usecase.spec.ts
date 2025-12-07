@@ -29,7 +29,7 @@ describe('GetTagUsecase', () => {
     slug: 'mobility',
     locale: 'en-US',
     label: 'Mobility',
-    visibility: 'private',
+    visibility: 'PRIVATE',
     createdBy: 'coach-1',
     createdAt: new Date('2024-01-02T00:00:00.000Z'),
     updatedAt: new Date('2024-02-02T00:00:00.000Z'),

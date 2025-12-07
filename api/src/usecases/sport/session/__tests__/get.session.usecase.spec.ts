@@ -24,7 +24,7 @@ const sessionEntity = {
   locale: 'en-us',
   label: 'Upper Body',
   durationMin: 60,
-  visibility: 'public' as const,
+  visibility: 'PUBLIC' as const,
   description: 'Full body workout',
   exerciseIds: ['ex-1', 'ex-2'],
   createdBy: 'coach-1',
@@ -39,7 +39,7 @@ const mapped: SessionUsecaseModel = {
   locale: 'en-us',
   label: 'Upper Body',
   durationMin: 60,
-  visibility: 'public',
+  visibility: 'PUBLIC',
   description: 'Full body workout',
   exerciseIds: ['ex-1', 'ex-2'],
   createdBy: 'coach-1',
@@ -140,7 +140,7 @@ describe('GetSessionUsecase', () => {
     const dto = buildDto(Role.COACH, 'coach-2');
     asMock(sessionRepositoryMock.get).mockResolvedValue({
       ...sessionEntity,
-      visibility: 'private',
+      visibility: 'PRIVATE',
     });
     asMock(userRepositoryMock.getUser).mockResolvedValue(buildUser('coach-1', 'coach'));
 
@@ -164,7 +164,7 @@ describe('GetSessionUsecase', () => {
     const failure = new Error('user service down');
     asMock(sessionRepositoryMock.get).mockResolvedValue({
       ...sessionEntity,
-      visibility: 'private',
+      visibility: 'PRIVATE',
       createdBy: 'admin-1',
     });
     asMock(userRepositoryMock.getUser).mockRejectedValue(failure);

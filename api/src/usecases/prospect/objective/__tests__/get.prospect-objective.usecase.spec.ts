@@ -28,7 +28,7 @@ describe('GetProspectObjectiveUsecase', () => {
     id: 'objective-2',
     locale: 'en-us',
     label: 'Mass gain',
-    visibility: 'private',
+    visibility: 'PRIVATE',
     createdBy: 'coach-7',
     createdAt: now,
     updatedAt: now,

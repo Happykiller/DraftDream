@@ -42,7 +42,7 @@ describe('GetMealPlanUsecase', () => {
         carbGrams: 200,
         fatGrams: 70,
         days: [],
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-1',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -95,7 +95,7 @@ describe('GetMealPlanUsecase', () => {
 
     it('should throw forbidden error if user is not authorized', async () => {
         const otherUserDto = { ...dto, session: { ...dto.session, userId: 'other-user', role: Role.ATHLETE } };
-        const privateMealPlan = { ...mealPlan, visibility: 'private' };
+        const privateMealPlan = { ...mealPlan, visibility: 'PRIVATE' };
         mealPlanRepositoryMock.get.mockResolvedValue(privateMealPlan as any); // Cast to any to avoid strict type check on visibility string literal if needed
 
         await expect(usecase.execute(otherUserDto)).rejects.toThrow(ERRORS.GET_MEAL_PLAN_FORBIDDEN);

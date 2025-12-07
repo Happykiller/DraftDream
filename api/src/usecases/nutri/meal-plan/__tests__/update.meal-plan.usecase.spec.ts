@@ -30,7 +30,7 @@ describe('UpdateMealPlanUsecase', () => {
     const dto: UpdateMealPlanUsecaseDto = {
         id: 'plan-1',
         label: 'Updated Plan',
-        visibility: 'private',
+        visibility: 'PRIVATE',
     };
 
     const updatedMealPlan: MealPlanUsecaseModel = {
@@ -43,7 +43,7 @@ describe('UpdateMealPlanUsecase', () => {
         carbGrams: 200,
         fatGrams: 70,
         days: [],
-        visibility: 'private',
+        visibility: 'PRIVATE',
         createdBy: 'user-1',
         createdAt: new Date(),
         updatedAt: new Date(),

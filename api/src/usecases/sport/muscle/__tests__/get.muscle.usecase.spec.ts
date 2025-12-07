@@ -29,7 +29,7 @@ describe('GetMuscleUsecase', () => {
     slug: 'triceps',
     locale: 'en-US',
     label: 'Triceps',
-    visibility: 'private',
+    visibility: 'PRIVATE',
     createdBy: 'coach-2',
     createdAt: new Date('2024-01-02T00:00:00.000Z'),
     updatedAt: new Date('2024-02-02T00:00:00.000Z'),

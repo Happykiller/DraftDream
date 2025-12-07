@@ -32,7 +32,7 @@ describe('UpdateProspectSourceUsecase', () => {
     id,
     locale: 'fr',
     label: 'New Label',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'admin-1',
     createdAt: now,
     updatedAt: now,

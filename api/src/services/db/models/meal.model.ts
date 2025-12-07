@@ -11,7 +11,7 @@ export interface Meal {
   proteinGrams: number;
   carbGrams: number;
   fatGrams: number;
-  visibility: 'private' | 'public';
+  visibility: 'PRIVATE' | 'PUBLIC';
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;

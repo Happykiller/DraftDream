@@ -52,7 +52,7 @@ describe('CreateMealPlanUsecase', () => {
                 ],
             },
         ],
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-1',
     };
 
@@ -85,7 +85,7 @@ describe('CreateMealPlanUsecase', () => {
                 ],
             },
         ],
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-1',
         createdAt: new Date(),
         updatedAt: new Date(),

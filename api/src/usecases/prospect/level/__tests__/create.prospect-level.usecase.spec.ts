@@ -24,7 +24,7 @@ describe('CreateProspectLevelUsecase', () => {
   const dto: CreateProspectLevelDto = {
     locale: 'fr',
     label: 'Client',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'admin-1',
     slug: 'test-slug',
   };
@@ -35,7 +35,7 @@ describe('CreateProspectLevelUsecase', () => {
     id: 'level-1',
     locale: 'fr',
     label: 'Client',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'admin-1',
     createdAt: now,
     updatedAt: now,

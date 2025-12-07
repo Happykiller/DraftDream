@@ -27,7 +27,7 @@ describe('GetEquipmentUsecase', () => {
     slug: 'dumbbell',
     locale: 'en-us',
     label: 'Dumbbell',
-    visibility: 'private',
+    visibility: 'PRIVATE',
     createdBy: 'coach-3',
     createdAt: now,
     updatedAt: now,

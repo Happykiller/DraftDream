@@ -31,7 +31,7 @@ describe('CreateCategoryUsecase', () => {
   const dto: CreateCategoryUsecaseDto = {
     locale: 'en-US',
     label: 'Strength',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'user-123',
   };
 
@@ -41,7 +41,7 @@ describe('CreateCategoryUsecase', () => {
     slug: 'strength',
     locale: 'en-us',
     label: 'Strength',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'user-123',
     createdAt: now,
     updatedAt: now,

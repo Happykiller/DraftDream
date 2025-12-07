@@ -27,7 +27,7 @@ describe('GetProspectSourceUsecase', () => {
     id: 'source-1',
     locale: 'fr',
     label: 'Client',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'admin-1',
     createdAt: now,
     updatedAt: now,

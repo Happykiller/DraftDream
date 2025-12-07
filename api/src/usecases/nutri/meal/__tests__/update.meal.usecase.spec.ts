@@ -38,7 +38,7 @@ describe('UpdateMealUsecase', () => {
     proteinGrams: 35,
     carbGrams: 45,
     fatGrams: 18,
-    visibility: 'private',
+    visibility: 'PRIVATE',
   };
 
   const updatedMeal: MealUsecaseModel = {
@@ -52,7 +52,7 @@ describe('UpdateMealUsecase', () => {
     proteinGrams: 35,
     carbGrams: 45,
     fatGrams: 18,
-    visibility: 'private',
+    visibility: 'PRIVATE',
     createdBy: 'coach-4',
     createdAt: new Date('2024-05-08T00:00:00.000Z'),
     updatedAt: new Date('2024-05-09T00:00:00.000Z'),

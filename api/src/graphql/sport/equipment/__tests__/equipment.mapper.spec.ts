@@ -14,7 +14,7 @@ describe('mapEquipmentUsecaseToGql', () => {
       slug: 'barbell',
       locale: 'fr-FR',
       label: 'Barre',
-      visibility: 'private',
+      visibility: 'PRIVATE',
       createdBy: 'coach-11',
       createdAt,
       updatedAt,

@@ -31,7 +31,7 @@ describe('CreateEquipmentUsecase', () => {
   const dto: CreateEquipmentUsecaseDto = {
     locale: 'en-US',
     label: 'Barbell',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'coach-1',
   };
 
@@ -41,7 +41,7 @@ describe('CreateEquipmentUsecase', () => {
     slug: 'barbell',
     locale: 'en-us',
     label: 'Barbell',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'coach-1',
     createdAt: now,
     updatedAt: now,

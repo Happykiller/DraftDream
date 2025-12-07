@@ -35,7 +35,7 @@ describe('GetMealUsecase', () => {
     proteinGrams: 35,
     carbGrams: 55,
     fatGrams: 12,
-    visibility: 'private',
+    visibility: 'PRIVATE',
     createdBy: 'athlete-1',
     createdAt: new Date('2024-05-02T00:00:00.000Z'),
     updatedAt: new Date('2024-05-03T00:00:00.000Z'),

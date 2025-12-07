@@ -29,7 +29,7 @@ describe('DeleteMealDayUsecase', () => {
     label: 'Strength Day',
     description: 'High intensity focus',
     mealIds: ['meal-1', 'meal-2'],
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'coach-123',
     createdAt: now,
     updatedAt: now,

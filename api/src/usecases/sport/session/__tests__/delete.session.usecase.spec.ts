@@ -20,7 +20,7 @@ const sessionEntity = {
   locale: 'en-us',
   label: 'Upper Body',
   durationMin: 60,
-  visibility: 'public' as const,
+  visibility: 'PUBLIC' as const,
   description: 'Full body workout',
   exerciseIds: ['ex-1', 'ex-2'],
   createdBy: 'coach-1',

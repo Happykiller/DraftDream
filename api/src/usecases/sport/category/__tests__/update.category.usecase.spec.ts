@@ -32,7 +32,7 @@ describe('UpdateCategoryUsecase', () => {
     id: 'category-789',
     locale: 'en-US',
     label: 'Flexibility',
-    visibility: 'public',
+    visibility: 'PUBLIC',
   };
 
   const updatedCategory: CategoryUsecaseModel = {
@@ -40,7 +40,7 @@ describe('UpdateCategoryUsecase', () => {
     slug: 'flexibility',
     locale: 'en-US',
     label: 'Flexibility',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'coach-3',
     createdAt: new Date('2024-03-01T00:00:00.000Z'),
     updatedAt: new Date('2024-04-01T00:00:00.000Z'),

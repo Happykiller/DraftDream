@@ -30,7 +30,7 @@ describe('GetMealTypeUsecase', () => {
     locale: 'en-US',
     label: 'Lunch',
     icon: 'lunch',
-    visibility: 'private',
+    visibility: 'PRIVATE',
     createdBy: 'coach-7',
     createdAt: new Date('2024-03-01T12:00:00.000Z'),
     updatedAt: new Date('2024-03-15T12:00:00.000Z'),

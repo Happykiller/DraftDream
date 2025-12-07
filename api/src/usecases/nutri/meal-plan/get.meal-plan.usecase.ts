@@ -7,6 +7,7 @@ import { Inversify } from '@src/inversify/investify';
 import { mapMealPlanToUsecase } from '@src/usecases/nutri/meal-plan/meal-plan.mapper';
 import { GetMealPlanUsecaseDto } from '@src/usecases/nutri/meal-plan/meal-plan.usecase.dto';
 import type { MealPlanUsecaseModel } from '@src/usecases/nutri/meal-plan/meal-plan.usecase.model';
+import { enumEquals } from '@src/common/enum.util';
 
 export class GetMealPlanUsecase {
   constructor(private readonly inversify: Inversify) { }
@@ -25,7 +26,7 @@ export class GetMealPlanUsecase {
       const isCreator = creatorId === session.userId;
       const isCoach = session.role === Role.COACH;
       const isPublic = isCoach
-        ? mealPlan.visibility === 'public' || (await this.isPublicMealPlan(creatorId))
+        ? enumEquals(mealPlan.visibility, 'PUBLIC') ?? (await this.isPublicMealPlan(creatorId))
         : false;
       const isAssignedAthlete = session.role === Role.ATHLETE && assigneeId === session.userId;
 

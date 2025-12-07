@@ -37,7 +37,7 @@ describe('UpdateMealDayUsecase', () => {
     label: 'Updated Day',
     description: 'New focus',
     mealIds: ['meal-3'],
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'coach-123',
     createdAt: now,
     updatedAt: now,

@@ -29,7 +29,7 @@ describe('UpdateProspectLevelUsecase', () => {
     id: 'level-1',
     locale: 'fr',
     label: 'Prospect',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'admin-1',
     createdAt: now,
     updatedAt: now,

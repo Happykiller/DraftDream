@@ -31,7 +31,7 @@ describe('CreateMuscleUsecase', () => {
   const dto: CreateMuscleUsecaseDto = {
     locale: 'en-US',
     label: 'Biceps',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'coach-123',
   };
 
@@ -41,7 +41,7 @@ describe('CreateMuscleUsecase', () => {
     slug: 'biceps',
     locale: 'en-us',
     label: 'Biceps',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'coach-123',
     createdAt: now,
     updatedAt: now,

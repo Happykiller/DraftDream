@@ -33,7 +33,7 @@ describe('ListMealDaysUsecase', () => {
       label: 'Strength Day',
       description: 'High intensity focus',
       mealIds: ['meal-1', 'meal-2'],
-      visibility: 'public',
+      visibility: 'PUBLIC',
       createdBy: 'coach-123',
       createdAt: now,
       updatedAt: now,
@@ -45,7 +45,7 @@ describe('ListMealDaysUsecase', () => {
       label: 'Recovery Day',
       description: 'Restorative meals',
       mealIds: ['meal-3', 'meal-4'],
-      visibility: 'private',
+      visibility: 'PRIVATE',
       createdBy: 'coach-456',
       createdAt: now,
       updatedAt: now,
@@ -155,7 +155,7 @@ describe('ListMealDaysUsecase', () => {
     });
     expect(mealDayRepositoryMock.list).toHaveBeenCalledWith({
       createdBy: 'admin-9',
-      visibility: 'public',
+      visibility: 'PUBLIC',
       page: 1,
       limit: 20,
     });

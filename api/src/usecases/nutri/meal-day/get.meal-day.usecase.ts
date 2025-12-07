@@ -7,6 +7,7 @@ import { Role } from '@src/common/role.enum';
 import { mapMealDayToUsecase } from '@src/usecases/nutri/meal-day/meal-day.mapper';
 import { GetMealDayUsecaseDto } from '@src/usecases/nutri/meal-day/meal-day.usecase.dto';
 import type { MealDayUsecaseModel } from '@src/usecases/nutri/meal-day/meal-day.usecase.model';
+import { enumEquals } from '@src/common/enum.util';
 
 export class GetMealDayUsecase {
   constructor(private readonly inversify: Inversify) { }
@@ -20,7 +21,7 @@ export class GetMealDayUsecase {
         return null;
       }
 
-      if (session.role === Role.ADMIN || mealDay.createdBy === session.userId || mealDay.visibility === 'public') {
+      if (session.role === Role.ADMIN || mealDay.createdBy === session.userId || enumEquals(mealDay.visibility, 'PUBLIC')) {
         return mapMealDayToUsecase(mealDay);
       }
 

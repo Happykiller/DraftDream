@@ -11,6 +11,7 @@ import {
 } from '@services/db/dtos/exercise.dto';
 import { ERRORS } from '@src/common/ERROR';
 import { slugifyCandidate } from '@src/common/slug.util';
+import { normalizeVisibility } from '@src/common/enum.util';
 
 interface ExerciseDoc {
   _id: ObjectId;
@@ -24,7 +25,7 @@ interface ExerciseDoc {
   charge?: string;
   rest?: number;
   videoUrl?: string;
-  visibility: 'private' | 'public';
+  visibility: 'PRIVATE' | 'PUBLIC';
 
   categories: ObjectId[];
   muscles: ObjectId[];
@@ -90,7 +91,7 @@ export class BddServiceExerciseMongo {
       charge: dto.charge?.trim(),
       rest: dto.rest,
       videoUrl: dto.videoUrl,
-      visibility: dto.visibility === 'public' ? 'public' : 'private',
+      visibility: normalizeVisibility(dto.visibility) ?? 'PRIVATE',
 
       categories: normalizedCategoryIds.map(this.toObjectId),
       muscles: (dto.muscleIds ?? []).map(this.toObjectId),
@@ -180,9 +181,9 @@ export class BddServiceExerciseMongo {
     }
 
     if (visibility) {
-      filter.visibility = visibility === 'public' ? 'public' : 'private';
+      filter.visibility = normalizeVisibility(visibility) ?? 'PRIVATE';
     } else if (includePublicVisibility) {
-      ownershipConditions.push({ visibility: 'public' });
+      ownershipConditions.push({ visibility: 'PUBLIC' });
     }
 
     if (ownershipConditions.length) {
@@ -231,7 +232,7 @@ export class BddServiceExerciseMongo {
     if (patch.rest !== undefined) $set.rest = patch.rest;
     if (patch.videoUrl !== undefined) $set.videoUrl = patch.videoUrl;
     if (patch.visibility !== undefined) {
-      $set.visibility = patch.visibility === 'public' ? 'public' : 'private';
+      $set.visibility = normalizeVisibility(patch.visibility) ?? 'PRIVATE';
     }
 
     if (patch.categoryIds !== undefined) {
@@ -322,24 +323,24 @@ export class BddServiceExerciseMongo {
       slug: '',
       locale: doc.locale,
       label: '',
-      visibility: 'private',
+      visibility: 'PRIVATE',
       createdBy: '',
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     })),
     muscles: (doc.muscles ?? []).map((oid) => ({
       id: oid.toHexString(),
-      slug: '', locale: doc.locale, label: '', visibility: 'private',
+      slug: '', locale: doc.locale, label: '', visibility: 'PRIVATE',
       createdBy: '', createdAt: doc.createdAt, updatedAt: doc.updatedAt,
     })),
     equipment: (doc.equipment ?? []).map((oid) => ({
       id: oid.toHexString(),
-      slug: '', locale: doc.locale, label: '', visibility: 'private',
+      slug: '', locale: doc.locale, label: '', visibility: 'PRIVATE',
       createdBy: '', createdAt: doc.createdAt, updatedAt: doc.updatedAt,
     })),
     tags: (doc.tags ?? []).map((oid) => ({
       id: oid.toHexString(),
-      slug: '', locale: doc.locale, label: '', visibility: 'private',
+      slug: '', locale: doc.locale, label: '', visibility: 'PRIVATE',
       createdBy: '', createdAt: doc.createdAt, updatedAt: doc.updatedAt,
     })),
 

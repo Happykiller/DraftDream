@@ -26,7 +26,7 @@ describe('ListProspectActivityPreferencesUsecase', () => {
     id: 'preference-1',
     locale: 'fr-fr',
     label: 'Musculation',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'admin-1',
     createdAt: now,
     updatedAt: now,
@@ -36,7 +36,7 @@ describe('ListProspectActivityPreferencesUsecase', () => {
     q: 'musculation',
     locale: 'fr-FR',
     createdBy: 'admin-1',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     limit: 10,
     page: 2,
   };

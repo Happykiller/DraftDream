@@ -5,13 +5,14 @@ import { Tag } from '@services/db/models/tag.model';
 import {
   CreateTagDto, GetTagDto, ListTagsDto, UpdateTagDto,
 } from '@services/db/dtos/tag.dto';
+import { normalizeVisibility } from '@src/common/enum.util';
 
 interface TagDoc {
   _id: ObjectId;
   slug: string;
   locale: string;
   label: string;
-  visibility: 'private' | 'public';
+  visibility: 'PRIVATE' | 'PUBLIC';
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
@@ -48,7 +49,7 @@ export class BddServiceTagMongo {
       slug: dto.slug.toLowerCase().trim(),
       locale: dto.locale.toLowerCase().trim(),
       label: dto.label.trim(),
-      visibility: dto.visibility,
+      visibility: normalizeVisibility(dto.visibility) ?? 'PRIVATE',
       createdBy: dto.createdBy,
       createdAt: now,
       updatedAt: now,
@@ -87,7 +88,10 @@ export class BddServiceTagMongo {
     }
     if (locale) filter.locale = locale.toLowerCase().trim();
     if (createdBy) filter.createdBy = createdBy;
-    if (visibility === 'public' || visibility === 'private') filter.visibility = visibility;
+    if (visibility) {
+      const normalized = normalizeVisibility(visibility);
+      if (normalized) filter.visibility = normalized;
+    }
 
     try {
       const collection = this.col();
@@ -107,7 +111,7 @@ export class BddServiceTagMongo {
     if (patch.slug !== undefined) $set.slug = patch.slug.toLowerCase().trim();
     if (patch.locale !== undefined) $set.locale = patch.locale.toLowerCase().trim();
     if (patch.label !== undefined) $set.label = patch.label.trim();
-    if (patch.visibility !== undefined) $set.visibility = patch.visibility;
+    if (patch.visibility !== undefined) $set.visibility = normalizeVisibility(patch.visibility) ?? 'PRIVATE';
 
     try {
       const res: any = await (this.col()).findOneAndUpdate(

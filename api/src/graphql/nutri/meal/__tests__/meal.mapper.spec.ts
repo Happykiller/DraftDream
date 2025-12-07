@@ -20,7 +20,7 @@ describe('mapMealUsecaseToGql', () => {
       proteinGrams: 40,
       carbGrams: 50,
       fatGrams: 20,
-      visibility: 'public',
+      visibility: 'PUBLIC',
       createdBy: 'coach-1',
       createdAt,
       updatedAt,

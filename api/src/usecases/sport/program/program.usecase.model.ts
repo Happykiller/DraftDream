@@ -32,7 +32,7 @@ export interface ProgramUsecaseModel {
   slug: string;
   locale: string;
   label: string;
-  visibility: 'private' | 'public';
+  visibility: 'PRIVATE' | 'PUBLIC';
   duration: number;
   frequency: number;
   description?: string;

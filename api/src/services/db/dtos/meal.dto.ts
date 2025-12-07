@@ -10,7 +10,7 @@ export interface CreateMealDto {
   proteinGrams: number;
   carbGrams: number;
   fatGrams: number;
-  visibility: 'private' | 'public';
+  visibility: 'PRIVATE' | 'PUBLIC';
   createdBy: string;
 }
 
@@ -31,7 +31,7 @@ export interface ListMealsDto {
   locale?: string;
   typeId?: string;
   createdBy?: string;
-  visibility?: 'private' | 'public';
+  visibility?: 'PRIVATE' | 'PUBLIC';
   limit?: number;                 // default 20
   page?: number;                  // default 1
   sort?: Record<string, 1 | -1>;  // e.g. { updatedAt: -1 }

@@ -41,7 +41,7 @@ describe('UpdateEquipmentUsecase', () => {
     slug: 'rack-a-squat',
     locale: 'fr-fr',
     label: 'Rack à squat',
-    visibility: 'private',
+    visibility: 'PRIVATE',
     createdBy: 'coach-5',
     createdAt: now,
     updatedAt: now,

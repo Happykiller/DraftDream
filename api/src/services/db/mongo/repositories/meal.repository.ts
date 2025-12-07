@@ -25,7 +25,7 @@ interface MealDoc {
   proteinGrams: number;
   carbGrams: number;
   fatGrams: number;
-  visibility: 'private' | 'public';
+  visibility: 'PRIVATE' | 'PUBLIC';
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
@@ -72,7 +72,7 @@ export class BddServiceMealMongo {
       proteinGrams: dto.proteinGrams,
       carbGrams: dto.carbGrams,
       fatGrams: dto.fatGrams,
-      visibility: dto.visibility === 'public' ? 'public' : 'private',
+      visibility: dto.visibility === 'PUBLIC' ? 'PUBLIC' : 'PRIVATE',
       createdBy: dto.createdBy,
       createdAt: now,
       updatedAt: now,
@@ -129,9 +129,7 @@ export class BddServiceMealMongo {
     if (createdBy) filter.createdBy = createdBy;
 
     if (visibility) {
-      if (visibility === 'public') filter.visibility = 'public';
-      
-      else filter.visibility = 'private';
+      filter.visibility = visibility;
     }
 
     try {
@@ -173,9 +171,7 @@ export class BddServiceMealMongo {
     if (patch.carbGrams !== undefined) $set.carbGrams = patch.carbGrams;
     if (patch.fatGrams !== undefined) $set.fatGrams = patch.fatGrams;
     if (patch.visibility !== undefined) {
-      if (patch.visibility === 'public') $set.visibility = 'public';
-      
-      else $set.visibility = 'private';
+      $set.visibility = patch.visibility;
     }
 
     try {
@@ -233,7 +229,7 @@ export class BddServiceMealMongo {
     proteinGrams: doc.proteinGrams,
     carbGrams: doc.carbGrams,
     fatGrams: doc.fatGrams,
-    visibility: doc.visibility,
+    visibility: (doc.visibility as string).toUpperCase() as 'PRIVATE' | 'PUBLIC',
     createdBy: doc.createdBy,
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt,

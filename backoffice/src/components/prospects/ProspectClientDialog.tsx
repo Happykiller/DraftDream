@@ -16,7 +16,7 @@ import {
 import Grid from '@mui/material/Grid';
 import { useTranslation } from 'react-i18next';
 
-import { ProspectStatus, type ProspectStatusOption } from '@commons/prospects/status';
+import { ProspectStatus } from '@commons/prospects/status';
 import type { Prospect } from '@hooks/useProspects';
 import type { ProspectMetadataOption } from '@hooks/useProspectMetadataOptions';
 
@@ -60,7 +60,8 @@ export interface ProspectClientDialogProps {
   open: boolean;
   mode: 'create' | 'edit';
   initial?: Prospect | null;
-  statuses: ProspectStatusOption[];
+  statuses: Array<{ value: ProspectStatus; label: string }>;
+
   levels: ProspectMetadataOption[];
   sources: ProspectMetadataOption[];
   objectives: ProspectMetadataOption[];

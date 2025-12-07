@@ -1,0 +1,20 @@
+{
+    "releaseNotes": {
+        "backToHome": "Back to home",
+        "description": "Review FitDesk releases in the language detected from your browser with a streamlined layout for every milestone.",
+        "documentTitle": "Release Notes | FitDesk",
+        "empty": "No release notes are available yet.",
+        "emptyScope": "No updates recorded for this scope yet.",
+        "error": "An error occurred while loading the release notes. Please try again later.",
+        "footer": "FitDesk Platform — multilingual release notes delivered clearly.",
+        "globalLabel": "Global",
+        "loading": "Loading release notes…",
+        "notesLabel": "Notes",
+        "projectLabel": "Project",
+        "releasedOn": "Released on {{date}}",
+        "scopeLabel": "Scope",
+        "subtitle": "Release notes",
+        "title": "Release notes",
+        "pageSubtitle": "Discover the latest improvements, features, and fixes that make FitDesk better for you."
+    }
+}

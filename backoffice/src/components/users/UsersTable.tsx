@@ -2,7 +2,7 @@
 import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
-import { Box, Button, Stack, TextField, IconButton, Tooltip, Chip } from '@mui/material';
+import { Box, Button, Stack, TextField, IconButton, Tooltip, Chip, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 
 import type { User } from '@hooks/useUsers';
 import { useDateFormatter } from '@hooks/useDateFormatter';
@@ -13,17 +13,19 @@ export interface UsersTableProps {
   page: number;   // 1-based
   limit: number;
   q: string;
+  type?: string;
   loading: boolean;
   onCreate: () => void;
   onEdit: (row: User) => void;
   onQueryChange: (q: string) => void;
+  onTypeChange: (type: string) => void;
   onPageChange: (page: number) => void; // 1-based
   onLimitChange: (limit: number) => void;
 }
 
 export const UsersTable = React.memo(function UsersTable({
-  rows, total, page, limit, q, loading,
-  onCreate, onEdit, onQueryChange, onPageChange, onLimitChange,
+  rows, total, page, limit, q, type, loading,
+  onCreate, onEdit, onQueryChange, onTypeChange, onPageChange, onLimitChange,
 }: UsersTableProps): React.JSX.Element {
   const fmtDate = useDateFormatter();
 
@@ -88,6 +90,21 @@ export const UsersTable = React.memo(function UsersTable({
           size="small"
           sx={{ maxWidth: 360 }}
         />
+        <FormControl size="small" sx={{ minWidth: 150 }}>
+          <InputLabel id="user-type-filter-label">Type</InputLabel>
+          <Select
+            labelId="user-type-filter-label"
+            id="user-type-filter"
+            value={type || ''}
+            label="Type"
+            onChange={(e) => onTypeChange(e.target.value)}
+          >
+            <MenuItem value="">All</MenuItem>
+            <MenuItem value="athlete">Athlete</MenuItem>
+            <MenuItem value="coach">Coach</MenuItem>
+            <MenuItem value="admin">Admin</MenuItem>
+          </Select>
+        </FormControl>
         <Box sx={{ flex: 1 }} />
         <Button variant="contained" onClick={onCreate}>New User</Button>
       </Stack>

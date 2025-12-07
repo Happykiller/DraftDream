@@ -13,7 +13,7 @@ export interface CreateMealUsecaseDto {
   proteinGrams: number;
   carbGrams: number;
   fatGrams: number;
-  visibility: 'private' | 'public';
+  visibility: 'PRIVATE' | 'PUBLIC';
   createdBy: string;
 }
 
@@ -26,7 +26,7 @@ export interface ListMealsUsecaseDto {
   locale?: string;
   typeId?: string;
   createdBy?: string;
-  visibility?: 'private' | 'public';
+  visibility?: 'PRIVATE' | 'PUBLIC';
   limit?: number;
   page?: number;
   sort?: { updatedAt?: 1 | -1 };
@@ -46,7 +46,7 @@ export interface UpdateMealUsecaseDto {
   proteinGrams?: number;
   carbGrams?: number;
   fatGrams?: number;
-  visibility?: 'private' | 'public';
+  visibility?: 'PRIVATE' | 'PUBLIC';
 }
 
 export interface DeleteMealUsecaseDto {

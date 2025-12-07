@@ -35,14 +35,14 @@ describe('ListExercisesUsecase', () => {
     charge: 'bodyweight',
     rest: 60,
     videoUrl: 'https://cdn.local/push-up.mp4',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     categories: [
       {
         id: 'category-1',
         slug: 'cat',
         locale: 'en-us',
         label: 'Category',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -54,7 +54,7 @@ describe('ListExercisesUsecase', () => {
         slug: 'muscle',
         locale: 'en-us',
         label: 'Muscle',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -66,7 +66,7 @@ describe('ListExercisesUsecase', () => {
         slug: 'equipment',
         locale: 'en-us',
         label: 'Equipment',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -78,7 +78,7 @@ describe('ListExercisesUsecase', () => {
         slug: 'tag',
         locale: 'en-us',
         label: 'Tag',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -101,7 +101,7 @@ describe('ListExercisesUsecase', () => {
     charge: 'bodyweight',
     rest: 60,
     videoUrl: 'https://cdn.local/push-up.mp4',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     categoryIds: ['category-1'],
     muscleIds: ['muscle-1'],
     equipmentIds: ['equipment-1'],
@@ -156,7 +156,7 @@ describe('ListExercisesUsecase', () => {
     const dto: ListExercisesUsecaseDto = {
       session: { userId: 'coach-1', role: Role.COACH },
       createdBy: 'coach-1',
-      visibility: 'private',
+      visibility: 'PRIVATE',
       page: 1,
       limit: 10,
     };
@@ -167,7 +167,7 @@ describe('ListExercisesUsecase', () => {
       page: 1,
       limit: 10,
       createdBy: 'coach-1',
-      visibility: 'private',
+      visibility: 'PRIVATE',
     });
     expect(result.items).toEqual([mappedExercise]);
   });
@@ -188,7 +188,7 @@ describe('ListExercisesUsecase', () => {
 
     const dto: ListExercisesUsecaseDto = {
       session: { userId: 'coach-1', role: Role.COACH },
-      visibility: 'public',
+      visibility: 'PUBLIC',
       page: 3,
       limit: 15,
     };
@@ -198,7 +198,7 @@ describe('ListExercisesUsecase', () => {
     expect(exerciseRepositoryMock.list).toHaveBeenCalledWith({
       page: 3,
       limit: 15,
-      visibility: 'public',
+      visibility: 'PUBLIC',
     });
   });
 
@@ -226,7 +226,7 @@ describe('ListExercisesUsecase', () => {
 
     const dto: ListExercisesUsecaseDto = {
       session: { userId: 'coach-1', role: Role.COACH },
-      visibility: 'private',
+      visibility: 'PRIVATE',
       page: 1,
       limit: 10,
     };
@@ -236,7 +236,7 @@ describe('ListExercisesUsecase', () => {
     expect(exerciseRepositoryMock.list).toHaveBeenCalledWith({
       page: 1,
       limit: 10,
-      visibility: 'private',
+      visibility: 'PRIVATE',
       createdByIn: ['coach-1'],
       includePublicVisibility: false,
     });

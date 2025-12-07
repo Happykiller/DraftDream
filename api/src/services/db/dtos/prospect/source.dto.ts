@@ -2,7 +2,7 @@
 export interface CreateProspectSourceDto {
   locale: string;
   label: string;
-  visibility: 'private' | 'public';
+  visibility: 'PRIVATE' | 'PUBLIC';
   createdBy: string;
   slug: string;
 }
@@ -11,7 +11,7 @@ export interface UpdateProspectSourceDto {
   slug?: string;
   locale?: string;
   label?: string;
-  visibility?: 'private' | 'public';
+  visibility?: 'PRIVATE' | 'PUBLIC';
 }
 
 export interface GetProspectSourceDto {
@@ -22,7 +22,7 @@ export interface ListProspectSourcesDto {
   q?: string;
   locale?: string;
   createdBy?: string;
-  visibility?: 'private' | 'public';
+  visibility?: 'PRIVATE' | 'PUBLIC';
   limit?: number;
   page?: number;
   sort?: Record<string, 1 | -1>;

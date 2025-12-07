@@ -48,7 +48,7 @@ describe('UpdateProgramUsecase', () => {
     slug: 'updated-program',
     locale: 'en-us',
     label: 'Updated Program',
-    visibility: 'private',
+    visibility: 'PRIVATE',
     duration: 8,
     frequency: 3,
     sessions: [
@@ -70,7 +70,7 @@ describe('UpdateProgramUsecase', () => {
     slug: 'updated-program',
     locale: 'en-us',
     label: 'Updated Program',
-    visibility: 'private',
+    visibility: 'PRIVATE',
     duration: 8,
     frequency: 3,
     sessions: [

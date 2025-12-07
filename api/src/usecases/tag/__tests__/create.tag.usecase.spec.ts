@@ -30,7 +30,7 @@ describe('CreateTagUsecase', () => {
   const dto: CreateTagUsecaseDto = {
     locale: 'en-US',
     label: 'Mobility',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'coach-123',
   };
 
@@ -40,7 +40,7 @@ describe('CreateTagUsecase', () => {
     slug: 'mobility',
     locale: 'en-us',
     label: 'Mobility',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'coach-123',
     createdAt: now,
     updatedAt: now,
