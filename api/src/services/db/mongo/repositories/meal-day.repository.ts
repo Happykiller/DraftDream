@@ -235,7 +235,7 @@ export class BddServiceMealDayMongo {
 
     mealIds: [...(doc.mealIds ?? [])],
 
-    visibility: doc.visibility,
+    visibility: normalizeVisibility(doc.visibility) ?? 'PRIVATE',
     createdBy: doc.createdBy.toHexString(),
     deletedAt: doc.deletedAt,
     createdAt: doc.createdAt,
