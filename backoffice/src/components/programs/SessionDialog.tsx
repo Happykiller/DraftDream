@@ -136,14 +136,12 @@ export function SessionDialog({
 
   const handleAddExercise = () => {
     if (!selectedExercise) return;
-    setValues((prev) => {
-      const alreadyAdded = prev.exercises.some((exercise) => exercise.id === selectedExercise.id);
-      if (alreadyAdded) return prev;
-      return {
-        ...prev,
-        exercises: [...prev.exercises, selectedExercise],
-      };
-    });
+
+    // Allow the same exercise to appear multiple times so coaches can repeat it within a session.
+    setValues((prev) => ({
+      ...prev,
+      exercises: [...prev.exercises, selectedExercise],
+    }));
     setSelectedExercise(null);
   };
 
