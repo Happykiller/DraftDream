@@ -62,22 +62,31 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
           direction="row"
           justifyContent="space-between"
           alignItems="flex-start"
-          flexWrap="wrap"
+          flexWrap="nowrap"
           columnGap={1}
-          rowGap={1}
         >
           <Stack spacing={0.5} flexGrow={1} minWidth={0}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 600 }} noWrap>
-              {template.label}
-            </Typography>
-            {template.description ? (
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ whiteSpace: 'pre-wrap' }}
-              >
-                {template.description}
+            <Tooltip title={template.label} arrow>
+              <Typography variant="subtitle1" sx={{ fontWeight: 600 }} noWrap>
+                {template.label}
               </Typography>
+            </Tooltip>
+            {template.description ? (
+              <Tooltip title={template.description} arrow>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                    whiteSpace: 'pre-wrap',
+                  }}
+                >
+                  {template.description}
+                </Typography>
+              </Tooltip>
             ) : null}
           </Stack>
           <Stack direction="row" spacing={1} alignItems="center" sx={{ flexShrink: 0 }}>
