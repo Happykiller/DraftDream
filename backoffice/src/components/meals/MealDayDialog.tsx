@@ -6,6 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Autocomplete,
   Button,
+  Chip,
   Dialog,
   DialogActions,
   DialogContent,
@@ -263,8 +264,8 @@ export function MealDayDialog({
             fullWidth
           />
 
-          <Stack spacing={2}>
-            <Stack direction="row" spacing={2} alignItems="center">
+          <Stack spacing={1.5}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} alignItems="center">
               <Autocomplete
                 value={selectedOption}
                 onChange={(_, option) => setSelectedOption(option)}
@@ -304,41 +305,52 @@ export function MealDayDialog({
                 )}
                 sx={{ flex: 1 }}
               />
-              <Button variant="outlined" onClick={handleAddMeal} disabled={!selectedOption}>
-                {t('meals.mealDays.dialog.add_meal')}
+              <Button
+                variant="outlined"
+                onClick={handleAddMeal}
+                disabled={!selectedOption}
+                sx={{ alignSelf: { xs: 'stretch', sm: 'center' }, whiteSpace: 'nowrap' }}
+              >
+                {t('common.buttons.add')}
               </Button>
             </Stack>
 
             {values.meals.length === 0 ? (
-              <Typography variant="body2" color="text.secondary">
-                {t('meals.mealDays.dialog.empty_meals')}
-              </Typography>
+              <Chip label={t('meals.mealDays.dialog.empty_meals')} variant="outlined" size="small" />
             ) : (
-              <List dense>
+              <List dense sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
                 {values.meals.map((meal, index) => (
                   <ListItem
                     key={`${meal.id}-${index}`}
                     secondaryAction={
                       <Stack direction="row" spacing={0.5}>
-                        <IconButton
-                          edge="end"
-                          aria-label="move-up"
+                        <Button
+                          size="small"
                           onClick={() => handleMove(index, 'up')}
+                          aria-label={`move-meal-up-${meal.id}`}
+                          startIcon={<ArrowUpwardIcon fontSize="inherit" />}
                           disabled={index === 0}
                         >
-                          <ArrowUpwardIcon />
-                        </IconButton>
-                        <IconButton
-                          edge="end"
-                          aria-label="move-down"
+                          {t('common.labels.up')}
+                        </Button>
+                        <Button
+                          size="small"
                           onClick={() => handleMove(index, 'down')}
+                          aria-label={`move-meal-down-${meal.id}`}
+                          startIcon={<ArrowDownwardIcon fontSize="inherit" />}
                           disabled={index === values.meals.length - 1}
                         >
-                          <ArrowDownwardIcon />
-                        </IconButton>
-                        <IconButton edge="end" aria-label="delete" onClick={() => handleRemove(index)}>
-                          <DeleteIcon />
-                        </IconButton>
+                          {t('common.labels.down')}
+                        </Button>
+                        <Button
+                          size="small"
+                          color="error"
+                          onClick={() => handleRemove(index)}
+                          aria-label={`remove-meal-${meal.id}`}
+                          startIcon={<DeleteIcon fontSize="inherit" />}
+                        >
+                          {t('common.buttons.delete')}
+                        </Button>
                       </Stack>
                     }
                   >
@@ -352,8 +364,10 @@ export function MealDayDialog({
             )}
           </Stack>
 
-          <DialogActions>
-            <Button onClick={onClose}>{t('common.buttons.cancel')}</Button>
+          <DialogActions sx={{ px: 0 }}>
+            <Button onClick={onClose} color="inherit">
+              {t('common.buttons.cancel')}
+            </Button>
             <Button type="submit" variant="contained">
               {isEdit ? t('common.buttons.save') : t('common.buttons.create')}
             </Button>
