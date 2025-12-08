@@ -67,6 +67,8 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
         borderRadius: 2,
         cursor: 'default',
         position: 'relative',
+        width: '100%',
+        maxWidth: '100%',
         '&:hover': {
           borderColor: theme.palette.primary.main,
           boxShadow: theme.shadows[1],
@@ -74,10 +76,17 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
       }}
     >
       {/* Exercise summary */}
-      <Stack direction="row" spacing={1.5} alignItems="flex-start">
-        <Stack spacing={1} flex={1}>
+      <Stack
+        direction="row"
+        spacing={1.5}
+        alignItems="flex-start"
+        flexWrap="wrap"
+        columnGap={1}
+        rowGap={1}
+      >
+        <Stack spacing={1} flex={1} minWidth={0}>
           <Stack spacing={0.25}>
-            <Stack direction="row" spacing={0.5} alignItems="center">
+            <Stack direction="row" spacing={0.5} alignItems="center" flexWrap="wrap" columnGap={0.5}>
               {showEditAction ? (
                 <Tooltip title={tooltips.edit_exercise} arrow>
                   <span style={{ display: 'inline-flex' }}>
@@ -95,7 +104,10 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
                   </span>
                 </Tooltip>
               ) : null}
-              <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+              <Typography
+                variant="subtitle1"
+                sx={{ fontWeight: 600, wordBreak: 'break-word' }}
+              >
                 {exercise.label}
               </Typography>
             </Stack>
@@ -191,7 +203,7 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
             </Tooltip>
           ) : null}
         </Stack>
-        <Stack spacing={0.5} alignItems="flex-end">
+        <Stack spacing={0.5} alignItems="flex-end" sx={{ flexShrink: 0 }}>
           {/* Primary action */}
           <Tooltip title={tooltips.add_exercise} arrow placement="left">
             <span style={{ display: 'inline-flex' }}>

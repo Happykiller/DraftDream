@@ -58,7 +58,14 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
     >
       {/* Session template */}
       <Stack spacing={1.25}>
-        <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="flex-start"
+          flexWrap="wrap"
+          columnGap={1}
+          rowGap={1}
+        >
           <Stack spacing={0.5} flexGrow={1} minWidth={0}>
             <Typography variant="subtitle1" sx={{ fontWeight: 600 }} noWrap>
               {template.label}
@@ -73,7 +80,7 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
               </Typography>
             ) : null}
           </Stack>
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={1} alignItems="center" sx={{ flexShrink: 0 }}>
             <Chip
               label={`${template.duration} ${builderCopy.structure.duration_unit}`}
               size="small"
