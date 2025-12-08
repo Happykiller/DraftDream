@@ -11,6 +11,7 @@ import {
   MenuItem,
   Stack,
   TextField,
+  Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -201,32 +202,36 @@ export function ProgramDialog({
             <Stack spacing={1.5}>
               {/* Signature ensures editors know who created the program and when it was last touched. */}
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                <TextField
-                  label={t('common.labels.slug')}
-                  value={initial.slug}
-                  InputProps={{ readOnly: true }}
-                  fullWidth
-                />
-                <TextField
-                  label={t('common.labels.creator')}
-                  value={creatorEmail}
-                  InputProps={{ readOnly: true }}
-                  fullWidth
-                />
+                <Stack flex={1} spacing={0.25}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('common.labels.slug')}
+                  </Typography>
+                  <Typography variant="body2" sx={{ wordBreak: 'break-all' }}>
+                    {initial.slug || '-'}
+                  </Typography>
+                </Stack>
+                <Stack flex={1} spacing={0.25}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('common.labels.creator')}
+                  </Typography>
+                  <Typography variant="body2" sx={{ wordBreak: 'break-all' }}>
+                    {creatorEmail || '-'}
+                  </Typography>
+                </Stack>
               </Stack>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                <TextField
-                  label={t('common.labels.created')}
-                  value={formattedCreatedAt}
-                  InputProps={{ readOnly: true }}
-                  fullWidth
-                />
-                <TextField
-                  label={t('common.labels.updated')}
-                  value={formattedUpdatedAt}
-                  InputProps={{ readOnly: true }}
-                  fullWidth
-                />
+                <Stack flex={1} spacing={0.25}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('common.labels.created')}
+                  </Typography>
+                  <Typography variant="body2">{formattedCreatedAt || '-'}</Typography>
+                </Stack>
+                <Stack flex={1} spacing={0.25}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('common.labels.updated')}
+                  </Typography>
+                  <Typography variant="body2">{formattedUpdatedAt || '-'}</Typography>
+                </Stack>
               </Stack>
             </Stack>
           ) : null}
