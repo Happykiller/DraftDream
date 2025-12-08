@@ -44,7 +44,6 @@ export function MealTypeTable(props: MealTypeTableProps): React.JSX.Element {
 
   const columns = React.useMemo<GridColDef<MealType>[]>(
     () => [
-      { field: 'slug', headerName: t('common.labels.slug'), flex: 1 },
       { field: 'label', headerName: t('common.labels.label'), flex: 1 },
       {
         field: 'icon',

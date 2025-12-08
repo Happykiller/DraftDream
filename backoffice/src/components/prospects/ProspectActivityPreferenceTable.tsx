@@ -44,7 +44,6 @@ export function ProspectActivityPreferenceTable(props: ProspectActivityPreferenc
 
   const columns = React.useMemo<GridColDef<ProspectActivityPreference>[]>(
     () => [
-      { field: 'slug', headerName: t('common.labels.slug'), flex: 1 },
       { field: 'label', headerName: t('common.labels.label'), flex: 1 },
       { field: 'locale', headerName: t('common.labels.locale'), width: 120 },
       { field: 'visibility', headerName: t('common.labels.visibility'), width: 140 },

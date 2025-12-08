@@ -42,7 +42,6 @@ export const TagTable = React.memo(function TagTable({
   const { t } = useTranslation();
 
   const columns = React.useMemo<GridColDef<Tag>[]>(() => [
-    { field: 'slug', headerName: t('common.labels.slug'), flex: 1 },
     { field: 'label', headerName: t('common.labels.label'), flex: 1 },
     { field: 'locale', headerName: t('common.labels.locale'), width: 120 },
     {

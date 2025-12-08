@@ -43,7 +43,6 @@ export const EquipmentTable = React.memo(function EquipmentTable({
   const { t } = useTranslation();
 
   const columns = React.useMemo<GridColDef<Equipment>[]>(() => [
-    { field: 'slug', headerName: t('common.labels.slug'), flex: 1, minWidth: 150 },
     { field: 'label', headerName: t('common.labels.label'), flex: 1, minWidth: 150 },
     { field: 'locale', headerName: t('common.labels.locale'), width: 120 },
     {

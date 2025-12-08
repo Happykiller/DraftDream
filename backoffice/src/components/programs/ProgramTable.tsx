@@ -3,7 +3,18 @@ import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
-import { Autocomplete, Box, Button, Chip, IconButton, Stack, TextField, Tooltip } from '@mui/material';
+import {
+  Autocomplete,
+  Box,
+  Button,
+  Chip,
+  IconButton,
+  Stack,
+  TextField,
+  Tooltip,
+  useMediaQuery,
+} from '@mui/material';
+import type { Theme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { useDateFormatter } from '@hooks/useDateFormatter';
@@ -48,9 +59,10 @@ export const ProgramTable = React.memo(function ProgramTable({
 }: ProgramTableProps): React.JSX.Element {
   const fmtDate = useDateFormatter();
   const { t } = useTranslation();
+  const isLargeUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
+  const isXlUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('xl'));
 
   const columns = React.useMemo<GridColDef<Program>[]>(() => [
-    { field: 'slug', headerName: t('common.labels.slug'), flex: 1.1, minWidth: 160 },
     { field: 'label', headerName: t('common.labels.label'), flex: 1.4, minWidth: 180 },
     { field: 'locale', headerName: t('common.labels.locale'), width: 110 },
     {
@@ -58,18 +70,6 @@ export const ProgramTable = React.memo(function ProgramTable({
       headerName: t('common.labels.visibility'),
       width: 140,
       renderCell: ({ value }) => getVisibilityLabel(value, t),
-    },
-    {
-      field: 'duration',
-      headerName: t('common.labels.duration_weeks'),
-      width: 150,
-      valueFormatter: (value: any) => `${value}`,
-    },
-    {
-      field: 'frequency',
-      headerName: t('common.labels.frequency_per_week'),
-      width: 160,
-      valueFormatter: (value: any) => `${value}`,
     },
     {
       field: 'athlete',
@@ -80,23 +80,27 @@ export const ProgramTable = React.memo(function ProgramTable({
         return params?.email ?? ''
       },
     },
-    {
-      field: 'sessions',
-      headerName: t('common.labels.sessions'),
-      width: 160,
-      sortable: false,
-      filterable: false,
-      renderCell: (params) => {
-        const count = params.row.sessions.length;
-        return (
-          <Chip
-            size="small"
-            label={t('programs.table.sessions_linked', { count })}
-            color={count > 0 ? 'primary' : 'default'}
-          />
-        );
-      },
-    },
+    ...(isLargeUp
+      ? [
+          {
+            field: 'sessions',
+            headerName: t('common.labels.sessions'),
+            width: 160,
+            sortable: false,
+            filterable: false,
+            renderCell: (params) => {
+              const count = params.row.sessions.length;
+              return (
+                <Chip
+                  size="small"
+                  label={t('programs.table.sessions_linked', { count })}
+                  color={count > 0 ? 'primary' : 'default'}
+                />
+              );
+            },
+          } satisfies GridColDef<Program>,
+        ]
+      : []),
     {
       field: 'creator',
       headerName: t('common.labels.creator'),
@@ -104,20 +108,24 @@ export const ProgramTable = React.memo(function ProgramTable({
       minWidth: 170,
       valueFormatter: (params: any) => params?.email ?? '',
     },
-    {
-      field: 'createdAt',
-      headerName: t('common.labels.created'),
-      flex: 1,
-      minWidth: 170,
-      valueFormatter: (params: any) => fmtDate(params),
-    },
-    {
-      field: 'updatedAt',
-      headerName: t('common.labels.updated'),
-      flex: 1,
-      minWidth: 170,
-      valueFormatter: (params: any) => fmtDate(params),
-    },
+    ...(isXlUp
+      ? [
+          {
+            field: 'createdAt',
+            headerName: t('common.labels.created'),
+            flex: 1,
+            minWidth: 170,
+            valueFormatter: (params: any) => fmtDate(params),
+          },
+          {
+            field: 'updatedAt',
+            headerName: t('common.labels.updated'),
+            flex: 1,
+            minWidth: 170,
+            valueFormatter: (params: any) => fmtDate(params),
+          },
+        ]
+      : []),
     {
       field: 'actions',
       headerName: t('common.labels.actions'),
@@ -139,7 +147,7 @@ export const ProgramTable = React.memo(function ProgramTable({
         </Stack>
       ),
     },
-  ], [fmtDate, onDelete, onEdit, t]);
+  ], [fmtDate, isLargeUp, isXlUp, onDelete, onEdit, t]);
 
   return (
     <Box sx={{ width: '100%' }}>
