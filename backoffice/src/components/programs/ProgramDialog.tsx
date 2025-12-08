@@ -99,6 +99,18 @@ export function ProgramDialog({
     () => sessionOptions.filter((session) => session.locale === values.locale),
     [sessionOptions, values.locale],
   );
+  const creatorEmail = React.useMemo(
+    () => initial?.creator?.email ?? initial?.createdBy ?? '',
+    [initial?.createdBy, initial?.creator?.email],
+  );
+  const formattedCreatedAt = React.useMemo(() => {
+    if (!initial?.createdAt) return '';
+    return new Date(initial.createdAt).toLocaleString();
+  }, [initial?.createdAt]);
+  const formattedUpdatedAt = React.useMemo(() => {
+    if (!initial?.updatedAt) return '';
+    return new Date(initial.updatedAt).toLocaleString();
+  }, [initial?.updatedAt]);
 
   React.useEffect(() => {
     if (isEdit && initial) {
@@ -185,6 +197,40 @@ export function ProgramDialog({
       </DialogTitle>
       <DialogContent>
         <Stack component="form" spacing={2} sx={{ mt: 1 }} onSubmit={submit}>
+          {isEdit && initial ? (
+            <Stack spacing={1.5}>
+              {/* Signature ensures editors know who created the program and when it was last touched. */}
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <TextField
+                  label={t('common.labels.slug')}
+                  value={initial.slug}
+                  InputProps={{ readOnly: true }}
+                  fullWidth
+                />
+                <TextField
+                  label={t('common.labels.creator')}
+                  value={creatorEmail}
+                  InputProps={{ readOnly: true }}
+                  fullWidth
+                />
+              </Stack>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <TextField
+                  label={t('common.labels.created')}
+                  value={formattedCreatedAt}
+                  InputProps={{ readOnly: true }}
+                  fullWidth
+                />
+                <TextField
+                  label={t('common.labels.updated')}
+                  value={formattedUpdatedAt}
+                  InputProps={{ readOnly: true }}
+                  fullWidth
+                />
+              </Stack>
+            </Stack>
+          ) : null}
+
           {/* General information */}
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             {/* Locale is stored per program because content differs between regions. */}
