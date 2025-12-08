@@ -31,6 +31,11 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
     template.exercises.length,
   ]);
 
+  const visibleExercises = React.useMemo(
+    () => template.exercises.slice(0, 3),
+    [template.exercises],
+  );
+
   const handleAddClick = React.useCallback(() => {
     onAdd();
   }, [onAdd]);
@@ -43,6 +48,8 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
         borderRadius: 2,
         cursor: 'default',
         transition: 'border-color 150ms ease, background-color 150ms ease',
+        width: '100%',
+        maxWidth: '100%',
         '&:hover': {
           borderColor: theme.palette.success.main,
           boxShadow: theme.shadows[2],
@@ -89,7 +96,7 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
         </Stack>
 
         {/* Session tags */}
-        <Stack direction="row" spacing={0.5} flexWrap="wrap">
+        <Stack direction="row" spacing={0.5} flexWrap="wrap" sx={{ width: '100%' }}>
           {template.tags.map((tag) => (
             <Chip key={tag} label={tag} size="small" variant="outlined" />
           ))}
@@ -101,15 +108,24 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
           </Typography>
         ) : (
           /* Exercise chips */
-          <Stack direction="row" spacing={0.5} flexWrap="wrap">
-            {template.exercises.map((exercise) => (
-              <Chip
-                key={`${template.id}-${exercise.exerciseId}`}
-                label={exercise.label}
-                size="small"
-                variant="outlined"
-              />
-            ))}
+          <Stack spacing={0.5} sx={{ width: '100%' }}>
+            <Stack direction="row" spacing={0.5} flexWrap="wrap">
+              {visibleExercises.map((exercise) => (
+                <Chip
+                  key={`${template.id}-${exercise.exerciseId}`}
+                  label={exercise.label}
+                  size="small"
+                  variant="outlined"
+                />
+              ))}
+            </Stack>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ alignSelf: 'flex-end', textAlign: 'right' }}
+            >
+              {exercisesLabel}
+            </Typography>
           </Stack>
         )}
       </Stack>
