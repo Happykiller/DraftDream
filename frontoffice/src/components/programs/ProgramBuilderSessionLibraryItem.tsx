@@ -59,11 +59,11 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
       {/* Session template */}
       <Stack spacing={1.25}>
         <Stack
-          direction="row"
+          direction={{ xs: 'column', sm: 'row' }}
           justifyContent="space-between"
           alignItems="flex-start"
-          flexWrap="nowrap"
           columnGap={1}
+          rowGap={1}
         >
           <Stack spacing={0.5} flexGrow={1} minWidth={0}>
             <Tooltip title={template.label} arrow>
@@ -89,7 +89,12 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
               </Tooltip>
             ) : null}
           </Stack>
-          <Stack direction="row" spacing={1} alignItems="center" sx={{ flexShrink: 0 }}>
+          <Stack
+            direction="row"
+            spacing={1}
+            alignItems="center"
+            sx={{ alignSelf: { xs: 'flex-start', sm: 'flex-end' } }}
+          >
             <Chip
               label={`${template.duration} ${builderCopy.structure.duration_unit}`}
               size="small"
