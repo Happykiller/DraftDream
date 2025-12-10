@@ -377,9 +377,9 @@ function ProgramSessionCard({
       sx={(theme) => ({
         borderRadius: 2.5,
         p: { xs: 2.5, md: 3 },
-        bgcolor: alpha(theme.palette.success.light, 0.12),
-        borderColor: alpha(theme.palette.success.main, 0.4),
-        boxShadow: '0 20px 40px rgba(22, 101, 52, 0.12)',
+        bgcolor: theme.palette.background.paper,
+        borderColor: theme.palette.divider,
+        boxShadow: '0 20px 40px rgba(15, 23, 42, 0.06)',
       })}
     >
       <Stack spacing={2.5}>
