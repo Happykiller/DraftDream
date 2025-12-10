@@ -446,7 +446,9 @@ export function useProgramBuilder(
           Boolean(currentUserId) &&
           item.createdBy === currentUserId,
         duration: item.rest ?? 0,
+        series: item.series ?? '-',
         sets: parseSeriesCount(item.series),
+        seriesCount: parseSeriesCount(item.series),
         reps: item.repetitions,
         rest: item.rest != null ? `${item.rest}s` : '-',
         description: item.description ?? undefined,

@@ -120,7 +120,7 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
           {/* Exercise metrics */}
           <Stack direction="row" spacing={1} flexWrap="wrap">
             <Typography variant="body2" color="text.secondary">
-              {exercise.sets}{setsLabel}
+              {exercise.series}{setsLabel}
             </Typography>
             <Typography variant="body2" color="text.secondary">
               {exercise.reps}{repsLabel}

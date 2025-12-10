@@ -9,7 +9,9 @@ export type ExerciseLibraryItem = {
   visibility: ExerciseVisibility;
   canEdit?: boolean;
   duration: number;
+  series: string;
   sets: number;
+  seriesCount: number;
   reps: string;
   rest: string;
   description?: string;
