@@ -531,54 +531,54 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
               </Stack>
             </Stack>
           </Stack>
-        {/* Session description */}
-        {isEditingDescription ? (
-          <TextField
-            inputRef={descriptionInputRef}
-            value={descriptionDraft}
-            onChange={(event) => setDescriptionDraft(event.target.value)}
-            onBlur={handleDescriptionBlur}
-            onKeyDown={handleDescriptionKeyDown}
-            size="small"
-            variant="standard"
-            placeholder={descriptionPlaceholder}
-            multiline
-            minRows={1}
-            inputProps={{
-              'aria-label': 'session-description',
-            }}
-            fullWidth
-          />
-        ) : (
-          <Typography
-            variant="body2"
-            component="p"
-            color="text.secondary"
-            sx={{
-              ...interactiveSurfaceSx,
-              display: 'inline-flex',
-              alignItems: 'flex-start',
-              gap: 0.5,
-              maxWidth: '100%',
-            }}
-            onClick={handleDescriptionClick}
-            onKeyDown={handleDescriptionDisplayKeyDown}
-            tabIndex={0}
-            role="button"
-          >
-            <Edit fontSize="inherit" color="disabled" />
-            <Box
-              component="span"
-              sx={{
-                whiteSpace: 'pre-wrap',
-                fontStyle: session.description ? 'normal' : 'italic',
+          {/* Session description */}
+          {isEditingDescription ? (
+            <TextField
+              inputRef={descriptionInputRef}
+              value={descriptionDraft}
+              onChange={(event) => setDescriptionDraft(event.target.value)}
+              onBlur={handleDescriptionBlur}
+              onKeyDown={handleDescriptionKeyDown}
+              size="small"
+              variant="standard"
+              placeholder={descriptionPlaceholder}
+              multiline
+              minRows={1}
+              inputProps={{
+                'aria-label': 'session-description',
               }}
+              fullWidth
+            />
+          ) : (
+            <Typography
+              variant="body2"
+              component="p"
+              color="text.secondary"
+              sx={{
+                ...interactiveSurfaceSx,
+                display: 'inline-flex',
+                alignItems: 'flex-start',
+                gap: 0.5,
+                maxWidth: '100%',
+              }}
+              onClick={handleDescriptionClick}
+              onKeyDown={handleDescriptionDisplayKeyDown}
+              tabIndex={0}
+              role="button"
             >
-              {session.description || descriptionPlaceholder}
-            </Box>
-          </Typography>
-        )}
-      </Stack>
+              <Edit fontSize="inherit" color="disabled" />
+              <Box
+                component="span"
+                sx={{
+                  whiteSpace: 'pre-wrap',
+                  fontStyle: session.description ? 'normal' : 'italic',
+                }}
+              >
+                {session.description || descriptionPlaceholder}
+              </Box>
+            </Typography>
+          )}
+        </Stack>
 
         {/* Session tags */}
         <Stack direction="row" spacing={0.5} flexWrap="wrap">
@@ -620,9 +620,9 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
                     )
                   }
                   onEdit={
-                  onEditExercise
-                    ? () => onEditExercise(session.id, exerciseItem)
-                    : undefined
+                    onEditExercise
+                      ? () => onEditExercise(session.id, exerciseItem)
+                      : undefined
                   }
                 />
               );
@@ -630,6 +630,6 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
           )}
         </Stack>
       </Stack>
-    </Paper>
+    </Paper >
   );
 });

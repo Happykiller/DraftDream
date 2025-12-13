@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Add, DeleteOutline, Edit, Public } from '@mui/icons-material';
 
 import type { BuilderCopy, ExerciseLibraryItem } from './programBuilderTypes';
+import { TextWithTooltip } from '../common/TextWithTooltip';
 
 type ProgramBuilderExerciseLibraryItemProps = {
   exercise: ExerciseLibraryItem;
@@ -104,18 +105,25 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
                   </span>
                 </Tooltip>
               ) : null}
-              <Typography
+              <TextWithTooltip
+                tooltipTitle={exercise.label}
                 variant="subtitle1"
-                sx={{ fontWeight: 600, wordBreak: 'break-word' }}
-              >
-                {exercise.label}
-              </Typography>
+                sx={{ fontWeight: 600, pr: 4 }}
+              />
             </Stack>
-              {exercise.categoryLabels.length ? (
-                <Typography variant="body2" color="text.secondary">
-                  {exercise.categoryLabels.join(', ')}
-                </Typography>
-              ) : null}
+            {exercise.categoryLabels.length ? (
+              <Typography variant="body2" color="text.secondary">
+                {exercise.categoryLabels.join(', ')}
+              </Typography>
+            ) : null}
+            {exercise.description ? (
+              <TextWithTooltip
+                tooltipTitle={exercise.description}
+                variant="body2"
+                color="text.secondary"
+                maxLines={2}
+              />
+            ) : null}
           </Stack>
           {/* Exercise metrics */}
           <Stack direction="row" spacing={1} flexWrap="wrap">
@@ -134,33 +142,55 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
             exercise.equipment.length > 0 ? (
             /* Exercise chips */
             <Stack direction="row" spacing={0.5} flexWrap="wrap">
-              {exercise.muscles.map((muscle) => (
-                <Tooltip
-                  key={`${exercise.id}-muscle-${muscle.id}`}
-                  title={tooltips.muscle_chip.replace('{{label}}', muscle.label)}
-                  arrow
-                >
-                  <Chip label={muscle.label} size="small" color="primary" variant="filled" />
-                </Tooltip>
-              ))}
-              {exercise.tags.map((tag) => (
-                <Tooltip
-                  key={`${exercise.id}-tag-${tag.id}`}
-                  title={tooltips.tag_chip.replace('{{label}}', tag.label)}
-                  arrow
-                >
-                  <Chip label={tag.label} size="small" color="secondary" variant="outlined" />
-                </Tooltip>
-              ))}
-              {exercise.equipment.map((eq) => (
-                <Tooltip
-                  key={`${exercise.id}-equipment-${eq.id}`}
-                  title={tooltips.equipment_chip.replace('{{label}}', eq.label)}
-                  arrow
-                >
-                  <Chip label={eq.label} size="small" variant="outlined" />
-                </Tooltip>
-              ))}
+              {[
+                ...exercise.muscles.map((muscle) => ({
+                  key: `muscle-${muscle.id}`,
+                  label: muscle.label,
+                  color: 'primary' as const,
+                  variant: 'filled' as const,
+                  tooltip: tooltips.muscle_chip.replace('{{label}}', muscle.label),
+                })),
+                ...exercise.tags.map((tag) => ({
+                  key: `tag-${tag.id}`,
+                  label: tag.label,
+                  color: 'secondary' as const,
+                  variant: 'outlined' as const,
+                  tooltip: tooltips.tag_chip.replace('{{label}}', tag.label),
+                })),
+                ...exercise.equipment.map((eq) => ({
+                  key: `equipment-${eq.id}`,
+                  label: eq.label,
+                  color: undefined,
+                  variant: 'outlined' as const,
+                  tooltip: tooltips.equipment_chip.replace('{{label}}', eq.label),
+                })),
+              ]
+                .slice(0, 3)
+                .map((chip) => (
+                  <Tooltip key={chip.key} title={chip.tooltip} arrow>
+                    <Chip
+                      label={chip.label}
+                      size="small"
+                      color={chip.color}
+                      variant={chip.variant}
+                    />
+                  </Tooltip>
+                ))}
+              {exercise.muscles.length +
+                exercise.tags.length +
+                exercise.equipment.length >
+                3 ? (
+                <Chip
+                  label={`+${exercise.muscles.length +
+                    exercise.tags.length +
+                    exercise.equipment.length -
+                    3
+                    }`}
+                  size="small"
+                  variant="outlined"
+                  sx={{ borderColor: theme.palette.divider }}
+                />
+              ) : null}
             </Stack>
           ) : null}
           {isPublic ? (
@@ -203,22 +233,28 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
             </Tooltip>
           ) : null}
         </Stack>
-        <Stack spacing={0.5} alignItems="flex-end" sx={{ flexShrink: 0 }}>
-          {/* Primary action */}
-          <Tooltip title={tooltips.add_exercise} arrow placement="left">
-            <span style={{ display: 'inline-flex' }}>
-              <IconButton
-                size="small"
-                onClick={handleAddClick}
-                disabled={disabled}
-                aria-label="add-exercise-to-session"
-              >
-                <Add fontSize="small" />
-              </IconButton>
-            </span>
-          </Tooltip>
-        </Stack>
+
       </Stack>
+      <Box
+        sx={{
+          position: 'absolute',
+          top: (theme) => theme.spacing(1),
+          right: (theme) => theme.spacing(1),
+        }}
+      >
+        <Tooltip title={tooltips.add_exercise} arrow placement="left">
+          <span style={{ display: 'inline-flex' }}>
+            <IconButton
+              size="small"
+              onClick={handleAddClick}
+              disabled={disabled}
+              aria-label="add-exercise-to-session"
+            >
+              <Add fontSize="small" />
+            </IconButton>
+          </span>
+        </Tooltip>
+      </Box>
     </Paper>
   );
 });

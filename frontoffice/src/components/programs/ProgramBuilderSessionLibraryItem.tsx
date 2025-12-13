@@ -4,6 +4,7 @@ import { Chip, IconButton, Paper, Stack, Tooltip, Typography } from '@mui/materi
 import { Add } from '@mui/icons-material';
 
 import type { BuilderCopy, SessionTemplate } from './programBuilderTypes';
+import { TextWithTooltip } from '../common/TextWithTooltip';
 
 type ProgramBuilderSessionTemplateItemProps = {
   template: SessionTemplate;
@@ -66,34 +67,20 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
           rowGap={1}
         >
           <Stack spacing={0.5} flexGrow={1} minWidth={0}>
-            <Tooltip title={template.label} arrow>
-              <Typography variant="subtitle1" sx={{ fontWeight: 600 }} noWrap>
-                {template.label}
-              </Typography>
-            </Tooltip>
+            <TextWithTooltip tooltipTitle={template.label} variant="subtitle1" sx={{ fontWeight: 600 }} />
             {template.description ? (
-              <Tooltip title={template.description} arrow>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{
-                    display: '-webkit-box',
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden',
-                    whiteSpace: 'pre-wrap',
-                  }}
-                >
-                  {template.description}
-                </Typography>
-              </Tooltip>
+              <TextWithTooltip
+                tooltipTitle={template.description}
+                variant="body2"
+                color="text.secondary"
+                maxLines={2}
+              />
             ) : null}
           </Stack>
           <Stack
             direction="row"
             spacing={1}
             alignItems="center"
-            sx={{ alignSelf: { xs: 'flex-start', sm: 'flex-end' } }}
           >
             <Chip
               label={`${template.duration} ${builderCopy.structure.duration_unit}`}
@@ -139,14 +126,15 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
                   variant="outlined"
                 />
               ))}
+              {template.exercises.length > 3 ? (
+                <Chip
+                  label={`+${template.exercises.length - 3}`}
+                  size="small"
+                  variant="outlined"
+                  sx={{ borderColor: theme.palette.divider }}
+                />
+              ) : null}
             </Stack>
-            <Typography
-              variant="caption"
-              color="text.secondary"
-              sx={{ alignSelf: 'flex-end', textAlign: 'right' }}
-            >
-              {exercisesLabel}
-            </Typography>
           </Stack>
         )}
       </Stack>

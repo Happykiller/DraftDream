@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Add, Refresh } from '@mui/icons-material';
 import {
-  Button,
   IconButton,
   Stack,
   Tooltip,
@@ -56,9 +55,9 @@ export function NutritionPlansCoach(): React.JSX.Element {
       loading
         ? undefined
         : t('nutrition-coach.list.result_count', {
-            count: mealPlans.length,
-            total: totalMealPlans,
-          }),
+          count: mealPlans.length,
+          total: totalMealPlans,
+        }),
     [loading, mealPlans.length, t, totalMealPlans],
   );
 
@@ -182,24 +181,24 @@ export function NutritionPlansCoach(): React.JSX.Element {
         >
           <Typography variant="h5">{t('nutrition-coach.subtitle')}</Typography>
           <Stack alignItems="center" direction="row" spacing={1} sx={{ ml: 'auto' }}>
-            <Tooltip title={t('nutrition-coach.actions.refresh')}>
+            <Tooltip title={t('nutrition-coach.actions.create')} arrow>
               <IconButton
-                aria-label={t('nutrition-coach.actions.refresh')}
-                color="primary"
-                onClick={handleRefresh}
-                size="small"
+                color="warning"
+                onClick={handleCreate}
+                aria-label={t('nutrition-coach.actions.create')}
               >
-                <Refresh fontSize="small" />
+                <Add />
               </IconButton>
             </Tooltip>
-            <Button
-              color="warning"
-              onClick={handleCreate}
-              startIcon={<Add />}
-              variant="contained"
-            >
-              {t('nutrition-coach.actions.create')}
-            </Button>
+            <Tooltip title={t('nutrition-coach.actions.refresh')} arrow>
+              <IconButton
+                aria-label={t('nutrition-coach.actions.refresh')}
+                color="warning"
+                onClick={handleRefresh}
+              >
+                <Refresh />
+              </IconButton>
+            </Tooltip>
           </Stack>
         </Stack>
         <Typography color="text.secondary" variant="body2">

@@ -3,17 +3,17 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
-  Button,
-  FormControl,
-  InputLabel,
+  IconButton,
+  Menu,
   MenuItem,
-  Select,
   Stack,
   Tab,
   Tabs,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import FilterListIcon from '@mui/icons-material/FilterList';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import QueryStatsOutlinedIcon from '@mui/icons-material/QueryStatsOutlined';
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -63,6 +63,20 @@ export function Prospects(): React.JSX.Element {
   const { sources: sourceMetadata } = useProspectMetadataOptions();
   const [prospectToDelete, setProspectToDelete] = React.useState<Prospect | null>(null);
   const [deleteLoading, setDeleteLoading] = React.useState(false);
+  const [filterAnchorEl, setFilterAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  const handleOpenFilter = (event: React.MouseEvent<HTMLElement>) => {
+    setFilterAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseFilter = () => {
+    setFilterAnchorEl(null);
+  };
+
+  const handleFilterSelect = (value: ProspectSourceFilterValue) => {
+    setSourceFilter(value);
+    handleCloseFilter();
+  };
 
   const deleteDialogCopy = React.useMemo(
     () =>
@@ -198,53 +212,64 @@ export function Prospects(): React.JSX.Element {
             spacing={1}
             width={{ xs: '100%', md: 'auto' }}
           >
-            <Button
-              color="error"
-              onClick={() => handleCreateProspect(ProspectStatus.LEAD)}
-              startIcon={<AddIcon fontSize="small" />}
-              sx={{ alignSelf: { xs: 'stretch', sm: 'auto' }, flexShrink: 0 }}
-              variant="contained"
-            >
-              {t('prospects.actions.create_lead')}
-            </Button>
-
-            <FormControl
-              size="small"
-              sx={{ minWidth: { xs: '100%', sm: 220 }, flexShrink: 0 }}
-            >
-              <InputLabel id="prospects-source-filter-label">
-                {t('prospects.workflow.summary.filters.label')}
-              </InputLabel>
-              <Select
-                labelId="prospects-source-filter-label"
-                label={t('prospects.workflow.summary.filters.label')}
-                value={sourceFilter}
-                onChange={(event) =>
-                  setSourceFilter(event.target.value as ProspectSourceFilterValue)
-                }
-                fullWidth
+            <Tooltip title={t('prospects.actions.create_lead')} arrow>
+              <IconButton
+                color="error"
+                onClick={() => handleCreateProspect(ProspectStatus.LEAD)}
+                aria-label={t('prospects.actions.create_lead')}
               >
-                <MenuItem value="all">{t('prospects.workflow.summary.filters.all_sources')}</MenuItem>
-                {hasUnassignedSource ? (
-                  <MenuItem value="none">{t('prospects.workflow.summary.filters.none_source')}</MenuItem>
-                ) : null}
-                {sourceOptions.map((option) => (
-                  <MenuItem key={option.id} value={option.id}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+                <AddIcon />
+              </IconButton>
+            </Tooltip>
 
-            <Button
-              color="error"
-              onClick={handleRefresh}
-              startIcon={<RefreshIcon fontSize="small" />}
-              sx={{ alignSelf: { xs: 'stretch', sm: 'auto' }, flexShrink: 0 }}
-              variant="contained"
+            <Tooltip title={t('prospects.workflow.summary.actions.refresh')} arrow>
+              <IconButton
+                color="error"
+                onClick={handleRefresh}
+                aria-label={t('prospects.workflow.summary.actions.refresh')}
+              >
+                <RefreshIcon />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title={t('prospects.workflow.summary.filters.label')} arrow>
+              <IconButton
+                color={sourceFilter !== 'all' ? 'error' : 'default'}
+                onClick={handleOpenFilter}
+                aria-label={t('prospects.workflow.summary.filters.label')}
+              >
+                <FilterListIcon />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              anchorEl={filterAnchorEl}
+              open={Boolean(filterAnchorEl)}
+              onClose={handleCloseFilter}
             >
-              {t('prospects.workflow.summary.actions.refresh')}
-            </Button>
+              <MenuItem
+                selected={sourceFilter === 'all'}
+                onClick={() => handleFilterSelect('all')}
+              >
+                {t('prospects.workflow.summary.filters.all_sources')}
+              </MenuItem>
+              {hasUnassignedSource ? (
+                <MenuItem
+                  selected={sourceFilter === 'none'}
+                  onClick={() => handleFilterSelect('none')}
+                >
+                  {t('prospects.workflow.summary.filters.none_source')}
+                </MenuItem>
+              ) : null}
+              {sourceOptions.map((option) => (
+                <MenuItem
+                  key={option.id}
+                  selected={sourceFilter === option.id}
+                  onClick={() => handleFilterSelect(option.id)}
+                >
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Menu>
           </Stack>
         </Stack>
 
@@ -257,9 +282,9 @@ export function Prospects(): React.JSX.Element {
             sx={{
               alignSelf: 'center',
               bgcolor: 'grey.100',
-              p: 0.5,
+              p: 0.25,
               borderRadius: 2,
-              minHeight: 48,
+              minHeight: 36,
               '.MuiTabs-indicator': { display: 'none' },
             }}
             centered
@@ -271,9 +296,9 @@ export function Prospects(): React.JSX.Element {
               label={t('prospects.tabs.list')}
               sx={{
                 textTransform: 'none',
-                fontWeight: 700,
-                minHeight: 44,
-                minWidth: 140,
+                fontWeight: 600,
+                minHeight: 32,
+                minWidth: 120,
                 borderRadius: 1.5,
                 border: '1px solid',
                 borderColor: 'divider',

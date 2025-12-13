@@ -578,6 +578,7 @@ export function MealPlanBuilderPanel({
             >
               <Box sx={{ flexGrow: 1, minHeight: 0, overflow: 'auto', p: { xs: 2, md: 3 } }}>
                 <Grid container columnSpacing={{ xs: 0, md: 2 }} rowSpacing={{ xs: 2, md: 0 }} sx={{ minHeight: '100%' }}>
+                  {/* Left Column: Plan Configuration & Day Library */}
                   <Grid size={{ xs: 12, md: 3 }} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <Card variant="outlined">
                       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -698,6 +699,7 @@ export function MealPlanBuilderPanel({
                     </Card>
                   </Grid>
 
+                  {/* Center Column: Plan Editor */}
                   <Grid size={{ xs: 12, md: 6 }} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <Card variant="outlined" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, flexGrow: 1 }}>
@@ -925,6 +927,7 @@ export function MealPlanBuilderPanel({
                     </Card>
                   </Grid>
 
+                  {/* Right Column: Meal Library */}
                   <Grid size={{ xs: 12, md: 3 }} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <Card variant="outlined" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, flexGrow: 1 }}>

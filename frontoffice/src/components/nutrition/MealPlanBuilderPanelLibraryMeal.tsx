@@ -9,8 +9,9 @@ import {
   IconButton,
   Stack,
   Tooltip,
-  Typography,
 } from '@mui/material';
+
+import { TextWithTooltip } from '../common/TextWithTooltip';
 
 import type { Meal } from '@hooks/nutrition/useMeals';
 import { useMealTypeIcon } from '@hooks/nutrition/useMealTypeIcon';
@@ -96,25 +97,24 @@ export const MealPlanBuilderPanelLibraryMeal = React.memo(function MealPlanBuild
                 </span>
               </Tooltip>
             ) : null}
-            <Tooltip title={meal.label ?? ''} arrow placement="bottom-start">
-              <Typography
-                variant="subtitle2"
-                noWrap
-                sx={{
-                  fontWeight: 600,
-                  flex: 1,
-                  minWidth: 0,
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-              >
-                {meal.label}
-              </Typography>
-            </Tooltip>
+
+            <TextWithTooltip
+              tooltipTitle={meal.label ?? ''}
+              variant="subtitle2"
+              sx={{
+                fontWeight: 600,
+                flex: 1,
+                minWidth: 0,
+                pr: 4,
+              }}
+            />
           </Stack>
-          <Typography variant="caption" color="text.secondary">
-            {formatMealSummary(meal)}
-          </Typography>
+          <TextWithTooltip
+            tooltipTitle={formatMealSummary(meal)}
+            variant="caption"
+            color="text.secondary"
+            maxLines={2}
+          />
         </Stack>
       </CardContent>
       {(isPublic || isOwnedByCurrentUser) && (
@@ -155,6 +155,7 @@ export const MealPlanBuilderPanelLibraryMeal = React.memo(function MealPlanBuild
           )}
         </Box>
       )}
+
       <Box
         sx={{
           position: 'absolute',

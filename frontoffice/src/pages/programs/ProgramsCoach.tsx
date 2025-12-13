@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Add, Refresh } from '@mui/icons-material';
-import { Button, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import { IconButton, Stack, Tooltip, Typography } from '@mui/material';
 
 import { ProgramList } from '@components/programs/ProgramList';
 import { type BuilderCopy } from '@components/programs/ProgramBuilderPanel';
@@ -46,9 +46,9 @@ export function ProgramsCoach(): React.JSX.Element {
       loading
         ? undefined
         : t('programs-coatch.list.result_count', {
-            count: programs.length,
-            total: totalPrograms,
-          }),
+          count: programs.length,
+          total: totalPrograms,
+        }),
     [loading, programs.length, t, totalPrograms],
   );
 
@@ -160,24 +160,24 @@ export function ProgramsCoach(): React.JSX.Element {
           <Typography variant="h5">{t('programs-coatch.subtitle')}</Typography>
 
           <Stack alignItems="center" direction="row" spacing={1} sx={{ ml: 'auto' }}>
-            <Tooltip title={t('programs-coatch.actions.refresh')}>
+            <Tooltip title={t('programs-coatch.actions.open_builder')} arrow>
               <IconButton
-                aria-label={t('programs-coatch.actions.refresh')}
-                color="primary"
-                onClick={handleRefresh}
-                size="small"
+                color="success"
+                onClick={handleCreateProgram}
+                aria-label={t('programs-coatch.actions.open_builder')}
               >
-                <Refresh fontSize="small" />
+                <Add />
               </IconButton>
             </Tooltip>
-            <Button
-              color="success"
-              onClick={handleCreateProgram}
-              startIcon={<Add />}
-              variant="contained"
-            >
-              {t('programs-coatch.actions.open_builder')}
-            </Button>
+            <Tooltip title={t('programs-coatch.actions.refresh')} arrow>
+              <IconButton
+                aria-label={t('programs-coatch.actions.refresh')}
+                color="success"
+                onClick={handleRefresh}
+              >
+                <Refresh />
+              </IconButton>
+            </Tooltip>
           </Stack>
         </Stack>
         <Typography color="text.secondary" variant="body2">
