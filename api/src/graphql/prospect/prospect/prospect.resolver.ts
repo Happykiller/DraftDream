@@ -167,7 +167,7 @@ export class ProspectResolver {
   @Mutation(() => ProspectConversionGql, { name: 'prospect_convert', nullable: true })
   @Auth(Role.ADMIN, Role.COACH)
   async prospect_convert(
-    @Args('input') input: ConvertProspectInput,
+    @Args('input', { type: () => ConvertProspectInput }) input: ConvertProspectInput,
     @Context('req') req: any,
   ): Promise<ProspectConversionGql | null> {
     const session = this.extractSession(req);
