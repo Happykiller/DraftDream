@@ -3,7 +3,17 @@ import * as React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
-import { Box, Button, IconButton, MenuItem, Stack, TextField, Tooltip } from '@mui/material';
+import {
+  Box,
+  Button,
+  IconButton,
+  MenuItem,
+  Stack,
+  TextField,
+  Tooltip,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { ProspectStatus } from '@commons/prospects/status';
@@ -61,6 +71,8 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
   } = props;
   const { t } = useTranslation();
   const fmtDate = useDateFormatter();
+  const theme = useTheme();
+  const isHugeScreen = useMediaQuery(theme.breakpoints.up('xl'));
   const statusLabels = React.useMemo<Record<ProspectStatus, string>>(
     () =>
       Object.fromEntries(statuses.map((status) => [status.value, status.label])) as Record<
@@ -76,7 +88,7 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
     return value.map((item) => item.label).join(', ');
   }, [t]);
 
-  const columns = React.useMemo<GridColDef<Prospect>[]>(
+  const baseColumns = React.useMemo<GridColDef<Prospect>[]>(
     () => [
       { field: 'firstName', headerName: t('common.labels.first_name'), flex: 1, minWidth: 160 },
       { field: 'lastName', headerName: t('common.labels.last_name'), flex: 1, minWidth: 160 },
@@ -140,18 +152,6 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
         minWidth: 160,
       },
       {
-        field: 'createdAt',
-        headerName: t('common.labels.created'),
-        renderCell: (params) => (params.value ? fmtDate(params.value as string) : t('common.messages.no_value')),
-        minWidth: 160,
-      },
-      {
-        field: 'updatedAt',
-        headerName: t('common.labels.updated'),
-        renderCell: (params) => fmtDate(params.value as string),
-        minWidth: 160,
-      },
-      {
         field: 'actions',
         headerName: t('common.labels.actions'),
         sortable: false,
@@ -173,8 +173,32 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
         minWidth: 120,
       },
     ],
-    [fmtDate, onDelete, onEdit, renderList, t],
+    [fmtDate, onDelete, onEdit, renderList, statusLabels, t],
   );
+
+  const columns = React.useMemo<GridColDef<Prospect>[]>(() => {
+    if (!isHugeScreen) {
+      return baseColumns;
+    }
+
+    return [
+      ...baseColumns.slice(0, -1),
+      {
+        field: 'createdAt',
+        headerName: t('common.labels.created'),
+        renderCell: (params) =>
+          params.value ? fmtDate(params.value as string) : t('common.messages.no_value'),
+        minWidth: 160,
+      },
+      {
+        field: 'updatedAt',
+        headerName: t('common.labels.updated'),
+        renderCell: (params) => fmtDate(params.value as string),
+        minWidth: 160,
+      },
+      baseColumns[baseColumns.length - 1],
+    ];
+  }, [baseColumns, fmtDate, isHugeScreen, t]);
 
   return (
     <Box sx={{ width: '100%' }}>
