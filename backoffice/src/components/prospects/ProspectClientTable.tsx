@@ -12,7 +12,6 @@ import {
   TextField,
   Tooltip,
   useMediaQuery,
-  useTheme,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -71,8 +70,8 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
   } = props;
   const { t } = useTranslation();
   const fmtDate = useDateFormatter();
-  const theme = useTheme();
-  const isHugeScreen = useMediaQuery(theme.breakpoints.up('xl'));
+  // Only show audit columns on ultra-wide viewports (>= 2000px) to avoid cluttering 1080p layouts.
+  const isUltraWideScreen = useMediaQuery('(min-width:2000px)');
   const statusLabels = React.useMemo<Record<ProspectStatus, string>>(
     () =>
       Object.fromEntries(statuses.map((status) => [status.value, status.label])) as Record<
@@ -177,7 +176,7 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
   );
 
   const columns = React.useMemo<GridColDef<Prospect>[]>(() => {
-    if (!isHugeScreen) {
+    if (!isUltraWideScreen) {
       return baseColumns;
     }
 
@@ -198,7 +197,7 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
       },
       baseColumns[baseColumns.length - 1],
     ];
-  }, [baseColumns, fmtDate, isHugeScreen, t]);
+  }, [baseColumns, fmtDate, isUltraWideScreen, t]);
 
   return (
     <Box sx={{ width: '100%' }}>
