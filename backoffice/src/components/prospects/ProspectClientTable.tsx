@@ -70,7 +70,7 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
   } = props;
   const { t } = useTranslation();
   const fmtDate = useDateFormatter();
-  // Only show audit columns on ultra-wide viewports (>= 2000px) to avoid cluttering 1080p layouts.
+  // Only show extended columns on ultra-wide viewports (>= 2000px) to avoid cluttering 1080p layouts.
   const isUltraWideScreen = useMediaQuery('(min-width:2000px)');
   const statusLabels = React.useMemo<Record<ProspectStatus, string>>(
     () =>
@@ -126,18 +126,6 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
         flex: 1,
       },
       {
-        field: 'objectives',
-        headerName: t('common.labels.objectives'),
-        renderCell: (params) => renderList(params.row.objectives),
-        flex: 1,
-      },
-      {
-        field: 'activityPreferences',
-        headerName: t('common.labels.activity_preferences'),
-        renderCell: (params) => renderList(params.row.activityPreferences),
-        flex: 1,
-      },
-      {
         field: 'budget',
         headerName: t('common.labels.budget'),
         renderCell: (params) =>
@@ -172,16 +160,29 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
         minWidth: 120,
       },
     ],
-    [fmtDate, onDelete, onEdit, renderList, statusLabels, t],
+    [fmtDate, onDelete, onEdit, statusLabels, t],
   );
 
-  const columns = React.useMemo<GridColDef<Prospect>[]>(() => {
-    if (!isUltraWideScreen) {
-      return baseColumns;
-    }
+  const extendedColumns = React.useMemo<GridColDef<Prospect>[]>(
+    () => [
+      {
+        field: 'objectives',
+        headerName: t('common.labels.objectives'),
+        renderCell: (params) => renderList(params.row.objectives),
+        flex: 1,
+      },
+      {
+        field: 'activityPreferences',
+        headerName: t('common.labels.activity_preferences'),
+        renderCell: (params) => renderList(params.row.activityPreferences),
+        flex: 1,
+      },
+    ],
+    [renderList, t],
+  );
 
-    return [
-      ...baseColumns.slice(0, -1),
+  const auditColumns = React.useMemo<GridColDef<Prospect>[]>(
+    () => [
       {
         field: 'createdAt',
         headerName: t('common.labels.created'),
@@ -195,9 +196,23 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
         renderCell: (params) => fmtDate(params.value as string),
         minWidth: 160,
       },
+    ],
+    [fmtDate, t],
+  );
+
+  const columns = React.useMemo<GridColDef<Prospect>[]>(() => {
+    if (!isUltraWideScreen) {
+      return baseColumns;
+    }
+
+    return [
+      ...baseColumns.slice(0, 8),
+      ...extendedColumns,
+      ...baseColumns.slice(8, -1),
+      ...auditColumns,
       baseColumns[baseColumns.length - 1],
     ];
-  }, [baseColumns, fmtDate, isUltraWideScreen, t]);
+  }, [auditColumns, baseColumns, extendedColumns, isUltraWideScreen]);
 
   return (
     <Box sx={{ width: '100%' }}>
