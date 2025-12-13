@@ -87,6 +87,10 @@ export class ConvertProspectToAthleteUsecase {
     }
 
     const password = this.generateSecurePassword();
+    // Temporary logging to expose the generated password until delivery notifications are in place.
+    this.inversify.loggerService.info(
+      `[ProspectConversion] Temporary athlete password for ${params.email}: ${password}`,
+    );
     const athlete = await this.inversify.createUserUsecase.execute({
       type: 'athlete',
       first_name: params.prospect.firstName,

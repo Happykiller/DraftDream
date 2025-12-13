@@ -87,6 +87,11 @@ Individual meals and recipes
 
 ### 👤 Client Management
 
+#### [Prospect Management](./prospect-management.md)
+Track and convert prospects into active athlete accounts
+- Prospect profiles, objectives, and preferences
+- Conversion into athlete accounts with coach linkage
+
 #### Client Profiles
 Client information and onboarding
 - Personal details

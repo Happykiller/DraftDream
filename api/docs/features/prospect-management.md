@@ -56,6 +56,40 @@ The prospect management feature allows coaches to track detailed information abo
 
 **Then** the system should update the fields and return the updated prospect
 
+### Scenario: Convert a prospect to an athlete account
+
+**Given** a coach owns a prospect with email `prospect@example.com`
+
+**When** the coach triggers the conversion:
+```graphql
+mutation ConvertProspect($input: ConvertProspectInput!) {
+  prospect_convert(input: $input) {
+    prospect {
+      id
+      status
+    }
+    athlete {
+      id
+      email
+      type
+    }
+    coachAthleteLink {
+      id
+      coachId
+      athleteId
+      is_active
+    }
+    createdAthlete
+    createdCoachAthleteLink
+  }
+}
+```
+
+**Then** the system should:
+1. Create an athlete account when no athlete exists for the prospect email (a temporary password is logged for retrieval).
+2. Link the athlete to the owning coach, reactivating an existing inactive link when needed.
+3. Update the prospect status to `CLIENT`.
+
 ---
 
 ## Domain: Prospect Objectives
