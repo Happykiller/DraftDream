@@ -1,6 +1,6 @@
 // src\components\Input.tsx
 import React from 'react';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import {
   IconButton,
   InputAdornment,
@@ -53,6 +53,7 @@ export const Input: React.FC<InputProps> = ({
   ...rest
 }) => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const [state, setState] = React.useState(entity);
   const [passVisible, setPassVisible] = React.useState(false);
   const [virgin, setVirgin] = React.useState(virginProp);
@@ -103,6 +104,11 @@ export const Input: React.FC<InputProps> = ({
             edge="end"
             size="small"
             sx={{ color: theme.palette.text.secondary }}
+            aria-label={
+              passVisible
+                ? t('common.aria.hide_password')
+                : t('common.aria.show_password')
+            }
           >
             {passVisible ? icons.visibilityOff : icons.visibility}
           </IconButton>
@@ -116,7 +122,9 @@ export const Input: React.FC<InputProps> = ({
             <IconButton
               edge="end"
               size="small"
-              sx={{ color: theme.palette.text.secondary }}>
+              sx={{ color: theme.palette.text.secondary }}
+              aria-label={t('common.aria.show_help')}
+            >
               {icons.help}
             </IconButton>
           </Tooltip>
@@ -130,6 +138,7 @@ export const Input: React.FC<InputProps> = ({
                 onClick={action.onClick}
                 disabled={action.disabled}
                 sx={{ color: theme.palette.text.secondary }}
+                aria-label={action.title}
               >
                 {action.icon}
               </IconButton>

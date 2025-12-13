@@ -133,6 +133,11 @@
       "duplicate": "Duplicate",
       "version": "FitDesk CRM v{{version}} · ©2025 - All rights reserved"
     },
+    "aria": {
+      "show_password": "Show password",
+      "hide_password": "Hide password",
+      "show_help": "Show help"
+    },
     "messages": {
       "no_value": "-",
       "confirm_deletion_warning": "This action cannot be undone.",

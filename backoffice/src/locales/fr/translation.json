@@ -133,6 +133,11 @@
       "duplicate": "Dupliquer",
       "version": "FitDesk CRM v{{version}} - 2025 - Tous droits réservés"
     },
+    "aria": {
+      "show_password": "Afficher le mot de passe",
+      "hide_password": "Masquer le mot de passe",
+      "show_help": "Afficher l'aide"
+    },
     "messages": {
       "no_value": "-",
       "confirm_deletion_warning": "Cette action est irréversible.",
