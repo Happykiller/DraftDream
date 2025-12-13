@@ -481,6 +481,9 @@
       },
       "confirm": {
         "delete_title": "Delete prospect"
+      },
+      "actions": {
+        "convert": "Convert to athlete"
       }
     },
     "objectives": {

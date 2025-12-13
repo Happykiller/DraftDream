@@ -482,6 +482,9 @@
       },
       "confirm": {
         "delete_title": "Supprimer le prospect"
+      },
+      "actions": {
+        "convert": "Convertir en athlète"
       }
     },
     "objectives": {

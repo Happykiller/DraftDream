@@ -26,7 +26,7 @@ export function ClientsPanel(): React.JSX.Element {
   const [levelFilter, setLevelFilter] = React.useState<string | null>(null);
   const [sourceFilter, setSourceFilter] = React.useState<string | null>(null);
 
-  const { items, total, loading, create, update, remove } = useProspects({
+  const { items, total, loading, create, update, remove, convert } = useProspects({
     page,
     limit,
     q,
@@ -92,6 +92,7 @@ export function ClientsPanel(): React.JSX.Element {
         onCreate={() => setOpenCreate(true)}
         onEdit={(row) => setEditId(row.id)}
         onDelete={(row) => setDeleteId(row.id)}
+        onConvert={(row) => convert(row.id)}
         onQueryChange={setSearchInput}
         onPageChange={setPage}
         onLimitChange={setLimit}

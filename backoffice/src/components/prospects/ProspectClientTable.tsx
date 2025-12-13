@@ -2,6 +2,7 @@
 import * as React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import {
   Box,
@@ -36,6 +37,7 @@ export interface ProspectClientTableProps {
   onCreate: () => void;
   onEdit: (row: Prospect) => void;
   onDelete: (row: Prospect) => void;
+  onConvert: (row: Prospect) => void;
   onQueryChange: (value: string) => void;
   onPageChange: (page: number) => void;
   onLimitChange: (limit: number) => void;
@@ -61,6 +63,7 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
     onCreate,
     onEdit,
     onDelete,
+    onConvert,
     onQueryChange,
     onPageChange,
     onLimitChange,
@@ -139,6 +142,17 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
         filterable: false,
         renderCell: (params) => (
           <Stack direction="row" spacing={0.5}>
+            {params.row.status === ProspectStatus.TODO && (
+              <Tooltip title={t('prospects.list.actions.convert')}>
+                <IconButton
+                  size="small"
+                  aria-label={`convert-prospect-${params.row.id}`}
+                  onClick={() => onConvert(params.row)}
+                >
+                  <PersonAddAltIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
             <Tooltip title={t('common.tooltips.edit')}>
               <IconButton size="small" aria-label={`edit-prospect-${params.row.id}`} onClick={() => onEdit(params.row)}>
                 <EditIcon fontSize="small" />
@@ -151,10 +165,10 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
             </Tooltip>
           </Stack>
         ),
-        minWidth: 120,
+        minWidth: 160,
       },
     ],
-    [fmtDate, onDelete, onEdit, statusLabels, t],
+    [fmtDate, onConvert, onDelete, onEdit, statusLabels, t],
   );
 
   const levelColumn = React.useMemo<GridColDef<Prospect>>(
