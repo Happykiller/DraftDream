@@ -105,13 +105,6 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
         flex: 1,
       },
       {
-        field: 'level',
-        headerName: t('common.labels.level'),
-        renderCell: (params) => params.row.level?.label ?? t('common.messages.no_value'),
-        minWidth: 140,
-        flex: 1,
-      },
-      {
         field: 'source',
         headerName: t('common.labels.source'),
         renderCell: (params) => params.row.source?.label ?? t('common.messages.no_value'),
@@ -163,6 +156,17 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
     [fmtDate, onDelete, onEdit, statusLabels, t],
   );
 
+  const levelColumn = React.useMemo<GridColDef<Prospect>>(
+    () => ({
+      field: 'level',
+      headerName: t('common.labels.level'),
+      renderCell: (params) => params.row.level?.label ?? t('common.messages.no_value'),
+      minWidth: 140,
+      flex: 1,
+    }),
+    [t],
+  );
+
   const extendedColumns = React.useMemo<GridColDef<Prospect>[]>(
     () => [
       {
@@ -206,13 +210,15 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
     }
 
     return [
-      ...baseColumns.slice(0, 8),
+      ...baseColumns.slice(0, 5),
+      levelColumn,
+      ...baseColumns.slice(5, 7),
       ...extendedColumns,
-      ...baseColumns.slice(8, -1),
+      ...baseColumns.slice(7, -1),
       ...auditColumns,
       baseColumns[baseColumns.length - 1],
     ];
-  }, [auditColumns, baseColumns, extendedColumns, isUltraWideScreen]);
+  }, [auditColumns, baseColumns, extendedColumns, isUltraWideScreen, levelColumn]);
 
   return (
     <Box sx={{ width: '100%' }}>
