@@ -20,7 +20,17 @@ export class UserGql {
   @Field(() => ID) id!: string;
   @Field() type!: 'athlete' | 'coach' | 'admin';
   @Field() first_name!: string;
+  @Field({ name: 'firstName' })
+  get firstName(): string {
+    return this.first_name;
+  }
+
   @Field() last_name!: string;
+  @Field({ name: 'lastName' })
+  get lastName(): string {
+    return this.last_name;
+  }
+
   @Field() email!: string;
   @Field({ nullable: true }) phone?: string;
   @Field(() => AddressGql, { nullable: true }) address?: AddressGql;

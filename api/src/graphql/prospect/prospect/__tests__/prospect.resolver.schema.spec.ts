@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 
 import { GraphQLSchemaBuilderModule, GraphQLSchemaFactory } from '@nestjs/graphql';
+import { GraphQLObjectType } from 'graphql';
 import { Test } from '@nestjs/testing';
 
 import {
@@ -45,5 +46,24 @@ describe('ProspectResolver schema', () => {
     expect(convertInput).toBeDefined();
     expect(mutationFields?.prospect_convert).toBeDefined();
     expect(mutationFields?.prospect_convert?.args[0]?.name).toBe('input');
+  });
+
+  it('exposes camelCase compatibility fields on converted entities', async () => {
+    const moduleRef = await Test.createTestingModule({
+      imports: [GraphQLSchemaBuilderModule],
+      providers: [ProspectResolver],
+    }).compile();
+
+    const gqlSchemaFactory = moduleRef.get(GraphQLSchemaFactory);
+    const schema = await gqlSchemaFactory.create([ProspectResolver], {
+      orphanedTypes: [ProspectGql, ProspectListGql, ProspectConversionGql],
+    });
+
+    const userType = schema.getType('UserGql') as GraphQLObjectType;
+    const coachAthleteType = schema.getType('CoachAthleteGql') as GraphQLObjectType;
+
+    expect(userType.getFields().firstName).toBeDefined();
+    expect(userType.getFields().lastName).toBeDefined();
+    expect(coachAthleteType.getFields().active).toBeDefined();
   });
 });
