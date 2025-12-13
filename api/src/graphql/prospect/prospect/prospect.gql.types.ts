@@ -46,6 +46,8 @@ export class ProspectGql {
   @Field() createdBy!: string;
   @Field() createdAt!: Date;
   @Field() updatedAt!: Date;
+  @Field(() => ID, { nullable: true }) matchedAthleteId?: string;
+  @Field(() => ID, { nullable: true }) coachAthleteLinkId?: string;
 
   @Field(() => UserGql, { nullable: true }) creator?: UserGql | null;
   @Field(() => ProspectLevelGql, { nullable: true }) level?: ProspectLevelGql | null;

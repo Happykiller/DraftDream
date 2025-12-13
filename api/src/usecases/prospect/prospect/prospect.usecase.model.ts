@@ -28,4 +28,6 @@ export interface ProspectUsecaseModel {
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
+  matchedAthleteId?: string;
+  coachAthleteLinkId?: string;
 }

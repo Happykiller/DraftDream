@@ -25,5 +25,7 @@ export const mapProspectUsecaseToGql = (model: ProspectUsecaseModel): ProspectGq
     createdBy: model.createdBy,
     createdAt: model.createdAt,
     updatedAt: model.updatedAt,
+    matchedAthleteId: model.matchedAthleteId,
+    coachAthleteLinkId: model.coachAthleteLinkId,
   };
 };
