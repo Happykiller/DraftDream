@@ -70,6 +70,7 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
   } = props;
   const { t } = useTranslation();
   const fmtDate = useDateFormatter();
+  const fmtDateOnly = useDateFormatter({ options: { dateStyle: 'short' } });
   // Only show extended columns on ultra-wide viewports (>= 2000px) to avoid cluttering 1080p layouts.
   const isUltraWideScreen = useMediaQuery('(min-width:2000px)');
   const statusLabels = React.useMemo<Record<ProspectStatus, string>>(
@@ -128,7 +129,7 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
       {
         field: 'desiredStartDate',
         headerName: t('common.labels.desired_start_date'),
-        renderCell: (params) => (params.value ? fmtDate(params.value) : t('common.messages.no_value')),
+        renderCell: (params) => (params.value ? fmtDateOnly(params.value) : t('common.messages.no_value')),
         minWidth: 160,
       },
       {
