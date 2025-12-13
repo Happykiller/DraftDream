@@ -10,6 +10,7 @@ export const mapCoachAthleteUsecaseToGql = (link: CoachAthleteUsecaseModel): Coa
   startDate: link.startDate,
   endDate: link.endDate,
   is_active: link.is_active,
+  active: link.is_active,
   note: link.note,
   createdBy: link.createdBy,
   createdAt: link.createdAt,

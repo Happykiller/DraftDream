@@ -12,7 +12,9 @@ export function mapUserUsecaseToGql(model: UserUsecaseModel): UserGql {
     id: model.id,
     type: model.type,
     first_name: model.first_name,
+    firstName: model.first_name,
     last_name: model.last_name,
+    lastName: model.last_name,
     email: model.email,
     phone: model.phone,
     address: model.address
