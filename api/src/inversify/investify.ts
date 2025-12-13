@@ -66,6 +66,7 @@ import { DeleteProspectSourceUsecase } from '@usecases/prospect/source/delete.pr
 import { GetProspectUsecase } from '@usecases/prospect/prospect/get.prospect.usecase';
 import { ListProspectsUsecase } from '@usecases/prospect/prospect/list.prospects.usecase';
 import { CreateProspectUsecase } from '@usecases/prospect/prospect/create.prospect.usecase';
+import { ConvertProspectToAthleteUsecase } from '@usecases/prospect/prospect/convert.prospect.usecase';
 import { UpdateProspectUsecase } from '@usecases/prospect/prospect/update.prospect.usecase';
 import { DeleteProspectUsecase } from '@usecases/prospect/prospect/delete.prospect.usecase';
 import { GetCoachAthleteUsecase } from '@usecases/athlete/coach-athlete/get.coach-athlete.usecase';
@@ -170,6 +171,7 @@ export class Inversify {
   getProspectUsecase: GetProspectUsecase;
   createProspectUsecase: CreateProspectUsecase;
   listProspectsUsecase: ListProspectsUsecase;
+  convertProspectToAthleteUsecase: ConvertProspectToAthleteUsecase;
   updateProspectUsecase: UpdateProspectUsecase;
   deleteProspectUsecase: DeleteProspectUsecase;
   getCoachAthleteUsecase: GetCoachAthleteUsecase;
@@ -304,6 +306,7 @@ export class Inversify {
     this.getProspectUsecase = new GetProspectUsecase(this);
     this.createProspectUsecase = new CreateProspectUsecase(this);
     this.listProspectsUsecase = new ListProspectsUsecase(this);
+    this.convertProspectToAthleteUsecase = new ConvertProspectToAthleteUsecase(this);
     this.updateProspectUsecase = new UpdateProspectUsecase(this);
     this.deleteProspectUsecase = new DeleteProspectUsecase(this);
     // usecases coach athlete

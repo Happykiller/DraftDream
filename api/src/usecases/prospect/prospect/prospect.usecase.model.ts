@@ -31,3 +31,11 @@ export interface ProspectUsecaseModel {
   matchedAthleteId?: string;
   coachAthleteLinkId?: string;
 }
+
+export interface ProspectConversionUsecaseResult {
+  prospect: ProspectUsecaseModel;
+  athlete: import('@src/usecases/user/user.usecase.model').UserUsecaseModel;
+  coachAthleteLink: import('@src/usecases/athlete/coach-athlete/coach-athlete.usecase.model').CoachAthleteUsecaseModel;
+  createdAthlete: boolean;
+  createdCoachAthleteLink: boolean;
+}

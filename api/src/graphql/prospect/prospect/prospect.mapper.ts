@@ -1,7 +1,9 @@
 // src/graphql/client/client/client.mapper.ts
-import { ProspectUsecaseModel } from '@usecases/prospect/prospect/prospect.usecase.model';
+import { mapUserUsecaseToGql } from '@graphql/user/user.mapper';
+import { mapCoachAthleteUsecaseToGql } from '@graphql/athlete/coach-athlete/coach-athlete.mapper';
+import { ProspectConversionUsecaseResult, ProspectUsecaseModel } from '@usecases/prospect/prospect/prospect.usecase.model';
 
-import { ProspectGql } from './prospect.gql.types';
+import { ProspectConversionGql, ProspectGql } from './prospect.gql.types';
 
 export const mapProspectUsecaseToGql = (model: ProspectUsecaseModel): ProspectGql => {
   return {
@@ -27,5 +29,17 @@ export const mapProspectUsecaseToGql = (model: ProspectUsecaseModel): ProspectGq
     updatedAt: model.updatedAt,
     matchedAthleteId: model.matchedAthleteId,
     coachAthleteLinkId: model.coachAthleteLinkId,
+  };
+};
+
+export const mapProspectConversionUsecaseToGql = (
+  result: ProspectConversionUsecaseResult,
+): ProspectConversionGql => {
+  return {
+    prospect: mapProspectUsecaseToGql(result.prospect),
+    athlete: mapUserUsecaseToGql(result.athlete),
+    coachAthleteLink: mapCoachAthleteUsecaseToGql(result.coachAthleteLink),
+    createdAthlete: result.createdAthlete,
+    createdCoachAthleteLink: result.createdCoachAthleteLink,
   };
 };

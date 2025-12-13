@@ -66,3 +66,8 @@ export interface GetProspectUsecaseDto {
 }
 
 export interface DeleteProspectUsecaseDto { id: string }
+
+export interface ConvertProspectToAthleteUsecaseDto {
+  prospectId: string;
+  session: UsecaseSession;
+}
