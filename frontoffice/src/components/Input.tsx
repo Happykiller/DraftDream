@@ -39,7 +39,7 @@ interface InputProps extends Omit<TextFieldProps, 'onChange'> {
 }
 
 /** Material UI text field enriched with validation and helper controls. */
-export const Input: React.FC<InputProps> = ({
+export const Input: React.FC<InputProps> = React.memo(({
   label,
   tooltip,
   regex,
@@ -59,18 +59,18 @@ export const Input: React.FC<InputProps> = ({
   const [virgin, setVirgin] = React.useState(virginProp);
   const isPassword = type === 'password';
 
-  const fullLabel = (
+  const fullLabel = React.useMemo(() => (
     <>
       {label}
       {require && '*'}
     </>
-  );
+  ), [label, require]);
 
   React.useEffect(() => {
     setState(entity);
   }, [entity]);
 
-  const calcValid = (value: string): boolean => {
+  const calcValid = React.useCallback((value: string): boolean => {
     const v = value.trim();
     if (require && v.length === 0) return false;
     if (regex && v.length !== 0) {
@@ -78,24 +78,24 @@ export const Input: React.FC<InputProps> = ({
       return reg.test(v);
     }
     return true;
-  };
+  }, [require, regex]);
 
-  const giveHelper = () => {
+  const helperText = React.useMemo(() => {
     if (!virgin && require && !state.valid) {
       return <Trans>common.field_incorrect</Trans>;
     }
     return null;
-  };
+  }, [virgin, require, state.valid]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setVirgin(false);
     const newValue = e.target.value;
     const isValid = calcValid(newValue);
     setState({ value: newValue, valid: isValid });
     onChange?.({ value: newValue, valid: isValid });
-  };
+  }, [calcValid, onChange]);
 
-  const renderEndAdornment = () => (
+  const endAdornment = React.useMemo(() => (
     <InputAdornment position="end">
       <Box display="flex" alignItems="center" gap={0.5}>
         {isPassword && (
@@ -139,7 +139,7 @@ export const Input: React.FC<InputProps> = ({
         )}
       </Box>
     </InputAdornment>
-  );
+  ), [isPassword, passVisible, icons, tooltip, endActions, theme, setPassVisible]);
 
   return (
     <>
@@ -151,22 +151,22 @@ export const Input: React.FC<InputProps> = ({
         autoComplete="off"
         variant="outlined"
         label={fullLabel}
-      type={isPassword ? (passVisible ? 'text' : 'password') : type}
-      error={!virgin && !state.valid}
-      value={state.value}
-      helperText={giveHelper()}
-      onChange={handleChange}
-      InputProps={{
-        startAdornment: startIcon ? (
-          <InputAdornment
-            position="start"
-            sx={{ color: theme.palette.text.secondary }}
-          >
-            {startIcon}
-          </InputAdornment>
-        ) : undefined,
-        endAdornment: renderEndAdornment(),
-      }}
+        type={isPassword ? (passVisible ? 'text' : 'password') : type}
+        error={!virgin && !state.valid}
+        value={state.value}
+        helperText={helperText}
+        onChange={handleChange}
+        InputProps={{
+          startAdornment: startIcon ? (
+            <InputAdornment
+              position="start"
+              sx={{ color: theme.palette.text.secondary }}
+            >
+              {startIcon}
+            </InputAdornment>
+          ) : undefined,
+          endAdornment: endAdornment,
+        }}
         sx={{
           '.MuiOutlinedInput-root': {
             backgroundColor: theme.palette.background.paper,
@@ -195,4 +195,4 @@ export const Input: React.FC<InputProps> = ({
       />
     </>
   );
-};
+});
