@@ -1,7 +1,7 @@
 # Feature: Prospect Management
 
 ## Description
-The prospect management feature allows coaches to track detailed information about their potential clients (prospects). This includes fitness goals, activity preferences, fitness levels, lead sources, and account status tracking for business insights.
+The prospect management feature allows coaches to track detailed information about their potential clients (prospects). This includes prospect profiles, fitness goals, activity preferences, fitness levels, and lead sources.
 
 ## Roles
 - **ADMIN**: Full access to all prospect data
@@ -9,204 +9,182 @@ The prospect management feature allows coaches to track detailed information abo
 
 ---
 
-## Domain: Prospect Objectives
+## Domain: Prospect Profiles
 
-### Scenario: Create a prospect objective
+### Scenario: Create a prospect profile
 
-**Given** a prospect exists with ID `prospect-1`
-**And** the prospect is working with coach `coach-1`
+**Given** a coach is authenticated
 
-**When** the coach creates an objective:
+**When** the coach creates a prospect:
 ```json
 {
-  "label": "Weight Loss",
-  "description": "Lose 10kg in 3 months",
-  "targetValue": 10,
-  "unit": "kg",
-  "targetDate": "2024-04-01",
-  "is_active": true,
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@example.com",
+  "phone": "+123456789",
+  "status": "NEW",
+  "levelId": "level-1",
+  "objectiveIds": ["objective-1"],
+  "activityPreferenceIds": ["pref-1"],
+  "medicalConditions": "None",
+  "allergies": "Peanuts",
+  "notes": "Interested in weight loss",
+  "sourceId": "source-1",
+  "budget": 500,
+  "dealDescription": "Package A",
+  "desiredStartDate": "2024-02-01",
   "createdBy": "coach-1"
 }
 ```
 
 **Then** the system should:
-1. Generate slug from label: `weight-loss`
-2. Create the objective
-3. Set creation timestamps
-4. Return the created objective
+1. Create the prospect profile
+2. Return the created prospect
 
-**And** the coach can track progress toward this goal
+### Scenario: Update a prospect profile
+
+**Given** a prospect exists with ID `prospect-1`
+
+**When** the coach updates the prospect:
+```json
+{
+  "id": "prospect-1",
+  "status": "QUALIFIED",
+  "budget": 600
+}
+```
+
+**Then** the system should update the fields and return the updated prospect
+
+---
+
+## Domain: Prospect Objectives
+
+### Scenario: Create a prospect objective
+
+**Given** a coach creates an objective
+
+**When** the coach sends:
+```json
+{
+  "label": "Weight Loss",
+  "locale": "en",
+  "visibility": "PUBLIC",
+  "createdBy": "coach-1"
+}
+```
+
+**Then** the system should create the objective with a generated slug `weight-loss`.
 
 ---
 
 ## Domain: Activity Preferences
 
-### Scenario: Record prospect activity preferences
+### Scenario: Create prospect activity preferences
 
-**Given** a prospect profile exists
-**And** the prospect is filling out their onboarding questionnaire
+**Given** a coach creates a preference
 
-**When** the prospect selects their preferences:
+**When** the coach sends:
 ```json
 {
   "label": "Running",
-  "preferenceLevel": "high",
-  "frequency_per_week": 3,
-  "notes": "Prefers outdoor running",
-  "is_active": true,
-  "createdBy": "prospect-1"
+  "locale": "en",
+  "visibility": "PUBLIC",
+  "createdBy": "coach-1"
 }
 ```
 
-**Then** the system should:
-1. Store the activity preference
-2. Generate slug: `running`
-3. Associate with prospect profile
-4. Enable preference-based program recommendations
+**Then** the system should create the preference with slug `running`.
 
 ---
 
 ## Domain: Prospect Levels
 
-### Scenario: Assess prospect fitness level
+### Scenario: Create prospect fitness level
 
-**Given** a new prospect has completed their fitness assessment
-**And** the coach evaluated their capabilities
+**Given** a coach creates a level
 
-**When** the coach sets the prospect level:
+**When** the coach sends:
 ```json
 {
   "label": "Intermediate",
-  "description": "Has 6-12 months training experience",
-  "assessmentDate": "2024-01-15",
-  "is_active": true,
+  "locale": "en",
+  "visibility": "PUBLIC",
   "createdBy": "coach-1"
 }
 ```
 
-**Then** the system should:
-1. Record the fitness level
-2. Generate slug: `intermediate`
-3. Use for program difficulty matching
-4. Track level progression over time
+**Then** the system should create the level with slug `intermediate`.
 
 ---
 
 ## Domain: Prospect Sources
 
-### Scenario: Track prospect acquisition source
+### Scenario: Create prospect source
 
-**Given** a new prospect is onboarding
-**And** the prospect came from a marketing campaign
+**Given** a coach creates a source
 
-**When** the source is recorded:
+**When** the coach sends:
 ```json
 {
-  "label": "Instagram Ad - January",
-  "channel": "social_media",
-  "campaign": "new_year_transformation",
-  "referralCode": "NY2024",
-  "is_active": true,
-  "createdBy": "admin-1"
+  "label": "Instagram",
+  "locale": "en",
+  "visibility": "PUBLIC",
+  "createdBy": "coach-1"
 }
 ```
 
-**Then** the system should:
-1. Record the acquisition source
-2. Generate slug: `instagram-ad-january`
-3. Enable marketing ROI analysis
-4. Track conversion rates by source
-
----
-
-## Scenario: List prospects with multiple filters
-
-**Given** multiple prospects exist:
-  - Prospect A: level=beginner, status=active, objective=weight-loss
-  - Prospect B: level=advanced, status=inactive, objective=muscle-gain
-  - Prospect C: level=beginner, status=active, objective=general-fitness
-
-**When** a coach requests prospects with filters:
-```json
-{
-  "level": "beginner",
-  "status": "active",
-  "coachId": "coach-1"
-}
-```
-
-**Then** the system should:
-1. Filter by fitness level
-2. Filter by active status
-3. Filter by assigned coach
-4. Return Prospects A and C
-
-**And** inactive prospects should be excluded
+**Then** the system should create the source with slug `instagram`.
 
 ---
 
 ## Business Rules
 
 ### Prospect Profiles
-- Extends base User entity with fitness-specific data
-- One prospect profile per user
-- Managed primarily by assigned coach
+- Comprehensive profile including contact info, medical info, and deal details.
+- Status tracking (NEW, QUALIFIED, etc.).
+- Linked to Level, Objectives, Preferences, Source.
 
-### Objectives
-- **Slug**: Auto-generated from label
-- **Types**: Weight loss, muscle gain, strength, endurance, general fitness
-- **Tracking**: Target value, unit, target date
-- **Multiple**: Prospects can have multiple objectives
-- **Active**: Only one active objective per type recommended
-
-### Activity Preferences
-- **Preference Levels**: none, low, medium, high
-- **Frequency**: Sessions per week
-- **Purpose**: Guide program recommendations
-- **Updates**: Can change as prospect preferences evolve
-
-### Fitness Levels
-- **Standard Levels**: Beginner, intermediate, advanced, elite
-- **Assessment**: Based on coach evaluation and performance
-- **Progression**: Should be updated as prospect improves
-- **Impact**: Affects program difficulty and exercise selection
-
-### Source Tracking
-- **Channels**: Organic, referral, paid ads, social media, etc.
-- **Campaign**: Specific marketing campaign identifier
-- **Attribution**: First-touch attribution model
-- **Analytics**: Enable ROI calculation and campaign optimization
+### Sub-Domains (Objectives, Levels, Preferences, Sources)
+- **Label**: Display name.
+- **Slug**: Auto-generated.
+- **Locale**: Language support.
+- **Visibility**: PUBLIC or PRIVATE.
 
 ---
 
-## CRUD Operations (Each Sub-Domain)
+## CRUD Operations
 
-### Create
-- **Authorization**: COACH (own prospects), ADMIN
-- **Validation**: Prospect exists, slug uniqueness per locale
-- **Auto-generation**: Slug from label
+### Prospect Profile
+- **Create**: `CreateProspectUsecase`
+- **Update**: `UpdateProspectUsecase`
+- **List**: `ListProspectsUsecase`
+- **Get**: `GetProspectUsecase`
+- **Delete**: `DeleteProspectUsecase`
 
-### Get
-- **Authorization**: COACH (own prospects), ADMIN
-- **Returns**: Complete entity details
-
-### List
-- **Authorization**: COACH (own prospects), ADMIN (all)
-- **Filters**: By prospect, by type, by status, date range
-- **Sorting**: By date, label, preference level
-
-### Update
-- **Authorization**: COACH (own prospects), ADMIN
-- **Slug Update**: Regenerated if label changes
-- **Partial**: Only specified fields updated
-
-### Delete
-- **Authorization**: COACH (own prospects), ADMIN
-- **Type**: Soft delete (mark inactive) recommended
+### Sub-Domains (Objective, Level, ActivityPreference, Source)
+- **Create**: `Create...Usecase`
+- **Update**: `Update...Usecase`
+- **List**: `List...Usecase`
+- **Get**: `Get...Usecase`
+- **Delete**: `Delete...Usecase`
 
 ---
 
 ## GraphQL Operations
+
+### Create Prospect
+```graphql
+mutation CreateProspect($input: CreateProspectInput!) {
+  prospect_create(input: $input) {
+    id
+    firstName
+    lastName
+    email
+    status
+  }
+}
+```
 
 ### Create Prospect Objective
 ```graphql
@@ -215,86 +193,16 @@ mutation CreateProspectObjective($input: CreateProspectObjectiveInput!) {
     id
     label
     slug
-    targetValue
-    unit
-    targetDate
-    is_active
+    visibility
   }
 }
 ```
-
-### List Prospect Preferences
-```graphql
-query ListProspectPreferences($prospectId: ID!) {
-  prospect_activity_preference_list(prospectId: $prospectId) {
-    items {
-        id
-        label
-        preferenceLevel
-        frequency_per_week
-    }
-  }
-}
-```
-
-### Update Prospect Level
-```graphql
-mutation UpdateProspectLevel($input: UpdateProspectLevelInput!) {
-  prospect_level_update(input: $input) {
-    id
-    label
-    assessmentDate
-    updatedAt
-  }
-}
-```
-
----
-
-## Reporting & Analytics
-
-### Prospect Segmentation
-- By fitness level (beginner/intermediate/advanced)
-- By activity preferences
-- By objectives
-- By acquisition source
-- By status
-
-### Retention Metrics
-- Active vs inactive prospects
-- Churn rate by segment
-- Status transition analysis
-- Reactivation rates
-
-### Marketing Attribution
-- Prospects by source
-- Conversion rates by channel
-- Campaign performance
-- ROI by marketing spend
 
 ---
 
 ## Error Codes
-
-### Objectives
-- `CREATE_PROSPECT_OBJECTIVE_USECASE` - Failed to create objective
-- `UPDATE_PROSPECT_OBJECTIVE_USECASE` - Failed to update objective
-- `DELETE_PROSPECT_OBJECTIVE_USECASE` - Failed to delete objective
-- `OBJECTIVE_NOT_FOUND` - Objective does not exist
-
-### Activity Preferences
-- `CREATE_PROSPECT_ACTIVITY_PREFERENCE_USECASE` - Failed to create preference
-- `UPDATE_PROSPECT_ACTIVITY_PREFERENCE_USECASE` - Failed to update preference
-- `DELETE_PROSPECT_ACTIVITY_PREFERENCE_USECASE` - Failed to delete preference
-
-### Levels
-- `CREATE_PROSPECT_LEVEL_USECASE` - Failed to create level
-- `UPDATE_PROSPECT_LEVEL_USECASE` - Failed to update level
-- `DELETE_PROSPECT_LEVEL_USECASE` - Failed to delete level
-
-
-### Sources
-- `CREATE_PROSPECT_SOURCE_USECASE` - Failed to create source
-- `UPDATE_PROSPECT_SOURCE_USECASE` - Failed to update source
-- `DELETE_PROSPECT_SOURCE_USECASE` - Failed to delete source
-- `PROSPECT_NOT_FOUND` - Prospect profile does not exist
+- `CREATE_PROSPECT_USECASE`
+- `UPDATE_PROSPECT_USECASE`
+- `DELETE_PROSPECT_USECASE`
+- `PROSPECT_NOT_FOUND`
+- ... (Similar codes for sub-domains)
