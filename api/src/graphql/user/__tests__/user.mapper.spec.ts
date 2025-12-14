@@ -41,6 +41,8 @@ describe('mapUserUsecaseToGql', () => {
     expect(result).toEqual({
       id: 'user-1',
       type: 'coach',
+      firstName: 'Marie',
+      lastName: 'Curie',
       first_name: 'Marie',
       last_name: 'Curie',
       email: 'marie@example.com',

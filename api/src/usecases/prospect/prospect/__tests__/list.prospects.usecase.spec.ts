@@ -6,6 +6,8 @@ import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { BddServiceMongo } from '@services/db/mongo/db.service.mongo';
 import { BddServiceProspectMongo } from '@services/db/mongo/repositories/prospect/prospect.repository';
+import { BddServiceUserMongo } from '@services/db/mongo/repositories/user.repository';
+import { BddServiceCoachAthleteMongo } from '@services/db/mongo/repositories/coach-athlete.repository';
 import { ListProspectsUsecase } from '@usecases/prospect/prospect/list.prospects.usecase';
 import { Prospect } from '@services/db/models/prospect/prospect.model';
 import { ProspectStatus } from '@src/common/prospect-status.enum';
@@ -58,6 +60,8 @@ describe('ListProspectsUsecase', () => {
         loggerMock = mock<LoggerMock>();
 
         (bddServiceMock as unknown as { prospect: BddServiceProspectMongo }).prospect = repositoryMock;
+        (bddServiceMock as unknown as { user: BddServiceUserMongo }).user = mock<BddServiceUserMongo>();
+        (bddServiceMock as unknown as { coachAthlete: BddServiceCoachAthleteMongo }).coachAthlete = mock<BddServiceCoachAthleteMongo>();
         inversifyMock.bddService = bddServiceMock as unknown as BddServiceMongo;
         inversifyMock.loggerService = loggerMock;
 
