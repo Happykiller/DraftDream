@@ -288,6 +288,7 @@
       "title": "Athlete link",
       "helper": "Review every piece of information for your athlete.",
       "summary_title": "Link summary",
+      "client_sheet_title": "Client sheet",
       "loading": "Loading athlete link...",
       "tabs": {
         "overview": "Overview",
@@ -301,7 +302,14 @@
         "end_date": "End: {{date}}",
         "no_start_date": "No start date provided",
         "no_end_date": "No end date",
+        "first_name": "First name",
+        "last_name": "Last name",
+        "email": "Email",
+        "phone": "Phone",
+        "no_first_name": "First name not provided",
+        "no_last_name": "Last name not provided",
         "no_email": "Email not provided",
+        "no_phone": "Phone not provided",
         "no_note": "No note provided"
       },
       "status": {

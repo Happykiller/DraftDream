@@ -11,6 +11,7 @@ import {
   CardContent,
   CircularProgress,
   Divider,
+  Grid,
   Stack,
   Tab,
   Tabs,
@@ -106,6 +107,26 @@ export function AthleteLinkDetails(): React.JSX.Element {
     return link.endDate ? formatDate(link.endDate) : t('athletes.details.fields.no_end_date');
   }, [formatDate, link, t]);
 
+  const athleteFirstName = React.useMemo(
+    () => link?.athlete?.first_name?.trim() || t('athletes.details.fields.no_first_name'),
+    [link?.athlete?.first_name, t],
+  );
+
+  const athleteLastName = React.useMemo(
+    () => link?.athlete?.last_name?.trim() || t('athletes.details.fields.no_last_name'),
+    [link?.athlete?.last_name, t],
+  );
+
+  const athleteEmail = React.useMemo(
+    () => link?.athlete?.email?.trim() || t('athletes.details.fields.no_email'),
+    [link?.athlete?.email, t],
+  );
+
+  const athletePhone = React.useMemo(
+    () => link?.athlete?.phone?.trim() || t('athletes.details.fields.no_phone'),
+    [link?.athlete?.phone, t],
+  );
+
   const headerBackground = React.useMemo(
     () => ({
       backgroundColor: alpha(theme.palette.info.main, 0.14),
@@ -125,6 +146,20 @@ export function AthleteLinkDetails(): React.JSX.Element {
   const handleTabChange = React.useCallback((_: React.SyntheticEvent, newValue: string) => {
     setCurrentTab(newValue as AthleteLinkTab);
   }, []);
+
+  const renderClientField = React.useCallback(
+    (label: string, value: string) => (
+      <Grid size={{ xs: 12, sm: 6 }}>
+        <Stack spacing={0.5} alignItems="flex-start">
+          <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, letterSpacing: 0.4 }}>
+            {label}
+          </Typography>
+          <Typography variant="body2">{value}</Typography>
+        </Stack>
+      </Grid>
+    ),
+    [],
+  );
 
   return (
     <Stack
@@ -265,9 +300,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
 
                     <Stack direction="row" spacing={1} alignItems="center">
                       <Mail color="action" fontSize="small" />
-                      <Typography variant="body2">
-                        {link.athlete?.email || t('athletes.details.fields.no_email')}
-                      </Typography>
+                      <Typography variant="body2">{athleteEmail}</Typography>
                     </Stack>
 
                     <Stack direction="row" spacing={1} alignItems="center">
@@ -299,16 +332,33 @@ export function AthleteLinkDetails(): React.JSX.Element {
                 <Box sx={{ flexGrow: 1, overflow: 'auto', minHeight: 0 }}>
                   <TabPanel value="overview" currentTab={currentTab}>
                     {link ? (
-                      <Stack spacing={2} sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3 } }}>
-                        <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                          {t('athletes.details.summary_title')}
-                        </Typography>
-
-                        <Stack direction="row" spacing={1} alignItems="flex-start">
-                          <Notes color="action" fontSize="small" sx={{ mt: 0.25 }} />
-                          <Typography variant="body2">
-                            {link.note?.trim() || t('athletes.details.fields.no_note')}
+                      <Stack spacing={3} sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3 } }}>
+                        <Stack spacing={1.5}>
+                          <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                            {t('athletes.details.client_sheet_title')}
                           </Typography>
+
+                          <Grid container spacing={2} rowSpacing={2}>
+                            {renderClientField(t('athletes.details.fields.first_name'), athleteFirstName)}
+                            {renderClientField(t('athletes.details.fields.last_name'), athleteLastName)}
+                            {renderClientField(t('athletes.details.fields.email'), athleteEmail)}
+                            {renderClientField(t('athletes.details.fields.phone'), athletePhone)}
+                          </Grid>
+                        </Stack>
+
+                        <Divider />
+
+                        <Stack spacing={1.5}>
+                          <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                            {t('athletes.details.summary_title')}
+                          </Typography>
+
+                          <Stack direction="row" spacing={1} alignItems="flex-start">
+                            <Notes color="action" fontSize="small" sx={{ mt: 0.25 }} />
+                            <Typography variant="body2">
+                              {link.note?.trim() || t('athletes.details.fields.no_note')}
+                            </Typography>
+                          </Stack>
                         </Stack>
                       </Stack>
                     ) : null}

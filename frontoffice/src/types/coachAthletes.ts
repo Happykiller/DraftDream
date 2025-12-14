@@ -5,6 +5,7 @@ export interface CoachAthleteUserSummary {
   first_name?: string | null;
   last_name?: string | null;
   email?: string | null;
+  phone?: string | null;
 }
 
 export interface CoachAthleteLink {

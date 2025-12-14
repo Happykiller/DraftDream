@@ -290,6 +290,7 @@
       "title": "Lien coach-athlète",
       "helper": "Consultez toutes les informations pour votre athlète.",
       "summary_title": "Résumé du lien",
+      "client_sheet_title": "Fiche client",
       "loading": "Chargement du lien athlète...",
       "tabs": {
         "overview": "Vue d'ensemble",
@@ -303,7 +304,14 @@
         "end_date": "Fin : {{date}}",
         "no_start_date": "Date de début non renseignée",
         "no_end_date": "Pas de date de fin",
+        "first_name": "Prénom",
+        "last_name": "Nom",
+        "email": "Email",
+        "phone": "Téléphone",
+        "no_first_name": "Prénom non renseigné",
+        "no_last_name": "Nom non renseigné",
         "no_email": "Email non renseigné",
+        "no_phone": "Téléphone non renseigné",
         "no_note": "Aucune note enregistrée"
       },
       "status": {

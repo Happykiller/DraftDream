@@ -17,8 +17,8 @@ const COACH_ATHLETE_FIELDS = `
   createdAt
   updatedAt
   deletedAt
-  coach { id first_name last_name email }
-  athlete { id first_name last_name email }
+  coach { id first_name last_name email phone }
+  athlete { id first_name last_name email phone }
 `;
 
 const LIST_QUERY = `
