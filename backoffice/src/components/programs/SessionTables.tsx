@@ -3,7 +3,9 @@ import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
-import { Box, Button, Chip, IconButton, Stack, TextField, Tooltip } from '@mui/material';
+
+import { Box, Button, Chip, IconButton, Stack, TextField, Tooltip, useMediaQuery } from '@mui/material';
+import type { Theme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 import type { Session } from '@hooks/useSessions';
@@ -40,6 +42,9 @@ export const SessionTables = React.memo(function SessionTables({
 }: SessionTablesProps): React.JSX.Element {
   const fmtDate = useDateFormatter();
   const { t } = useTranslation();
+  // Responsive: Hide Created/Updated on smaller screens
+  const isXl = useMediaQuery((theme: Theme) => theme.breakpoints.up('xl'));
+
 
   const columns = React.useMemo<GridColDef<Session>[]>(() => [
     { field: 'label', headerName: t('common.labels.label'), flex: 1.4, minWidth: 180 },
@@ -77,20 +82,24 @@ export const SessionTables = React.memo(function SessionTables({
       minWidth: 170,
       valueFormatter: (p: any) => p?.email ?? '',
     },
-    {
-      field: 'createdAt',
-      headerName: t('common.labels.created'),
-      flex: 1,
-      minWidth: 170,
-      valueFormatter: (p: any) => fmtDate(p),
-    },
-    {
-      field: 'updatedAt',
-      headerName: t('common.labels.updated'),
-      flex: 1,
-      minWidth: 170,
-      valueFormatter: (p: any) => fmtDate(p),
-    },
+    ...(isXl
+      ? [
+        {
+          field: 'createdAt',
+          headerName: t('common.labels.created'),
+          flex: 1,
+          minWidth: 170,
+          valueFormatter: (p: any) => fmtDate(p),
+        },
+        {
+          field: 'updatedAt',
+          headerName: t('common.labels.updated'),
+          flex: 1,
+          minWidth: 170,
+          valueFormatter: (p: any) => fmtDate(p),
+        },
+      ]
+      : []),
     {
       field: 'actions',
       headerName: t('common.labels.actions'),
@@ -112,7 +121,7 @@ export const SessionTables = React.memo(function SessionTables({
         </Stack>
       ),
     },
-  ], [onEdit, onDelete, fmtDate, t]);
+  ], [onEdit, onDelete, fmtDate, t, isXl]);
 
   return (
     <Box sx={{ width: '100%' }}>

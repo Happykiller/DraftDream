@@ -3,11 +3,10 @@ import * as React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
-import { Box, Button, IconButton, Stack, TextField, Tooltip } from '@mui/material';
+import { Box, Button, IconButton, Stack, TextField, Tooltip, useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
-
-import type { ProspectObjective } from '@hooks/useProspectObjectives';
-import { useDateFormatter } from '@hooks/useDateFormatter';
+import { useDateFormatter } from '@src/hooks/useDateFormatter';
 
 export interface ProspectObjectiveTableProps {
   rows: ProspectObjective[];
@@ -41,6 +40,8 @@ export function ProspectObjectiveTable(props: ProspectObjectiveTableProps): Reac
   } = props;
   const { t } = useTranslation();
   const fmtDate = useDateFormatter();
+  const theme = useTheme();
+  const isXl = useMediaQuery(theme.breakpoints.up('xl'));
 
   const columns = React.useMemo<GridColDef<ProspectObjective>[]>(
     () => [
@@ -53,18 +54,22 @@ export function ProspectObjectiveTable(props: ProspectObjectiveTableProps): Reac
         valueGetter: (params: any) => params?.email,
         flex: 1,
       },
-      {
-        field: 'createdAt',
-        headerName: t('common.labels.created'),
-        valueFormatter: (value: any) => fmtDate(value),
-        flex: 1,
-      },
-      {
-        field: 'updatedAt',
-        headerName: t('common.labels.updated'),
-        valueFormatter: (value: any) => fmtDate(value),
-        flex: 1,
-      },
+      ...(isXl
+        ? [
+          {
+            field: 'createdAt',
+            headerName: t('common.labels.created'),
+            valueFormatter: (value: any) => fmtDate(value),
+            flex: 1,
+          },
+          {
+            field: 'updatedAt',
+            headerName: t('common.labels.updated'),
+            valueFormatter: (value: any) => fmtDate(value),
+            flex: 1,
+          },
+        ]
+        : []),
       {
         field: 'actions',
         headerName: t('common.labels.actions'),
@@ -86,7 +91,8 @@ export function ProspectObjectiveTable(props: ProspectObjectiveTableProps): Reac
         ),
       },
     ],
-    [fmtDate, onDelete, onEdit, t],
+
+    [fmtDate, onDelete, onEdit, t, isXl],
   );
 
   return (

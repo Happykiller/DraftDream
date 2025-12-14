@@ -45,7 +45,6 @@ const LIST_Q = `
         slug
         label
         locale
-        visibility
         createdBy
         creator { id email }
         createdAt

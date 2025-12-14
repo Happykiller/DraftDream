@@ -11,8 +11,10 @@ import {
   Stack,
   Switch,
   TextField,
+  Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { useDateFormatter } from '@src/hooks/useDateFormatter';
 
 import type { CoachAthlete } from '@hooks/useCoachAthletes';
 
@@ -65,6 +67,16 @@ export function CoachAthleteDialog(props: CoachAthleteDialogProps): React.JSX.El
   const isEdit = mode === 'edit';
   const { t } = useTranslation();
   const [values, setValues] = React.useState<CoachAthleteDialogValues>(buildDefaultValues);
+  const formatDate = useDateFormatter();
+
+  const formattedCreatedAt = React.useMemo(
+    () => (initial?.createdAt ? formatDate(initial.createdAt) : '-'),
+    [initial?.createdAt, formatDate],
+  );
+  const formattedUpdatedAt = React.useMemo(
+    () => (initial?.updatedAt ? formatDate(initial.updatedAt) : '-'),
+    [initial?.updatedAt, formatDate],
+  );
 
   React.useEffect(() => {
     if (open && isEdit && initial) {
@@ -100,6 +112,23 @@ export function CoachAthleteDialog(props: CoachAthleteDialogProps): React.JSX.El
         </DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{ mt: 1 }}>
+            {isEdit && initial ? (
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <Stack flex={1} spacing={0.25}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('common.labels.created')}
+                  </Typography>
+                  <Typography variant="body2">{formattedCreatedAt}</Typography>
+                </Stack>
+                <Stack flex={1} spacing={0.25}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('common.labels.updated')}
+                  </Typography>
+                  <Typography variant="body2">{formattedUpdatedAt}</Typography>
+                </Stack>
+              </Stack>
+            ) : null}
+
             {/* General information */}
             <Autocomplete
               value={values.coach}

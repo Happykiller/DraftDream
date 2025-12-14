@@ -18,7 +18,9 @@ type UserGql {
   id: ID!
   type: String!
   first_name: String!
+  firstName: String!
   last_name: String!
+  lastName: String!
   email: String!
   phone: String
   address: AddressGql
@@ -325,6 +327,30 @@ type ProspectSourceListGql {
   limit: Int!
 }
 
+type CoachAthleteGql {
+  id: ID!
+  coachId: ID!
+  athleteId: ID!
+  startDate: DateTime!
+  endDate: DateTime
+  is_active: Boolean!
+  active: Boolean!
+  note: String
+  createdBy: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  coach: UserGql
+  athlete: UserGql
+}
+
+type CoachAthleteListGql {
+  items: [CoachAthleteGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
 type ProspectWorkflowEntryGql {
   status: String!
   date: DateTime!
@@ -351,6 +377,8 @@ type ProspectGql {
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  matchedAthleteId: ID
+  coachAthleteLinkId: ID
   creator: UserGql
   level: ProspectLevelGql
   source: ProspectSourceGql
@@ -375,6 +403,14 @@ type ProspectListGql {
   total: Int!
   page: Int!
   limit: Int!
+}
+
+type ProspectConversionGql {
+  prospect: ProspectGql!
+  athlete: UserGql!
+  coachAthleteLink: CoachAthleteGql!
+  createdAthlete: Boolean!
+  createdCoachAthleteLink: Boolean!
 }
 
 type MealTypeGql {
@@ -501,29 +537,6 @@ type MealPlanGql {
 
 type MealPlanListGql {
   items: [MealPlanGql!]!
-  total: Int!
-  page: Int!
-  limit: Int!
-}
-
-type CoachAthleteGql {
-  id: ID!
-  coachId: ID!
-  athleteId: ID!
-  startDate: DateTime!
-  endDate: DateTime
-  is_active: Boolean!
-  note: String
-  createdBy: ID!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  deletedAt: DateTime
-  coach: UserGql
-  athlete: UserGql
-}
-
-type CoachAthleteListGql {
-  items: [CoachAthleteGql!]!
   total: Int!
   page: Int!
   limit: Int!
@@ -816,6 +829,7 @@ type Mutation {
   prospect_create(input: CreateProspectInput!): ProspectGql
   prospect_update(input: UpdateProspectInput!): ProspectGql
   prospect_delete(id: ID!): Boolean!
+  prospect_convert(input: ConvertProspectInput!): ProspectConversionGql
   exercise_create(input: CreateExerciseInput!): ExerciseGql
   exercise_update(input: UpdateExerciseInput!): ExerciseGql
   exercise_softDelete(id: ID!): Boolean!
@@ -1088,6 +1102,10 @@ input UpdateProspectInput {
   budget: Float
   dealDescription: String
   desiredStartDate: DateTime
+}
+
+input ConvertProspectInput {
+  prospectId: ID!
 }
 
 input CreateExerciseInput {

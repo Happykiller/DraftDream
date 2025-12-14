@@ -3,8 +3,9 @@
 import * as React from 'react';
 import {
   Dialog, DialogTitle, DialogContent, DialogActions,
-  TextField, Button, Stack, MenuItem, FormControlLabel, Switch, Divider
+  TextField, Button, Stack, MenuItem, FormControlLabel, Switch, Divider, Typography
 } from '@mui/material';
+import { useDateFormatter } from '@src/hooks/useDateFormatter';
 import type { User } from '@src/hooks/useUsers';
 
 export type UserDialogMode = 'create' | 'edit';
@@ -54,6 +55,16 @@ const DEFAULTS: UserDialogValues = {
 export function UserDialog({ open, mode, initial, onClose, onSubmit }: UserDialogProps): React.JSX.Element {
   const isEdit = mode === 'edit';
   const [values, setValues] = React.useState<UserDialogValues>(DEFAULTS);
+  const formatDate = useDateFormatter();
+
+  const formattedCreatedAt = React.useMemo(
+    () => (initial?.createdAt ? formatDate(initial.createdAt) : '-'),
+    [initial?.createdAt, formatDate],
+  );
+  const formattedUpdatedAt = React.useMemo(
+    () => (initial?.updatedAt ? formatDate(initial.updatedAt) : '-'),
+    [initial?.updatedAt, formatDate],
+  );
 
   React.useEffect(() => {
     if (isEdit && initial) {
@@ -93,6 +104,25 @@ export function UserDialog({ open, mode, initial, onClose, onSubmit }: UserDialo
       <DialogTitle id="user-dialog-title">{isEdit ? 'Edit User' : 'New User'}</DialogTitle>
       <DialogContent>
         <Stack component="form" onSubmit={submit} spacing={2} sx={{ mt: 1 }}>
+          {isEdit && initial ? (
+            <Stack spacing={1.5}>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <Stack flex={1} spacing={0.25}>
+                  <Typography variant="caption" color="text.secondary">
+                    Created
+                  </Typography>
+                  <Typography variant="body2">{formattedCreatedAt}</Typography>
+                </Stack>
+                <Stack flex={1} spacing={0.25}>
+                  <Typography variant="caption" color="text.secondary">
+                    Updated
+                  </Typography>
+                  <Typography variant="body2">{formattedUpdatedAt}</Typography>
+                </Stack>
+              </Stack>
+            </Stack>
+          ) : null}
+
           <TextField select label="Type" name="type" value={values.type} onChange={onChange} required fullWidth>
             {['coach', 'athlete', 'admin'].map((t) => (
               <MenuItem key={t} value={t}>{t}</MenuItem>
@@ -101,7 +131,7 @@ export function UserDialog({ open, mode, initial, onClose, onSubmit }: UserDialo
 
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <TextField label="First name" name="first_name" value={values.first_name} onChange={onChange} required fullWidth />
-            <TextField label="Last name"  name="last_name"  value={values.last_name}  onChange={onChange} required fullWidth />
+            <TextField label="Last name" name="last_name" value={values.last_name} onChange={onChange} required fullWidth />
           </Stack>
 
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
@@ -112,7 +142,7 @@ export function UserDialog({ open, mode, initial, onClose, onSubmit }: UserDialo
           {!isEdit && (
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
               <TextField label="Password" name="password" type="password" value={values.password} onChange={onChange} required fullWidth />
-              <TextField label="Confirm"  name="confirm_password" type="password" value={values.confirm_password} onChange={onChange} fullWidth />
+              <TextField label="Confirm" name="confirm_password" type="password" value={values.confirm_password} onChange={onChange} fullWidth />
             </Stack>
           )}
 
@@ -129,7 +159,7 @@ export function UserDialog({ open, mode, initial, onClose, onSubmit }: UserDialo
             <TextField label="City" name="address_city" value={values.address_city} onChange={onChange} fullWidth />
           </Stack>
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-            <TextField label="Code"   name="address_code"   value={values.address_code}   onChange={onChange} fullWidth />
+            <TextField label="Code" name="address_code" value={values.address_code} onChange={onChange} fullWidth />
             <TextField label="Country" name="address_country" value={values.address_country} onChange={onChange} fullWidth />
           </Stack>
 

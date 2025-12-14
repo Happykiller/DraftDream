@@ -3,7 +3,9 @@ import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
-import { Box, Button, Stack, TextField, IconButton, Tooltip } from '@mui/material';
+
+import { Box, Button, Stack, TextField, IconButton, Tooltip, useMediaQuery } from '@mui/material';
+import type { Theme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import type { Category } from '@hooks/useCategories';
@@ -42,6 +44,9 @@ export function CategoryTable(props: CategoryTableProps): React.JSX.Element {
   } = props;
   const fmtDate = useDateFormatter();
   const { t } = useTranslation();
+  // Responsive: Hide Created/Updated on smaller screens
+  const isXl = useMediaQuery((theme: Theme) => theme.breakpoints.up('xl'));
+
 
   const columns = React.useMemo<GridColDef<Category>[]>(
     () => [
@@ -59,18 +64,24 @@ export function CategoryTable(props: CategoryTableProps): React.JSX.Element {
         valueGetter: (params: any) => params?.email,
         flex: 1,
       },
-      {
-        field: 'createdAt',
-        headerName: t('common.labels.created'),
-        valueFormatter: (value: any) => fmtDate(value),
-        flex: 1,
-      },
-      {
-        field: 'updatedAt',
-        headerName: t('common.labels.updated'),
-        valueFormatter: (value: any) => fmtDate(value),
-        flex: 1,
-      },
+      ...(isXl
+        ? [
+          {
+            field: 'createdAt',
+            headerName: t('common.labels.created'),
+            valueFormatter: (value: any) => fmtDate(value),
+            flex: 1,
+            minWidth: 170,
+          },
+          {
+            field: 'updatedAt',
+            headerName: t('common.labels.updated'),
+            valueFormatter: (value: any) => fmtDate(value),
+            flex: 1,
+            minWidth: 170,
+          },
+        ]
+        : []),
       {
         field: 'actions',
         headerName: t('common.labels.actions'),
@@ -92,7 +103,7 @@ export function CategoryTable(props: CategoryTableProps): React.JSX.Element {
         ),
       },
     ],
-    [fmtDate, onDelete, onEdit, t]
+    [fmtDate, onDelete, onEdit, t, isXl]
   );
 
   return (

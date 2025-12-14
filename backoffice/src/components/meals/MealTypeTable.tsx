@@ -2,12 +2,13 @@
 import * as React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { Box, Button, IconButton, Stack, TextField, Tooltip } from '@mui/material';
+import { Box, Button, IconButton, Stack, TextField, Tooltip, useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { useTranslation } from 'react-i18next';
 
 import type { MealType } from '@hooks/useMealTypes';
-import { useDateFormatter } from '@hooks/useDateFormatter';
+import { useDateFormatter } from '@src/hooks/useDateFormatter';
 
 export interface MealTypeTableProps {
   rows: MealType[];
@@ -41,6 +42,9 @@ export function MealTypeTable(props: MealTypeTableProps): React.JSX.Element {
   } = props;
   const { t } = useTranslation();
   const formatDate = useDateFormatter();
+  const theme = useTheme();
+  // Responsive: Hide columns on smaller screens
+  const isXl = useMediaQuery(theme.breakpoints.up('xl'));
 
   const columns = React.useMemo<GridColDef<MealType>[]>(
     () => [
@@ -59,18 +63,22 @@ export function MealTypeTable(props: MealTypeTableProps): React.JSX.Element {
         renderCell: (params) => params.row.creator?.email ?? t('common.messages.no_value'),
         flex: 1,
       },
-      {
-        field: 'createdAt',
-        headerName: t('common.labels.created'),
-        valueFormatter: (value: any) => formatDate(value),
-        flex: 1,
-      },
-      {
-        field: 'updatedAt',
-        headerName: t('common.labels.updated'),
-        valueFormatter: (value: any) => formatDate(value),
-        flex: 1,
-      },
+      ...(isXl
+        ? [
+          {
+            field: 'createdAt',
+            headerName: t('common.labels.created'),
+            valueFormatter: (value: any) => formatDate(value),
+            flex: 1,
+          },
+          {
+            field: 'updatedAt',
+            headerName: t('common.labels.updated'),
+            valueFormatter: (value: any) => formatDate(value),
+            flex: 1,
+          },
+        ]
+        : []),
       {
         field: 'actions',
         headerName: t('common.labels.actions'),
@@ -92,7 +100,7 @@ export function MealTypeTable(props: MealTypeTableProps): React.JSX.Element {
         ),
       },
     ],
-    [formatDate, onDelete, onEdit, t],
+    [formatDate, onDelete, onEdit, t, isXl],
   );
 
   return (

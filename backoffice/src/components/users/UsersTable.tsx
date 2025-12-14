@@ -2,10 +2,11 @@
 import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
-import { Box, Button, Stack, TextField, IconButton, Tooltip, Chip, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { Box, Button, Stack, TextField, IconButton, Tooltip, Chip, Select, MenuItem, FormControl, InputLabel, useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 import type { User } from '@hooks/useUsers';
-import { useDateFormatter } from '@hooks/useDateFormatter';
+import { useDateFormatter } from '@src/hooks/useDateFormatter';
 
 export interface UsersTableProps {
   rows: User[];
@@ -28,6 +29,8 @@ export const UsersTable = React.memo(function UsersTable({
   onCreate, onEdit, onQueryChange, onTypeChange, onPageChange, onLimitChange,
 }: UsersTableProps): React.JSX.Element {
   const fmtDate = useDateFormatter();
+  const theme = useTheme();
+  const isXl = useMediaQuery(theme.breakpoints.up('xl'));
 
   const columns = React.useMemo<GridColDef<User>[]>(
     () => [
@@ -52,16 +55,18 @@ export const UsersTable = React.memo(function UsersTable({
         sortable: false,
         filterable: false,
       },
-      {
-        field: 'company',
-        headerName: 'Company',
-        flex: 1,
-        valueGetter: (p: any) => {
-          return p?.name ?? '—';
-        },
-      },
-      { field: 'createdAt', headerName: 'Created', flex: 1, minWidth: 180, valueFormatter: (p) => fmtDate(p) },
-      { field: 'updatedAt', headerName: 'Updated', flex: 1, minWidth: 180, valueFormatter: (p) => fmtDate(p) },
+      ...(isXl
+        ? [
+          {
+            field: 'company',
+            headerName: 'Company',
+            flex: 1,
+            valueGetter: (p: any) => p?.name ?? '—',
+          },
+          { field: 'createdAt', headerName: 'Created', flex: 1, minWidth: 180, valueFormatter: (p: any) => fmtDate(p) },
+          { field: 'updatedAt', headerName: 'Updated', flex: 1, minWidth: 180, valueFormatter: (p: any) => fmtDate(p) },
+        ]
+        : []),
       {
         field: 'actions',
         headerName: 'Actions',
@@ -76,7 +81,7 @@ export const UsersTable = React.memo(function UsersTable({
         ),
       },
     ],
-    [onEdit, fmtDate]
+    [onEdit, fmtDate, isXl]
   );
 
   return (

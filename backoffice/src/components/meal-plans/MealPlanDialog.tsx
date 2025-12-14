@@ -237,6 +237,19 @@ export function MealPlanDialog({
     }, {} as Record<string, MealPlanDialogMealOption[]>);
   }, [mealOptions]);
 
+  const creatorEmail = React.useMemo(
+    () => initial?.creator?.email ?? initial?.createdBy ?? '',
+    [initial?.createdBy, initial?.creator?.email],
+  );
+  const formattedCreatedAt = React.useMemo(() => {
+    if (!initial?.createdAt) return '';
+    return new Date(initial.createdAt).toLocaleString();
+  }, [initial?.createdAt]);
+  const formattedUpdatedAt = React.useMemo(() => {
+    if (!initial?.updatedAt) return '';
+    return new Date(initial.updatedAt).toLocaleString();
+  }, [initial?.updatedAt]);
+
   React.useEffect(() => {
     if (open && isEdit && initial) {
       setValues(toDialogValues(initial, userOptions));
@@ -452,6 +465,44 @@ export function MealPlanDialog({
       <Box component="form" onSubmit={submit}>
         <DialogContent>
           <Stack spacing={3} sx={{ mt: 1 }}>
+            {isEdit && initial ? (
+              <Stack spacing={1.5}>
+                {/* Signature ensures editors know who created the program and when it was last touched. */}
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <Stack flex={1} spacing={0.25}>
+                    <Typography variant="caption" color="text.secondary">
+                      {t('common.labels.slug')}
+                    </Typography>
+                    <Typography variant="body2" sx={{ wordBreak: 'break-all' }}>
+                      {initial.slug || '-'}
+                    </Typography>
+                  </Stack>
+                  <Stack flex={1} spacing={0.25}>
+                    <Typography variant="caption" color="text.secondary">
+                      {t('common.labels.creator')}
+                    </Typography>
+                    <Typography variant="body2" sx={{ wordBreak: 'break-all' }}>
+                      {creatorEmail || '-'}
+                    </Typography>
+                  </Stack>
+                </Stack>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <Stack flex={1} spacing={0.25}>
+                    <Typography variant="caption" color="text.secondary">
+                      {t('common.labels.created')}
+                    </Typography>
+                    <Typography variant="body2">{formattedCreatedAt || '-'}</Typography>
+                  </Stack>
+                  <Stack flex={1} spacing={0.25}>
+                    <Typography variant="caption" color="text.secondary">
+                      {t('common.labels.updated')}
+                    </Typography>
+                    <Typography variant="body2">{formattedUpdatedAt || '-'}</Typography>
+                  </Stack>
+                </Stack>
+              </Stack>
+            ) : null}
+
             {/* General information */}
             <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
               <TextField
@@ -591,6 +642,7 @@ export function MealPlanDialog({
                       }}
                     />
                   )}
+                  fullWidth
                 />
                 <Button variant="outlined" onClick={handleAddDay} disabled={!selectedDay}>
                   {t('meals.mealPlans.dialog.add_day')}
@@ -729,6 +781,7 @@ export function MealPlanDialog({
                             }}
                           />
                         )}
+                        fullWidth
                       />
                       <Button
                         variant="outlined"

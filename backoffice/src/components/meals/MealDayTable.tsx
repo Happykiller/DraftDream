@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
-import { Box, Button, IconButton, Stack, TextField, Tooltip, Typography } from '@mui/material';
+import { Box, Button, IconButton, Stack, TextField, Tooltip, Typography, useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 import type { MealDay } from '@hooks/useMealDays';
 import { useDateFormatter } from '@hooks/useDateFormatter';
@@ -28,6 +29,10 @@ export function MealDayTable(props: MealDayTableProps): React.JSX.Element {
   const { rows, total, page, limit, q, loading, onCreate, onEdit, onDelete, onQueryChange, onPageChange, onLimitChange } = props;
   const { t } = useTranslation();
   const formatDate = useDateFormatter();
+  const theme = useTheme();
+  // Responsive: Hide Created/Updated on smaller screens
+  const isXl = useMediaQuery(theme.breakpoints.up('xl'));
+
 
   const columns = React.useMemo<GridColDef<MealDay>[]>(() => {
     return [
@@ -54,23 +59,29 @@ export function MealDayTable(props: MealDayTableProps): React.JSX.Element {
       {
         field: 'creator',
         headerName: t('common.labels.creator'),
-        valueGetter: (creator :any) => {
+        valueGetter: (creator: any) => {
           return creator?.email || t('common.messages.unknown');
         },
         flex: 1,
       },
-      {
-        field: 'createdAt',
-        headerName: t('common.labels.created'),
-        valueFormatter: (value: any) => formatDate(value),
-        flex: 1,
-      },
-      {
-        field: 'updatedAt',
-        headerName: t('common.labels.updated'),
-        valueFormatter: (value: any) => formatDate(value),
-        flex: 1,
-      },
+      ...(isXl
+        ? [
+          {
+            field: 'createdAt',
+            headerName: t('common.labels.created'),
+            valueFormatter: (value: any) => formatDate(value),
+            flex: 1,
+            minWidth: 170,
+          },
+          {
+            field: 'updatedAt',
+            headerName: t('common.labels.updated'),
+            valueFormatter: (value: any) => formatDate(value),
+            flex: 1,
+            minWidth: 170,
+          },
+        ]
+        : []),
       {
         field: 'actions',
         headerName: t('common.labels.actions'),
@@ -92,7 +103,7 @@ export function MealDayTable(props: MealDayTableProps): React.JSX.Element {
         ),
       },
     ];
-  }, [formatDate, onDelete, onEdit, t]);
+  }, [formatDate, onDelete, onEdit, t, isXl]);
 
   return (
     <Box sx={{ width: '100%' }}>

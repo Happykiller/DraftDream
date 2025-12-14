@@ -3,11 +3,11 @@ import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
-import { Box, Button, Stack, TextField, IconButton, Tooltip } from '@mui/material';
+import { Box, Button, Stack, TextField, IconButton, Tooltip, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import type { Equipment } from '@hooks/useEquipment';
-import { useDateFormatter } from '@hooks/useDateFormatter';
+import type { Equipment } from '@src/hooks/useEquipment';
+import { useDateFormatter } from '@src/hooks/useDateFormatter';
 import { getVisibilityLabel } from '../../commons/visibility';
 
 export interface EquipmentTableProps {
@@ -41,6 +41,9 @@ export const EquipmentTable = React.memo(function EquipmentTable({
 }: EquipmentTableProps): React.JSX.Element {
   const fmtDate = useDateFormatter();
   const { t } = useTranslation();
+  // Responsive: Hide Created/Updated on smaller screens
+  const isXl = useMediaQuery((theme: any) => theme.breakpoints.up('xl'));
+
 
   const columns = React.useMemo<GridColDef<Equipment>[]>(() => [
     { field: 'label', headerName: t('common.labels.label'), flex: 1, minWidth: 150 },
@@ -58,20 +61,24 @@ export const EquipmentTable = React.memo(function EquipmentTable({
       minWidth: 180,
       valueFormatter: (params: any) => params?.email,
     },
-    {
-      field: 'createdAt',
-      headerName: t('common.labels.created'),
-      valueFormatter: (value: any) => fmtDate(value),
-      flex: 1,
-      minWidth: 180,
-    },
-    {
-      field: 'updatedAt',
-      headerName: t('common.labels.updated'),
-      valueFormatter: (value: any) => fmtDate(value),
-      flex: 1,
-      minWidth: 180,
-    },
+    ...(isXl
+      ? [
+        {
+          field: 'createdAt',
+          headerName: t('common.labels.created'),
+          valueFormatter: (value: any) => fmtDate(value),
+          flex: 1,
+          minWidth: 180,
+        },
+        {
+          field: 'updatedAt',
+          headerName: t('common.labels.updated'),
+          valueFormatter: (value: any) => fmtDate(value),
+          flex: 1,
+          minWidth: 180,
+        },
+      ]
+      : []),
     {
       field: 'actions',
       headerName: t('common.labels.actions'),
@@ -93,7 +100,7 @@ export const EquipmentTable = React.memo(function EquipmentTable({
         </Stack>
       ),
     },
-  ], [fmtDate, onDelete, onEdit, t]);
+  ], [fmtDate, onDelete, onEdit, t, isXl]);
 
   return (
     <Box sx={{ width: '100%' }}>
