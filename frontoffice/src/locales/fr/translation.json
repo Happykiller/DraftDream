@@ -279,8 +279,18 @@
         "end_date": "Fin : {{date}}",
         "no_end_date": "Pas de date de fin",
         "no_note": "Aucune note enregistrée",
+        "actions": {
+          "view": "Voir l'athlète"
+        },
         "status_active": "Lien actif",
         "status_inactive": "Lien inactif"
+      },
+      "panel": {
+        "title": "Fiche athlète",
+        "no_email": "Email non renseigné",
+        "actions": {
+          "back_to_list": "Retourner vers la liste"
+        }
       }
     },
     "notifications": {

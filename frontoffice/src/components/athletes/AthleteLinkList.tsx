@@ -4,6 +4,7 @@ import { Search } from '@mui/icons-material';
 import { Box, Grid, InputAdornment, Skeleton, Stack, TextField, Typography } from '@mui/material';
 
 import { AthleteLinkCard } from './AthleteLinkCard';
+import { AthleteLinkPanel } from './AthleteLinkPanel';
 
 import type { CoachAthleteLink } from '@app-types/coachAthletes';
 
@@ -29,6 +30,7 @@ export const AthleteLinkList = React.memo(function AthleteLinkList({
   emptyDescription,
   onSearchChange,
 }: AthleteLinkListProps): React.JSX.Element {
+  const [selectedLink, setSelectedLink] = React.useState<CoachAthleteLink | null>(null);
   const filteredLinks = React.useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
     if (!query) return links;
@@ -44,6 +46,12 @@ export const AthleteLinkList = React.memo(function AthleteLinkList({
   }, [links, searchQuery]);
 
   const showEmpty = !loading && filteredLinks.length === 0;
+  const handleViewLink = React.useCallback((link: CoachAthleteLink) => {
+    setSelectedLink(link);
+  }, []);
+  const handleClosePanel = React.useCallback(() => {
+    setSelectedLink(null);
+  }, []);
 
   return (
     <Stack spacing={2} sx={{ width: '100%' }}>
@@ -92,11 +100,15 @@ export const AthleteLinkList = React.memo(function AthleteLinkList({
         <Grid container spacing={2}>
           {filteredLinks.map((link) => (
             <Grid key={link.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-              <AthleteLinkCard link={link} />
+              <AthleteLinkCard link={link} onView={handleViewLink} />
             </Grid>
           ))}
         </Grid>
       )}
+
+      {selectedLink ? (
+        <AthleteLinkPanel link={selectedLink} onClose={handleClosePanel} open />
+      ) : null}
     </Stack>
   );
 });

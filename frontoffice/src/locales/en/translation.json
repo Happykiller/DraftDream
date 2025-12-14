@@ -277,8 +277,18 @@
         "end_date": "End: {{date}}",
         "no_end_date": "No end date",
         "no_note": "No note provided",
+        "actions": {
+          "view": "View athlete"
+        },
         "status_active": "Active link",
         "status_inactive": "Inactive link"
+      },
+      "panel": {
+        "title": "Athlete overview",
+        "no_email": "Email not provided",
+        "actions": {
+          "back_to_list": "Return to list"
+        }
       }
     },
     "notifications": {
