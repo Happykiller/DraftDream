@@ -304,6 +304,16 @@
         "empty": "No activity preferences provided",
         "load_failed": "Unable to load the athlete's preferences"
       },
+      "programs": {
+        "empty_state": {
+          "title": "No programs assigned yet",
+          "description": "Attach a training plan to this athlete to start tracking progress.",
+          "helper": "Use the programs section to build and assign tailored workouts."
+        },
+        "search_placeholder": "Search this athlete's programs...",
+        "search_aria_label": "Search programs assigned to this athlete",
+        "result_count": "{{count}} / {{total}} program(s)"
+      },
       "tabs": {
         "overview": "Overview",
         "programs": "Programs",

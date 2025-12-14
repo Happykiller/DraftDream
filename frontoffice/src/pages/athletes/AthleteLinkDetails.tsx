@@ -32,9 +32,11 @@ import { alpha, useTheme } from '@mui/material/styles';
 
 import { getAthleteDisplayName } from '@components/athletes/athleteLinkUtils';
 import { TextWithTooltip } from '@components/common/TextWithTooltip';
+import { ProgramList } from '@components/programs/ProgramList';
 import type { AthleteLinkDetailsLoaderResult } from '@pages/athletes/AthleteLinkDetails.loader';
 import { useAthleteInfo } from '@hooks/athletes/useAthleteInfo';
 import { useCoachAthleteLink } from '@hooks/athletes/useCoachAthleteLink';
+import { usePrograms, type Program } from '@hooks/programs/usePrograms';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 
 type AthleteLinkTab = 'overview' | 'programs' | 'nutritions';
@@ -57,6 +59,12 @@ function TabPanel({ value, currentTab, children }: TabPanelProps): React.JSX.Ele
 interface EmptySectionPlaceholderProps {
   readonly title: string;
   readonly helper: string;
+}
+
+interface ProgramTabEmptyState {
+  readonly title: string;
+  readonly description: string;
+  readonly helper?: string;
 }
 
 /** Placeholder shown when a tab has no implemented content yet. */
@@ -158,6 +166,40 @@ export function AthleteLinkDetails(): React.JSX.Element {
     [athleteInfo?.activityPreferences],
   );
 
+  const athleteId = link?.athlete?.id;
+
+  const [programSearchQuery, setProgramSearchQuery] = React.useState('');
+
+  const { items: programs, total: totalPrograms, loading: programsLoading } = usePrograms({
+    page: 1,
+    limit: 12,
+    q: programSearchQuery,
+    userId: athleteId ?? undefined,
+    enabled: Boolean(athleteId),
+  });
+
+  const programEmptyState = React.useMemo(
+    () =>
+      t('athletes.details.programs.empty_state', {
+        returnObjects: true,
+      }) as ProgramTabEmptyState,
+    [t],
+  );
+
+  const programSearchPlaceholder = t('athletes.details.programs.search_placeholder');
+  const programSearchAriaLabel = t('athletes.details.programs.search_aria_label');
+
+  const programResultCountLabel = React.useMemo(
+    () =>
+      programsLoading
+        ? undefined
+        : t('athletes.details.programs.result_count', {
+            count: programs.length,
+            total: totalPrograms,
+          }),
+    [programs.length, programsLoading, t, totalPrograms],
+  );
+
   const finalError = error ?? loaderError;
   const showEmptyState = !loading && !link && finalError !== null;
   const [currentTab, setCurrentTab] = React.useState<AthleteLinkTab>('overview');
@@ -169,6 +211,21 @@ export function AthleteLinkDetails(): React.JSX.Element {
   const handleTabChange = React.useCallback((_: React.SyntheticEvent, newValue: string) => {
     setCurrentTab(newValue as AthleteLinkTab);
   }, []);
+
+  const handleProgramSearchChange = React.useCallback((value: string) => {
+    setProgramSearchQuery(value);
+  }, []);
+
+  React.useEffect(() => {
+    setProgramSearchQuery('');
+  }, [athleteId]);
+
+  const handleViewProgram = React.useCallback(
+    (program: Program) => {
+      navigate(`/programs-coach/view/${program.id}`);
+    },
+    [navigate],
+  );
 
   const renderClientField = React.useCallback(
     (label: string, value: string) => (
@@ -514,10 +571,24 @@ export function AthleteLinkDetails(): React.JSX.Element {
                   </TabPanel>
 
                   <TabPanel value="programs" currentTab={currentTab}>
-                    <EmptySectionPlaceholder
-                      title={t('athletes.details.tabs.programs')}
-                      helper={t('athletes.details.tabs.programs_helper')}
-                    />
+                    {link ? (
+                      <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3 } }}>
+                        <ProgramList
+                          programs={programs}
+                          loading={programsLoading}
+                          placeholderTitle={programEmptyState.title}
+                          placeholderSubtitle={programEmptyState.description}
+                          placeholderHelper={programEmptyState.helper}
+                          allowedActions={['view']}
+                          onViewProgram={handleViewProgram}
+                          onSearchChange={handleProgramSearchChange}
+                          searchPlaceholder={programSearchPlaceholder}
+                          searchAriaLabel={programSearchAriaLabel}
+                          searchQuery={programSearchQuery}
+                          resultCountLabel={programResultCountLabel}
+                        />
+                      </Box>
+                    ) : null}
                   </TabPanel>
 
                   <TabPanel value="nutritions" currentTab={currentTab}>

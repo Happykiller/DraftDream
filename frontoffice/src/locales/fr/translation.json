@@ -306,6 +306,16 @@
         "empty": "Aucune préférence renseignée",
         "load_failed": "Impossible de charger les préférences de l'athlète"
       },
+      "programs": {
+        "empty_state": {
+          "title": "Aucun programme assigné",
+          "description": "Associez un programme d'entraînement à cet athlète pour suivre ses progrès.",
+          "helper": "Utilisez la section programmes pour construire et attribuer des séances adaptées."
+        },
+        "search_placeholder": "Rechercher dans les programmes de cet athlète...",
+        "search_aria_label": "Rechercher les programmes assignés à cet athlète",
+        "result_count": "{{count}} / {{total}} programme(s)"
+      },
       "tabs": {
         "overview": "Vue d'ensemble",
         "programs": "Programmes",
