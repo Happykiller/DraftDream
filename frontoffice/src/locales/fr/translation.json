@@ -288,7 +288,7 @@
     },
     "details": {
       "title": "Lien coach-athlète",
-      "helper": "Consultez toutes les informations de la liaison coach-athlète.",
+      "helper": "Consultez toutes les informations pour votre athlète.",
       "summary_title": "Résumé du lien",
       "loading": "Chargement du lien athlète...",
       "fields": {

@@ -286,7 +286,7 @@
     },
     "details": {
       "title": "Athlete link",
-      "helper": "Review the full coach-athlete link information.",
+      "helper": "Review every piece of information for your athlete.",
       "summary_title": "Link summary",
       "loading": "Loading athlete link...",
       "fields": {
