@@ -291,6 +291,11 @@
       "client_sheet_title": "Client sheet",
       "notes_title": "Notes",
       "loading": "Loading athlete link...",
+      "objectives": {
+        "title": "Objectives",
+        "empty": "No objectives provided",
+        "load_failed": "Unable to load the athlete's objectives"
+      },
       "tabs": {
         "overview": "Overview",
         "programs": "Programs",

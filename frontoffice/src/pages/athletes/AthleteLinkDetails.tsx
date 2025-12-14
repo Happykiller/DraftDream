@@ -2,13 +2,14 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
-import { ArrowBack, CalendarMonth, EventBusy, EventNote, Mail, Notes, Visibility } from '@mui/icons-material';
+import { ArrowBack, CalendarMonth, EventBusy, EventNote, Mail, Notes, TrackChanges, Visibility } from '@mui/icons-material';
 import {
   Alert,
   Box,
   Button,
   Card,
   CardContent,
+  Chip,
   CircularProgress,
   Divider,
   Grid,
@@ -22,6 +23,7 @@ import { alpha, useTheme } from '@mui/material/styles';
 import { getAthleteDisplayName } from '@components/athletes/athleteLinkUtils';
 import { TextWithTooltip } from '@components/common/TextWithTooltip';
 import type { AthleteLinkDetailsLoaderResult } from '@pages/athletes/AthleteLinkDetails.loader';
+import { useAthleteInfo } from '@hooks/athletes/useAthleteInfo';
 import { useCoachAthleteLink } from '@hooks/athletes/useCoachAthleteLink';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 
@@ -135,6 +137,12 @@ export function AthleteLinkDetails(): React.JSX.Element {
     }),
     [theme.palette.info.contrastText, theme.palette.info.main],
   );
+
+  const { athleteInfo, loading: athleteInfoLoading, error: athleteInfoError } = useAthleteInfo({
+    athleteId: link?.athleteId,
+  });
+
+  const objectives = React.useMemo(() => athleteInfo?.objectives ?? [], [athleteInfo?.objectives]);
 
   const finalError = error ?? loaderError;
   const showEmptyState = !loading && !link && finalError !== null;
@@ -277,7 +285,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
                 {showEmptyState ? <Alert severity="error">{finalError}</Alert> : null}
 
                 {link ? (
-                  <Stack spacing={1.5}>
+                  <Stack spacing={2}>
                     <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
                       {t('athletes.details.client_sheet_title')}
                     </Typography>
@@ -296,6 +304,64 @@ export function AthleteLinkDetails(): React.JSX.Element {
                         {renderClientField(t('athletes.details.fields.phone'), athletePhone)}
                       </Grid>
                     </Grid>
+
+                    <Card
+                      variant="outlined"
+                      sx={{
+                        borderColor: alpha(theme.palette.info.main, 0.24),
+                        backgroundColor: alpha(theme.palette.info.main, 0.06),
+                        boxShadow: 'none',
+                      }}
+                    >
+                      <Stack spacing={1.5} sx={{ p: 1.5 }}>
+                        <Stack direction="row" spacing={1} alignItems="center">
+                          <TrackChanges color="info" fontSize="small" />
+                          <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                            {t('athletes.details.objectives.title')}
+                          </Typography>
+                        </Stack>
+
+                        {athleteInfoLoading ? (
+                          <Stack direction="row" spacing={1} alignItems="center">
+                            <CircularProgress size={18} color="info" />
+                            <Typography variant="caption" color="text.secondary">
+                              {t('athletes.details.loading')}
+                            </Typography>
+                          </Stack>
+                        ) : null}
+
+                        {!athleteInfoLoading && athleteInfoError ? (
+                          <Alert severity="warning" sx={{ m: 0 }}>
+                            {athleteInfoError}
+                          </Alert>
+                        ) : null}
+
+                        {!athleteInfoLoading && !athleteInfoError ? (
+                          objectives.length ? (
+                            <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                              {objectives.map((objective) => (
+                                <Chip
+                                  key={objective.id}
+                                  label={objective.label}
+                                  color="info"
+                                  variant="outlined"
+                                  sx={{
+                                    borderColor: alpha(theme.palette.info.main, 0.3),
+                                    backgroundColor: alpha(theme.palette.info.main, 0.12),
+                                    color: theme.palette.info.main,
+                                    fontWeight: 600,
+                                  }}
+                                />
+                              ))}
+                            </Stack>
+                          ) : (
+                            <Typography variant="body2" color="text.secondary">
+                              {t('athletes.details.objectives.empty')}
+                            </Typography>
+                          )
+                        ) : null}
+                      </Stack>
+                    </Card>
                   </Stack>
                 ) : null}
               </Box>

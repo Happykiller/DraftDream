@@ -293,6 +293,11 @@
       "client_sheet_title": "Fiche client",
       "notes_title": "Notes",
       "loading": "Chargement du lien athlète...",
+      "objectives": {
+        "title": "Objectifs",
+        "empty": "Aucun objectif renseigné",
+        "load_failed": "Impossible de charger les objectifs de l'athlète"
+      },
       "tabs": {
         "overview": "Vue d'ensemble",
         "programs": "Programmes",
