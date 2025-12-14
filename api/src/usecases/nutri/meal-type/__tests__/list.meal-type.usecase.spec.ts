@@ -70,7 +70,7 @@ describe('ListMealTypesUsecase', () => {
   });
 
   it('should list meal types through the repository', async () => {
-    mealTypeRepositoryMock.list.mockResolvedValue({
+    (mealTypeRepositoryMock.list as any).mockResolvedValue({
       items: mealTypes,
       total: mealTypes.length,
       page: dto.page!,
@@ -91,7 +91,7 @@ describe('ListMealTypesUsecase', () => {
   });
 
   it('should call the repository with default parameters when none are provided', async () => {
-    mealTypeRepositoryMock.list.mockResolvedValue({
+    (mealTypeRepositoryMock.list as any).mockResolvedValue({
       items: [],
       total: 0,
       page: 1,
@@ -105,7 +105,7 @@ describe('ListMealTypesUsecase', () => {
 
   it('should log and throw a domain error when listing fails', async () => {
     const failure = new Error('list failure');
-    mealTypeRepositoryMock.list.mockRejectedValue(failure);
+    (mealTypeRepositoryMock.list as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.LIST_MEAL_TYPES_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(

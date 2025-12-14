@@ -168,7 +168,7 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
         minWidth: 160,
       },
     ],
-    [fmtDate, onConvert, onDelete, onEdit, statusLabels, t],
+    [fmtDateOnly, onConvert, onDelete, onEdit, statusLabels, t],
   );
 
   const levelColumn = React.useMemo<GridColDef<Prospect>>(

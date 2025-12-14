@@ -52,7 +52,7 @@ describe('GetProspectObjectiveUsecase', () => {
   });
 
   it('should retrieve a prospect objective through the repository', async () => {
-    repositoryMock.get.mockResolvedValue(objective);
+    (repositoryMock.get as any).mockResolvedValue(objective);
 
     const result = await usecase.execute(dto);
 
@@ -61,7 +61,7 @@ describe('GetProspectObjectiveUsecase', () => {
   });
 
   it('should return null when the prospect objective is not found', async () => {
-    repositoryMock.get.mockResolvedValue(null);
+    (repositoryMock.get as any).mockResolvedValue(null);
 
     const result = await usecase.execute(dto);
 
@@ -70,7 +70,7 @@ describe('GetProspectObjectiveUsecase', () => {
 
   it('should log and throw a domain error when repository get fails', async () => {
     const failure = new Error('get failure');
-    repositoryMock.get.mockRejectedValue(failure);
+    (repositoryMock.get as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.GET_PROSPECT_OBJECTIVE_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(`GetProspectObjectiveUsecase#execute => ${failure.message}`);

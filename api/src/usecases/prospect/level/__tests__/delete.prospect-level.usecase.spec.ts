@@ -35,14 +35,14 @@ describe('DeleteProspectLevelUsecase', () => {
   });
 
   it('should delete a level through the repository', async () => {
-    repositoryMock.delete.mockResolvedValue(true);
+    (repositoryMock.delete as any).mockResolvedValue(true);
 
     await expect(usecase.execute(dto)).resolves.toBe(true);
   });
 
   it('should log and throw when repository deletion fails', async () => {
     const failure = new Error('delete failure');
-    repositoryMock.delete.mockRejectedValue(failure);
+    (repositoryMock.delete as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.DELETE_PROSPECT_LEVEL_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(`DeleteProspectLevelUsecase#execute => ${failure.message}`);

@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, afterEach, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -67,7 +67,7 @@ describe('ListAthleteInfosUsecase', () => {
     });
 
     it('should list athlete infos for admin with all filters', async () => {
-        repositoryMock.list.mockResolvedValue({
+        (repositoryMock.list as any).mockResolvedValue({
             items: athleteInfos,
             total: 2,
             page: 1,
@@ -95,7 +95,7 @@ describe('ListAthleteInfosUsecase', () => {
     });
 
     it('should list athlete infos for coach filtering by their userId', async () => {
-        repositoryMock.list.mockResolvedValue({
+        (repositoryMock.list as any).mockResolvedValue({
             items: athleteInfos,
             total: 2,
             page: 1,
@@ -120,7 +120,7 @@ describe('ListAthleteInfosUsecase', () => {
 
     it('should log and throw when repository list fails', async () => {
         const failure = new Error('list failure');
-        repositoryMock.list.mockRejectedValue(failure);
+        (repositoryMock.list as any).mockRejectedValue(failure);
 
         await expect(usecase.execute({
             session: { userId: 'admin-1', role: Role.ADMIN },

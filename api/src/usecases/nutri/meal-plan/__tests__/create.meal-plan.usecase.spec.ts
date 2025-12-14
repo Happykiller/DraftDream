@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -109,7 +109,7 @@ describe('CreateMealPlanUsecase', () => {
     });
 
     it('should create a meal plan with generated slugs', async () => {
-        mealPlanRepositoryMock.create.mockResolvedValue(createdMealPlan);
+        (mealPlanRepositoryMock.create as any).mockResolvedValue(createdMealPlan);
 
         const result = await usecase.execute(dto);
 
@@ -121,7 +121,7 @@ describe('CreateMealPlanUsecase', () => {
     });
 
     it('should return null if creation fails', async () => {
-        mealPlanRepositoryMock.create.mockResolvedValue(null);
+        (mealPlanRepositoryMock.create as any).mockResolvedValue(null);
 
         const result = await usecase.execute(dto);
 
@@ -130,7 +130,7 @@ describe('CreateMealPlanUsecase', () => {
 
     it('should log and throw error when repository throws', async () => {
         const error = new Error('DB Error');
-        mealPlanRepositoryMock.create.mockRejectedValue(error);
+        (mealPlanRepositoryMock.create as any).mockRejectedValue(error);
 
         await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.CREATE_MEAL_PLAN_USECASE);
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining(error.message));

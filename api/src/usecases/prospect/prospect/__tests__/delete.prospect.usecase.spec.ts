@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, afterEach, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -40,7 +40,7 @@ describe('DeleteProspectUsecase', () => {
     });
 
     it('should soft delete a prospect successfully', async () => {
-        repositoryMock.delete.mockResolvedValue(true);
+        (repositoryMock.delete as any).mockResolvedValue(true);
 
         const result = await usecase.execute({ id: 'prospect-1' });
 
@@ -49,7 +49,7 @@ describe('DeleteProspectUsecase', () => {
     });
 
     it('should return false when deletion fails', async () => {
-        repositoryMock.delete.mockResolvedValue(false);
+        (repositoryMock.delete as any).mockResolvedValue(false);
 
         const result = await usecase.execute({ id: 'prospect-999' });
 
@@ -58,7 +58,7 @@ describe('DeleteProspectUsecase', () => {
 
     it('should log and throw when repository delete fails', async () => {
         const failure = new Error('delete failure');
-        repositoryMock.delete.mockRejectedValue(failure);
+        (repositoryMock.delete as any).mockRejectedValue(failure);
 
         await expect(usecase.execute({ id: 'prospect-1' })).rejects.toThrow(ERRORS.DELETE_PROSPECT_USECASE);
         expect(loggerMock.error).toHaveBeenCalledWith(`DeleteProspectUsecase#execute => ${failure.message}`);

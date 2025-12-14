@@ -39,7 +39,7 @@ describe('DeleteEquipmentUsecase', () => {
   });
 
   it('should delete equipment through the repository', async () => {
-    equipmentRepositoryMock.delete.mockResolvedValue(true);
+    (equipmentRepositoryMock.delete as any).mockResolvedValue(true);
 
     const result = await usecase.execute(dto);
 
@@ -48,7 +48,7 @@ describe('DeleteEquipmentUsecase', () => {
   });
 
   it('should return false when repository delete returns false', async () => {
-    equipmentRepositoryMock.delete.mockResolvedValue(false);
+    (equipmentRepositoryMock.delete as any).mockResolvedValue(false);
 
     const result = await usecase.execute(dto);
 
@@ -57,7 +57,7 @@ describe('DeleteEquipmentUsecase', () => {
 
   it('should log and throw a domain error when repository delete fails', async () => {
     const failure = new Error('delete failure');
-    equipmentRepositoryMock.delete.mockRejectedValue(failure);
+    (equipmentRepositoryMock.delete as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.DELETE_EQUIPMENT_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(`DeleteEquipmentUsecase#execute => ${failure.message}`);

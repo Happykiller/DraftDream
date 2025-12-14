@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -66,7 +66,7 @@ describe('UpdateMealTypeUsecase', () => {
   });
 
   it('should update the meal type through the repository', async () => {
-    mealTypeRepositoryMock.update.mockResolvedValue(updatedMealType);
+    (mealTypeRepositoryMock.update as any).mockResolvedValue(updatedMealType);
 
     const result = await usecase.execute(dto);
 
@@ -79,7 +79,7 @@ describe('UpdateMealTypeUsecase', () => {
   });
 
   it('should return null when the repository returns null', async () => {
-    mealTypeRepositoryMock.update.mockResolvedValue(null);
+    (mealTypeRepositoryMock.update as any).mockResolvedValue(null);
 
     const result = await usecase.execute(dto);
 
@@ -88,7 +88,7 @@ describe('UpdateMealTypeUsecase', () => {
 
   it('should log and throw a domain error when update fails', async () => {
     const failure = new Error('update failure');
-    mealTypeRepositoryMock.update.mockRejectedValue(failure);
+    (mealTypeRepositoryMock.update as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.UPDATE_MEAL_TYPE_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(

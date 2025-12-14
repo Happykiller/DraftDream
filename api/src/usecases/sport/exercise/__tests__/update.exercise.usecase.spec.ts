@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -137,8 +137,8 @@ describe('UpdateExerciseUsecase', () => {
   });
 
   it('should update the exercise and map the response when the coach is the creator', async () => {
-    exerciseRepositoryMock.get.mockResolvedValue(exercise);
-    exerciseRepositoryMock.update.mockResolvedValue(exercise);
+    (exerciseRepositoryMock.get as any).mockResolvedValue(exercise);
+    (exerciseRepositoryMock.update as any).mockResolvedValue(exercise);
 
     const patch: UpdateExerciseUsecaseDto = {
       label: 'Push-up Advanced',
@@ -158,8 +158,8 @@ describe('UpdateExerciseUsecase', () => {
   });
 
   it('should allow an admin to update an exercise they did not create', async () => {
-    exerciseRepositoryMock.get.mockResolvedValue(exercise);
-    exerciseRepositoryMock.update.mockResolvedValue(exercise);
+    (exerciseRepositoryMock.get as any).mockResolvedValue(exercise);
+    (exerciseRepositoryMock.update as any).mockResolvedValue(exercise);
 
     const patch: UpdateExerciseUsecaseDto = {
       label: 'Push-up Elite',
@@ -175,7 +175,7 @@ describe('UpdateExerciseUsecase', () => {
   });
 
   it('should throw when the targeted exercise cannot be found', async () => {
-    exerciseRepositoryMock.get.mockResolvedValue(null);
+    (exerciseRepositoryMock.get as any).mockResolvedValue(null);
 
     const patch: UpdateExerciseUsecaseDto = {
       label: 'Push-up Advanced',
@@ -188,7 +188,7 @@ describe('UpdateExerciseUsecase', () => {
   });
 
   it('should throw when a coach tries to update an exercise they did not create', async () => {
-    exerciseRepositoryMock.get.mockResolvedValue(exercise);
+    (exerciseRepositoryMock.get as any).mockResolvedValue(exercise);
 
     const patch: UpdateExerciseUsecaseDto = {
       label: 'Push-up Advanced',
@@ -202,8 +202,8 @@ describe('UpdateExerciseUsecase', () => {
 
   it('should log and throw a domain error when update fails', async () => {
     const failure = new Error('database failure');
-    exerciseRepositoryMock.get.mockResolvedValue(exercise);
-    exerciseRepositoryMock.update.mockRejectedValue(failure);
+    (exerciseRepositoryMock.get as any).mockResolvedValue(exercise);
+    (exerciseRepositoryMock.update as any).mockRejectedValue(failure);
 
     const patch: UpdateExerciseUsecaseDto = {
       label: 'Push-up Advanced',

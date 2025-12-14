@@ -51,7 +51,7 @@ describe('GetEquipmentUsecase', () => {
   });
 
   it('should retrieve equipment by id through the repository', async () => {
-    equipmentRepositoryMock.get.mockResolvedValue(equipment);
+    (equipmentRepositoryMock.get as any).mockResolvedValue(equipment);
 
     const result = await usecase.execute(dto);
 
@@ -60,7 +60,7 @@ describe('GetEquipmentUsecase', () => {
   });
 
   it('should return null when repository returns null', async () => {
-    equipmentRepositoryMock.get.mockResolvedValue(null);
+    (equipmentRepositoryMock.get as any).mockResolvedValue(null);
 
     const result = await usecase.execute(dto);
 
@@ -69,7 +69,7 @@ describe('GetEquipmentUsecase', () => {
 
   it('should log and throw a domain error when repository get fails', async () => {
     const failure = new Error('read failure');
-    equipmentRepositoryMock.get.mockRejectedValue(failure);
+    (equipmentRepositoryMock.get as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.GET_EQUIPMENT_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(`GetEquipmentUsecase#execute => ${failure.message}`);

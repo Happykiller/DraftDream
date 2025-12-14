@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, afterEach, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -86,8 +86,8 @@ describe('CreateAthleteInfoUsecase', () => {
     });
 
     it('should create athlete info when user is admin', async () => {
-        userRepositoryMock.getUser.mockResolvedValue(athleteUser);
-        athleteInfoRepositoryMock.create.mockResolvedValue(createdInfo);
+        (userRepositoryMock.getUser as any).mockResolvedValue(athleteUser);
+        (athleteInfoRepositoryMock.create as any).mockResolvedValue(createdInfo);
 
         const result = await usecase.execute(dto);
 
@@ -110,8 +110,8 @@ describe('CreateAthleteInfoUsecase', () => {
             ...dto,
             session: { userId: 'athlete-1', role: Role.ATHLETE },
         };
-        userRepositoryMock.getUser.mockResolvedValue(athleteUser);
-        athleteInfoRepositoryMock.create.mockResolvedValue(createdInfo);
+        (userRepositoryMock.getUser as any).mockResolvedValue(athleteUser);
+        (athleteInfoRepositoryMock.create as any).mockResolvedValue(createdInfo);
 
         const result = await usecase.execute(selfDto);
 
@@ -130,7 +130,7 @@ describe('CreateAthleteInfoUsecase', () => {
     });
 
     it('should throw USER_NOT_FOUND when user does not exist', async () => {
-        userRepositoryMock.getUser.mockResolvedValue(null);
+        (userRepositoryMock.getUser as any).mockResolvedValue(null);
 
         await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.USER_NOT_FOUND);
         expect(athleteInfoRepositoryMock.create).not.toHaveBeenCalled();
@@ -148,15 +148,15 @@ describe('CreateAthleteInfoUsecase', () => {
             is_active: false,
             createdBy: ''
         };
-        userRepositoryMock.getUser.mockResolvedValue(coachUser);
+        (userRepositoryMock.getUser as any).mockResolvedValue(coachUser);
 
         await expect(usecase.execute({ ...dto, userId: 'coach-1' })).rejects.toThrow(ERRORS.TARGET_NOT_ATHLETE);
         expect(athleteInfoRepositoryMock.create).not.toHaveBeenCalled();
     });
 
     it('should return null when repository creation returns null', async () => {
-        userRepositoryMock.getUser.mockResolvedValue(athleteUser);
-        athleteInfoRepositoryMock.create.mockResolvedValue(null);
+        (userRepositoryMock.getUser as any).mockResolvedValue(athleteUser);
+        (athleteInfoRepositoryMock.create as any).mockResolvedValue(null);
 
         const result = await usecase.execute(dto);
 
@@ -165,8 +165,8 @@ describe('CreateAthleteInfoUsecase', () => {
 
     it('should log and throw when repository creation fails', async () => {
         const failure = new Error('create failure');
-        userRepositoryMock.getUser.mockResolvedValue(athleteUser);
-        athleteInfoRepositoryMock.create.mockRejectedValue(failure);
+        (userRepositoryMock.getUser as any).mockResolvedValue(athleteUser);
+        (athleteInfoRepositoryMock.create as any).mockRejectedValue(failure);
 
         await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.CREATE_ATHLETE_INFO_USECASE);
         expect(loggerMock.error).toHaveBeenCalledWith(`CreateAthleteInfoUsecase#execute => ${failure.message}`);

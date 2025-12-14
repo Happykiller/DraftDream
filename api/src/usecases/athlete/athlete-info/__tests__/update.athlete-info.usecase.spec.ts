@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, afterEach, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -72,8 +72,8 @@ describe('UpdateAthleteInfoUsecase', () => {
 
     it('should update athlete info when user is admin', async () => {
         const updatedInfo = { ...existingInfo, notes: 'Updated notes' };
-        athleteInfoRepositoryMock.get.mockResolvedValue(existingInfo);
-        athleteInfoRepositoryMock.update.mockResolvedValue(updatedInfo);
+        (athleteInfoRepositoryMock.get as any).mockResolvedValue(existingInfo);
+        (athleteInfoRepositoryMock.update as any).mockResolvedValue(updatedInfo);
 
         const result = await usecase.execute({
             id: 'info-1',
@@ -88,8 +88,8 @@ describe('UpdateAthleteInfoUsecase', () => {
 
     it('should update athlete info when user is the creator', async () => {
         const updatedInfo = { ...existingInfo, notes: 'Updated notes' };
-        athleteInfoRepositoryMock.get.mockResolvedValue(existingInfo);
-        athleteInfoRepositoryMock.update.mockResolvedValue(updatedInfo);
+        (athleteInfoRepositoryMock.get as any).mockResolvedValue(existingInfo);
+        (athleteInfoRepositoryMock.update as any).mockResolvedValue(updatedInfo);
 
         const result = await usecase.execute({
             id: 'info-1',
@@ -101,7 +101,7 @@ describe('UpdateAthleteInfoUsecase', () => {
     });
 
     it('should return null when user is not admin and not the creator', async () => {
-        athleteInfoRepositoryMock.get.mockResolvedValue(existingInfo);
+        (athleteInfoRepositoryMock.get as any).mockResolvedValue(existingInfo);
 
         const result = await usecase.execute({
             id: 'info-1',
@@ -114,9 +114,9 @@ describe('UpdateAthleteInfoUsecase', () => {
     });
 
     it('should validate new userId is an athlete when userId changes', async () => {
-        userRepositoryMock.getUser.mockResolvedValue(athleteUser);
-        athleteInfoRepositoryMock.get.mockResolvedValue(existingInfo);
-        athleteInfoRepositoryMock.update.mockResolvedValue({ ...existingInfo, userId: 'athlete-2' });
+        (userRepositoryMock.getUser as any).mockResolvedValue(athleteUser);
+        (athleteInfoRepositoryMock.get as any).mockResolvedValue(existingInfo);
+        (athleteInfoRepositoryMock.update as any).mockResolvedValue({ ...existingInfo, userId: 'athlete-2' });
 
         await usecase.execute({
             id: 'info-1',
@@ -139,8 +139,8 @@ describe('UpdateAthleteInfoUsecase', () => {
             is_active: false,
             createdBy: ''
         };
-        userRepositoryMock.getUser.mockResolvedValue(coachUser);
-        athleteInfoRepositoryMock.get.mockResolvedValue(existingInfo);
+        (userRepositoryMock.getUser as any).mockResolvedValue(coachUser);
+        (athleteInfoRepositoryMock.get as any).mockResolvedValue(existingInfo);
 
         await expect(usecase.execute({
             id: 'info-1',
@@ -150,7 +150,7 @@ describe('UpdateAthleteInfoUsecase', () => {
     });
 
     it('should return null when athlete info not found', async () => {
-        athleteInfoRepositoryMock.get.mockResolvedValue(null);
+        (athleteInfoRepositoryMock.get as any).mockResolvedValue(null);
 
         const result = await usecase.execute({
             id: 'info-999',
@@ -163,8 +163,8 @@ describe('UpdateAthleteInfoUsecase', () => {
 
     it('should log and throw when repository update fails', async () => {
         const failure = new Error('update failure');
-        athleteInfoRepositoryMock.get.mockResolvedValue(existingInfo);
-        athleteInfoRepositoryMock.update.mockRejectedValue(failure);
+        (athleteInfoRepositoryMock.get as any).mockResolvedValue(existingInfo);
+        (athleteInfoRepositoryMock.update as any).mockRejectedValue(failure);
 
         await expect(usecase.execute({
             id: 'info-1',

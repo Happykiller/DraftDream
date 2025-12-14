@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -63,8 +63,8 @@ describe('DeleteMealPlanUsecase', () => {
     });
 
     it('should delete a meal plan if user is creator', async () => {
-        mealPlanRepositoryMock.get.mockResolvedValue(existingMealPlan);
-        mealPlanRepositoryMock.delete.mockResolvedValue(true);
+        (mealPlanRepositoryMock.get as any).mockResolvedValue(existingMealPlan);
+        (mealPlanRepositoryMock.delete as any).mockResolvedValue(true);
 
         const result = await usecase.execute(dto);
 
@@ -74,8 +74,8 @@ describe('DeleteMealPlanUsecase', () => {
 
     it('should delete a meal plan if user is admin', async () => {
         const adminDto = { ...dto, session: { ...dto.session, role: Role.ADMIN, userId: 'admin-1' } };
-        mealPlanRepositoryMock.get.mockResolvedValue(existingMealPlan);
-        mealPlanRepositoryMock.delete.mockResolvedValue(true);
+        (mealPlanRepositoryMock.get as any).mockResolvedValue(existingMealPlan);
+        (mealPlanRepositoryMock.delete as any).mockResolvedValue(true);
 
         const result = await usecase.execute(adminDto);
 
@@ -84,7 +84,7 @@ describe('DeleteMealPlanUsecase', () => {
     });
 
     it('should return false if meal plan not found', async () => {
-        mealPlanRepositoryMock.get.mockResolvedValue(null);
+        (mealPlanRepositoryMock.get as any).mockResolvedValue(null);
 
         const result = await usecase.execute(dto);
 
@@ -93,14 +93,14 @@ describe('DeleteMealPlanUsecase', () => {
 
     it('should throw forbidden error if user is not creator nor admin', async () => {
         const otherUserDto = { ...dto, session: { ...dto.session, userId: 'other-user' } };
-        mealPlanRepositoryMock.get.mockResolvedValue(existingMealPlan);
+        (mealPlanRepositoryMock.get as any).mockResolvedValue(existingMealPlan);
 
         await expect(usecase.execute(otherUserDto)).rejects.toThrow(ERRORS.DELETE_MEAL_PLAN_FORBIDDEN);
     });
 
     it('should log and throw error when repository throws', async () => {
         const error = new Error('DB Error');
-        mealPlanRepositoryMock.get.mockRejectedValue(error);
+        (mealPlanRepositoryMock.get as any).mockRejectedValue(error);
 
         await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.UPDATE_EXERCISE_USECASE);
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining(error.message));

@@ -35,21 +35,21 @@ describe('DeleteProspectSourceUsecase', () => {
   });
 
   it('should delete a source', async () => {
-    repositoryMock.delete.mockResolvedValue(true);
+    (repositoryMock.delete as any).mockResolvedValue(true);
 
     await expect(usecase.execute(dto)).resolves.toBe(true);
     expect(repositoryMock.delete).toHaveBeenCalledWith(dto.id);
   });
 
   it('should return false when delete fails in repository', async () => {
-    repositoryMock.delete.mockResolvedValue(false);
+    (repositoryMock.delete as any).mockResolvedValue(false);
 
     await expect(usecase.execute(dto)).resolves.toBe(false);
   });
 
   it('should log and throw when repository throws', async () => {
     const failure = new Error('delete failure');
-    repositoryMock.delete.mockRejectedValue(failure);
+    (repositoryMock.delete as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.DELETE_PROSPECT_SOURCE_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(`DeleteProspectSourceUsecase#execute => ${failure.message}`);

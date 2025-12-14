@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -54,7 +54,7 @@ describe('CreateCoachAthleteUsecase', () => {
     });
 
     it('should create a coach-athlete link', async () => {
-        coachAthleteRepositoryMock.create.mockResolvedValue(createdLink);
+        (coachAthleteRepositoryMock.create as any).mockResolvedValue(createdLink);
 
         const result = await usecase.execute(dto);
 
@@ -63,7 +63,7 @@ describe('CreateCoachAthleteUsecase', () => {
     });
 
     it('should return null if creation fails (returns null)', async () => {
-        coachAthleteRepositoryMock.create.mockResolvedValue(null);
+        (coachAthleteRepositoryMock.create as any).mockResolvedValue(null);
 
         const result = await usecase.execute(dto);
 
@@ -72,7 +72,7 @@ describe('CreateCoachAthleteUsecase', () => {
 
     it('should log and throw error when repository throws', async () => {
         const error = new Error('DB Error');
-        coachAthleteRepositoryMock.create.mockRejectedValue(error);
+        (coachAthleteRepositoryMock.create as any).mockRejectedValue(error);
 
         await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.CREATE_COACH_ATHLETE_USECASE);
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining(error.message));

@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -65,7 +65,7 @@ describe('UpdateCategoryUsecase', () => {
   });
 
   it('should update the category through the repository', async () => {
-    categoryRepositoryMock.update.mockResolvedValue(updatedCategory);
+    (categoryRepositoryMock.update as any).mockResolvedValue(updatedCategory);
 
     const result = await usecase.execute(dto);
 
@@ -80,7 +80,7 @@ describe('UpdateCategoryUsecase', () => {
   });
 
   it('should return null when the repository returns null', async () => {
-    categoryRepositoryMock.update.mockResolvedValue(null);
+    (categoryRepositoryMock.update as any).mockResolvedValue(null);
 
     const result = await usecase.execute(dto);
 
@@ -89,7 +89,7 @@ describe('UpdateCategoryUsecase', () => {
 
   it('should log and throw a domain error when update fails', async () => {
     const failure = new Error('update failure');
-    categoryRepositoryMock.update.mockRejectedValue(failure);
+    (categoryRepositoryMock.update as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.UPDATE_CATEGORY_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(

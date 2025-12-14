@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest, afterEach } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -64,7 +64,7 @@ describe('CreateProspectSourceUsecase', () => {
 
   it('should create a prospect source through the repository', async () => {
     const buildSlugSpy = jest.spyOn(slugUtil, 'buildSlug').mockReturnValue(source.slug);
-    repositoryMock.create.mockResolvedValue(source);
+    (repositoryMock.create as any).mockResolvedValue(source);
 
     // Remove slug from dto for execution if it's not used in the usecase logic directly but generated
     // However, the DTO interface has slug. In the usecase, slug is generated.
@@ -96,7 +96,7 @@ describe('CreateProspectSourceUsecase', () => {
   });
 
   it('should return null when repository creation returns null', async () => {
-    repositoryMock.create.mockResolvedValue(null);
+    (repositoryMock.create as any).mockResolvedValue(null);
 
     const result = await usecase.execute(dto);
 
@@ -105,7 +105,7 @@ describe('CreateProspectSourceUsecase', () => {
 
   it('should log and throw when repository creation fails', async () => {
     const failure = new Error('create failure');
-    repositoryMock.create.mockRejectedValue(failure);
+    (repositoryMock.create as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.CREATE_PROSPECT_SOURCE_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(`CreateProspectSourceUsecase#execute => ${failure.message}`);

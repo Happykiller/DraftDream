@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -76,7 +76,7 @@ describe('ListMealPlansUsecase', () => {
 
     it('should list meal plans for admin', async () => {
         const adminDto = { ...dto, session: { ...dto.session, role: Role.ADMIN, userId: 'admin-1' } };
-        mealPlanRepositoryMock.list.mockResolvedValue(listResult);
+        (mealPlanRepositoryMock.list as any).mockResolvedValue(listResult);
 
         const result = await usecase.execute(adminDto);
 
@@ -85,8 +85,8 @@ describe('ListMealPlansUsecase', () => {
     });
 
     it('should list meal plans for coach (accessible creators)', async () => {
-        userRepositoryMock.listUsers.mockResolvedValue({ items: [], total: 0, page: 1, limit: 50 }); // No admins
-        mealPlanRepositoryMock.list.mockResolvedValue(listResult);
+        (userRepositoryMock.listUsers as any).mockResolvedValue({ items: [], total: 0, page: 1, limit: 50 }); // No admins
+        (mealPlanRepositoryMock.list as any).mockResolvedValue(listResult);
 
         const result = await usecase.execute(dto);
 
@@ -98,7 +98,7 @@ describe('ListMealPlansUsecase', () => {
 
     it('should list meal plans for athlete (assigned to them)', async () => {
         const athleteDto = { ...dto, session: { ...dto.session, role: Role.ATHLETE, userId: 'athlete-1' } };
-        mealPlanRepositoryMock.list.mockResolvedValue(listResult);
+        (mealPlanRepositoryMock.list as any).mockResolvedValue(listResult);
 
         const result = await usecase.execute(athleteDto);
 
@@ -116,9 +116,9 @@ describe('ListMealPlansUsecase', () => {
 
     it('should log and throw error when repository throws', async () => {
         const error = new Error('DB Error');
-        mealPlanRepositoryMock.list.mockRejectedValue(error);
+        (mealPlanRepositoryMock.list as any).mockRejectedValue(error);
         // Mock user list for coach flow
-        userRepositoryMock.listUsers.mockResolvedValue({ items: [], total: 0, page: 1, limit: 50 });
+        (userRepositoryMock.listUsers as any).mockResolvedValue({ items: [], total: 0, page: 1, limit: 50 });
 
         await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.LIST_MEAL_PLANS_USECASE);
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining(error.message));

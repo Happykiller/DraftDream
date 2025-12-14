@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, afterEach, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -54,8 +54,8 @@ describe('DeleteAthleteInfoUsecase', () => {
     });
 
     it('should soft delete athlete info when user is admin', async () => {
-        repositoryMock.get.mockResolvedValue(existingInfo);
-        repositoryMock.delete.mockResolvedValue(true);
+        (repositoryMock.get as any).mockResolvedValue(existingInfo);
+        (repositoryMock.delete as any).mockResolvedValue(true);
 
         const result = await usecase.execute({
             id: 'info-1',
@@ -68,8 +68,8 @@ describe('DeleteAthleteInfoUsecase', () => {
     });
 
     it('should soft delete athlete info when user is the creator', async () => {
-        repositoryMock.get.mockResolvedValue(existingInfo);
-        repositoryMock.delete.mockResolvedValue(true);
+        (repositoryMock.get as any).mockResolvedValue(existingInfo);
+        (repositoryMock.delete as any).mockResolvedValue(true);
 
         const result = await usecase.execute({
             id: 'info-1',
@@ -80,7 +80,7 @@ describe('DeleteAthleteInfoUsecase', () => {
     });
 
     it('should return false when user is not admin and not the creator', async () => {
-        repositoryMock.get.mockResolvedValue(existingInfo);
+        (repositoryMock.get as any).mockResolvedValue(existingInfo);
 
         const result = await usecase.execute({
             id: 'info-1',
@@ -92,7 +92,7 @@ describe('DeleteAthleteInfoUsecase', () => {
     });
 
     it('should return false when athlete info not found', async () => {
-        repositoryMock.get.mockResolvedValue(null);
+        (repositoryMock.get as any).mockResolvedValue(null);
 
         const result = await usecase.execute({
             id: 'info-999',
@@ -105,8 +105,8 @@ describe('DeleteAthleteInfoUsecase', () => {
 
     it('should log and throw when repository delete fails', async () => {
         const failure = new Error('delete failure');
-        repositoryMock.get.mockResolvedValue(existingInfo);
-        repositoryMock.delete.mockRejectedValue(failure);
+        (repositoryMock.get as any).mockResolvedValue(existingInfo);
+        (repositoryMock.delete as any).mockRejectedValue(failure);
 
         await expect(usecase.execute({
             id: 'info-1',

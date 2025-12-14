@@ -52,7 +52,7 @@ describe('GetProspectActivityPreferenceUsecase', () => {
   });
 
   it('should get prospect activity preference through the repository', async () => {
-    repositoryMock.get.mockResolvedValue(preference);
+    (repositoryMock.get as any).mockResolvedValue(preference);
 
     const result = await usecase.execute(dto);
 
@@ -61,7 +61,7 @@ describe('GetProspectActivityPreferenceUsecase', () => {
   });
 
   it('should return null when repository returns null', async () => {
-    repositoryMock.get.mockResolvedValue(null);
+    (repositoryMock.get as any).mockResolvedValue(null);
 
     const result = await usecase.execute(dto);
 
@@ -70,7 +70,7 @@ describe('GetProspectActivityPreferenceUsecase', () => {
 
   it('should log and throw a domain error when repository get fails', async () => {
     const failure = new Error('get failure');
-    repositoryMock.get.mockRejectedValue(failure);
+    (repositoryMock.get as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.GET_PROSPECT_ACTIVITY_PREFERENCE_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(`GetProspectActivityPreferenceUsecase#execute => ${failure.message}`);

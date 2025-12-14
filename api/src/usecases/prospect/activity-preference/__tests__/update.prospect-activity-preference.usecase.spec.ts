@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest, afterEach } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -63,7 +63,7 @@ describe('UpdateProspectActivityPreferenceUsecase', () => {
 
   it('should update prospect activity preference through the repository', async () => {
     const buildSlugSpy = jest.spyOn(slugUtil, 'buildSlug').mockReturnValue('generated-hiit');
-    repositoryMock.update.mockResolvedValue(preference);
+    (repositoryMock.update as any).mockResolvedValue(preference);
 
     const result = await usecase.execute({ ...dto, id });
 
@@ -81,7 +81,7 @@ describe('UpdateProspectActivityPreferenceUsecase', () => {
   });
 
   it('should return null when repository update returns null', async () => {
-    repositoryMock.update.mockResolvedValue(null);
+    (repositoryMock.update as any).mockResolvedValue(null);
 
     const result = await usecase.execute({ ...dto, id });
 
@@ -90,7 +90,7 @@ describe('UpdateProspectActivityPreferenceUsecase', () => {
 
   it('should log and throw a domain error when repository update fails', async () => {
     const failure = new Error('update failure');
-    repositoryMock.update.mockRejectedValue(failure);
+    (repositoryMock.update as any).mockRejectedValue(failure);
 
     await expect(usecase.execute({ ...dto, id })).rejects.toThrow(ERRORS.UPDATE_PROSPECT_ACTIVITY_PREFERENCE_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(`UpdateProspectActivityPreferenceUsecase#execute => ${failure.message}`);

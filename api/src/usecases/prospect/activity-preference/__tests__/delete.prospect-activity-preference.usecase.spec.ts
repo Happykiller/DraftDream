@@ -39,7 +39,7 @@ describe('DeleteProspectActivityPreferenceUsecase', () => {
   });
 
   it('should delete prospect activity preference through the repository', async () => {
-    repositoryMock.delete.mockResolvedValue(true);
+    (repositoryMock.delete as any).mockResolvedValue(true);
 
     const result = await usecase.execute(dto);
 
@@ -48,7 +48,7 @@ describe('DeleteProspectActivityPreferenceUsecase', () => {
   });
 
   it('should propagate repository result when delete returns false', async () => {
-    repositoryMock.delete.mockResolvedValue(false);
+    (repositoryMock.delete as any).mockResolvedValue(false);
 
     const result = await usecase.execute(dto);
 
@@ -57,7 +57,7 @@ describe('DeleteProspectActivityPreferenceUsecase', () => {
 
   it('should log and throw a domain error when repository delete fails', async () => {
     const failure = new Error('delete failure');
-    repositoryMock.delete.mockRejectedValue(failure);
+    (repositoryMock.delete as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.DELETE_PROSPECT_ACTIVITY_PREFERENCE_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(`DeleteProspectActivityPreferenceUsecase#execute => ${failure.message}`);

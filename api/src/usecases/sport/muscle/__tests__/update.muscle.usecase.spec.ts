@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -63,7 +63,7 @@ describe('UpdateMuscleUsecase', () => {
   });
 
   it('should update the muscle through the repository', async () => {
-    muscleRepositoryMock.update.mockResolvedValue(updatedMuscle);
+    (muscleRepositoryMock.update as any).mockResolvedValue(updatedMuscle);
 
     const result = await usecase.execute(dto);
 
@@ -77,7 +77,7 @@ describe('UpdateMuscleUsecase', () => {
   });
 
   it('should return null when the repository returns null', async () => {
-    muscleRepositoryMock.update.mockResolvedValue(null);
+    (muscleRepositoryMock.update as any).mockResolvedValue(null);
 
     const result = await usecase.execute(dto);
 
@@ -86,7 +86,7 @@ describe('UpdateMuscleUsecase', () => {
 
   it('should log and throw a domain error when update fails', async () => {
     const failure = new Error('update failure');
-    muscleRepositoryMock.update.mockRejectedValue(failure);
+    (muscleRepositoryMock.update as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.UPDATE_MUSCLE_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(

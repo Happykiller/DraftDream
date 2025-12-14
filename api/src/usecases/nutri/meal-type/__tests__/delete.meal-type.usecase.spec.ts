@@ -42,7 +42,7 @@ describe('DeleteMealTypeUsecase', () => {
   });
 
   it('should delete the meal type through the repository', async () => {
-    mealTypeRepositoryMock.delete.mockResolvedValue(true);
+    (mealTypeRepositoryMock.delete as any).mockResolvedValue(true);
 
     const result = await usecase.execute(dto);
 
@@ -51,7 +51,7 @@ describe('DeleteMealTypeUsecase', () => {
   });
 
   it('should return false when the repository returns false', async () => {
-    mealTypeRepositoryMock.delete.mockResolvedValue(false);
+    (mealTypeRepositoryMock.delete as any).mockResolvedValue(false);
 
     const result = await usecase.execute(dto);
 
@@ -60,7 +60,7 @@ describe('DeleteMealTypeUsecase', () => {
 
   it('should log and throw a domain error when deletion fails', async () => {
     const failure = new Error('database failure');
-    mealTypeRepositoryMock.delete.mockRejectedValue(failure);
+    (mealTypeRepositoryMock.delete as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.DELETE_MEAL_TYPE_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(

@@ -7,6 +7,7 @@ import { Box, Button, IconButton, Stack, TextField, Tooltip, useMediaQuery } fro
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import { useDateFormatter } from '@src/hooks/useDateFormatter';
+import type { ProspectObjective } from '@src/hooks/useProspectObjectives';
 
 export interface ProspectObjectiveTableProps {
   rows: ProspectObjective[];

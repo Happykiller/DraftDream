@@ -2,7 +2,7 @@
 import * as React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { DataGrid, type GridColDef } from '@mui/x-data-grid';
+import { DataGrid, type GridColDef, type GridRenderCellParams } from '@mui/x-data-grid';
 import {
   Autocomplete,
   Box,
@@ -139,19 +139,19 @@ export function CoachAthleteTable(props: CoachAthleteTableProps): React.JSX.Elem
             field: 'createdAt',
             headerName: t('common.labels.created'),
             minWidth: 160,
-            renderCell: (params) => fmtDate(params.value as string),
+            renderCell: (params: GridRenderCellParams) => fmtDate(params.value as string),
           },
           {
             field: 'updatedAt',
             headerName: t('athletes.table.columns.updated_at'),
             minWidth: 160,
-            renderCell: (params) => fmtDate(params.value as string),
+            renderCell: (params: GridRenderCellParams) => fmtDate(params.value as string),
           },
           {
             field: 'deletedAt',
             headerName: t('athletes.table.columns.deleted_at'),
             minWidth: 160,
-            renderCell: (params) => (params.value ? fmtDate(params.value as string) : t('common.messages.no_value')),
+            renderCell: (params: GridRenderCellParams) => (params.value ? fmtDate(params.value as string) : t('common.messages.no_value')),
           },
         ]
         : []),

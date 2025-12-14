@@ -300,7 +300,7 @@ export class BddServiceProspectMongo {
           entry.status === 'create' ? 'create' : this.toStatus(entry.status);
         const date = this.normalizeDate(entry.date) ?? fallbackDate;
         if (!normalizedStatus || !date) return null;
-        return { status: normalizedStatus as ProspectWorkflowEntry['status'], date };
+        return { status: normalizedStatus, date };
       })
       .filter((entry): entry is ProspectWorkflowEntry => Boolean(entry));
   }

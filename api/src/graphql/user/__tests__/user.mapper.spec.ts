@@ -64,6 +64,8 @@ describe('mapUserUsecaseToGql', () => {
       updatedAt,
       is_active: true,
       createdBy: 'admin-1',
+      firstName: 'Marie',
+      lastName: 'Curie',
     });
   });
 

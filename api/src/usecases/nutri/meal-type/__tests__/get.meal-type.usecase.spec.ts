@@ -55,7 +55,7 @@ describe('GetMealTypeUsecase', () => {
   });
 
   it('should return the meal type retrieved from the repository', async () => {
-    mealTypeRepositoryMock.get.mockResolvedValue(mealType);
+    (mealTypeRepositoryMock.get as any).mockResolvedValue(mealType);
 
     const result = await usecase.execute(dto);
 
@@ -65,7 +65,7 @@ describe('GetMealTypeUsecase', () => {
   });
 
   it('should return null when the meal type is not found', async () => {
-    mealTypeRepositoryMock.get.mockResolvedValue(null);
+    (mealTypeRepositoryMock.get as any).mockResolvedValue(null);
 
     const result = await usecase.execute(dto);
 
@@ -74,7 +74,7 @@ describe('GetMealTypeUsecase', () => {
 
   it('should log and throw a domain error when retrieval fails', async () => {
     const failure = new Error('repository failure');
-    mealTypeRepositoryMock.get.mockRejectedValue(failure);
+    (mealTypeRepositoryMock.get as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.GET_MEAL_TYPE_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(

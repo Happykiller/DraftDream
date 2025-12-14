@@ -58,10 +58,7 @@ function TabPanel({ value, currentTab, children }: TabPanelProps): React.JSX.Ele
   return <Box sx={{ height: '100%' }}>{children}</Box>;
 }
 
-interface EmptySectionPlaceholderProps {
-  readonly title: string;
-  readonly helper: string;
-}
+
 
 interface ProgramTabEmptyState {
   readonly title: string;
@@ -82,19 +79,7 @@ interface MacroLabels {
   readonly fats: string;
 }
 
-/** Placeholder shown when a tab has no implemented content yet. */
-function EmptySectionPlaceholder({ title, helper }: EmptySectionPlaceholderProps): React.JSX.Element {
-  return (
-    <Stack spacing={1} alignItems="flex-start" sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3 } }}>
-      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-        {title}
-      </Typography>
-      <Typography variant="body2" color="text.secondary">
-        {helper}
-      </Typography>
-    </Stack>
-  );
-}
+
 
 /** Dedicated page showing the details of a coach-athlete link. */
 export function AthleteLinkDetails(): React.JSX.Element {

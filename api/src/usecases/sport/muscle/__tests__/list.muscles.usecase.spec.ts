@@ -68,7 +68,7 @@ describe('ListMusclesUsecase', () => {
   });
 
   it('should list muscles through the repository', async () => {
-    muscleRepositoryMock.listMuscles.mockResolvedValue({
+    (muscleRepositoryMock.listMuscles as any).mockResolvedValue({
       items: muscles,
       total: muscles.length,
       page: dto.page!,
@@ -89,7 +89,7 @@ describe('ListMusclesUsecase', () => {
   });
 
   it('should call the repository with default parameters when none are provided', async () => {
-    muscleRepositoryMock.listMuscles.mockResolvedValue({
+    (muscleRepositoryMock.listMuscles as any).mockResolvedValue({
       items: [],
       total: 0,
       page: 1,
@@ -103,7 +103,7 @@ describe('ListMusclesUsecase', () => {
 
   it('should log and throw a domain error when listing fails', async () => {
     const failure = new Error('list failure');
-    muscleRepositoryMock.listMuscles.mockRejectedValue(failure);
+    (muscleRepositoryMock.listMuscles as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.LIST_MUSCLES_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(

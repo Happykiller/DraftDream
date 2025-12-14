@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, afterEach, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -58,6 +58,8 @@ describe('ListProspectsUsecase', () => {
         loggerMock = mock<LoggerMock>();
 
         (bddServiceMock as unknown as { prospect: BddServiceProspectMongo }).prospect = repositoryMock;
+        (bddServiceMock as unknown as { user: any }).user = mock<any>(); // Mocking loosely to avoid import hell if possible, or I should import properly.
+        (bddServiceMock as unknown as { coachAthlete: any }).coachAthlete = mock<any>();
         inversifyMock.bddService = bddServiceMock as unknown as BddServiceMongo;
         inversifyMock.loggerService = loggerMock;
 
@@ -73,7 +75,7 @@ describe('ListProspectsUsecase', () => {
     });
 
     it('should list prospects for admin with all filters', async () => {
-        repositoryMock.list.mockResolvedValue({
+        (repositoryMock.list as any).mockResolvedValue({
             items: prospects,
             total: 2,
             page: 1,
@@ -105,7 +107,7 @@ describe('ListProspectsUsecase', () => {
     });
 
     it('should list prospects for coach filtering by their userId', async () => {
-        repositoryMock.list.mockResolvedValue({
+        (repositoryMock.list as any).mockResolvedValue({
             items: prospects,
             total: 2,
             page: 1,
@@ -131,7 +133,7 @@ describe('ListProspectsUsecase', () => {
     });
 
     it('should list prospects with pagination', async () => {
-        repositoryMock.list.mockResolvedValue({
+        (repositoryMock.list as any).mockResolvedValue({
             items: [prospects[0]],
             total: 2,
             page: 2,
@@ -152,7 +154,7 @@ describe('ListProspectsUsecase', () => {
 
     it('should log and throw when repository list fails', async () => {
         const failure = new Error('list failure');
-        repositoryMock.list.mockRejectedValue(failure);
+        (repositoryMock.list as any).mockRejectedValue(failure);
 
         await expect(usecase.execute({
             session: { userId: 'admin-1', role: Role.ADMIN },

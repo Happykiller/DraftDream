@@ -129,7 +129,7 @@ describe('ListExercisesUsecase', () => {
   });
 
   it('should list exercises for an admin without altering the payload', async () => {
-    exerciseRepositoryMock.list.mockResolvedValue({ items: [exercise], total: 1, page: 2, limit: 5 });
+    (exerciseRepositoryMock.list as any).mockResolvedValue({ items: [exercise], total: 1, page: 2, limit: 5 });
 
     const dto: ListExercisesUsecaseDto = {
       session: { userId: 'admin-1', role: Role.ADMIN },
@@ -151,7 +151,7 @@ describe('ListExercisesUsecase', () => {
   });
 
   it('should allow a coach to list only exercises they created when specifying createdBy', async () => {
-    exerciseRepositoryMock.list.mockResolvedValue({ items: [exercise], total: 1, page: 1, limit: 10 });
+    (exerciseRepositoryMock.list as any).mockResolvedValue({ items: [exercise], total: 1, page: 1, limit: 10 });
 
     const dto: ListExercisesUsecaseDto = {
       session: { userId: 'coach-1', role: Role.COACH },
@@ -184,7 +184,7 @@ describe('ListExercisesUsecase', () => {
   });
 
   it('should allow a coach to list public exercises explicitly', async () => {
-    exerciseRepositoryMock.list.mockResolvedValue({ items: [exercise], total: 1, page: 3, limit: 15 });
+    (exerciseRepositoryMock.list as any).mockResolvedValue({ items: [exercise], total: 1, page: 3, limit: 15 });
 
     const dto: ListExercisesUsecaseDto = {
       session: { userId: 'coach-1', role: Role.COACH },
@@ -203,7 +203,7 @@ describe('ListExercisesUsecase', () => {
   });
 
   it('should allow a coach to list their private and public exercises by default', async () => {
-    exerciseRepositoryMock.list.mockResolvedValue({ items: [exercise], total: 1, page: 1, limit: 20 });
+    (exerciseRepositoryMock.list as any).mockResolvedValue({ items: [exercise], total: 1, page: 1, limit: 20 });
 
     const dto: ListExercisesUsecaseDto = {
       session: { userId: 'coach-1', role: Role.COACH },
@@ -222,7 +222,7 @@ describe('ListExercisesUsecase', () => {
   });
 
   it('should allow a coach to list only private exercises when requesting private visibility', async () => {
-    exerciseRepositoryMock.list.mockResolvedValue({ items: [exercise], total: 1, page: 1, limit: 10 });
+    (exerciseRepositoryMock.list as any).mockResolvedValue({ items: [exercise], total: 1, page: 1, limit: 10 });
 
     const dto: ListExercisesUsecaseDto = {
       session: { userId: 'coach-1', role: Role.COACH },
@@ -253,7 +253,7 @@ describe('ListExercisesUsecase', () => {
 
   it('should log and throw a domain error when listing fails', async () => {
     const failure = new Error('database failure');
-    exerciseRepositoryMock.list.mockRejectedValue(failure);
+    (exerciseRepositoryMock.list as any).mockRejectedValue(failure);
 
     const dto: ListExercisesUsecaseDto = {
       session: { userId: 'admin-1', role: Role.ADMIN },

@@ -1,3 +1,4 @@
+import React from 'react';
 import { Paper, Typography, Box, useTheme } from '@mui/material';
 
 interface StatCardProps {

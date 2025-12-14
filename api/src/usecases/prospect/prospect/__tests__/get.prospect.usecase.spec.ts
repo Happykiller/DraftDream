@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, afterEach, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -58,7 +58,7 @@ describe('GetProspectUsecase', () => {
     });
 
     it('should get a prospect when user is admin', async () => {
-        repositoryMock.get.mockResolvedValue(prospect);
+        (repositoryMock.get as any).mockResolvedValue(prospect);
 
         const result = await usecase.execute({
             id: 'prospect-1',
@@ -70,7 +70,7 @@ describe('GetProspectUsecase', () => {
     });
 
     it('should get a prospect when user is the creator', async () => {
-        repositoryMock.get.mockResolvedValue(prospect);
+        (repositoryMock.get as any).mockResolvedValue(prospect);
 
         const result = await usecase.execute({
             id: 'prospect-1',
@@ -81,7 +81,7 @@ describe('GetProspectUsecase', () => {
     });
 
     it('should return null when user is not admin and not the creator', async () => {
-        repositoryMock.get.mockResolvedValue(prospect);
+        (repositoryMock.get as any).mockResolvedValue(prospect);
 
         const result = await usecase.execute({
             id: 'prospect-1',
@@ -92,7 +92,7 @@ describe('GetProspectUsecase', () => {
     });
 
     it('should return null when prospect not found', async () => {
-        repositoryMock.get.mockResolvedValue(null);
+        (repositoryMock.get as any).mockResolvedValue(null);
 
         const result = await usecase.execute({
             id: 'prospect-999',
@@ -104,7 +104,7 @@ describe('GetProspectUsecase', () => {
 
     it('should log and throw when repository get fails', async () => {
         const failure = new Error('get failure');
-        repositoryMock.get.mockRejectedValue(failure);
+        (repositoryMock.get as any).mockRejectedValue(failure);
 
         await expect(usecase.execute({
             id: 'prospect-1',

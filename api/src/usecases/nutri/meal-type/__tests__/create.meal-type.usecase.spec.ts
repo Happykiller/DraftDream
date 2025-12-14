@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -67,7 +67,7 @@ describe('CreateMealTypeUsecase', () => {
   });
 
   it('should create a meal type through the repository', async () => {
-    mealTypeRepositoryMock.create.mockResolvedValue(mealType);
+    (mealTypeRepositoryMock.create as any).mockResolvedValue(mealType);
 
     const result = await usecase.execute(dto);
 
@@ -83,7 +83,7 @@ describe('CreateMealTypeUsecase', () => {
   });
 
   it('should return null when the repository returns null', async () => {
-    mealTypeRepositoryMock.create.mockResolvedValue(null);
+    (mealTypeRepositoryMock.create as any).mockResolvedValue(null);
 
     const result = await usecase.execute(dto);
 
@@ -92,7 +92,7 @@ describe('CreateMealTypeUsecase', () => {
 
   it('should log and throw a domain error when creation fails', async () => {
     const failure = new Error('persistence failure');
-    mealTypeRepositoryMock.create.mockRejectedValue(failure);
+    (mealTypeRepositoryMock.create as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.CREATE_MEAL_TYPE_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(

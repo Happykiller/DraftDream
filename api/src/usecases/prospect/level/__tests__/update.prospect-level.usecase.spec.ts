@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, afterEach, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -58,7 +58,7 @@ describe('UpdateProspectLevelUsecase', () => {
 
   it('should update level through the repository', async () => {
     const buildSlugSpy = jest.spyOn(slugUtil, 'buildSlug').mockReturnValue('generated-prospect');
-    repositoryMock.update.mockResolvedValue(level);
+    (repositoryMock.update as any).mockResolvedValue(level);
 
     await expect(usecase.execute({ ...dto, id })).resolves.toEqual(level);
     expect(repositoryMock.update).toHaveBeenCalledWith(id, {
@@ -74,14 +74,14 @@ describe('UpdateProspectLevelUsecase', () => {
   });
 
   it('should return null when update fails to find entity', async () => {
-    repositoryMock.update.mockResolvedValue(null);
+    (repositoryMock.update as any).mockResolvedValue(null);
 
     await expect(usecase.execute({ ...dto, id })).resolves.toBeNull();
   });
 
   it('should log and throw when repository update fails', async () => {
     const failure = new Error('update failure');
-    repositoryMock.update.mockRejectedValue(failure);
+    (repositoryMock.update as any).mockRejectedValue(failure);
 
     await expect(usecase.execute({ ...dto, id })).rejects.toThrow(ERRORS.UPDATE_PROSPECT_LEVEL_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(`UpdateProspectLevelUsecase#execute => ${failure.message}`);

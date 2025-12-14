@@ -42,7 +42,7 @@ describe('DeleteCategoryUsecase', () => {
   });
 
   it('should delete the category through the repository', async () => {
-    categoryRepositoryMock.delete.mockResolvedValue(true);
+    (categoryRepositoryMock.delete as any).mockResolvedValue(true);
 
     const result = await usecase.execute(dto);
 
@@ -51,7 +51,7 @@ describe('DeleteCategoryUsecase', () => {
   });
 
   it('should return false when the repository returns false', async () => {
-    categoryRepositoryMock.delete.mockResolvedValue(false);
+    (categoryRepositoryMock.delete as any).mockResolvedValue(false);
 
     const result = await usecase.execute(dto);
 
@@ -60,7 +60,7 @@ describe('DeleteCategoryUsecase', () => {
 
   it('should log and throw a domain error when deletion fails', async () => {
     const failure = new Error('database failure');
-    categoryRepositoryMock.delete.mockRejectedValue(failure);
+    (categoryRepositoryMock.delete as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.DELETE_CATEGORY_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(

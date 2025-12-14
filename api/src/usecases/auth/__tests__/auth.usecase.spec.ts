@@ -63,9 +63,9 @@ describe('AuthUsecase', () => {
   });
 
   it('should authenticate the user and return an access token', async () => {
-    userRepositoryMock.getUserByEmail.mockResolvedValue({ ...persistedUser });
-    cryptServiceMock.verify.mockResolvedValue(true);
-    jwtServiceMock.sign.mockResolvedValue('jwt-token');
+    (userRepositoryMock.getUserByEmail as any).mockResolvedValue({ ...persistedUser });
+    (cryptServiceMock.verify as any).mockResolvedValue(true);
+    (jwtServiceMock.sign as any).mockResolvedValue('jwt-token');
 
     const result = await usecase.execute(dto);
 
@@ -82,7 +82,7 @@ describe('AuthUsecase', () => {
   });
 
   it('should reject when the user is unknown', async () => {
-    userRepositoryMock.getUserByEmail.mockResolvedValue(null);
+    (userRepositoryMock.getUserByEmail as any).mockResolvedValue(null);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.INVALID_CREDENTIALS);
 
@@ -92,7 +92,7 @@ describe('AuthUsecase', () => {
   });
 
   it('should reject when the stored password is missing', async () => {
-    userRepositoryMock.getUserByEmail.mockResolvedValue({ ...persistedUser, password: undefined });
+    (userRepositoryMock.getUserByEmail as any).mockResolvedValue({ ...persistedUser, password: undefined });
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.INVALID_CREDENTIALS);
 
@@ -102,8 +102,8 @@ describe('AuthUsecase', () => {
   });
 
   it('should reject when the password verification fails', async () => {
-    userRepositoryMock.getUserByEmail.mockResolvedValue({ ...persistedUser });
-    cryptServiceMock.verify.mockResolvedValue(false);
+    (userRepositoryMock.getUserByEmail as any).mockResolvedValue({ ...persistedUser });
+    (cryptServiceMock.verify as any).mockResolvedValue(false);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.INVALID_CREDENTIALS);
 
@@ -112,11 +112,11 @@ describe('AuthUsecase', () => {
   });
 
   it('should wrap unexpected errors as AUTH_USECASE_FAIL', async () => {
-    userRepositoryMock.getUserByEmail.mockResolvedValue({ ...persistedUser });
-    cryptServiceMock.verify.mockResolvedValue(true);
+    (userRepositoryMock.getUserByEmail as any).mockResolvedValue({ ...persistedUser });
+    (cryptServiceMock.verify as any).mockResolvedValue(true);
 
     const failure = new Error('signing failed');
-    jwtServiceMock.sign.mockRejectedValue(failure);
+    (jwtServiceMock.sign as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.AUTH_USECASE_FAIL);
 

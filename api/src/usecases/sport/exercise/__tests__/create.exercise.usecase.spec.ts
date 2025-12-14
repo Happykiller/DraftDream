@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -151,7 +151,7 @@ describe('CreateExerciseUsecase', () => {
   });
 
   it('should create an exercise and map the response', async () => {
-    exerciseRepositoryMock.create.mockResolvedValue(exercise);
+    (exerciseRepositoryMock.create as any).mockResolvedValue(exercise);
 
     const result = await usecase.execute(dto);
 
@@ -163,7 +163,7 @@ describe('CreateExerciseUsecase', () => {
   });
 
   it('should return null when the repository returns null', async () => {
-    exerciseRepositoryMock.create.mockResolvedValue(null);
+    (exerciseRepositoryMock.create as any).mockResolvedValue(null);
 
     const result = await usecase.execute(dto);
 
@@ -172,7 +172,7 @@ describe('CreateExerciseUsecase', () => {
 
   it('should log and throw a domain error when creation fails', async () => {
     const failure = new Error('database failure');
-    exerciseRepositoryMock.create.mockRejectedValue(failure);
+    (exerciseRepositoryMock.create as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.CREATE_EXERCISE_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(

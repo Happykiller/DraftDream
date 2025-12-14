@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { describe, expect, it } from '@jest/globals';
 
 import { GraphQLSchemaBuilderModule, GraphQLSchemaFactory } from '@nestjs/graphql';
 import { GraphQLObjectType } from 'graphql';

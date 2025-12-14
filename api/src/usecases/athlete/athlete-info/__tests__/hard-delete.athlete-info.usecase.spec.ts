@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, afterEach, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -41,7 +41,7 @@ describe('HardDeleteAthleteInfoUsecase', () => {
     });
 
     it('should hard delete athlete info when user is admin', async () => {
-        repositoryMock.hardDelete.mockResolvedValue(true);
+        (repositoryMock.hardDelete as any).mockResolvedValue(true);
 
         const result = await usecase.execute({
             id: 'info-1',
@@ -61,7 +61,7 @@ describe('HardDeleteAthleteInfoUsecase', () => {
     });
 
     it('should return false when hard delete fails', async () => {
-        repositoryMock.hardDelete.mockResolvedValue(false);
+        (repositoryMock.hardDelete as any).mockResolvedValue(false);
 
         const result = await usecase.execute({
             id: 'info-999',
@@ -73,7 +73,7 @@ describe('HardDeleteAthleteInfoUsecase', () => {
 
     it('should log and throw when repository hard delete fails', async () => {
         const failure = new Error('hard delete failure');
-        repositoryMock.hardDelete.mockRejectedValue(failure);
+        (repositoryMock.hardDelete as any).mockRejectedValue(failure);
 
         await expect(usecase.execute({
             id: 'info-1',

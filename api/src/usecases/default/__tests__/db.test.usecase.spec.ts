@@ -36,7 +36,7 @@ describe('DbTestUsecase', () => {
   });
 
   it('should return true when database test succeeds', async () => {
-    testRepositoryMock.test.mockResolvedValue(true);
+    (testRepositoryMock.test as any).mockResolvedValue(true);
 
     const result = await usecase.execute();
 
@@ -45,7 +45,7 @@ describe('DbTestUsecase', () => {
   });
 
   it('should return false when database test fails gracefully', async () => {
-    testRepositoryMock.test.mockResolvedValue(false);
+    (testRepositoryMock.test as any).mockResolvedValue(false);
 
     const result = await usecase.execute();
 
@@ -55,7 +55,7 @@ describe('DbTestUsecase', () => {
 
   it('should log and throw a domain error when the repository throws', async () => {
     const failure = new Error('ping failure');
-    testRepositoryMock.test.mockRejectedValue(failure);
+    (testRepositoryMock.test as any).mockRejectedValue(failure);
 
     await expect(usecase.execute()).rejects.toThrow(ERRORS.DB_TEST_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(

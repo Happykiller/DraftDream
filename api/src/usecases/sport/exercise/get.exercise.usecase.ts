@@ -20,6 +20,8 @@ export class GetExerciseUsecase {
         return null;
       }
 
+
+
       // Read access is allowed for all roles according to business rules.
       if (session.role === Role.ADMIN || res.createdBy === session.userId || enumEquals(res.visibility, 'PUBLIC')) {
         return mapExerciseToUsecase(res);

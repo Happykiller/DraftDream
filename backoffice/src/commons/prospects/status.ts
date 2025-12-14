@@ -13,4 +13,5 @@ export const ProspectStatus = {
   CLIENT: 'CLIENT',
 } as const;
 
+// eslint-disable-next-line no-redeclare
 export type ProspectStatus = (typeof ProspectStatus)[keyof typeof ProspectStatus];

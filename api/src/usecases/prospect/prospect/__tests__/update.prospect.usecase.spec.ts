@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, afterEach, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -58,8 +58,8 @@ describe('UpdateProspectUsecase', () => {
 
     it('should update a prospect successfully', async () => {
         const updatedProspect = { ...existingProspect, firstName: 'Johnny' };
-        repositoryMock.get.mockResolvedValue(existingProspect);
-        repositoryMock.update.mockResolvedValue(updatedProspect);
+        (repositoryMock.get as any).mockResolvedValue(existingProspect);
+        (repositoryMock.update as any).mockResolvedValue(updatedProspect);
 
         const result = await usecase.execute({
             id: 'prospect-1',
@@ -72,8 +72,8 @@ describe('UpdateProspectUsecase', () => {
     });
 
     it('should track status change in workflowHistory', async () => {
-        repositoryMock.get.mockResolvedValue(existingProspect);
-        repositoryMock.update.mockResolvedValue({
+        (repositoryMock.get as any).mockResolvedValue(existingProspect);
+        (repositoryMock.update as any).mockResolvedValue({
             ...existingProspect,
             status: ProspectStatus.CONTACTED,
         });
@@ -96,8 +96,8 @@ describe('UpdateProspectUsecase', () => {
     });
 
     it('should not update workflowHistory when status unchanged', async () => {
-        repositoryMock.get.mockResolvedValue(existingProspect);
-        repositoryMock.update.mockResolvedValue(existingProspect);
+        (repositoryMock.get as any).mockResolvedValue(existingProspect);
+        (repositoryMock.update as any).mockResolvedValue(existingProspect);
 
         await usecase.execute({
             id: 'prospect-1',
@@ -113,7 +113,7 @@ describe('UpdateProspectUsecase', () => {
     });
 
     it('should return null when prospect not found', async () => {
-        repositoryMock.get.mockResolvedValue(null);
+        (repositoryMock.get as any).mockResolvedValue(null);
 
         const result = await usecase.execute({
             id: 'prospect-999',
@@ -125,8 +125,8 @@ describe('UpdateProspectUsecase', () => {
     });
 
     it('should return null when update returns null', async () => {
-        repositoryMock.get.mockResolvedValue(existingProspect);
-        repositoryMock.update.mockResolvedValue(null);
+        (repositoryMock.get as any).mockResolvedValue(existingProspect);
+        (repositoryMock.update as any).mockResolvedValue(null);
 
         const result = await usecase.execute({
             id: 'prospect-1',
@@ -138,8 +138,8 @@ describe('UpdateProspectUsecase', () => {
 
     it('should log and throw when repository update fails', async () => {
         const failure = new Error('update failure');
-        repositoryMock.get.mockResolvedValue(existingProspect);
-        repositoryMock.update.mockRejectedValue(failure);
+        (repositoryMock.get as any).mockResolvedValue(existingProspect);
+        (repositoryMock.update as any).mockRejectedValue(failure);
 
         await expect(usecase.execute({
             id: 'prospect-1',

@@ -1,6 +1,6 @@
 // src\common\__tests__\slug.util.spec.ts
 import { randomBytes } from 'crypto';
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { buildSlug, slugifyCandidate } from '../slug.util';
 
 jest.mock('crypto', () => ({

@@ -84,7 +84,7 @@ describe('CreateProspectUsecase', () => {
     });
 
     it('should create a prospect with all fields', async () => {
-        repositoryMock.create.mockResolvedValue(prospect);
+        (repositoryMock.create as any).mockResolvedValue(prospect);
 
         const result = await usecase.execute(dto);
 
@@ -131,7 +131,7 @@ describe('CreateProspectUsecase', () => {
             updatedAt: now,
         };
 
-        repositoryMock.create.mockResolvedValue(minimalProspect);
+        (repositoryMock.create as any).mockResolvedValue(minimalProspect);
 
         const result = await usecase.execute(minimalDto);
 
@@ -140,7 +140,7 @@ describe('CreateProspectUsecase', () => {
     });
 
     it('should auto-initialize workflowHistory when not provided', async () => {
-        repositoryMock.create.mockResolvedValue(prospect);
+        (repositoryMock.create as any).mockResolvedValue(prospect);
 
         await usecase.execute(dto);
 
@@ -152,7 +152,7 @@ describe('CreateProspectUsecase', () => {
     });
 
     it('should return null when repository creation returns null', async () => {
-        repositoryMock.create.mockResolvedValue(null);
+        (repositoryMock.create as any).mockResolvedValue(null);
 
         const result = await usecase.execute(dto);
 
@@ -161,7 +161,7 @@ describe('CreateProspectUsecase', () => {
 
     it('should log and throw when repository creation fails', async () => {
         const failure = new Error('create failure');
-        repositoryMock.create.mockRejectedValue(failure);
+        (repositoryMock.create as any).mockRejectedValue(failure);
 
         await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.CREATE_PROSPECT_USECASE);
         expect(loggerMock.error).toHaveBeenCalledWith(`CreateProspectUsecase#execute => ${failure.message}`);

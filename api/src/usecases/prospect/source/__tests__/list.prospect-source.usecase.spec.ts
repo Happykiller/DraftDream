@@ -47,7 +47,7 @@ describe('ListProspectSourcesUsecase', () => {
 
   it('should return list of sources', async () => {
     const dto: ListProspectSourcesDto = { page: 1, limit: 10 };
-    repositoryMock.list.mockResolvedValue({
+    (repositoryMock.list as any).mockResolvedValue({
       items: [source],
       total: 1,
       page: 1,
@@ -67,7 +67,7 @@ describe('ListProspectSourcesUsecase', () => {
 
   it('should log and throw when repository fails', async () => {
     const failure = new Error('list failure');
-    repositoryMock.list.mockRejectedValue(failure);
+    (repositoryMock.list as any).mockRejectedValue(failure);
 
     await expect(usecase.execute()).rejects.toThrow(ERRORS.LIST_PROSPECT_SOURCES_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(`ListProspectSourcesUsecase#execute => ${failure.message}`);

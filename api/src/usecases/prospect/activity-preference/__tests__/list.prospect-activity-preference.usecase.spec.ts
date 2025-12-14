@@ -65,7 +65,7 @@ describe('ListProspectActivityPreferencesUsecase', () => {
       page: 2,
       limit: 10,
     };
-    repositoryMock.list.mockResolvedValue(repositoryResult);
+    (repositoryMock.list as any).mockResolvedValue(repositoryResult);
 
     const result = await usecase.execute(dto);
 
@@ -80,7 +80,7 @@ describe('ListProspectActivityPreferencesUsecase', () => {
       page: 1,
       limit: 20,
     };
-    repositoryMock.list.mockResolvedValue(repositoryResult);
+    (repositoryMock.list as any).mockResolvedValue(repositoryResult);
 
     const result = await usecase.execute();
 
@@ -90,7 +90,7 @@ describe('ListProspectActivityPreferencesUsecase', () => {
 
   it('should log and throw a domain error when repository list fails', async () => {
     const failure = new Error('list failure');
-    repositoryMock.list.mockRejectedValue(failure);
+    (repositoryMock.list as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.LIST_PROSPECT_ACTIVITY_PREFERENCES_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(`ListProspectActivityPreferencesUsecase#execute => ${failure.message}`);

@@ -64,7 +64,7 @@ describe('ListMealDaysUsecase', () => {
     inversifyMock.bddService = bddServiceMock as unknown as BddServiceMongo;
     inversifyMock.loggerService = loggerMock;
 
-    userRepositoryMock.listUsers.mockResolvedValue({ items: [], total: 0, page: 1, limit: 50 });
+    (userRepositoryMock.listUsers as any).mockResolvedValue({ items: [], total: 0, page: 1, limit: 50 });
 
     usecase = new ListMealDaysUsecase(inversifyMock);
   });
@@ -74,7 +74,7 @@ describe('ListMealDaysUsecase', () => {
   });
 
   it('should list meal days for an admin session', async () => {
-    mealDayRepositoryMock.list.mockResolvedValue({
+    (mealDayRepositoryMock.list as any).mockResolvedValue({
       items: mealDays,
       total: mealDays.length,
       page: 2,
@@ -104,7 +104,7 @@ describe('ListMealDaysUsecase', () => {
   });
 
   it('should list only owned meal days for a coach when createdBy matches the session user', async () => {
-    mealDayRepositoryMock.list.mockResolvedValue({
+    (mealDayRepositoryMock.list as any).mockResolvedValue({
       items: [mealDays[0]],
       total: 1,
       page: 1,
@@ -127,13 +127,13 @@ describe('ListMealDaysUsecase', () => {
   });
 
   it('should allow a coach to list public meal days of allowed creators', async () => {
-    userRepositoryMock.listUsers.mockResolvedValue({
+    (userRepositoryMock.listUsers as any).mockResolvedValue({
       items: [{ id: 'admin-9' } as any],
       total: 1,
       page: 1,
       limit: 50,
     });
-    mealDayRepositoryMock.list.mockResolvedValue({
+    (mealDayRepositoryMock.list as any).mockResolvedValue({
       items: [mealDays[0]],
       total: 1,
       page: 1,
@@ -168,13 +168,13 @@ describe('ListMealDaysUsecase', () => {
   });
 
   it('should list accessible meal days for a coach when no creator filter is provided', async () => {
-    userRepositoryMock.listUsers.mockResolvedValue({
+    (userRepositoryMock.listUsers as any).mockResolvedValue({
       items: [{ id: 'admin-9' } as any],
       total: 1,
       page: 1,
       limit: 50,
     });
-    mealDayRepositoryMock.list.mockResolvedValue({
+    (mealDayRepositoryMock.list as any).mockResolvedValue({
       items: mealDays,
       total: mealDays.length,
       page: 1,
@@ -198,13 +198,13 @@ describe('ListMealDaysUsecase', () => {
   });
 
   it('should reject when a coach requests unauthorized creator data', async () => {
-    userRepositoryMock.listUsers.mockResolvedValue({
+    (userRepositoryMock.listUsers as any).mockResolvedValue({
       items: [{ id: 'admin-1' } as any],
       total: 1,
       page: 1,
       limit: 50,
     });
-    mealDayRepositoryMock.list.mockResolvedValue({
+    (mealDayRepositoryMock.list as any).mockResolvedValue({
       items: [],
       total: 0,
       page: 1,
@@ -243,7 +243,7 @@ describe('ListMealDaysUsecase', () => {
 
   it('should log and throw a domain error when listing fails', async () => {
     const failure = new Error('listing failed');
-    mealDayRepositoryMock.list.mockRejectedValue(failure);
+    (mealDayRepositoryMock.list as any).mockRejectedValue(failure);
     const dto: ListMealDaysUsecaseDto = {
       session: { userId: 'admin-1', role: Role.ADMIN },
     };

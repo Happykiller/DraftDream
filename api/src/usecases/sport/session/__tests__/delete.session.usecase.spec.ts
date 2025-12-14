@@ -1,4 +1,4 @@
-﻿import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+﻿import { beforeEach, describe, expect, it } from '@jest/globals';
 
 import { ERRORS } from '@src/common/ERROR';
 import { Role } from '@src/common/role.enum';
