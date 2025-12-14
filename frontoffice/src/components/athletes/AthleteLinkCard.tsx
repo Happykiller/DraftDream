@@ -1,16 +1,7 @@
 // src/components/athletes/AthleteLinkCard.tsx
 import * as React from 'react';
 import { CalendarMonth, EventBusy, EventNote, Notes } from '@mui/icons-material';
-import {
-  Avatar,
-  Card,
-  CardContent,
-  CardHeader,
-  Chip,
-  Divider,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Card, CardContent, CardHeader, Divider, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { useDateFormatter } from '@hooks/useDateFormatter';
@@ -18,12 +9,6 @@ import type { CoachAthleteLink } from '@app-types/coachAthletes';
 
 export interface AthleteLinkCardProps {
   link: CoachAthleteLink;
-}
-
-function getInitials(name?: string): string {
-  if (!name) return '?';
-  const [first = '', last = ''] = name.split(' ');
-  return `${first.charAt(0)}${last.charAt(0)}`.toUpperCase() || '?';
 }
 
 function formatFullName(link: CoachAthleteLink): string {
@@ -39,7 +24,6 @@ export const AthleteLinkCard = React.memo(function AthleteLinkCard({ link }: Ath
   const { t } = useTranslation();
   const formatDate = useDateFormatter({ options: { day: '2-digit', month: '2-digit', year: 'numeric' } });
   const athleteName = React.useMemo(() => formatFullName(link), [link]);
-  const initials = React.useMemo(() => getInitials(athleteName), [athleteName]);
 
   const startDateLabel = React.useMemo(() => formatDate(link.startDate), [formatDate, link.startDate]);
   const endDateLabel = React.useMemo(
@@ -51,20 +35,12 @@ export const AthleteLinkCard = React.memo(function AthleteLinkCard({ link }: Ath
     <Card variant="outlined" sx={{ height: '100%' }}>
       {/* General information */}
       <CardHeader
-        avatar={<Avatar sx={{ bgcolor: 'primary.main' }}>{initials}</Avatar>}
         title={
           <Typography fontWeight={600} variant="subtitle1">
             {athleteName}
           </Typography>
         }
         subheader={link.athlete?.email || undefined}
-        action={
-          <Chip
-            label={link.is_active ? t('athletes.list.card.status_active') : t('athletes.list.card.status_inactive')}
-            color={link.is_active ? 'success' : 'default'}
-            size="small"
-          />
-        }
       />
       <Divider />
       <CardContent>
