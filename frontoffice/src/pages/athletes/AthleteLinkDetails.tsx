@@ -139,7 +139,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
   );
 
   const { athleteInfo, loading: athleteInfoLoading, error: athleteInfoError } = useAthleteInfo({
-    athleteId: link?.athleteId,
+    userId: link?.athlete?.id,
   });
 
   const objectives = React.useMemo(() => athleteInfo?.objectives ?? [], [athleteInfo?.objectives]);

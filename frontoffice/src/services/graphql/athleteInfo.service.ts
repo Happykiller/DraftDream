@@ -5,38 +5,41 @@ import type { AthleteInfo } from '@app-types/athleteInfo';
 
 import { GraphqlServiceFetch } from './graphql.service.fetch';
 
-const ATHLETE_INFO_GET_Q = `
-  query AthleteInfoGet($id: ID!) {
-    athleteInfo_get(id: $id) {
-      id
-      userId
-      levelId
-      objectiveIds
-      activityPreferenceIds
-      objectives { id label }
-      activityPreferences { id label }
+const ATHLETE_INFO_BY_USER_Q = `
+  query AthleteInfoByUser($input: ListAthleteInfosInput) {
+    athleteInfo_list(input: $input) {
+      items {
+        id
+        userId
+        levelId
+        objectiveIds
+        activityPreferenceIds
+        objectives { id label }
+        activityPreferences { id label }
+      }
     }
   }
 `;
 
-type AthleteInfoGetPayload = { athleteInfo_get: AthleteInfo | null };
+type AthleteInfoListPayload = { athleteInfo_list: { items: AthleteInfo[] } | null };
 
-interface AthleteInfoGetOptions {
-  athleteId: string;
+interface AthleteInfoByUserOptions {
+  userId: string;
 }
 
-/** Loads the athlete information attached to a specific athlete. */
-export async function athleteInfoGet({ athleteId }: AthleteInfoGetOptions): Promise<AthleteInfo | null> {
+/** Loads the athlete information attached to a specific user. */
+export async function athleteInfoGetByUser({ userId }: AthleteInfoByUserOptions): Promise<AthleteInfo | null> {
   const graphql = new GraphqlServiceFetch(inversify);
-  const { data, errors } = await graphql.send<AthleteInfoGetPayload>({
-    query: ATHLETE_INFO_GET_Q,
-    operationName: 'AthleteInfoGet',
-    variables: { id: athleteId },
+  const trimmedUserId = userId.trim();
+  const { data, errors } = await graphql.send<AthleteInfoListPayload>({
+    query: ATHLETE_INFO_BY_USER_Q,
+    operationName: 'AthleteInfoByUser',
+    variables: { input: { userId: trimmedUserId, limit: 1, page: 1 } },
   });
 
   if (errors?.length) {
     throw new Error(errors[0].message);
   }
 
-  return data?.athleteInfo_get ?? null;
+  return data?.athleteInfo_list?.items?.[0] ?? null;
 }

@@ -4,12 +4,12 @@ import { useTranslation } from 'react-i18next';
 
 import type { AthleteInfo } from '@app-types/athleteInfo';
 
-import { athleteInfoGet } from '@services/graphql/athleteInfo.service';
+import { athleteInfoGetByUser } from '@services/graphql/athleteInfo.service';
 
 import { useAsyncTask } from '@hooks/useAsyncTask';
 
 export interface UseAthleteInfoOptions {
-  athleteId?: string | null;
+  userId?: string | null;
   initialInfo?: AthleteInfo | null;
   initialError?: string | null;
 }
@@ -23,7 +23,7 @@ export interface UseAthleteInfoResult {
 
 /** Fetches athlete information for the current athlete profile. */
 export function useAthleteInfo({
-  athleteId,
+  userId,
   initialInfo = null,
   initialError = null,
 }: UseAthleteInfoOptions = {}): UseAthleteInfoResult {
@@ -39,7 +39,7 @@ export function useAthleteInfo({
       setError(null);
 
       try {
-        const result = await execute(() => athleteInfoGet({ athleteId: id }));
+        const result = await execute(() => athleteInfoGetByUser({ userId: id }));
 
         if (!result) {
           const message = t('athletes.details.objectives.load_failed');
@@ -72,25 +72,25 @@ export function useAthleteInfo({
   }, [initialError]);
 
   React.useEffect(() => {
-    if (!athleteId) {
+    if (!userId) {
       setAthleteInfo(null);
       setError(null);
       setLoading(false);
       return;
     }
 
-    void load(athleteId);
-  }, [athleteId, load]);
+    void load(userId);
+  }, [userId, load]);
 
   const reload = React.useCallback(async () => {
-    if (!athleteId) {
+    if (!userId) {
       setAthleteInfo(null);
       setError(null);
       return null;
     }
 
-    return load(athleteId);
-  }, [athleteId, load]);
+    return load(userId);
+  }, [userId, load]);
 
   return { athleteInfo, loading, error, reload };
 }
