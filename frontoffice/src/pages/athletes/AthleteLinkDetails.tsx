@@ -20,6 +20,7 @@ import {
 import { alpha, useTheme } from '@mui/material/styles';
 
 import { getAthleteDisplayName } from '@components/athletes/athleteLinkUtils';
+import { TextWithTooltip } from '@components/common/TextWithTooltip';
 import type { AthleteLinkDetailsLoaderResult } from '@pages/athletes/AthleteLinkDetails.loader';
 import { useCoachAthleteLink } from '@hooks/athletes/useCoachAthleteLink';
 import { useDateFormatter } from '@hooks/useDateFormatter';
@@ -149,14 +150,12 @@ export function AthleteLinkDetails(): React.JSX.Element {
 
   const renderClientField = React.useCallback(
     (label: string, value: string) => (
-      <Grid size={{ xs: 12, sm: 6 }}>
-        <Stack spacing={0.5} alignItems="flex-start">
-          <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, letterSpacing: 0.4 }}>
-            {label}
-          </Typography>
-          <Typography variant="body2">{value}</Typography>
-        </Stack>
-      </Grid>
+      <Stack spacing={0.5} alignItems="flex-start" sx={{ minWidth: 0 }}>
+        <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, letterSpacing: 0.4 }}>
+          {label}
+        </Typography>
+        <TextWithTooltip tooltipTitle={value} variant="body2" sx={{ width: '100%' }} />
+      </Stack>
     ),
     [],
   );
@@ -284,10 +283,18 @@ export function AthleteLinkDetails(): React.JSX.Element {
                     </Typography>
 
                     <Grid container spacing={1.5} rowSpacing={2}>
-                      {renderClientField(t('athletes.details.fields.first_name'), athleteFirstName)}
-                      {renderClientField(t('athletes.details.fields.last_name'), athleteLastName)}
-                      {renderClientField(t('athletes.details.fields.email'), athleteEmail)}
-                      {renderClientField(t('athletes.details.fields.phone'), athletePhone)}
+                      <Grid size={{ xs: 6, sm: 6 }}>
+                        {renderClientField(t('athletes.details.fields.first_name'), athleteFirstName)}
+                      </Grid>
+                      <Grid size={{ xs: 6, sm: 6 }}>
+                        {renderClientField(t('athletes.details.fields.last_name'), athleteLastName)}
+                      </Grid>
+                      <Grid size={{ xs: 6, sm: 6 }}>
+                        {renderClientField(t('athletes.details.fields.email'), athleteEmail)}
+                      </Grid>
+                      <Grid size={{ xs: 6, sm: 6 }}>
+                        {renderClientField(t('athletes.details.fields.phone'), athletePhone)}
+                      </Grid>
                     </Grid>
                   </Stack>
                 ) : null}
