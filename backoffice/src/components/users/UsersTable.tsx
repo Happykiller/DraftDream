@@ -1,6 +1,7 @@
 // src/components/users/UsersTable.tsx
 import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Button, Stack, TextField, IconButton, Tooltip, Chip, Select, MenuItem, FormControl, InputLabel, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -18,6 +19,7 @@ export interface UsersTableProps {
   loading: boolean;
   onCreate: () => void;
   onEdit: (row: User) => void;
+  onDelete: (row: User) => void;
   onQueryChange: (q: string) => void;
   onTypeChange: (type: string) => void;
   onPageChange: (page: number) => void; // 1-based
@@ -26,7 +28,7 @@ export interface UsersTableProps {
 
 export const UsersTable = React.memo(function UsersTable({
   rows, total, page, limit, q, type, loading,
-  onCreate, onEdit, onQueryChange, onTypeChange, onPageChange, onLimitChange,
+  onCreate, onEdit, onDelete, onQueryChange, onTypeChange, onPageChange, onLimitChange,
 }: UsersTableProps): React.JSX.Element {
   const fmtDate = useDateFormatter();
   const theme = useTheme();
@@ -49,8 +51,8 @@ export const UsersTable = React.memo(function UsersTable({
       {
         field: 'is_active',
         headerName: 'Status',
-        renderCell: (p) => (
-          <Chip size="small" label={p ? 'Active' : 'Inactive'} color={p ? 'success' : 'default'} />
+        renderCell: (params) => (
+          <Chip size="small" label={params.value ? 'Active' : 'Inactive'} color={params.value ? 'success' : 'default'} />
         ),
         sortable: false,
         filterable: false,
@@ -73,15 +75,22 @@ export const UsersTable = React.memo(function UsersTable({
         sortable: false,
         filterable: false,
         renderCell: (p) => (
-          <Tooltip title="Edit">
-            <IconButton size="small" aria-label={`edit-${p?.row.id}`} onClick={() => onEdit(p.row)}>
-              <EditIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
+          <Stack direction="row" spacing={0.5}>
+            <Tooltip title="Edit">
+              <IconButton size="small" aria-label={`edit-${p?.row.id}`} onClick={() => onEdit(p.row)}>
+                <EditIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Delete">
+              <IconButton size="small" aria-label={`delete-${p?.row.id}`} onClick={() => onDelete(p.row)}>
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </Stack>
         ),
       },
     ],
-    [onEdit, fmtDate, isXl]
+    [onEdit, onDelete, fmtDate, isXl]
   );
 
   return (

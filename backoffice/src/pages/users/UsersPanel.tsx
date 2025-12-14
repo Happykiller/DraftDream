@@ -14,7 +14,7 @@ export function UsersPanel(): React.JSX.Element {
   const debounced = useDebouncedValue(searchInput, 300);
   React.useEffect(() => { if (debounced !== q) setQ(debounced); }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update } = useUsers({
+  const { items, total, loading, create, update, remove } = useUsers({
     page,
     limit,
     q,
@@ -24,6 +24,7 @@ export function UsersPanel(): React.JSX.Element {
   // Dialog states
   const [openCreate, setOpenCreate] = React.useState(false);
   const [editId, setEditId] = React.useState<string | null>(null);
+  const [deleteId, setDeleteId] = React.useState<string | null>(null);
   const editing = React.useMemo(() => items.find((i) => i.id === editId), [items, editId]);
 
   // Create handler: map dialog values → GQL input
@@ -72,6 +73,12 @@ export function UsersPanel(): React.JSX.Element {
     });
   };
 
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    await remove(deleteId);
+    setDeleteId(null);
+  };
+
   return (
     <Box>
       <UsersTable
@@ -84,6 +91,7 @@ export function UsersPanel(): React.JSX.Element {
         loading={loading}
         onCreate={() => setOpenCreate(true)}
         onEdit={(row) => setEditId(row.id)}
+        onDelete={(row) => setDeleteId(row.id)}
         onQueryChange={setSearchInput}
         onTypeChange={setType}
         onPageChange={setPage}
@@ -105,11 +113,12 @@ export function UsersPanel(): React.JSX.Element {
         onSubmit={handleUpdate}
       />
 
-      {/* No delete in schema; keep confirm placeholder if you add it later */}
       <ConfirmDialog
-        open={false}
-        onClose={() => void 0}
-        onConfirm={() => void 0}
+        open={!!deleteId}
+        title="Delete User"
+        message="Are you sure you want to delete this user? This action cannot be undone."
+        onClose={() => setDeleteId(null)}
+        onConfirm={handleDelete}
       />
     </Box>
   );

@@ -18,6 +18,8 @@ import { BddServiceMongo } from '@services/db/mongo/db.service.mongo';
 import { CryptServiceReal } from '@services/crypt/crypt.service.real';
 import { UpdateUserUsecase } from '@usecases/user/update.user.usecase';
 import { CreateUserUsecase } from '@usecases/user/create.user.usecase';
+import { DeleteUserUsecase } from '@usecases/user/delete.user.usecase';
+import { HardDeleteUserUsecase } from '@usecases/user/hard-delete.user.usecase';
 import { GetMuscleUsecase } from '@src/usecases/sport/muscle/get.muscle.usecase';
 import { GetSessionUsecase } from '@src/usecases/sport/session/get.session.usecase';
 import { ListMusclesUsecase } from '@src/usecases/sport/muscle/list.muscles.usecase';
@@ -125,6 +127,8 @@ export class Inversify {
   getMuscleUsecase: GetMuscleUsecase;
   updateUserUsecase: UpdateUserUsecase;
   createUserUsecase: CreateUserUsecase;
+  deleteUserUsecase: DeleteUserUsecase;
+  hardDeleteUserUsecase: HardDeleteUserUsecase;
   getSessionUsecase: GetSessionUsecase;
   getProgramUsecase: GetProgramUsecase;
   getCategoryUsecase: GetCategoryUsecase;
@@ -242,6 +246,8 @@ export class Inversify {
     this.createUserUsecase = new CreateUserUsecase(this);
     this.listUsersUsecase = new ListUsersUsecase(this);
     this.updateUserUsecase = new UpdateUserUsecase(this);
+    this.deleteUserUsecase = new DeleteUserUsecase(this);
+    this.hardDeleteUserUsecase = new HardDeleteUserUsecase(this);
     // usecases category
     this.getCategoryUsecase = new GetCategoryUsecase(this);
     this.createCategoryUsecase = new CreateCategoryUsecase(this);
