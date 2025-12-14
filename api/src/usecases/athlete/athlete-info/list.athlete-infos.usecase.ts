@@ -21,9 +21,12 @@ export class ListAthleteInfosUsecase {
     try {
       const { session, ...filters } = dto;
       const isAdmin = session.role === Role.ADMIN;
-      const createdBy = isAdmin ? filters.createdBy : session.userId;
-      const userId = isAdmin ? filters.userId : undefined;
+      const isFilteringByUser = Boolean(filters.userId);
+
       const includeArchived = isAdmin ? filters.includeArchived : false;
+      const userId = isAdmin ? filters.userId : filters.userId ?? undefined;
+      // Allow coaches to fetch athlete profiles by user identifier while keeping creator scoping when no user filter is provided.
+      const createdBy = isAdmin ? filters.createdBy : isFilteringByUser ? undefined : session.userId;
 
       const result = await this.inversify.bddService.athleteInfo.list({
         userId,
