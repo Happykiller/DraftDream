@@ -289,6 +289,7 @@
       "helper": "Review every piece of information for your athlete.",
       "summary_title": "Link summary",
       "client_sheet_title": "Client sheet",
+      "notes_title": "Notes",
       "loading": "Loading athlete link...",
       "tabs": {
         "overview": "Overview",

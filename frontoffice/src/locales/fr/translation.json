@@ -291,6 +291,7 @@
       "helper": "Consultez toutes les informations pour votre athlète.",
       "summary_title": "Résumé du lien",
       "client_sheet_title": "Fiche client",
+      "notes_title": "Notes",
       "loading": "Chargement du lien athlète...",
       "tabs": {
         "overview": "Vue d'ensemble",

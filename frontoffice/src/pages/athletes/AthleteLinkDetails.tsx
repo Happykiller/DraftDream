@@ -252,6 +252,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
                 flexDirection: { xs: 'column', md: 'row' },
               }}
             >
+              {/* Info block */}
               <Box
                 sx={{
                   width: { xs: '100%', md: '15%' },
@@ -279,40 +280,22 @@ export function AthleteLinkDetails(): React.JSX.Element {
                 {link ? (
                   <Stack spacing={1.5}>
                     <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-                      {t('athletes.details.summary_title')}
+                      {t('athletes.details.client_sheet_title')}
                     </Typography>
 
-                    <Stack direction="row" spacing={1} alignItems="center">
-                      <CalendarMonth color="action" fontSize="small" />
-                      <Typography variant="body2">{startDateFieldLabel}</Typography>
-                    </Stack>
-
-                    <Stack direction="row" spacing={1} alignItems="center">
-                      {link.endDate ? (
-                        <EventNote color="action" fontSize="small" />
-                      ) : (
-                        <EventBusy color="action" fontSize="small" />
-                      )}
-                      <Typography variant="body2">
-                        {t('athletes.details.fields.end_date', { date: endDateLabel })}
-                      </Typography>
-                    </Stack>
-
-                    <Stack direction="row" spacing={1} alignItems="center">
-                      <Mail color="action" fontSize="small" />
-                      <Typography variant="body2">{athleteEmail}</Typography>
-                    </Stack>
-
-                    <Stack direction="row" spacing={1} alignItems="center">
-                      <Visibility color="action" fontSize="small" />
-                      <Typography variant="body2">{statusLabel}</Typography>
-                    </Stack>
+                    <Grid container spacing={1.5} rowSpacing={2}>
+                      {renderClientField(t('athletes.details.fields.first_name'), athleteFirstName)}
+                      {renderClientField(t('athletes.details.fields.last_name'), athleteLastName)}
+                      {renderClientField(t('athletes.details.fields.email'), athleteEmail)}
+                      {renderClientField(t('athletes.details.fields.phone'), athletePhone)}
+                    </Grid>
                   </Stack>
                 ) : null}
               </Box>
 
               <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', md: 'block' } }} />
 
+              {/* Content block */}
               <Box sx={{ flexGrow: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
                 <Tabs
                   value={currentTab}
@@ -335,22 +318,43 @@ export function AthleteLinkDetails(): React.JSX.Element {
                       <Stack spacing={3} sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3 } }}>
                         <Stack spacing={1.5}>
                           <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                            {t('athletes.details.client_sheet_title')}
+                            {t('athletes.details.summary_title')}
                           </Typography>
 
-                          <Grid container spacing={2} rowSpacing={2}>
-                            {renderClientField(t('athletes.details.fields.first_name'), athleteFirstName)}
-                            {renderClientField(t('athletes.details.fields.last_name'), athleteLastName)}
-                            {renderClientField(t('athletes.details.fields.email'), athleteEmail)}
-                            {renderClientField(t('athletes.details.fields.phone'), athletePhone)}
-                          </Grid>
+                          <Stack spacing={1}>
+                            <Stack direction="row" spacing={1} alignItems="center">
+                              <CalendarMonth color="action" fontSize="small" />
+                              <Typography variant="body2">{startDateFieldLabel}</Typography>
+                            </Stack>
+
+                            <Stack direction="row" spacing={1} alignItems="center">
+                              {link.endDate ? (
+                                <EventNote color="action" fontSize="small" />
+                              ) : (
+                                <EventBusy color="action" fontSize="small" />
+                              )}
+                              <Typography variant="body2">
+                                {t('athletes.details.fields.end_date', { date: endDateLabel })}
+                              </Typography>
+                            </Stack>
+
+                            <Stack direction="row" spacing={1} alignItems="center">
+                              <Mail color="action" fontSize="small" />
+                              <Typography variant="body2">{athleteEmail}</Typography>
+                            </Stack>
+
+                            <Stack direction="row" spacing={1} alignItems="center">
+                              <Visibility color="action" fontSize="small" />
+                              <Typography variant="body2">{statusLabel}</Typography>
+                            </Stack>
+                          </Stack>
                         </Stack>
 
                         <Divider />
 
                         <Stack spacing={1.5}>
                           <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                            {t('athletes.details.summary_title')}
+                            {t('athletes.details.notes_title')}
                           </Typography>
 
                           <Stack direction="row" spacing={1} alignItems="flex-start">
