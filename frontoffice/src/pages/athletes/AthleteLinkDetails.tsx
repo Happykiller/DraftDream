@@ -3,13 +3,61 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 import { ArrowBack, CalendarMonth, EventBusy, EventNote, Mail, Notes, Visibility } from '@mui/icons-material';
-import { Alert, Box, Button, Card, CardContent, CircularProgress, Divider, Stack, Typography } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CircularProgress,
+  Divider,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
+} from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 
 import { getAthleteDisplayName } from '@components/athletes/athleteLinkUtils';
 import type { AthleteLinkDetailsLoaderResult } from '@pages/athletes/AthleteLinkDetails.loader';
 import { useCoachAthleteLink } from '@hooks/athletes/useCoachAthleteLink';
 import { useDateFormatter } from '@hooks/useDateFormatter';
+
+type AthleteLinkTab = 'overview' | 'programs' | 'nutritions';
+
+interface TabPanelProps {
+  readonly value: AthleteLinkTab;
+  readonly currentTab: AthleteLinkTab;
+  readonly children: React.ReactNode;
+}
+
+/** Simple tab panel that hides content when the tab is not selected. */
+function TabPanel({ value, currentTab, children }: TabPanelProps): React.JSX.Element | null {
+  if (value !== currentTab) {
+    return null;
+  }
+
+  return <Box sx={{ height: '100%' }}>{children}</Box>;
+}
+
+interface EmptySectionPlaceholderProps {
+  readonly title: string;
+  readonly helper: string;
+}
+
+/** Placeholder shown when a tab has no implemented content yet. */
+function EmptySectionPlaceholder({ title, helper }: EmptySectionPlaceholderProps): React.JSX.Element {
+  return (
+    <Stack spacing={1} alignItems="flex-start" sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3 } }}>
+      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+        {title}
+      </Typography>
+      <Typography variant="body2" color="text.secondary">
+        {helper}
+      </Typography>
+    </Stack>
+  );
+}
 
 /** Dedicated page showing the details of a coach-athlete link. */
 export function AthleteLinkDetails(): React.JSX.Element {
@@ -68,10 +116,15 @@ export function AthleteLinkDetails(): React.JSX.Element {
 
   const finalError = error ?? loaderError;
   const showEmptyState = !loading && !link && finalError !== null;
+  const [currentTab, setCurrentTab] = React.useState<AthleteLinkTab>('overview');
 
   const handleBack = React.useCallback(() => {
     navigate('/athletes');
   }, [navigate]);
+
+  const handleTabChange = React.useCallback((_: React.SyntheticEvent, newValue: string) => {
+    setCurrentTab(newValue as AthleteLinkTab);
+  }, []);
 
   return (
     <Stack
@@ -155,8 +208,28 @@ export function AthleteLinkDetails(): React.JSX.Element {
               '&:last-child': { pb: 0 },
             }}
           >
-            <Box sx={{ flexGrow: 1, overflow: 'auto', minHeight: 0 }}>
-              <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3, md: 3.5 } }}>
+            <Box
+              sx={{
+                flexGrow: 1,
+                overflow: 'hidden',
+                minHeight: 0,
+                display: 'flex',
+                flexDirection: { xs: 'column', md: 'row' },
+              }}
+            >
+              <Box
+                sx={{
+                  width: { xs: '100%', md: '15%' },
+                  minWidth: { md: 180 },
+                  maxWidth: { md: 260 },
+                  borderRight: { md: 1 },
+                  borderColor: { md: 'divider' },
+                  bgcolor: alpha(theme.palette.info.main, 0.04),
+                  px: { xs: 2, sm: 3, md: 2 },
+                  py: { xs: 2, sm: 3 },
+                  overflow: 'auto',
+                }}
+              >
                 {loading && !link ? (
                   <Stack alignItems="center" spacing={1} sx={{ py: 3 }}>
                     <CircularProgress color="info" size={32} />
@@ -170,7 +243,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
 
                 {link ? (
                   <Stack spacing={1.5}>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
                       {t('athletes.details.summary_title')}
                     </Typography>
 
@@ -197,19 +270,64 @@ export function AthleteLinkDetails(): React.JSX.Element {
                       </Typography>
                     </Stack>
 
-                    <Stack direction="row" spacing={1} alignItems="flex-start">
-                      <Notes color="action" fontSize="small" sx={{ mt: 0.25 }} />
-                      <Typography variant="body2">
-                        {link.note?.trim() || t('athletes.details.fields.no_note')}
-                      </Typography>
-                    </Stack>
-
                     <Stack direction="row" spacing={1} alignItems="center">
                       <Visibility color="action" fontSize="small" />
                       <Typography variant="body2">{statusLabel}</Typography>
                     </Stack>
                   </Stack>
                 ) : null}
+              </Box>
+
+              <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', md: 'block' } }} />
+
+              <Box sx={{ flexGrow: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+                <Tabs
+                  value={currentTab}
+                  onChange={handleTabChange}
+                  variant="scrollable"
+                  scrollButtons="auto"
+                  allowScrollButtonsMobile
+                  sx={{ px: { xs: 1, sm: 2, md: 3 } }}
+                >
+                  <Tab value="overview" label={t('athletes.details.tabs.overview')} />
+                  <Tab value="programs" label={t('athletes.details.tabs.programs')} />
+                  <Tab value="nutritions" label={t('athletes.details.tabs.nutritions')} />
+                </Tabs>
+
+                <Divider />
+
+                <Box sx={{ flexGrow: 1, overflow: 'auto', minHeight: 0 }}>
+                  <TabPanel value="overview" currentTab={currentTab}>
+                    {link ? (
+                      <Stack spacing={2} sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3 } }}>
+                        <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                          {t('athletes.details.summary_title')}
+                        </Typography>
+
+                        <Stack direction="row" spacing={1} alignItems="flex-start">
+                          <Notes color="action" fontSize="small" sx={{ mt: 0.25 }} />
+                          <Typography variant="body2">
+                            {link.note?.trim() || t('athletes.details.fields.no_note')}
+                          </Typography>
+                        </Stack>
+                      </Stack>
+                    ) : null}
+                  </TabPanel>
+
+                  <TabPanel value="programs" currentTab={currentTab}>
+                    <EmptySectionPlaceholder
+                      title={t('athletes.details.tabs.programs')}
+                      helper={t('athletes.details.tabs.programs_helper')}
+                    />
+                  </TabPanel>
+
+                  <TabPanel value="nutritions" currentTab={currentTab}>
+                    <EmptySectionPlaceholder
+                      title={t('athletes.details.tabs.nutritions')}
+                      helper={t('athletes.details.tabs.nutritions_helper')}
+                    />
+                  </TabPanel>
+                </Box>
               </Box>
             </Box>
           </CardContent>

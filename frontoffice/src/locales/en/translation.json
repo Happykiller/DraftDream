@@ -289,6 +289,13 @@
       "helper": "Review every piece of information for your athlete.",
       "summary_title": "Link summary",
       "loading": "Loading athlete link...",
+      "tabs": {
+        "overview": "Overview",
+        "programs": "Programs",
+        "nutritions": "Nutritions",
+        "programs_helper": "Attach training programs to this athlete to track their progress.",
+        "nutritions_helper": "Link nutrition plans to centralize the athlete's dietary follow-up."
+      },
       "fields": {
         "start_date": "Start: {{date}}",
         "end_date": "End: {{date}}",
