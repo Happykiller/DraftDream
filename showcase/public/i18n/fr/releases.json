@@ -1,6 +1,37 @@
 {
   "releases": [
     {
+      "version": "0.9.0",
+      "title": "Conversion Prospect & Suivi Athlète",
+      "date": "2025-12-14",
+      "global": [
+        "Conversion directe des prospects en athlètes avec création de compte et lien coach automatique.",
+        "Nouvelle fiche Athlète centralisant programmes, nutrition, objectifs et données santé.",
+        "Gestion de la visibilité (Privé/Public) unifiée pour les programmes, séances et nutrition.",
+        "Flexibilité accrue dans la création de séances (doublons, ordonnancement) et navigation optimisée."
+      ],
+      "notes": "FitDesk 0.9.0 complète le cycle CRM en connectant la vente au suivi opérationnel. Cette version introduit la conversion automatique des prospects en athlètes et déploie une fiche athlète 'vue 360°' intégrant nutrition, sport et données personnelles, le tout supporté par une interface plus lisible et standardisée.",
+      "projects": {
+        "/api": [
+          "Support transactionnel de la conversion prospect vers athlète.",
+          "Normalisation des statuts prospects et génération de slugs multilingues renforcée.",
+          "Nouvelles entrées pour les données santé (allergies, conditions) et métadonnées athlète."
+        ],
+        "/backoffice": [
+          "Panneau d'administration des utilisateurs stabilisé avec correctifs d'affichage.",
+          "Clarification des champs éditables et sécurisation des données sensibles."
+        ],
+        "/frontoffice": [
+          "Bouton de conversion rapide Prospect → Athlète depuis le pipeline.",
+          "Onglets dédiés Nutrition et Programmes intégrés directement dans la fiche Athlète.",
+          "Amélioration UX : compteurs de résultats, titres tronqués intelligents et responsive mobile."
+        ],
+        "/showcase": [
+          "Mise à jour des contenus pour refléter l'approche 'Suivi Athlète' et la fin du cycle CRM."
+        ]
+      }
+    },
+    {
       "version": "0.8.0",
       "title": "Pipeline Commercial Renforcé & Dashboards Séparés",
       "date": "2025-12-05",

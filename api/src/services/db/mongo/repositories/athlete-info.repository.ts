@@ -110,6 +110,21 @@ export class BddServiceAthleteInfoMongo {
   }
 
   /**
+   * Retrieves an athlete info sheet by user identifier.
+   */
+  async getByUserId(userId: string): Promise<AthleteInfo | null> {
+    try {
+      if (!userId) {
+        throw new Error('INVALID_USER_ID');
+      }
+      const doc = await this.col().findOne({ userId, deletedAt: { $exists: false } });
+      return doc ? this.toModel(doc) : null;
+    } catch (error) {
+      this.handleError('getByUserId', error);
+    }
+  }
+
+  /**
    * Lists athlete info sheets matching filters.
    */
   async list(params: ListAthleteInfosDto = {}) {

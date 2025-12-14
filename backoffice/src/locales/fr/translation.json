@@ -440,9 +440,16 @@
       "search_placeholder": "Rechercher des utilisateurs...",
       "new_button": "Nouvel utilisateur"
     },
+    "filter": {
+      "all": "Tous"
+    },
     "dialog": {
       "create_title": "Nouvel utilisateur",
       "edit_title": "Modifier l'utilisateur"
+    },
+    "confirm": {
+      "delete_title": "Supprimer l'utilisateur",
+      "delete_message": "Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible."
     },
     "types": {
       "coach": "Coach",

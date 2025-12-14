@@ -55,6 +55,12 @@ export class ConvertProspectToAthleteUsecase {
         note: prospect.notes,
       });
 
+      await this.ensureAthleteInfo({
+        prospect,
+        userId: athleteResult.athlete.id,
+        createdBy: dto.session.userId,
+      });
+
       const updatedProspect = await this.updateProspectStatusToClient(prospect);
 
       return {
@@ -144,6 +150,31 @@ export class ConvertProspectToAthleteUsecase {
     }
 
     return { link: created, created: true };
+  }
+
+  /**
+   * Ensures athlete info exists using the prospect's data.
+   */
+  private async ensureAthleteInfo(params: {
+    prospect: ProspectUsecaseModel;
+    userId: string;
+    createdBy: string;
+  }): Promise<void> {
+    const existing = await this.inversify.bddService.athleteInfo.getByUserId(params.userId);
+    if (existing) {
+      return;
+    }
+
+    await this.inversify.createAthleteInfoUsecase.execute({
+      session: { userId: params.createdBy, role: 'ADMIN' as any }, // Assuming admin or authorized context for conversion
+      userId: params.userId,
+      levelId: params.prospect.levelId,
+      objectiveIds: params.prospect.objectiveIds,
+      activityPreferenceIds: params.prospect.activityPreferenceIds,
+      medicalConditions: params.prospect.medicalConditions,
+      allergies: params.prospect.allergies,
+      notes: params.prospect.notes,
+    });
   }
 
   /**

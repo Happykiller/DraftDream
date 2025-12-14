@@ -202,7 +202,8 @@ export class BddServiceExerciseMongo {
     if (normalizedCategoryIds.length) {
       filter.categories = { $all: normalizedCategoryIds.map(this.toObjectId) };
     }
-    filter.deletedAt = undefined;
+    // Exclude soft-deleted exercises from listings.
+    filter.deletedAt = { $exists: false };
 
     try {
       const collection = this.col();

@@ -28,7 +28,10 @@ export class UpdateMealPlanUsecase {
         }));
       }
       const updated = await this.inversify.bddService.mealPlan.update(dto.id, toUpdate);
-      return updated ? mapMealPlanToUsecase(updated) : null;
+      if (!updated) {
+        throw new Error(ERRORS.MEAL_PLAN_NOT_FOUND);
+      }
+      return mapMealPlanToUsecase(updated);
     } catch (error: any) {
       this.inversify.loggerService.error(`UpdateMealPlanUsecase#execute => ${error?.message ?? error}`);
       throw normalizeError(error, ERRORS.UPDATE_MEAL_PLAN_USECASE);
