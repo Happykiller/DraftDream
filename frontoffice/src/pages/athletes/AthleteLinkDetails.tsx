@@ -32,11 +32,13 @@ import { alpha, useTheme } from '@mui/material/styles';
 
 import { getAthleteDisplayName } from '@components/athletes/athleteLinkUtils';
 import { TextWithTooltip } from '@components/common/TextWithTooltip';
+import { MealPlanList } from '@components/nutrition/MealPlanList';
 import { ProgramList } from '@components/programs/ProgramList';
 import type { AthleteLinkDetailsLoaderResult } from '@pages/athletes/AthleteLinkDetails.loader';
 import { useAthleteInfo } from '@hooks/athletes/useAthleteInfo';
 import { useCoachAthleteLink } from '@hooks/athletes/useCoachAthleteLink';
 import { usePrograms, type Program } from '@hooks/programs/usePrograms';
+import { useMealPlans, type MealPlan } from '@hooks/nutrition/useMealPlans';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 
 type AthleteLinkTab = 'overview' | 'programs' | 'nutritions';
@@ -65,6 +67,19 @@ interface ProgramTabEmptyState {
   readonly title: string;
   readonly description: string;
   readonly helper?: string;
+}
+
+interface NutritionTabEmptyState {
+  readonly title: string;
+  readonly description: string;
+  readonly helper?: string;
+}
+
+interface MacroLabels {
+  readonly calories: string;
+  readonly protein: string;
+  readonly carbs: string;
+  readonly fats: string;
 }
 
 /** Placeholder shown when a tab has no implemented content yet. */
@@ -169,6 +184,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
   const athleteId = link?.athlete?.id;
 
   const [programSearchQuery, setProgramSearchQuery] = React.useState('');
+  const [nutritionSearchQuery, setNutritionSearchQuery] = React.useState('');
 
   const { items: programs, total: totalPrograms, loading: programsLoading } = usePrograms({
     page: 1,
@@ -200,6 +216,41 @@ export function AthleteLinkDetails(): React.JSX.Element {
     [programs.length, programsLoading, t, totalPrograms],
   );
 
+  const { items: mealPlans, total: totalMealPlans, loading: mealPlansLoading } = useMealPlans({
+    page: 1,
+    limit: 12,
+    q: nutritionSearchQuery,
+    userId: athleteId ?? undefined,
+    enabled: Boolean(athleteId),
+  });
+
+  const nutritionEmptyState = React.useMemo(
+    () =>
+      t('athletes.details.nutritions.empty_state', {
+        returnObjects: true,
+      }) as NutritionTabEmptyState,
+    [t],
+  );
+
+  const nutritionSearchPlaceholder = t('athletes.details.nutritions.search_placeholder');
+  const nutritionSearchAriaLabel = t('athletes.details.nutritions.search_aria_label');
+
+  const macroLabels = React.useMemo(
+    () => t('athletes.details.nutritions.macros', { returnObjects: true }) as MacroLabels,
+    [t],
+  );
+
+  const nutritionResultCountLabel = React.useMemo(
+    () =>
+      mealPlansLoading
+        ? undefined
+        : t('athletes.details.nutritions.result_count', {
+            count: mealPlans.length,
+            total: totalMealPlans,
+          }),
+    [mealPlans.length, mealPlansLoading, t, totalMealPlans],
+  );
+
   const finalError = error ?? loaderError;
   const showEmptyState = !loading && !link && finalError !== null;
   const [currentTab, setCurrentTab] = React.useState<AthleteLinkTab>('overview');
@@ -216,13 +267,25 @@ export function AthleteLinkDetails(): React.JSX.Element {
     setProgramSearchQuery(value);
   }, []);
 
+  const handleNutritionSearchChange = React.useCallback((value: string) => {
+    setNutritionSearchQuery(value);
+  }, []);
+
   React.useEffect(() => {
     setProgramSearchQuery('');
+    setNutritionSearchQuery('');
   }, [athleteId]);
 
   const handleViewProgram = React.useCallback(
     (program: Program) => {
       navigate(`/programs-coach/view/${program.id}`);
+    },
+    [navigate],
+  );
+
+  const handleViewMealPlan = React.useCallback(
+    (mealPlan: MealPlan) => {
+      navigate(`/nutrition-coach/view/${mealPlan.id}`);
     },
     [navigate],
   );
@@ -592,10 +655,30 @@ export function AthleteLinkDetails(): React.JSX.Element {
                   </TabPanel>
 
                   <TabPanel value="nutritions" currentTab={currentTab}>
-                    <EmptySectionPlaceholder
-                      title={t('athletes.details.tabs.nutritions')}
-                      helper={t('athletes.details.tabs.nutritions_helper')}
-                    />
+                    {link ? (
+                      <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3 } }}>
+                        <MealPlanList
+                          mealPlans={mealPlans}
+                          loading={mealPlansLoading}
+                          placeholderTitle={nutritionEmptyState.title}
+                          placeholderSubtitle={nutritionEmptyState.description}
+                          placeholderHelper={nutritionEmptyState.helper}
+                          allowedActions={['view']}
+                          onViewMealPlan={handleViewMealPlan}
+                          dayCountFormatter={(count) =>
+                            t('athletes.details.nutritions.day_count', {
+                              count,
+                            })
+                          }
+                          macroLabels={macroLabels}
+                          onSearchChange={handleNutritionSearchChange}
+                          searchPlaceholder={nutritionSearchPlaceholder}
+                          searchAriaLabel={nutritionSearchAriaLabel}
+                          searchQuery={nutritionSearchQuery}
+                          resultCountLabel={nutritionResultCountLabel}
+                        />
+                      </Box>
+                    ) : null}
                   </TabPanel>
                 </Box>
               </Box>

@@ -316,6 +316,25 @@
         "search_aria_label": "Rechercher les programmes assignés à cet athlète",
         "result_count": "{{count}} / {{total}} programme(s)"
       },
+      "nutritions": {
+        "empty_state": {
+          "title": "Aucun plan nutritionnel",
+          "description": "Ajoutez un plan nutritionnel pour centraliser le suivi de cet athlète.",
+          "helper": "Utilisez la section nutrition pour construire et partager vos plans alimentaires."
+        },
+        "search_placeholder": "Rechercher un plan nutritionnel de l'athlète...",
+        "search_aria_label": "Rechercher les plans nutritionnels assignés à cet athlète",
+        "result_count": "{{count}} / {{total}} plan(s)",
+        "day_count": "{{count}} jour",
+        "day_count_one": "{{count}} jour",
+        "day_count_other": "{{count}} jours",
+        "macros": {
+          "calories": "Calories",
+          "protein": "Protéines",
+          "carbs": "Glucides",
+          "fats": "Lipides"
+        }
+      },
       "tabs": {
         "overview": "Vue d'ensemble",
         "programs": "Programmes",

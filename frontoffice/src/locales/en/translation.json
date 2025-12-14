@@ -314,6 +314,25 @@
         "search_aria_label": "Search programs assigned to this athlete",
         "result_count": "{{count}} / {{total}} program(s)"
       },
+      "nutritions": {
+        "empty_state": {
+          "title": "No nutrition plan assigned yet",
+          "description": "Add a nutrition plan for this athlete to centralize follow-up.",
+          "helper": "Use the nutrition section to build and share dietary guidance."
+        },
+        "search_placeholder": "Search this athlete's nutrition plans...",
+        "search_aria_label": "Search nutrition plans assigned to this athlete",
+        "result_count": "{{count}} / {{total}} plan(s)",
+        "day_count": "{{count}} day",
+        "day_count_one": "{{count}} day",
+        "day_count_other": "{{count}} days",
+        "macros": {
+          "calories": "Calories",
+          "protein": "Protein",
+          "carbs": "Carbs",
+          "fats": "Fats"
+        }
+      },
       "tabs": {
         "overview": "Overview",
         "programs": "Programs",
