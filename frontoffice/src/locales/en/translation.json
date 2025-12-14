@@ -291,10 +291,18 @@
       "client_sheet_title": "Client sheet",
       "notes_title": "Notes",
       "loading": "Loading athlete link...",
+      "athlete_info": {
+        "load_failed": "Unable to load the athlete's information"
+      },
       "objectives": {
         "title": "Objectives",
         "empty": "No objectives provided",
         "load_failed": "Unable to load the athlete's objectives"
+      },
+      "activity_preferences": {
+        "title": "Activity preferences",
+        "empty": "No activity preferences provided",
+        "load_failed": "Unable to load the athlete's preferences"
       },
       "tabs": {
         "overview": "Overview",

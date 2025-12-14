@@ -42,7 +42,7 @@ export function useAthleteInfo({
         const result = await execute(() => athleteInfoGetByUser({ userId: id }));
 
         if (!result) {
-          const message = t('athletes.details.objectives.load_failed');
+          const message = t('athletes.details.athlete_info.load_failed');
           setAthleteInfo(null);
           setError(message);
           return null;
@@ -52,7 +52,7 @@ export function useAthleteInfo({
         return result;
       } catch (caught: unknown) {
         console.error('[useAthleteInfo] Failed to load athlete info', caught);
-        const message = t('athletes.details.objectives.load_failed');
+        const message = t('athletes.details.athlete_info.load_failed');
         setAthleteInfo(null);
         setError(message);
         return null;

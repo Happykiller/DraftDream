@@ -2,7 +2,17 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
-import { ArrowBack, CalendarMonth, EventBusy, EventNote, Mail, Notes, TrackChanges, Visibility } from '@mui/icons-material';
+import {
+  ArrowBack,
+  CalendarMonth,
+  EventBusy,
+  EventNote,
+  Mail,
+  MonitorHeart,
+  Notes,
+  TrackChanges,
+  Visibility,
+} from '@mui/icons-material';
 import {
   Alert,
   Box,
@@ -143,6 +153,10 @@ export function AthleteLinkDetails(): React.JSX.Element {
   });
 
   const objectives = React.useMemo(() => athleteInfo?.objectives ?? [], [athleteInfo?.objectives]);
+  const activityPreferences = React.useMemo(
+    () => athleteInfo?.activityPreferences ?? [],
+    [athleteInfo?.activityPreferences],
+  );
 
   const finalError = error ?? loaderError;
   const showEmptyState = !loading && !link && finalError !== null;
@@ -357,6 +371,64 @@ export function AthleteLinkDetails(): React.JSX.Element {
                           ) : (
                             <Typography variant="body2" color="text.secondary">
                               {t('athletes.details.objectives.empty')}
+                            </Typography>
+                          )
+                        ) : null}
+                      </Stack>
+                    </Card>
+
+                    <Card
+                      variant="outlined"
+                      sx={{
+                        borderColor: alpha(theme.palette.success.main, 0.24),
+                        backgroundColor: alpha(theme.palette.success.main, 0.07),
+                        boxShadow: 'none',
+                      }}
+                    >
+                      <Stack spacing={1.5} sx={{ p: 1.5 }}>
+                        <Stack direction="row" spacing={1} alignItems="center">
+                          <MonitorHeart color="success" fontSize="small" />
+                          <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                            {t('athletes.details.activity_preferences.title')}
+                          </Typography>
+                        </Stack>
+
+                        {athleteInfoLoading ? (
+                          <Stack direction="row" spacing={1} alignItems="center">
+                            <CircularProgress size={18} color="success" />
+                            <Typography variant="caption" color="text.secondary">
+                              {t('athletes.details.loading')}
+                            </Typography>
+                          </Stack>
+                        ) : null}
+
+                        {!athleteInfoLoading && athleteInfoError ? (
+                          <Alert severity="warning" sx={{ m: 0 }}>
+                            {athleteInfoError}
+                          </Alert>
+                        ) : null}
+
+                        {!athleteInfoLoading && !athleteInfoError ? (
+                          activityPreferences.length ? (
+                            <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                              {activityPreferences.map((preference) => (
+                                <Chip
+                                  key={preference.id}
+                                  label={preference.label}
+                                  color="success"
+                                  variant="outlined"
+                                  sx={{
+                                    borderColor: alpha(theme.palette.success.main, 0.3),
+                                    backgroundColor: alpha(theme.palette.success.main, 0.12),
+                                    color: theme.palette.success.main,
+                                    fontWeight: 600,
+                                  }}
+                                />
+                              ))}
+                            </Stack>
+                          ) : (
+                            <Typography variant="body2" color="text.secondary">
+                              {t('athletes.details.activity_preferences.empty')}
                             </Typography>
                           )
                         ) : null}
