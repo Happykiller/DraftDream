@@ -284,13 +284,31 @@
         },
         "status_active": "Lien actif",
         "status_inactive": "Lien inactif"
-      },
-      "panel": {
-        "title": "Fiche athlète",
+      }
+    },
+    "details": {
+      "title": "Lien coach-athlète",
+      "helper": "Consultez toutes les informations de la liaison coach-athlète.",
+      "summary_title": "Résumé du lien",
+      "loading": "Chargement du lien athlète...",
+      "fields": {
+        "start_date": "Début : {{date}}",
+        "end_date": "Fin : {{date}}",
+        "no_start_date": "Date de début non renseignée",
+        "no_end_date": "Pas de date de fin",
         "no_email": "Email non renseigné",
-        "actions": {
-          "back_to_list": "Retourner vers la liste"
-        }
+        "no_note": "Aucune note enregistrée"
+      },
+      "status": {
+        "active": "Lien actif",
+        "inactive": "Lien inactif"
+      },
+      "actions": {
+        "back_to_list": "Retourner vers la liste"
+      },
+      "errors": {
+        "not_found": "Lien coach-athlète introuvable.",
+        "load_failed": "Impossible de charger ce lien coach-athlète."
       }
     },
     "notifications": {

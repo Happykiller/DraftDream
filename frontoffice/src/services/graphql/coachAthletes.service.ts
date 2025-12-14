@@ -1,7 +1,7 @@
 // src/services/graphql/coachAthletes.service.ts
 import inversify from '@src/commons/inversify';
 
-import type { CoachAthleteListResult } from '@app-types/coachAthletes';
+import type { CoachAthleteLink, CoachAthleteListResult } from '@app-types/coachAthletes';
 
 import { GraphqlServiceFetch } from './graphql.service.fetch';
 
@@ -34,7 +34,21 @@ const LIST_QUERY = `
   }
 `;
 
+const GET_QUERY = `
+  query CoachAthleteGet($id: ID!) {
+    coachAthlete_get(id: $id) {
+      ${COACH_ATHLETE_FIELDS}
+    }
+  }
+`;
+
 type CoachAthleteListPayload = { coachAthlete_list: CoachAthleteListResult };
+
+interface CoachAthleteGetOptions {
+  linkId: string;
+}
+
+type CoachAthleteGetPayload = { coachAthlete_get: CoachAthleteLink | null };
 
 export interface CoachAthleteListInput {
   page?: number;
@@ -74,4 +88,19 @@ export async function coachAthleteList(input: CoachAthleteListInput): Promise<Co
     page: input.page ?? 1,
     limit: input.limit ?? 20,
   };
+}
+
+export async function coachAthleteGet({ linkId }: CoachAthleteGetOptions): Promise<CoachAthleteLink | null> {
+  const graphql = new GraphqlServiceFetch(inversify);
+  const { data, errors } = await graphql.send<CoachAthleteGetPayload>({
+    query: GET_QUERY,
+    operationName: 'CoachAthleteGet',
+    variables: { id: linkId },
+  });
+
+  if (errors?.length) {
+    throw new Error(errors[0].message);
+  }
+
+  return data?.coachAthlete_get ?? null;
 }

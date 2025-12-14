@@ -282,13 +282,31 @@
         },
         "status_active": "Active link",
         "status_inactive": "Inactive link"
-      },
-      "panel": {
-        "title": "Athlete overview",
+      }
+    },
+    "details": {
+      "title": "Athlete link",
+      "helper": "Review the full coach-athlete link information.",
+      "summary_title": "Link summary",
+      "loading": "Loading athlete link...",
+      "fields": {
+        "start_date": "Start: {{date}}",
+        "end_date": "End: {{date}}",
+        "no_start_date": "No start date provided",
+        "no_end_date": "No end date",
         "no_email": "Email not provided",
-        "actions": {
-          "back_to_list": "Return to list"
-        }
+        "no_note": "No note provided"
+      },
+      "status": {
+        "active": "Active link",
+        "inactive": "Inactive link"
+      },
+      "actions": {
+        "back_to_list": "Return to list"
+      },
+      "errors": {
+        "not_found": "The athlete link could not be found.",
+        "load_failed": "Unable to load this athlete link."
       }
     },
     "notifications": {

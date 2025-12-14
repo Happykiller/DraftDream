@@ -2,9 +2,9 @@
 import * as React from 'react';
 import { Search } from '@mui/icons-material';
 import { Box, Grid, InputAdornment, Skeleton, Stack, TextField, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 import { AthleteLinkCard } from './AthleteLinkCard';
-import { AthleteLinkPanel } from './AthleteLinkPanel';
 
 import type { CoachAthleteLink } from '@app-types/coachAthletes';
 
@@ -30,7 +30,7 @@ export const AthleteLinkList = React.memo(function AthleteLinkList({
   emptyDescription,
   onSearchChange,
 }: AthleteLinkListProps): React.JSX.Element {
-  const [selectedLink, setSelectedLink] = React.useState<CoachAthleteLink | null>(null);
+  const navigate = useNavigate();
   const filteredLinks = React.useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
     if (!query) return links;
@@ -47,11 +47,8 @@ export const AthleteLinkList = React.memo(function AthleteLinkList({
 
   const showEmpty = !loading && filteredLinks.length === 0;
   const handleViewLink = React.useCallback((link: CoachAthleteLink) => {
-    setSelectedLink(link);
-  }, []);
-  const handleClosePanel = React.useCallback(() => {
-    setSelectedLink(null);
-  }, []);
+    navigate(`/athletes/view/${link.id}`);
+  }, [navigate]);
 
   return (
     <Stack spacing={2} sx={{ width: '100%' }}>
@@ -105,10 +102,6 @@ export const AthleteLinkList = React.memo(function AthleteLinkList({
           ))}
         </Grid>
       )}
-
-      {selectedLink ? (
-        <AthleteLinkPanel link={selectedLink} onClose={handleClosePanel} open />
-      ) : null}
     </Stack>
   );
 });
