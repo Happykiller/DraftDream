@@ -3,9 +3,9 @@ import * as React from 'react';
 import { Stack } from '@mui/material';
 
 import { AthleteInformationTable } from '@components/athletes/AthleteInformationTable';
+import { useAthleteInfos } from '@hooks/useAthleteInfos';
 import { useDebouncedValue } from '@hooks/useDebouncedValue';
 import { useTabParams } from '@hooks/useTabParams';
-import { useUsers } from '@hooks/useUsers';
 
 export function AthleteInformation(): React.JSX.Element {
   const { page, limit, q, setPage, setLimit, setQ } = useTabParams('athinfo');
@@ -15,11 +15,9 @@ export function AthleteInformation(): React.JSX.Element {
     if (debounced !== q) setQ(debounced);
   }, [debounced, q, setQ]);
 
-  const { items, total, loading } = useUsers({
+  const { items, total, loading } = useAthleteInfos({
     page,
     limit,
-    q,
-    type: 'athlete',
   });
 
   return (
