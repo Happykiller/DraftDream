@@ -68,6 +68,7 @@ export function Sidebar({ items, currentPath, onSelectPath, onGoHome }: SidebarP
     const hasChildren = Boolean(item.children?.length);
     const branchActive = isBranchActive(item, currentPath);
     const open = hasChildren ? openBranch[item.path] ?? branchActive : false;
+    const isNested = depth > 0;
 
     const handleClick = () => {
       if (hasChildren) {
@@ -78,7 +79,7 @@ export function Sidebar({ items, currentPath, onSelectPath, onGoHome }: SidebarP
 
     return (
       <Box key={item.path}>
-        <ListItem disablePadding sx={{ ml: depth ? depth * 2 : 0 }}>
+        <ListItem disablePadding sx={{ ml: { lg: isNested ? depth * 1.5 : 0 } }}>
           <Tooltip title={item.label} placement="right" arrow>
             <Box sx={{ width: '100%' }}>
               <ListItemButton
@@ -87,12 +88,14 @@ export function Sidebar({ items, currentPath, onSelectPath, onGoHome }: SidebarP
                 aria-current={branchActive ? 'page' : undefined}
                 aria-label={item.label}
                 sx={{
-                  mx: 1,
-                  my: 0.5,
-                  borderRadius: 2,
+                  width: '100%',
+                  mx: isNested ? 0.5 : 1,
+                  my: isNested ? 0.25 : 0.5,
+                  py: isNested ? 0.75 : 1,
+                  borderRadius: isNested ? 1.5 : 2,
                   transition: 'transform 200ms ease, background-color 200ms ease',
                   justifyContent: { xs: 'center', lg: 'flex-start' },
-                  pl: { lg: depth ? 2 + depth : undefined },
+                  pl: { lg: isNested ? 2 + depth : 2 },
                   '&:hover': { transform: 'scale(1.02)', backgroundColor: 'rgba(255,255,255,0.06)' },
                   '&.Mui-selected': {
                     background: gradientActive,
@@ -106,13 +109,13 @@ export function Sidebar({ items, currentPath, onSelectPath, onGoHome }: SidebarP
                   },
                 }}
               >
-                <ListItemIcon sx={{ minWidth: { xs: 'auto', lg: 40 } }}>
+                <ListItemIcon sx={{ minWidth: { xs: 'auto', lg: isNested ? 32 : 40 } }}>
                   <Box
                     className="NavIconShape"
                     aria-hidden
                     sx={{
-                      width: 28,
-                      height: 28,
+                      width: isNested ? 24 : 28,
+                      height: isNested ? 24 : 28,
                       borderRadius: 1,
                       display: 'grid',
                       placeItems: 'center',
@@ -127,7 +130,7 @@ export function Sidebar({ items, currentPath, onSelectPath, onGoHome }: SidebarP
                 </ListItemIcon>
 
                 <ListItemText
-                  primaryTypographyProps={{ variant: 'body1', fontWeight: 500 }}
+                  primaryTypographyProps={{ variant: isNested ? 'body2' : 'body1', fontWeight: 500 }}
                   primary={item.label}
                   sx={{ display: { xs: 'none', lg: 'block' } }}
                 />
@@ -136,8 +139,8 @@ export function Sidebar({ items, currentPath, onSelectPath, onGoHome }: SidebarP
                   <Box
                     sx={{
                       display: { xs: 'none', lg: 'block' },
-                      width: 8,
-                      height: 8,
+                      width: isNested ? 6 : 8,
+                      height: isNested ? 6 : 8,
                       borderRadius: '50%',
                       ml: 'auto',
                       mr: 1,
@@ -154,9 +157,7 @@ export function Sidebar({ items, currentPath, onSelectPath, onGoHome }: SidebarP
 
         {hasChildren && (
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <List disablePadding>
-              {item.children?.map((child) => renderNavItem(child, depth + 1))}
-            </List>
+            <List disablePadding>{item.children?.map((child) => renderNavItem(child, depth + 1))}</List>
           </Collapse>
         )}
       </Box>
@@ -165,6 +166,7 @@ export function Sidebar({ items, currentPath, onSelectPath, onGoHome }: SidebarP
 
   return (
     <Box role="navigation" sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      {/* General information */}
       {/* Header/logo */}
       <Box sx={{ px: 2, py: 2, display: 'flex', alignItems: 'center', gap: 1.5 }}>
         <Tooltip title={t('sidebar.go_home')} arrow>
@@ -204,7 +206,7 @@ export function Sidebar({ items, currentPath, onSelectPath, onGoHome }: SidebarP
       <Divider sx={dividerSx} />
 
       {/* Menu */}
-      <List sx={{ flexGrow: 1, py: 1 }}>{items.map((item) => renderNavItem(item))}</List>
+      <List sx={{ flexGrow: 1, py: 1, overflowX: 'hidden' }}>{items.map((item) => renderNavItem(item))}</List>
 
       <Divider sx={dividerSx} />
 
