@@ -95,11 +95,12 @@ const LIST_Q = `
 export interface UseAthleteInfosParams {
   page: number;
   limit: number;
+  q?: string;
   includeArchived?: boolean;
   userId?: string | null;
 }
 
-export function useAthleteInfos({ page, limit, includeArchived, userId }: UseAthleteInfosParams) {
+export function useAthleteInfos({ page, limit, q, includeArchived, userId }: UseAthleteInfosParams) {
   const [items, setItems] = React.useState<AthleteInfo[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
@@ -108,7 +109,7 @@ export function useAthleteInfos({ page, limit, includeArchived, userId }: UseAth
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
 
   const load = React.useCallback(
-    async (vars: { page: number; limit: number; includeArchived?: boolean; userId?: string | null }) => {
+    async (vars: { page: number; limit: number; q?: string; includeArchived?: boolean; userId?: string | null }) => {
       setLoading(true);
       try {
         const { data, errors } = await execute(() =>
@@ -118,6 +119,7 @@ export function useAthleteInfos({ page, limit, includeArchived, userId }: UseAth
               input: {
                 page: vars.page,
                 limit: vars.limit,
+                q: vars.q || undefined,
                 includeArchived: vars.includeArchived,
                 userId: vars.userId || undefined,
               },
@@ -138,18 +140,18 @@ export function useAthleteInfos({ page, limit, includeArchived, userId }: UseAth
   );
 
   const lastSigRef = React.useRef<string | null>(null);
-  const sig = `${page}|${limit}|${includeArchived ? '1' : '0'}|${userId || ''}`;
+  const sig = `${page}|${limit}|${q || ''}|${includeArchived ? '1' : '0'}|${userId || ''}`;
 
   React.useEffect(() => {
     if (lastSigRef.current === sig) return;
     lastSigRef.current = sig;
-    void load({ page, limit, includeArchived, userId });
-  }, [sig, load, page, limit, includeArchived, userId]);
+    void load({ page, limit, q, includeArchived, userId });
+  }, [sig, load, page, limit, q, includeArchived, userId]);
 
   return {
     items,
     total,
     loading,
-    reload: () => load({ page, limit, includeArchived, userId }),
+    reload: () => load({ page, limit, q, includeArchived, userId }),
   };
 }

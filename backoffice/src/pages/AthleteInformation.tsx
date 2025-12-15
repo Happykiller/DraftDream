@@ -18,6 +18,7 @@ export function AthleteInformation(): React.JSX.Element {
   const { items, total, loading } = useAthleteInfos({
     page,
     limit,
+    q: debounced,
   });
 
   return (

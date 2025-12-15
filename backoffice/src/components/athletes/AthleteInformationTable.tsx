@@ -41,32 +41,6 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
     if (query && page !== 1) onPageChange(1);
   }, [onPageChange, page, query]);
 
-  const filteredRows = React.useMemo(() => {
-    const needle = query.trim().toLowerCase();
-    if (!needle) return rows;
-
-    return rows.filter((row) => {
-      const athlete = row.athlete;
-      const name = `${athlete?.first_name ?? ''} ${athlete?.last_name ?? ''}`.trim();
-      const tokens = [
-        name,
-        athlete?.email,
-        athlete?.phone,
-        athlete?.company?.name,
-        athlete?.address?.city,
-        athlete?.address?.country,
-        row.level?.label,
-      ]
-        .map((token) => (token || '').toString().toLowerCase())
-        .filter(Boolean);
-
-      return tokens.some((token) => token.includes(needle));
-    });
-  }, [query, rows]);
-
-  const effectiveRows = query ? filteredRows : rows;
-  const effectiveTotal = query ? filteredRows.length : total;
-
   const columns = React.useMemo<GridColDef<AthleteInfo>[]>(
     () => [
       {
@@ -165,11 +139,11 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
 
       <DataGrid
         autoHeight
-        rows={effectiveRows}
+        rows={rows}
         columns={columns}
-        rowCount={effectiveTotal}
+        rowCount={total}
         pagination
-        paginationMode={query ? 'client' : 'server'}
+        paginationMode="server"
         disableColumnMenu
         loading={loading}
         pageSizeOptions={[10, 25, 50]}
