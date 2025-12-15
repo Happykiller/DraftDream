@@ -568,22 +568,14 @@
     "information": {
       "title": "Informations athlètes",
       "search_placeholder": "Rechercher des athlètes...",
-      "helper": "Consulter les fiches athlètes",
       "table": {
         "columns": {
-          "name": "Nom",
           "email": "Email",
           "phone": "Téléphone",
-          "type": "Type",
           "level": "Niveau",
-          "status": "Statut",
           "company": "Entreprise",
           "address": "Localisation",
           "updated_at": "Mis à jour le"
-        },
-        "status": {
-          "active": "Actif",
-          "inactive": "Inactif"
         }
       }
     },

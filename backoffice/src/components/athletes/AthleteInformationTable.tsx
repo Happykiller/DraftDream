@@ -1,7 +1,7 @@
 // src/components/athletes/AthleteInformationTable.tsx
 import * as React from 'react';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
-import { Box, Chip, Stack, TextField, Tooltip, useMediaQuery } from '@mui/material';
+import { Box, Stack, TextField, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
@@ -44,16 +44,6 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
   const columns = React.useMemo<GridColDef<AthleteInfo>[]>(
     () => [
       {
-        field: 'athlete',
-        headerName: t('athletes.information.table.columns.name'),
-        flex: 1.1,
-        valueGetter: (_value, row) => {
-          const full = `${row?.athlete?.first_name ?? ''} ${row?.athlete?.last_name ?? ''}`.trim();
-          return full || '—';
-        },
-        sortComparator: (a, b) => String(a).localeCompare(String(b)),
-      },
-      {
         field: 'email',
         headerName: t('athletes.information.table.columns.email'),
         flex: 1,
@@ -66,34 +56,11 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
         valueGetter: (_value, row) => row.athlete?.phone ?? '—',
       },
       {
-        field: 'type',
-        headerName: t('athletes.information.table.columns.type'),
-        flex: 0.6,
-        valueGetter: (_value, row) => row.athlete?.type ?? '—',
-      },
-      {
         field: 'level',
         headerName: t('athletes.information.table.columns.level'),
         flex: 0.8,
         valueGetter: (_value, row) => row.level?.label ?? '—',
         sortComparator: (a, b) => String(a).localeCompare(String(b)),
-      },
-      {
-        field: 'is_active',
-        headerName: t('athletes.information.table.columns.status'),
-        valueGetter: (_value, row) => row.athlete?.is_active ?? false,
-        renderCell: (params) => (
-          <Chip
-            size="small"
-            label={params.value ? t('athletes.information.table.status.active') : t('athletes.information.table.status.inactive')}
-            color={params.value ? 'success' : 'default'}
-          />
-        ),
-        sortable: false,
-        filterable: false,
-        align: 'center',
-        headerAlign: 'center',
-        minWidth: 140,
       },
       ...(isXl
         ? [
@@ -139,9 +106,6 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
           size="small"
           sx={{ maxWidth: 360 }}
         />
-        <Tooltip title={t('athletes.information.helper')} arrow placement="top">
-          <Chip label={t('athletes.information.helper')} color="info" size="small" sx={{ alignSelf: 'center' }} />
-        </Tooltip>
       </Stack>
 
       <DataGrid
