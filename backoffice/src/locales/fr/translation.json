@@ -568,6 +568,24 @@
   },
   "athletes": {
     "title": "Athlètes",
+    "nav": {
+      "liaison": "Liaison",
+      "information": "Information"
+    },
+    "information": {
+      "title": "Informations athlètes",
+      "search_placeholder": "Rechercher des athlètes...",
+      "table": {
+        "columns": {
+          "email": "Email",
+          "phone": "Téléphone",
+          "level": "Niveau",
+          "company": "Entreprise",
+          "address": "Localisation",
+          "updated_at": "Mis à jour le"
+        }
+      }
+    },
     "table": {
       "create": "Nouvelle liaison",
       "no_note": "Aucune note",

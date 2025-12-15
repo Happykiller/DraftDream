@@ -5,6 +5,8 @@ import {
   FlagCircle,
   Groups,
   Home,
+  InfoOutlined,
+  LinkOutlined,
   ManageAccounts,
   Palette,
   RestaurantMenu,
@@ -17,6 +19,7 @@ export type NavItem = {
   icon: React.ReactNode;
   path: string;
   external?: boolean;
+  children?: NavItem[];
 };
 
 /** Return role-based navigation items. Pure list, memoized by role. */
@@ -48,7 +51,11 @@ export function useNavItems(role?: string): NavItem[] {
         {
           label: t('athletes.title'),
           icon: <Groups />,
-          path: '/athletes',
+          path: '/athletes/liaison',
+          children: [
+            { label: t('athletes.nav.liaison'), icon: <LinkOutlined />, path: '/athletes/liaison' },
+            { label: t('athletes.nav.information'), icon: <InfoOutlined />, path: '/athletes/information' },
+          ],
         },
         {
           label: t('users.title'),
