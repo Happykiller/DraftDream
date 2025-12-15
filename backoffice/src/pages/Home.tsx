@@ -13,7 +13,7 @@ import {
 } from '@mui/icons-material';
 
 // Hooks
-import { useUser } from '@hooks/useUser';
+
 import { useProspects } from '@hooks/useProspects';
 import { useUsers } from '@hooks/useUsers';
 import { usePrograms } from '@hooks/usePrograms';
@@ -21,7 +21,7 @@ import { useSessions } from '@hooks/useSessions';
 import { useExercises } from '@hooks/useExercises';
 import { useMealPlans } from '@hooks/useMealPlans';
 import { useMealDays } from '@hooks/useMealDays';
-import { ProspectStatus } from '@src/commons/prospects/status';
+// import { ProspectStatus } from '@src/commons/prospects/status';
 
 // Components
 import { DashboardLayout } from '@components/dashboard/DashboardLayout';
@@ -62,7 +62,7 @@ const getDistributionData = (items: any[], key: string, labelMap?: Record<string
 export function Home(): React.JSX.Element {
   const theme = useTheme();
   const navigate = useNavigate();
-  const { user: currentUser } = useUser();
+  // const { user: currentUser } = useUser();
 
   // -- Data Fetching --
 
@@ -84,10 +84,11 @@ export function Home(): React.JSX.Element {
 
   // "My Prospects" -> "A faire"
   const myProspects = useMemo(() => {
-    if (!currentUser?.id) return [];
     // User requested "prospects au status 'todo'"
-    return prospects.filter(p => p.status === ProspectStatus.TODO).slice(0, 5);
-  }, [prospects, currentUser]);
+    // We remove the check on currentUser?.id because we don't actually filter by user ownership yet
+    // and we want to show the prospects as soon as they are loaded.
+    return prospects.filter(p => p.status === 'TODO').slice(0, 5);
+  }, [prospects]);
 
   // Charts Data
   const prospectsGrowth = useMemo(() => getGrowthData(prospects), [prospects]);

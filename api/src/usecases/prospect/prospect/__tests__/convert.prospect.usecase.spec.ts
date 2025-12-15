@@ -122,6 +122,8 @@ describe('ConvertProspectToAthleteUsecase', () => {
             status: ProspectStatus.CLIENT,
         });
         (inversifyMock.bddService as any).coachAthlete.list.mockResolvedValue({ items: [], total: 0, page: 1, limit: 1 });
+        (inversifyMock.bddService as any).athleteInfo = { getByUserId: jest.fn().mockResolvedValue(null) };
+        (inversifyMock.createAthleteInfoUsecase as any) = { execute: jest.fn() };
 
         const result = await usecase.execute({ prospectId: 'prospect-1', session });
 
@@ -139,6 +141,17 @@ describe('ConvertProspectToAthleteUsecase', () => {
                 coachId: baseProspect.createdBy,
                 athleteId: athlete.id,
                 is_active: true,
+            }),
+        );
+        expect(inversifyMock.createAthleteInfoUsecase.execute).toHaveBeenCalledWith(
+            expect.objectContaining({
+                userId: athlete.id,
+                levelId: baseProspect.levelId,
+                objectiveIds: baseProspect.objectiveIds,
+                activityPreferenceIds: baseProspect.activityPreferenceIds,
+                medicalConditions: baseProspect.medicalConditions,
+                allergies: baseProspect.allergies,
+                notes: baseProspect.notes,
             }),
         );
         expect(inversifyMock.updateProspectUsecase.execute).toHaveBeenCalledWith(
@@ -167,6 +180,8 @@ describe('ConvertProspectToAthleteUsecase', () => {
             page: 1,
             limit: 1,
         });
+        (inversifyMock.bddService as any).athleteInfo = { getByUserId: jest.fn().mockResolvedValue(null) };
+        (inversifyMock.createAthleteInfoUsecase as any) = { execute: jest.fn() };
         updateCoachAthleteExecute.mockResolvedValue(coachAthleteLink);
         updateProspectExecute.mockResolvedValue({
             ...baseProspect,

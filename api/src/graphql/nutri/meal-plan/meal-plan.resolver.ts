@@ -79,7 +79,19 @@ export class MealPlanResolver {
   @Auth(Role.ADMIN, Role.COACH)
   async mealPlan_update(
     @Args('input') input: UpdateMealPlanInput,
+    @Context('req') req: any,
   ): Promise<MealPlanGql | null> {
+    const session = this.extractSession(req);
+    const hasDayPayload = Boolean(input.days?.length) || Boolean(input.dayIds?.length);
+    const days = hasDayPayload
+      ? await this.resolveDays(
+        session,
+        input.days,
+        input.dayIds,
+        { defaultLocale: input.locale },
+      )
+      : undefined;
+
     const updateDto: any = {
       id: input.id,
       locale: input.locale,
@@ -92,6 +104,10 @@ export class MealPlanResolver {
       fatGrams: input.fatGrams,
       userId: input.userId === undefined ? undefined : input.userId,
     };
+
+    if (days !== undefined) {
+      updateDto.days = days;
+    }
 
     const updated = await inversify.updateMealPlanUsecase.execute(updateDto);
     return updated ? mapMealPlanUsecaseToGql(updated) : null;

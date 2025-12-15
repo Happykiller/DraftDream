@@ -1,6 +1,7 @@
 // ⚠️ Comment in English: Self-contained Users panel with its own URL params (usr_*).
 import * as React from 'react';
 import { Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { useDebouncedValue } from '@hooks/useDebouncedValue';
 import { useTabParams } from '@hooks/useTabParams';
 import { useUsers } from '@hooks/useUsers';
@@ -9,6 +10,7 @@ import { UserDialog, type UserDialogValues } from '@components/users/UserDialog'
 import { ConfirmDialog } from '@components/common/ConfirmDialog';
 
 export function UsersPanel(): React.JSX.Element {
+  const { t } = useTranslation();
   const { page, limit, q, type, setPage, setLimit, setQ, setType } = useTabParams('usr');
   const [searchInput, setSearchInput] = React.useState(q);
   const debounced = useDebouncedValue(searchInput, 300);
@@ -115,8 +117,8 @@ export function UsersPanel(): React.JSX.Element {
 
       <ConfirmDialog
         open={!!deleteId}
-        title="Delete User"
-        message="Are you sure you want to delete this user? This action cannot be undone."
+        title={t('users.confirm.delete_title', 'Delete User')}
+        message={t('users.confirm.delete_message', 'Are you sure you want to delete this user? This action cannot be undone.')}
         onClose={() => setDeleteId(null)}
         onConfirm={handleDelete}
       />

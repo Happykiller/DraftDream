@@ -5,6 +5,7 @@ import {
   Dialog, DialogTitle, DialogContent, DialogActions,
   TextField, Button, Stack, MenuItem, FormControlLabel, Switch, Divider, Typography
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { useDateFormatter } from '@src/hooks/useDateFormatter';
 import type { User } from '@src/hooks/useUsers';
 
@@ -53,6 +54,7 @@ const DEFAULTS: UserDialogValues = {
 };
 
 export function UserDialog({ open, mode, initial, onClose, onSubmit }: UserDialogProps): React.JSX.Element {
+  const { t } = useTranslation();
   const isEdit = mode === 'edit';
   const [values, setValues] = React.useState<UserDialogValues>(DEFAULTS);
   const formatDate = useDateFormatter();
@@ -101,7 +103,7 @@ export function UserDialog({ open, mode, initial, onClose, onSubmit }: UserDialo
 
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="user-dialog-title" fullWidth maxWidth="sm">
-      <DialogTitle id="user-dialog-title">{isEdit ? 'Edit User' : 'New User'}</DialogTitle>
+      <DialogTitle id="user-dialog-title">{isEdit ? t('users.dialog.edit_title') : t('users.dialog.create_title')}</DialogTitle>
       <DialogContent>
         <Stack component="form" onSubmit={submit} spacing={2} sx={{ mt: 1 }}>
           {isEdit && initial ? (
@@ -109,13 +111,13 @@ export function UserDialog({ open, mode, initial, onClose, onSubmit }: UserDialo
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 <Stack flex={1} spacing={0.25}>
                   <Typography variant="caption" color="text.secondary">
-                    Created
+                    {t('common.labels.created')}
                   </Typography>
                   <Typography variant="body2">{formattedCreatedAt}</Typography>
                 </Stack>
                 <Stack flex={1} spacing={0.25}>
                   <Typography variant="caption" color="text.secondary">
-                    Updated
+                    {t('common.labels.updated')}
                   </Typography>
                   <Typography variant="body2">{formattedUpdatedAt}</Typography>
                 </Stack>
@@ -123,49 +125,49 @@ export function UserDialog({ open, mode, initial, onClose, onSubmit }: UserDialo
             </Stack>
           ) : null}
 
-          <TextField select label="Type" name="type" value={values.type} onChange={onChange} required fullWidth>
-            {['coach', 'athlete', 'admin'].map((t) => (
-              <MenuItem key={t} value={t}>{t}</MenuItem>
+          <TextField select label={t('common.labels.type')} name="type" value={values.type} onChange={onChange} required fullWidth>
+            {['coach', 'athlete', 'admin'].map((k) => (
+              <MenuItem key={k} value={k}>{t(`users.types.${k}`)}</MenuItem>
             ))}
           </TextField>
 
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-            <TextField label="First name" name="first_name" value={values.first_name} onChange={onChange} required fullWidth />
-            <TextField label="Last name" name="last_name" value={values.last_name} onChange={onChange} required fullWidth />
+            <TextField label={t('common.labels.first_name')} name="first_name" value={values.first_name} onChange={onChange} required fullWidth />
+            <TextField label={t('common.labels.last_name')} name="last_name" value={values.last_name} onChange={onChange} required fullWidth />
           </Stack>
 
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-            <TextField label="Email" name="email" type="email" value={values.email} onChange={onChange} required fullWidth />
-            <TextField label="Phone" name="phone" value={values.phone} onChange={onChange} fullWidth />
+            <TextField label={t('common.labels.email')} name="email" type="email" value={values.email} onChange={onChange} required fullWidth />
+            <TextField label={t('common.labels.phone')} name="phone" value={values.phone} onChange={onChange} fullWidth />
           </Stack>
 
           {!isEdit && (
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-              <TextField label="Password" name="password" type="password" value={values.password} onChange={onChange} required fullWidth />
-              <TextField label="Confirm" name="confirm_password" type="password" value={values.confirm_password} onChange={onChange} fullWidth />
+              <TextField label={t('common.labels.password')} name="password" type="password" value={values.password} onChange={onChange} required fullWidth />
+              <TextField label={t('common.labels.confirm_password')} name="confirm_password" type="password" value={values.confirm_password} onChange={onChange} fullWidth />
             </Stack>
           )}
 
           <FormControlLabel
             control={<Switch checked={values.is_active} onChange={(_, c) => setValues(v => ({ ...v, is_active: c }))} />}
-            label="Active"
+            label={t('common.status.active')}
           />
 
           <Divider />
-          <TextField label="Company" name="company_name" value={values.company_name} onChange={onChange} fullWidth />
+          <TextField label={t('common.labels.company')} name="company_name" value={values.company_name} onChange={onChange} fullWidth />
 
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-            <TextField label="Address name" name="address_name" value={values.address_name} onChange={onChange} fullWidth />
-            <TextField label="City" name="address_city" value={values.address_city} onChange={onChange} fullWidth />
+            <TextField label={t('common.labels.address_name')} name="address_name" value={values.address_name} onChange={onChange} fullWidth />
+            <TextField label={t('common.labels.address_city')} name="address_city" value={values.address_city} onChange={onChange} fullWidth />
           </Stack>
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-            <TextField label="Code" name="address_code" value={values.address_code} onChange={onChange} fullWidth />
-            <TextField label="Country" name="address_country" value={values.address_country} onChange={onChange} fullWidth />
+            <TextField label={t('common.labels.address_code')} name="address_code" value={values.address_code} onChange={onChange} fullWidth />
+            <TextField label={t('common.labels.address_country')} name="address_country" value={values.address_country} onChange={onChange} fullWidth />
           </Stack>
 
           <DialogActions sx={{ px: 0 }}>
-            <Button onClick={onClose} color="inherit">Cancel</Button>
-            <Button type="submit" variant="contained">{isEdit ? 'Save' : 'Create'}</Button>
+            <Button onClick={onClose} color="inherit">{t('common.buttons.cancel')}</Button>
+            <Button type="submit" variant="contained">{isEdit ? t('common.buttons.save') : t('common.buttons.create')}</Button>
           </DialogActions>
         </Stack>
       </DialogContent>

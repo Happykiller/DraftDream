@@ -1,5 +1,7 @@
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import LanguageSelector from './LanguageSelector';
+
 
 // ... existing imports ...
 
@@ -100,24 +102,26 @@ const Header = () => {
         >
           Témoignages
         </Typography>
-      </Box>
-
-      {/* Release Notes Button */}
-      <Box>
-        <Button
+        <Typography
           onClick={() => navigate('/changelog')}
-          variant="text"
-          color="inherit"
           sx={{
-            color: 'text.secondary',
-            textTransform: 'none',
+            cursor: 'pointer',
+            fontSize: '0.95rem',
             fontWeight: 500,
-            '&:hover': { color: 'primary.main', bgcolor: 'transparent' }
+            color: 'text.secondary',
+            transition: 'color 0.2s',
+            '&:hover': { color: 'primary.main' }
           }}
         >
           Nouveautés
-        </Button>
+        </Typography>
       </Box>
+
+      {/* Language Selector */}
+      <Box>
+        <LanguageSelector />
+      </Box>
+
     </Box>
   );
 };

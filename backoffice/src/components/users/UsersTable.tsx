@@ -5,6 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Button, Stack, TextField, IconButton, Tooltip, Chip, Select, MenuItem, FormControl, InputLabel, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
 import type { User } from '@hooks/useUsers';
 import { useDateFormatter } from '@src/hooks/useDateFormatter';
@@ -30,6 +31,7 @@ export const UsersTable = React.memo(function UsersTable({
   rows, total, page, limit, q, type, loading,
   onCreate, onEdit, onDelete, onQueryChange, onTypeChange, onPageChange, onLimitChange,
 }: UsersTableProps): React.JSX.Element {
+  const { t } = useTranslation();
   const fmtDate = useDateFormatter();
   const theme = useTheme();
   const isXl = useMediaQuery(theme.breakpoints.up('xl'));
@@ -38,7 +40,7 @@ export const UsersTable = React.memo(function UsersTable({
     () => [
       {
         field: 'name',
-        headerName: 'Name',
+        headerName: t('common.labels.name'),
         flex: 1.2,
         valueGetter: (_value, row) => {
           const full = `${row?.first_name ?? ''} ${row?.last_name ?? ''}`.trim();
@@ -46,13 +48,13 @@ export const UsersTable = React.memo(function UsersTable({
         },
         sortComparator: (a, b) => String(a).localeCompare(String(b)),
       },
-      { field: 'email', headerName: 'Email', flex: 1 },
-      { field: 'type', headerName: 'Type' },
+      { field: 'email', headerName: t('common.labels.email'), flex: 1 },
+      { field: 'type', headerName: t('common.labels.type') },
       {
         field: 'is_active',
-        headerName: 'Status',
+        headerName: t('common.labels.status'),
         renderCell: (params) => (
-          <Chip size="small" label={params.value ? 'Active' : 'Inactive'} color={params.value ? 'success' : 'default'} />
+          <Chip size="small" label={params.value ? t('common.status.active') : t('common.status.inactive')} color={params.value ? 'success' : 'default'} />
         ),
         sortable: false,
         filterable: false,
@@ -61,27 +63,27 @@ export const UsersTable = React.memo(function UsersTable({
         ? [
           {
             field: 'company',
-            headerName: 'Company',
+            headerName: t('common.labels.company'),
             flex: 1,
             valueGetter: (p: any) => p?.name ?? '—',
           },
-          { field: 'createdAt', headerName: 'Created', flex: 1, minWidth: 180, valueFormatter: (p: any) => fmtDate(p) },
-          { field: 'updatedAt', headerName: 'Updated', flex: 1, minWidth: 180, valueFormatter: (p: any) => fmtDate(p) },
+          { field: 'createdAt', headerName: t('common.labels.created'), flex: 1, minWidth: 180, valueFormatter: (p: any) => fmtDate(p) },
+          { field: 'updatedAt', headerName: t('common.labels.updated'), flex: 1, minWidth: 180, valueFormatter: (p: any) => fmtDate(p) },
         ]
         : []),
       {
         field: 'actions',
-        headerName: 'Actions',
+        headerName: t('common.labels.actions'),
         sortable: false,
         filterable: false,
         renderCell: (p) => (
           <Stack direction="row" spacing={0.5}>
-            <Tooltip title="Edit">
+            <Tooltip title={t('common.tooltips.edit')}>
               <IconButton size="small" aria-label={`edit-${p?.row.id}`} onClick={() => onEdit(p.row)}>
                 <EditIcon fontSize="small" />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Delete">
+            <Tooltip title={t('common.tooltips.delete')}>
               <IconButton size="small" aria-label={`delete-${p?.row.id}`} onClick={() => onDelete(p.row)}>
                 <DeleteIcon fontSize="small" />
               </IconButton>
@@ -90,14 +92,14 @@ export const UsersTable = React.memo(function UsersTable({
         ),
       },
     ],
-    [onEdit, onDelete, fmtDate, isXl]
+    [onEdit, onDelete, fmtDate, isXl, t]
   );
 
   return (
     <Box sx={{ width: '100%' }}>
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ mb: 1 }} alignItems={{ xs: 'stretch', sm: 'center' }}>
         <TextField
-          placeholder="Search…"
+          placeholder={t('users.table.search_placeholder')}
           value={q}
           onChange={(e) => onQueryChange(e.target.value)}
           inputProps={{ 'aria-label': 'search-users' }}
@@ -105,22 +107,22 @@ export const UsersTable = React.memo(function UsersTable({
           sx={{ maxWidth: 360 }}
         />
         <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel id="user-type-filter-label">Type</InputLabel>
+          <InputLabel id="user-type-filter-label">{t('common.labels.type')}</InputLabel>
           <Select
             labelId="user-type-filter-label"
             id="user-type-filter"
             value={type || ''}
-            label="Type"
+            label={t('common.labels.type')}
             onChange={(e) => onTypeChange(e.target.value)}
           >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value="athlete">Athlete</MenuItem>
-            <MenuItem value="coach">Coach</MenuItem>
-            <MenuItem value="admin">Admin</MenuItem>
+            <MenuItem value="">{t('users.filter.all', 'All')}</MenuItem>
+            <MenuItem value="athlete">{t('users.types.athlete')}</MenuItem>
+            <MenuItem value="coach">{t('users.types.coach')}</MenuItem>
+            <MenuItem value="admin">{t('users.types.admin')}</MenuItem>
           </Select>
         </FormControl>
         <Box sx={{ flex: 1 }} />
-        <Button variant="contained" onClick={onCreate}>New User</Button>
+        <Button variant="contained" onClick={onCreate}>{t('users.table.new_button')}</Button>
       </Stack>
 
       <DataGrid
