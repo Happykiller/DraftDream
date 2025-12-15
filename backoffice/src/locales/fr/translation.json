@@ -575,6 +575,7 @@
           "email": "Email",
           "phone": "Téléphone",
           "type": "Type",
+          "level": "Niveau",
           "status": "Statut",
           "company": "Entreprise",
           "address": "Localisation",

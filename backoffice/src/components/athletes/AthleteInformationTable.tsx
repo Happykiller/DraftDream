@@ -72,6 +72,13 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
         valueGetter: (_value, row) => row.athlete?.type ?? '—',
       },
       {
+        field: 'level',
+        headerName: t('athletes.information.table.columns.level'),
+        flex: 0.8,
+        valueGetter: (_value, row) => row.level?.label ?? '—',
+        sortComparator: (a, b) => String(a).localeCompare(String(b)),
+      },
+      {
         field: 'is_active',
         headerName: t('athletes.information.table.columns.status'),
         valueGetter: (_value, row) => row.athlete?.is_active ?? false,
