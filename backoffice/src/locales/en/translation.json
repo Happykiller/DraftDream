@@ -560,6 +560,31 @@
   },
   "athletes": {
     "title": "Athletes",
+    "nav": {
+      "liaison": "Liaison",
+      "information": "Information"
+    },
+    "information": {
+      "title": "Athlete information",
+      "search_placeholder": "Search athletes...",
+      "helper": "Consult athlete details",
+      "table": {
+        "columns": {
+          "name": "Name",
+          "email": "Email",
+          "phone": "Phone",
+          "type": "Type",
+          "status": "Status",
+          "company": "Company",
+          "address": "Location",
+          "updated_at": "Updated on"
+        },
+        "status": {
+          "active": "Active",
+          "inactive": "Inactive"
+        }
+      }
+    },
     "table": {
       "create": "New link",
       "no_note": "No note provided",
