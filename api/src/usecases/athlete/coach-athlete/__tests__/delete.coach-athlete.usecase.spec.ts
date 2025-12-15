@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -41,7 +41,7 @@ describe('DeleteCoachAthleteUsecase', () => {
     });
 
     it('should delete a coach-athlete link', async () => {
-        coachAthleteRepositoryMock.delete.mockResolvedValue(true);
+        (coachAthleteRepositoryMock.delete as any).mockResolvedValue(true);
 
         const result = await usecase.execute(dto);
 
@@ -50,7 +50,7 @@ describe('DeleteCoachAthleteUsecase', () => {
     });
 
     it('should return false if deletion fails', async () => {
-        coachAthleteRepositoryMock.delete.mockResolvedValue(false);
+        (coachAthleteRepositoryMock.delete as any).mockResolvedValue(false);
 
         const result = await usecase.execute(dto);
 
@@ -59,7 +59,7 @@ describe('DeleteCoachAthleteUsecase', () => {
 
     it('should log and throw error when repository throws', async () => {
         const error = new Error('DB Error');
-        coachAthleteRepositoryMock.delete.mockRejectedValue(error);
+        (coachAthleteRepositoryMock.delete as any).mockRejectedValue(error);
 
         await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.DELETE_COACH_ATHLETE_USECASE);
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining(error.message));

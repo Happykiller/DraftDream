@@ -77,6 +77,9 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
       }) as BuilderCopy['library']['tooltips'],
     [t],
   );
+  const seriesLabel = React.useMemo(() => {
+    return exerciseItem.series?.trim() || String(exerciseItem.sets);
+  }, [exerciseItem.series, exerciseItem.sets]);
 
   const [isEditingLabel, setIsEditingLabel] = React.useState(false);
   const fallbackLabel = exercise?.label ?? exerciseItem.label;
@@ -373,7 +376,7 @@ export const ProgramBuilderExerciseItem = React.memo(function ProgramBuilderExer
               </Typography>
             )}
             <Typography variant="caption" color="text.secondary">
-              {exerciseItem.sets} x {exerciseItem.repetitions} - {exerciseItem.rest}
+              {seriesLabel} x {exerciseItem.repetitions} - {exerciseItem.rest}
             </Typography>
             {(
               (exerciseItem.muscles?.length ?? 0) > 0 ||

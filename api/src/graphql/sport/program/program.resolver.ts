@@ -54,7 +54,7 @@ export class ProgramResolver {
     const payload = {
       locale: input.locale,
       label: input.label,
-      visibility: this.normalizeProgramVisibility(input.visibility) ?? 'private',
+      visibility: this.normalizeProgramVisibility(input.visibility) ?? 'PRIVATE',
       duration: input.duration,
       frequency: input.frequency,
       description: input.description,
@@ -276,10 +276,10 @@ export class ProgramResolver {
    */
   private normalizeProgramVisibility(
     visibility?: ProgramVisibility | null,
-  ): 'private' | 'public' | undefined {
+  ): 'PRIVATE' | 'PUBLIC' | undefined {
     if (!visibility) {
       return undefined;
     }
-    return visibility === ProgramVisibility.PUBLIC ? 'public' : 'private';
+    return visibility === ProgramVisibility.PUBLIC ? 'PUBLIC' : 'PRIVATE';
   }
 }

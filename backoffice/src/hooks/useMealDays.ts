@@ -187,7 +187,6 @@ export interface UseMealDaysResult {
   total: number;
   loading: boolean;
   create: (input: {
-    slug: string;
     locale: string;
     label: string;
     description?: string;
@@ -196,7 +195,6 @@ export interface UseMealDaysResult {
   }) => Promise<void>;
   update: (input: {
     id: string;
-    slug?: string;
     locale?: string;
     label?: string;
     description?: string;
@@ -251,10 +249,12 @@ export function useMealDays({ page, limit, q, locale, visibility }: UseMealDaysP
   const create = React.useCallback<UseMealDaysResult['create']>(
     async (input) => {
       try {
+        const sanitizedInput = { ...input };
+        delete (sanitizedInput as any).slug; // Slug is generated server-side.
         const { errors } = await execute(() =>
           gql.send<CreateMealDayPayload>({
             query: CREATE_MUTATION,
-            variables: { input },
+            variables: { input: sanitizedInput },
             operationName: 'CreateMealDay',
           }),
         );
@@ -272,10 +272,12 @@ export function useMealDays({ page, limit, q, locale, visibility }: UseMealDaysP
   const update = React.useCallback<UseMealDaysResult['update']>(
     async (input) => {
       try {
+        const sanitizedInput = { ...input };
+        delete (sanitizedInput as any).slug; // Slug is generated server-side.
         const { errors } = await execute(() =>
           gql.send<UpdateMealDayPayload>({
             query: UPDATE_MUTATION,
-            variables: { input },
+            variables: { input: sanitizedInput },
             operationName: 'UpdateMealDay',
           }),
         );

@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -32,7 +32,7 @@ describe('CreateMealDayUsecase', () => {
     label: 'Strength Day',
     description: 'High intensity focus',
     mealIds: ['meal-1', 'meal-2'],
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'coach-123',
   };
 
@@ -44,7 +44,7 @@ describe('CreateMealDayUsecase', () => {
     label: 'Strength Day',
     description: 'High intensity focus',
     mealIds: ['meal-1', 'meal-2'],
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'coach-123',
     createdAt: now,
     updatedAt: now,
@@ -68,7 +68,7 @@ describe('CreateMealDayUsecase', () => {
   });
 
   it('should create a meal day through the repository', async () => {
-    mealDayRepositoryMock.create.mockResolvedValue(mealDay as any);
+    (mealDayRepositoryMock.create as any).mockResolvedValue(mealDay as any);
 
     const result = await usecase.execute(dto);
 
@@ -80,7 +80,7 @@ describe('CreateMealDayUsecase', () => {
   });
 
   it('should return null when the repository returns null', async () => {
-    mealDayRepositoryMock.create.mockResolvedValue(null);
+    (mealDayRepositoryMock.create as any).mockResolvedValue(null);
 
     const result = await usecase.execute(dto);
 
@@ -89,7 +89,7 @@ describe('CreateMealDayUsecase', () => {
 
   it('should log and throw a domain error when creation fails', async () => {
     const failure = new Error('database failure');
-    mealDayRepositoryMock.create.mockRejectedValue(failure);
+    (mealDayRepositoryMock.create as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.CREATE_MEAL_DAY_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(

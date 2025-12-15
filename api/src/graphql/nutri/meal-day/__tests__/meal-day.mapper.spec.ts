@@ -17,7 +17,7 @@ describe('mapMealDayUsecaseToGql', () => {
       label: 'Jour 1',
       description: 'Meals for the first day',
       mealIds,
-      visibility: 'public',
+      visibility: 'PUBLIC',
       createdBy: 'coach-3',
       createdAt,
       updatedAt,

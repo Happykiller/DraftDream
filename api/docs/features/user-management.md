@@ -1,7 +1,7 @@
 # Feature: User Management
 
 ## Description
-The user management feature allows administrators to create, read, update, and delete user accounts. Users can be of three types: ADMIN, COACH, or ATHLETE. The system handles password hashing, validation, and maintains user profiles with contact information.
+The user management feature allows administrators to create, read, and update user accounts. Users can be of three types: ADMIN, COACH, or ATHLETE. The system handles password hashing, validation, and maintains user profiles with contact information.
 
 ## Roles
 - **ADMIN**: Can manage all users
@@ -136,22 +136,6 @@ The user management feature allows administrators to create, read, update, and d
 
 ---
 
-## Scenario: Delete a user
-
-**Given** a user exists with ID `user-42`
-**And** the user is active in the system
-
-**When** an admin deletes the user with ID `user-42`
-
-**Then** the system should:
-1. Find the user in the database
-2. Remove the user permanently or mark as deleted
-3. Return success confirmation
-
-**And** the user should no longer be accessible
-
----
-
 ## Scenario: Retrieve user by email
 
 **Given** a user exists with email `coach@example.com`
@@ -241,11 +225,6 @@ includePassword: true
 - **Authorization**: ADMIN (any user), COACH/ATHLETE (own profile, limited fields)
 - **Validation**: Email uniqueness if changed
 
-### Delete User
-- **Use Case**: `DeleteUserUsecase`
-- **Authorization**: ADMIN only
-- **Type**: Soft delete (mark inactive) or hard delete
-
 ---
 
 ## GraphQL Operations
@@ -309,6 +288,5 @@ mutation UserUpdate($id: ID!, $input: UpdateUserInput!) {
 - `CREATE_USER_USECASE` - Failed to create user
 - `GET_USER_USECASE` - Failed to retrieve user
 - `UPDATE_USER_USECASE` - Failed to update user
-- `DELETE_USER_USECASE` - Failed to delete user
 - `USER_NOT_FOUND` - User does not exist
 - `DUPLICATE_EMAIL` - Email already registered

@@ -20,7 +20,7 @@ interface MealTypeDoc {
   locale: string;
   label: string;
   icon?: string | null;
-  visibility: 'private' | 'public';
+  visibility: 'PRIVATE' | 'PUBLIC';
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
@@ -62,7 +62,7 @@ export class BddServiceMealTypeMongo {
       locale: dto.locale.toLowerCase().trim(),
       label: dto.label.trim(),
       icon: icon ?? null,
-      visibility: dto.visibility === 'public' ? 'public' : 'private',
+      visibility: dto.visibility === 'PUBLIC' ? 'PUBLIC' : 'PRIVATE',
       createdBy: dto.createdBy,
       createdAt: now,
       updatedAt: now,
@@ -117,9 +117,7 @@ export class BddServiceMealTypeMongo {
     if (createdBy) filter.createdBy = createdBy;
 
     if (visibility) {
-      if (visibility === 'public') filter.visibility = 'public';
-      
-      else filter.visibility = 'private';
+      filter.visibility = visibility;
     }
 
     try {
@@ -156,9 +154,7 @@ export class BddServiceMealTypeMongo {
     if (patch.label !== undefined) $set.label = patch.label.trim();
     if (patch.icon !== undefined) $set.icon = this.normalizeIcon(patch.icon) ?? null;
     if (patch.visibility !== undefined) {
-      if (patch.visibility === 'public') $set.visibility = 'public';
-      
-      else $set.visibility = 'private';
+      $set.visibility = patch.visibility;
     }
 
     try {
@@ -211,7 +207,7 @@ export class BddServiceMealTypeMongo {
     locale: doc.locale,
     label: doc.label,
     icon: doc.icon ?? null,
-    visibility: doc.visibility,
+    visibility: (doc.visibility as string).toUpperCase() as 'PRIVATE' | 'PUBLIC',
     createdBy: doc.createdBy,
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt,

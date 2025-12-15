@@ -32,7 +32,7 @@ describe('GetProgramUsecase', () => {
     slug: 'strength',
     locale: 'en-us',
     label: 'Strength',
-    visibility: 'private',
+    visibility: 'PRIVATE',
     duration: 6,
     frequency: 3,
     sessions: [],
@@ -47,7 +47,7 @@ describe('GetProgramUsecase', () => {
     slug: 'strength',
     locale: 'en-us',
     label: 'Strength',
-    visibility: 'private',
+    visibility: 'PRIVATE',
     duration: 6,
     frequency: 3,
     sessions: [],
@@ -118,7 +118,7 @@ describe('GetProgramUsecase', () => {
     const program: Program = {
       ...baseProgram,
       createdBy: 'admin-1',
-      visibility: 'public',
+      visibility: 'PUBLIC',
     };
     asMock(programRepositoryMock.get).mockResolvedValue(program);
     asMock(userRepositoryMock.getUser).mockResolvedValue({
@@ -139,14 +139,14 @@ describe('GetProgramUsecase', () => {
     const result = await usecase.execute(dto);
 
     expect(asMock(userRepositoryMock.getUser).mock.calls[0]).toEqual([{ id: 'admin-1' }]);
-    expect(result).toEqual({ ...expectedProgram, createdBy: 'admin-1', visibility: 'public' });
+    expect(result).toEqual({ ...expectedProgram, createdBy: 'admin-1', visibility: 'PUBLIC' });
   });
 
   it('should allow a coach when the program is public', async () => {
     const program: Program = {
       ...baseProgram,
       createdBy: 'other-coach',
-      visibility: 'public',
+      visibility: 'PUBLIC',
     };
     asMock(programRepositoryMock.get).mockResolvedValue(program);
 
@@ -157,7 +157,7 @@ describe('GetProgramUsecase', () => {
 
     const result = await usecase.execute(dto);
 
-    expect(result).toEqual({ ...expectedProgram, createdBy: 'other-coach', visibility: 'public' });
+    expect(result).toEqual({ ...expectedProgram, createdBy: 'other-coach', visibility: 'PUBLIC' });
   });
 
   it('should allow an athlete assigned to the program', async () => {

@@ -3,7 +3,8 @@ import * as React from 'react';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box, Button, Stack, TextField, IconButton, Tooltip } from '@mui/material';
+import { Box, Button, Stack, TextField, IconButton, Tooltip, useMediaQuery } from '@mui/material';
+
 import { useTranslation } from 'react-i18next';
 import type { Tag } from '@src/hooks/useTags';
 import { useDateFormatter } from '@src/hooks/useDateFormatter';
@@ -40,9 +41,11 @@ export const TagTable = React.memo(function TagTable({
 }: TagTableProps): React.JSX.Element {
   const fmtDate = useDateFormatter();
   const { t } = useTranslation();
+  // Responsive: Hide Created/Updated on smaller screens
+  const isXl = useMediaQuery((theme: any) => theme.breakpoints.up('xl'));
+
 
   const columns = React.useMemo<GridColDef<Tag>[]>(() => [
-    { field: 'slug', headerName: t('common.labels.slug'), flex: 1 },
     { field: 'label', headerName: t('common.labels.label'), flex: 1 },
     { field: 'locale', headerName: t('common.labels.locale'), width: 120 },
     {
@@ -57,8 +60,24 @@ export const TagTable = React.memo(function TagTable({
       valueGetter: (params: any) => params?.email,
       flex: 1,
     },
-    { field: 'createdAt', headerName: t('common.labels.created'), valueFormatter: (value) => fmtDate(value), flex: 1 },
-    { field: 'updatedAt', headerName: t('common.labels.updated'), valueFormatter: (value) => fmtDate(value), flex: 1 },
+    ...(isXl
+      ? [
+        {
+          field: 'createdAt',
+          headerName: t('common.labels.created'),
+          valueFormatter: (value: any) => fmtDate(value),
+          flex: 1,
+          minWidth: 170,
+        },
+        {
+          field: 'updatedAt',
+          headerName: t('common.labels.updated'),
+          valueFormatter: (value: any) => fmtDate(value),
+          flex: 1,
+          minWidth: 170,
+        },
+      ]
+      : []),
     {
       field: 'actions',
       headerName: t('common.labels.actions'),
@@ -80,7 +99,7 @@ export const TagTable = React.memo(function TagTable({
         </Stack>
       ),
     },
-  ], [fmtDate, onDelete, onEdit, t]);
+  ], [fmtDate, onDelete, onEdit, t, isXl]);
 
   return (
     <Box sx={{ width: '100%' }}>

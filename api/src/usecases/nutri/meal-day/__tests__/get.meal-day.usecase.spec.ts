@@ -30,7 +30,7 @@ describe('GetMealDayUsecase', () => {
     label: 'Strength Day',
     description: 'High intensity focus',
     mealIds: ['meal-1', 'meal-2'],
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'coach-123',
     createdAt: now,
     updatedAt: now,
@@ -54,7 +54,7 @@ describe('GetMealDayUsecase', () => {
   });
 
   it('should return the meal day for an admin session', async () => {
-    mealDayRepositoryMock.get.mockResolvedValue(mealDay);
+    (mealDayRepositoryMock.get as any).mockResolvedValue(mealDay);
     const dto: GetMealDayUsecaseDto = {
       id: mealDay.id,
       session: { userId: 'admin-1', role: Role.ADMIN },
@@ -68,7 +68,7 @@ describe('GetMealDayUsecase', () => {
   });
 
   it('should return the meal day for its creator regardless of role', async () => {
-    mealDayRepositoryMock.get.mockResolvedValue({ ...mealDay, createdBy: 'athlete-7', visibility: 'private' });
+    (mealDayRepositoryMock.get as any).mockResolvedValue({ ...mealDay, createdBy: 'athlete-7', visibility: 'PRIVATE' });
     const dto: GetMealDayUsecaseDto = {
       id: mealDay.id,
       session: { userId: 'athlete-7', role: Role.ATHLETE },
@@ -76,11 +76,11 @@ describe('GetMealDayUsecase', () => {
 
     const result = await usecase.execute(dto);
 
-    expect(result).toEqual(mapMealDayToUsecase({ ...mealDay, createdBy: 'athlete-7', visibility: 'private' }));
+    expect(result).toEqual(mapMealDayToUsecase({ ...mealDay, createdBy: 'athlete-7', visibility: 'PRIVATE' }));
   });
 
   it('should allow coaches to access public meal days they do not own', async () => {
-    mealDayRepositoryMock.get.mockResolvedValue({ ...mealDay, createdBy: 'coach-999', visibility: 'public' });
+    (mealDayRepositoryMock.get as any).mockResolvedValue({ ...mealDay, createdBy: 'coach-999', visibility: 'PUBLIC' });
     const dto: GetMealDayUsecaseDto = {
       id: mealDay.id,
       session: { userId: 'coach-123', role: Role.COACH },
@@ -88,11 +88,11 @@ describe('GetMealDayUsecase', () => {
 
     const result = await usecase.execute(dto);
 
-    expect(result).toEqual(mapMealDayToUsecase({ ...mealDay, createdBy: 'coach-999', visibility: 'public' }));
+    expect(result).toEqual(mapMealDayToUsecase({ ...mealDay, createdBy: 'coach-999', visibility: 'PUBLIC' }));
   });
 
   it('should return null when the repository returns null', async () => {
-    mealDayRepositoryMock.get.mockResolvedValue(null);
+    (mealDayRepositoryMock.get as any).mockResolvedValue(null);
 
     const result = await usecase.execute({ id: 'missing', session: { userId: 'coach-1', role: Role.COACH } });
 
@@ -100,7 +100,7 @@ describe('GetMealDayUsecase', () => {
   });
 
   it('should reject when the session is not allowed to access the meal day', async () => {
-    mealDayRepositoryMock.get.mockResolvedValue({ ...mealDay, visibility: 'private', createdBy: 'coach-999' });
+    (mealDayRepositoryMock.get as any).mockResolvedValue({ ...mealDay, visibility: 'PRIVATE', createdBy: 'coach-999' });
     const dto: GetMealDayUsecaseDto = {
       id: mealDay.id,
       session: { userId: 'athlete-1', role: Role.ATHLETE },
@@ -112,7 +112,7 @@ describe('GetMealDayUsecase', () => {
 
   it('should log and throw a domain error when retrieval fails', async () => {
     const failure = new Error('lookup failed');
-    mealDayRepositoryMock.get.mockRejectedValue(failure);
+    (mealDayRepositoryMock.get as any).mockRejectedValue(failure);
     const dto: GetMealDayUsecaseDto = {
       id: mealDay.id,
       session: { userId: 'admin-1', role: Role.ADMIN },

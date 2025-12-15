@@ -1,45 +1,29 @@
 // src/commons/prospects/status.ts
-// Comment in English: Prospect status constants and helpers for UI bindings.
+// Prospect status enum and pipeline configuration.
+// Use i18n for display labels in components (see prospects.workflow.stages in translation files).
 
-export const ProspectStatusEnum = {
+export const ProspectStatus = {
   LEAD: 'LEAD',
-  CONTACTE: 'CONTACTE',
-  RDV_PLANIFIE: 'RDV_PLANIFIE',
-  PROPOSITION: 'PROPOSITION',
-  NEGOCIATION: 'NEGOCIATION',
-  GAGNE: 'GAGNE',
-  PERDUS: 'PERDUS',
-  A_FAIRE: 'A_FAIRE',
+  CONTACTED: 'CONTACTED',
+  MEETING_SCHEDULED: 'MEETING_SCHEDULED',
+  OFFER: 'OFFER',
+  NEGOTIATION: 'NEGOTIATION',
+  WON: 'WON',
+  LOST: 'LOST',
+  TODO: 'TODO',
   CLIENT: 'CLIENT',
 } as const;
 
-export type ProspectStatusEnum = (typeof ProspectStatusEnum)[keyof typeof ProspectStatusEnum];
-
-export const prospectStatusLabels: Record<ProspectStatusEnum, string> = {
-  [ProspectStatusEnum.LEAD]: 'Lead',
-  [ProspectStatusEnum.CONTACTE]: 'Contacté',
-  [ProspectStatusEnum.RDV_PLANIFIE]: 'RDV planifié',
-  [ProspectStatusEnum.PROPOSITION]: 'Proposition',
-  [ProspectStatusEnum.NEGOCIATION]: 'Négociation',
-  [ProspectStatusEnum.GAGNE]: 'Gagné',
-  [ProspectStatusEnum.PERDUS]: 'Perdus',
-  [ProspectStatusEnum.A_FAIRE]: 'Création athlète',
-  [ProspectStatusEnum.CLIENT]: 'Client',
-};
-
-export interface ProspectStatusOption {
-  value: ProspectStatusEnum;
-  label: string;
-}
+export type ProspectStatus = (typeof ProspectStatus)[keyof typeof ProspectStatus];
 
 /** Ordered list of statuses used to build the prospect pipeline. */
-export const pipelineStatuses: ProspectStatusEnum[] = [
-  ProspectStatusEnum.LEAD,
-  ProspectStatusEnum.CONTACTE,
-  ProspectStatusEnum.RDV_PLANIFIE,
-  ProspectStatusEnum.PROPOSITION,
-  ProspectStatusEnum.NEGOCIATION,
-  ProspectStatusEnum.GAGNE,
-  ProspectStatusEnum.A_FAIRE,
-  ProspectStatusEnum.PERDUS,
+export const pipelineStatuses: ProspectStatus[] = [
+  ProspectStatus.LEAD,
+  ProspectStatus.CONTACTED,
+  ProspectStatus.MEETING_SCHEDULED,
+  ProspectStatus.OFFER,
+  ProspectStatus.NEGOTIATION,
+  ProspectStatus.WON,
+  ProspectStatus.TODO,
+  ProspectStatus.LOST,
 ];

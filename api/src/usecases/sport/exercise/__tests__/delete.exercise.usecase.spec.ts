@@ -34,14 +34,14 @@ describe('DeleteExerciseUsecase', () => {
     charge: 'bodyweight',
     rest: 60,
     videoUrl: 'https://cdn.local/push-up.mp4',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     categories: [
       {
         id: 'category-1',
         slug: 'cat',
         locale: 'en-us',
         label: 'Category',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -53,7 +53,7 @@ describe('DeleteExerciseUsecase', () => {
         slug: 'muscle',
         locale: 'en-us',
         label: 'Muscle',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -65,7 +65,7 @@ describe('DeleteExerciseUsecase', () => {
         slug: 'equipment',
         locale: 'en-us',
         label: 'Equipment',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -77,7 +77,7 @@ describe('DeleteExerciseUsecase', () => {
         slug: 'tag',
         locale: 'en-us',
         label: 'Tag',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -106,7 +106,7 @@ describe('DeleteExerciseUsecase', () => {
   });
 
   it('should return false when the exercise does not exist', async () => {
-    exerciseRepositoryMock.get.mockResolvedValue(null);
+    (exerciseRepositoryMock.get as any).mockResolvedValue(null);
 
     const dto: DeleteExerciseUsecaseDto = {
       id: 'exercise-unknown',
@@ -120,8 +120,8 @@ describe('DeleteExerciseUsecase', () => {
   });
 
   it('should delete the exercise when requested by an admin', async () => {
-    exerciseRepositoryMock.get.mockResolvedValue(exercise);
-    exerciseRepositoryMock.delete.mockResolvedValue(true);
+    (exerciseRepositoryMock.get as any).mockResolvedValue(exercise);
+    (exerciseRepositoryMock.delete as any).mockResolvedValue(true);
 
     const dto: DeleteExerciseUsecaseDto = {
       id: exercise.id,
@@ -135,8 +135,8 @@ describe('DeleteExerciseUsecase', () => {
   });
 
   it('should delete the exercise when requested by its creator', async () => {
-    exerciseRepositoryMock.get.mockResolvedValue({ ...exercise, createdBy: 'creator-1' });
-    exerciseRepositoryMock.delete.mockResolvedValue(true);
+    (exerciseRepositoryMock.get as any).mockResolvedValue({ ...exercise, createdBy: 'creator-1' });
+    (exerciseRepositoryMock.delete as any).mockResolvedValue(true);
 
     const dto: DeleteExerciseUsecaseDto = {
       id: exercise.id,
@@ -150,7 +150,7 @@ describe('DeleteExerciseUsecase', () => {
   });
 
   it('should throw a forbidden error when the user is neither admin nor creator', async () => {
-    exerciseRepositoryMock.get.mockResolvedValue(exercise);
+    (exerciseRepositoryMock.get as any).mockResolvedValue(exercise);
 
     const dto: DeleteExerciseUsecaseDto = {
       id: exercise.id,
@@ -164,7 +164,7 @@ describe('DeleteExerciseUsecase', () => {
 
   it('should log and throw a domain error when deletion fails', async () => {
     const failure = new Error('database failure');
-    exerciseRepositoryMock.get.mockRejectedValue(failure);
+    (exerciseRepositoryMock.get as any).mockRejectedValue(failure);
 
     const dto: DeleteExerciseUsecaseDto = {
       id: exercise.id,

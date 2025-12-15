@@ -60,8 +60,8 @@ export class ProspectSourceResolver {
       input?.visibility === undefined
         ? undefined
         : input.visibility === ProspectSourceVisibility.PUBLIC
-          ? 'public'
-          : 'private';
+          ? 'PUBLIC'
+          : 'PRIVATE';
     const res = await inversify.listClientSourcesUsecase.execute({
       q: input?.q,
       locale: input?.locale,
@@ -91,8 +91,8 @@ export class ProspectSourceResolver {
         input.visibility === undefined
           ? undefined
           : input.visibility === ProspectSourceVisibility.PUBLIC
-            ? 'public'
-            : 'private',
+            ? 'PUBLIC'
+            : 'PRIVATE',
     });
     return updated ? mapProspectSourceUsecaseToGql(updated) : null;
   }

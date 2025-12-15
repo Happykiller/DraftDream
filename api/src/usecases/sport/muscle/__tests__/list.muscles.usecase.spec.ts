@@ -32,7 +32,7 @@ describe('ListMusclesUsecase', () => {
       slug: 'quadriceps',
       locale: 'en-US',
       label: 'Quadriceps',
-      visibility: 'public',
+      visibility: 'PUBLIC',
       createdBy: 'coach-1',
       createdAt: new Date('2024-01-01T00:00:00.000Z'),
       updatedAt: new Date('2024-01-10T00:00:00.000Z'),
@@ -42,7 +42,7 @@ describe('ListMusclesUsecase', () => {
       slug: 'hamstrings',
       locale: 'en-US',
       label: 'Hamstrings',
-      visibility: 'private',
+      visibility: 'PRIVATE',
       createdBy: 'coach-2',
       createdAt: new Date('2024-02-01T00:00:00.000Z'),
       updatedAt: new Date('2024-02-10T00:00:00.000Z'),
@@ -68,7 +68,7 @@ describe('ListMusclesUsecase', () => {
   });
 
   it('should list muscles through the repository', async () => {
-    muscleRepositoryMock.listMuscles.mockResolvedValue({
+    (muscleRepositoryMock.listMuscles as any).mockResolvedValue({
       items: muscles,
       total: muscles.length,
       page: dto.page!,
@@ -89,7 +89,7 @@ describe('ListMusclesUsecase', () => {
   });
 
   it('should call the repository with default parameters when none are provided', async () => {
-    muscleRepositoryMock.listMuscles.mockResolvedValue({
+    (muscleRepositoryMock.listMuscles as any).mockResolvedValue({
       items: [],
       total: 0,
       page: 1,
@@ -103,7 +103,7 @@ describe('ListMusclesUsecase', () => {
 
   it('should log and throw a domain error when listing fails', async () => {
     const failure = new Error('list failure');
-    muscleRepositoryMock.listMuscles.mockRejectedValue(failure);
+    (muscleRepositoryMock.listMuscles as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.LIST_MUSCLES_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(

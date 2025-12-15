@@ -77,7 +77,7 @@ export class SessionResolver {
       durationMin: input.durationMin,
       description: input.description,
       exerciseIds: input.exerciseIds,
-      visibility: this.normalizeSessionVisibility(input.visibility) ?? 'public',
+      visibility: this.normalizeSessionVisibility(input.visibility) ?? 'PUBLIC',
       createdBy: session.userId,
     });
     return created ? mapSessionUsecaseToGql(created) : null; // null => slug/locale déjà pris
@@ -166,10 +166,10 @@ export class SessionResolver {
 
   private normalizeSessionVisibility(
     visibility?: SessionVisibility | null,
-  ): 'private' | 'public' | undefined {
+  ): 'PRIVATE' | 'PUBLIC' | undefined {
     if (!visibility) {
       return undefined;
     }
-    return visibility === SessionVisibility.PUBLIC ? 'public' : 'private';
+    return visibility === SessionVisibility.PUBLIC ? 'PUBLIC' : 'PRIVATE';
   }
 }

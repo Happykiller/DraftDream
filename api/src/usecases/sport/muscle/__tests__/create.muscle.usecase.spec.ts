@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -31,7 +31,7 @@ describe('CreateMuscleUsecase', () => {
   const dto: CreateMuscleUsecaseDto = {
     locale: 'en-US',
     label: 'Biceps',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'coach-123',
   };
 
@@ -41,7 +41,7 @@ describe('CreateMuscleUsecase', () => {
     slug: 'biceps',
     locale: 'en-us',
     label: 'Biceps',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'coach-123',
     createdAt: now,
     updatedAt: now,
@@ -66,7 +66,7 @@ describe('CreateMuscleUsecase', () => {
   });
 
   it('should create a muscle through the repository', async () => {
-    muscleRepositoryMock.create.mockResolvedValue(muscle);
+    (muscleRepositoryMock.create as any).mockResolvedValue(muscle);
 
     const result = await usecase.execute(dto);
 
@@ -82,7 +82,7 @@ describe('CreateMuscleUsecase', () => {
   });
 
   it('should return null when the repository returns null', async () => {
-    muscleRepositoryMock.create.mockResolvedValue(null);
+    (muscleRepositoryMock.create as any).mockResolvedValue(null);
 
     const result = await usecase.execute(dto);
 
@@ -91,7 +91,7 @@ describe('CreateMuscleUsecase', () => {
 
   it('should log and throw a domain error when creation fails', async () => {
     const failure = new Error('database failure');
-    muscleRepositoryMock.create.mockRejectedValue(failure);
+    (muscleRepositoryMock.create as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.CREATE_MUSCLE_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(

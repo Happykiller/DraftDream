@@ -9,9 +9,11 @@ export interface TabParams {
   page: number;
   limit: number;
   q: string;
+  type?: string;
   setPage: (p: number) => void;
   setLimit: (l: number) => void;
   setQ: (val: string) => void;
+  setType: (val: string) => void;
 }
 
 export function useTabParams(prefix: string, defaults = { page: 1, limit: 10 }): TabParams {
@@ -20,6 +22,7 @@ export function useTabParams(prefix: string, defaults = { page: 1, limit: 10 }):
   const page = Number.parseInt(params.get(`${prefix}_page`) || String(defaults.page), 10);
   const limit = Number.parseInt(params.get(`${prefix}_limit`) || String(defaults.limit), 10);
   const q = params.get(`${prefix}_q`) || '';
+  const type = params.get(`${prefix}_type`) || '';
 
   const setPage = React.useCallback(
     (p: number) =>
@@ -54,5 +57,17 @@ export function useTabParams(prefix: string, defaults = { page: 1, limit: 10 }):
     [setParams, prefix]
   );
 
-  return { page, limit, q, setPage, setLimit, setQ };
+  const setType = React.useCallback(
+    (val: string) =>
+      setParams(prev => {
+        const sp = new URLSearchParams(prev);
+        if (val) sp.set(`${prefix}_type`, val);
+        else sp.delete(`${prefix}_type`);
+        sp.set(`${prefix}_page`, '1');
+        return sp;
+      }, { replace: true }),
+    [setParams, prefix]
+  );
+
+  return { page, limit, q, type, setPage, setLimit, setQ, setType };
 }

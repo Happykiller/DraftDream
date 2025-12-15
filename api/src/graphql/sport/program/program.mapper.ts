@@ -46,7 +46,7 @@ export function mapProgramUsecaseToGql(model: ProgramUsecaseModel): ProgramGql {
     locale: model.locale,
     label: model.label,
     visibility:
-      model.visibility === 'public' ? ProgramVisibility.PUBLIC : ProgramVisibility.PRIVATE,
+      model.visibility === 'PUBLIC' ? ProgramVisibility.PUBLIC : ProgramVisibility.PRIVATE,
     duration: model.duration,
     frequency: model.frequency,
     description: model.description,

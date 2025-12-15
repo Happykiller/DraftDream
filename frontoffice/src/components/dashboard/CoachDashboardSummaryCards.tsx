@@ -8,7 +8,7 @@ import RestaurantMenuOutlinedIcon from '@mui/icons-material/RestaurantMenuOutlin
 import FitnessCenterOutlinedIcon from '@mui/icons-material/FitnessCenterOutlined';
 
 import { UserType } from '@src/commons/enums';
-import { ProspectStatusEnum } from '@src/commons/prospects/status';
+import { ProspectStatus } from '@src/commons/prospects/status';
 import { useCoachAthletes } from '@hooks/athletes/useCoachAthletes';
 import { useMealPlans } from '@hooks/nutrition/useMealPlans';
 import { usePrograms } from '@hooks/programs/usePrograms';
@@ -34,7 +34,7 @@ export function CoachDashboardSummaryCards(): React.JSX.Element {
   const { total: clientCount, loading: clientsLoading } = useProspects({
     page: 1,
     limit: 1,
-    status: ProspectStatusEnum.CLIENT,
+    status: ProspectStatus.CLIENT,
     enabled: canSeeLeadData,
   });
 

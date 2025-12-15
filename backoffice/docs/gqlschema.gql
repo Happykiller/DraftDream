@@ -18,7 +18,9 @@ type UserGql {
   id: ID!
   type: String!
   first_name: String!
+  firstName: String!
   last_name: String!
+  lastName: String!
   email: String!
   phone: String
   address: AddressGql
@@ -46,14 +48,14 @@ type TagGql {
   slug: String!
   locale: String!
   label: String!
-  visibility: TagVisibility!
+  visibility: MealPlanVisibility!
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   creator: UserGql
 }
 
-enum TagVisibility {
+enum MealPlanVisibility {
   PRIVATE
   PUBLIC
 }
@@ -78,16 +80,11 @@ type MuscleGql {
   slug: String!
   locale: String!
   label: String!
-  visibility: MuscleVisibility!
+  visibility: MealPlanVisibility!
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   creator: UserGql
-}
-
-enum MuscleVisibility {
-  PRIVATE
-  PUBLIC
 }
 
 type MuscleListGql {
@@ -115,7 +112,7 @@ type SessionSportGql {
   createdAt: DateTime!
   updatedAt: DateTime!
   creator: UserGql
-  visibility: String!
+  visibility: MealPlanVisibility!
 }
 
 type SessionListGql {
@@ -130,16 +127,11 @@ type CategoryGql {
   slug: String!
   locale: String!
   label: String!
-  visibility: CategoryVisibility!
+  visibility: MealPlanVisibility!
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   creator: UserGql
-}
-
-enum CategoryVisibility {
-  PRIVATE
-  PUBLIC
 }
 
 type CategoryListGql {
@@ -154,16 +146,11 @@ type EquipmentGql {
   slug: String!
   locale: String!
   label: String!
-  visibility: EquipmentVisibility!
+  visibility: MealPlanVisibility!
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   creator: UserGql
-}
-
-enum EquipmentVisibility {
-  PRIVATE
-  PUBLIC
 }
 
 type EquipmentListGql {
@@ -213,7 +200,7 @@ type ProgramGql {
   duration: Int!
   frequency: Int!
   description: String
-  visibility: ProgramVisibility!
+  visibility: MealPlanVisibility!
   sessions: [ProgramSessionGql!]!
   userId: ID
   createdBy: String!
@@ -221,11 +208,6 @@ type ProgramGql {
   updatedAt: DateTime!
   creator: UserGql
   athlete: UserGql
-}
-
-enum ProgramVisibility {
-  PRIVATE
-  PUBLIC
 }
 
 type ProgramListGql {
@@ -247,7 +229,7 @@ type ExerciseGql {
   charge: String
   rest: Int
   videoUrl: String
-  visibility: ExerciseVisibility!
+  visibility: MealPlanVisibility!
   categoryIds: [ID!]!
   muscleIds: [ID!]!
   equipmentIds: [ID!]
@@ -262,11 +244,6 @@ type ExerciseGql {
   creator: UserGql
 }
 
-enum ExerciseVisibility {
-  PRIVATE
-  PUBLIC
-}
-
 type ExerciseListGql {
   items: [ExerciseGql!]!
   total: Int!
@@ -279,16 +256,11 @@ type ProspectObjectiveGql {
   slug: String!
   locale: String!
   label: String!
-  visibility: ProspectObjectiveVisibility!
+  visibility: MealPlanVisibility!
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   creator: UserGql
-}
-
-enum ProspectObjectiveVisibility {
-  PRIVATE
-  PUBLIC
 }
 
 type ProspectObjectiveListGql {
@@ -303,16 +275,11 @@ type ProspectActivityPreferenceGql {
   slug: String!
   locale: String!
   label: String!
-  visibility: ProspectActivityPreferenceVisibility!
+  visibility: MealPlanVisibility!
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   creator: UserGql
-}
-
-enum ProspectActivityPreferenceVisibility {
-  PRIVATE
-  PUBLIC
 }
 
 type ProspectActivityPreferenceListGql {
@@ -327,16 +294,11 @@ type ProspectLevelGql {
   slug: String!
   locale: String!
   label: String!
-  visibility: ProspectLevelVisibility!
+  visibility: MealPlanVisibility!
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   creator: UserGql
-}
-
-enum ProspectLevelVisibility {
-  PRIVATE
-  PUBLIC
 }
 
 type ProspectLevelListGql {
@@ -351,16 +313,11 @@ type ProspectSourceGql {
   slug: String!
   locale: String!
   label: String!
-  visibility: ProspectSourceVisibility!
+  visibility: MealPlanVisibility!
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   creator: UserGql
-}
-
-enum ProspectSourceVisibility {
-  PRIVATE
-  PUBLIC
 }
 
 type ProspectSourceListGql {
@@ -368,6 +325,35 @@ type ProspectSourceListGql {
   total: Int!
   page: Int!
   limit: Int!
+}
+
+type CoachAthleteGql {
+  id: ID!
+  coachId: ID!
+  athleteId: ID!
+  startDate: DateTime!
+  endDate: DateTime
+  is_active: Boolean!
+  active: Boolean!
+  note: String
+  createdBy: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  coach: UserGql
+  athlete: UserGql
+}
+
+type CoachAthleteListGql {
+  items: [CoachAthleteGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
+type ProspectWorkflowEntryGql {
+  status: String!
+  date: DateTime!
 }
 
 type ProspectGql {
@@ -387,9 +373,12 @@ type ProspectGql {
   budget: Float
   dealDescription: String
   desiredStartDate: DateTime
+  workflowHistory: [ProspectWorkflowEntryGql!]!
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  matchedAthleteId: ID
+  coachAthleteLinkId: ID
   creator: UserGql
   level: ProspectLevelGql
   source: ProspectSourceGql
@@ -399,13 +388,13 @@ type ProspectGql {
 
 enum ProspectStatusEnum {
   LEAD
-  CONTACTE
-  RDV_PLANIFIE
-  PROPOSITION
-  NEGOCIATION
-  GAGNE
-  PERDUS
-  A_FAIRE
+  CONTACTED
+  MEETING_SCHEDULED
+  OFFER
+  NEGOTIATION
+  WON
+  LOST
+  TODO
   CLIENT
 }
 
@@ -416,22 +405,25 @@ type ProspectListGql {
   limit: Int!
 }
 
+type ProspectConversionGql {
+  prospect: ProspectGql!
+  athlete: UserGql!
+  coachAthleteLink: CoachAthleteGql!
+  createdAthlete: Boolean!
+  createdCoachAthleteLink: Boolean!
+}
+
 type MealTypeGql {
   id: ID!
   slug: String!
   locale: String!
   label: String!
   icon: String
-  visibility: MealTypeVisibility!
+  visibility: MealPlanVisibility!
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   creator: UserGql
-}
-
-enum MealTypeVisibility {
-  PRIVATE
-  PUBLIC
 }
 
 type MealTypeListGql {
@@ -452,17 +444,12 @@ type MealGql {
   proteinGrams: Int!
   carbGrams: Int!
   fatGrams: Int!
-  visibility: MealVisibility!
+  visibility: MealPlanVisibility!
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   creator: UserGql
   type: MealTypeGql
-}
-
-enum MealVisibility {
-  PRIVATE
-  PUBLIC
 }
 
 type MealListGql {
@@ -479,17 +466,12 @@ type MealDayGql {
   label: String!
   description: String
   mealIds: [ID!]!
-  visibility: MealDayVisibility!
+  visibility: MealPlanVisibility!
   createdBy: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   creator: UserGql
   meals: [MealGql!]
-}
-
-enum MealDayVisibility {
-  PRIVATE
-  PUBLIC
 }
 
 type MealDayListGql {
@@ -505,7 +487,7 @@ type MealPlanMealTypeSnapshotGql {
   slug: String
   locale: String
   label: String!
-  visibility: MealTypeVisibility
+  visibility: MealPlanVisibility
 }
 
 type MealPlanMealSnapshotGql {
@@ -553,11 +535,6 @@ type MealPlanGql {
   athlete: UserGql
 }
 
-enum MealPlanVisibility {
-  PRIVATE
-  PUBLIC
-}
-
 type MealPlanListGql {
   items: [MealPlanGql!]!
   total: Int!
@@ -565,24 +542,29 @@ type MealPlanListGql {
   limit: Int!
 }
 
-type CoachAthleteGql {
+type AthleteInfoGql {
   id: ID!
-  coachId: ID!
-  athleteId: ID!
-  startDate: DateTime!
-  endDate: DateTime
-  is_active: Boolean!
-  note: String
+  userId: ID!
+  levelId: ID
+  objectiveIds: [ID!]!
+  activityPreferenceIds: [ID!]!
+  medicalConditions: String
+  allergies: String
+  notes: String
   createdBy: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
-  coach: UserGql
+  schemaVersion: Int!
   athlete: UserGql
+  creator: UserGql
+  level: ProspectLevelGql
+  objectives: [ProspectObjectiveGql!]!
+  activityPreferences: [ProspectActivityPreferenceGql!]!
 }
 
-type CoachAthleteListGql {
-  items: [CoachAthleteGql!]!
+type AthleteInfoListGql {
+  items: [AthleteInfoGql!]!
   total: Int!
   page: Int!
   limit: Int!
@@ -627,13 +609,15 @@ type Query {
   mealPlan_list(input: ListMealPlansInput): MealPlanListGql!
   coachAthlete_get(id: ID!): CoachAthleteGql
   coachAthlete_list(input: ListCoachAthletesInput): CoachAthleteListGql!
+  athleteInfo_get(id: ID!): AthleteInfoGql
+  athleteInfo_list(input: ListAthleteInfosInput): AthleteInfoListGql!
 }
 
 input ListTagsInput {
   q: String
   locale: String
   createdBy: String
-  visibility: TagVisibility
+  visibility: MealPlanVisibility
   limit: Int
   page: Int
 }
@@ -656,7 +640,7 @@ input ListMusclesInput {
   q: String
   locale: String
   createdBy: String
-  visibility: MuscleVisibility
+  visibility: MealPlanVisibility
   limit: Int
   page: Int
 }
@@ -673,7 +657,7 @@ input ListProgramsInput {
   q: String
   locale: String
   createdBy: String
-  visibility: ProgramVisibility
+  visibility: MealPlanVisibility
   userId: ID
   limit: Int
   page: Int
@@ -683,7 +667,7 @@ input ListCategoriesInput {
   q: String
   locale: String
   createdBy: String
-  visibility: CategoryVisibility
+  visibility: MealPlanVisibility
   limit: Int
   page: Int
 }
@@ -692,7 +676,7 @@ input ListProspectObjectivesInput {
   q: String
   locale: String
   createdBy: String
-  visibility: ProspectObjectiveVisibility
+  visibility: MealPlanVisibility
   limit: Int
   page: Int
 }
@@ -701,7 +685,7 @@ input ListProspectActivityPreferencesInput {
   q: String
   locale: String
   createdBy: String
-  visibility: ProspectActivityPreferenceVisibility
+  visibility: MealPlanVisibility
   limit: Int
   page: Int
 }
@@ -710,7 +694,7 @@ input ListProspectLevelsInput {
   q: String
   locale: String
   createdBy: String
-  visibility: ProspectLevelVisibility
+  visibility: MealPlanVisibility
   limit: Int
   page: Int
 }
@@ -719,7 +703,7 @@ input ListProspectSourcesInput {
   q: String
   locale: String
   createdBy: String
-  visibility: ProspectSourceVisibility
+  visibility: MealPlanVisibility
   limit: Int
   page: Int
 }
@@ -738,7 +722,7 @@ input ListExercisesInput {
   q: String
   locale: String
   createdBy: String
-  visibility: ExerciseVisibility
+  visibility: MealPlanVisibility
   categoryIds: [ID!]
   limit: Int
   page: Int
@@ -748,7 +732,7 @@ input ListEquipmentInput {
   q: String
   locale: String
   createdBy: String
-  visibility: EquipmentVisibility
+  visibility: MealPlanVisibility
   limit: Int
   page: Int
 }
@@ -757,7 +741,7 @@ input ListMealTypesInput {
   q: String
   locale: String
   createdBy: String
-  visibility: MealTypeVisibility
+  visibility: MealPlanVisibility
   limit: Int
   page: Int
 }
@@ -765,7 +749,7 @@ input ListMealTypesInput {
 input ListMealDaysInput {
   q: String
   locale: String
-  visibility: MealDayVisibility
+  visibility: MealPlanVisibility
   createdBy: String
   limit: Int
   page: Int
@@ -776,7 +760,7 @@ input ListMealsInput {
   locale: String
   typeId: ID
   createdBy: String
-  visibility: MealVisibility
+  visibility: MealPlanVisibility
   limit: Int
   page: Int
 }
@@ -799,6 +783,14 @@ input ListCoachAthletesInput {
   limit: Int
   page: Int
   includeArchived: Boolean
+}
+
+input ListAthleteInfosInput {
+  userId: ID
+  createdBy: ID
+  includeArchived: Boolean
+  limit: Int
+  page: Int
 }
 
 type Mutation {
@@ -837,6 +829,7 @@ type Mutation {
   prospect_create(input: CreateProspectInput!): ProspectGql
   prospect_update(input: UpdateProspectInput!): ProspectGql
   prospect_delete(id: ID!): Boolean!
+  prospect_convert(input: ConvertProspectInput!): ProspectConversionGql
   exercise_create(input: CreateExerciseInput!): ExerciseGql
   exercise_update(input: UpdateExerciseInput!): ExerciseGql
   exercise_softDelete(id: ID!): Boolean!
@@ -860,19 +853,23 @@ type Mutation {
   coachAthlete_create(input: CreateCoachAthleteInput!): CoachAthleteGql
   coachAthlete_update(input: UpdateCoachAthleteInput!): CoachAthleteGql
   coachAthlete_delete(id: ID!): Boolean!
+  athleteInfo_create(input: CreateAthleteInfoInput!): AthleteInfoGql
+  athleteInfo_update(input: UpdateAthleteInfoInput!): AthleteInfoGql
+  athleteInfo_delete(id: ID!): Boolean!
+  athleteInfo_hardDelete(id: ID!): Boolean!
 }
 
 input CreateTagInput {
   locale: String!
   label: String!
-  visibility: TagVisibility!
+  visibility: MealPlanVisibility!
 }
 
 input UpdateTagInput {
   id: ID!
   locale: String
   label: String
-  visibility: TagVisibility
+  visibility: MealPlanVisibility
 }
 
 input AuthInput {
@@ -920,13 +917,14 @@ input UpdateUserInput {
 input CreateMuscleInput {
   locale: String!
   label: String!
-  visibility: MuscleVisibility!
+  visibility: MealPlanVisibility!
 }
 
 input UpdateMuscleInput {
   id: ID!
   locale: String
   label: String
+  visibility: MealPlanVisibility
 }
 
 input CreateSessionInput {
@@ -935,6 +933,7 @@ input CreateSessionInput {
   durationMin: Int!
   description: String
   exerciseIds: [ID!]!
+  visibility: MealPlanVisibility
 }
 
 input UpdateSessionInput {
@@ -942,7 +941,7 @@ input UpdateSessionInput {
   locale: String
   label: String
   durationMin: Int
-  visibility: String
+  visibility: MealPlanVisibility
   description: String
   exerciseIds: [ID!]
 }
@@ -950,7 +949,7 @@ input UpdateSessionInput {
 input CreateProgramInput {
   locale: String!
   label: String!
-  visibility: ProgramVisibility
+  visibility: MealPlanVisibility
   duration: Int!
   frequency: Int!
   description: String
@@ -992,7 +991,7 @@ input UpdateProgramInput {
   id: ID!
   locale: String
   label: String
-  visibility: ProgramVisibility
+  visibility: MealPlanVisibility
   duration: Int
   frequency: Int
   description: String
@@ -1006,66 +1005,66 @@ input UpdateProgramInput {
 input CreateCategoryInput {
   locale: String!
   label: String!
-  visibility: CategoryVisibility!
+  visibility: MealPlanVisibility!
 }
 
 input UpdateCategoryInput {
   id: ID!
   locale: String
   label: String
-  visibility: CategoryVisibility
+  visibility: MealPlanVisibility
 }
 
 input CreateProspectObjectiveInput {
   locale: String!
   label: String!
-  visibility: ProspectObjectiveVisibility!
+  visibility: MealPlanVisibility!
 }
 
 input UpdateProspectObjectiveInput {
   id: ID!
   locale: String
   label: String
-  visibility: ProspectObjectiveVisibility
+  visibility: MealPlanVisibility
 }
 
 input CreateProspectActivityPreferenceInput {
   locale: String!
   label: String!
-  visibility: ProspectActivityPreferenceVisibility!
+  visibility: MealPlanVisibility!
 }
 
 input UpdateProspectActivityPreferenceInput {
   id: ID!
   locale: String
   label: String
-  visibility: ProspectActivityPreferenceVisibility
+  visibility: MealPlanVisibility
 }
 
 input CreateProspectLevelInput {
   locale: String!
   label: String!
-  visibility: ProspectLevelVisibility!
+  visibility: MealPlanVisibility!
 }
 
 input UpdateProspectLevelInput {
   id: ID!
   locale: String
   label: String
-  visibility: ProspectLevelVisibility
+  visibility: MealPlanVisibility
 }
 
 input CreateProspectSourceInput {
   locale: String!
   label: String!
-  visibility: ProspectSourceVisibility!
+  visibility: MealPlanVisibility!
 }
 
 input UpdateProspectSourceInput {
   id: ID!
   locale: String
   label: String
-  visibility: ProspectSourceVisibility
+  visibility: MealPlanVisibility
 }
 
 input CreateProspectInput {
@@ -1105,6 +1104,10 @@ input UpdateProspectInput {
   desiredStartDate: DateTime
 }
 
+input ConvertProspectInput {
+  prospectId: ID!
+}
+
 input CreateExerciseInput {
   locale: String!
   label: String!
@@ -1115,7 +1118,7 @@ input CreateExerciseInput {
   charge: String
   rest: Int
   videoUrl: String
-  visibility: ExerciseVisibility!
+  visibility: MealPlanVisibility!
   categoryIds: [ID!]!
   muscleIds: [ID!]!
   equipmentIds: [ID!]
@@ -1133,7 +1136,7 @@ input UpdateExerciseInput {
   charge: String
   rest: Int
   videoUrl: String
-  visibility: ExerciseVisibility
+  visibility: MealPlanVisibility
   categoryIds: [ID!]
   muscleIds: [ID!]
   equipmentIds: [ID!]
@@ -1143,20 +1146,21 @@ input UpdateExerciseInput {
 input CreateEquipmentInput {
   locale: String!
   label: String!
-  visibility: EquipmentVisibility!
+  visibility: MealPlanVisibility!
 }
 
 input UpdateEquipmentInput {
   id: ID!
   locale: String
   label: String
+  visibility: MealPlanVisibility
 }
 
 input CreateMealTypeInput {
   locale: String!
   label: String!
   icon: String
-  visibility: MealTypeVisibility!
+  visibility: MealPlanVisibility!
 }
 
 input UpdateMealTypeInput {
@@ -1164,7 +1168,7 @@ input UpdateMealTypeInput {
   locale: String
   label: String
   icon: String
-  visibility: MealTypeVisibility
+  visibility: MealPlanVisibility
 }
 
 input CreateMealDayInput {
@@ -1172,7 +1176,7 @@ input CreateMealDayInput {
   label: String!
   description: String
   mealIds: [ID!]!
-  visibility: MealDayVisibility!
+  visibility: MealPlanVisibility!
 }
 
 input UpdateMealDayInput {
@@ -1181,7 +1185,7 @@ input UpdateMealDayInput {
   label: String
   description: String
   mealIds: [ID!]
-  visibility: MealDayVisibility
+  visibility: MealPlanVisibility
 }
 
 input CreateMealInput {
@@ -1193,7 +1197,7 @@ input CreateMealInput {
   proteinGrams: Int!
   carbGrams: Int!
   fatGrams: Int!
-  visibility: MealVisibility!
+  visibility: MealPlanVisibility!
 }
 
 input UpdateMealInput {
@@ -1206,7 +1210,7 @@ input UpdateMealInput {
   proteinGrams: Int
   carbGrams: Int
   fatGrams: Int
-  visibility: MealVisibility
+  visibility: MealPlanVisibility
 }
 
 input CreateMealPlanInput {
@@ -1251,7 +1255,7 @@ input MealPlanMealTypeInput {
   templateMealTypeId: ID
   locale: String
   label: String!
-  visibility: MealTypeVisibility
+  visibility: MealPlanVisibility
 }
 
 input UpdateMealPlanInput {
@@ -1286,4 +1290,25 @@ input UpdateCoachAthleteInput {
   endDate: DateTime
   note: String
   is_active: Boolean
+}
+
+input CreateAthleteInfoInput {
+  userId: ID!
+  levelId: ID
+  objectiveIds: [ID!]
+  activityPreferenceIds: [ID!]
+  medicalConditions: String
+  allergies: String
+  notes: String
+}
+
+input UpdateAthleteInfoInput {
+  id: ID!
+  userId: ID
+  levelId: ID
+  objectiveIds: [ID!]
+  activityPreferenceIds: [ID!]
+  medicalConditions: String
+  allergies: String
+  notes: String
 }

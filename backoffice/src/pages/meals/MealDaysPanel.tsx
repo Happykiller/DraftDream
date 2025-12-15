@@ -47,7 +47,6 @@ export function MealDaysPanel(): React.JSX.Element {
 
   const mapDialogValuesToInput = React.useCallback(
     (values: MealDayDialogValues) => ({
-      slug: values.slug,
       locale: values.locale,
       label: values.label,
       description: values.description ? values.description : undefined,

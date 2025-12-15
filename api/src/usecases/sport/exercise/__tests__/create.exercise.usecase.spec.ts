@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -36,7 +36,7 @@ describe('CreateExerciseUsecase', () => {
     series: '3',
     repetitions: '12',
     rest: 60,
-    visibility: 'public',
+    visibility: 'PUBLIC',
     categoryIds: ['category-1'],
     muscleIds: ['muscle-1'],
     equipmentIds: ['equipment-1'],
@@ -57,14 +57,14 @@ describe('CreateExerciseUsecase', () => {
     charge: 'bodyweight',
     rest: 60,
     videoUrl: 'https://cdn.local/push-up.mp4',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     categories: [
       {
         id: 'category-1',
         slug: 'cat',
         locale: 'en-us',
         label: 'Category',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -76,7 +76,7 @@ describe('CreateExerciseUsecase', () => {
         slug: 'muscle',
         locale: 'en-us',
         label: 'Muscle',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -88,7 +88,7 @@ describe('CreateExerciseUsecase', () => {
         slug: 'equipment',
         locale: 'en-us',
         label: 'Equipment',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -100,7 +100,7 @@ describe('CreateExerciseUsecase', () => {
         slug: 'tag',
         locale: 'en-us',
         label: 'Tag',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -123,7 +123,7 @@ describe('CreateExerciseUsecase', () => {
     charge: 'bodyweight',
     rest: 60,
     videoUrl: 'https://cdn.local/push-up.mp4',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     categoryIds: ['category-1'],
     muscleIds: ['muscle-1'],
     equipmentIds: ['equipment-1'],
@@ -151,7 +151,7 @@ describe('CreateExerciseUsecase', () => {
   });
 
   it('should create an exercise and map the response', async () => {
-    exerciseRepositoryMock.create.mockResolvedValue(exercise);
+    (exerciseRepositoryMock.create as any).mockResolvedValue(exercise);
 
     const result = await usecase.execute(dto);
 
@@ -163,7 +163,7 @@ describe('CreateExerciseUsecase', () => {
   });
 
   it('should return null when the repository returns null', async () => {
-    exerciseRepositoryMock.create.mockResolvedValue(null);
+    (exerciseRepositoryMock.create as any).mockResolvedValue(null);
 
     const result = await usecase.execute(dto);
 
@@ -172,7 +172,7 @@ describe('CreateExerciseUsecase', () => {
 
   it('should log and throw a domain error when creation fails', async () => {
     const failure = new Error('database failure');
-    exerciseRepositoryMock.create.mockRejectedValue(failure);
+    (exerciseRepositoryMock.create as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.CREATE_EXERCISE_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(

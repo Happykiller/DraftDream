@@ -27,7 +27,7 @@ describe('ListProspectLevelsUsecase', () => {
     id: 'level-1',
     locale: 'fr',
     label: 'Client',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'admin-1',
     createdAt: now,
     updatedAt: now,
@@ -47,7 +47,7 @@ describe('ListProspectLevelsUsecase', () => {
   });
 
   it('should list levels through the repository', async () => {
-    repositoryMock.list.mockResolvedValue({ items: [level], total: 1, page: 1, limit: 20 });
+    (repositoryMock.list as any).mockResolvedValue({ items: [level], total: 1, page: 1, limit: 20 });
 
     const result = await usecase.execute(dto);
 
@@ -65,7 +65,7 @@ describe('ListProspectLevelsUsecase', () => {
 
   it('should log and throw when repository fails', async () => {
     const failure = new Error('list failure');
-    repositoryMock.list.mockRejectedValue(failure);
+    (repositoryMock.list as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.LIST_PROSPECT_LEVELS_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(`ListProspectLevelsUsecase#execute => ${failure.message}`);

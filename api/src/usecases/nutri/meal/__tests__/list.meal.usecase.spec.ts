@@ -39,7 +39,7 @@ describe('ListMealsUsecase', () => {
       proteinGrams: 20,
       carbGrams: 50,
       fatGrams: 12,
-      visibility: 'public',
+      visibility: 'PUBLIC',
       createdBy: 'coach-2',
       createdAt: new Date('2024-05-04T00:00:00.000Z'),
       updatedAt: new Date('2024-05-05T00:00:00.000Z'),
@@ -55,7 +55,7 @@ describe('ListMealsUsecase', () => {
       proteinGrams: 50,
       carbGrams: 55,
       fatGrams: 25,
-      visibility: 'private',
+      visibility: 'PRIVATE',
       createdBy: 'coach-3',
       createdAt: new Date('2024-05-06T00:00:00.000Z'),
       updatedAt: new Date('2024-05-07T00:00:00.000Z'),
@@ -80,7 +80,7 @@ describe('ListMealsUsecase', () => {
   });
 
   it('should list meals through the repository', async () => {
-    mealRepositoryMock.list.mockResolvedValue({
+    (mealRepositoryMock.list as any).mockResolvedValue({
       items: meals,
       total: meals.length,
       page: dto.page!,
@@ -101,7 +101,7 @@ describe('ListMealsUsecase', () => {
   });
 
   it('should call the repository with default parameters when none are provided', async () => {
-    mealRepositoryMock.list.mockResolvedValue({
+    (mealRepositoryMock.list as any).mockResolvedValue({
       items: [],
       total: 0,
       page: 1,
@@ -115,7 +115,7 @@ describe('ListMealsUsecase', () => {
 
   it('should log and throw a domain error when listing fails', async () => {
     const failure = new Error('list failure');
-    mealRepositoryMock.list.mockRejectedValue(failure);
+    (mealRepositoryMock.list as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.LIST_MEALS_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(

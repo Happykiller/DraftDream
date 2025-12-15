@@ -4,6 +4,7 @@ import { Chip, IconButton, Paper, Stack, Tooltip, Typography } from '@mui/materi
 import { Add } from '@mui/icons-material';
 
 import type { BuilderCopy, SessionTemplate } from './programBuilderTypes';
+import { TextWithTooltip } from '../common/TextWithTooltip';
 
 type ProgramBuilderSessionTemplateItemProps = {
   template: SessionTemplate;
@@ -31,6 +32,11 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
     template.exercises.length,
   ]);
 
+  const visibleExercises = React.useMemo(
+    () => template.exercises.slice(0, 3),
+    [template.exercises],
+  );
+
   const handleAddClick = React.useCallback(() => {
     onAdd();
   }, [onAdd]);
@@ -43,6 +49,8 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
         borderRadius: 2,
         cursor: 'default',
         transition: 'border-color 150ms ease, background-color 150ms ease',
+        width: '100%',
+        maxWidth: '100%',
         '&:hover': {
           borderColor: theme.palette.success.main,
           boxShadow: theme.shadows[2],
@@ -51,22 +59,29 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
     >
       {/* Session template */}
       <Stack spacing={1.25}>
-        <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          justifyContent="space-between"
+          alignItems="flex-start"
+          columnGap={1}
+          rowGap={1}
+        >
           <Stack spacing={0.5} flexGrow={1} minWidth={0}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 600 }} noWrap>
-              {template.label}
-            </Typography>
+            <TextWithTooltip tooltipTitle={template.label} variant="subtitle1" sx={{ fontWeight: 600 }} />
             {template.description ? (
-              <Typography
+              <TextWithTooltip
+                tooltipTitle={template.description}
                 variant="body2"
                 color="text.secondary"
-                sx={{ whiteSpace: 'pre-wrap' }}
-              >
-                {template.description}
-              </Typography>
+                maxLines={2}
+              />
             ) : null}
           </Stack>
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack
+            direction="row"
+            spacing={1}
+            alignItems="center"
+          >
             <Chip
               label={`${template.duration} ${builderCopy.structure.duration_unit}`}
               size="small"
@@ -89,7 +104,7 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
         </Stack>
 
         {/* Session tags */}
-        <Stack direction="row" spacing={0.5} flexWrap="wrap">
+        <Stack direction="row" spacing={0.5} flexWrap="wrap" sx={{ width: '100%' }}>
           {template.tags.map((tag) => (
             <Chip key={tag} label={tag} size="small" variant="outlined" />
           ))}
@@ -101,15 +116,25 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
           </Typography>
         ) : (
           /* Exercise chips */
-          <Stack direction="row" spacing={0.5} flexWrap="wrap">
-            {template.exercises.map((exercise) => (
-              <Chip
-                key={`${template.id}-${exercise.exerciseId}`}
-                label={exercise.label}
-                size="small"
-                variant="outlined"
-              />
-            ))}
+          <Stack spacing={0.5} sx={{ width: '100%' }}>
+            <Stack direction="row" spacing={0.5} flexWrap="wrap">
+              {visibleExercises.map((exercise) => (
+                <Chip
+                  key={`${template.id}-${exercise.exerciseId}`}
+                  label={exercise.label}
+                  size="small"
+                  variant="outlined"
+                />
+              ))}
+              {template.exercises.length > 3 ? (
+                <Chip
+                  label={`+${template.exercises.length - 3}`}
+                  size="small"
+                  variant="outlined"
+                  sx={{ borderColor: theme.palette.divider }}
+                />
+              ) : null}
+            </Stack>
           </Stack>
         )}
       </Stack>

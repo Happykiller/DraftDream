@@ -289,6 +289,7 @@ export interface UseMealPlansParams {
   q: string;
   createdBy?: string;
   userId?: string;
+  enabled?: boolean;
 }
 
 export interface MealPlanCreateInput {
@@ -328,6 +329,7 @@ export function useMealPlans({
   q,
   createdBy,
   userId,
+  enabled = true,
 }: UseMealPlansParams): UseMealPlansResult {
   const { t, i18n } = useTranslation();
   const [items, setItems] = React.useState<MealPlan[]>([]);
@@ -339,6 +341,10 @@ export function useMealPlans({
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
 
   const load = React.useCallback(async () => {
+    if (!enabled) {
+      return;
+    }
+
     setLoading(true);
     try {
       await execute(async () => {
@@ -373,11 +379,18 @@ export function useMealPlans({
     } finally {
       setLoading(false);
     }
-  }, [createdBy, execute, flashError, gql, limit, page, q, t, userId]);
+  }, [createdBy, enabled, execute, flashError, gql, limit, page, q, t, userId]);
 
   React.useEffect(() => {
+    if (!enabled) {
+      setItems([]);
+      setTotal(0);
+      setLoading(false);
+      return;
+    }
+
     void load();
-  }, [load]);
+  }, [enabled, load]);
 
   const create = React.useCallback<UseMealPlansResult['create']>(
     async (input) => {

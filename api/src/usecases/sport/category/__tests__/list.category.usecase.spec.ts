@@ -32,7 +32,7 @@ describe('ListCategoriesUsecase', () => {
       slug: 'strength',
       locale: 'en-US',
       label: 'Strength',
-      visibility: 'public',
+      visibility: 'PUBLIC',
       createdBy: 'coach-1',
       createdAt: new Date('2024-01-01T00:00:00.000Z'),
       updatedAt: new Date('2024-01-10T00:00:00.000Z'),
@@ -42,7 +42,7 @@ describe('ListCategoriesUsecase', () => {
       slug: 'endurance',
       locale: 'en-US',
       label: 'Endurance',
-      visibility: 'private',
+      visibility: 'PRIVATE',
       createdBy: 'coach-2',
       createdAt: new Date('2024-02-01T00:00:00.000Z'),
       updatedAt: new Date('2024-02-10T00:00:00.000Z'),
@@ -68,7 +68,7 @@ describe('ListCategoriesUsecase', () => {
   });
 
   it('should list categories through the repository', async () => {
-    categoryRepositoryMock.list.mockResolvedValue({
+    (categoryRepositoryMock.list as any).mockResolvedValue({
       items: categories,
       total: categories.length,
       page: dto.page!,
@@ -89,7 +89,7 @@ describe('ListCategoriesUsecase', () => {
   });
 
   it('should call the repository with default parameters when none are provided', async () => {
-    categoryRepositoryMock.list.mockResolvedValue({
+    (categoryRepositoryMock.list as any).mockResolvedValue({
       items: [],
       total: 0,
       page: 1,
@@ -103,7 +103,7 @@ describe('ListCategoriesUsecase', () => {
 
   it('should log and throw a domain error when listing fails', async () => {
     const failure = new Error('list failure');
-    categoryRepositoryMock.list.mockRejectedValue(failure);
+    (categoryRepositoryMock.list as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.LIST_CATEGORIES_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(

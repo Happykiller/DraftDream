@@ -55,7 +55,7 @@ export function mapMealPlanUsecaseToGql(model: MealPlanUsecaseModel): MealPlanGq
     locale: model.locale,
     label: model.label,
     description: model.description ?? null,
-    visibility: model.visibility === 'public' ? MealPlanVisibility.PUBLIC : MealPlanVisibility.PRIVATE,
+    visibility: model.visibility === 'PUBLIC' ? MealPlanVisibility.PUBLIC : MealPlanVisibility.PRIVATE,
     calories: model.calories,
     proteinGrams: model.proteinGrams,
     carbGrams: model.carbGrams,
@@ -76,5 +76,5 @@ function normalizeVisibility(
   if (!visibility) {
     return null;
   }
-  return visibility === 'public' ? MealTypeVisibility.PUBLIC : MealTypeVisibility.PRIVATE;
+  return visibility === 'PUBLIC' ? MealTypeVisibility.PUBLIC : MealTypeVisibility.PRIVATE;
 }

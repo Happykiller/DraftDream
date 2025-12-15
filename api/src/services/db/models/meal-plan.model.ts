@@ -6,7 +6,7 @@ export interface MealPlanMealTypeSnapshot {
   slug?: string;
   locale?: string;
   label: string;
-  visibility?: 'private' | 'public';
+  visibility?: 'PRIVATE' | 'PUBLIC';
 }
 
 export interface MealPlanMealSnapshot {
@@ -40,7 +40,7 @@ export interface MealPlan {
   locale: string;
   label: string;
   description?: string;
-  visibility: 'private' | 'public';
+  visibility: 'PRIVATE' | 'PUBLIC';
   calories: number;
   proteinGrams: number;
   carbGrams: number;

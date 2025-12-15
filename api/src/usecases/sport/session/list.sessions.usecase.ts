@@ -47,10 +47,26 @@ export class ListSessionsUsecase {
             limit: res.limit,
           };
         }
+        const adminIds: string[] = [];
+        let page = 1;
+        let hasMore = true;
+
+        while (hasMore) {
+          const admins = await this.inversify.bddService.user.listUsers({
+            type: 'admin',
+            limit: 50,
+            page,
+          });
+          adminIds.push(...admins.items.map((u) => u.id));
+          hasMore = admins.items.length === 50; // Assuming if full page, maybe more
+          // Or better: hasMore = (page * 50) < admins.total;
+          if (admins.items.length < 50) hasMore = false;
+          page++;
+        }
 
         const res = await this.inversify.bddService.session.list({
           ...rest,
-          createdByIn: [session.userId],
+          createdByIn: [session.userId, ...adminIds],
           includePublicVisibility: true,
         });
         return {

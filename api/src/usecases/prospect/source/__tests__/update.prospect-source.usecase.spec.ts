@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest, afterEach } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -32,7 +32,7 @@ describe('UpdateProspectSourceUsecase', () => {
     id,
     locale: 'fr',
     label: 'New Label',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'admin-1',
     createdAt: now,
     updatedAt: now,
@@ -57,7 +57,7 @@ describe('UpdateProspectSourceUsecase', () => {
 
   it('should update a prospect source', async () => {
     const buildSlugSpy = jest.spyOn(slugUtil, 'buildSlug').mockReturnValue('new-label');
-    repositoryMock.update.mockResolvedValue(source);
+    (repositoryMock.update as any).mockResolvedValue(source);
 
     const result = await usecase.execute({ ...dto, id });
 
@@ -75,7 +75,7 @@ describe('UpdateProspectSourceUsecase', () => {
   });
 
   it('should return null when repository update returns null', async () => {
-    repositoryMock.update.mockResolvedValue(null);
+    (repositoryMock.update as any).mockResolvedValue(null);
 
     const result = await usecase.execute({ ...dto, id });
 
@@ -84,7 +84,7 @@ describe('UpdateProspectSourceUsecase', () => {
 
   it('should log and throw when repository fails', async () => {
     const failure = new Error('update failure');
-    repositoryMock.update.mockRejectedValue(failure);
+    (repositoryMock.update as any).mockRejectedValue(failure);
 
     await expect(usecase.execute({ ...dto, id })).rejects.toThrow(ERRORS.UPDATE_PROSPECT_SOURCE_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(`UpdateProspectSourceUsecase#execute => ${failure.message}`);

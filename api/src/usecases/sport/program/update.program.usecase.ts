@@ -14,13 +14,13 @@ export class UpdateProgramUsecase {
     try {
       const toUpdate: UpdateProgramUsecaseDto & { slug?: string } = { ...dto };
       if (dto.label) {
-        toUpdate.slug = buildSlug({ label: dto.label, fallback: 'program' });
+        toUpdate.slug = buildSlug({ label: dto.label, fallback: 'program', locale: dto.locale });
       }
       if (dto.sessions) {
         toUpdate.sessions = dto.sessions.map((session) => {
           return {
             ...session,
-            slug: buildSlug({ label: session.label, fallback: 'session' }),
+            slug: buildSlug({ label: session.label, fallback: 'session', locale: session.locale ?? dto.locale }),
           };
         });
       }

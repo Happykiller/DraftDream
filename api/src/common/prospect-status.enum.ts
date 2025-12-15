@@ -1,15 +1,15 @@
 // src/common/prospect-status.enum.ts
 // Centralized prospect status values to ensure consistent usage across layers.
 export enum ProspectStatus {
-  LEAD = 'lead',
-  CONTACTE = 'contacté',
-  RDV_PLANIFIE = 'rdv planifié',
-  PROPOSITION = 'proposition',
-  NEGOCIATION = 'négociation',
-  GAGNE = 'gagné',
-  PERDUS = 'perdus',
-  A_FAIRE = 'à faire',
-  CLIENT = 'client',
+  LEAD = 'LEAD',
+  CONTACTED = 'CONTACTED',
+  MEETING_SCHEDULED = 'MEETING_SCHEDULED',
+  OFFER = 'OFFER',
+  NEGOTIATION = 'NEGOTIATION',
+  WON = 'WON',
+  LOST = 'LOST',
+  TODO = 'TODO',
+  CLIENT = 'CLIENT',
 }
 
 export type ProspectStatusValue = `${ProspectStatus}`;

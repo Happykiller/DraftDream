@@ -279,8 +279,94 @@
         "end_date": "Fin : {{date}}",
         "no_end_date": "Pas de date de fin",
         "no_note": "Aucune note enregistrée",
+        "actions": {
+          "view": "Voir l'athlète"
+        },
         "status_active": "Lien actif",
         "status_inactive": "Lien inactif"
+      }
+    },
+    "details": {
+      "title": "Lien coach-athlète",
+      "helper": "Consultez toutes les informations pour votre athlète.",
+      "summary_title": "Résumé du lien",
+      "client_sheet_title": "Fiche client",
+      "notes_title": "Notes",
+      "loading": "Chargement du lien athlète...",
+      "athlete_info": {
+        "load_failed": "Impossible de charger les informations de l'athlète"
+      },
+      "objectives": {
+        "title": "Objectifs",
+        "empty": "Aucun objectif renseigné",
+        "load_failed": "Impossible de charger les objectifs de l'athlète"
+      },
+      "activity_preferences": {
+        "title": "Préférences d'activité",
+        "empty": "Aucune préférence renseignée",
+        "load_failed": "Impossible de charger les préférences de l'athlète"
+      },
+      "programs": {
+        "empty_state": {
+          "title": "Aucun programme assigné",
+          "description": "Associez un programme d'entraînement à cet athlète pour suivre ses progrès.",
+          "helper": "Utilisez la section programmes pour construire et attribuer des séances adaptées."
+        },
+        "search_placeholder": "Rechercher dans les programmes de cet athlète...",
+        "search_aria_label": "Rechercher les programmes assignés à cet athlète",
+        "result_count": "{{count}} / {{total}} programme(s)"
+      },
+      "nutritions": {
+        "empty_state": {
+          "title": "Aucun plan nutritionnel",
+          "description": "Ajoutez un plan nutritionnel pour centraliser le suivi de cet athlète.",
+          "helper": "Utilisez la section nutrition pour construire et partager vos plans alimentaires."
+        },
+        "search_placeholder": "Rechercher un plan nutritionnel de l'athlète...",
+        "search_aria_label": "Rechercher les plans nutritionnels assignés à cet athlète",
+        "result_count": "{{count}} / {{total}} plan(s)",
+        "day_count": "{{count}} jour",
+        "day_count_one": "{{count}} jour",
+        "day_count_other": "{{count}} jours",
+        "macros": {
+          "calories": "Calories",
+          "protein": "Protéines",
+          "carbs": "Glucides",
+          "fats": "Lipides"
+        }
+      },
+      "tabs": {
+        "overview": "Vue d'ensemble",
+        "programs": "Programmes",
+        "nutritions": "Nutritions",
+        "programs_helper": "Associez vos programmes d'entraînement à cet athlète pour suivre sa progression.",
+        "nutritions_helper": "Reliez les plans nutritionnels à cet athlète pour centraliser son suivi alimentaire."
+      },
+      "fields": {
+        "start_date": "Début : {{date}}",
+        "end_date": "Fin : {{date}}",
+        "no_start_date": "Date de début non renseignée",
+        "no_end_date": "Pas de date de fin",
+        "first_name": "Prénom",
+        "last_name": "Nom",
+        "email": "Email",
+        "phone": "Téléphone",
+        "no_first_name": "Prénom non renseigné",
+        "no_last_name": "Nom non renseigné",
+        "no_email": "Email non renseigné",
+        "no_phone": "Téléphone non renseigné",
+        "no_note": "Aucune note enregistrée"
+      },
+      "status": {
+        "active": "Lien actif",
+        "inactive": "Lien inactif"
+      },
+      "actions": {
+        "back_to_list": "Retourner vers la liste"
+      },
+      "errors": {
+        "not_found": "Lien coach-athlète introuvable.",
+        "load_failed": "Impossible de charger ce lien coach-athlète."
       }
     },
     "notifications": {
@@ -353,6 +439,9 @@
       "templates_subtitle": "Choisissez une séance dans la liste ou cliquez pour l'ajouter.",
       "templates_limit_hint": "Affichage des 10 sessions maximum triés par ordre alphabétique.",
       "templates_refresh_label": "Recharger les séances",
+      "templates_result_count": "{{count}}/{{total}} séance",
+      "templates_result_count_one": "{{count}}/{{total}} séance",
+      "templates_result_count_other": "{{count}}/{{total}} séances",
       "structure": {
         "title": "Nom du programme",
         "header_description": "Ajouter une description à votre programme.",
@@ -374,6 +463,9 @@
       "library": {
         "title": "Bibliotheque d'exercices",
         "search_placeholder": "Rechercher un exercice...",
+        "result_count": "{{count}}/{{total}} exercice",
+        "result_count_one": "{{count}}/{{total}} exercice",
+        "result_count_other": "{{count}}/{{total}} exercices",
         "primary_filter_label": "Categorie",
         "primary_filter_all": "Toutes categories",
         "secondary_filter_label": "Type",
@@ -491,6 +583,9 @@
     "list": {
       "search_placeholder": "Rechercher des programmes...",
       "search_aria_label": "Rechercher des programmes",
+      "result_count": "{{count}}/{{total}} résultats",
+      "result_count_one": "{{count}}/{{total}} résultat",
+      "result_count_other": "{{count}}/{{total}} résultats",
       "created_by": "Créé par {{name}}",
       "created_by_unknown": "Coach inconnu",
       "no_description": "Aucune description fournie.",
@@ -694,7 +789,10 @@
     },
     "list": {
       "search_placeholder": "Rechercher un programme...",
-      "search_aria_label": "Rechercher un programme"
+      "search_aria_label": "Rechercher un programme",
+      "result_count": "{{count}}/{{total}} résultats",
+      "result_count_one": "{{count}}/{{total}} résultat",
+      "result_count_other": "{{count}}/{{total}} résultats"
     },
     "errors": {
       "not_found": "Ce programme n'est plus disponible.",
@@ -760,6 +858,7 @@
         "total_meals_one": "{{count}} repas au total",
         "total_meals_other": "{{count}} repas au total",
         "nutrition_title": "Résumé nutritionnel",
+        "average_title": "Moyenne / jour",
         "calories_label": "Calories",
         "calories_unit": "kcal",
         "protein_label": "Protéines",
@@ -782,6 +881,9 @@
         "title": "Bibliothèque de journées",
         "subtitle": "Sélectionnez une journée type ou ajoutez-la au plan.",
         "search_placeholder": "Rechercher une journée...",
+        "result_count": "{{count}}/{{total}} journées",
+        "result_count_one": "{{count}}/{{total}} journée",
+        "result_count_other": "{{count}}/{{total}} journées",
         "empty_state": "Aucune journée ne correspond à vos filtres.",
         "add_label": "Ajouter au plan",
         "limit_hint": "Affichage des 10 journées maximum triées par ordre alphabétique.",
@@ -791,6 +893,9 @@
         "title": "Bibliothèque de repas",
         "subtitle": "Ajoutez des repas aux journées du plan en choisissant la cible.",
         "search_placeholder": "Rechercher un repas...",
+        "result_count": "{{count}}/{{total}} repas",
+        "result_count_one": "{{count}}/{{total}} repas",
+        "result_count_other": "{{count}}/{{total}} repas",
         "empty_state": "Aucun repas ne correspond à vos filtres.",
         "add_label": "Ajouter au jour",
         "create_label": "Nouveau repas",
@@ -851,6 +956,9 @@
     "list": {
       "search_placeholder": "Rechercher un plan nutritionnel...",
       "search_aria_label": "Rechercher un plan nutritionnel",
+      "result_count": "{{count}}/{{total}} résultats",
+      "result_count_one": "{{count}}/{{total}} résultat",
+      "result_count_other": "{{count}}/{{total}} résultats",
       "day_count": "{{count}} jour",
       "day_count_one": "{{count}} jour",
       "day_count_other": "{{count}} jours",
@@ -939,6 +1047,9 @@
     "list": {
       "search_placeholder": "Rechercher un plan nutritionnel...",
       "search_aria_label": "Rechercher un plan nutritionnel",
+      "result_count": "{{count}}/{{total}} résultats",
+      "result_count_one": "{{count}}/{{total}} résultat",
+      "result_count_other": "{{count}}/{{total}} résultats",
       "day_count": "{{count}} jour",
       "day_count_one": "{{count}} jour",
       "day_count_other": "{{count}} jours"

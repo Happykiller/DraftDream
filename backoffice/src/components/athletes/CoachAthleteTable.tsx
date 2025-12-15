@@ -2,7 +2,7 @@
 import * as React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { DataGrid, type GridColDef } from '@mui/x-data-grid';
+import { DataGrid, type GridColDef, type GridRenderCellParams } from '@mui/x-data-grid';
 import {
   Autocomplete,
   Box,
@@ -14,11 +14,13 @@ import {
   Switch,
   TextField,
   Tooltip,
+  useMediaQuery,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
 import type { CoachAthlete } from '@hooks/useCoachAthletes';
-import { useDateFormatter } from '@hooks/useDateFormatter';
+import { useDateFormatter } from '@src/hooks/useDateFormatter';
 
 import type { CoachAthleteUserOption } from './CoachAthleteDialog';
 
@@ -81,6 +83,9 @@ export function CoachAthleteTable(props: CoachAthleteTableProps): React.JSX.Elem
   } = props;
   const { t } = useTranslation();
   const fmtDate = useDateFormatter();
+  const theme = useTheme();
+  // Responsive: Hide columns on smaller screens
+  const isXl = useMediaQuery(theme.breakpoints.up('xl'));
 
   const columns = React.useMemo<GridColDef<CoachAthlete>[]>(
     () => [
@@ -128,18 +133,28 @@ export function CoachAthleteTable(props: CoachAthleteTableProps): React.JSX.Elem
         minWidth: 200,
         renderCell: (params) => params.value || t('athletes.table.no_note'),
       },
-      {
-        field: 'updatedAt',
-        headerName: t('athletes.table.columns.updated_at'),
-        minWidth: 160,
-        renderCell: (params) => fmtDate(params.value as string),
-      },
-      {
-        field: 'deletedAt',
-        headerName: t('athletes.table.columns.deleted_at'),
-        minWidth: 160,
-        renderCell: (params) => (params.value ? fmtDate(params.value as string) : t('common.messages.no_value')),
-      },
+      ...(isXl
+        ? [
+          {
+            field: 'createdAt',
+            headerName: t('common.labels.created'),
+            minWidth: 160,
+            renderCell: (params: GridRenderCellParams) => fmtDate(params.value as string),
+          },
+          {
+            field: 'updatedAt',
+            headerName: t('athletes.table.columns.updated_at'),
+            minWidth: 160,
+            renderCell: (params: GridRenderCellParams) => fmtDate(params.value as string),
+          },
+          {
+            field: 'deletedAt',
+            headerName: t('athletes.table.columns.deleted_at'),
+            minWidth: 160,
+            renderCell: (params: GridRenderCellParams) => (params.value ? fmtDate(params.value as string) : t('common.messages.no_value')),
+          },
+        ]
+        : []),
       {
         field: 'actions',
         headerName: t('common.labels.actions'),
@@ -162,7 +177,7 @@ export function CoachAthleteTable(props: CoachAthleteTableProps): React.JSX.Elem
         ),
       },
     ],
-    [fmtDate, onDelete, onEdit, t],
+    [fmtDate, onDelete, onEdit, t, isXl],
   );
 
   return (

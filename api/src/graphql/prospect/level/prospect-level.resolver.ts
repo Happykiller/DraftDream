@@ -60,8 +60,8 @@ export class ProspectLevelResolver {
       input?.visibility === undefined
         ? undefined
         : input.visibility === ProspectLevelVisibility.PUBLIC
-          ? 'public'
-          : 'private';
+          ? 'PUBLIC'
+          : 'PRIVATE';
     const res = await inversify.listClientLevelsUsecase.execute({
       q: input?.q,
       locale: input?.locale,
@@ -91,8 +91,8 @@ export class ProspectLevelResolver {
         input.visibility === undefined
           ? undefined
           : input.visibility === ProspectLevelVisibility.PUBLIC
-            ? 'public'
-            : 'private',
+            ? 'PUBLIC'
+            : 'PRIVATE',
     });
     return updated ? mapProspectLevelUsecaseToGql(updated) : null;
   }

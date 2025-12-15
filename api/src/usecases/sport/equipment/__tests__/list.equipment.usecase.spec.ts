@@ -26,7 +26,7 @@ describe('ListEquipmentUsecase', () => {
     slug: 'kettlebell',
     locale: 'en-us',
     label: 'Kettlebell',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'coach-4',
     createdAt: now,
     updatedAt: now,
@@ -54,7 +54,7 @@ describe('ListEquipmentUsecase', () => {
       q: 'bell',
       locale: 'en-US',
       createdBy: 'coach-4',
-      visibility: 'public',
+      visibility: 'PUBLIC',
       limit: 10,
       page: 2,
       sort: { updatedAt: -1 },
@@ -67,7 +67,7 @@ describe('ListEquipmentUsecase', () => {
       limit: 10,
     };
 
-    equipmentRepositoryMock.listEquipments.mockResolvedValue(repositoryResult);
+    (equipmentRepositoryMock.listEquipments as any).mockResolvedValue(repositoryResult);
 
     const result = await usecase.execute(dto);
 
@@ -84,7 +84,7 @@ describe('ListEquipmentUsecase', () => {
       limit: 20,
     };
 
-    equipmentRepositoryMock.listEquipments.mockResolvedValue(repositoryResult);
+    (equipmentRepositoryMock.listEquipments as any).mockResolvedValue(repositoryResult);
 
     const result = await usecase.execute();
 
@@ -94,7 +94,7 @@ describe('ListEquipmentUsecase', () => {
 
   it('should log and throw a domain error when repository list fails', async () => {
     const failure = new Error('list failure');
-    equipmentRepositoryMock.listEquipments.mockRejectedValue(failure);
+    (equipmentRepositoryMock.listEquipments as any).mockRejectedValue(failure);
 
     await expect(usecase.execute()).rejects.toThrow(ERRORS.LIST_EQUIPMENT_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(`ListEquipmentUsecase#execute => ${failure.message}`);

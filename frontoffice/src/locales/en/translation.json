@@ -225,10 +225,10 @@
           "title": "Lead",
           "description": "New contact to qualify before proposing a meeting."
         },
-          "contact": {
-            "title": "Contacted",
-            "description": "Initial exchange completed to validate interest and needs."
-          },
+        "contact": {
+          "title": "Contacted",
+          "description": "Initial exchange completed to validate interest and needs."
+        },
         "meeting": {
           "title": "Meeting scheduled",
           "description": "A meeting is booked; prepare the session and materials."
@@ -259,7 +259,7 @@
         }
       }
     }
-    },
+  },
   "athletes": {
     "title": "Athletes",
     "subtitle": "Manage your athletes",
@@ -277,8 +277,94 @@
         "end_date": "End: {{date}}",
         "no_end_date": "No end date",
         "no_note": "No note provided",
+        "actions": {
+          "view": "View athlete"
+        },
         "status_active": "Active link",
         "status_inactive": "Inactive link"
+      }
+    },
+    "details": {
+      "title": "Athlete link",
+      "helper": "Review every piece of information for your athlete.",
+      "summary_title": "Link summary",
+      "client_sheet_title": "Client sheet",
+      "notes_title": "Notes",
+      "loading": "Loading athlete link...",
+      "athlete_info": {
+        "load_failed": "Unable to load the athlete's information"
+      },
+      "objectives": {
+        "title": "Objectives",
+        "empty": "No objectives provided",
+        "load_failed": "Unable to load the athlete's objectives"
+      },
+      "activity_preferences": {
+        "title": "Activity preferences",
+        "empty": "No activity preferences provided",
+        "load_failed": "Unable to load the athlete's preferences"
+      },
+      "programs": {
+        "empty_state": {
+          "title": "No programs assigned yet",
+          "description": "Attach a training plan to this athlete to start tracking progress.",
+          "helper": "Use the programs section to build and assign tailored workouts."
+        },
+        "search_placeholder": "Search this athlete's programs...",
+        "search_aria_label": "Search programs assigned to this athlete",
+        "result_count": "{{count}} / {{total}} program(s)"
+      },
+      "nutritions": {
+        "empty_state": {
+          "title": "No nutrition plan assigned yet",
+          "description": "Add a nutrition plan for this athlete to centralize follow-up.",
+          "helper": "Use the nutrition section to build and share dietary guidance."
+        },
+        "search_placeholder": "Search this athlete's nutrition plans...",
+        "search_aria_label": "Search nutrition plans assigned to this athlete",
+        "result_count": "{{count}} / {{total}} plan(s)",
+        "day_count": "{{count}} day",
+        "day_count_one": "{{count}} day",
+        "day_count_other": "{{count}} days",
+        "macros": {
+          "calories": "Calories",
+          "protein": "Protein",
+          "carbs": "Carbs",
+          "fats": "Fats"
+        }
+      },
+      "tabs": {
+        "overview": "Overview",
+        "programs": "Programs",
+        "nutritions": "Nutritions",
+        "programs_helper": "Attach training programs to this athlete to track their progress.",
+        "nutritions_helper": "Link nutrition plans to centralize the athlete's dietary follow-up."
+      },
+      "fields": {
+        "start_date": "Start: {{date}}",
+        "end_date": "End: {{date}}",
+        "no_start_date": "No start date provided",
+        "no_end_date": "No end date",
+        "first_name": "First name",
+        "last_name": "Last name",
+        "email": "Email",
+        "phone": "Phone",
+        "no_first_name": "First name not provided",
+        "no_last_name": "Last name not provided",
+        "no_email": "Email not provided",
+        "no_phone": "Phone not provided",
+        "no_note": "No note provided"
+      },
+      "status": {
+        "active": "Active link",
+        "inactive": "Inactive link"
+      },
+      "actions": {
+        "back_to_list": "Return to list"
+      },
+      "errors": {
+        "not_found": "The athlete link could not be found.",
+        "load_failed": "Unable to load this athlete link."
       }
     },
     "notifications": {
@@ -318,9 +404,6 @@
       "empty": "No session data available"
     }
   },
-  "programs-athlete": {
-    "title": "My programs"
-  },
   "programs-coatch": {
     "title": "Programs",
     "subtitle": "Build training programs tailored to each athlete.",
@@ -352,6 +435,9 @@
       "templates_subtitle": "Choose a template from the list or click to add it.",
       "templates_limit_hint": "Showing up to 10 sessions sorted alphabetically.",
       "templates_refresh_label": "Reload sessions",
+      "templates_result_count": "{{count}}/{{total}} session",
+      "templates_result_count_one": "{{count}}/{{total}} session",
+      "templates_result_count_other": "{{count}}/{{total}} sessions",
       "structure": {
         "title": "Program name",
         "header_description": "Adjust the outline of your draft program.",
@@ -373,6 +459,9 @@
       "library": {
         "title": "Exercise library",
         "search_placeholder": "Search an exercise...",
+        "result_count": "{{count}}/{{total}} exercise",
+        "result_count_one": "{{count}}/{{total}} exercise",
+        "result_count_other": "{{count}}/{{total}} exercises",
         "primary_filter_label": "Category",
         "primary_filter_all": "All categories",
         "secondary_filter_label": "Type",
@@ -490,6 +579,9 @@
     "list": {
       "search_placeholder": "Search programs...",
       "search_aria_label": "Search programs",
+      "result_count": "{{count}}/{{total}} results",
+      "result_count_one": "{{count}}/{{total}} result",
+      "result_count_other": "{{count}}/{{total}} results",
       "created_by": "Created by {{name}}",
       "created_by_unknown": "Unknown coach",
       "no_description": "No description provided.",
@@ -693,7 +785,10 @@
     },
     "list": {
       "search_placeholder": "Search programs...",
-      "search_aria_label": "Search programs"
+      "search_aria_label": "Search programs",
+      "result_count": "{{count}}/{{total}} results",
+      "result_count_one": "{{count}}/{{total}} result",
+      "result_count_other": "{{count}}/{{total}} results"
     },
     "errors": {
       "not_found": "This program is no longer available.",
@@ -759,6 +854,7 @@
         "total_meals_one": "{{count}} meal in total",
         "total_meals_other": "{{count}} meals in total",
         "nutrition_title": "Nutrition summary",
+        "average_title": "Average / day",
         "calories_label": "Calories",
         "calories_unit": "kcal",
         "protein_label": "Protein",
@@ -781,6 +877,9 @@
         "title": "Meal day library",
         "subtitle": "Pick a template day or add it to the plan.",
         "search_placeholder": "Search meal days...",
+        "result_count": "{{count}}/{{total}} days",
+        "result_count_one": "{{count}}/{{total}} day",
+        "result_count_other": "{{count}}/{{total}} days",
         "empty_state": "No meal day matches your filters.",
         "add_label": "Add day to plan",
         "limit_hint": "Showing up to 10 meal days sorted alphabetically.",
@@ -790,6 +889,9 @@
         "title": "Meal library",
         "subtitle": "Add meals to your plan days by choosing the target day.",
         "search_placeholder": "Search meals...",
+        "result_count": "{{count}}/{{total}} meals",
+        "result_count_one": "{{count}}/{{total}} meal",
+        "result_count_other": "{{count}}/{{total}} meals",
         "empty_state": "No meal matches your filters.",
         "add_label": "Add to day",
         "create_label": "New meal",
@@ -850,6 +952,9 @@
     "list": {
       "search_placeholder": "Search nutrition plans...",
       "search_aria_label": "Search nutrition plans",
+      "result_count": "{{count}}/{{total}} results",
+      "result_count_one": "{{count}}/{{total}} result",
+      "result_count_other": "{{count}}/{{total}} results",
       "day_count": "{{count}} day",
       "day_count_one": "{{count}} day",
       "day_count_other": "{{count}} days",
@@ -938,6 +1043,9 @@
     "list": {
       "search_placeholder": "Search nutrition plans...",
       "search_aria_label": "Search nutrition plans",
+      "result_count": "{{count}}/{{total}} results",
+      "result_count_one": "{{count}}/{{total}} result",
+      "result_count_other": "{{count}}/{{total}} results",
       "day_count": "{{count}} day",
       "day_count_one": "{{count}} day",
       "day_count_other": "{{count}} days"

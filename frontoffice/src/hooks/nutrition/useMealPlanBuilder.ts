@@ -48,8 +48,10 @@ export interface UseMealPlanBuilderResult {
   mealSearch: string;
   setMealSearch: React.Dispatch<React.SetStateAction<string>>;
   dayLibrary: MealDay[];
+  dayLibraryTotal: number;
   dayLibraryLoading: boolean;
   mealLibrary: Meal[];
+  mealLibraryTotal: number;
   mealLibraryLoading: boolean;
   mealTypes: MealType[];
   mealTypesLoading: boolean;
@@ -292,6 +294,7 @@ export function useMealPlanBuilder(
 
   const {
     items: mealDays,
+    total: dayLibraryTotal,
     loading: dayLibraryLoading,
     reload: reloadMealDays,
   } = useMealDays({
@@ -303,6 +306,7 @@ export function useMealPlanBuilder(
 
   const {
     items: meals,
+    total: mealLibraryTotal,
     loading: mealLibraryLoading,
     reload: reloadMeals,
     create: createMeal,
@@ -706,8 +710,10 @@ export function useMealPlanBuilder(
     mealSearch,
     setMealSearch,
     dayLibrary: mealDays,
+    dayLibraryTotal,
     dayLibraryLoading,
     mealLibrary: meals,
+    mealLibraryTotal,
     mealLibraryLoading,
     mealTypes: filteredMealTypes,
     mealTypesLoading,

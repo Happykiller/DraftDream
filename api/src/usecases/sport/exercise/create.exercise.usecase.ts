@@ -12,7 +12,7 @@ export class CreateExerciseUsecase {
 
   async execute(dto: CreateExerciseUsecaseDto): Promise<ExerciseUsecaseModel | null> {
     try {
-      const slug = buildSlug({ label: dto.label, fallback: 'exercise' });
+      const slug = buildSlug({ label: dto.label, fallback: 'exercise', locale: dto.locale });
       const created = await this.inversify.bddService.exercise.create({
         ...dto,
         slug,

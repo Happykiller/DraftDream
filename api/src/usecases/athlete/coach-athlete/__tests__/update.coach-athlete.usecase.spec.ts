@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -54,7 +54,7 @@ describe('UpdateCoachAthleteUsecase', () => {
     });
 
     it('should update a coach-athlete link', async () => {
-        coachAthleteRepositoryMock.update.mockResolvedValue(updatedLink);
+        (coachAthleteRepositoryMock.update as any).mockResolvedValue(updatedLink);
 
         const result = await usecase.execute(dto);
 
@@ -65,7 +65,7 @@ describe('UpdateCoachAthleteUsecase', () => {
     });
 
     it('should return null if update fails (returns null)', async () => {
-        coachAthleteRepositoryMock.update.mockResolvedValue(null);
+        (coachAthleteRepositoryMock.update as any).mockResolvedValue(null);
 
         const result = await usecase.execute(dto);
 
@@ -74,7 +74,7 @@ describe('UpdateCoachAthleteUsecase', () => {
 
     it('should log and throw error when repository throws', async () => {
         const error = new Error('DB Error');
-        coachAthleteRepositoryMock.update.mockRejectedValue(error);
+        (coachAthleteRepositoryMock.update as any).mockRejectedValue(error);
 
         await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.UPDATE_COACH_ATHLETE_USECASE);
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining(error.message));

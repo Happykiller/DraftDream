@@ -20,6 +20,7 @@
       "delete": "Delete",
       "save": "Save",
       "create": "Create",
+      "add": "Add",
       "edit": "Edit",
       "new": "New",
       "success": "Success",
@@ -33,6 +34,7 @@
     },
     "labels": {
       "label": "Label",
+      "id": "ID",
       "name": "Name",
       "slug": "Slug",
       "locale": "Locale",
@@ -80,6 +82,8 @@
       "category": "Category",
       "equipment_optional": "Equipment (optional)",
       "tags_optional": "Tags (optional)",
+      "up": "Up",
+      "down": "Down",
       "meals": "Meals",
       "foods": "Foods",
       "calories": "Calories",
@@ -362,7 +366,9 @@
         "create_title": "New meal day",
         "edit_title": "Edit meal day",
         "add_meal": "Add meal",
+        "meal_placeholder": "Select a meal to add",
         "refresh_meals": "Refresh meals",
+        "empty_meals": "No meals selected yet.",
         "empty_list": "No meals selected yet.",
         "search_placeholder": "Search meals..."
       },
@@ -433,9 +439,16 @@
       "search_placeholder": "Search users...",
       "new_button": "New User"
     },
+    "filter": {
+      "all": "All"
+    },
     "dialog": {
       "create_title": "New User",
       "edit_title": "Edit User"
+    },
+    "confirm": {
+      "delete_title": "Delete User",
+      "delete_message": "Are you sure you want to delete this user? This action cannot be undone."
     },
     "types": {
       "coach": "Coach",
@@ -475,6 +488,9 @@
       },
       "confirm": {
         "delete_title": "Delete prospect"
+      },
+      "actions": {
+        "convert": "Convert to athlete"
       }
     },
     "objectives": {
@@ -514,13 +530,13 @@
       },
       "values": {
         "lead": "Lead",
-        "contacte": "Contacted",
-        "rdv_planifie": "Meeting scheduled",
-        "proposition": "Proposal",
-        "negociation": "Negotiation",
-        "gagne": "Won",
-        "perdus": "Lost",
-        "a_faire": "To do",
+        "contacted": "Contacted",
+        "meeting_scheduled": "Meeting scheduled",
+        "offer": "Offer",
+        "negotiation": "Negotiation",
+        "won": "Won",
+        "lost": "Lost",
+        "todo": "To do",
         "client": "Client"
       }
     },

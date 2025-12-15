@@ -42,7 +42,7 @@ describe('DeleteMuscleUsecase', () => {
   });
 
   it('should delete the muscle through the repository', async () => {
-    muscleRepositoryMock.delete.mockResolvedValue(true);
+    (muscleRepositoryMock.delete as any).mockResolvedValue(true);
 
     const result = await usecase.execute(dto);
 
@@ -51,7 +51,7 @@ describe('DeleteMuscleUsecase', () => {
   });
 
   it('should return false when the repository returns false', async () => {
-    muscleRepositoryMock.delete.mockResolvedValue(false);
+    (muscleRepositoryMock.delete as any).mockResolvedValue(false);
 
     const result = await usecase.execute(dto);
 
@@ -60,7 +60,7 @@ describe('DeleteMuscleUsecase', () => {
 
   it('should log and throw a domain error when deletion fails', async () => {
     const failure = new Error('database failure');
-    muscleRepositoryMock.delete.mockRejectedValue(failure);
+    (muscleRepositoryMock.delete as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.DELETE_MUSCLE_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(

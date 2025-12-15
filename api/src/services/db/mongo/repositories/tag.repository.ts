@@ -5,13 +5,15 @@ import { Tag } from '@services/db/models/tag.model';
 import {
   CreateTagDto, GetTagDto, ListTagsDto, UpdateTagDto,
 } from '@services/db/dtos/tag.dto';
+import { toVisibility } from '@src/common/enum.util';
+import { Visibility } from '@src/common/visibility.enum';
 
 interface TagDoc {
   _id: ObjectId;
   slug: string;
   locale: string;
   label: string;
-  visibility: 'private' | 'public';
+  visibility: Visibility;
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
@@ -48,7 +50,7 @@ export class BddServiceTagMongo {
       slug: dto.slug.toLowerCase().trim(),
       locale: dto.locale.toLowerCase().trim(),
       label: dto.label.trim(),
-      visibility: dto.visibility,
+      visibility: toVisibility(dto.visibility) ?? Visibility.PRIVATE,
       createdBy: dto.createdBy,
       createdAt: now,
       updatedAt: now,
@@ -87,7 +89,10 @@ export class BddServiceTagMongo {
     }
     if (locale) filter.locale = locale.toLowerCase().trim();
     if (createdBy) filter.createdBy = createdBy;
-    if (visibility === 'public' || visibility === 'private') filter.visibility = visibility;
+    if (visibility) {
+      const normalized = toVisibility(visibility);
+      if (normalized) filter.visibility = normalized;
+    }
 
     try {
       const collection = this.col();
@@ -107,7 +112,7 @@ export class BddServiceTagMongo {
     if (patch.slug !== undefined) $set.slug = patch.slug.toLowerCase().trim();
     if (patch.locale !== undefined) $set.locale = patch.locale.toLowerCase().trim();
     if (patch.label !== undefined) $set.label = patch.label.trim();
-    if (patch.visibility !== undefined) $set.visibility = patch.visibility;
+    if (patch.visibility !== undefined) $set.visibility = toVisibility(patch.visibility) ?? Visibility.PRIVATE;
 
     try {
       const res: any = await (this.col()).findOneAndUpdate(
@@ -150,7 +155,7 @@ export class BddServiceTagMongo {
     slug: doc.slug,
     locale: doc.locale,
     label: doc.label,
-    visibility: doc.visibility,
+    visibility: toVisibility(doc.visibility) ?? Visibility.PRIVATE,
     createdBy: doc.createdBy,
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt,

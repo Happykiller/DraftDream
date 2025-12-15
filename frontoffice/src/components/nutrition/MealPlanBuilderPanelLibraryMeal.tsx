@@ -9,8 +9,9 @@ import {
   IconButton,
   Stack,
   Tooltip,
-  Typography,
 } from '@mui/material';
+
+import { TextWithTooltip } from '../common/TextWithTooltip';
 
 import type { Meal } from '@hooks/nutrition/useMeals';
 import { useMealTypeIcon } from '@hooks/nutrition/useMealTypeIcon';
@@ -67,9 +68,14 @@ export const MealPlanBuilderPanelLibraryMeal = React.memo(function MealPlanBuild
     >
       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
         <Stack spacing={0.75}>
-          <Stack direction="row" spacing={0.75} alignItems="center">
+          <Stack
+            direction="row"
+            spacing={0.75}
+            alignItems="center"
+            sx={{ flexWrap: 'wrap', rowGap: 0.5 }}
+          >
             {meal.type?.label ? (
-              <Tooltip title={meal.type.label}>
+              <Tooltip title={meal.type.label} placement="bottom-start" arrow>
                 <span style={{ display: 'inline-flex' }}>
                   <MealIcon fontSize="small" sx={{ color: mealIconColor }} />
                 </span>
@@ -78,7 +84,7 @@ export const MealPlanBuilderPanelLibraryMeal = React.memo(function MealPlanBuild
               <MealIcon fontSize="small" sx={{ color: mealIconColor }} />
             )}
             {isOwnedByCurrentUser && onEdit ? (
-              <Tooltip title={builderCopy.meal_library.edit_tooltip ?? ''} arrow>
+              <Tooltip title={builderCopy.meal_library.edit_tooltip ?? ''} arrow placement="bottom-start">
                 <span style={{ display: 'inline-flex' }}>
                   <IconButton
                     size="small"
@@ -91,13 +97,24 @@ export const MealPlanBuilderPanelLibraryMeal = React.memo(function MealPlanBuild
                 </span>
               </Tooltip>
             ) : null}
-            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-              {meal.label}
-            </Typography>
+
+            <TextWithTooltip
+              tooltipTitle={meal.label ?? ''}
+              variant="subtitle2"
+              sx={{
+                fontWeight: 600,
+                flex: 1,
+                minWidth: 0,
+                pr: 4,
+              }}
+            />
           </Stack>
-          <Typography variant="caption" color="text.secondary">
-            {formatMealSummary(meal)}
-          </Typography>
+          <TextWithTooltip
+            tooltipTitle={formatMealSummary(meal)}
+            variant="caption"
+            color="text.secondary"
+            maxLines={2}
+          />
         </Stack>
       </CardContent>
       {(isPublic || isOwnedByCurrentUser) && (
@@ -138,6 +155,7 @@ export const MealPlanBuilderPanelLibraryMeal = React.memo(function MealPlanBuild
           )}
         </Box>
       )}
+
       <Box
         sx={{
           position: 'absolute',
@@ -158,6 +176,6 @@ export const MealPlanBuilderPanelLibraryMeal = React.memo(function MealPlanBuild
           </span>
         </Tooltip>
       </Box>
-    </Card>
+    </Card >
   );
 });

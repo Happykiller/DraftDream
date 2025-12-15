@@ -35,7 +35,7 @@ describe('GetMealUsecase', () => {
     proteinGrams: 35,
     carbGrams: 55,
     fatGrams: 12,
-    visibility: 'private',
+    visibility: 'PRIVATE',
     createdBy: 'athlete-1',
     createdAt: new Date('2024-05-02T00:00:00.000Z'),
     updatedAt: new Date('2024-05-03T00:00:00.000Z'),
@@ -59,7 +59,7 @@ describe('GetMealUsecase', () => {
   });
 
   it('should return the meal retrieved from the repository', async () => {
-    mealRepositoryMock.get.mockResolvedValue(meal);
+    (mealRepositoryMock.get as any).mockResolvedValue(meal);
 
     const result = await usecase.execute(dto);
 
@@ -69,7 +69,7 @@ describe('GetMealUsecase', () => {
   });
 
   it('should return null when the meal is not found', async () => {
-    mealRepositoryMock.get.mockResolvedValue(null);
+    (mealRepositoryMock.get as any).mockResolvedValue(null);
 
     const result = await usecase.execute(dto);
 
@@ -78,7 +78,7 @@ describe('GetMealUsecase', () => {
 
   it('should log and throw a domain error when retrieval fails', async () => {
     const failure = new Error('repository failure');
-    mealRepositoryMock.get.mockRejectedValue(failure);
+    (mealRepositoryMock.get as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.GET_MEAL_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(

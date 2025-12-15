@@ -59,7 +59,7 @@ export class ListMealDaysUsecase {
           const res = await this.inversify.bddService.mealDay.list({
             ...rest,
             createdBy,
-            visibility: 'public',
+            visibility: 'PUBLIC',
           });
           return {
             items: res.items.map(mapMealDayToUsecase),

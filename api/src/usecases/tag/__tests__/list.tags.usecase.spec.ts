@@ -24,7 +24,7 @@ describe('ListTagsUsecase', () => {
     page: 3,
     limit: 15,
     locale: 'en-US',
-    visibility: 'public',
+    visibility: 'PUBLIC',
   };
 
   const tags: TagUsecaseModel[] = [
@@ -33,7 +33,7 @@ describe('ListTagsUsecase', () => {
       slug: 'strength',
       locale: 'en-US',
       label: 'Strength',
-      visibility: 'public',
+      visibility: 'PUBLIC',
       createdBy: 'coach-1',
       createdAt: new Date('2024-01-01T00:00:00.000Z'),
       updatedAt: new Date('2024-01-10T00:00:00.000Z'),
@@ -43,7 +43,7 @@ describe('ListTagsUsecase', () => {
       slug: 'endurance',
       locale: 'en-US',
       label: 'Endurance',
-      visibility: 'private',
+      visibility: 'PRIVATE',
       createdBy: 'coach-2',
       createdAt: new Date('2024-02-01T00:00:00.000Z'),
       updatedAt: new Date('2024-02-10T00:00:00.000Z'),

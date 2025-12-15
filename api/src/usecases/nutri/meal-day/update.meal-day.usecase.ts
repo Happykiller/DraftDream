@@ -15,7 +15,7 @@ export class UpdateMealDayUsecase {
     try {
       const toUpdate: any = { ...dto };
       if (dto.label) {
-        toUpdate.slug = buildSlug({ label: dto.label, fallback: 'meal-day' });
+        toUpdate.slug = buildSlug({ label: dto.label, fallback: 'meal-day', locale: dto.locale });
       }
       const updated = await this.inversify.bddService.mealDay.update(dto.id, toUpdate);
       return updated ? mapMealDayToUsecase(updated) : null;

@@ -1,0 +1,20 @@
+{
+    "releaseNotes": {
+        "backToHome": "Retour à l'accueil",
+        "description": "Consultez les versions de FitDesk dans la langue détectée automatiquement, avec une mise en page épurée pour chaque jalon.",
+        "documentTitle": "Notes de version | FitDesk",
+        "empty": "Aucune note de version n'est disponible pour le moment.",
+        "emptyScope": "Aucune mise à jour disponible pour ce périmètre pour l'instant.",
+        "error": "Une erreur est survenue lors du chargement des notes de version. Merci de réessayer plus tard.",
+        "footer": "Plateforme FitDesk — des notes de version multilingues et claires.",
+        "globalLabel": "Global",
+        "loading": "Chargement des notes de version…",
+        "notesLabel": "Notes",
+        "projectLabel": "Projet",
+        "releasedOn": "Publié le {{date}}",
+        "scopeLabel": "Périmètre",
+        "subtitle": "Notes de version",
+        "title": "Notes de version",
+        "pageSubtitle": "Découvrez les dernières améliorations, fonctionnalités et correctifs qui rendent FitDesk meilleur pour vous."
+    }
+}

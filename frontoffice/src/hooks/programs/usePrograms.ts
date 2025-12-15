@@ -297,9 +297,10 @@ export interface UseProgramsParams {
   q: string;
   createdBy?: string;
   userId?: string;
+  enabled?: boolean;
 }
 
-export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsParams) {
+export function usePrograms({ page, limit, q, createdBy, userId, enabled = true }: UseProgramsParams) {
   const [items, setItems] = React.useState<Program[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
@@ -310,6 +311,10 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
 
   const load = React.useCallback(async () => {
+    if (!enabled) {
+      return;
+    }
+
     setLoading(true);
     try {
       await execute(async () => {
@@ -339,11 +344,18 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
     } finally {
       setLoading(false);
     }
-  }, [createdBy, execute, flashError, gql, limit, page, q, userId]);
+  }, [createdBy, enabled, execute, flashError, gql, limit, page, q, userId]);
 
   React.useEffect(() => {
+    if (!enabled) {
+      setItems([]);
+      setTotal(0);
+      setLoading(false);
+      return;
+    }
+
     void load();
-  }, [load]);
+  }, [enabled, load]);
 
   const create = React.useCallback(
     async (input: {

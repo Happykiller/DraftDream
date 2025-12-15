@@ -18,6 +18,7 @@ Parties prenantes clés:
 | --- | --- | --- |
 | **Gestion prospects/clients** | Création, qualification (statut, niveau, source), suivi des préférences, budget, objectifs, historique. | Pas encore de scoring automatique ni d'intégration CRM externe.
 | **Relations coach ↔ athlète** | Création/édition des liaisons, dates d'effet, statut actif/inactif, notes contextuelles partagées entre front/back office. | Pas de multi-coaching (un athlète rattaché à un coach unique par relation).
+| **Fiches info athlète** | Données spécifiques aux athlètes (niveau, objectifs, préférences d'activité, conditions médicales, allergies, notes) issues du référentiel prospects. | Un seul enregistrement par athlète, en lecture/écriture via l'API GraphQL.
 | **Programmes & bibliothèque d'exercices** | CRUD complet sur programmes, séances, exercices, catégories, muscles, tags, équipements, visibilité privée/publique. | Pas de moteur d'entraînement temps-réel ni d'intégration capteurs.
 | **Nutrition** | Gestion des plans, jours, repas, aliments, macros, icônes de type de repas, visibilité. | Pas de synchronisation automatique avec applis tierces (MyFitnessPal, wearables).
 | **Profils & authentification** | Connexion, snapshot de session, changement de langue, visualisation du token actif. | MFA et SSO non implémentés.
@@ -63,6 +64,7 @@ Hors périmètre immédiat: facturation, analytics en temps réel, marketplace p
 - **Lien coach/athlète**: une relation active doit comporter une date de début, une visibilité (privée par défaut) et un statut. Les suppressions sont logiques (soft delete) pour préserver l'historique.
 - **Visibilité des contenus**: `private` limite l'accès à l'équipe propriétaire; `public` les expose dans les catalogues frontoffice/backoffice. Toute publication requiert un créateur identifié et une vérification de complétude (sessions ≥1, exercices ≥1).
 - **Nutrition**: un plan contient `n` jours, chaque jour `m` repas, et chaque repas référence des aliments ou macros. Les champs calories/macros doivent rester cohérents (somme des aliments = macros du repas).
+- **Fiche info athlète**: une fiche est unique par athlète, réutilise les référentiels prospects (niveaux, objectifs, préférences d'activité) et stocke des données de santé sensibles (conditions médicales, allergies) soumises à visibilité privée.
 - **Localisation**: les interfaces doivent rester entièrement bilingues (FR/EN). Les formulaires valident la présence des clés i18n avant publication.
 - **Filtrage locale front/back office**: toutes les requêtes frontoffice (coach/athlète) vers les bibliothèques partagées (jours de repas, repas, types de repas, séances, exercices, etc.) doivent embarquer la langue active pour ne remonter que les contenus correspondant à cet utilisateur. Les formulaires de création/édition du backoffice doivent eux aussi restreindre les options proposées à la langue sélectionnée pour empêcher qu'un coach publie du contenu dans une langue non désirée.
 - **Terminologie frontoffice**: toute interface coach/athlète affiche la fiche commerciale sous l'intitulé « Prospect » (même si l'API conserve l'entité `Client`). La mention « client » n'apparaît que lors du reporting backoffice.
@@ -84,6 +86,7 @@ Principales entités et relations:
 - **Exercise** — référentiel central (catégorie, muscles ciblés, équipement, tags, média). Instances dérivent de ce référentiel.
 - **NutritionPlan** — regroupe n **NutritionDay** avec macros cibles.
 - **NutritionDay** — contient des **Meal**; chaque Meal référence 1..n **FoodItem** ou macros.
+- **AthleteInfo** — fiche par athlète, pointe vers un **User** de type ATHLETE, référence les niveaux/objectifs/préférences prospects, stocke conditions médicales et allergies, auditée (creator, timestamps) et supprimable en soft/hard delete.
 - **ReleaseNote** — entité publiée côté showcase pour tracer les évolutions.
 
 Contraintes fonctionnelles:

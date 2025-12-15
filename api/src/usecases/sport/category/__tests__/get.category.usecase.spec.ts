@@ -29,7 +29,7 @@ describe('GetCategoryUsecase', () => {
     slug: 'mobility',
     locale: 'en-US',
     label: 'Mobility',
-    visibility: 'private',
+    visibility: 'PRIVATE',
     createdBy: 'coach-1',
     createdAt: new Date('2024-01-02T00:00:00.000Z'),
     updatedAt: new Date('2024-02-02T00:00:00.000Z'),
@@ -54,7 +54,7 @@ describe('GetCategoryUsecase', () => {
   });
 
   it('should return the category retrieved from the repository', async () => {
-    categoryRepositoryMock.get.mockResolvedValue(category);
+    (categoryRepositoryMock.get as any).mockResolvedValue(category);
 
     const result = await usecase.execute(dto);
 
@@ -64,7 +64,7 @@ describe('GetCategoryUsecase', () => {
   });
 
   it('should return null when the category is not found', async () => {
-    categoryRepositoryMock.get.mockResolvedValue(null);
+    (categoryRepositoryMock.get as any).mockResolvedValue(null);
 
     const result = await usecase.execute(dto);
 
@@ -73,7 +73,7 @@ describe('GetCategoryUsecase', () => {
 
   it('should log and throw a domain error when retrieval fails', async () => {
     const failure = new Error('repository failure');
-    categoryRepositoryMock.get.mockRejectedValue(failure);
+    (categoryRepositoryMock.get as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.GET_CATEGORY_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(

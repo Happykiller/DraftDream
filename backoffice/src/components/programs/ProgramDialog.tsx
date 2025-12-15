@@ -1,6 +1,11 @@
 // src/components/programs/ProgramDialog.tsx
 import * as React from 'react';
 import {
+  ArrowDownward as ArrowDownwardIcon,
+  ArrowUpward as ArrowUpwardIcon,
+  Delete as DeleteIcon,
+} from '@mui/icons-material';
+import {
   Autocomplete,
   Button,
   Chip,
@@ -8,9 +13,13 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  List,
+  ListItem,
+  ListItemText,
   MenuItem,
   Stack,
   TextField,
+  Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -93,12 +102,25 @@ export function ProgramDialog({
   onSubmit,
 }: ProgramDialogProps): React.JSX.Element {
   const [values, setValues] = React.useState<ProgramDialogValues>(DEFAULT_VALUES);
+  const [selectedSession, setSelectedSession] = React.useState<ProgramSessionOption | null>(null);
   const isEdit = mode === 'edit';
   const { t } = useTranslation();
   const filteredSessionOptions = React.useMemo(
     () => sessionOptions.filter((session) => session.locale === values.locale),
     [sessionOptions, values.locale],
   );
+  const creatorEmail = React.useMemo(
+    () => initial?.creator?.email ?? initial?.createdBy ?? '',
+    [initial?.createdBy, initial?.creator?.email],
+  );
+  const formattedCreatedAt = React.useMemo(() => {
+    if (!initial?.createdAt) return '';
+    return new Date(initial.createdAt).toLocaleString();
+  }, [initial?.createdAt]);
+  const formattedUpdatedAt = React.useMemo(() => {
+    if (!initial?.updatedAt) return '';
+    return new Date(initial.updatedAt).toLocaleString();
+  }, [initial?.updatedAt]);
 
   React.useEffect(() => {
     if (isEdit && initial) {
@@ -156,6 +178,10 @@ export function ProgramDialog({
     }
   }, [filteredSessionOptions, isEdit, initial]);
 
+  React.useEffect(() => {
+    setSelectedSession((prev) => (prev?.locale === values.locale ? prev : null));
+  }, [values.locale]);
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setValues((prev) => ({
@@ -178,6 +204,36 @@ export function ProgramDialog({
     onClose();
   };
 
+  const handleAddSession = () => {
+    if (!selectedSession) return;
+
+    setValues((prev) => ({
+      ...prev,
+      sessions: [...prev.sessions, selectedSession],
+    }));
+    setSelectedSession(null);
+  };
+
+  const handleRemoveSession = (index: number) => {
+    setValues((prev) => ({
+      ...prev,
+      sessions: prev.sessions.filter((_, idx) => idx !== index),
+    }));
+  };
+
+  const handleMoveSession = (index: number, direction: 'up' | 'down') => {
+    setValues((prev) => {
+      const nextSessions = [...prev.sessions];
+      if (direction === 'up' && index > 0) {
+        [nextSessions[index - 1], nextSessions[index]] = [nextSessions[index], nextSessions[index - 1]];
+      }
+      if (direction === 'down' && index < nextSessions.length - 1) {
+        [nextSessions[index + 1], nextSessions[index]] = [nextSessions[index], nextSessions[index + 1]];
+      }
+      return { ...prev, sessions: nextSessions };
+    });
+  };
+
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="program-dialog-title" fullWidth maxWidth="sm">
       <DialogTitle id="program-dialog-title">
@@ -185,6 +241,44 @@ export function ProgramDialog({
       </DialogTitle>
       <DialogContent>
         <Stack component="form" spacing={2} sx={{ mt: 1 }} onSubmit={submit}>
+          {isEdit && initial ? (
+            <Stack spacing={1.5}>
+              {/* Signature ensures editors know who created the program and when it was last touched. */}
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <Stack flex={1} spacing={0.25}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('common.labels.slug')}
+                  </Typography>
+                  <Typography variant="body2" sx={{ wordBreak: 'break-all' }}>
+                    {initial.slug || '-'}
+                  </Typography>
+                </Stack>
+                <Stack flex={1} spacing={0.25}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('common.labels.creator')}
+                  </Typography>
+                  <Typography variant="body2" sx={{ wordBreak: 'break-all' }}>
+                    {creatorEmail || '-'}
+                  </Typography>
+                </Stack>
+              </Stack>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <Stack flex={1} spacing={0.25}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('common.labels.created')}
+                  </Typography>
+                  <Typography variant="body2">{formattedCreatedAt || '-'}</Typography>
+                </Stack>
+                <Stack flex={1} spacing={0.25}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('common.labels.updated')}
+                  </Typography>
+                  <Typography variant="body2">{formattedUpdatedAt || '-'}</Typography>
+                </Stack>
+              </Stack>
+            </Stack>
+          ) : null}
+
           {/* General information */}
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             {/* Locale is stored per program because content differs between regions. */}
@@ -263,26 +357,78 @@ export function ProgramDialog({
           />
 
           {/* Sessions selection is mandatory to guarantee programs deliver real workouts. */}
-          <Autocomplete
-            multiple
-            options={filteredSessionOptions}
-            getOptionLabel={(option) => option.label || option.slug}
-            isOptionEqualToValue={(option, value) => option.id === value.id}
-            value={values.sessions}
-            onChange={(_, newValue) => setValues((prev) => ({ ...prev, sessions: newValue }))}
-            renderTags={(tagValue, getTagProps) =>
-              tagValue.map((option, index) => (
-                <Chip {...getTagProps({ index })} key={option.id} label={option.label || option.slug} />
-              ))
-            }
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label={t('common.labels.sessions')}
-                placeholder={t('common.placeholders.select_sessions')}
+          <Stack spacing={1.5}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} alignItems="center">
+              <Autocomplete
+                options={filteredSessionOptions}
+                getOptionLabel={(option) => option.label || option.slug}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                value={selectedSession}
+                onChange={(_, newValue) => setSelectedSession(newValue)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label={t('common.labels.sessions')}
+                    placeholder={t('common.placeholders.select_sessions')}
+                  />
+                )}
+                fullWidth
               />
+              <Button
+                variant="outlined"
+                onClick={handleAddSession}
+                disabled={!selectedSession}
+                sx={{ alignSelf: { xs: 'stretch', sm: 'center' }, whiteSpace: 'nowrap' }}
+              >
+                {t('common.buttons.add')}
+              </Button>
+            </Stack>
+
+            {values.sessions.length === 0 ? (
+              <Chip label={t('common.messages.no_value')} variant="outlined" size="small" />
+            ) : (
+              <List dense sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
+                {values.sessions.map((session, index) => (
+                  <ListItem
+                    key={`${session.id}-${index}`}
+                    secondaryAction={
+                      <Stack direction="row" spacing={0.5}>
+                        <Button
+                          size="small"
+                          onClick={() => handleMoveSession(index, 'up')}
+                          aria-label={`move-session-up-${session.id}`}
+                          startIcon={<ArrowUpwardIcon fontSize="inherit" />}
+                          disabled={index === 0}
+                        >
+                          {t('common.labels.up')}
+                        </Button>
+                        <Button
+                          size="small"
+                          onClick={() => handleMoveSession(index, 'down')}
+                          aria-label={`move-session-down-${session.id}`}
+                          startIcon={<ArrowDownwardIcon fontSize="inherit" />}
+                          disabled={index === values.sessions.length - 1}
+                        >
+                          {t('common.labels.down')}
+                        </Button>
+                        <Button
+                          size="small"
+                          color="error"
+                          onClick={() => handleRemoveSession(index)}
+                          aria-label={`remove-session-${session.id}`}
+                          startIcon={<DeleteIcon fontSize="inherit" />}
+                        >
+                          {t('common.buttons.delete')}
+                        </Button>
+                      </Stack>
+                    }
+                  >
+                    <ListItemText primary={session.label || session.slug} secondary={session.locale ?? values.locale} />
+                  </ListItem>
+                ))}
+              </List>
             )}
-          />
+          </Stack>
 
           {/* Athlete assignment remains optional since some programs are templates. */}
           <Autocomplete

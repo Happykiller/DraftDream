@@ -26,7 +26,7 @@ export function ProgramsAthlete(): React.JSX.Element {
     returnObjects: true,
   }) as AthleteEmptyStateCopy;
 
-  const { items: programs, loading: listLoading } = usePrograms({
+  const { items: programs, total: totalPrograms, loading: listLoading } = usePrograms({
     page: 1,
     limit: 12,
     q: searchQuery,
@@ -35,6 +35,17 @@ export function ProgramsAthlete(): React.JSX.Element {
 
   const searchPlaceholder = t('programs-athlete.list.search_placeholder');
   const searchAriaLabel = t('programs-athlete.list.search_aria_label');
+
+  const resultCountLabel = React.useMemo(
+    () =>
+      listLoading
+        ? undefined
+        : t('programs-athlete.list.result_count', {
+            count: programs.length,
+            total: totalPrograms,
+          }),
+    [listLoading, programs.length, t, totalPrograms],
+  );
 
   const handleNavigateToProgram = React.useCallback(
     (nextProgram: Program) => {
@@ -68,6 +79,7 @@ export function ProgramsAthlete(): React.JSX.Element {
           searchPlaceholder={searchPlaceholder}
           searchAriaLabel={searchAriaLabel}
           searchQuery={searchQuery}
+          resultCountLabel={resultCountLabel}
         />
       </Stack>
     </Stack>

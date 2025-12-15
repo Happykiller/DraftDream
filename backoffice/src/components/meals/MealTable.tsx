@@ -2,7 +2,8 @@
 import * as React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { Box, Button, IconButton, Stack, TextField, Tooltip } from '@mui/material';
+import { Box, Button, IconButton, Stack, TextField, Tooltip, useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { useTranslation } from 'react-i18next';
 
@@ -41,10 +42,11 @@ export function MealTable(props: MealTableProps): React.JSX.Element {
   } = props;
   const { t } = useTranslation();
   const formatDate = useDateFormatter();
+  // Responsive: Hide columns on smaller screens
+  const isXl = useMediaQuery(useTheme().breakpoints.up('xl'));
 
   const columns = React.useMemo<GridColDef<Meal>[]>(() => {
     return [
-      { field: 'slug', headerName: t('common.labels.slug'), flex: 1 },
       { field: 'label', headerName: t('common.labels.label'), flex: 1 },
       { field: 'locale', headerName: t('common.labels.locale'), width: 120 },
       {
@@ -55,10 +57,14 @@ export function MealTable(props: MealTableProps): React.JSX.Element {
         },
         flex: 1,
       },
-      { field: 'calories', headerName: t('common.labels.calories'), width: 120 },
-      { field: 'proteinGrams', headerName: t('common.labels.protein_grams'), width: 150 },
-      { field: 'carbGrams', headerName: t('common.labels.carb_grams'), width: 150 },
-      { field: 'fatGrams', headerName: t('common.labels.fat_grams'), width: 140 },
+      ...(isXl
+        ? [
+          { field: 'calories', headerName: t('common.labels.calories'), width: 120 },
+          { field: 'proteinGrams', headerName: t('common.labels.protein_grams'), width: 150 },
+          { field: 'carbGrams', headerName: t('common.labels.carb_grams'), width: 150 },
+          { field: 'fatGrams', headerName: t('common.labels.fat_grams'), width: 140 },
+        ]
+        : []),
       { field: 'visibility', headerName: t('common.labels.visibility'), width: 140 },
       {
         field: 'creator',
@@ -66,18 +72,22 @@ export function MealTable(props: MealTableProps): React.JSX.Element {
         valueGetter: (params: any) => params?.row?.creator?.email ?? '',
         flex: 1,
       },
-      {
-        field: 'createdAt',
-        headerName: t('common.labels.created'),
-        valueFormatter: (value: any) => formatDate(value),
-        flex: 1,
-      },
-      {
-        field: 'updatedAt',
-        headerName: t('common.labels.updated'),
-        valueFormatter: (value: any) => formatDate(value),
-        flex: 1,
-      },
+      ...(isXl
+        ? [
+          {
+            field: 'createdAt',
+            headerName: t('common.labels.created'),
+            valueFormatter: (value: any) => formatDate(value),
+            flex: 1,
+          },
+          {
+            field: 'updatedAt',
+            headerName: t('common.labels.updated'),
+            valueFormatter: (value: any) => formatDate(value),
+            flex: 1,
+          },
+        ]
+        : []),
       {
         field: 'actions',
         headerName: t('common.labels.actions'),
@@ -99,7 +109,7 @@ export function MealTable(props: MealTableProps): React.JSX.Element {
         ),
       },
     ];
-  }, [formatDate, onDelete, onEdit, t]);
+  }, [formatDate, isXl, onDelete, onEdit, t]);
 
   return (
     <Box sx={{ width: '100%' }}>

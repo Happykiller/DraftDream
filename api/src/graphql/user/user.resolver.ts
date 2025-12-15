@@ -1,5 +1,5 @@
 // src/nestjs/user/user.resolver.ts
-import { Resolver, Mutation, Args, Query, Context } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Query, Context, ID } from '@nestjs/graphql';
 import { Role } from '@graphql/common/ROLE';
 import inversify from '@src/inversify/investify';
 import { Auth } from '@graphql/decorators/auth.decorator';
@@ -33,7 +33,7 @@ export class UserResolver {
         name: input.company.name,
         address: input.company.address ? { ...input.company.address } : undefined,
       } : undefined,
-      is_active: input.is_active??true,
+      is_active: input.is_active ?? true,
       createdBy: req?.user?.id,
     };
 
@@ -93,5 +93,21 @@ export class UserResolver {
 
     const updated: UserUsecaseModel = await inversify.updateUserUsecase.execute(dto);
     return mapUserUsecaseToGql(updated);
+  }
+
+  @Mutation(() => Boolean, { name: 'user_delete' })
+  @Auth(Role.ADMIN)
+  async user_delete(
+    @Args('id', { type: () => ID }) id: string,
+  ): Promise<boolean> {
+    return inversify.deleteUserUsecase.execute(id);
+  }
+
+  @Mutation(() => Boolean, { name: 'user_hard_delete' })
+  @Auth(Role.ADMIN)
+  async user_hard_delete(
+    @Args('id', { type: () => ID }) id: string,
+  ): Promise<boolean> {
+    return inversify.hardDeleteUserUsecase.execute(id);
   }
 }

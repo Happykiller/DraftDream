@@ -11,7 +11,7 @@ export class CreateEquipmentUsecase {
 
   async execute(dto: CreateEquipmentUsecaseDto): Promise<EquipmentUsecaseModel | null> {
     try {
-      const slug = buildSlug({ label: dto.label, fallback: 'equipment' });
+      const slug = buildSlug({ label: dto.label, fallback: 'equipment', locale: dto.locale });
       const created = await this.inversify.bddService.equipment.create({
         slug,
         locale: dto.locale,

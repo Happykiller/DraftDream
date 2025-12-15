@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -30,7 +30,7 @@ describe('UpdateMealPlanUsecase', () => {
     const dto: UpdateMealPlanUsecaseDto = {
         id: 'plan-1',
         label: 'Updated Plan',
-        visibility: 'private',
+        visibility: 'PRIVATE',
     };
 
     const updatedMealPlan: MealPlanUsecaseModel = {
@@ -43,7 +43,7 @@ describe('UpdateMealPlanUsecase', () => {
         carbGrams: 200,
         fatGrams: 70,
         days: [],
-        visibility: 'private',
+        visibility: 'PRIVATE',
         createdBy: 'user-1',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -67,7 +67,7 @@ describe('UpdateMealPlanUsecase', () => {
     });
 
     it('should update a meal plan and regenerate slug if label provided', async () => {
-        mealPlanRepositoryMock.update.mockResolvedValue(updatedMealPlan);
+        (mealPlanRepositoryMock.update as any).mockResolvedValue(updatedMealPlan);
 
         const result = await usecase.execute({ ...dto, id: 'plan-1' });
 
@@ -79,7 +79,7 @@ describe('UpdateMealPlanUsecase', () => {
     });
 
     it('should return null if update fails', async () => {
-        mealPlanRepositoryMock.update.mockResolvedValue(null);
+        (mealPlanRepositoryMock.update as any).mockResolvedValue(null);
 
         const result = await usecase.execute({ ...dto, id: 'plan-1' });
 
@@ -88,7 +88,7 @@ describe('UpdateMealPlanUsecase', () => {
 
     it('should log and throw error when repository throws', async () => {
         const error = new Error('DB Error');
-        mealPlanRepositoryMock.update.mockRejectedValue(error);
+        (mealPlanRepositoryMock.update as any).mockRejectedValue(error);
 
         await expect(usecase.execute({ ...dto, id: 'plan-1' })).rejects.toThrow(ERRORS.UPDATE_MEAL_PLAN_USECASE);
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining(error.message));

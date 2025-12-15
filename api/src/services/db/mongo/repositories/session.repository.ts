@@ -9,6 +9,8 @@ import {
   ListSessionsDto,
   UpdateSessionDto,
 } from '@services/db/dtos/session.dto';
+import { toVisibility } from '@src/common/enum.util';
+import { Visibility } from '@src/common/visibility.enum';
 
 interface SessionDoc {
   _id: ObjectId;
@@ -17,7 +19,7 @@ interface SessionDoc {
 
   label: string;
   durationMin: number;
-  visibility: 'private' | 'public';
+  visibility: Visibility;
   description?: string;
 
   exerciseIds: string[];
@@ -66,7 +68,7 @@ export class BddServiceSessionMongo {
 
       label: dto.label.trim(),
       durationMin: Math.trunc(dto.durationMin),
-      visibility: dto.visibility ?? 'public',
+      visibility: toVisibility(dto.visibility) ?? Visibility.PUBLIC,
       description: dto.description,
 
       // Preserve order as provided
@@ -112,15 +114,23 @@ export class BddServiceSessionMongo {
       sort = { updatedAt: -1 },
     } = params;
 
-    const filter: Record<string, any> = {};
+    // Combine search, locale, ownership, and archival filters so they apply together.
+    const conditions: Record<string, any>[] = [];
+
     if (q?.trim()) {
-      filter.$or = [
-        { slug: { $regex: new RegExp(q.trim(), 'i') } },
-        { label: { $regex: new RegExp(q.trim(), 'i') } },
-        { description: { $regex: new RegExp(q.trim(), 'i') } },
-      ];
+      const regex = new RegExp(q.trim(), 'i');
+      conditions.push({
+        $or: [
+          { slug: { $regex: regex } },
+          { label: { $regex: regex } },
+          { description: { $regex: regex } },
+        ],
+      });
     }
-    if (locale) filter.locale = locale.toLowerCase().trim();
+
+    if (locale) {
+      conditions.push({ locale: locale.toLowerCase().trim() });
+    }
     const normalizedCreatedByIn = Array.isArray(createdByIn)
       ? createdByIn.map((id) => id?.trim()).filter((id): id is string => Boolean(id))
       : [];
@@ -135,14 +145,18 @@ export class BddServiceSessionMongo {
     }
 
     if (includePublicVisibility) {
-      ownershipConditions.push({ visibility: 'public' });
+      ownershipConditions.push({ visibility: Visibility.PUBLIC });
     }
 
     if (ownershipConditions.length) {
-      filter.$or = ownershipConditions;
+      conditions.push({ $or: ownershipConditions });
     }
 
-    if (!includeArchived) filter.deletedAt = { $exists: false };
+    if (!includeArchived) {
+      conditions.push({ deletedAt: { $exists: false } });
+    }
+
+    const filter: Record<string, any> = conditions.length ? { $and: conditions } : {};
 
     try {
       const collection = this.col();
@@ -164,7 +178,7 @@ export class BddServiceSessionMongo {
     if (patch.locale !== undefined) $set.locale = patch.locale.toLowerCase().trim();
     if (patch.label !== undefined) $set.label = patch.label.trim();
     if (patch.durationMin !== undefined) $set.durationMin = Math.trunc(patch.durationMin);
-    if (patch.visibility !== undefined) $set.visibility = patch.visibility;
+    if (patch.visibility !== undefined) $set.visibility = toVisibility(patch.visibility) ?? Visibility.PRIVATE;
     if (patch.description !== undefined) $set.description = patch.description;
     if (patch.exerciseIds !== undefined) $set.exerciseIds = [...patch.exerciseIds];
 
@@ -213,7 +227,7 @@ export class BddServiceSessionMongo {
 
     label: doc.label,
     durationMin: doc.durationMin,
-    visibility: doc.visibility,
+    visibility: toVisibility(doc.visibility) ?? Visibility.PRIVATE,
     description: doc.description,
 
     // Relations are represented minimally; hydrate elsewhere if needed.

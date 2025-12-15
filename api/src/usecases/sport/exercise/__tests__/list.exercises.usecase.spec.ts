@@ -35,14 +35,14 @@ describe('ListExercisesUsecase', () => {
     charge: 'bodyweight',
     rest: 60,
     videoUrl: 'https://cdn.local/push-up.mp4',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     categories: [
       {
         id: 'category-1',
         slug: 'cat',
         locale: 'en-us',
         label: 'Category',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -54,7 +54,7 @@ describe('ListExercisesUsecase', () => {
         slug: 'muscle',
         locale: 'en-us',
         label: 'Muscle',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -66,7 +66,7 @@ describe('ListExercisesUsecase', () => {
         slug: 'equipment',
         locale: 'en-us',
         label: 'Equipment',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -78,7 +78,7 @@ describe('ListExercisesUsecase', () => {
         slug: 'tag',
         locale: 'en-us',
         label: 'Tag',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -101,7 +101,7 @@ describe('ListExercisesUsecase', () => {
     charge: 'bodyweight',
     rest: 60,
     videoUrl: 'https://cdn.local/push-up.mp4',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     categoryIds: ['category-1'],
     muscleIds: ['muscle-1'],
     equipmentIds: ['equipment-1'],
@@ -129,7 +129,7 @@ describe('ListExercisesUsecase', () => {
   });
 
   it('should list exercises for an admin without altering the payload', async () => {
-    exerciseRepositoryMock.list.mockResolvedValue({ items: [exercise], total: 1, page: 2, limit: 5 });
+    (exerciseRepositoryMock.list as any).mockResolvedValue({ items: [exercise], total: 1, page: 2, limit: 5 });
 
     const dto: ListExercisesUsecaseDto = {
       session: { userId: 'admin-1', role: Role.ADMIN },
@@ -151,12 +151,12 @@ describe('ListExercisesUsecase', () => {
   });
 
   it('should allow a coach to list only exercises they created when specifying createdBy', async () => {
-    exerciseRepositoryMock.list.mockResolvedValue({ items: [exercise], total: 1, page: 1, limit: 10 });
+    (exerciseRepositoryMock.list as any).mockResolvedValue({ items: [exercise], total: 1, page: 1, limit: 10 });
 
     const dto: ListExercisesUsecaseDto = {
       session: { userId: 'coach-1', role: Role.COACH },
       createdBy: 'coach-1',
-      visibility: 'private',
+      visibility: 'PRIVATE',
       page: 1,
       limit: 10,
     };
@@ -167,7 +167,7 @@ describe('ListExercisesUsecase', () => {
       page: 1,
       limit: 10,
       createdBy: 'coach-1',
-      visibility: 'private',
+      visibility: 'PRIVATE',
     });
     expect(result.items).toEqual([mappedExercise]);
   });
@@ -184,11 +184,11 @@ describe('ListExercisesUsecase', () => {
   });
 
   it('should allow a coach to list public exercises explicitly', async () => {
-    exerciseRepositoryMock.list.mockResolvedValue({ items: [exercise], total: 1, page: 3, limit: 15 });
+    (exerciseRepositoryMock.list as any).mockResolvedValue({ items: [exercise], total: 1, page: 3, limit: 15 });
 
     const dto: ListExercisesUsecaseDto = {
       session: { userId: 'coach-1', role: Role.COACH },
-      visibility: 'public',
+      visibility: 'PUBLIC',
       page: 3,
       limit: 15,
     };
@@ -198,12 +198,12 @@ describe('ListExercisesUsecase', () => {
     expect(exerciseRepositoryMock.list).toHaveBeenCalledWith({
       page: 3,
       limit: 15,
-      visibility: 'public',
+      visibility: 'PUBLIC',
     });
   });
 
   it('should allow a coach to list their private and public exercises by default', async () => {
-    exerciseRepositoryMock.list.mockResolvedValue({ items: [exercise], total: 1, page: 1, limit: 20 });
+    (exerciseRepositoryMock.list as any).mockResolvedValue({ items: [exercise], total: 1, page: 1, limit: 20 });
 
     const dto: ListExercisesUsecaseDto = {
       session: { userId: 'coach-1', role: Role.COACH },
@@ -222,11 +222,11 @@ describe('ListExercisesUsecase', () => {
   });
 
   it('should allow a coach to list only private exercises when requesting private visibility', async () => {
-    exerciseRepositoryMock.list.mockResolvedValue({ items: [exercise], total: 1, page: 1, limit: 10 });
+    (exerciseRepositoryMock.list as any).mockResolvedValue({ items: [exercise], total: 1, page: 1, limit: 10 });
 
     const dto: ListExercisesUsecaseDto = {
       session: { userId: 'coach-1', role: Role.COACH },
-      visibility: 'private',
+      visibility: 'PRIVATE',
       page: 1,
       limit: 10,
     };
@@ -236,7 +236,7 @@ describe('ListExercisesUsecase', () => {
     expect(exerciseRepositoryMock.list).toHaveBeenCalledWith({
       page: 1,
       limit: 10,
-      visibility: 'private',
+      visibility: 'PRIVATE',
       createdByIn: ['coach-1'],
       includePublicVisibility: false,
     });
@@ -253,7 +253,7 @@ describe('ListExercisesUsecase', () => {
 
   it('should log and throw a domain error when listing fails', async () => {
     const failure = new Error('database failure');
-    exerciseRepositoryMock.list.mockRejectedValue(failure);
+    (exerciseRepositoryMock.list as any).mockRejectedValue(failure);
 
     const dto: ListExercisesUsecaseDto = {
       session: { userId: 'admin-1', role: Role.ADMIN },

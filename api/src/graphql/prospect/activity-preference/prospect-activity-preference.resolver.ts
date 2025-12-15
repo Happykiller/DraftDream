@@ -60,8 +60,8 @@ export class ProspectActivityPreferenceResolver {
       input?.visibility === undefined
         ? undefined
         : input.visibility === ProspectActivityPreferenceVisibility.PUBLIC
-          ? 'public'
-          : 'private';
+          ? 'PUBLIC'
+          : 'PRIVATE';
     const res = await inversify.listClientActivityPreferencesUsecase.execute({
       q: input?.q,
       locale: input?.locale,
@@ -91,8 +91,8 @@ export class ProspectActivityPreferenceResolver {
         input.visibility === undefined
           ? undefined
           : input.visibility === ProspectActivityPreferenceVisibility.PUBLIC
-            ? 'public'
-            : 'private',
+            ? 'PUBLIC'
+            : 'PRIVATE',
     });
     return updated ? mapProspectActivityPreferenceUsecaseToGql(updated) : null;
   }

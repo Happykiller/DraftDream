@@ -1,6 +1,6 @@
 // src\common\__tests__\slug.util.spec.ts
 import { randomBytes } from 'crypto';
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { buildSlug, slugifyCandidate } from '../slug.util';
 
 jest.mock('crypto', () => ({
@@ -41,6 +41,15 @@ describe('slugifyCandidate', () => {
 
   it('should handle numbers', () => {
     expect(slugifyCandidate('Item 123')).toBe('item-123');
+  });
+
+  it('should respect locale-specific lowercasing when provided', () => {
+    expect(slugifyCandidate('IĞDIR', 'tr')).toBe('gd-r');
+    expect(slugifyCandidate('IĞDIR', 'en-US')).toBe('igdir');
+  });
+
+  it('should fallback gracefully when locale is invalid', () => {
+    expect(slugifyCandidate('Hello', 'invalid-locale')).toBe('hello');
   });
 });
 

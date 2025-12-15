@@ -29,7 +29,7 @@ describe('DeleteMealDayUsecase', () => {
     label: 'Strength Day',
     description: 'High intensity focus',
     mealIds: ['meal-1', 'meal-2'],
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'coach-123',
     createdAt: now,
     updatedAt: now,
@@ -53,8 +53,8 @@ describe('DeleteMealDayUsecase', () => {
   });
 
   it('should delete a meal day when the session belongs to an admin', async () => {
-    mealDayRepositoryMock.get.mockResolvedValue(mealDay);
-    mealDayRepositoryMock.delete.mockResolvedValue(true);
+    (mealDayRepositoryMock.get as any).mockResolvedValue(mealDay);
+    (mealDayRepositoryMock.delete as any).mockResolvedValue(true);
     const dto: DeleteMealDayUsecaseDto = {
       id: mealDay.id,
       session: { userId: 'admin-1', role: Role.ADMIN },
@@ -67,8 +67,8 @@ describe('DeleteMealDayUsecase', () => {
   });
 
   it('should delete a meal day when the session belongs to the creator', async () => {
-    mealDayRepositoryMock.get.mockResolvedValue(mealDay);
-    mealDayRepositoryMock.delete.mockResolvedValue(true);
+    (mealDayRepositoryMock.get as any).mockResolvedValue(mealDay);
+    (mealDayRepositoryMock.delete as any).mockResolvedValue(true);
     const dto: DeleteMealDayUsecaseDto = {
       id: mealDay.id,
       session: { userId: mealDay.createdBy, role: Role.ATHLETE },
@@ -81,7 +81,7 @@ describe('DeleteMealDayUsecase', () => {
   });
 
   it('should return false when the meal day does not exist', async () => {
-    mealDayRepositoryMock.get.mockResolvedValue(null);
+    (mealDayRepositoryMock.get as any).mockResolvedValue(null);
     const dto: DeleteMealDayUsecaseDto = {
       id: 'missing',
       session: { userId: 'coach-123', role: Role.COACH },
@@ -94,7 +94,7 @@ describe('DeleteMealDayUsecase', () => {
   });
 
   it('should reject when the session is not allowed to delete the meal day', async () => {
-    mealDayRepositoryMock.get.mockResolvedValue({ ...mealDay, createdBy: 'other-coach' });
+    (mealDayRepositoryMock.get as any).mockResolvedValue({ ...mealDay, createdBy: 'other-coach' });
     const dto: DeleteMealDayUsecaseDto = {
       id: mealDay.id,
       session: { userId: 'coach-123', role: Role.COACH },
@@ -106,9 +106,9 @@ describe('DeleteMealDayUsecase', () => {
   });
 
   it('should log and throw a domain error when deletion fails', async () => {
-    mealDayRepositoryMock.get.mockResolvedValue(mealDay);
+    (mealDayRepositoryMock.get as any).mockResolvedValue(mealDay);
     const failure = new Error('delete failed');
-    mealDayRepositoryMock.delete.mockRejectedValue(failure);
+    (mealDayRepositoryMock.delete as any).mockRejectedValue(failure);
     const dto: DeleteMealDayUsecaseDto = {
       id: mealDay.id,
       session: { userId: 'admin-1', role: Role.ADMIN },
@@ -122,7 +122,7 @@ describe('DeleteMealDayUsecase', () => {
 
   it('should log and throw a domain error when retrieval fails', async () => {
     const failure = new Error('lookup failed');
-    mealDayRepositoryMock.get.mockRejectedValue(failure);
+    (mealDayRepositoryMock.get as any).mockRejectedValue(failure);
     const dto: DeleteMealDayUsecaseDto = {
       id: mealDay.id,
       session: { userId: 'admin-1', role: Role.ADMIN },

@@ -4,8 +4,8 @@ import { ERRORS } from '@src/common/ERROR';
 import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { buildSlug } from '@src/common/slug.util';
-import { mapMealPlanToUsecase } from '@src/usecases/nutri/meal-plan/meal-plan.mapper';
 import { UpdateMealPlanUsecaseDto } from '@src/usecases/nutri/meal-plan/meal-plan.usecase.dto';
+import { mapMealPlanToUsecase } from '@src/usecases/nutri/meal-plan/meal-plan.mapper';
 import type { MealPlanUsecaseModel } from '@src/usecases/nutri/meal-plan/meal-plan.usecase.model';
 
 export class UpdateMealPlanUsecase {
@@ -15,15 +15,15 @@ export class UpdateMealPlanUsecase {
     try {
       const toUpdate: any = { ...dto };
       if (dto.label) {
-        toUpdate.slug = buildSlug({ label: dto.label, fallback: 'meal-plan' });
+        toUpdate.slug = buildSlug({ label: dto.label, fallback: 'meal-plan', locale: dto.locale });
       }
       if (dto.days) {
         toUpdate.days = dto.days.map((day) => ({
           ...day,
-          slug: buildSlug({ label: day.label, fallback: 'meal-day' }),
+          slug: buildSlug({ label: day.label, fallback: 'meal-day', locale: day.locale ?? dto.locale }),
           meals: day.meals.map((meal) => ({
             ...meal,
-            slug: buildSlug({ label: meal.label, fallback: 'meal' }),
+            slug: buildSlug({ label: meal.label, fallback: 'meal', locale: meal.locale ?? dto.locale }),
           })),
         }));
       }

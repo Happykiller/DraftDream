@@ -21,8 +21,10 @@ import {
   CreateProspectInput,
   ListProspectsInput,
   UpdateProspectInput,
+  ConvertProspectInput,
+  ProspectConversionGql,
 } from './prospect.gql.types';
-import { mapProspectUsecaseToGql } from './prospect.mapper';
+import { mapProspectConversionUsecaseToGql, mapProspectUsecaseToGql } from './prospect.mapper';
 import { ProspectObjective } from '@services/db/models/prospect/objective.model';
 import { ProspectActivityPreference } from '@services/db/models/prospect/activity-preference.model';
 import type { UsecaseSession } from '@usecases/prospect/prospect/prospect.usecase.dto';
@@ -160,6 +162,21 @@ export class ProspectResolver {
   @Auth(Role.ADMIN, Role.COACH)
   async prospect_delete(@Args('id', { type: () => ID }) id: string): Promise<boolean> {
     return await inversify.deleteProspectUsecase.execute({ id });
+  }
+
+  @Mutation(() => ProspectConversionGql, { name: 'prospect_convert', nullable: true })
+  @Auth(Role.ADMIN, Role.COACH)
+  async prospect_convert(
+    @Args('input', { type: () => ConvertProspectInput }) input: ConvertProspectInput,
+    @Context('req') req: any,
+  ): Promise<ProspectConversionGql | null> {
+    const session = this.extractSession(req);
+    const result = await inversify.convertProspectToAthleteUsecase.execute({
+      prospectId: input.prospectId,
+      session,
+    });
+
+    return result ? mapProspectConversionUsecaseToGql(result) : null;
   }
 
   private extractSession(req: any): UsecaseSession {

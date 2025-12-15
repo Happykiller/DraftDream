@@ -1,9 +1,150 @@
 {
   "landing": {
     "hero": {
-      "title": "The future showcase for your hybrid teams",
-      "subtitle": "An all-in-one solution combining ergonomic workspaces, smart scheduling, and wellbeing insights.",
-      "cta": "Explore the changelog"
+      "title": "The CRM designed for sports coaches",
+      "titleHighlight": "designed for sports coaches",
+      "subtitle": "Manage your clients, create personalized programs, and grow your business",
+      "description": "Centralize your fitness client management. Create personalized workout and nutrition plans. Automate your administrative tasks with our complete CRM solution.",
+      "benefits": {
+        "trial": "14 days free",
+        "noCommitment": "No commitment",
+        "support": "Support included"
+      }
+    },
+    "features": {
+      "title": "Detailed Features",
+      "subtitle": "Discover all the tools you need to grow your coaching business",
+      "items": {
+        "clientManagement": {
+          "title": "Complete Client Management",
+          "desc": "Centralize clients and prospects: contact info, goals, level, medical conditions. Manage the full journey from contact to retention."
+        },
+        "clientPortal": {
+          "title": "Dedicated Client Portal",
+          "desc": "Each client has their own personal space to view programs, track progress, access nutrition plans, and communicate with their coach."
+        },
+        "programs": {
+          "title": "Personalized Programs",
+          "desc": "Create custom programs adapted to all practices for every client. Access an exercise library and templates to save time."
+        },
+        "messaging": {
+          "title": "Integrated Messaging",
+          "desc": "Direct and secure communication with your clients. Instant messages, file sharing, and centralized conversation tracking."
+        },
+        "calendar": {
+          "title": "Smart Calendar",
+          "desc": "Simplified planning with Google Calendar synchronization. Online booking, automatic reminders, and slot management."
+        },
+        "progress": {
+          "title": "Progress Tracking",
+          "desc": "Visualize your clients' evolution: weight, measurements, progress photos. Detailed charts and analysis for professional monitoring."
+        },
+        "nutrition": {
+          "title": "Nutrition Plans",
+          "desc": "Personalized meal plans with automatic macro calculation. Recipe library and integrated nutrition templates."
+        },
+        "billing": {
+          "title": "Simplified Billing",
+          "desc": "Create and send invoices in one click. Secure online payments via Stripe. Automatic revenue tracking and reminders."
+        },
+        "reports": {
+          "title": "Daily Reports",
+          "desc": "Receive detailed reports from your clients: workout, nutrition, sleep, mental state. Adapt monitoring proactively."
+        },
+        "library": {
+          "title": "Libraries & Automation",
+          "desc": "Access rich libraries of pre-designed programs and nutrition plans. Automate repetitive tasks to focus on coaching."
+        }
+      }
+    },
+    "pricing": {
+      "title": "Choose your plan",
+      "monthly": "Monthly",
+      "annual": "Annual",
+      "discount": "-15%",
+      "popular": "Popular",
+      "perMonth": "/month",
+      "ttc": "incl. tax",
+      "allFeatures": "All features included",
+      "trialIncentive": "14-day free trial offered",
+      "plans": {
+        "trial": {
+          "name": "Trial",
+          "sub": "Up to 5 clients"
+        },
+        "starter": {
+          "name": "Starter",
+          "sub": "Up to 5 clients"
+        },
+        "pro": {
+          "name": "Pro",
+          "sub": "Up to 15 clients"
+        },
+        "premium": {
+          "name": "Premium",
+          "sub": "Unlimited clients"
+        }
+      }
+    },
+    "testimonials": {
+      "title": "They trust us",
+      "subtitle": "Discover how FitDesk CRM transformed the business of our partner professionals",
+      "role": "Sports Coach",
+      "reviews": {
+        "1": {
+          "text": "FitDesk CRM revolutionized how I work. I can now easily track my 25 clients."
+        },
+        "2": {
+          "text": "The interface is intuitive and the features are exactly what I needed. My clients love it."
+        },
+        "3": {
+          "text": "Since using FitDesk, I save 2 hours per day on admin management. I can focus on coaching."
+        }
+      }
+    },
+    "stats": {
+      "1": {
+        "value": "500+",
+        "label": "Active Coaches"
+      },
+      "2": {
+        "value": "98%",
+        "label": "Client Satisfaction"
+      },
+      "3": {
+        "value": "+40%",
+        "label": "Average Revenue"
+      },
+      "4": {
+        "value": "1h30",
+        "label": "Saved per day"
+      }
+    },
+    "cta": {
+      "title": "Ready to transform your fitness business?",
+      "subtitle": "Join hundreds of professionals who have already chosen FitDesk CRM"
+    },
+    "footer": {
+      "brandDesc": "The CRM solution dedicated to fitness professionals.",
+      "product": {
+        "title": "Product",
+        "features": "Features",
+        "pricing": "Pricing"
+      },
+      "support": {
+        "title": "Support",
+        "contact": "Contact",
+        "helpCenter": "Help Center",
+        "news": "What's New"
+      },
+      "legal": {
+        "title": "Legal",
+        "mentions": "Legal Notice",
+        "ems": "Terms of Use",
+        "sales": "Terms of Sale",
+        "privacy": "Privacy Policy"
+      },
+      "rights": "© 2025 FitDesk CRM. All rights reserved"
     }
   }
 }

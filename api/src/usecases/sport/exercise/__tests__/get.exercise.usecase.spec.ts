@@ -9,6 +9,7 @@ import { BddServiceExerciseMongo } from '@services/db/mongo/repositories/exercis
 import { Exercise } from '@services/db/models/exercise.model';
 import { GetExerciseUsecase } from '@src/usecases/sport/exercise/get.exercise.usecase';
 import { GetExerciseUsecaseDto } from '@src/usecases/sport/exercise/exercise.usecase.dto';
+import { GetExerciseDto } from '@services/db/dtos/exercise.dto';
 import { ExerciseUsecaseModel } from '@src/usecases/sport/exercise/exercise.usecase.model';
 
 interface LoggerMock {
@@ -35,14 +36,14 @@ describe('GetExerciseUsecase', () => {
     charge: 'bodyweight',
     rest: 60,
     videoUrl: 'https://cdn.local/push-up.mp4',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     categories: [
       {
         id: 'category-1',
         slug: 'cat',
         locale: 'en-us',
         label: 'Category',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -54,7 +55,7 @@ describe('GetExerciseUsecase', () => {
         slug: 'muscle',
         locale: 'en-us',
         label: 'Muscle',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -66,7 +67,7 @@ describe('GetExerciseUsecase', () => {
         slug: 'equipment',
         locale: 'en-us',
         label: 'Equipment',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -78,7 +79,7 @@ describe('GetExerciseUsecase', () => {
         slug: 'tag',
         locale: 'en-us',
         label: 'Tag',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -101,7 +102,7 @@ describe('GetExerciseUsecase', () => {
     charge: 'bodyweight',
     rest: 60,
     videoUrl: 'https://cdn.local/push-up.mp4',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     categoryIds: ['category-1'],
     muscleIds: ['muscle-1'],
     equipmentIds: ['equipment-1'],
@@ -129,7 +130,7 @@ describe('GetExerciseUsecase', () => {
   });
 
   it('should return null when the repository returns null', async () => {
-    exerciseRepositoryMock.get.mockResolvedValue(null);
+    (exerciseRepositoryMock.get as any).mockResolvedValue(null);
 
     const dto: GetExerciseUsecaseDto = {
       id: 'exercise-unknown',
@@ -142,7 +143,7 @@ describe('GetExerciseUsecase', () => {
   });
 
   it('should return the mapped exercise for an admin session', async () => {
-    exerciseRepositoryMock.get.mockResolvedValue(exercise);
+    (exerciseRepositoryMock.get as any).mockResolvedValue(exercise);
 
     const dto: GetExerciseUsecaseDto = {
       id: exercise.id,
@@ -156,7 +157,7 @@ describe('GetExerciseUsecase', () => {
   });
 
   it('should return the exercise when requested by its creator', async () => {
-    exerciseRepositoryMock.get.mockResolvedValue({ ...exercise, createdBy: 'creator-1' });
+    (exerciseRepositoryMock.get as any).mockResolvedValue({ ...exercise, createdBy: 'creator-1' });
 
     const dto: GetExerciseUsecaseDto = {
       id: exercise.id,
@@ -169,7 +170,7 @@ describe('GetExerciseUsecase', () => {
   });
 
   it('should return the exercise to a coach when visibility is public', async () => {
-    exerciseRepositoryMock.get.mockResolvedValue({ ...exercise, createdBy: 'owner-1', visibility: 'public' });
+    (exerciseRepositoryMock.get as any).mockResolvedValue({ ...exercise, createdBy: 'owner-1', visibility: 'PUBLIC' });
 
     const dto: GetExerciseUsecaseDto = {
       id: exercise.id,
@@ -182,7 +183,7 @@ describe('GetExerciseUsecase', () => {
   });
 
   it('should throw a forbidden error when the user is not allowed to access the exercise', async () => {
-    exerciseRepositoryMock.get.mockResolvedValue({ ...exercise, visibility: 'private', createdBy: 'owner-2' });
+    (exerciseRepositoryMock.get as any).mockResolvedValue({ ...exercise, visibility: 'PRIVATE', createdBy: 'owner-2' });
 
     const dto: GetExerciseUsecaseDto = {
       id: exercise.id,
@@ -195,7 +196,7 @@ describe('GetExerciseUsecase', () => {
 
   it('should log and throw a domain error when retrieval fails', async () => {
     const failure = new Error('database failure');
-    exerciseRepositoryMock.get.mockRejectedValue(failure);
+    (exerciseRepositoryMock.get as any).mockRejectedValue(failure);
 
     const dto: GetExerciseUsecaseDto = {
       id: exercise.id,

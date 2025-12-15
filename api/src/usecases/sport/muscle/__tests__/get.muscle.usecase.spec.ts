@@ -29,7 +29,7 @@ describe('GetMuscleUsecase', () => {
     slug: 'triceps',
     locale: 'en-US',
     label: 'Triceps',
-    visibility: 'private',
+    visibility: 'PRIVATE',
     createdBy: 'coach-2',
     createdAt: new Date('2024-01-02T00:00:00.000Z'),
     updatedAt: new Date('2024-02-02T00:00:00.000Z'),
@@ -54,7 +54,7 @@ describe('GetMuscleUsecase', () => {
   });
 
   it('should return the muscle retrieved from the repository', async () => {
-    muscleRepositoryMock.get.mockResolvedValue(muscle);
+    (muscleRepositoryMock.get as any).mockResolvedValue(muscle);
 
     const result = await usecase.execute(dto);
 
@@ -64,7 +64,7 @@ describe('GetMuscleUsecase', () => {
   });
 
   it('should return null when the muscle is not found', async () => {
-    muscleRepositoryMock.get.mockResolvedValue(null);
+    (muscleRepositoryMock.get as any).mockResolvedValue(null);
 
     const result = await usecase.execute(dto);
 
@@ -73,7 +73,7 @@ describe('GetMuscleUsecase', () => {
 
   it('should log and throw a domain error when retrieval fails', async () => {
     const failure = new Error('repository failure');
-    muscleRepositoryMock.get.mockRejectedValue(failure);
+    (muscleRepositoryMock.get as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.GET_MUSCLE_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(

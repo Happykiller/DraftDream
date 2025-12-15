@@ -82,6 +82,12 @@ const UPDATE_M = `
   }
 `;
 
+const DELETE_M = `
+  mutation DeleteUser($id: ID!) {
+    user_delete(id: $id)
+  }
+`;
+
 export interface UseUsersParams {
   page: number; // 1-based
   limit: number;
@@ -201,5 +207,26 @@ export function useUsers({ page, limit, q, type }: UseUsersParams) {
     [execute, gql, flashError, flashSuccess, load, page, limit, q, type]
   );
 
-  return { items, total, loading, create, update, reload: () => load({ page, limit, q, type }) };
+  const remove = React.useCallback(
+    async (id: string) => {
+      try {
+        const { errors } = await execute(() =>
+          gql.send<{ user_delete: boolean }>({
+            query: DELETE_M,
+            variables: { id },
+            operationName: 'DeleteUser',
+          }),
+        );
+        if (errors?.length) throw new Error(errors[0].message);
+        flashSuccess('User deleted');
+        await load({ page, limit, q, type });
+      } catch (e: any) {
+        flashError(e?.message ?? 'Delete failed');
+        throw e;
+      }
+    },
+    [execute, gql, flashError, flashSuccess, load, page, limit, q, type]
+  );
+
+  return { items, total, loading, create, update, remove, reload: () => load({ page, limit, q, type }) };
 }

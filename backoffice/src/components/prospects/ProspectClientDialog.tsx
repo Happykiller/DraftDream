@@ -14,9 +14,11 @@ import {
   TextField,
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
 
-import { ProspectStatusEnum, type ProspectStatusOption } from '@commons/prospects/status';
+import { ProspectStatus } from '@commons/prospects/status';
 import type { Prospect } from '@hooks/useProspects';
 import type { ProspectMetadataOption } from '@hooks/useProspectMetadataOptions';
 
@@ -25,7 +27,7 @@ export interface ProspectClientDialogValues {
   lastName: string;
   email: string;
   phone?: string;
-  status: ProspectStatusEnum | '';
+  status: ProspectStatus | '';
   levelId?: string | null;
   sourceId?: string | null;
   objectiveIds: string[];
@@ -60,7 +62,8 @@ export interface ProspectClientDialogProps {
   open: boolean;
   mode: 'create' | 'edit';
   initial?: Prospect | null;
-  statuses: ProspectStatusOption[];
+  statuses: Array<{ value: ProspectStatus; label: string }>;
+
   levels: ProspectMetadataOption[];
   sources: ProspectMetadataOption[];
   objectives: ProspectMetadataOption[];
@@ -86,6 +89,18 @@ export function ProspectClientDialog({
   const { t } = useTranslation();
   const [values, setValues] = React.useState<ProspectClientDialogValues>(DEFAULT_VALUES);
   const isEdit = mode === 'edit';
+  const creatorEmail = React.useMemo(
+    () => initial?.creator?.email ?? initial?.createdBy ?? '',
+    [initial?.createdBy, initial?.creator?.email],
+  );
+  const formattedCreatedAt = React.useMemo(() => {
+    if (!initial?.createdAt) return '';
+    return new Date(initial.createdAt).toLocaleString();
+  }, [initial?.createdAt]);
+  const formattedUpdatedAt = React.useMemo(() => {
+    if (!initial?.updatedAt) return '';
+    return new Date(initial.updatedAt).toLocaleString();
+  }, [initial?.updatedAt]);
 
   React.useEffect(() => {
     if (isEdit && initial) {
@@ -136,6 +151,43 @@ export function ProspectClientDialog({
         {isEdit ? t('prospects.list.dialog.edit_title') : t('prospects.list.dialog.create_title')}
       </DialogTitle>
       <DialogContent dividers>
+        {isEdit && initial ? (
+          <Stack spacing={1.5} sx={{ mb: 2 }}>
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="caption" color="text.secondary">
+                  {t('common.labels.id')}
+                </Typography>
+                <Typography variant="body2" sx={{ wordBreak: 'break-all' }}>
+                  {initial.id || '-'}
+                </Typography>
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="caption" color="text.secondary">
+                  {t('common.labels.creator')}
+                </Typography>
+                <Typography variant="body2" sx={{ wordBreak: 'break-all' }}>
+                  {creatorEmail || '-'}
+                </Typography>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="caption" color="text.secondary">
+                  {t('common.labels.created')}
+                </Typography>
+                <Typography variant="body2">{formattedCreatedAt || '-'}</Typography>
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="caption" color="text.secondary">
+                  {t('common.labels.updated')}
+                </Typography>
+                <Typography variant="body2">{formattedUpdatedAt || '-'}</Typography>
+              </Grid>
+            </Grid>
+          </Stack>
+        ) : null}
+
         {/* General information */}
         <Box component="form" onSubmit={handleSubmit}>
           <Grid container spacing={2} sx={{ mt: 0 }}>

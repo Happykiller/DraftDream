@@ -89,7 +89,7 @@ export class BddServiceUserMongo {
     try {
       const _id = this.toObjectId(dto.id);
       const projection = this.makeProjection(!!opts?.includePassword);
-      const doc = await (this.col()).findOne({ _id }, { projection });
+      const doc = await (this.col()).findOne({ _id, deletedAt: { $exists: false } }, { projection });
       return doc ? this.toModel(doc, !!opts?.includePassword) : null;
     } catch (error) {
       this.handleError('getUser', error);
@@ -100,7 +100,7 @@ export class BddServiceUserMongo {
   async getUserByEmail(email: string, opts?: { includePassword?: boolean }): Promise<User | null> {
     try {
       const projection = this.makeProjection(!!opts?.includePassword);
-      const doc = await (this.col()).findOne({ email: email.toLowerCase().trim() }, { projection });
+      const doc = await (this.col()).findOne({ email: email.toLowerCase().trim(), deletedAt: { $exists: false } }, { projection });
       return doc ? this.toModel(doc, !!opts?.includePassword) : null;
     } catch (error) {
       this.handleError('getUserByEmail', error);
@@ -116,7 +116,7 @@ export class BddServiceUserMongo {
       is_active, createdBy,
     } = params;
 
-    const filter: Filter<UserDoc> = {};
+    const filter: Filter<UserDoc> = { deletedAt: { $exists: false } };
     if (type) filter.type = type;
     if (companyName?.trim()) {
       filter['company.name' as keyof UserDoc] = new RegExp(companyName.trim(), 'i') as any;
@@ -179,10 +179,10 @@ export class BddServiceUserMongo {
     if (patch.createdBy !== undefined) $set.createdBy = patch.createdBy;
 
     try {
-      const res: any = await (this.col()).findOneAndUpdate(
+      const res = await (this.col()).findOneAndUpdate(
         { _id }, { $set }, { returnDocument: 'after', projection: this.makeProjection(false) }
       );
-      return res.value ? this.toModel(res.value, false) : null;
+      return res ? this.toModel(res, false) : null;
     } catch (error) {
       if (this.isDuplicateError(error)) {
         const err = new Error('EMAIL_ALREADY_EXISTS');
@@ -218,6 +218,17 @@ export class BddServiceUserMongo {
       return res.modifiedCount === 1;
     } catch (error) {
       this.handleError('deleteUser', error);
+    }
+  }
+
+  // --- Hard Delete ---
+  async hardDeleteUser(id: string): Promise<boolean> {
+    try {
+      const _id = this.toObjectId(id);
+      const res = await (this.col()).deleteOne({ _id });
+      return res.deletedCount === 1;
+    } catch (error) {
+      this.handleError('hardDeleteUser', error);
     }
   }
 

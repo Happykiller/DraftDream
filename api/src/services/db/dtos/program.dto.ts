@@ -34,7 +34,7 @@ export interface CreateProgramDto {
   duration: number;
   frequency: number;
   description?: string;
-  visibility?: 'private' | 'public';
+  visibility?: 'PRIVATE' | 'PUBLIC';
   /** Snapshot of sessions attached to the program. */
   sessions: ProgramSessionSnapshotDto[];
   /** Optional assigned user id */
@@ -49,7 +49,7 @@ export interface ListProgramsDto {
   locale?: string;
   createdBy?: string;
   createdByIn?: string[];
-  visibility?: 'private' | 'public';
+  visibility?: 'PRIVATE' | 'PUBLIC';
   /** Filter by assigned user id */
   userId?: string;
   includePublicVisibility?: boolean;
@@ -66,7 +66,7 @@ export type UpdateProgramDto = Partial<{
   duration: number;
   frequency: number;
   description: string;
-  visibility: 'private' | 'public';
+  visibility: 'PRIVATE' | 'PUBLIC';
   /** Replace the whole snapshot definition. */
   sessions: ProgramSessionSnapshotDto[];
   /** Set/replace the assigned user id */

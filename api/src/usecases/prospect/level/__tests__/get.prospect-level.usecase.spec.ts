@@ -27,7 +27,7 @@ describe('GetProspectLevelUsecase', () => {
     id: 'level-1',
     locale: 'fr',
     label: 'Client',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'admin-1',
     createdAt: now,
     updatedAt: now,
@@ -47,20 +47,20 @@ describe('GetProspectLevelUsecase', () => {
   });
 
   it('should return a level when found', async () => {
-    repositoryMock.get.mockResolvedValue(level);
+    (repositoryMock.get as any).mockResolvedValue(level);
 
     await expect(usecase.execute(dto)).resolves.toEqual(level);
   });
 
   it('should return null when not found', async () => {
-    repositoryMock.get.mockResolvedValue(null);
+    (repositoryMock.get as any).mockResolvedValue(null);
 
     await expect(usecase.execute(dto)).resolves.toBeNull();
   });
 
   it('should log and throw when repository fails', async () => {
     const failure = new Error('get failure');
-    repositoryMock.get.mockRejectedValue(failure);
+    (repositoryMock.get as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.GET_PROSPECT_LEVEL_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(`GetProspectLevelUsecase#execute => ${failure.message}`);

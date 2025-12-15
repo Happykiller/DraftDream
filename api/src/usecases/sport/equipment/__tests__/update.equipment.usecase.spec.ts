@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -41,7 +41,7 @@ describe('UpdateEquipmentUsecase', () => {
     slug: 'rack-a-squat',
     locale: 'fr-fr',
     label: 'Rack à squat',
-    visibility: 'private',
+    visibility: 'PRIVATE',
     createdBy: 'coach-5',
     createdAt: now,
     updatedAt: now,
@@ -65,7 +65,7 @@ describe('UpdateEquipmentUsecase', () => {
   });
 
   it('should update equipment through the repository', async () => {
-    equipmentRepositoryMock.update.mockResolvedValue(equipment);
+    (equipmentRepositoryMock.update as any).mockResolvedValue(equipment);
 
     const result = await usecase.execute(dto);
 
@@ -78,7 +78,7 @@ describe('UpdateEquipmentUsecase', () => {
   });
 
   it('should return null when repository update returns null', async () => {
-    equipmentRepositoryMock.update.mockResolvedValue(null);
+    (equipmentRepositoryMock.update as any).mockResolvedValue(null);
 
     const result = await usecase.execute(dto);
 
@@ -87,7 +87,7 @@ describe('UpdateEquipmentUsecase', () => {
 
   it('should log and throw a domain error when repository update fails', async () => {
     const failure = new Error('update failure');
-    equipmentRepositoryMock.update.mockRejectedValue(failure);
+    (equipmentRepositoryMock.update as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.UPDATE_EQUIPMENT_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(`UpdateEquipmentUsecase#execute => ${failure.message}`);

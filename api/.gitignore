@@ -12,3 +12,4 @@ src/config/prod.ts
 .vscode/settings.json
 gqlschema.gql
 coverage/
+coverage_report.txt

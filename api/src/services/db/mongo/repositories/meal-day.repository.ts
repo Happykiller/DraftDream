@@ -7,10 +7,11 @@ import {
   CreateMealDayDto,
   GetMealDayDto,
   ListMealDaysDto,
-  MealDayVisibility,
   UpdateMealDayDto,
 } from '@services/db/dtos/meal-day.dto';
 import { MealDay } from '@services/db/models/meal-day.model';
+import { toVisibility } from '@src/common/enum.util';
+import { Visibility } from '@src/common/visibility.enum';
 
 interface MealDayDoc {
   _id: ObjectId;
@@ -22,7 +23,7 @@ interface MealDayDoc {
 
   mealIds: string[];
 
-  visibility: MealDayVisibility;
+  visibility: Visibility;
   createdBy: ObjectId;
   deletedAt?: Date;
   createdAt: Date;
@@ -66,7 +67,7 @@ export class BddServiceMealDayMongo {
 
       mealIds: [...dto.mealIds],
 
-      visibility: dto.visibility,
+      visibility: toVisibility(dto.visibility) ?? Visibility.PRIVATE,
       createdBy: this.toObjectId(dto.createdBy),
       createdAt: now,
       updatedAt: now,
@@ -119,9 +120,8 @@ export class BddServiceMealDayMongo {
     }
 
     if (visibility) {
-      if (visibility === 'public') andConditions.push({ visibility: 'public' });
-      
-      else andConditions.push({ visibility: 'private' });
+      const normalized = toVisibility(visibility);
+      if (normalized) andConditions.push({ visibility: normalized });
     }
 
     const normalizedCreatedByIn = Array.isArray(createdByIn)
@@ -148,12 +148,12 @@ export class BddServiceMealDayMongo {
       const extraCreators = includeCreatorIds
         .map((id) => id?.trim())
         .filter((id): id is string => Boolean(id));
-      if (extraCreators.length > 0) {
-        orConditions.push({
-          createdBy: { $in: extraCreators.map(this.toObjectId) },
-          visibility: 'public',
-        });
-      }
+        if (extraCreators.length > 0) {
+          orConditions.push({
+            createdBy: { $in: extraCreators.map(this.toObjectId) },
+            visibility: Visibility.PUBLIC,
+          });
+        }
 
       andConditions.push({ $or: orConditions });
     }
@@ -188,7 +188,7 @@ export class BddServiceMealDayMongo {
     if (patch.label !== undefined) $set.label = patch.label.trim();
     if (patch.description !== undefined) $set.description = patch.description;
     if (patch.mealIds !== undefined) $set.mealIds = [...patch.mealIds];
-    if (patch.visibility !== undefined) $set.visibility = patch.visibility;
+    if (patch.visibility !== undefined) $set.visibility = toVisibility(patch.visibility) ?? Visibility.PRIVATE;
 
     try {
       const res: any = await (this.col()).findOneAndUpdate(
@@ -235,7 +235,7 @@ export class BddServiceMealDayMongo {
 
     mealIds: [...(doc.mealIds ?? [])],
 
-    visibility: doc.visibility,
+    visibility: toVisibility(doc.visibility) ?? Visibility.PRIVATE,
     createdBy: doc.createdBy.toHexString(),
     deletedAt: doc.deletedAt,
     createdAt: doc.createdAt,

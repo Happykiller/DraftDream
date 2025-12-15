@@ -6,6 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Autocomplete,
   Button,
+  Chip,
   Dialog,
   DialogActions,
   DialogContent,
@@ -20,6 +21,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { useDateFormatter } from '@src/hooks/useDateFormatter';
 
 import type { MealDay } from '@hooks/useMealDays';
 import { VISIBILITY_OPTIONS, type Visibility } from '@src/commons/visibility';
@@ -33,7 +35,6 @@ export interface MealDayDialogMealOption {
 }
 
 export interface MealDayDialogValues {
-  slug: string;
   locale: string;
   label: string;
   description: string;
@@ -53,7 +54,6 @@ export interface MealDayDialogProps {
 }
 
 const DEFAULT_VALUES: MealDayDialogValues = {
-  slug: '',
   locale: 'en',
   label: '',
   description: '',
@@ -119,6 +119,17 @@ export function MealDayDialog({
   const [selectedOption, setSelectedOption] = React.useState<MealDayDialogMealOption | null>(null);
   const { t } = useTranslation();
   const isEdit = mode === 'edit';
+  const formatDate = useDateFormatter();
+
+  const creatorEmail = React.useMemo(() => initial?.creator?.email || '-', [initial?.creator?.email]);
+  const formattedCreatedAt = React.useMemo(
+    () => (initial?.createdAt ? formatDate(initial.createdAt) : '-'),
+    [initial?.createdAt, formatDate],
+  );
+  const formattedUpdatedAt = React.useMemo(
+    () => (initial?.updatedAt ? formatDate(initial.updatedAt) : '-'),
+    [initial?.updatedAt, formatDate],
+  );
 
   const filteredMealOptions = React.useMemo(
     () => mealOptions.filter((option) => option.locale === values.locale),
@@ -128,7 +139,6 @@ export function MealDayDialog({
   React.useEffect(() => {
     if (open && isEdit && initial) {
       setValues({
-        slug: initial.slug,
         locale: initial.locale,
         label: initial.label,
         description: initial.description ?? '',
@@ -195,13 +205,11 @@ export function MealDayDialog({
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const trimmedSlug = values.slug.trim();
     const trimmedLabel = values.label.trim();
-    if (!trimmedSlug || !trimmedLabel) return;
+    if (!trimmedLabel) return;
 
     await onSubmit({
       ...values,
-      slug: trimmedSlug,
       label: trimmedLabel,
       description: values.description.trim(),
     });
@@ -215,16 +223,44 @@ export function MealDayDialog({
       </DialogTitle>
       <DialogContent>
         <Stack component="form" spacing={3} sx={{ mt: 1 }} onSubmit={submit}>
+          {/* Metadata */}
+          {isEdit && initial ? (
+            <Stack spacing={1.5}>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <Stack flex={1} spacing={0.25}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('common.labels.slug')}
+                  </Typography>
+                  <Typography variant="body2" sx={{ wordBreak: 'break-all' }}>
+                    {initial.slug || '-'}
+                  </Typography>
+                </Stack>
+                <Stack flex={1} spacing={0.25}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('common.labels.creator')}
+                  </Typography>
+                  <Typography variant="body2">{creatorEmail}</Typography>
+                </Stack>
+              </Stack>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <Stack flex={1} spacing={0.25}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('common.labels.created')}
+                  </Typography>
+                  <Typography variant="body2">{formattedCreatedAt}</Typography>
+                </Stack>
+                <Stack flex={1} spacing={0.25}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('common.labels.updated')}
+                  </Typography>
+                  <Typography variant="body2">{formattedUpdatedAt}</Typography>
+                </Stack>
+              </Stack>
+            </Stack>
+          ) : null}
+
           {/* General information */}
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-            <TextField
-              label={t('common.labels.slug')}
-              name="slug"
-              value={values.slug}
-              onChange={handleFieldChange}
-              required
-              fullWidth
-            />
             <TextField
               select
               label={t('common.labels.locale')}
@@ -276,14 +312,20 @@ export function MealDayDialog({
             fullWidth
           />
 
-          <Stack spacing={2}>
-            <Stack direction="row" spacing={2} alignItems="center">
+          <Stack spacing={1.5}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} alignItems="center">
               <Autocomplete
                 value={selectedOption}
                 onChange={(_, option) => setSelectedOption(option)}
                 options={filteredMealOptions}
                 loading={mealOptionsLoading}
                 getOptionLabel={(option) => option.label}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                renderOption={(props, option) => (
+                  <li {...props} key={option.id}>
+                    {option.label} ({option.locale.toUpperCase()})
+                  </li>
+                )}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -311,41 +353,52 @@ export function MealDayDialog({
                 )}
                 sx={{ flex: 1 }}
               />
-              <Button variant="outlined" onClick={handleAddMeal} disabled={!selectedOption}>
-                {t('meals.mealDays.dialog.add_meal')}
+              <Button
+                variant="outlined"
+                onClick={handleAddMeal}
+                disabled={!selectedOption}
+                sx={{ alignSelf: { xs: 'stretch', sm: 'center' }, whiteSpace: 'nowrap' }}
+              >
+                {t('common.buttons.add')}
               </Button>
             </Stack>
 
             {values.meals.length === 0 ? (
-              <Typography variant="body2" color="text.secondary">
-                {t('meals.mealDays.dialog.empty_meals')}
-              </Typography>
+              <Chip label={t('meals.mealDays.dialog.empty_meals')} variant="outlined" size="small" />
             ) : (
-              <List dense>
+              <List dense sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
                 {values.meals.map((meal, index) => (
                   <ListItem
                     key={`${meal.id}-${index}`}
                     secondaryAction={
                       <Stack direction="row" spacing={0.5}>
-                        <IconButton
-                          edge="end"
-                          aria-label="move-up"
+                        <Button
+                          size="small"
                           onClick={() => handleMove(index, 'up')}
+                          aria-label={`move-meal-up-${meal.id}`}
+                          startIcon={<ArrowUpwardIcon fontSize="inherit" />}
                           disabled={index === 0}
                         >
-                          <ArrowUpwardIcon />
-                        </IconButton>
-                        <IconButton
-                          edge="end"
-                          aria-label="move-down"
+                          {t('common.labels.up')}
+                        </Button>
+                        <Button
+                          size="small"
                           onClick={() => handleMove(index, 'down')}
+                          aria-label={`move-meal-down-${meal.id}`}
+                          startIcon={<ArrowDownwardIcon fontSize="inherit" />}
                           disabled={index === values.meals.length - 1}
                         >
-                          <ArrowDownwardIcon />
-                        </IconButton>
-                        <IconButton edge="end" aria-label="delete" onClick={() => handleRemove(index)}>
-                          <DeleteIcon />
-                        </IconButton>
+                          {t('common.labels.down')}
+                        </Button>
+                        <Button
+                          size="small"
+                          color="error"
+                          onClick={() => handleRemove(index)}
+                          aria-label={`remove-meal-${meal.id}`}
+                          startIcon={<DeleteIcon fontSize="inherit" />}
+                        >
+                          {t('common.buttons.delete')}
+                        </Button>
                       </Stack>
                     }
                   >
@@ -359,8 +412,10 @@ export function MealDayDialog({
             )}
           </Stack>
 
-          <DialogActions>
-            <Button onClick={onClose}>{t('common.buttons.cancel')}</Button>
+          <DialogActions sx={{ px: 0 }}>
+            <Button onClick={onClose} color="inherit">
+              {t('common.buttons.cancel')}
+            </Button>
             <Button type="submit" variant="contained">
               {isEdit ? t('common.buttons.save') : t('common.buttons.create')}
             </Button>

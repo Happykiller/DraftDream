@@ -1,11 +1,15 @@
-// docs\user.http
+# docs/user.http
+@page = 1
+@limit = 10
 
-### Create a user (GraphQL)
+### User: create coach (admin only)
 POST {{host}}
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "query": "mutation CreateUser($input: CreateUserInput!) { user_create(input: $input) { id type first_name last_name email phone createdAt updatedAt } }",
+  "query":
+    "mutation($input: CreateUserInput!){ user_create(input: $input) { id type first_name last_name email phone is_active createdBy createdAt updatedAt } }",
   "variables": {
     "input": {
       "type": "coach",
@@ -14,6 +18,7 @@ Content-Type: application/json
       "email": "alex.martin@example.com",
       "phone": "+33612345678",
       "password": "SuperSecret123!",
+      "confirm_password": "SuperSecret123!",
       "address": {
         "name": "12 rue des Fleurs",
         "city": "Lyon",
@@ -28,13 +33,98 @@ Content-Type: application/json
           "code": "75011",
           "country": "FR"
         }
+      },
+      "is_active": true
+    }
+  }
+}
+
+### User: create athlete (admin only)
+POST {{host}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query":
+    "mutation($input: CreateUserInput!){ user_create(input: $input) { id type first_name last_name email phone is_active createdAt } }",
+  "variables": {
+    "input": {
+      "type": "athlete",
+      "first_name": "Jamie",
+      "last_name": "Lee",
+      "email": "jamie.lee@example.com",
+      "phone": "+33698765432",
+      "password": "AnotherSecret123!",
+      "confirm_password": "AnotherSecret123!",
+      "address": {
+        "name": "2 place Bellecour",
+        "city": "Lyon",
+        "code": "69002",
+        "country": "FR"
+      },
+      "is_active": true
+    }
+  }
+}
+
+### User: list (admin or coach)
+POST {{host}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query":
+    "query($input: ListUsersInput){ user_list(input: $input){ items{ id type first_name last_name email phone company { name } is_active createdBy createdAt } total page limit } }",
+  "variables": {
+    "input": {
+      // "q": "martin",
+      // "type": "coach",
+      // "companyName": "FitDesk",
+      // "is_active": true,
+      "page": {{page}},
+      "limit": {{limit}}
+    }
+  }
+}
+
+### User: update (admin only)
+POST {{host}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query":
+    "mutation($input: UpdateUserInput!){ user_update(input: $input) { id type first_name last_name email phone company { name } is_active updatedAt } }",
+  "variables": {
+    "input": {
+      "id": "REPLACE_USER_ID",
+      "first_name": "Alexandre",
+      "last_name": "Martin",
+      "phone": "+33612345679",
+      "company": {
+        "name": "FitDesk Europe"
       }
     }
   }
 }
 
+### User: deactivate (admin only)
+POST {{host}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
 
-### who
+{
+  "query":
+    "mutation($input: UpdateUserInput!){ user_update(input: $input) { id email is_active updatedAt } }",
+  "variables": {
+    "input": {
+      "id": "REPLACE_USER_ID",
+      "is_active": false
+    }
+  }
+}
+
+### Who am I (any authenticated user)
 POST {{host}}
 Authorization: Bearer {{token}}
 Content-Type: application/json

@@ -1,9 +1,150 @@
 {
   "landing": {
     "hero": {
-      "title": "La future vitrine des équipes hybrides",
-      "subtitle": "Une solution tout-en-un mêlant espaces ergonomiques, planification intelligente et insights bien-être.",
-      "cta": "Explorer le changelog"
+      "title": "Le CRM conçu pour les coachs sportifs",
+      "titleHighlight": "conçu pour les coachs sportifs",
+      "subtitle": "Gérez vos clients, créez des programmes personnalisés et développez votre activité",
+      "description": "Centralisez la gestion de votre clientèle fitness. Créez des programmes d'entraînement et de nutrition personnalisés. Automatisez vos tâches administratives avec notre solution CRM complète.",
+      "benefits": {
+        "trial": "14 jours gratuits",
+        "noCommitment": "Sans engagement",
+        "support": "Support inclus"
+      }
+    },
+    "features": {
+      "title": "Fonctionnalités détaillées",
+      "subtitle": "Découvrez tous les outils dont vous avez besoin pour développer votre activité de coaching",
+      "items": {
+        "clientManagement": {
+          "title": "Gestion complète des clients",
+          "desc": "Centralisez clients et prospects : coordonnées, objectifs, niveau, conditions médicales. Gérez le parcours complet de la prise de contact à la fidélisation."
+        },
+        "clientPortal": {
+          "title": "Portail client dédié",
+          "desc": "Chaque client dispose de son propre espace personnel pour consulter ses programmes, suivre sa progression, accéder à ses plans nutritionnels et communiquer avec son coach."
+        },
+        "programs": {
+          "title": "Programmes personnalisés",
+          "desc": "Créez des programmes sur mesure et adaptés à toutes les pratiques pour chacun de vos clients. Accédez à une bibliothèque d'exercices et des templates pour gagner du temps."
+        },
+        "messaging": {
+          "title": "Messagerie intégrée",
+          "desc": "Communication directe et sécurisée avec vos clients. Messages instantanés, partage de fichiers et suivi des échanges centralisé."
+        },
+        "calendar": {
+          "title": "Agenda intelligent",
+          "desc": "Planification simplifiée avec synchronisation Google Calendar. Réservations en ligne, rappels automatiques et gestion des créneaux."
+        },
+        "progress": {
+          "title": "Suivi de progression",
+          "desc": "Visualisez l'évolution de vos clients : poids, mensurations, photos de progression. Graphiques détaillés et analyses pour un suivi professionnel."
+        },
+        "nutrition": {
+          "title": "Plans nutritionnels",
+          "desc": "Plans alimentaires personnalisés avec calcul automatique des macros. Bibliothèque de recettes et templates nutritionnels intégrés."
+        },
+        "billing": {
+          "title": "Facturation simplifiée",
+          "desc": "Créez et envoyez des factures en un clic. Paiements en ligne sécurisés via Stripe. Suivi automatique des revenus et relances."
+        },
+        "reports": {
+          "title": "Rapports quotidiens",
+          "desc": "Recevez des rapports détaillés de vos clients : entraînement, nutrition, sommeil, état mental. Adaptez le suivi de manière proactive."
+        },
+        "library": {
+          "title": "Bibliothèques et automatisation",
+          "desc": "Accédez à de riches bibliothèques de programmes et plans nutritionnels pré-conçus. Automatisez les tâches répétitives pour vous concentrer sur le coaching."
+        }
+      }
+    },
+    "pricing": {
+      "title": "Choisissez votre plan",
+      "monthly": "Mensuel",
+      "annual": "Annuel",
+      "discount": "-15%",
+      "popular": "Populaire",
+      "perMonth": "/mois",
+      "ttc": "TTC",
+      "allFeatures": "Toutes les fonctionnalités incluses",
+      "trialIncentive": "Essai de 14 jours offerts",
+      "plans": {
+        "trial": {
+          "name": "Essai",
+          "sub": "Jusqu'à 5 clients"
+        },
+        "starter": {
+          "name": "Starter",
+          "sub": "Jusqu'à 5 clients"
+        },
+        "pro": {
+          "name": "Pro",
+          "sub": "Jusqu'à 15 clients"
+        },
+        "premium": {
+          "name": "Premium",
+          "sub": "Clients illimités"
+        }
+      }
+    },
+    "testimonials": {
+      "title": "Ils nous font confiance",
+      "subtitle": "Découvrez comment FitDesk CRM a transformé l'activité de nos professionnels partenaires",
+      "role": "Coach Sportif",
+      "reviews": {
+        "1": {
+          "text": "FitDesk CRM a révolutionné ma façon de travailler. Je peux maintenant suivre mes 25 clients facilement."
+        },
+        "2": {
+          "text": "L'interface est intuitive et les fonctionnalités sont exactement ce dont j'avais besoin. Mes clients adorent."
+        },
+        "3": {
+          "text": "Depuis que j'utilise FitDesk, je gagne 2h par jour sur ma gestion administrative. Je peux me concentrer sur le coaching."
+        }
+      }
+    },
+    "stats": {
+      "1": {
+        "value": "500+",
+        "label": "Coachs actifs"
+      },
+      "2": {
+        "value": "98%",
+        "label": "Satisfaction client"
+      },
+      "3": {
+        "value": "+40%",
+        "label": "Revenus en moyenne"
+      },
+      "4": {
+        "value": "1h30",
+        "label": "Économisée par jour"
+      }
+    },
+    "cta": {
+      "title": "Prêt à transformer votre activité fitness ?",
+      "subtitle": "Rejoignez des centaines de professionnels qui ont déjà fait le choix de FitDesk CRM"
+    },
+    "footer": {
+      "brandDesc": "La solution CRM dédiée aux professionnels du fitness.",
+      "product": {
+        "title": "Produit",
+        "features": "Fonctionnalités",
+        "pricing": "Tarifs"
+      },
+      "support": {
+        "title": "Support",
+        "contact": "Contact",
+        "helpCenter": "Centre d'aide",
+        "news": "Nouveautés"
+      },
+      "legal": {
+        "title": "Légal",
+        "mentions": "Mentions légales",
+        "ems": "CGU",
+        "sales": "CGV",
+        "privacy": "Politique de protection des données personnelles"
+      },
+      "rights": "© 2025 FitDesk CRM. Tous droits réservés"
     }
   }
 }

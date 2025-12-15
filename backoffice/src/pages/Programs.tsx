@@ -38,8 +38,8 @@ export function Programs(): React.JSX.Element {
         <Tab value="exercices" label={t('programs.tabs.exercises')} />
         <Tab value="categories" label={t('programs.tabs.categories')} />
         <Tab value="muscles" label={t('programs.tabs.muscles')} />
-        <Tab value="tags" label={t('programs.tabs.tags')} />
         <Tab value="equipment" label={t('programs.tabs.equipment')} />
+        <Tab value="tags" label={t('programs.tabs.tags')} />
       </Tabs>
 
       {tab === 'categories' && <CategoriesPanel />}

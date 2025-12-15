@@ -26,7 +26,7 @@ describe('ListProspectObjectivesUsecase', () => {
     id: 'objective-3',
     locale: 'en-us',
     label: 'Performance',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'coach-8',
     createdAt: now,
     updatedAt: now,
@@ -54,7 +54,7 @@ describe('ListProspectObjectivesUsecase', () => {
       q: 'perf',
       locale: 'en-US',
       createdBy: 'coach-8',
-      visibility: 'public',
+      visibility: 'PUBLIC',
       page: 2,
       limit: 5,
       sort: { updatedAt: -1 },
@@ -67,7 +67,7 @@ describe('ListProspectObjectivesUsecase', () => {
       limit: 5,
     };
 
-    repositoryMock.list.mockResolvedValue(repositoryResult);
+    (repositoryMock.list as any).mockResolvedValue(repositoryResult);
 
     const result = await usecase.execute(dto);
 
@@ -83,7 +83,7 @@ describe('ListProspectObjectivesUsecase', () => {
       limit: 20,
     };
 
-    repositoryMock.list.mockResolvedValue(repositoryResult);
+    (repositoryMock.list as any).mockResolvedValue(repositoryResult);
 
     const result = await usecase.execute();
 
@@ -93,7 +93,7 @@ describe('ListProspectObjectivesUsecase', () => {
 
   it('should log and throw a domain error when repository list fails', async () => {
     const failure = new Error('list failure');
-    repositoryMock.list.mockRejectedValue(failure);
+    (repositoryMock.list as any).mockRejectedValue(failure);
 
     await expect(usecase.execute()).rejects.toThrow(ERRORS.LIST_PROSPECT_OBJECTIVES_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(`ListProspectObjectivesUsecase#execute => ${failure.message}`);

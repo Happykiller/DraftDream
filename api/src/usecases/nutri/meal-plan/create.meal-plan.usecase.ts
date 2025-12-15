@@ -13,13 +13,13 @@ export class CreateMealPlanUsecase {
 
   async execute(dto: CreateMealPlanUsecaseDto): Promise<MealPlanUsecaseModel | null> {
     try {
-      const slug = buildSlug({ label: dto.label, fallback: 'meal-plan' });
+      const slug = buildSlug({ label: dto.label, fallback: 'meal-plan', locale: dto.locale });
       const days = dto.days.map((day) => ({
         ...day,
-        slug: buildSlug({ label: day.label, fallback: 'meal-day' }),
+        slug: buildSlug({ label: day.label, fallback: 'meal-day', locale: day.locale ?? dto.locale }),
         meals: day.meals.map((meal) => ({
           ...meal,
-          slug: buildSlug({ label: meal.label, fallback: 'meal' }),
+          slug: buildSlug({ label: meal.label, fallback: 'meal', locale: meal.locale ?? dto.locale }),
         })),
       }));
       const created = await this.inversify.bddService.mealPlan.create({

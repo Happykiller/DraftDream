@@ -1,6 +1,7 @@
 // ⚠️ Comment in English: Self-contained Users panel with its own URL params (usr_*).
 import * as React from 'react';
 import { Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { useDebouncedValue } from '@hooks/useDebouncedValue';
 import { useTabParams } from '@hooks/useTabParams';
 import { useUsers } from '@hooks/useUsers';
@@ -9,16 +10,23 @@ import { UserDialog, type UserDialogValues } from '@components/users/UserDialog'
 import { ConfirmDialog } from '@components/common/ConfirmDialog';
 
 export function UsersPanel(): React.JSX.Element {
-  const { page, limit, q, setPage, setLimit, setQ } = useTabParams('usr');
+  const { t } = useTranslation();
+  const { page, limit, q, type, setPage, setLimit, setQ, setType } = useTabParams('usr');
   const [searchInput, setSearchInput] = React.useState(q);
   const debounced = useDebouncedValue(searchInput, 300);
   React.useEffect(() => { if (debounced !== q) setQ(debounced); }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update } = useUsers({ page, limit, q });
+  const { items, total, loading, create, update, remove } = useUsers({
+    page,
+    limit,
+    q,
+    type: type as 'athlete' | 'coach' | 'admin' | undefined
+  });
 
   // Dialog states
   const [openCreate, setOpenCreate] = React.useState(false);
   const [editId, setEditId] = React.useState<string | null>(null);
+  const [deleteId, setDeleteId] = React.useState<string | null>(null);
   const editing = React.useMemo(() => items.find((i) => i.id === editId), [items, editId]);
 
   // Create handler: map dialog values → GQL input
@@ -35,11 +43,11 @@ export function UsersPanel(): React.JSX.Element {
       company: v.company_name ? { name: v.company_name } : undefined,
       address: v.address_name || v.address_city || v.address_code || v.address_country
         ? {
-            name: v.address_name || '',
-            city: v.address_city || '',
-            code: v.address_code || '',
-            country: v.address_country || '',
-          }
+          name: v.address_name || '',
+          city: v.address_city || '',
+          code: v.address_code || '',
+          country: v.address_country || '',
+        }
         : undefined,
     });
   };
@@ -58,13 +66,19 @@ export function UsersPanel(): React.JSX.Element {
       company: v.company_name ? { name: v.company_name } : undefined,
       address: v.address_name || v.address_city || v.address_code || v.address_country
         ? {
-            name: v.address_name || '',
-            city: v.address_city || '',
-            code: v.address_code || '',
-            country: v.address_country || '',
-          }
+          name: v.address_name || '',
+          city: v.address_city || '',
+          code: v.address_code || '',
+          country: v.address_country || '',
+        }
         : undefined,
     });
+  };
+
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    await remove(deleteId);
+    setDeleteId(null);
   };
 
   return (
@@ -75,10 +89,13 @@ export function UsersPanel(): React.JSX.Element {
         page={page}
         limit={limit}
         q={searchInput}
+        type={type}
         loading={loading}
         onCreate={() => setOpenCreate(true)}
         onEdit={(row) => setEditId(row.id)}
+        onDelete={(row) => setDeleteId(row.id)}
         onQueryChange={setSearchInput}
+        onTypeChange={setType}
         onPageChange={setPage}
         onLimitChange={setLimit}
       />
@@ -98,11 +115,12 @@ export function UsersPanel(): React.JSX.Element {
         onSubmit={handleUpdate}
       />
 
-      {/* No delete in schema; keep confirm placeholder if you add it later */}
       <ConfirmDialog
-        open={false}
-        onClose={() => void 0}
-        onConfirm={() => void 0}
+        open={!!deleteId}
+        title={t('users.confirm.delete_title', 'Delete User')}
+        message={t('users.confirm.delete_message', 'Are you sure you want to delete this user? This action cannot be undone.')}
+        onClose={() => setDeleteId(null)}
+        onConfirm={handleDelete}
       />
     </Box>
   );

@@ -20,6 +20,7 @@
       "delete": "Supprimer",
       "save": "Enregistrer",
       "create": "Créer",
+      "add": "Ajouter",
       "edit": "Modifier",
       "new": "Nouveau",
       "success": "Succès",
@@ -33,6 +34,7 @@
     },
     "labels": {
       "label": "Libellé",
+      "id": "Identifiant",
       "name": "Nom",
       "slug": "Slug",
       "locale": "Langue",
@@ -80,6 +82,8 @@
       "category": "Catégorie",
       "equipment_optional": "Équipement (optionnel)",
       "tags_optional": "Tags (optionnel)",
+      "up": "Haut",
+      "down": "Bas",
       "meals": "Repas",
       "foods": "Aliments",
       "calories": "Calories",
@@ -362,7 +366,9 @@
         "create_title": "Nouvelle journée de repas",
         "edit_title": "Modifier la journée de repas",
         "add_meal": "Ajouter un repas",
+        "meal_placeholder": "Sélectionner un repas à ajouter",
         "refresh_meals": "Rafraîchir les repas",
+        "empty_meals": "Aucun repas sélectionné pour le moment.",
         "empty_list": "Aucun repas sélectionné pour le moment.",
         "search_placeholder": "Rechercher des repas..."
       },
@@ -434,9 +440,16 @@
       "search_placeholder": "Rechercher des utilisateurs...",
       "new_button": "Nouvel utilisateur"
     },
+    "filter": {
+      "all": "Tous"
+    },
     "dialog": {
       "create_title": "Nouvel utilisateur",
       "edit_title": "Modifier l'utilisateur"
+    },
+    "confirm": {
+      "delete_title": "Supprimer l'utilisateur",
+      "delete_message": "Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible."
     },
     "types": {
       "coach": "Coach",
@@ -476,6 +489,9 @@
       },
       "confirm": {
         "delete_title": "Supprimer le prospect"
+      },
+      "actions": {
+        "convert": "Convertir en athlète"
       }
     },
     "objectives": {
@@ -515,13 +531,13 @@
       },
       "values": {
         "lead": "Lead",
-        "contacte": "Contacté",
-        "rdv_planifie": "RDV planifié",
-        "proposition": "Proposition",
-        "negociation": "Négociation",
-        "gagne": "Gagné",
-        "perdus": "Perdu",
-        "a_faire": "À faire",
+        "contacted": "Contacté",
+        "meeting_scheduled": "RDV planifié",
+        "offer": "Proposition",
+        "negotiation": "Négociation",
+        "won": "Gagné",
+        "lost": "Perdu",
+        "todo": "À faire",
         "client": "Client"
       }
     },

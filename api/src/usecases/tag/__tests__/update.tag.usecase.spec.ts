@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 
 import { ERRORS } from '@src/common/ERROR';
 import { Inversify } from '@src/inversify/investify';
@@ -32,7 +32,7 @@ describe('UpdateTagUsecase', () => {
     id: 'tag-789',
     locale: 'en-US',
     label: 'Flexibility',
-    visibility: 'private',
+    visibility: 'PRIVATE',
   };
 
   const updatedTag: TagUsecaseModel = {
@@ -40,7 +40,7 @@ describe('UpdateTagUsecase', () => {
     slug: 'flexibility',
     locale: 'en-US',
     label: 'Flexibility',
-    visibility: 'private',
+    visibility: 'PRIVATE',
     createdBy: 'coach-3',
     createdAt: new Date('2024-03-01T00:00:00.000Z'),
     updatedAt: new Date('2024-04-01T00:00:00.000Z'),

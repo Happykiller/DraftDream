@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -37,7 +37,7 @@ describe('UpdateMealDayUsecase', () => {
     label: 'Updated Day',
     description: 'New focus',
     mealIds: ['meal-3'],
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'coach-123',
     createdAt: now,
     updatedAt: now,
@@ -61,7 +61,7 @@ describe('UpdateMealDayUsecase', () => {
   });
 
   it('should update a meal day through the repository', async () => {
-    mealDayRepositoryMock.update.mockResolvedValue(mealDay);
+    (mealDayRepositoryMock.update as any).mockResolvedValue(mealDay);
     const dto: UpdateMealDayUsecaseDto = {
       id: mealDay.id,
       label: 'Updated Day',
@@ -80,7 +80,7 @@ describe('UpdateMealDayUsecase', () => {
   });
 
   it('should return null when the repository returns null', async () => {
-    mealDayRepositoryMock.update.mockResolvedValue(null);
+    (mealDayRepositoryMock.update as any).mockResolvedValue(null);
 
     const result = await usecase.execute({ id: 'missing' });
 
@@ -89,7 +89,7 @@ describe('UpdateMealDayUsecase', () => {
 
   it('should log and throw a domain error when update fails', async () => {
     const failure = new Error('update failure');
-    mealDayRepositoryMock.update.mockRejectedValue(failure);
+    (mealDayRepositoryMock.update as any).mockRejectedValue(failure);
 
     await expect(usecase.execute({ id: mealDay.id })).rejects.toThrow(ERRORS.UPDATE_MEAL_DAY_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(

@@ -1,8 +1,9 @@
 // src/components/meals/MealTypeDialog.tsx
 // Comment in English: Dialog used to create or edit nutrition meal types.
 import * as React from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Stack, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { useDateFormatter } from '@src/hooks/useDateFormatter';
 
 import type { MealType } from '@hooks/useMealTypes';
 import { VISIBILITY_OPTIONS, type Visibility } from '@src/commons/visibility';
@@ -33,6 +34,17 @@ export function MealTypeDialog({ open, mode, initial, onClose, onSubmit }: MealT
   const [values, setValues] = React.useState<MealTypeDialogValues>(DEFAULT_VALUES);
   const isEdit = mode === 'edit';
   const { t } = useTranslation();
+  const formatDate = useDateFormatter();
+
+  const creatorEmail = React.useMemo(() => initial?.creator?.email || '-', [initial?.creator?.email]);
+  const formattedCreatedAt = React.useMemo(
+    () => (initial?.createdAt ? formatDate(initial.createdAt) : '-'),
+    [initial?.createdAt, formatDate],
+  );
+  const formattedUpdatedAt = React.useMemo(
+    () => (initial?.updatedAt ? formatDate(initial.updatedAt) : '-'),
+    [initial?.updatedAt, formatDate],
+  );
 
   React.useEffect(() => {
     if (isEdit && initial) {
@@ -72,6 +84,36 @@ export function MealTypeDialog({ open, mode, initial, onClose, onSubmit }: MealT
       </DialogTitle>
       <DialogContent>
         <Stack component="form" onSubmit={submit} spacing={2} sx={{ mt: 1 }}>
+          {isEdit && initial ? (
+            <Stack spacing={1.5}>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <Stack flex={1} spacing={0.25}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('common.labels.creator')}
+                  </Typography>
+                  <Typography variant="body2">{creatorEmail}</Typography>
+                </Stack>
+                <Stack flex={1} spacing={0.25}>
+                  {/* Empty or another field if needed */}
+                </Stack>
+              </Stack>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <Stack flex={1} spacing={0.25}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('common.labels.created')}
+                  </Typography>
+                  <Typography variant="body2">{formattedCreatedAt}</Typography>
+                </Stack>
+                <Stack flex={1} spacing={0.25}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('common.labels.updated')}
+                  </Typography>
+                  <Typography variant="body2">{formattedUpdatedAt}</Typography>
+                </Stack>
+              </Stack>
+            </Stack>
+          ) : null}
+
           {/* General information */}
           <TextField
             label={t('common.labels.label')}

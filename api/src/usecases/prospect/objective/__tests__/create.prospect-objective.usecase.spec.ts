@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest, afterEach } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -24,7 +24,7 @@ describe('CreateProspectObjectiveUsecase', () => {
   const dto: CreateProspectObjectiveDto = {
     locale: 'fr-FR',
     label: 'Perte de poids',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'admin-1',
     slug: 'test-slug',
   };
@@ -35,7 +35,7 @@ describe('CreateProspectObjectiveUsecase', () => {
     id: 'objective-1',
     locale: 'fr-fr',
     label: 'Perte de poids',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'admin-1',
     createdAt: now,
     updatedAt: now,
@@ -64,7 +64,7 @@ describe('CreateProspectObjectiveUsecase', () => {
 
   it('should create prospect objective through the repository', async () => {
     const buildSlugSpy = jest.spyOn(slugUtil, 'buildSlug').mockReturnValue(objective.slug);
-    repositoryMock.create.mockResolvedValue(objective);
+    (repositoryMock.create as any).mockResolvedValue(objective);
 
     const result = await usecase.execute(dto);
 
@@ -83,7 +83,7 @@ describe('CreateProspectObjectiveUsecase', () => {
   });
 
   it('should return null when repository creation returns null', async () => {
-    repositoryMock.create.mockResolvedValue(null);
+    (repositoryMock.create as any).mockResolvedValue(null);
 
     const result = await usecase.execute(dto);
 
@@ -92,7 +92,7 @@ describe('CreateProspectObjectiveUsecase', () => {
 
   it('should log and throw a domain error when repository creation fails', async () => {
     const failure = new Error('create failure');
-    repositoryMock.create.mockRejectedValue(failure);
+    (repositoryMock.create as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.CREATE_PROSPECT_OBJECTIVE_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(`CreateProspectObjectiveUsecase#execute => ${failure.message}`);

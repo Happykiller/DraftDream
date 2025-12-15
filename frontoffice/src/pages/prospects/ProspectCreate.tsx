@@ -12,7 +12,7 @@ import { useFlashStore } from '@hooks/useFlashStore';
 
 import { prospectCreate } from '@services/graphql/prospects.service';
 
-import { pipelineStatuses, ProspectStatusEnum } from '@src/commons/prospects/status';
+import { pipelineStatuses, ProspectStatus } from '@src/commons/prospects/status';
 
 import { buildProspectCreateInput } from './prospectFormMappers';
 
@@ -28,8 +28,8 @@ export function ProspectCreate(): React.JSX.Element {
   const flashError = useFlashStore((state) => state.error);
   const [submitting, setSubmitting] = React.useState(false);
 
-  const initialStatus = React.useMemo<ProspectStatusEnum | null>(() => {
-    const statusParam = searchParams.get('status') as ProspectStatusEnum | null;
+  const initialStatus = React.useMemo<ProspectStatus | null>(() => {
+    const statusParam = searchParams.get('status') as ProspectStatus | null;
     if (!statusParam) {
       return null;
     }

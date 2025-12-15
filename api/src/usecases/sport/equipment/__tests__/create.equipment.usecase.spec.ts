@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -31,7 +31,7 @@ describe('CreateEquipmentUsecase', () => {
   const dto: CreateEquipmentUsecaseDto = {
     locale: 'en-US',
     label: 'Barbell',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'coach-1',
   };
 
@@ -41,7 +41,7 @@ describe('CreateEquipmentUsecase', () => {
     slug: 'barbell',
     locale: 'en-us',
     label: 'Barbell',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'coach-1',
     createdAt: now,
     updatedAt: now,
@@ -65,7 +65,7 @@ describe('CreateEquipmentUsecase', () => {
   });
 
   it('should create equipment through the repository', async () => {
-    equipmentRepositoryMock.create.mockResolvedValue(equipment);
+    (equipmentRepositoryMock.create as any).mockResolvedValue(equipment);
 
     const result = await usecase.execute(dto);
 
@@ -80,7 +80,7 @@ describe('CreateEquipmentUsecase', () => {
   });
 
   it('should return null when repository creation returns null', async () => {
-    equipmentRepositoryMock.create.mockResolvedValue(null);
+    (equipmentRepositoryMock.create as any).mockResolvedValue(null);
 
     const result = await usecase.execute(dto);
 
@@ -89,7 +89,7 @@ describe('CreateEquipmentUsecase', () => {
 
   it('should log and throw a domain error when repository creation fails', async () => {
     const failure = new Error('write failure');
-    equipmentRepositoryMock.create.mockRejectedValue(failure);
+    (equipmentRepositoryMock.create as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.CREATE_EQUIPMENT_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(`CreateEquipmentUsecase#execute => ${failure.message}`);

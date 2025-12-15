@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -42,7 +42,7 @@ describe('GetMealPlanUsecase', () => {
         carbGrams: 200,
         fatGrams: 70,
         days: [],
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-1',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -68,7 +68,7 @@ describe('GetMealPlanUsecase', () => {
     });
 
     it('should get a meal plan if user is creator', async () => {
-        mealPlanRepositoryMock.get.mockResolvedValue(mealPlan);
+        (mealPlanRepositoryMock.get as any).mockResolvedValue(mealPlan);
 
         const result = await usecase.execute(dto);
 
@@ -78,7 +78,7 @@ describe('GetMealPlanUsecase', () => {
 
     it('should get a meal plan if user is admin', async () => {
         const adminDto = { ...dto, session: { ...dto.session, role: Role.ADMIN, userId: 'admin-1' } };
-        mealPlanRepositoryMock.get.mockResolvedValue(mealPlan);
+        (mealPlanRepositoryMock.get as any).mockResolvedValue(mealPlan);
 
         const result = await usecase.execute(adminDto);
 
@@ -86,7 +86,7 @@ describe('GetMealPlanUsecase', () => {
     });
 
     it('should return null if not found', async () => {
-        mealPlanRepositoryMock.get.mockResolvedValue(null);
+        (mealPlanRepositoryMock.get as any).mockResolvedValue(null);
 
         const result = await usecase.execute(dto);
 
@@ -95,15 +95,15 @@ describe('GetMealPlanUsecase', () => {
 
     it('should throw forbidden error if user is not authorized', async () => {
         const otherUserDto = { ...dto, session: { ...dto.session, userId: 'other-user', role: Role.ATHLETE } };
-        const privateMealPlan = { ...mealPlan, visibility: 'private' };
-        mealPlanRepositoryMock.get.mockResolvedValue(privateMealPlan as any); // Cast to any to avoid strict type check on visibility string literal if needed
+        const privateMealPlan = { ...mealPlan, visibility: 'PRIVATE' };
+        (mealPlanRepositoryMock.get as any).mockResolvedValue(privateMealPlan as any); // Cast to any to avoid strict type check on visibility string literal if needed
 
         await expect(usecase.execute(otherUserDto)).rejects.toThrow(ERRORS.GET_MEAL_PLAN_FORBIDDEN);
     });
 
     it('should log and throw error when repository throws', async () => {
         const error = new Error('DB Error');
-        mealPlanRepositoryMock.get.mockRejectedValue(error);
+        (mealPlanRepositoryMock.get as any).mockRejectedValue(error);
 
         await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.GET_MEAL_PLAN_USECASE);
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining(error.message));

@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest, afterEach } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -24,7 +24,7 @@ describe('CreateProspectActivityPreferenceUsecase', () => {
   const dto: CreateProspectActivityPreferenceDto = {
     locale: 'fr-FR',
     label: 'Musculation',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'admin-1',
     slug: 'test-slug',
   };
@@ -35,7 +35,7 @@ describe('CreateProspectActivityPreferenceUsecase', () => {
     id: 'preference-1',
     locale: 'fr-fr',
     label: 'Musculation',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'admin-1',
     createdAt: now,
     updatedAt: now,
@@ -64,7 +64,7 @@ describe('CreateProspectActivityPreferenceUsecase', () => {
 
   it('should create prospect activity preference through the repository', async () => {
     const buildSlugSpy = jest.spyOn(slugUtil, 'buildSlug').mockReturnValue(preference.slug);
-    repositoryMock.create.mockResolvedValue(preference);
+    (repositoryMock.create as any).mockResolvedValue(preference);
 
     const result = await usecase.execute(dto);
 
@@ -83,7 +83,7 @@ describe('CreateProspectActivityPreferenceUsecase', () => {
   });
 
   it('should return null when repository creation returns null', async () => {
-    repositoryMock.create.mockResolvedValue(null);
+    (repositoryMock.create as any).mockResolvedValue(null);
 
     const result = await usecase.execute(dto);
 
@@ -92,7 +92,7 @@ describe('CreateProspectActivityPreferenceUsecase', () => {
 
   it('should log and throw a domain error when repository creation fails', async () => {
     const failure = new Error('create failure');
-    repositoryMock.create.mockRejectedValue(failure);
+    (repositoryMock.create as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.CREATE_PROSPECT_ACTIVITY_PREFERENCE_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(`CreateProspectActivityPreferenceUsecase#execute => ${failure.message}`);

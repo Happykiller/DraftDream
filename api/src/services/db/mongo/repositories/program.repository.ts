@@ -15,6 +15,8 @@ import {
   ProgramSessionSnapshotDto,
   UpdateProgramDto,
 } from '@services/db/dtos/program.dto';
+import { toVisibility } from '@src/common/enum.util';
+import { Visibility } from '@src/common/visibility.enum';
 
 interface ProgramExerciseDoc {
   id: string;
@@ -49,7 +51,7 @@ interface ProgramDoc {
   slug: string;
   locale: string;
   label: string;
-  visibility: 'private' | 'public';
+  visibility: Visibility;
   duration: number;
   frequency: number;
   description?: string;
@@ -96,7 +98,7 @@ export class BddServiceProgramMongo {
       slug: dto.slug.toLowerCase().trim(),
       locale: dto.locale.toLowerCase().trim(),
       label: dto.label.trim(),
-      visibility: dto.visibility === 'public' ? 'public' : 'private',
+      visibility: toVisibility(dto.visibility) ?? Visibility.PRIVATE,
       duration: Math.trunc(dto.duration),
       frequency: Math.trunc(dto.frequency),
       description: dto.description,
@@ -164,9 +166,10 @@ export class BddServiceProgramMongo {
     }
 
     if (visibility) {
-      filter.visibility = visibility === 'public' ? 'public' : 'private';
-    } else if (params.includePublicVisibility) {
-      ownershipConditions.push({ visibility: 'public' });
+      const normalizedVisibility = toVisibility(visibility) ?? Visibility.PRIVATE;
+      filter.visibility = normalizedVisibility;
+    } else if (includePublicVisibility) {
+      ownershipConditions.push({ visibility: Visibility.PUBLIC });
     }
 
     if (ownershipConditions.length) {
@@ -199,7 +202,7 @@ export class BddServiceProgramMongo {
     if (patch.frequency !== undefined) $set.frequency = Math.trunc(patch.frequency);
     if (patch.description !== undefined) $set.description = patch.description;
     if (patch.visibility !== undefined) {
-      $set.visibility = patch.visibility === 'public' ? 'public' : 'private';
+      $set.visibility = toVisibility(patch.visibility) ?? Visibility.PRIVATE;
     }
     if (patch.sessions !== undefined) $set.sessions = patch.sessions.map(this.toSessionDoc);
     if (patch.userId !== undefined) {
@@ -285,7 +288,7 @@ export class BddServiceProgramMongo {
       slug: doc.slug,
       locale: doc.locale,
       label: doc.label,
-      visibility: doc.visibility ?? 'private',
+      visibility: toVisibility(doc.visibility) ?? Visibility.PRIVATE,
       duration: doc.duration,
       frequency: doc.frequency,
       description: doc.description,

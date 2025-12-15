@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Add, DeleteOutline, Edit, Public } from '@mui/icons-material';
 
 import type { BuilderCopy, ExerciseLibraryItem } from './programBuilderTypes';
+import { TextWithTooltip } from '../common/TextWithTooltip';
 
 type ProgramBuilderExerciseLibraryItemProps = {
   exercise: ExerciseLibraryItem;
@@ -67,6 +68,8 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
         borderRadius: 2,
         cursor: 'default',
         position: 'relative',
+        width: '100%',
+        maxWidth: '100%',
         '&:hover': {
           borderColor: theme.palette.primary.main,
           boxShadow: theme.shadows[1],
@@ -74,10 +77,17 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
       }}
     >
       {/* Exercise summary */}
-      <Stack direction="row" spacing={1.5} alignItems="flex-start">
-        <Stack spacing={1} flex={1}>
+      <Stack
+        direction="row"
+        spacing={1.5}
+        alignItems="flex-start"
+        flexWrap="wrap"
+        columnGap={1}
+        rowGap={1}
+      >
+        <Stack spacing={1} flex={1} minWidth={0}>
           <Stack spacing={0.25}>
-            <Stack direction="row" spacing={0.5} alignItems="center">
+            <Stack direction="row" spacing={0.5} alignItems="center" flexWrap="wrap" columnGap={0.5}>
               {showEditAction ? (
                 <Tooltip title={tooltips.edit_exercise} arrow>
                   <span style={{ display: 'inline-flex' }}>
@@ -95,20 +105,30 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
                   </span>
                 </Tooltip>
               ) : null}
-              <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                {exercise.label}
-              </Typography>
+              <TextWithTooltip
+                tooltipTitle={exercise.label}
+                variant="subtitle1"
+                sx={{ fontWeight: 600, pr: 4 }}
+              />
             </Stack>
-              {exercise.categoryLabels.length ? (
-                <Typography variant="body2" color="text.secondary">
-                  {exercise.categoryLabels.join(', ')}
-                </Typography>
-              ) : null}
+            {exercise.categoryLabels.length ? (
+              <Typography variant="body2" color="text.secondary">
+                {exercise.categoryLabels.join(', ')}
+              </Typography>
+            ) : null}
+            {exercise.description ? (
+              <TextWithTooltip
+                tooltipTitle={exercise.description}
+                variant="body2"
+                color="text.secondary"
+                maxLines={2}
+              />
+            ) : null}
           </Stack>
           {/* Exercise metrics */}
           <Stack direction="row" spacing={1} flexWrap="wrap">
             <Typography variant="body2" color="text.secondary">
-              {exercise.sets}{setsLabel}
+              {exercise.series}{setsLabel}
             </Typography>
             <Typography variant="body2" color="text.secondary">
               {exercise.reps}{repsLabel}
@@ -122,33 +142,55 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
             exercise.equipment.length > 0 ? (
             /* Exercise chips */
             <Stack direction="row" spacing={0.5} flexWrap="wrap">
-              {exercise.muscles.map((muscle) => (
-                <Tooltip
-                  key={`${exercise.id}-muscle-${muscle.id}`}
-                  title={tooltips.muscle_chip.replace('{{label}}', muscle.label)}
-                  arrow
-                >
-                  <Chip label={muscle.label} size="small" color="primary" variant="filled" />
-                </Tooltip>
-              ))}
-              {exercise.tags.map((tag) => (
-                <Tooltip
-                  key={`${exercise.id}-tag-${tag.id}`}
-                  title={tooltips.tag_chip.replace('{{label}}', tag.label)}
-                  arrow
-                >
-                  <Chip label={tag.label} size="small" color="secondary" variant="outlined" />
-                </Tooltip>
-              ))}
-              {exercise.equipment.map((eq) => (
-                <Tooltip
-                  key={`${exercise.id}-equipment-${eq.id}`}
-                  title={tooltips.equipment_chip.replace('{{label}}', eq.label)}
-                  arrow
-                >
-                  <Chip label={eq.label} size="small" variant="outlined" />
-                </Tooltip>
-              ))}
+              {[
+                ...exercise.muscles.map((muscle) => ({
+                  key: `muscle-${muscle.id}`,
+                  label: muscle.label,
+                  color: 'primary' as const,
+                  variant: 'filled' as const,
+                  tooltip: tooltips.muscle_chip.replace('{{label}}', muscle.label),
+                })),
+                ...exercise.tags.map((tag) => ({
+                  key: `tag-${tag.id}`,
+                  label: tag.label,
+                  color: 'secondary' as const,
+                  variant: 'outlined' as const,
+                  tooltip: tooltips.tag_chip.replace('{{label}}', tag.label),
+                })),
+                ...exercise.equipment.map((eq) => ({
+                  key: `equipment-${eq.id}`,
+                  label: eq.label,
+                  color: undefined,
+                  variant: 'outlined' as const,
+                  tooltip: tooltips.equipment_chip.replace('{{label}}', eq.label),
+                })),
+              ]
+                .slice(0, 3)
+                .map((chip) => (
+                  <Tooltip key={chip.key} title={chip.tooltip} arrow>
+                    <Chip
+                      label={chip.label}
+                      size="small"
+                      color={chip.color}
+                      variant={chip.variant}
+                    />
+                  </Tooltip>
+                ))}
+              {exercise.muscles.length +
+                exercise.tags.length +
+                exercise.equipment.length >
+                3 ? (
+                <Chip
+                  label={`+${exercise.muscles.length +
+                    exercise.tags.length +
+                    exercise.equipment.length -
+                    3
+                    }`}
+                  size="small"
+                  variant="outlined"
+                  sx={{ borderColor: theme.palette.divider }}
+                />
+              ) : null}
             </Stack>
           ) : null}
           {isPublic ? (
@@ -191,22 +233,28 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
             </Tooltip>
           ) : null}
         </Stack>
-        <Stack spacing={0.5} alignItems="flex-end">
-          {/* Primary action */}
-          <Tooltip title={tooltips.add_exercise} arrow placement="left">
-            <span style={{ display: 'inline-flex' }}>
-              <IconButton
-                size="small"
-                onClick={handleAddClick}
-                disabled={disabled}
-                aria-label="add-exercise-to-session"
-              >
-                <Add fontSize="small" />
-              </IconButton>
-            </span>
-          </Tooltip>
-        </Stack>
+
       </Stack>
+      <Box
+        sx={{
+          position: 'absolute',
+          top: (theme) => theme.spacing(1),
+          right: (theme) => theme.spacing(1),
+        }}
+      >
+        <Tooltip title={tooltips.add_exercise} arrow placement="left">
+          <span style={{ display: 'inline-flex' }}>
+            <IconButton
+              size="small"
+              onClick={handleAddClick}
+              disabled={disabled}
+              aria-label="add-exercise-to-session"
+            >
+              <Add fontSize="small" />
+            </IconButton>
+          </span>
+        </Tooltip>
+      </Box>
     </Paper>
   );
 });

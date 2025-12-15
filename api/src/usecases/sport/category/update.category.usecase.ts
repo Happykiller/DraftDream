@@ -17,7 +17,7 @@ export class UpdateCategoryUsecase {
         visibility: dto.visibility,
       };
       if (dto.label) {
-        toUpdate.slug = buildSlug({ label: dto.label, fallback: 'category' });
+        toUpdate.slug = buildSlug({ label: dto.label, fallback: 'category', locale: dto.locale });
       }
       const updated = await this.inversify.bddService.category.update(
         dto.id,

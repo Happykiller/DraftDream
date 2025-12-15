@@ -300,6 +300,19 @@ export const router = createBrowserRouter([
           return { Component: withTitle(mod.Athletes, 'athletes.title') };
         },
       },
+      {
+        path: 'view/:linkId',
+        lazy: async () => {
+          const [componentModule, loaderModule] = await Promise.all([
+            import('@src/pages/athletes/AthleteLinkDetails'),
+            import('@src/pages/athletes/AthleteLinkDetails.loader'),
+          ]);
+          return {
+            Component: withTitle(componentModule.AthleteLinkDetails, 'athletes.details.title'),
+            loader: loaderModule.athleteLinkDetailsLoader,
+          };
+        },
+      },
     ],
   },
   {

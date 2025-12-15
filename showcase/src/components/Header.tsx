@@ -1,36 +1,12 @@
-import {
-  Box,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography
-} from '@mui/material';
-import { type MouseEvent } from 'react';
+import { Box, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import LanguageSelector from './LanguageSelector';
 
-import { supportedLanguages, useI18n, type Language } from '../i18n/I18nProvider';
 
-const flagByLanguage: Record<Language, string> = {
-  en: '🇬🇧',
-  fr: '🇫🇷'
-};
+// ... existing imports ...
 
-const ariaLabelByLanguage: Record<Language, string> = {
-  en: 'English language',
-  fr: 'Langue française'
-};
-
-/**
- * Renders the global showcase header with branding and language selector.
- */
-const Header = (): JSX.Element => {
-  const { language, setLanguage } = useI18n();
-
-  const handleLanguageChange = (_event: MouseEvent<HTMLElement>, newLanguage: Language | null): void => {
-    if (!newLanguage || newLanguage === language) {
-      return;
-    }
-
-    setLanguage(newLanguage);
-  };
+const Header = () => {
+  const navigate = useNavigate();
 
   return (
     <Box
@@ -42,38 +18,110 @@ const Header = (): JSX.Element => {
         display: 'flex',
         gap: 2,
         justifyContent: 'space-between',
-        px: { xs: 2, sm: 3 },
-        py: 2
+        px: { xs: 2, md: 4 },
+        py: 2,
+        backgroundColor: 'background.default',
+        position: 'sticky',
+        top: 0,
+        zIndex: 1100, // Ensure it stays on top
       }}
     >
-      {/* General information */}
-      <Typography component="span" fontWeight={700} variant="h6">
-        FitDesk Showcase
-      </Typography>
-      <ToggleButtonGroup
-        aria-label="Select interface language"
-        exclusive
-        onChange={handleLanguageChange}
+      {/* Brand / Logo */}
+      <Box
+        onClick={() => navigate('/')}
         sx={{
-          marginLeft: 'auto',
-          '& .MuiToggleButton-root': {
-            px: 1.5
-          }
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1.5,
+          cursor: 'pointer',
+          userSelect: 'none'
         }}
-        value={language}
       >
-        {supportedLanguages.map((supportedLanguage) => (
-          <ToggleButton
-            aria-label={ariaLabelByLanguage[supportedLanguage]}
-            key={supportedLanguage}
-            value={supportedLanguage}
-          >
-            <Box aria-hidden component="span" sx={{ fontSize: 20 }}>
-              {flagByLanguage[supportedLanguage]}
-            </Box>
-          </ToggleButton>
-        ))}
-      </ToggleButtonGroup>
+        <Box
+          component="img"
+          src="/Logo.webp"
+          alt="FitDesk Logo"
+          sx={{
+            width: 40,
+            height: 40,
+            objectFit: 'contain'
+          }}
+        />
+        <Typography component="span" fontWeight={700} variant="h6" sx={{ color: 'text.primary' }}>
+          FitDesk
+        </Typography>
+        <Typography component="span" fontWeight={400} variant="body2" sx={{ color: 'text.secondary', ml: -0.5, pt: 0.5 }}>
+          CRM
+        </Typography>
+      </Box>
+
+      {/* Navigation Links */}
+      <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 5, alignItems: 'center' }}>
+        <Typography
+          onClick={() => {
+            document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+          }}
+          sx={{
+            cursor: 'pointer',
+            fontSize: '0.95rem',
+            fontWeight: 500,
+            color: 'text.secondary',
+            transition: 'color 0.2s',
+            '&:hover': { color: 'primary.main' }
+          }}
+        >
+          Fonctionnalités
+        </Typography>
+        <Typography
+          onClick={() => {
+            document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
+          }}
+          sx={{
+            cursor: 'pointer',
+            fontSize: '0.95rem',
+            fontWeight: 500,
+            color: 'text.secondary',
+            transition: 'color 0.2s',
+            '&:hover': { color: 'primary.main' }
+          }}
+        >
+          Tarifs
+        </Typography>
+        <Typography
+          onClick={() => {
+            document.getElementById('testimonials')?.scrollIntoView({ behavior: 'smooth' });
+          }}
+          sx={{
+            cursor: 'pointer',
+            fontSize: '0.95rem',
+            fontWeight: 500,
+            color: 'text.secondary',
+            transition: 'color 0.2s',
+            '&:hover': { color: 'primary.main' }
+          }}
+        >
+          Témoignages
+        </Typography>
+        <Typography
+          onClick={() => navigate('/changelog')}
+          sx={{
+            cursor: 'pointer',
+            fontSize: '0.95rem',
+            fontWeight: 500,
+            color: 'text.secondary',
+            transition: 'color 0.2s',
+            '&:hover': { color: 'primary.main' }
+          }}
+        >
+          Nouveautés
+        </Typography>
+      </Box>
+
+      {/* Language Selector */}
+      <Box>
+        <LanguageSelector />
+      </Box>
+
     </Box>
   );
 };

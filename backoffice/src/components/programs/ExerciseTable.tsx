@@ -4,7 +4,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
-import { Box, Button, Stack, TextField, IconButton, Tooltip, Chip } from '@mui/material';
+import { Box, Button, Stack, TextField, IconButton, Tooltip, Chip, useMediaQuery } from '@mui/material';
+import type { Theme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import type { Exercise } from '@hooks/useExercises';
 import { useDateFormatter } from '@hooks/useDateFormatter';
@@ -43,9 +44,11 @@ export const ExerciseTable = React.memo(function ExerciseTable({
 }: ExerciseTableProps): React.JSX.Element {
   const fmtDate = useDateFormatter();
   const { t } = useTranslation();
+  // Responsive: Hide Created/Updated on smaller screens
+  const isXl = useMediaQuery((theme: Theme) => theme.breakpoints.up('xl'));
+
 
   const columns = React.useMemo<GridColDef<Exercise>[]>(() => [
-    { field: 'slug', headerName: t('common.labels.slug'), flex: 1, minWidth: 140 },
     { field: 'label', headerName: t('common.labels.label'), flex: 1.4, minWidth: 160 },
     { field: 'locale', headerName: t('common.labels.locale'), width: 90 },
     { field: 'series', headerName: t('common.labels.series'), width: 110 },
@@ -84,8 +87,24 @@ export const ExerciseTable = React.memo(function ExerciseTable({
       width: 130,
       renderCell: ({ value }) => getVisibilityLabel(value, t),
     },
-    { field: 'createdAt', headerName: t('common.labels.created'), valueFormatter: (value: any) => fmtDate(value), flex: 1, minWidth: 170 },
-    { field: 'updatedAt', headerName: t('common.labels.updated'), valueFormatter: (value: any) => fmtDate(value), flex: 1, minWidth: 170 },
+    ...(isXl
+      ? [
+        {
+          field: 'createdAt',
+          headerName: t('common.labels.created'),
+          valueFormatter: (value: any) => fmtDate(value),
+          flex: 1,
+          minWidth: 170,
+        },
+        {
+          field: 'updatedAt',
+          headerName: t('common.labels.updated'),
+          valueFormatter: (value: any) => fmtDate(value),
+          flex: 1,
+          minWidth: 170,
+        },
+      ]
+      : []),
     {
       field: 'actions',
       headerName: t('common.labels.actions'),
@@ -112,7 +131,7 @@ export const ExerciseTable = React.memo(function ExerciseTable({
         </Stack>
       ),
     },
-  ], [fmtDate, onDelete, onEdit, onDuplicate, t]);
+  ], [fmtDate, onDelete, onEdit, onDuplicate, t, isXl]);
 
   return (
     <Box sx={{ width: '100%' }}>

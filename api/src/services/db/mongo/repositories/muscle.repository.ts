@@ -10,7 +10,7 @@ interface MuscleDoc {
   slug: string;
   locale: string;
   label: string;
-  visibility: 'private' | 'public';
+  visibility: 'PRIVATE' | 'PUBLIC';
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
@@ -169,7 +169,7 @@ export class BddServiceMuscleMongo {
     slug: doc.slug,
     locale: doc.locale,
     label: doc.label,
-    visibility: doc.visibility,
+    visibility: (doc.visibility as string).toUpperCase() as 'PRIVATE' | 'PUBLIC',
     createdBy: doc.createdBy,
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt,

@@ -2,7 +2,8 @@
 import * as React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { Box, Button, IconButton, Stack, TextField, Tooltip, Typography } from '@mui/material';
+import { Box, Button, IconButton, Stack, TextField, Tooltip, Typography, useMediaQuery } from '@mui/material';
+import type { Theme } from '@mui/material';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { useTranslation } from 'react-i18next';
 
@@ -29,10 +30,11 @@ export function MealPlanTable(props: MealPlanTableProps): React.JSX.Element {
   const { rows, total, page, limit, q, loading, onCreate, onEdit, onDelete, onQueryChange, onPageChange, onLimitChange } = props;
   const { t } = useTranslation();
   const formatDate = useDateFormatter();
+  // Responsive: Hide columns on smaller screens
+  const isXl = useMediaQuery((theme: Theme) => theme.breakpoints.up('xl'));
 
   const columns = React.useMemo<GridColDef<MealPlan>[]>(() => {
     return [
-      { field: 'slug', headerName: t('common.labels.slug'), flex: 1 },
       { field: 'label', headerName: t('common.labels.label'), flex: 1.2 },
       { field: 'locale', headerName: t('common.labels.locale'), width: 120 },
       {
@@ -57,44 +59,52 @@ export function MealPlanTable(props: MealPlanTableProps): React.JSX.Element {
         width: 140,
         renderCell: ({ row }) => row.days.length,
       },
-      {
-        field: 'calories',
-        headerName: t('meals.mealPlans.columns.calories'),
-        width: 120,
-      },
-      {
-        field: 'proteinGrams',
-        headerName: t('meals.mealPlans.columns.protein'),
-        width: 120,
-      },
-      {
-        field: 'carbGrams',
-        headerName: t('meals.mealPlans.columns.carb'),
-        width: 120,
-      },
-      {
-        field: 'fatGrams',
-        headerName: t('meals.mealPlans.columns.fat'),
-        width: 120,
-      },
+      ...(isXl
+        ? [
+          {
+            field: 'calories',
+            headerName: t('meals.mealPlans.columns.calories'),
+            width: 120,
+          },
+          {
+            field: 'proteinGrams',
+            headerName: t('meals.mealPlans.columns.protein'),
+            width: 120,
+          },
+          {
+            field: 'carbGrams',
+            headerName: t('meals.mealPlans.columns.carb'),
+            width: 120,
+          },
+          {
+            field: 'fatGrams',
+            headerName: t('meals.mealPlans.columns.fat'),
+            width: 120,
+          },
+        ]
+        : []),
       {
         field: 'athlete',
         headerName: t('common.labels.user'),
         flex: 1,
         renderCell: ({ row }) => row.athlete?.email || row.userId || t('common.messages.no_value'),
       },
-      {
-        field: 'createdAt',
-        headerName: t('common.labels.created'),
-        flex: 1,
-        valueFormatter: (value) => formatDate(value as string),
-      },
-      {
-        field: 'updatedAt',
-        headerName: t('common.labels.updated'),
-        flex: 1,
-        valueFormatter: (value) => formatDate(value as string),
-      },
+      ...(isXl
+        ? [
+          {
+            field: 'createdAt',
+            headerName: t('common.labels.created'),
+            flex: 1,
+            valueFormatter: (value: any) => formatDate(value as string),
+          },
+          {
+            field: 'updatedAt',
+            headerName: t('common.labels.updated'),
+            flex: 1,
+            valueFormatter: (value: any) => formatDate(value as string),
+          },
+        ]
+        : []),
       {
         field: 'actions',
         headerName: t('common.labels.actions'),
@@ -116,7 +126,7 @@ export function MealPlanTable(props: MealPlanTableProps): React.JSX.Element {
         ),
       },
     ];
-  }, [formatDate, onDelete, onEdit, t]);
+  }, [formatDate, isXl, onDelete, onEdit, t]);
 
   return (
     <Box sx={{ width: '100%' }}>

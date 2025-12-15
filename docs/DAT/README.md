@@ -9,7 +9,7 @@ Principes directeurs:
 - **Industrialisation**: pipeline `make save` → `make install` pour préparer les images (`fitdesk_*`) puis les déployer sur le serveur cible (voir `serv/docker-compose.prod.yml`).
 
 Lien DAF/DAT:
-- Les parcours prospects↔clients↔athlètes reposent sur Mongo et les résolveurs GraphQL (DAF §2) → couverts par les use cases `clients`, `athletes` dans l'API.
+- Les parcours prospects↔clients↔athlètes reposent sur Mongo et les résolveurs GraphQL (DAF §2) → couverts par les use cases `clients`, `athletes`, `athlete-info` dans l'API.
 - La cohérence FR/EN (DAF §6) dépend des bundles i18n versionnés dans frontoffice/backoffice.
 - Les exigences de visibilité (DAF §4) s'appuient sur des champs de métadonnées propagés de Mongo aux frontaux via DTOs partagés.
 
@@ -59,7 +59,7 @@ Flux principaux:
 Règles de structuration: imports en escalier, séparation strictes entre `usecases` et `services`, conventions i18n (pas de fallback `defaultValue`).
 
 ## 5. Stockage et données
-- **MongoDB 7**: base unique déclarée via `MONGO_DB`. Utilisation des collections `users`, `clients`, `athletes`, `programs`, `sessions`, `exercises`, `nutritionPlans`, `releases`, etc. Accès via `mongodb` driver/Mongoose.
+- **MongoDB 7**: base unique déclarée via `MONGO_DB`. Utilisation des collections `users`, `clients`, `athletes`, `athleteInfos`, `programs`, `sessions`, `exercises`, `nutritionPlans`, `releases`, etc. Accès via `mongodb` driver/Mongoose.
   - Paramètres critiques: authentification SCRAM (user root + user applicatif), volume persistant, healthcheck `db.runCommand({ ping:1 })`.
   - Sauvegardes: exports mongodump à automatiser (actuellement manuel via `make save`).
 - **Object storage (MinIO)**: référencé pour servir médias (icônes, vidéos). À intégrer via URL signées.
@@ -67,7 +67,7 @@ Règles de structuration: imports en escalier, séparation strictes entre `useca
 - **Migrations**: scripts TypeScript sous `api/src/services/db/mongo/migrations` exécutés lors du bootstrap.
 
 ## 6. Intégrations et interfaces techniques
-- **GraphQL schema** (généré au runtime par NestJS/Mercurius): mutations/queries pour clients, programmes, nutrition, relations. Auth via header `Authorization: Bearer <JWT>`.
+- **GraphQL schema** (généré au runtime par NestJS/Mercurius): mutations/queries pour clients, programmes, nutrition, relations, fiches info athlète. Auth via header `Authorization: Bearer <JWT>`.
 - **JWT service** (`api/src/services/jwt`) : signe HS256, configuration via `JWT_SECRET` et `jwt.expire`.
 - **Webhooks**: non implémentés; planifiés pour export release/analytics.
 - **Showcase**: consomme JSON statique, pas d'API runtime.

@@ -6,6 +6,7 @@ import { Inversify } from '@src/inversify/investify';
 import { GetSessionUsecaseDto } from '@src/usecases/sport/session/session.usecase.dto';
 import { mapSessionToUsecase } from '@src/usecases/sport/session/session.mapper';
 import type { SessionUsecaseModel } from '@src/usecases/sport/session/session.usecase.model';
+import { enumEquals } from '@src/common/enum.util';
 
 export class GetSessionUsecase {
   constructor(private readonly inversify: Inversify) { }
@@ -23,7 +24,7 @@ export class GetSessionUsecase {
       const isAdmin = session.role === Role.ADMIN;
       const isCreator = creatorId === session.userId;
       const isCoach = session.role === Role.COACH;
-      const isPublic = isCoach ? (s.visibility === 'public' || await this.isPublicTemplate(creatorId)) : false;
+      const isPublic = isCoach ? (enumEquals(s.visibility, 'PUBLIC') || await this.isPublicTemplate(creatorId)) : false;
 
       if (!isAdmin && !isCreator && !(isCoach && isPublic)) {
         throw new Error(ERRORS.GET_SESSION_FORBIDDEN);

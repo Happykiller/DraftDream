@@ -2,11 +2,21 @@
 import * as React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
-import { Box, Button, IconButton, MenuItem, Stack, TextField, Tooltip } from '@mui/material';
+import {
+  Box,
+  Button,
+  IconButton,
+  MenuItem,
+  Stack,
+  TextField,
+  Tooltip,
+  useMediaQuery,
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import type { ProspectStatusEnum, ProspectStatusOption } from '@commons/prospects/status';
+import { ProspectStatus } from '@commons/prospects/status';
 import type { Prospect } from '@hooks/useProspects';
 import type { ProspectMetadataOption } from '@hooks/useProspectMetadataOptions';
 import { useDateFormatter } from '@hooks/useDateFormatter';
@@ -17,20 +27,21 @@ export interface ProspectClientTableProps {
   page: number; // 1-based
   limit: number;
   q: string;
-  statusFilter?: ProspectStatusEnum | null;
+  statusFilter?: ProspectStatus | null;
   levelFilter?: string | null;
   sourceFilter?: string | null;
-  statuses: ProspectStatusOption[];
+  statuses: Array<{ value: ProspectStatus; label: string }>;
   levels: ProspectMetadataOption[];
   sources: ProspectMetadataOption[];
   loading: boolean;
   onCreate: () => void;
   onEdit: (row: Prospect) => void;
   onDelete: (row: Prospect) => void;
+  onConvert: (row: Prospect) => void;
   onQueryChange: (value: string) => void;
   onPageChange: (page: number) => void;
   onLimitChange: (limit: number) => void;
-  onStatusFilterChange: (value: ProspectStatusEnum | null) => void;
+  onStatusFilterChange: (value: ProspectStatus | null) => void;
   onLevelFilterChange: (value: string | null) => void;
   onSourceFilterChange: (value: string | null) => void;
 }
@@ -52,6 +63,7 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
     onCreate,
     onEdit,
     onDelete,
+    onConvert,
     onQueryChange,
     onPageChange,
     onLimitChange,
@@ -61,21 +73,25 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
   } = props;
   const { t } = useTranslation();
   const fmtDate = useDateFormatter();
-  const statusLabels = React.useMemo<Record<ProspectStatusEnum, string>>(
+  const fmtDateOnly = useDateFormatter({ options: { dateStyle: 'short' } });
+  // Only show extended columns on ultra-wide viewports (>= 2000px) to avoid cluttering 1080p layouts.
+  const isUltraWideScreen = useMediaQuery('(min-width:2000px)');
+  const statusLabels = React.useMemo<Record<ProspectStatus, string>>(
     () =>
       Object.fromEntries(statuses.map((status) => [status.value, status.label])) as Record<
-        ProspectStatusEnum,
+        ProspectStatus,
         string
       >,
     [statuses],
   );
+
 
   const renderList = React.useCallback((value?: { label?: string }[]) => {
     if (!value?.length) return t('common.messages.no_value');
     return value.map((item) => item.label).join(', ');
   }, [t]);
 
-  const columns = React.useMemo<GridColDef<Prospect>[]>(
+  const baseColumns = React.useMemo<GridColDef<Prospect>[]>(
     () => [
       { field: 'firstName', headerName: t('common.labels.first_name'), flex: 1, minWidth: 160 },
       { field: 'lastName', headerName: t('common.labels.last_name'), flex: 1, minWidth: 160 },
@@ -89,13 +105,6 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
           const label = statusValue ? statusLabels[statusValue] : undefined;
           return label ?? t('common.messages.no_value');
         },
-        minWidth: 140,
-        flex: 1,
-      },
-      {
-        field: 'level',
-        headerName: t('common.labels.level'),
-        renderCell: (params) => params.row.level?.label ?? t('common.messages.no_value'),
         minWidth: 140,
         flex: 1,
       },
@@ -114,18 +123,6 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
         flex: 1,
       },
       {
-        field: 'objectives',
-        headerName: t('common.labels.objectives'),
-        renderCell: (params) => renderList(params.row.objectives),
-        flex: 1,
-      },
-      {
-        field: 'activityPreferences',
-        headerName: t('common.labels.activity_preferences'),
-        renderCell: (params) => renderList(params.row.activityPreferences),
-        flex: 1,
-      },
-      {
         field: 'budget',
         headerName: t('common.labels.budget'),
         renderCell: (params) =>
@@ -135,19 +132,7 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
       {
         field: 'desiredStartDate',
         headerName: t('common.labels.desired_start_date'),
-        renderCell: (params) => (params.value ? fmtDate(params.value) : t('common.messages.no_value')),
-        minWidth: 160,
-      },
-      {
-        field: 'createdAt',
-        headerName: t('common.labels.created'),
-        renderCell: (params) => (params.value ? fmtDate(params.value as string) : t('common.messages.no_value')),
-        minWidth: 160,
-      },
-      {
-        field: 'updatedAt',
-        headerName: t('common.labels.updated'),
-        renderCell: (params) => fmtDate(params.value as string),
+        renderCell: (params) => (params.value ? fmtDateOnly(params.value) : t('common.messages.no_value')),
         minWidth: 160,
       },
       {
@@ -157,6 +142,17 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
         filterable: false,
         renderCell: (params) => (
           <Stack direction="row" spacing={0.5}>
+            {params.row.status === ProspectStatus.TODO && (
+              <Tooltip title={t('prospects.list.actions.convert')}>
+                <IconButton
+                  size="small"
+                  aria-label={`convert-prospect-${params.row.id}`}
+                  onClick={() => onConvert(params.row)}
+                >
+                  <PersonAddAltIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
             <Tooltip title={t('common.tooltips.edit')}>
               <IconButton size="small" aria-label={`edit-prospect-${params.row.id}`} onClick={() => onEdit(params.row)}>
                 <EditIcon fontSize="small" />
@@ -169,11 +165,75 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
             </Tooltip>
           </Stack>
         ),
-        minWidth: 120,
+        minWidth: 160,
       },
     ],
-    [fmtDate, onDelete, onEdit, renderList, t],
+    [fmtDateOnly, onConvert, onDelete, onEdit, statusLabels, t],
   );
+
+  const levelColumn = React.useMemo<GridColDef<Prospect>>(
+    () => ({
+      field: 'level',
+      headerName: t('common.labels.level'),
+      renderCell: (params) => params.row.level?.label ?? t('common.messages.no_value'),
+      minWidth: 140,
+      flex: 1,
+    }),
+    [t],
+  );
+
+  const extendedColumns = React.useMemo<GridColDef<Prospect>[]>(
+    () => [
+      {
+        field: 'objectives',
+        headerName: t('common.labels.objectives'),
+        renderCell: (params) => renderList(params.row.objectives),
+        flex: 1,
+      },
+      {
+        field: 'activityPreferences',
+        headerName: t('common.labels.activity_preferences'),
+        renderCell: (params) => renderList(params.row.activityPreferences),
+        flex: 1,
+      },
+    ],
+    [renderList, t],
+  );
+
+  const auditColumns = React.useMemo<GridColDef<Prospect>[]>(
+    () => [
+      {
+        field: 'createdAt',
+        headerName: t('common.labels.created'),
+        renderCell: (params) =>
+          params.value ? fmtDate(params.value as string) : t('common.messages.no_value'),
+        minWidth: 160,
+      },
+      {
+        field: 'updatedAt',
+        headerName: t('common.labels.updated'),
+        renderCell: (params) => fmtDate(params.value as string),
+        minWidth: 160,
+      },
+    ],
+    [fmtDate, t],
+  );
+
+  const columns = React.useMemo<GridColDef<Prospect>[]>(() => {
+    if (!isUltraWideScreen) {
+      return baseColumns;
+    }
+
+    return [
+      ...baseColumns.slice(0, 5),
+      levelColumn,
+      ...baseColumns.slice(5, 7),
+      ...extendedColumns,
+      ...baseColumns.slice(7, -1),
+      ...auditColumns,
+      baseColumns[baseColumns.length - 1],
+    ];
+  }, [auditColumns, baseColumns, extendedColumns, isUltraWideScreen, levelColumn]);
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -200,7 +260,7 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
             size="small"
             label={t('common.labels.status')}
             value={statusFilter || ''}
-            onChange={(event) => onStatusFilterChange((event.target.value as ProspectStatusEnum) || null)}
+            onChange={(event) => onStatusFilterChange((event.target.value as ProspectStatus) || null)}
             sx={{ minWidth: 180 }}
           >
             <MenuItem value="">{t('common.placeholders.select')}</MenuItem>

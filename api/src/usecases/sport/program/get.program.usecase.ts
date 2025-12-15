@@ -6,6 +6,7 @@ import { Inversify } from '@src/inversify/investify';
 import { GetProgramUsecaseDto } from '@src/usecases/sport/program/program.usecase.dto';
 import { mapProgramToUsecase } from '@src/usecases/sport/program/program.mapper';
 import type { ProgramUsecaseModel } from '@src/usecases/sport/program/program.usecase.model';
+import { enumEquals } from '@src/common/enum.util';
 
 export class GetProgramUsecase {
   constructor(private readonly inversify: Inversify) { }
@@ -27,7 +28,7 @@ export class GetProgramUsecase {
       let isPublic = false;
       if (isCoach) {
         const creatorIsAdmin = await this.isPublicProgram(creatorId);
-        isPublic = program.visibility === 'public' || creatorIsAdmin;
+        isPublic = enumEquals(program.visibility, 'PUBLIC') || creatorIsAdmin;
       }
       const isAssignedAthlete = session.role === Role.ATHLETE && assigneeId === session.userId;
 

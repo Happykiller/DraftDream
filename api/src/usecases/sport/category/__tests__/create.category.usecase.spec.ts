@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 
 import { ERRORS } from '@src/common/ERROR';
 import { Inversify } from '@src/inversify/investify';
@@ -31,7 +31,7 @@ describe('CreateCategoryUsecase', () => {
   const dto: CreateCategoryUsecaseDto = {
     locale: 'en-US',
     label: 'Strength',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'user-123',
   };
 
@@ -41,7 +41,7 @@ describe('CreateCategoryUsecase', () => {
     slug: 'strength',
     locale: 'en-us',
     label: 'Strength',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     createdBy: 'user-123',
     createdAt: now,
     updatedAt: now,

@@ -9,6 +9,7 @@ import {
 } from '@nestjs/graphql';
 
 import { UserGql } from '@graphql/user/user.gql.types';
+import { CoachAthleteGql } from '@graphql/athlete/coach-athlete/coach-athlete.gql.types';
 import { ProspectLevelGql } from '@graphql/prospect/level/prospect-level.gql.types';
 import { ProspectObjectiveGql } from '@graphql/prospect/objective/prospect-objective.gql.types';
 import { ProspectActivityPreferenceGql } from '@graphql/prospect/activity-preference/prospect-activity-preference.gql.types';
@@ -46,6 +47,8 @@ export class ProspectGql {
   @Field() createdBy!: string;
   @Field() createdAt!: Date;
   @Field() updatedAt!: Date;
+  @Field(() => ID, { nullable: true }) matchedAthleteId?: string;
+  @Field(() => ID, { nullable: true }) coachAthleteLinkId?: string;
 
   @Field(() => UserGql, { nullable: true }) creator?: UserGql | null;
   @Field(() => ProspectLevelGql, { nullable: true }) level?: ProspectLevelGql | null;
@@ -112,4 +115,18 @@ export class ProspectListGql {
   @Field(() => Int) total!: number;
   @Field(() => Int) page!: number;
   @Field(() => Int) limit!: number;
+}
+
+@InputType()
+export class ConvertProspectInput {
+  @Field(() => ID) prospectId!: string;
+}
+
+@ObjectType()
+export class ProspectConversionGql {
+  @Field(() => ProspectGql) prospect!: ProspectGql;
+  @Field(() => UserGql) athlete!: UserGql;
+  @Field(() => CoachAthleteGql) coachAthleteLink!: CoachAthleteGql;
+  @Field() createdAthlete!: boolean;
+  @Field() createdCoachAthleteLink!: boolean;
 }

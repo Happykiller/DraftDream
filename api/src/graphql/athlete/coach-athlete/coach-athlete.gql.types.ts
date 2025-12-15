@@ -18,6 +18,11 @@ export class CoachAthleteGql {
   @Field() startDate!: Date;
   @Field({ nullable: true }) endDate?: Date;
   @Field() is_active!: boolean;
+  @Field({ name: 'active' })
+  get active(): boolean {
+    return this.is_active;
+  }
+
   @Field({ nullable: true }) note?: string;
   @Field(() => ID) createdBy!: string;
   @Field() createdAt!: Date;

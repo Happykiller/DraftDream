@@ -14,7 +14,7 @@ describe('mapTagUsecaseToGql', () => {
       slug: 'mobility',
       locale: 'fr-FR',
       label: 'Mobilité',
-      visibility: 'public',
+      visibility: 'PUBLIC',
       createdBy: 'coach-12',
       createdAt,
       updatedAt,

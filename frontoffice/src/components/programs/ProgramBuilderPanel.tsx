@@ -66,7 +66,9 @@ export function ProgramBuilderPanel({
     exerciseCategory,
     exerciseType,
     sessionTemplates,
+    sessionTemplatesTotal,
     filteredExercises,
+    exerciseLibraryTotal,
     exerciseCategoryOptions,
     exerciseTypeOptions,
     exerciseMap,
@@ -163,6 +165,28 @@ export function ProgramBuilderPanel({
   void _summaryText;
 
   const addExerciseFallbackLabel = t('programs-coatch.builder.library.no_sessions_warning');
+
+  const sessionResultCountLabel = React.useMemo(
+    () =>
+      sessionsLoading
+        ? undefined
+        : t('programs-coatch.builder.templates_result_count', {
+          count: sessionTemplates.length,
+          total: sessionTemplatesTotal,
+        }),
+    [sessionTemplates.length, sessionTemplatesTotal, sessionsLoading, t],
+  );
+
+  const exerciseResultCountLabel = React.useMemo(
+    () =>
+      exercisesLoading
+        ? undefined
+        : t('programs-coatch.builder.library.result_count', {
+          count: filteredExercises.length,
+          total: exerciseLibraryTotal,
+        }),
+    [exerciseLibraryTotal, exercisesLoading, filteredExercises.length, t],
+  );
 
   const [exerciseMenuAnchor, setExerciseMenuAnchor] = React.useState<{
     anchor: HTMLElement;
@@ -772,14 +796,11 @@ export function ProgramBuilderPanel({
                 >
                   {/* Configuration Panel */}
                   <Grid
-                    size={{ xs: 12, md: 3, lg: 3 }}
+                    size={{ xs: 12, md: 3 }}
                     sx={{
                       display: 'flex',
                       flexDirection: 'column',
-                      px: 1,
-                      py: 1,
                       gap: 2,
-                      minHeight: '100%',
                     }}
                   >
                     <Card variant="outlined" sx={{ flexShrink: 0 }}>
@@ -854,7 +875,7 @@ export function ProgramBuilderPanel({
                       </CardContent>
                     </Card>
 
-                    <Card variant="outlined" sx={{ flexGrow: 1, display: 'flex' }}>
+                    <Card variant="outlined" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                       <CardContent
                         sx={{
                           display: 'flex',
@@ -902,6 +923,21 @@ export function ProgramBuilderPanel({
                                 <Search fontSize="small" color="disabled" />
                               </InputAdornment>
                             ),
+                            endAdornment:
+                              sessionResultCountLabel && sessionResultCountLabel.length > 0 ? (
+                                <InputAdornment
+                                  position="end"
+                                  sx={{ pointerEvents: 'none', color: 'text.disabled' }}
+                                >
+                                  <Typography
+                                    color="inherit"
+                                    sx={{ fontSize: 13, whiteSpace: 'nowrap' }}
+                                    variant="body2"
+                                  >
+                                    {sessionResultCountLabel}
+                                  </Typography>
+                                </InputAdornment>
+                              ) : undefined,
                           }}
                           sx={{ backgroundColor: theme.palette.background.default }}
                         />
@@ -910,7 +946,7 @@ export function ProgramBuilderPanel({
                           {sessionLimitHint}
                         </Typography>
 
-                        <Stack spacing={1.5} sx={{ flexGrow: 1 }}>
+                        <Stack spacing={1.5} sx={{ overflow: 'auto' }}>
                           {sessionsLoading ? null : sessionTemplates.length === 0 ? (
                             <Typography variant="body2" color="text.secondary">
                               {builderCopy.structure.empty}
@@ -932,13 +968,11 @@ export function ProgramBuilderPanel({
 
                   {/* Structure Panel */}
                   <Grid
-                    size={{ xs: 12, md: 5, lg: 5 }}
+                    size={{ xs: 12, md: 6 }}
                     sx={{
                       display: 'flex',
                       flexDirection: 'column',
-                      px: 1,
-                      py: 1,
-                      minHeight: '100%',
+                      gap: 2,
                     }}
                   >
                     <Card
@@ -1131,16 +1165,14 @@ export function ProgramBuilderPanel({
 
                   {/* Exercise Library Panel */}
                   <Grid
-                    size={{ xs: 12, md: 4, lg: 4 }}
+                    size={{ xs: 12, md: 3 }}
                     sx={{
                       display: 'flex',
                       flexDirection: 'column',
-                      px: 1,
-                      py: 1,
-                      minHeight: '100%',
+                      gap: 2,
                     }}
                   >
-                    <Card variant="outlined" sx={{ flexGrow: 1, display: 'flex' }}>
+                    <Card variant="outlined" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                       <CardContent
                         sx={{
                           display: 'flex',
@@ -1187,6 +1219,22 @@ export function ProgramBuilderPanel({
                                 <Search fontSize="small" color="disabled" />
                               </InputAdornment>
                             ),
+                            endAdornment:
+                              exerciseResultCountLabel &&
+                                exerciseResultCountLabel.length > 0 ? (
+                                <InputAdornment
+                                  position="end"
+                                  sx={{ pointerEvents: 'none', color: 'text.disabled' }}
+                                >
+                                  <Typography
+                                    color="inherit"
+                                    sx={{ fontSize: 13, whiteSpace: 'nowrap' }}
+                                    variant="body2"
+                                  >
+                                    {exerciseResultCountLabel}
+                                  </Typography>
+                                </InputAdornment>
+                              ) : undefined,
                           }}
                           sx={{ backgroundColor: theme.palette.background.default }}
                         />
@@ -1240,7 +1288,7 @@ export function ProgramBuilderPanel({
                           {limitHint}
                         </Typography>
 
-                        <Stack spacing={1.5} sx={{ flexGrow: 1 }}>
+                        <Stack spacing={1.5} sx={{ overflow: 'auto' }}>
                           {exercisesLoading ? null : filteredExercises.length === 0 ? (
                             <Typography variant="body2" color="text.secondary">
                               {emptyExercisesMessage}
@@ -1330,9 +1378,9 @@ export function ProgramBuilderPanel({
         programExerciseContext={
           programExerciseContext
             ? {
-                exerciseItem: programExerciseContext.exerciseItem,
-                onSubmit: handleProgramExerciseSubmit,
-              }
+              exerciseItem: programExerciseContext.exerciseItem,
+              onSubmit: handleProgramExerciseSubmit,
+            }
             : null
         }
       />

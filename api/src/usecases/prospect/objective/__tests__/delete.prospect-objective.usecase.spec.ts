@@ -39,7 +39,7 @@ describe('DeleteProspectObjectiveUsecase', () => {
   });
 
   it('should delete the prospect objective through the repository', async () => {
-    repositoryMock.delete.mockResolvedValue(true);
+    (repositoryMock.delete as any).mockResolvedValue(true);
 
     const result = await usecase.execute(dto);
 
@@ -48,7 +48,7 @@ describe('DeleteProspectObjectiveUsecase', () => {
   });
 
   it('should return false when the repository deletion fails', async () => {
-    repositoryMock.delete.mockResolvedValue(false);
+    (repositoryMock.delete as any).mockResolvedValue(false);
 
     const result = await usecase.execute(dto);
 
@@ -57,7 +57,7 @@ describe('DeleteProspectObjectiveUsecase', () => {
 
   it('should log and throw a domain error when repository delete fails', async () => {
     const failure = new Error('delete failure');
-    repositoryMock.delete.mockRejectedValue(failure);
+    (repositoryMock.delete as any).mockRejectedValue(failure);
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.DELETE_PROSPECT_OBJECTIVE_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(`DeleteProspectObjectiveUsecase#execute => ${failure.message}`);

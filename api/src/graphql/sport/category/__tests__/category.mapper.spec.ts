@@ -14,7 +14,7 @@ describe('mapCategoryUsecaseToGql', () => {
       slug: 'strength',
       locale: 'fr-FR',
       label: 'Force',
-      visibility: 'public',
+      visibility: 'PUBLIC',
       createdBy: 'coach-10',
       createdAt,
       updatedAt,

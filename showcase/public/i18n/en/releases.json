@@ -1,6 +1,37 @@
 {
   "releases": [
     {
+      "version": "0.9.0",
+      "title": "Prospect Conversion & Athlete Monitoring",
+      "date": "2025-12-14",
+      "global": [
+        "Direct conversion from prospects to athletes with automatic account creation and coach linking.",
+        "New Athlete Profile centralizing programs, nutrition, objectives, and health data.",
+        "Unified Visibility management (Private/Public) for programs, sessions, and nutrition plans.",
+        "Increased flexibility in session creation (duplicates, ordering) and optimized navigation."
+      ],
+      "notes": "FitDesk 0.9.0 completes the CRM cycle by bridging sales to operational tracking. This version introduces automatic prospect-to-athlete conversion and deploys a '360° view' athlete profile integrating nutrition, sports, and personal data, all supported by a clearer and standardized interface.",
+      "projects": {
+        "/api": [
+          "Transactional support for prospect-to-athlete conversion.",
+          "Standardization of prospect statuses and reinforced multilingual slug generation.",
+          "New entries for health data (allergies, conditions) and athlete metadata."
+        ],
+        "/backoffice": [
+          "Stabilized user administration panel with display fixes.",
+          "Clarification of editable fields and securing of sensitive data."
+        ],
+        "/frontoffice": [
+          "Quick Prospect → Athlete conversion button from the pipeline.",
+          "Dedicated Nutrition and Programs tabs integrated directly into the Athlete profile.",
+          "UX improvements: result counters, smart truncated titles, and mobile responsiveness."
+        ],
+        "/showcase": [
+          "Content updates to reflect the 'Athlete Monitoring' approach and the completion of the CRM cycle."
+        ]
+      }
+    },
+    {
       "version": "0.8.0",
       "title": "Stronger Pipeline & Split Dashboards",
       "date": "2025-12-05",

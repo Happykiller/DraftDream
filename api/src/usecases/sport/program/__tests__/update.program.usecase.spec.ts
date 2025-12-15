@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest, afterEach } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 
 import { ERRORS } from '@src/common/ERROR';
 import { Inversify } from '@src/inversify/investify';
@@ -48,7 +48,7 @@ describe('UpdateProgramUsecase', () => {
     slug: 'updated-program',
     locale: 'en-us',
     label: 'Updated Program',
-    visibility: 'private',
+    visibility: 'PRIVATE',
     duration: 8,
     frequency: 3,
     sessions: [
@@ -70,7 +70,7 @@ describe('UpdateProgramUsecase', () => {
     slug: 'updated-program',
     locale: 'en-us',
     label: 'Updated Program',
-    visibility: 'private',
+    visibility: 'PRIVATE',
     duration: 8,
     frequency: 3,
     sessions: [

@@ -15,7 +15,7 @@ describe('mapMealTypeUsecaseToGql', () => {
       locale: 'fr-FR',
       label: 'Petit déjeuner',
       icon: 'coffee',
-      visibility: 'private',
+      visibility: 'PRIVATE',
       createdBy: 'coach-2',
       createdAt,
       updatedAt,

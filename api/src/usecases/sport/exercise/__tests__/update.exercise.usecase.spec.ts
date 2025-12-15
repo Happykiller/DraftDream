@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -43,14 +43,14 @@ describe('UpdateExerciseUsecase', () => {
     charge: 'bodyweight',
     rest: 60,
     videoUrl: 'https://cdn.local/push-up.mp4',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     categories: [
       {
         id: 'category-1',
         slug: 'cat',
         locale: 'en-us',
         label: 'Category',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -62,7 +62,7 @@ describe('UpdateExerciseUsecase', () => {
         slug: 'muscle',
         locale: 'en-us',
         label: 'Muscle',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -74,7 +74,7 @@ describe('UpdateExerciseUsecase', () => {
         slug: 'equipment',
         locale: 'en-us',
         label: 'Equipment',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -86,7 +86,7 @@ describe('UpdateExerciseUsecase', () => {
         slug: 'tag',
         locale: 'en-us',
         label: 'Tag',
-        visibility: 'public',
+        visibility: 'PUBLIC',
         createdBy: 'user-123',
         createdAt: now,
         updatedAt: now,
@@ -109,7 +109,7 @@ describe('UpdateExerciseUsecase', () => {
     charge: 'bodyweight',
     rest: 60,
     videoUrl: 'https://cdn.local/push-up.mp4',
-    visibility: 'public',
+    visibility: 'PUBLIC',
     categoryIds: ['category-1'],
     muscleIds: ['muscle-1'],
     equipmentIds: ['equipment-1'],
@@ -137,12 +137,12 @@ describe('UpdateExerciseUsecase', () => {
   });
 
   it('should update the exercise and map the response when the coach is the creator', async () => {
-    exerciseRepositoryMock.get.mockResolvedValue(exercise);
-    exerciseRepositoryMock.update.mockResolvedValue(exercise);
+    (exerciseRepositoryMock.get as any).mockResolvedValue(exercise);
+    (exerciseRepositoryMock.update as any).mockResolvedValue(exercise);
 
     const patch: UpdateExerciseUsecaseDto = {
       label: 'Push-up Advanced',
-      visibility: 'private',
+      visibility: 'PRIVATE',
       session: { userId: 'user-456', role: Role.COACH },
     };
 
@@ -151,15 +151,15 @@ describe('UpdateExerciseUsecase', () => {
     expect(exerciseRepositoryMock.get).toHaveBeenCalledWith({ id: exercise.id });
     expect(exerciseRepositoryMock.update).toHaveBeenCalledWith(exercise.id, {
       label: 'Push-up Advanced',
-      visibility: 'private',
+      visibility: 'PRIVATE',
       slug: 'push-up-advanced',
     });
     expect(result).toEqual(mappedExercise);
   });
 
   it('should allow an admin to update an exercise they did not create', async () => {
-    exerciseRepositoryMock.get.mockResolvedValue(exercise);
-    exerciseRepositoryMock.update.mockResolvedValue(exercise);
+    (exerciseRepositoryMock.get as any).mockResolvedValue(exercise);
+    (exerciseRepositoryMock.update as any).mockResolvedValue(exercise);
 
     const patch: UpdateExerciseUsecaseDto = {
       label: 'Push-up Elite',
@@ -175,7 +175,7 @@ describe('UpdateExerciseUsecase', () => {
   });
 
   it('should throw when the targeted exercise cannot be found', async () => {
-    exerciseRepositoryMock.get.mockResolvedValue(null);
+    (exerciseRepositoryMock.get as any).mockResolvedValue(null);
 
     const patch: UpdateExerciseUsecaseDto = {
       label: 'Push-up Advanced',
@@ -188,7 +188,7 @@ describe('UpdateExerciseUsecase', () => {
   });
 
   it('should throw when a coach tries to update an exercise they did not create', async () => {
-    exerciseRepositoryMock.get.mockResolvedValue(exercise);
+    (exerciseRepositoryMock.get as any).mockResolvedValue(exercise);
 
     const patch: UpdateExerciseUsecaseDto = {
       label: 'Push-up Advanced',
@@ -202,8 +202,8 @@ describe('UpdateExerciseUsecase', () => {
 
   it('should log and throw a domain error when update fails', async () => {
     const failure = new Error('database failure');
-    exerciseRepositoryMock.get.mockResolvedValue(exercise);
-    exerciseRepositoryMock.update.mockRejectedValue(failure);
+    (exerciseRepositoryMock.get as any).mockResolvedValue(exercise);
+    (exerciseRepositoryMock.update as any).mockRejectedValue(failure);
 
     const patch: UpdateExerciseUsecaseDto = {
       label: 'Push-up Advanced',

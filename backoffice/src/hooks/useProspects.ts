@@ -3,7 +3,7 @@
 import * as React from 'react';
 
 import inversify from '@src/commons/inversify';
-import { ProspectStatusEnum } from '@src/commons/prospects/status';
+import { ProspectStatus } from '@src/commons/prospects/status';
 
 import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
@@ -31,7 +31,7 @@ export interface Prospect {
   lastName: string;
   email: string;
   phone?: string;
-  status?: ProspectStatusEnum | null;
+  status?: ProspectStatus | null;
   levelId?: string;
   sourceId?: string;
   objectiveIds: string[];
@@ -121,16 +121,31 @@ const DELETE_M = `
   }
 `;
 
+const CONVERT_M = `
+  mutation ConvertProspect($input: ConvertProspectInput!) {
+    prospect_convert(input: $input) {
+      prospect {
+        ${PROSPECT_FIELDS}
+      }
+      athlete { id email firstName lastName }
+      coachAthleteLink { id coachId athleteId active }
+      createdAthlete
+      createdCoachAthleteLink
+    }
+  }
+`;
+
 type ProspectListPayload = { prospect_list: ProspectListResult };
 type CreateProspectPayload = { prospect_create: Prospect | null };
 type UpdateProspectPayload = { prospect_update: Prospect | null };
 type DeleteProspectPayload = { prospect_delete: boolean };
+type ConvertProspectPayload = { prospect_convert: { prospect: Prospect } | null };
 
 export interface UseProspectsParams {
   page: number; // 1-based
   limit: number;
   q: string;
-  status?: ProspectStatusEnum | null;
+  status?: ProspectStatus | null;
   levelId?: string | null;
   sourceId?: string | null;
 }
@@ -140,7 +155,7 @@ export interface ProspectCreateInput {
   lastName: string;
   email: string;
   phone?: string;
-  status?: ProspectStatusEnum;
+  status?: ProspectStatus;
   levelId?: string;
   sourceId?: string;
   objectiveIds?: string[];
@@ -264,5 +279,26 @@ export function useProspects(params: UseProspectsParams) {
     [execute, flashError, flashSuccess, gql, load],
   );
 
-  return { items, total, loading, create, update, remove };
+  const convert = React.useCallback(
+    async (prospectId: string) => {
+      try {
+        const { errors } = await execute(() =>
+          gql.send<ConvertProspectPayload>({
+            query: CONVERT_M,
+            variables: { input: { prospectId } },
+            operationName: 'ConvertProspect',
+          }),
+        );
+        if (errors?.length) throw new Error(errors[0].message);
+        flashSuccess('Prospect converted');
+        await load();
+      } catch (error: any) {
+        flashError(error?.message ?? 'Conversion failed');
+        throw error;
+      }
+    },
+    [execute, flashError, flashSuccess, gql, load],
+  );
+
+  return { items, total, loading, create, update, remove, convert };
 }

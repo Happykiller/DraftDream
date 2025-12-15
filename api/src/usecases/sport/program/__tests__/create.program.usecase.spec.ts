@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 
 import { ERRORS } from '@src/common/ERROR';
 import { Inversify } from '@src/inversify/investify';
@@ -31,7 +31,7 @@ describe('CreateProgramUsecase', () => {
   const dto: CreateProgramUsecaseDto = {
     locale: 'en-US',
     label: 'Strength',
-    visibility: 'private',
+    visibility: 'PRIVATE',
     duration: 6,
     frequency: 3,
     description: 'Program description',
@@ -55,7 +55,7 @@ describe('CreateProgramUsecase', () => {
     slug: 'strength',
     locale: 'en-us',
     label: 'Strength',
-    visibility: 'private',
+    visibility: 'PRIVATE',
     duration: 6,
     frequency: 3,
     description: 'Program description',
@@ -99,7 +99,7 @@ describe('CreateProgramUsecase', () => {
     slug: 'strength',
     locale: 'en-us',
     label: 'Strength',
-    visibility: 'private',
+    visibility: 'PRIVATE',
     duration: 6,
     frequency: 3,
     description: 'Program description',

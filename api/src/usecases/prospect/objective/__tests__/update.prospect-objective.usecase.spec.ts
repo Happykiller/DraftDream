@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest, afterEach } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
@@ -24,7 +24,7 @@ describe('UpdateProspectObjectiveUsecase', () => {
   const dto: UpdateProspectObjectiveDto = {
     locale: 'es-ES',
     label: 'Mantener',
-    visibility: 'private',
+    visibility: 'PRIVATE',
   };
   const id = 'objective-4';
 
@@ -34,7 +34,7 @@ describe('UpdateProspectObjectiveUsecase', () => {
     id: 'objective-4',
     locale: 'es-es',
     label: 'Mantener',
-    visibility: 'private',
+    visibility: 'PRIVATE',
     createdBy: 'coach-9',
     createdAt: now,
     updatedAt: now,
@@ -63,7 +63,7 @@ describe('UpdateProspectObjectiveUsecase', () => {
 
   it('should update the prospect objective through the repository', async () => {
     const buildSlugSpy = jest.spyOn(slugUtil, 'buildSlug').mockReturnValue('updated-objective');
-    repositoryMock.update.mockResolvedValue(objective);
+    (repositoryMock.update as any).mockResolvedValue(objective);
 
     const result = await usecase.execute({ ...dto, id });
 
@@ -81,7 +81,7 @@ describe('UpdateProspectObjectiveUsecase', () => {
   });
 
   it('should return null when the repository update returns null', async () => {
-    repositoryMock.update.mockResolvedValue(null);
+    (repositoryMock.update as any).mockResolvedValue(null);
 
     const result = await usecase.execute({ ...dto, id });
 
@@ -90,7 +90,7 @@ describe('UpdateProspectObjectiveUsecase', () => {
 
   it('should log and throw a domain error when repository update fails', async () => {
     const failure = new Error('update failure');
-    repositoryMock.update.mockRejectedValue(failure);
+    (repositoryMock.update as any).mockRejectedValue(failure);
 
     await expect(usecase.execute({ ...dto, id })).rejects.toThrow(ERRORS.UPDATE_PROSPECT_OBJECTIVE_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(`UpdateProspectObjectiveUsecase#execute => ${failure.message}`);

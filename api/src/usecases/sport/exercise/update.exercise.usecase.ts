@@ -28,7 +28,7 @@ export class UpdateExerciseUsecase {
         throw new Error(ERRORS.UPDATE_EXERCISE_FORBIDDEN);
       }
       if (patch.label) {
-        (patch as any).slug = buildSlug({ label: patch.label, fallback: 'exercise' });
+        (patch as any).slug = buildSlug({ label: patch.label, fallback: 'exercise', locale: patch.locale });
       }
 
       const res = await this.inversify.bddService.exercise.update(id, patch);

@@ -6,7 +6,7 @@ export interface MealType {
   locale: string;
   label: string;
   icon?: string | null;
-  visibility: 'private' | 'public';
+  visibility: 'PRIVATE' | 'PUBLIC';
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;

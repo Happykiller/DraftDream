@@ -6,6 +6,7 @@ import { Inversify } from '@src/inversify/investify';
 import { mapExerciseToUsecase } from '@src/usecases/sport/exercise/exercise.mapper';
 import { ListExercisesUsecaseDto } from '@src/usecases/sport/exercise/exercise.usecase.dto';
 import type { ExerciseUsecaseModel } from '@src/usecases/sport/exercise/exercise.usecase.model';
+import { enumEquals } from '@src/common/enum.util';
 
 export class ListExercisesUsecase {
   constructor(private readonly inversify: Inversify) { }
@@ -44,10 +45,10 @@ export class ListExercisesUsecase {
           };
         }
 
-        if (visibility === 'public') {
+        if (enumEquals(visibility, 'PUBLIC')) {
           const res = await this.inversify.bddService.exercise.list({
             ...rest,
-            visibility: 'public',
+            visibility: 'PUBLIC',
           });
           return {
             items: res.items.map(mapExerciseToUsecase),
@@ -57,7 +58,7 @@ export class ListExercisesUsecase {
           };
         }
 
-        const effectiveVisibility = visibility === 'private' ? 'private' : undefined;
+        const effectiveVisibility = enumEquals(visibility, 'PRIVATE') ? 'PRIVATE' : undefined;
         const res = await this.inversify.bddService.exercise.list({
           ...rest,
           ...(effectiveVisibility ? { visibility: effectiveVisibility } : {}),

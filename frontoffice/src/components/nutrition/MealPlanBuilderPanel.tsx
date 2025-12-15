@@ -1,5 +1,6 @@
 // src/components/nutrition/MealPlanBuilderPanel.tsx
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import { alpha, useTheme } from '@mui/material/styles';
 import {
   Autocomplete,
@@ -70,6 +71,7 @@ export function MealPlanBuilderPanel({
   onUpdated,
   mealPlan,
 }: MealPlanBuilderPanelProps): React.JSX.Element {
+  const { t } = useTranslation();
   const theme = useTheme();
 
   const {
@@ -83,8 +85,10 @@ export function MealPlanBuilderPanel({
     mealSearch,
     setMealSearch,
     dayLibrary,
+    dayLibraryTotal,
     dayLibraryLoading,
     mealLibrary,
+    mealLibraryTotal,
     mealLibraryLoading,
     mealTypes,
     mealTypesLoading,
@@ -180,6 +184,26 @@ export function MealPlanBuilderPanel({
   const summaryBorder = React.useMemo(
     () => alpha(theme.palette.primary.main, 0.16),
     [theme.palette.primary.main],
+  );
+  const dayResultCountLabel = React.useMemo(
+    () =>
+      dayLibraryLoading
+        ? undefined
+        : t('nutrition-coach.builder.day_library.result_count', {
+          count: dayLibrary.length,
+          total: dayLibraryTotal,
+        }),
+    [dayLibrary.length, dayLibraryLoading, dayLibraryTotal, t],
+  );
+  const mealResultCountLabel = React.useMemo(
+    () =>
+      mealLibraryLoading
+        ? undefined
+        : t('nutrition-coach.builder.meal_library.result_count', {
+          count: mealLibrary.length,
+          total: mealLibraryTotal,
+        }),
+    [mealLibrary.length, mealLibraryLoading, mealLibraryTotal, t],
   );
   const macroFormatter = React.useMemo(
     () =>
@@ -554,6 +578,7 @@ export function MealPlanBuilderPanel({
             >
               <Box sx={{ flexGrow: 1, minHeight: 0, overflow: 'auto', p: { xs: 2, md: 3 } }}>
                 <Grid container columnSpacing={{ xs: 0, md: 2 }} rowSpacing={{ xs: 2, md: 0 }} sx={{ minHeight: '100%' }}>
+                  {/* Left Column: Plan Configuration & Day Library */}
                   <Grid size={{ xs: 12, md: 3 }} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <Card variant="outlined">
                       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -626,6 +651,21 @@ export function MealPlanBuilderPanel({
                                 <Search fontSize="small" color="disabled" />
                               </InputAdornment>
                             ),
+                            endAdornment:
+                              dayResultCountLabel && dayResultCountLabel.length > 0 ? (
+                                <InputAdornment
+                                  position="end"
+                                  sx={{ pointerEvents: 'none', color: 'text.disabled' }}
+                                >
+                                  <Typography
+                                    color="inherit"
+                                    sx={{ fontSize: 13, whiteSpace: 'nowrap' }}
+                                    variant="body2"
+                                  >
+                                    {dayResultCountLabel}
+                                  </Typography>
+                                </InputAdornment>
+                              ) : undefined,
                           }}
                         />
                         {builderCopy.day_library.limit_hint ? (
@@ -659,6 +699,7 @@ export function MealPlanBuilderPanel({
                     </Card>
                   </Grid>
 
+                  {/* Center Column: Plan Editor */}
                   <Grid size={{ xs: 12, md: 6 }} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <Card variant="outlined" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, flexGrow: 1 }}>
@@ -718,6 +759,9 @@ export function MealPlanBuilderPanel({
                                 border: `1px solid ${summaryBorder}`,
                                 px: { xs: 1.25, md: 1.5 },
                                 py: { xs: 1.25, md: 1.5 },
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: 1.5,
                               }}
                             >
                               <Stack spacing={1}>
@@ -736,6 +780,61 @@ export function MealPlanBuilderPanel({
                                     const displayValue = entry.unit
                                       ? `${entry.value}\u00a0${entry.unit}`
                                       : entry.value;
+
+                                    return (
+                                      <Stack key={entry.key} spacing={0.25} sx={{ minWidth: { sm: 88 } }}>
+                                        <Typography variant="subtitle1" sx={{ fontWeight: 700, color: entry.color }}>
+                                          {displayValue}
+                                        </Typography>
+                                        <Typography variant="caption" color="text.secondary">
+                                          {entry.label}
+                                        </Typography>
+                                      </Stack>
+                                    );
+                                  })}
+                                </Stack>
+                              </Stack>
+
+                              <Divider />
+
+                              <Stack spacing={1}>
+                                <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>
+                                  {t('nutrition-coach.builder.summary.average_title')}
+                                </Typography>
+                                <Stack
+                                  direction={{ xs: 'column', sm: 'row' }}
+                                  spacing={{ xs: 1.5, sm: 3 }}
+                                  useFlexGap
+                                  flexWrap="wrap"
+                                >
+                                  {nutritionSummaryEntries.map((entry) => {
+                                    const totalDays = Math.max(days.length, 1);
+                                    // Parse back the formatted value (removing unit if attached, though value field here is formatted string)
+                                    // It's cleaner to re-calculate from raw numbers, but let's access raw validation first.
+                                    // Actually we can map over keys 'calories', 'protein', 'carbs', 'fats'
+
+                                    let rawValue = 0;
+                                    switch (entry.key) {
+                                      case 'calories':
+                                        rawValue = nutritionSummary.calories;
+                                        break;
+                                      case 'protein':
+                                        rawValue = nutritionSummary.proteinGrams;
+                                        break;
+                                      case 'carbs':
+                                        rawValue = nutritionSummary.carbGrams;
+                                        break;
+                                      case 'fats':
+                                        rawValue = nutritionSummary.fatGrams;
+                                        break;
+                                    }
+
+                                    const average = rawValue / totalDays;
+                                    const formattedAverage = macroFormatter.format(average);
+
+                                    const displayValue = entry.unit
+                                      ? `${formattedAverage}\u00a0${entry.unit}`
+                                      : formattedAverage;
 
                                     return (
                                       <Stack key={entry.key} spacing={0.25} sx={{ minWidth: { sm: 88 } }}>
@@ -828,6 +927,7 @@ export function MealPlanBuilderPanel({
                     </Card>
                   </Grid>
 
+                  {/* Right Column: Meal Library */}
                   <Grid size={{ xs: 12, md: 3 }} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <Card variant="outlined" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, flexGrow: 1 }}>
@@ -859,6 +959,21 @@ export function MealPlanBuilderPanel({
                                 <Search fontSize="small" color="disabled" />
                               </InputAdornment>
                             ),
+                            endAdornment:
+                              mealResultCountLabel && mealResultCountLabel.length > 0 ? (
+                                <InputAdornment
+                                  position="end"
+                                  sx={{ pointerEvents: 'none', color: 'text.disabled' }}
+                                >
+                                  <Typography
+                                    color="inherit"
+                                    sx={{ fontSize: 13, whiteSpace: 'nowrap' }}
+                                    variant="body2"
+                                  >
+                                    {mealResultCountLabel}
+                                  </Typography>
+                                </InputAdornment>
+                              ) : undefined,
                           }}
                         />
                         <Button

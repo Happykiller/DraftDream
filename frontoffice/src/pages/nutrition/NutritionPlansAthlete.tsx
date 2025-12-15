@@ -39,7 +39,7 @@ export function NutritionPlansAthlete(): React.JSX.Element {
 
   const athleteActions = React.useMemo<MealPlanActionKey[]>(() => ['view'], []);
 
-  const { items: mealPlans, loading } = useMealPlans({
+  const { items: mealPlans, total: totalMealPlans, loading } = useMealPlans({
     page: 1,
     limit: 12,
     q: searchQuery,
@@ -48,6 +48,17 @@ export function NutritionPlansAthlete(): React.JSX.Element {
 
   const searchPlaceholder = t('nutrition-athlete.list.search_placeholder');
   const searchAriaLabel = t('nutrition-athlete.list.search_aria_label');
+
+  const resultCountLabel = React.useMemo(
+    () =>
+      loading
+        ? undefined
+        : t('nutrition-athlete.list.result_count', {
+            count: mealPlans.length,
+            total: totalMealPlans,
+          }),
+    [loading, mealPlans.length, t, totalMealPlans],
+  );
 
   const handleOpenMealPlan = React.useCallback(
     (plan: MealPlan) => {
@@ -88,6 +99,7 @@ export function NutritionPlansAthlete(): React.JSX.Element {
         searchPlaceholder={searchPlaceholder}
         searchAriaLabel={searchAriaLabel}
         searchQuery={searchQuery}
+        resultCountLabel={resultCountLabel}
       />
     </Stack>
   );

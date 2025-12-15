@@ -1,0 +1,103 @@
+# docs/athlete-info.http
+@athleteId = 68deb865bcdd07a80bda3032
+@levelId = 6921a49b8ca07dd7318f6af6
+@objectiveId1 = 6921a49b8ca07dd7318f6add
+@activityPreferenceId1 = 6921a49b8ca07dd7318f6ae9
+@page = 1
+@limit = 10
+
+###
+# Athlete info: create
+POST {{host}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query":
+    "mutation($input: CreateAthleteInfoInput!){ athleteInfo_create(input:$input){ id userId levelId objectiveIds activityPreferenceIds medicalConditions allergies notes createdBy createdAt updatedAt } }",
+  "variables": {
+    "input": {
+      "userId": "{{athleteId}}",
+      "levelId": "{{levelId}}",
+      "objectiveIds": ["{{objectiveId1}}"],
+      "activityPreferenceIds": ["{{activityPreferenceId1}}"],
+      "medicalConditions": "asthma",
+      "allergies": "peanuts",
+      "notes": "prefers morning sessions"
+    }
+  }
+}
+
+###
+# Athlete info: get by id
+POST {{host}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query":
+    "query($id: ID!){ athleteInfo_get(id:$id){ id userId levelId objectiveIds activityPreferenceIds medicalConditions allergies notes createdBy createdAt updatedAt deletedAt schemaVersion athlete{ id email } creator{ id email } level{ id label } objectives{ id label } activityPreferences{ id label } } }",
+  "variables": { "id": "REPLACE_ATHLETE_INFO_ID" }
+}
+
+###
+# Athlete info: list (filters + pagination)
+POST {{host}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query":
+    "query($input: ListAthleteInfosInput){ athleteInfo_list(input:$input){ items{ id userId levelId objectiveIds activityPreferenceIds createdBy createdAt deletedAt } total page limit } }",
+  "variables": {
+    "input": {
+      //"userId": "{{athleteId}}",
+      //"createdBy": "creator-user-id",
+      //"includeArchived": true,
+      "page": {{page}},
+      "limit": {{limit}}
+    }
+  }
+}
+
+###
+# Athlete info: update
+POST {{host}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query":
+    "mutation($input: UpdateAthleteInfoInput!){ athleteInfo_update(input:$input){ id userId levelId objectiveIds activityPreferenceIds medicalConditions allergies notes updatedAt } }",
+  "variables": {
+    "input": {
+      "id": "REPLACE_ATHLETE_INFO_ID",
+      "levelId": "{{levelId}}",
+      "objectiveIds": ["{{objectiveId1}}"],
+      "activityPreferenceIds": ["{{activityPreferenceId1}}"],
+      "notes": "updated intake"
+    }
+  }
+}
+
+###
+# Athlete info: soft delete
+POST {{host}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query":"mutation($id: ID!){ athleteInfo_delete(id:$id) }",
+  "variables": { "id": "REPLACE_ATHLETE_INFO_ID" }
+}
+
+###
+# Athlete info: hard delete (admin only)
+POST {{host}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query":"mutation($id: ID!){ athleteInfo_hardDelete(id:$id) }",
+  "variables": { "id": "REPLACE_ATHLETE_INFO_ID" }
+}

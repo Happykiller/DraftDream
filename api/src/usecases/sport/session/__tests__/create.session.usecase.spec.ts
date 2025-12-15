@@ -1,4 +1,4 @@
-﻿import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+﻿import { beforeEach, describe, expect, it } from '@jest/globals';
 
 import { ERRORS } from '@src/common/ERROR';
 import { Inversify } from '@src/inversify/investify';
@@ -27,7 +27,7 @@ const sessionEntity = {
   locale: 'en-us',
   label: 'Upper Body',
   durationMin: 60,
-  visibility: 'public' as const,
+  visibility: 'PUBLIC' as const,
   description: 'Full body workout',
   exerciseIds: ['ex-1', 'ex-2'],
   createdBy: 'coach-1',
@@ -46,7 +46,7 @@ const sessionUsecaseModel: SessionUsecaseModel = {
   exerciseIds: ['ex-1', 'ex-2'],
   createdBy: 'coach-1',
   deletedAt: undefined,
-  visibility: 'public',
+  visibility: 'PUBLIC',
   createdAt: now,
   updatedAt: now,
 };

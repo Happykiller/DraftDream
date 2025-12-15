@@ -1,33 +1,17 @@
 // src/commons/prospects/status.ts
-// Comment in English: Prospect status constants and helpers for UI bindings.
+// Prospect status constants - use i18n for display labels in components
 
-export const ProspectStatusEnum = {
+export const ProspectStatus = {
   LEAD: 'LEAD',
-  CONTACTE: 'CONTACTE',
-  RDV_PLANIFIE: 'RDV_PLANIFIE',
-  PROPOSITION: 'PROPOSITION',
-  NEGOCIATION: 'NEGOCIATION',
-  GAGNE: 'GAGNE',
-  PERDUS: 'PERDUS',
-  A_FAIRE: 'A_FAIRE',
+  CONTACTED: 'CONTACTED',
+  MEETING_SCHEDULED: 'MEETING_SCHEDULED',
+  OFFER: 'OFFER',
+  NEGOTIATION: 'NEGOTIATION',
+  WON: 'WON',
+  LOST: 'LOST',
+  TODO: 'TODO',
   CLIENT: 'CLIENT',
 } as const;
 
-export type ProspectStatusEnum = (typeof ProspectStatusEnum)[keyof typeof ProspectStatusEnum];
-
-export const prospectStatusLabels: Record<ProspectStatusEnum, string> = {
-  [ProspectStatusEnum.LEAD]: 'Lead',
-  [ProspectStatusEnum.CONTACTE]: 'Contacté',
-  [ProspectStatusEnum.RDV_PLANIFIE]: 'RDV planifié',
-  [ProspectStatusEnum.PROPOSITION]: 'Proposition',
-  [ProspectStatusEnum.NEGOCIATION]: 'Négociation',
-  [ProspectStatusEnum.GAGNE]: 'Gagné',
-  [ProspectStatusEnum.PERDUS]: 'Perdus',
-  [ProspectStatusEnum.A_FAIRE]: 'À faire',
-  [ProspectStatusEnum.CLIENT]: 'Client',
-};
-
-export interface ProspectStatusOption {
-  value: ProspectStatusEnum;
-  label: string;
-}
+// eslint-disable-next-line no-redeclare
+export type ProspectStatus = (typeof ProspectStatus)[keyof typeof ProspectStatus];

@@ -1,0 +1,115 @@
+
+> api@0.10.0 test
+> jest
+
+PASS src/graphql/nutri/meal/__tests__/meal.mapper.spec.ts (8.925 s)
+PASS src/graphql/sport/category/__tests__/category.mapper.spec.ts (8.853 s)
+PASS src/graphql/sport/program/__tests__/program.mapper.spec.ts (9.498 s)
+PASS src/graphql/nutri/meal-plan/__tests__/meal-plan.mapper.spec.ts (9.822 s)
+PASS src/usecases/nutri/meal-day/__tests__/get.meal-day.usecase.spec.ts (10.014 s)
+PASS src/usecases/prospect/level/__tests__/delete.prospect-level.usecase.spec.ts (10.067 s)
+PASS src/usecases/nutri/meal/__tests__/get.meal.usecase.spec.ts (10.251 s)
+PASS src/graphql/sport/exercise/__tests__/exercise.mapper.spec.ts (10.123 s)
+PASS src/usecases/nutri/meal-type/__tests__/delete.meal-type.usecase.spec.ts (10.254 s)
+PASS src/usecases/nutri/meal/__tests__/list.meal.usecase.spec.ts (10.235 s)
+PASS src/usecases/nutri/meal/__tests__/delete.meal.usecase.spec.ts (10.426 s)
+PASS src/usecases/prospect/source/__tests__/list.prospect-source.usecase.spec.ts (10.377 s)
+PASS src/usecases/prospect/level/__tests__/get.prospect-level.usecase.spec.ts (10.426 s)
+PASS src/usecases/nutri/meal/__tests__/update.meal.usecase.spec.ts (10.601 s)
+PASS src/usecases/nutri/meal/__tests__/create.meal.usecase.spec.ts (10.608 s)
+PASS src/usecases/prospect/source/__tests__/delete.prospect-source.usecase.spec.ts (10.633 s)
+PASS src/usecases/prospect/level/__tests__/create.prospect-level.usecase.spec.ts (10.714 s)
+PASS src/usecases/sport/program/__tests__/list.programs.usecase.spec.ts (10.716 s)
+PASS src/usecases/sport/session/__tests__/list.sessions.usecase.spec.ts (10.758 s)
+PASS src/graphql/sport/muscle/__tests__/muscle.mapper.spec.ts (10.652 s)
+PASS src/usecases/prospect/objective/__tests__/update.prospect-objective.usecase.spec.ts (10.956 s)
+PASS src/usecases/sport/equipment/__tests__/update.equipment.usecase.spec.ts
+PASS src/usecases/sport/exercise/__tests__/get.exercise.usecase.spec.ts (11.091 s)
+PASS src/usecases/athlete/coach-athlete/__tests__/get.coach-athlete.usecase.spec.ts
+PASS src/graphql/sport/equipment/__tests__/equipment.mapper.spec.ts
+PASS src/usecases/nutri/meal-type/__tests__/create.meal-type.usecase.spec.ts
+PASS src/usecases/nutri/meal-type/__tests__/update.meal-type.usecase.spec.ts
+PASS src/usecases/prospect/level/__tests__/update.prospect-level.usecase.spec.ts
+PASS src/usecases/sport/session/__tests__/delete.session.usecase.spec.ts
+PASS src/usecases/sport/session/__tests__/update.session.usecase.spec.ts
+PASS src/usecases/auth/__tests__/auth.usecase.spec.ts
+PASS src/usecases/sport/exercise/__tests__/create.exercise.usecase.spec.ts (11.52 s)
+PASS src/usecases/nutri/meal-day/__tests__/update.meal-day.usecase.spec.ts
+PASS src/usecases/sport/category/__tests__/get.category.usecase.spec.ts
+PASS src/usecases/sport/program/__tests__/delete.program.usecase.spec.ts
+PASS src/usecases/athlete/coach-athlete/__tests__/create.coach-athlete.usecase.spec.ts
+PASS src/usecases/nutri/meal-plan/__tests__/create.meal-plan.usecase.spec.ts
+PASS src/usecases/sport/program/__tests__/get.program.usecase.spec.ts
+PASS src/usecases/nutri/meal-day/__tests__/create.meal-day.usecase.spec.ts
+PASS src/usecases/sport/category/__tests__/update.category.usecase.spec.ts
+PASS src/usecases/prospect/activity-preference/__tests__/create.prospect-activity-preference.usecase.spec.ts
+PASS src/usecases/prospect/objective/__tests__/delete.prospect-objective.usecase.spec.ts
+PASS src/usecases/athlete/coach-athlete/__tests__/update.coach-athlete.usecase.spec.ts
+PASS src/usecases/user/__tests__/get.user.usecase.spec.ts
+PASS src/usecases/nutri/meal-plan/__tests__/list.meal-plans.usecase.spec.ts
+PASS src/usecases/prospect/level/__tests__/list.prospect-level.usecase.spec.ts
+PASS src/usecases/prospect/source/__tests__/get.prospect-source.usecase.spec.ts
+PASS src/usecases/sport/muscle/__tests__/get.muscle.usecase.spec.ts
+PASS src/usecases/prospect/objective/__tests__/create.prospect-objective.usecase.spec.ts
+PASS src/usecases/sport/equipment/__tests__/create.equipment.usecase.spec.ts
+PASS src/usecases/sport/equipment/__tests__/list.equipment.usecase.spec.ts
+PASS src/usecases/nutri/meal-type/__tests__/list.meal-type.usecase.spec.ts
+PASS src/usecases/sport/muscle/__tests__/update.muscle.usecase.spec.ts
+PASS src/usecases/sport/session/__tests__/get.session.usecase.spec.ts
+PASS src/usecases/nutri/meal-plan/__tests__/get.meal-plan.usecase.spec.ts
+PASS src/usecases/prospect/activity-preference/__tests__/delete.prospect-activity-preference.usecase.spec.ts
+PASS src/usecases/sport/category/__tests__/delete.category.usecase.spec.ts
+PASS src/graphql/nutri/meal-type/__tests__/meal-type.mapper.spec.ts
+PASS src/usecases/sport/category/__tests__/create.category.usecase.spec.ts
+PASS src/usecases/user/__tests__/create.user.usecase.spec.ts
+PASS src/usecases/tag/__tests__/list.tags.usecase.spec.ts
+PASS src/usecases/sport/muscle/__tests__/list.muscles.usecase.spec.ts
+PASS src/usecases/athlete/coach-athlete/__tests__/list.coach-athletes.usecase.spec.ts
+PASS src/usecases/sport/exercise/__tests__/delete.exercise.usecase.spec.ts
+PASS src/usecases/sport/program/__tests__/create.program.usecase.spec.ts
+PASS src/usecases/prospect/source/__tests__/update.prospect-source.usecase.spec.ts
+PASS src/usecases/nutri/meal-plan/__tests__/update.meal-plan.usecase.spec.ts
+PASS src/usecases/nutri/meal-type/__tests__/get.meal-type.usecase.spec.ts
+PASS src/usecases/user/__tests__/update.user.usecase.spec.ts
+PASS src/usecases/prospect/source/__tests__/create.prospect-source.usecase.spec.ts
+PASS src/usecases/nutri/meal-day/__tests__/delete.meal-day.usecase.spec.ts
+PASS src/usecases/tag/__tests__/get.tag.usecase.spec.ts
+PASS src/usecases/sport/equipment/__tests__/get.equipment.usecase.spec.ts
+PASS src/usecases/tag/__tests__/delete.tag.usecase.spec.ts
+PASS src/usecases/sport/muscle/__tests__/delete.muscle.usecase.spec.ts
+PASS src/usecases/nutri/meal-day/__tests__/list.meal-day.usecase.spec.ts
+PASS src/usecases/sport/program/__tests__/program.mapper.spec.ts
+PASS src/graphql/user/__tests__/user.mapper.spec.ts
+PASS src/usecases/tag/__tests__/create.tag.usecase.spec.ts
+PASS src/usecases/sport/session/__tests__/session.mapper.spec.ts
+PASS src/common/__tests__/slug.util.spec.ts
+PASS src/graphql/sport/session/__tests__/session.mapper.spec.ts
+PASS src/common/__tests__/error.util.spec.ts
+PASS src/usecases/nutri/meal-plan/__tests__/meal-plan.mapper.spec.ts
+PASS src/usecases/nutri/meal-day/__tests__/meal-day.mapper.spec.ts
+PASS src/usecases/sport/exercise/__tests__/exercise.mapper.spec.ts
+PASS src/usecases/sport/equipment/__tests__/delete.equipment.usecase.spec.ts
+PASS src/usecases/nutri/meal-plan/__tests__/delete.meal-plan.usecase.spec.ts
+PASS src/usecases/prospect/objective/__tests__/list.prospect-objective.usecase.spec.ts
+PASS src/usecases/prospect/activity-preference/__tests__/update.prospect-activity-preference.usecase.spec.ts
+PASS src/usecases/sport/muscle/__tests__/create.muscle.usecase.spec.ts
+PASS src/usecases/sport/session/__tests__/create.session.usecase.spec.ts
+PASS src/usecases/default/__tests__/db.test.usecase.spec.ts
+PASS src/graphql/tag/__tests__/tag.mapper.spec.ts
+PASS src/usecases/sport/exercise/__tests__/update.exercise.usecase.spec.ts
+PASS src/usecases/athlete/coach-athlete/__tests__/delete.coach-athlete.usecase.spec.ts
+PASS src/usecases/sport/category/__tests__/list.category.usecase.spec.ts
+PASS src/usecases/prospect/activity-preference/__tests__/list.prospect-activity-preference.usecase.spec.ts
+PASS src/usecases/tag/__tests__/update.tag.usecase.spec.ts
+PASS src/usecases/prospect/objective/__tests__/get.prospect-objective.usecase.spec.ts
+PASS src/usecases/user/__tests__/list.users.usecase.spec.ts
+PASS src/graphql/nutri/meal-day/__tests__/meal-day.mapper.spec.ts
+PASS src/usecases/prospect/activity-preference/__tests__/get.prospect-activity-preference.usecase.spec.ts
+PASS src/usecases/sport/exercise/__tests__/list.exercises.usecase.spec.ts
+PASS src/usecases/sport/program/__tests__/update.program.usecase.spec.ts
+
+Test Suites: 105 passed, 105 total
+Tests:       431 passed, 431 total
+Snapshots:   0 total
+Time:        15.732 s, estimated 16 s
+Ran all test suites.
