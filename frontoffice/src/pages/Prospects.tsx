@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
+  Button,
   IconButton,
   Menu,
   MenuItem,
@@ -213,13 +214,16 @@ export function Prospects(): React.JSX.Element {
             width={{ xs: '100%', md: 'auto' }}
           >
             <Tooltip title={t('prospects.actions.create_lead')} arrow>
-              <IconButton
+              <Button
+                aria-label={t('prospects.actions.create_lead')}
                 color="error"
                 onClick={() => handleCreateProspect(ProspectStatus.LEAD)}
-                aria-label={t('prospects.actions.create_lead')}
+                size="small"
+                startIcon={<AddIcon />}
+                variant="contained"
               >
-                <AddIcon />
-              </IconButton>
+                {t('common.actions.create')}
+              </Button>
             </Tooltip>
 
             <Tooltip title={t('prospects.workflow.summary.actions.refresh')} arrow>
