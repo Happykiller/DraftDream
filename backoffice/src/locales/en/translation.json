@@ -444,7 +444,8 @@
     },
     "dialog": {
       "create_title": "New User",
-      "edit_title": "Edit User"
+      "edit_title": "Edit User",
+      "change_password": "Change password"
     },
     "confirm": {
       "delete_title": "Delete User",

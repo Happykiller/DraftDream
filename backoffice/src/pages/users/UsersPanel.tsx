@@ -7,6 +7,7 @@ import { useTabParams } from '@hooks/useTabParams';
 import { useUsers } from '@hooks/useUsers';
 import { UsersTable } from '@components/users/UsersTable';
 import { UserDialog, type UserDialogValues } from '@components/users/UserDialog';
+import { UserPasswordDialog } from '@components/users/UserPasswordDialog';
 import { ConfirmDialog } from '@components/common/ConfirmDialog';
 
 export function UsersPanel(): React.JSX.Element {
@@ -16,7 +17,7 @@ export function UsersPanel(): React.JSX.Element {
   const debounced = useDebouncedValue(searchInput, 300);
   React.useEffect(() => { if (debounced !== q) setQ(debounced); }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update, remove } = useUsers({
+  const { items, total, loading, create, update, updatePassword, remove } = useUsers({
     page,
     limit,
     q,
@@ -27,7 +28,10 @@ export function UsersPanel(): React.JSX.Element {
   const [openCreate, setOpenCreate] = React.useState(false);
   const [editId, setEditId] = React.useState<string | null>(null);
   const [deleteId, setDeleteId] = React.useState<string | null>(null);
+  const [passwordId, setPasswordId] = React.useState<string | null>(null);
+
   const editing = React.useMemo(() => items.find((i) => i.id === editId), [items, editId]);
+  const passwordUser = React.useMemo(() => items.find((i) => i.id === passwordId), [items, passwordId]);
 
   // Create handler: map dialog values → GQL input
   const handleCreate = async (v: UserDialogValues) => {
@@ -75,6 +79,11 @@ export function UsersPanel(): React.JSX.Element {
     });
   };
 
+  const handlePasswordUpdate = async (password: string, confirmPassword?: string) => {
+    if (!passwordId) return;
+    await updatePassword(passwordId, password, confirmPassword);
+  };
+
   const handleDelete = async () => {
     if (!deleteId) return;
     await remove(deleteId);
@@ -94,6 +103,7 @@ export function UsersPanel(): React.JSX.Element {
         onCreate={() => setOpenCreate(true)}
         onEdit={(row) => setEditId(row.id)}
         onDelete={(row) => setDeleteId(row.id)}
+        onPasswordUpdate={(row) => setPasswordId(row.id)}
         onQueryChange={setSearchInput}
         onTypeChange={setType}
         onPageChange={setPage}
@@ -113,6 +123,13 @@ export function UsersPanel(): React.JSX.Element {
         initial={editing}
         onClose={() => setEditId(null)}
         onSubmit={handleUpdate}
+      />
+
+      <UserPasswordDialog
+        open={!!passwordId}
+        user={passwordUser || null}
+        onClose={() => setPasswordId(null)}
+        onSubmit={handlePasswordUpdate}
       />
 
       <ConfirmDialog

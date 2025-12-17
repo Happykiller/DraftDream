@@ -55,3 +55,8 @@ export interface UpdateUserUsecaseDto {
   is_active?: boolean;
   createdBy?: string;
 }
+
+export interface UpdateUserPasswordUsecaseDto {
+  id: string;
+  password: string;
+}

@@ -9,7 +9,7 @@ import {
 } from '@graphql/user/user.gql.types';
 import { UserUsecaseModel } from '@usecases/user/user.usecase.model';
 import { CreateUserUsecaseDto } from '@usecases/user/user.usecase.dto';
-import { ListUserUsecaseDto, UpdateUserUsecaseDto } from '@usecases/user/user.usecase.dto';
+import { ListUserUsecaseDto, UpdateUserUsecaseDto, UpdateUserPasswordUsecaseDto } from '@usecases/user/user.usecase.dto';
 
 @Resolver(() => UserGql)
 export class UserResolver {
@@ -109,5 +109,15 @@ export class UserResolver {
     @Args('id', { type: () => ID }) id: string,
   ): Promise<boolean> {
     return inversify.hardDeleteUserUsecase.execute(id);
+  }
+
+  @Mutation(() => Boolean, { name: 'user_update_password' })
+  @Auth(Role.ADMIN)
+  async user_update_password(
+    @Args('id', { type: () => ID }) id: string,
+    @Args('password') password: string,
+  ): Promise<boolean> {
+    const dto: UpdateUserPasswordUsecaseDto = { id, password };
+    return inversify.updateUserPasswordUsecase.execute(dto);
   }
 }

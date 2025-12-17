@@ -140,10 +140,10 @@ export function AthleteLinkDetails(): React.JSX.Element {
 
   const headerBackground = React.useMemo(
     () => ({
-      backgroundColor: alpha(theme.palette.info.main, 0.14),
-      color: theme.palette.info.contrastText,
+      backgroundColor: alpha(theme.palette.primary.main, 0.14),
+      color: theme.palette.primary.contrastText,
     }),
-    [theme.palette.info.contrastText, theme.palette.info.main],
+    [theme.palette.primary.contrastText, theme.palette.primary.main],
   );
 
   const { athleteInfo, loading: athleteInfoLoading, error: athleteInfoError } = useAthleteInfo({
@@ -185,9 +185,9 @@ export function AthleteLinkDetails(): React.JSX.Element {
       programsLoading
         ? undefined
         : t('athletes.details.programs.result_count', {
-            count: programs.length,
-            total: totalPrograms,
-          }),
+          count: programs.length,
+          total: totalPrograms,
+        }),
     [programs.length, programsLoading, t, totalPrograms],
   );
 
@@ -220,9 +220,9 @@ export function AthleteLinkDetails(): React.JSX.Element {
       mealPlansLoading
         ? undefined
         : t('athletes.details.nutritions.result_count', {
-            count: mealPlans.length,
-            total: totalMealPlans,
-          }),
+          count: mealPlans.length,
+          total: totalMealPlans,
+        }),
     [mealPlans.length, mealPlansLoading, t, totalMealPlans],
   );
 

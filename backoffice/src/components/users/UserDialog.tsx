@@ -59,6 +59,7 @@ export function UserDialog({ open, mode, initial, onClose, onSubmit }: UserDialo
   const [values, setValues] = React.useState<UserDialogValues>(DEFAULTS);
   const formatDate = useDateFormatter();
 
+
   const formattedCreatedAt = React.useMemo(
     () => (initial?.createdAt ? formatDate(initial.createdAt) : '-'),
     [initial?.createdAt, formatDate],
@@ -135,6 +136,7 @@ export function UserDialog({ open, mode, initial, onClose, onSubmit }: UserDialo
             <TextField label={t('common.labels.first_name')} name="first_name" value={values.first_name} onChange={onChange} required fullWidth />
             <TextField label={t('common.labels.last_name')} name="last_name" value={values.last_name} onChange={onChange} required fullWidth />
           </Stack>
+
 
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <TextField label={t('common.labels.email')} name="email" type="email" value={values.email} onChange={onChange} required fullWidth />

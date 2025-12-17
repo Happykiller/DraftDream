@@ -88,6 +88,12 @@ const DELETE_M = `
   }
 `;
 
+const UPDATE_PASSWORD_M = `
+  mutation UpdateUserPassword($id: ID!, $password: String!) {
+    user_update_password(id: $id, password: $password)
+  }
+`;
+
 export interface UseUsersParams {
   page: number; // 1-based
   limit: number;
@@ -207,6 +213,30 @@ export function useUsers({ page, limit, q, type }: UseUsersParams) {
     [execute, gql, flashError, flashSuccess, load, page, limit, q, type]
   );
 
+  const updatePassword = React.useCallback(
+    async (id: string, password: string, confirm_password?: string) => {
+      if (confirm_password && password !== confirm_password) {
+        flashError('Passwords do not match');
+        return;
+      }
+      try {
+        const { errors } = await execute(() =>
+          gql.send<{ user_update_password: boolean }>({
+            query: UPDATE_PASSWORD_M,
+            variables: { id, password },
+            operationName: 'UpdateUserPassword',
+          }),
+        );
+        if (errors?.length) throw new Error(errors[0].message);
+        flashSuccess('Password updated');
+      } catch (e: any) {
+        flashError(e?.message ?? 'Password update failed');
+        throw e;
+      }
+    },
+    [execute, gql, flashError, flashSuccess]
+  );
+
   const remove = React.useCallback(
     async (id: string) => {
       try {
@@ -228,5 +258,5 @@ export function useUsers({ page, limit, q, type }: UseUsersParams) {
     [execute, gql, flashError, flashSuccess, load, page, limit, q, type]
   );
 
-  return { items, total, loading, create, update, remove, reload: () => load({ page, limit, q, type }) };
+  return { items, total, loading, create, update, updatePassword, remove, reload: () => load({ page, limit, q, type }) };
 }

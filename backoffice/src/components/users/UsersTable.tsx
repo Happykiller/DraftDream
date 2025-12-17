@@ -2,6 +2,7 @@
 import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Button, Stack, TextField, IconButton, Tooltip, Chip, Select, MenuItem, FormControl, InputLabel, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -21,6 +22,7 @@ export interface UsersTableProps {
   onCreate: () => void;
   onEdit: (row: User) => void;
   onDelete: (row: User) => void;
+  onPasswordUpdate: (row: User) => void;
   onQueryChange: (q: string) => void;
   onTypeChange: (type: string) => void;
   onPageChange: (page: number) => void; // 1-based
@@ -29,7 +31,7 @@ export interface UsersTableProps {
 
 export const UsersTable = React.memo(function UsersTable({
   rows, total, page, limit, q, type, loading,
-  onCreate, onEdit, onDelete, onQueryChange, onTypeChange, onPageChange, onLimitChange,
+  onCreate, onEdit, onDelete, onPasswordUpdate, onQueryChange, onTypeChange, onPageChange, onLimitChange,
 }: UsersTableProps): React.JSX.Element {
   const { t } = useTranslation();
   const fmtDate = useDateFormatter();
@@ -41,18 +43,20 @@ export const UsersTable = React.memo(function UsersTable({
       {
         field: 'name',
         headerName: t('common.labels.name'),
-        flex: 1.2,
+        flex: 1, // Reduced from 1.2
+        minWidth: 150,
         valueGetter: (_value, row) => {
           const full = `${row?.first_name ?? ''} ${row?.last_name ?? ''}`.trim();
           return full || '—';
         },
         sortComparator: (a, b) => String(a).localeCompare(String(b)),
       },
-      { field: 'email', headerName: t('common.labels.email'), flex: 1 },
-      { field: 'type', headerName: t('common.labels.type') },
+      { field: 'email', headerName: t('common.labels.email'), flex: 1, minWidth: 200 },
+      { field: 'type', headerName: t('common.labels.type'), width: 120 },
       {
         field: 'is_active',
         headerName: t('common.labels.status'),
+        width: 120,
         renderCell: (params) => (
           <Chip size="small" label={params.value ? t('common.status.active') : t('common.status.inactive')} color={params.value ? 'success' : 'default'} />
         ),
@@ -64,16 +68,17 @@ export const UsersTable = React.memo(function UsersTable({
           {
             field: 'company',
             headerName: t('common.labels.company'),
-            flex: 1,
+            flex: 0.8,
             valueGetter: (p: any) => p?.name ?? '—',
           },
-          { field: 'createdAt', headerName: t('common.labels.created'), flex: 1, minWidth: 180, valueFormatter: (p: any) => fmtDate(p) },
-          { field: 'updatedAt', headerName: t('common.labels.updated'), flex: 1, minWidth: 180, valueFormatter: (p: any) => fmtDate(p) },
+          { field: 'createdAt', headerName: t('common.labels.created'), width: 150, valueFormatter: (p: any) => fmtDate(p) },
+          { field: 'updatedAt', headerName: t('common.labels.updated'), width: 150, valueFormatter: (p: any) => fmtDate(p) },
         ]
         : []),
       {
         field: 'actions',
         headerName: t('common.labels.actions'),
+        width: 160, // Increased, fixed width
         sortable: false,
         filterable: false,
         renderCell: (p) => (
@@ -81,6 +86,11 @@ export const UsersTable = React.memo(function UsersTable({
             <Tooltip title={t('common.tooltips.edit')}>
               <IconButton size="small" aria-label={`edit-${p?.row.id}`} onClick={() => onEdit(p.row)}>
                 <EditIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title={t('users.dialog.change_password')}>
+              <IconButton size="small" aria-label={`password-${p?.row.id}`} onClick={() => onPasswordUpdate(p.row)}>
+                <VpnKeyIcon fontSize="small" />
               </IconButton>
             </Tooltip>
             <Tooltip title={t('common.tooltips.delete')}>
@@ -92,7 +102,7 @@ export const UsersTable = React.memo(function UsersTable({
         ),
       },
     ],
-    [onEdit, onDelete, fmtDate, isXl, t]
+    [onEdit, onDelete, onPasswordUpdate, fmtDate, isXl, t]
   );
 
   return (

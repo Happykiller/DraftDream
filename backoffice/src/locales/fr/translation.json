@@ -445,7 +445,8 @@
     },
     "dialog": {
       "create_title": "Nouvel utilisateur",
-      "edit_title": "Modifier l'utilisateur"
+      "edit_title": "Modifier l'utilisateur",
+      "change_password": "Changer le mot de passe"
     },
     "confirm": {
       "delete_title": "Supprimer l'utilisateur",
