@@ -424,7 +424,7 @@ export function ProspectFormPanel({
 
             <Divider />
 
-            <Box component="footer" sx={{ p: 2, backgroundColor: 'background.default' }}>
+            <Box component="footer" sx={{ p: 2, backgroundColor: '#e0dcdce0' }}>
               <Stack direction="row" justifyContent="flex-end" spacing={2}>
                 <Button color="inherit" onClick={onCancel} disabled={submitting}>
                   {copy.fields.cancel}
