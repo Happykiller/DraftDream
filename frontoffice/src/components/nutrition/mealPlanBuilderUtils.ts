@@ -73,3 +73,22 @@ export function computePlanNutritionSummary(days: MealPlanBuilderDay[]): MealPla
     { calories: 0, proteinGrams: 0, carbGrams: 0, fatGrams: 0 },
   );
 }
+
+export function computeDayNutritionSummary(day: MealPlanBuilderDay): MealPlanBuilderNutritionSummary {
+  return day.meals.reduce<MealPlanBuilderNutritionSummary>(
+    (totals, meal) => {
+      const calories = Number(meal.calories ?? 0);
+      const protein = Number(meal.proteinGrams ?? 0);
+      const carbs = Number(meal.carbGrams ?? 0);
+      const fats = Number(meal.fatGrams ?? 0);
+
+      totals.calories += Number.isFinite(calories) ? calories : 0;
+      totals.proteinGrams += Number.isFinite(protein) ? protein : 0;
+      totals.carbGrams += Number.isFinite(carbs) ? carbs : 0;
+      totals.fatGrams += Number.isFinite(fats) ? fats : 0;
+
+      return totals;
+    },
+    { calories: 0, proteinGrams: 0, carbGrams: 0, fatGrams: 0 },
+  );
+}
