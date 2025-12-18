@@ -38,6 +38,7 @@ import type {
   MealPlanMealSnapshot,
 } from '@hooks/nutrition/useMealPlans';
 import { useMealTypeIcon } from '@hooks/nutrition/useMealTypeIcon';
+import { computeDayNutritionSummary } from '@components/nutrition/mealPlanBuilderUtils';
 
 import type {
   NutritionPlanDetailsLoaderResult,
@@ -557,6 +558,58 @@ interface NutritionPlanDayCardProps {
 function NutritionPlanDayCard({ day, locale, t }: NutritionPlanDayCardProps): React.JSX.Element {
   const theme = useTheme();
   const mealCount = day.meals.length;
+  const daySummary = React.useMemo(
+    () => computeDayNutritionSummary(day),
+    [day],
+  );
+  const daySummaryItems = React.useMemo(
+    () => [
+      {
+        key: 'calories' as const,
+        label: t('nutrition-details.meals.day_summary.calories_label'),
+        value: t('nutrition-details.meals.day_summary.calories_value', {
+          value: formatNumber(daySummary.calories, locale),
+        }),
+        color: theme.palette.primary.main,
+      },
+      {
+        key: 'protein' as const,
+        label: t('nutrition-details.meals.day_summary.protein_label'),
+        value: t('nutrition-details.meals.day_summary.protein_value', {
+          value: formatNumber(daySummary.proteinGrams, locale),
+        }),
+        color: theme.palette.info.main,
+      },
+      {
+        key: 'carbs' as const,
+        label: t('nutrition-details.meals.day_summary.carbs_label'),
+        value: t('nutrition-details.meals.day_summary.carbs_value', {
+          value: formatNumber(daySummary.carbGrams, locale),
+        }),
+        color: theme.palette.success.main,
+      },
+      {
+        key: 'fats' as const,
+        label: t('nutrition-details.meals.day_summary.fats_label'),
+        value: t('nutrition-details.meals.day_summary.fats_value', {
+          value: formatNumber(daySummary.fatGrams, locale),
+        }),
+        color: theme.palette.warning.main,
+      },
+    ],
+    [
+      daySummary.calories,
+      daySummary.carbGrams,
+      daySummary.fatGrams,
+      daySummary.proteinGrams,
+      locale,
+      t,
+      theme.palette.info.main,
+      theme.palette.primary.main,
+      theme.palette.success.main,
+      theme.palette.warning.main,
+    ],
+  );
 
   return (
     <Card
@@ -611,6 +664,39 @@ function NutritionPlanDayCard({ day, locale, t }: NutritionPlanDayCardProps): Re
             </Typography>
           </Box>
         </Stack>
+
+        <Box
+          sx={{
+            borderRadius: 2,
+            backgroundColor: alpha(theme.palette.primary.main, 0.04),
+            border: `1px solid ${alpha(theme.palette.primary.main, 0.16)}`,
+            px: { xs: 1.5, sm: 2 },
+            py: { xs: 1.25, sm: 1.5 },
+          }}
+        >
+          <Stack spacing={1}>
+            <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>
+              {t('nutrition-details.meals.day_summary.title')}
+            </Typography>
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={{ xs: 1.25, sm: 3 }}
+              useFlexGap
+              flexWrap="wrap"
+            >
+              {daySummaryItems.map((item) => (
+                <Stack key={item.key} spacing={0.25} sx={{ minWidth: { sm: 100 } }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 700, color: item.color }}>
+                    {item.value}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {item.label}
+                  </Typography>
+                </Stack>
+              ))}
+            </Stack>
+          </Stack>
+        </Box>
 
         {mealCount === 0 ? (
           <Typography color="text.secondary" variant="body2">

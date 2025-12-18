@@ -1126,6 +1126,17 @@
         "meal_count_one": "({{count}} meal)",
         "meal_count_other": "({{count}} meals)"
       },
+      "day_summary": {
+        "title": "Day summary",
+        "calories_label": "Calories",
+        "calories_value": "{{value}} kcal",
+        "protein_label": "Protein",
+        "protein_value": "{{value}} g",
+        "carbs_label": "Carbs",
+        "carbs_value": "{{value}} g",
+        "fats_label": "Fats",
+        "fats_value": "{{value}} g"
+      },
       "meal_card": {
         "calories": "{{value}} kcal",
         "macros": {

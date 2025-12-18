@@ -1130,6 +1130,17 @@
         "meal_count_one": "({{count}} repas)",
         "meal_count_other": "({{count}} repas)"
       },
+      "day_summary": {
+        "title": "Résumé du jour",
+        "calories_label": "Calories",
+        "calories_value": "{{value}} kcal",
+        "protein_label": "Protéines",
+        "protein_value": "{{value}} g",
+        "carbs_label": "Glucides",
+        "carbs_value": "{{value}} g",
+        "fats_label": "Lipides",
+        "fats_value": "{{value}} g"
+      },
       "meal_card": {
         "calories": "{{value}} kcal",
         "macros": {
