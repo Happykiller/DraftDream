@@ -1,7 +1,8 @@
 import React from 'react';
-import { Paper, Typography, Box, useTheme } from '@mui/material';
+import { Typography, Box, useTheme } from '@mui/material';
+import { GlassCard } from '@components/common/GlassCard';
 
-interface StatCardProps {
+export interface StatCardProps {
     title: string;
     value: string | number;
     icon?: React.ElementType;
@@ -33,27 +34,12 @@ export const StatCard: React.FC<StatCardProps> = ({
     // Glassmorphism and Gradient effects
 
     return (
-        <Paper
-            elevation={3}
+        <GlassCard
+            colSpan={colSpan}
+            rowSpan={rowSpan}
             sx={{
-                gridColumn: `span ${colSpan}`,
-                gridRow: `span ${rowSpan}`,
-                position: 'relative',
-                overflow: 'hidden',
-                borderRadius: 4,
-                p: 3,
-                display: 'flex',
-                flexDirection: 'column',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-                '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: theme.shadows[8],
-                },
-                background: theme.palette.mode === 'dark'
-                    ? `linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%)`
-                    : theme.palette.background.paper,
-                backdropFilter: 'blur(20px)',
-                border: `1px solid ${theme.palette.divider}`,
+                background: color ? `${color}0D` : undefined, // Very subtle tint if color provided
+                borderColor: color ? `${color}40` : undefined,
             }}
         >
             {/* Header */}
@@ -107,6 +93,6 @@ export const StatCard: React.FC<StatCardProps> = ({
                     {actionIcon}
                 </Box>
             )}
-        </Paper>
+        </GlassCard>
     );
 };

@@ -189,7 +189,23 @@
     }
   },
   "home": {
-    "title": "Dashboard"
+    "title": "Dashboard",
+    "widgets": {
+      "total_users": "Total Users",
+      "total_prospects": "Total Prospects",
+      "prospects_todo": "To do",
+      "view_prospects": "View prospects",
+      "programs": "Programs",
+      "nutrition_plans": "Nutrition Plans",
+      "sessions_private": "Sessions (Private)",
+      "exercises_library": "Exercises Library",
+      "day_meals_private": "Day Meals (Private)",
+      "completion": "Completion",
+      "system_health": "System Health"
+    },
+    "chart": {
+      "vs_last_month": "vs last month"
+    }
   },
   "clients": {
     "title": "Clients"

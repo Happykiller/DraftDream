@@ -189,7 +189,23 @@
     }
   },
   "home": {
-    "title": "Tableau de bord"
+    "title": "Tableau de bord",
+    "widgets": {
+      "total_users": "Utilisateurs totaux",
+      "total_prospects": "Prospects totaux",
+      "prospects_todo": "A faire",
+      "view_prospects": "Voir prospects",
+      "programs": "Programmes",
+      "nutrition_plans": "Plans nutrition",
+      "sessions_private": "Séances (Privé)",
+      "exercises_library": "Bibliothèque d'exercices",
+      "day_meals_private": "Journées repas (Privé)",
+      "completion": "Complétion",
+      "system_health": "Santé du système"
+    },
+    "chart": {
+      "vs_last_month": "vs mois dernier"
+    }
   },
   "clients": {
     "title": "Clients"
