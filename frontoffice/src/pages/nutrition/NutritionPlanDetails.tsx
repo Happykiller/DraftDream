@@ -39,6 +39,7 @@ import type {
 } from '@hooks/nutrition/useMealPlans';
 import { useMealTypeIcon } from '@hooks/nutrition/useMealTypeIcon';
 import { computeDayNutritionSummary } from '@components/nutrition/mealPlanBuilderUtils';
+import { TextWithTooltip } from '@components/common/TextWithTooltip';
 
 import type {
   NutritionPlanDetailsLoaderResult,
@@ -650,13 +651,12 @@ function NutritionPlanDayCard({ day, locale, t }: NutritionPlanDayCardProps): Re
           </Box>
 
           <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-            <Typography
+            <TextWithTooltip
+              tooltipTitle={day.label}
               variant="h6"
-              sx={{ fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis' }}
+              sx={{ fontWeight: 700 }}
               noWrap
-            >
-              {day.label}
-            </Typography>
+            />
             <Typography color="text.secondary" variant="body2">
               {t('nutrition-details.meals.day_header.meal_count', {
                 count: mealCount,
@@ -824,13 +824,12 @@ const NutritionPlanMealCard = React.memo(function NutritionPlanMealCard({
             </Tooltip>
 
             <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-              <Typography
+              <TextWithTooltip
+                tooltipTitle={meal.label}
                 variant="subtitle1"
-                sx={{ fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis' }}
+                sx={{ fontWeight: 700 }}
                 noWrap
-              >
-                {meal.label}
-              </Typography>
+              />
               {meal.type?.label ? (
                 <Typography color="text.secondary" variant="body2">
                   {meal.type.label}
