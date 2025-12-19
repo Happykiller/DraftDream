@@ -1,12 +1,13 @@
 // src/components/athletes/AthleteLinkCard.tsx
 import * as React from 'react';
 import { CalendarMonth, EventBusy, EventNote, Notes, Visibility } from '@mui/icons-material';
-import { Card, CardContent, CardHeader, Divider, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import { Divider, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { useDateFormatter } from '@hooks/useDateFormatter';
 import { getAthleteDisplayName } from './athleteLinkUtils';
 import type { CoachAthleteLink } from '@app-types/coachAthletes';
+import { GlassCard } from '../common/GlassCard';
 
 export interface AthleteLinkCardProps {
   link: CoachAthleteLink;
@@ -32,48 +33,64 @@ export const AthleteLinkCard = React.memo(function AthleteLinkCard({
   }, [link, onView]);
 
   return (
-    <Card variant="outlined" sx={{ height: '100%' }}>
-      {/* General information */}
-      <CardHeader
-        title={
-          <Typography fontWeight={600} variant="subtitle1">
-            {athleteName}
-          </Typography>
-        }
-        subheader={link.athlete?.email || undefined}
-        action={
-          onView ? (
+    <GlassCard
+      sx={{
+        height: '100%',
+        p: 0, // Reset padding to handle internal separation if needed, or just keep it and adjust
+        overflow: 'hidden',
+      }}
+    >
+      <Stack spacing={2} sx={{ p: 2.5 }}>
+        {/* Header section manually built to match GlassCard look better than CardHeader */}
+        <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={1.5}>
+          <Stack spacing={0.5} sx={{ minWidth: 0 }}>
+            <Typography
+              fontWeight={700}
+              noWrap
+              variant="subtitle1"
+              sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
+            >
+              {athleteName}
+            </Typography>
+            {link.athlete?.email && (
+              <Typography variant="caption" color="text.secondary" noWrap>
+                {link.athlete.email}
+              </Typography>
+            )}
+          </Stack>
+
+          {onView && (
             <Tooltip title={t('athletes.list.card.actions.view')}>
               <IconButton aria-label={t('athletes.list.card.actions.view')} onClick={handleView} size="small">
                 <Visibility fontSize="small" />
               </IconButton>
             </Tooltip>
-          ) : undefined
-        }
-      />
-      <Divider />
-      <CardContent>
+          )}
+        </Stack>
+
+        <Divider sx={{ opacity: 0.6 }} />
+
         <Stack spacing={1.5}>
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={1.25} alignItems="center">
             <CalendarMonth color="action" fontSize="small" />
-            <Typography variant="body2">
+            <Typography variant="body2" color="text.primary">
               {t('athletes.list.card.start_date', { date: startDateLabel })}
             </Typography>
           </Stack>
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={1.25} alignItems="center">
             {link.endDate ? <EventNote color="action" fontSize="small" /> : <EventBusy color="action" fontSize="small" />}
-            <Typography variant="body2">
+            <Typography variant="body2" color="text.primary">
               {t('athletes.list.card.end_date', { date: endDateLabel })}
             </Typography>
           </Stack>
-          <Stack direction="row" spacing={1} alignItems="flex-start">
+          <Stack direction="row" spacing={1.25} alignItems="flex-start">
             <Notes color="action" fontSize="small" sx={{ mt: 0.25 }} />
-            <Typography variant="body2">
+            <Typography variant="body2" color="text.secondary" sx={{ fontStyle: link.note ? 'normal' : 'italic' }}>
               {link.note?.trim() || t('athletes.list.card.no_note')}
             </Typography>
           </Stack>
         </Stack>
-      </CardContent>
-    </Card>
+      </Stack>
+    </GlassCard>
   );
 });

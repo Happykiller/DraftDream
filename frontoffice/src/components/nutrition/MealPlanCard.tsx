@@ -27,6 +27,7 @@ import {
 import type { MealPlan, MealPlanDaySnapshot, MealPlanMealSnapshot } from '@hooks/nutrition/useMealPlans';
 import { useMealTypeIcon } from '@hooks/nutrition/useMealTypeIcon';
 
+import { GlassCard } from '../common/GlassCard';
 import { MealPlanDeleteDialog } from './MealPlanDeleteDialog';
 import { MealPlanCloneDialog } from './MealPlanCloneDialog';
 
@@ -372,13 +373,12 @@ export const MealPlanCard = React.memo(function MealPlanCard({
 
   return (
     <>
-      <Paper
-        elevation={0}
-        variant="dashboardSection"
+      <GlassCard
         sx={{
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
+          p: 2.5
         }}
       >
         <Box
@@ -400,7 +400,9 @@ export const MealPlanCard = React.memo(function MealPlanCard({
                   left: 0,
                   right: 0,
                   height: innerTheme.spacing(7),
-                  backgroundImage: `linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, ${innerTheme.palette.background.paper} 75%)`,
+                  backgroundImage: innerTheme.palette.mode === 'dark'
+                    ? `linear-gradient(180deg, rgba(30, 30, 30, 0) 0%, rgba(30, 30, 30, 0.9) 75%)`
+                    : `linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 75%)`,
                 },
               }
               : {}),
@@ -685,7 +687,7 @@ export const MealPlanCard = React.memo(function MealPlanCard({
             </Stack>
           </>
         ) : null}
-      </Paper>
+      </GlassCard>
 
       {allowedActions.includes('copy') && onClone && (
         <MealPlanCloneDialog

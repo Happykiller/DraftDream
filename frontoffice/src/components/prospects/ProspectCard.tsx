@@ -9,9 +9,6 @@ import {
 } from '@mui/icons-material';
 import {
   Button,
-  Card,
-  CardActions,
-  CardContent,
   Chip,
   Divider,
   IconButton,
@@ -24,6 +21,7 @@ import { useTranslation } from 'react-i18next';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 import { usePhoneFormatter } from '@hooks/usePhoneFormatter';
 import type { Prospect } from '@app-types/prospects';
+import { GlassCard } from '../common/GlassCard';
 
 interface ProspectCardSharedProps {
   prospect: Prospect;
@@ -241,88 +239,85 @@ export const ProspectListCard = React.memo(function ProspectListCard({
   const levelLabel = prospect.level?.label || t('prospects.list.card.level_unknown');
 
   return (
-    <Card
-      variant="outlined"
+    <GlassCard
       sx={{
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
+        gap: 1.25,
       }}
     >
-      {/* General information */}
-      <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.25 }}>
-        <ProspectHeader
-          prospect={prospect}
-          displayName={displayName}
-          actions={
-            <>
-              {onEdit ? (
-                <Tooltip title={t('prospects.list.actions.edit')}>
-                  <IconButton
-                    aria-label={`edit-prospect-${prospect.id}`}
-                    onClick={() => onEdit(prospect)}
-                    size="small"
-                  >
-                    <EditOutlined fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              ) : null}
-              {onDelete ? (
-                <Tooltip title={t('prospects.list.actions.delete')}>
-                  <IconButton
-                    aria-label={`delete-prospect-${prospect.id}`}
-                    color="error"
-                    onClick={() => onDelete(prospect)}
-                    size="small"
-                  >
-                    <DeleteOutline fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              ) : null}
-            </>
-          }
-        />
+      <ProspectHeader
+        prospect={prospect}
+        displayName={displayName}
+        actions={
+          <>
+            {onEdit ? (
+              <Tooltip title={t('prospects.list.actions.edit')}>
+                <IconButton
+                  aria-label={`edit-prospect-${prospect.id}`}
+                  onClick={() => onEdit(prospect)}
+                  size="small"
+                >
+                  <EditOutlined fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            ) : null}
+            {onDelete ? (
+              <Tooltip title={t('prospects.list.actions.delete')}>
+                <IconButton
+                  aria-label={`delete-prospect-${prospect.id}`}
+                  color="error"
+                  onClick={() => onDelete(prospect)}
+                  size="small"
+                >
+                  <DeleteOutline fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            ) : null}
+          </>
+        }
+      />
 
-        {prospect.email ? (
-          <Typography sx={{ textAlign: 'left' }} variant="body2" color="text.secondary">
-            {prospect.email}
-          </Typography>
-        ) : null}
-
-        <Stack alignItems="center" direction="row" spacing={1}>
-          <PhoneOutlined color="action" fontSize="small" />
-          <Typography sx={{ textAlign: 'left' }} variant="body2">
-            {formattedPhone}
-          </Typography>
-        </Stack>
-
-        <Stack alignItems="center" direction="row" spacing={1}>
-          <CalendarMonthOutlined color="action" fontSize="small" />
-          <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'left' }}>
-            {clientSinceLabel}
-          </Typography>
-        </Stack>
-
-        <Typography variant="body2" fontWeight={700} sx={{ textAlign: 'left' }}>
-          {t('prospects.list.card.objectives')}
+      {prospect.email ? (
+        <Typography sx={{ textAlign: 'left' }} variant="body2" color="text.secondary">
+          {prospect.email}
         </Typography>
+      ) : null}
 
-        {showObjectiveBadges ? (
-          <Stack direction="row" flexWrap="wrap" spacing={0.75} useFlexGap>
-            {prospect.objectives?.map((objective) => (
-              <Chip key={objective.id ?? objective.label} label={objective.label} size="small" />
-            ))}
-          </Stack>
-        ) : null}
+      <Stack alignItems="center" direction="row" spacing={1}>
+        <PhoneOutlined color="action" fontSize="small" />
+        <Typography sx={{ textAlign: 'left' }} variant="body2">
+          {formattedPhone}
+        </Typography>
+      </Stack>
 
-        <Stack alignItems="center" direction="row" justifyContent="space-between" spacing={1}>
-          <Typography variant="body2">{t('prospects.list.card.level')}</Typography>
-          <Typography variant="body2" fontWeight={700} sx={{ textAlign: 'right' }}>
-            {levelLabel}
-          </Typography>
+      <Stack alignItems="center" direction="row" spacing={1}>
+        <CalendarMonthOutlined color="action" fontSize="small" />
+        <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'left' }}>
+          {clientSinceLabel}
+        </Typography>
+      </Stack>
+
+      <Typography variant="body2" fontWeight={700} sx={{ textAlign: 'left' }}>
+        {t('prospects.list.card.objectives')}
+      </Typography>
+
+      {showObjectiveBadges ? (
+        <Stack direction="row" flexWrap="wrap" spacing={0.75} useFlexGap>
+          {prospect.objectives?.map((objective) => (
+            <Chip key={objective.id ?? objective.label} label={objective.label} size="small" />
+          ))}
         </Stack>
-      </CardContent>
-    </Card>
+      ) : null}
+
+      <Stack alignItems="center" direction="row" justifyContent="space-between" spacing={1} sx={{ mt: 'auto', pt: 1 }}>
+        <Typography variant="body2">{t('prospects.list.card.level')}</Typography>
+        <Typography variant="body2" fontWeight={700} sx={{ textAlign: 'right' }}>
+          {levelLabel}
+        </Typography>
+      </Stack>
+    </GlassCard>
   );
 });
 
@@ -368,87 +363,80 @@ export const ProspectWorkflowCard = React.memo(function ProspectWorkflowCard({
   }, [prospect.workflowHistory, t]);
 
   return (
-    <Card
-      variant="outlined"
+    <GlassCard
       sx={{
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
+        gap: 1.5,
       }}
     >
-      {/* General information */}
-      <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-        <ProspectHeader
-          prospect={prospect}
-          displayName={displayName}
-          actions={
-            <>
-              {onEdit ? (
-                <Tooltip title={t('prospects.list.actions.edit')}>
-                  <IconButton
-                    aria-label={`edit-prospect-${prospect.id}`}
-                    onClick={() => onEdit(prospect)}
-                    size="small"
-                  >
-                    <EditOutlined fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              ) : null}
-              {onDelete ? (
-                <Tooltip title={t('prospects.list.actions.delete')}>
-                  <IconButton
-                    aria-label={`delete-prospect-${prospect.id}`}
-                    onClick={() => onDelete(prospect)}
-                    size="small"
-                  >
-                    <DeleteOutline fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              ) : null}
-            </>
-          }
-        />
+      <ProspectHeader
+        prospect={prospect}
+        displayName={displayName}
+        actions={
+          <>
+            {onEdit ? (
+              <Tooltip title={t('prospects.list.actions.edit')}>
+                <IconButton
+                  aria-label={`edit-prospect-${prospect.id}`}
+                  onClick={() => onEdit(prospect)}
+                  size="small"
+                >
+                  <EditOutlined fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            ) : null}
+            {onDelete ? (
+              <Tooltip title={t('prospects.list.actions.delete')}>
+                <IconButton
+                  aria-label={`delete-prospect-${prospect.id}`}
+                  onClick={() => onDelete(prospect)}
+                  size="small"
+                >
+                  <DeleteOutline fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            ) : null}
+          </>
+        }
+      />
 
-        <ProspectDetails
-          prospect={prospect}
-          budgetLabel={budgetLabel}
-          createdLabel={createdLabel}
-          noPhoneLabel={noPhoneLabel}
-          showObjectiveBadges={showObjectiveBadges}
-          showPreferenceBadges={showPreferenceBadges}
-        />
-      </CardContent>
+      <ProspectDetails
+        prospect={prospect}
+        budgetLabel={budgetLabel}
+        createdLabel={createdLabel}
+        noPhoneLabel={noPhoneLabel}
+        showObjectiveBadges={showObjectiveBadges}
+        showPreferenceBadges={showPreferenceBadges}
+      />
 
-      <Divider flexItem sx={{ mx: 2 }} />
+      <Divider flexItem />
 
-      <CardActions sx={{ px: 2, py: 1.5 }}>
-        <Stack spacing={1.25} sx={{ width: '100%' }}>
-          <Stack alignItems="center" direction="row" flexWrap="wrap" rowGap={0.75} columnGap={1.5}>
-            <Typography variant="caption" color="text.secondary" sx={{ flexGrow: 1, textAlign: 'left' }}>
-              {daysInStageLabel}
-            </Typography>
+      <Stack spacing={1.25} sx={{ mt: 'auto' }}>
+        <Stack alignItems="center" direction="row" flexWrap="wrap" rowGap={0.75} columnGap={1.5}>
+          <Typography variant="caption" color="text.secondary" sx={{ flexGrow: 1, textAlign: 'left' }}>
+            {daysInStageLabel}
+          </Typography>
 
-            {!onValidate && prospect.level?.label ? <Chip label={prospect.level.label} color="success" size="small" /> : null}
-          </Stack>
-
-          {onValidate ? <Divider flexItem /> : null}
-
-          {onValidate ? (
-            <Stack alignItems="center" direction="row" justifyContent="center" sx={{ width: '100%' }}>
-              <Button
-                color="error"
-                fullWidth
-                onClick={() => onValidate(prospect)}
-                size="small"
-                variant="contained"
-                sx={{ fontWeight: 700, maxWidth: 220, minWidth: 160 }}
-              >
-                {t('prospects.list.actions.validate')}
-              </Button>
-            </Stack>
-          ) : null}
+          {!onValidate && prospect.level?.label ? <Chip label={prospect.level.label} color="success" size="small" /> : null}
         </Stack>
-      </CardActions>
-    </Card>
+
+        {onValidate ? (
+          <Stack alignItems="center" direction="row" justifyContent="center" sx={{ width: '100%', pt: 1 }}>
+            <Button
+              color="error"
+              fullWidth
+              onClick={() => onValidate(prospect)}
+              size="small"
+              variant="contained"
+              sx={{ fontWeight: 700, maxWidth: 220, minWidth: 160 }}
+            >
+              {t('prospects.list.actions.validate')}
+            </Button>
+          </Stack>
+        ) : null}
+      </Stack>
+    </GlassCard>
   );
 });

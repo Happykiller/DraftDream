@@ -1,4 +1,3 @@
-// src/components/nutrition/mealPlanBuilderUtils.ts
 import type { SvgIconComponent } from '@mui/icons-material';
 import {
   BrunchDining,
@@ -9,10 +8,8 @@ import {
   SoupKitchen,
 } from '@mui/icons-material';
 
-import type {
-  MealPlanBuilderDay,
-  MealPlanBuilderNutritionSummary,
-} from './mealPlanBuilderTypes';
+import type { MealPlanDaySnapshot } from '@hooks/nutrition/useMealPlans';
+import type { MealPlanBuilderNutritionSummary } from './mealPlanBuilderTypes';
 
 type MealSummaryLike = {
   calories: number | null | undefined;
@@ -53,7 +50,7 @@ export function getMealIcon(reference: string): SvgIconComponent {
   return MEAL_ICON_COMPONENTS[computeMealIconIndex(reference)];
 }
 
-export function computePlanNutritionSummary(days: MealPlanBuilderDay[]): MealPlanBuilderNutritionSummary {
+export function computePlanNutritionSummary(days: MealPlanDaySnapshot[]): MealPlanBuilderNutritionSummary {
   return days.reduce<MealPlanBuilderNutritionSummary>(
     (totals, day) => {
       day.meals.forEach((meal) => {
@@ -74,7 +71,7 @@ export function computePlanNutritionSummary(days: MealPlanBuilderDay[]): MealPla
   );
 }
 
-export function computeDayNutritionSummary(day: MealPlanBuilderDay): MealPlanBuilderNutritionSummary {
+export function computeDayNutritionSummary(day: MealPlanDaySnapshot): MealPlanBuilderNutritionSummary {
   return day.meals.reduce<MealPlanBuilderNutritionSummary>(
     (totals, meal) => {
       const calories = Number(meal.calories ?? 0);

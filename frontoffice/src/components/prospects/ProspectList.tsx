@@ -8,13 +8,14 @@ import {
   Search,
   VerifiedUser,
 } from '@mui/icons-material';
-import { alpha, Avatar, Box, Grid, InputAdornment, Paper, Skeleton, Stack, TextField, Typography } from '@mui/material';
+import { alpha, Avatar, Box, Grid, InputAdornment, Skeleton, Stack, TextField, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 import { ProspectListCard } from './ProspectCard';
 
 import { type ProspectListMetrics } from '@hooks/prospects/useProspectListMetrics';
 import type { Prospect } from '@app-types/prospects';
+import { GlassCard } from '../common/GlassCard';
 
 export interface ProspectListProps {
   prospects: Prospect[];
@@ -167,53 +168,54 @@ const ProspectListSummary = React.memo(function ProspectListSummary({ metrics, l
   ];
 
   return (
-    <Paper elevation={0} sx={{ borderRadius: 2, p: { xs: 1, sm: 1.5 }, bgcolor: 'transparent' }}>
+    <Box sx={{ p: { xs: 1, sm: 1.5 }, bgcolor: 'transparent' }}>
       {/* General information */}
       {loading ? (
-        <Grid columnSpacing={1} columns={{ xs: 1, sm: 2, lg: 4 }} container rowSpacing={1}>
+        <Grid columnSpacing={2} columns={{ xs: 1, sm: 2, lg: 4 }} container rowSpacing={2}>
           {Array.from({ length: 4 }).map((_, index) => (
             <Grid key={`list-metric-skeleton-${index}`} size={1}>
-              <Skeleton height={84} variant="rounded" />
+              <Skeleton height={84} variant="rounded" sx={{ borderRadius: 4 }} />
             </Grid>
           ))}
         </Grid>
       ) : (
-        <Grid columnSpacing={1} columns={{ xs: 1, sm: 2, lg: 4 }} container rowSpacing={1}>
+        <Grid columnSpacing={2} columns={{ xs: 1, sm: 2, lg: 4 }} container rowSpacing={2}>
           {cards.map((card) => (
             <Grid key={card.key} size={1}>
-              <Stack
-                alignItems="center"
-                direction="row"
-                spacing={1.5}
+              <GlassCard
                 sx={{
-                  bgcolor: alpha(card.color, 0.08),
-                  borderRadius: 2,
-                  px: 1.5,
-                  py: 1,
+                  bgcolor: alpha(card.color, 0.04),
+                  p: 2,
                   height: '100%',
                 }}
               >
-                <Avatar sx={{ bgcolor: alpha(card.color, 0.24), color: card.color, width: 40, height: 40 }}>
-                  <card.icon fontSize="small" />
-                </Avatar>
-                <Stack spacing={0.25} sx={{ minWidth: 0 }}>
-                  <Typography color="text.secondary" variant="body2">
-                    {card.label}
-                  </Typography>
-                  <Typography fontWeight={800} noWrap variant="h6">
-                    {new Intl.NumberFormat(i18n.language).format(card.value)}
-                  </Typography>
-                  {card.helper ? (
-                    <Typography color="text.secondary" fontSize={12} lineHeight={1.2} noWrap>
-                      {card.helper}
+                <Stack
+                  alignItems="center"
+                  direction="row"
+                  spacing={1.5}
+                >
+                  <Avatar sx={{ bgcolor: alpha(card.color, 0.12), color: card.color, width: 44, height: 44 }}>
+                    <card.icon fontSize="small" />
+                  </Avatar>
+                  <Stack spacing={0.25} sx={{ minWidth: 0 }}>
+                    <Typography color="text.secondary" variant="body2">
+                      {card.label}
                     </Typography>
-                  ) : null}
+                    <Typography fontWeight={800} noWrap variant="h6">
+                      {new Intl.NumberFormat(i18n.language).format(card.value)}
+                    </Typography>
+                    {card.helper ? (
+                      <Typography color="text.secondary" fontSize={11} lineHeight={1.2} noWrap>
+                        {card.helper}
+                      </Typography>
+                    ) : null}
+                  </Stack>
                 </Stack>
-              </Stack>
+              </GlassCard>
             </Grid>
           ))}
         </Grid>
       )}
-    </Paper>
+    </Box>
   );
 });
