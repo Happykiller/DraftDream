@@ -60,6 +60,8 @@ export function TextWithTooltip({
         : {};
 
     const baseSx = {
+        display: 'block',
+        width: '100%',
         minWidth: 0,
         maxWidth: '100%',
         overflow: 'hidden',
@@ -69,7 +71,7 @@ export function TextWithTooltip({
         <Tooltip title={isOverflowed ? tooltipTitle : ''} disableHoverListener={!isOverflowed} {...tooltipProps}>
             <Typography
                 ref={textRef}
-                noWrap={!maxLines}
+                noWrap={typographyProps.noWrap ?? !maxLines}
                 {...typographyProps}
                 sx={{
                     ...baseSx,
