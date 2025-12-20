@@ -4,6 +4,7 @@ import {
   Box,
   Chip,
   Divider,
+  Grid,
   IconButton,
   Stack,
   Tooltip,
@@ -33,6 +34,7 @@ import { ProgramCloneDialog } from './ProgramCloneDialog';
 import { ProgramDeleteDialog } from './ProgramDeleteDialog';
 import { ProgramViewDialog } from './ProgramViewDialog';
 import { deriveProgramDifficulty, formatProgramDate } from './programFormatting';
+import { TextWithTooltip } from '../common/TextWithTooltip';
 
 interface ProgramCardProps {
   program: Program;
@@ -291,22 +293,21 @@ export const ProgramCard = React.memo(function ProgramCard({
           })}
         >
           {/* Header */}
-          <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={1.5}>
+          <Grid container>
             {/* Program summary */}
-            <Stack flex={1} minWidth={0}>
-              <Typography variant="h6" sx={{ fontWeight: 700 }} noWrap>
-                {program.label}
-              </Typography>
-              <Typography
+            <Grid size={10}>
+              <TextWithTooltip
+                tooltipTitle={program.label}
+                variant="h6"
+                sx={{
+                  fontWeight: 700
+                }}
+              />
+              <TextWithTooltip
+                tooltipTitle={program.description || t('programs-coatch.list.no_description')}
                 variant="body2"
                 color="text.secondary"
-                sx={{
-                  minHeight: 40,
-                  mt: 0.75,
-                }}
-              >
-                {program.description || t('programs-coatch.list.no_description')}
-              </Typography>
+              />
               {(difficulty || athleteLabel) && (
                 <Stack
                   spacing={0.75}
@@ -337,9 +338,9 @@ export const ProgramCard = React.memo(function ProgramCard({
                   )}
                 </Stack>
               )}
-            </Stack>
+            </Grid>
             {/* Actions */}
-            <Stack direction="row" spacing={0.25}>
+            <Grid size={2} display="flex" justifyContent="flex-end" alignItems="flex-start">
               {availableActions.map(({ key, color, Icon }) => {
                 const label = t(`programs-coatch.list.actions.${key}`);
                 const isDisabled =
@@ -372,8 +373,8 @@ export const ProgramCard = React.memo(function ProgramCard({
                   </Tooltip>
                 );
               })}
-            </Stack>
-          </Stack>
+            </Grid>
+          </Grid>
 
           {/* Metrics */}
           <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
