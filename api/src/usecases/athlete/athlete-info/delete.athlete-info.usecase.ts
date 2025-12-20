@@ -18,7 +18,25 @@ export class DeleteAthleteInfoUsecase {
       }
 
       const isAdmin = session.role === Role.ADMIN;
-      if (!isAdmin && existing.createdBy !== session.userId) {
+      const isAthlete = session.role === Role.ATHLETE;
+      const isCoach = session.role === Role.COACH;
+
+      if (isAdmin) {
+        return await this.inversify.bddService.athleteInfo.delete(payload.id);
+      }
+
+      if (isAthlete && existing.userId !== session.userId) {
+        return false;
+      }
+
+      if (isCoach) {
+        const hasLink = await this.hasCoachAthleteLink(session.userId, existing.userId);
+        if (!hasLink) {
+          return false;
+        }
+      }
+
+      if (!isCoach && !isAthlete && existing.createdBy !== session.userId) {
         return false;
       }
 
@@ -27,5 +45,17 @@ export class DeleteAthleteInfoUsecase {
       this.inversify.loggerService.error(`DeleteAthleteInfoUsecase#execute => ${error?.message ?? error}`);
       throw normalizeError(error, ERRORS.DELETE_ATHLETE_INFO_USECASE);
     }
+  }
+
+  private async hasCoachAthleteLink(coachId: string, athleteId: string): Promise<boolean> {
+    const result = await this.inversify.bddService.coachAthlete.list({
+      coachId,
+      athleteId,
+      is_active: true,
+      includeArchived: false,
+      limit: 1,
+      page: 1,
+    });
+    return result.total > 0;
   }
 }

@@ -28,6 +28,7 @@ export interface UpdateAthleteInfoUsecaseDto {
 
 export interface ListAthleteInfosUsecaseDto {
   userId?: string;
+  userIds?: string[];
   createdBy?: string;
   includeArchived?: boolean;
   limit?: number;

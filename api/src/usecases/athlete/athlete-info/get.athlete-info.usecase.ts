@@ -19,7 +19,25 @@ export class GetAthleteInfoUsecase {
       }
 
       const isAdmin = session.role === Role.ADMIN;
-      if (!isAdmin && found.createdBy !== session.userId) {
+      const isAthlete = session.role === Role.ATHLETE;
+      const isCoach = session.role === Role.COACH;
+
+      if (isAdmin) {
+        return { ...found };
+      }
+
+      if (isAthlete && found.userId !== session.userId) {
+        return null;
+      }
+
+      if (isCoach) {
+        const hasLink = await this.hasCoachAthleteLink(session.userId, found.userId);
+        if (!hasLink) {
+          return null;
+        }
+      }
+
+      if (!isCoach && !isAthlete && found.createdBy !== session.userId) {
         return null;
       }
 
@@ -28,5 +46,17 @@ export class GetAthleteInfoUsecase {
       this.inversify.loggerService.error(`GetAthleteInfoUsecase#execute => ${error?.message ?? error}`);
       throw normalizeError(error, ERRORS.GET_ATHLETE_INFO_USECASE);
     }
+  }
+
+  private async hasCoachAthleteLink(coachId: string, athleteId: string): Promise<boolean> {
+    const result = await this.inversify.bddService.coachAthlete.list({
+      coachId,
+      athleteId,
+      is_active: true,
+      includeArchived: false,
+      limit: 1,
+      page: 1,
+    });
+    return result.total > 0;
   }
 }
