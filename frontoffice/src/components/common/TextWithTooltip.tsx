@@ -61,11 +61,16 @@ export function TextWithTooltip({
 
     return (
         <Tooltip title={isOverflowed ? tooltipTitle : ''} disableHoverListener={!isOverflowed} {...tooltipProps}>
+            {/* General information */}
             <Typography
                 ref={textRef}
                 noWrap={!maxLines}
                 {...typographyProps}
                 sx={{
+                    display: 'block',
+                    maxWidth: '100%',
+                    minWidth: 0,
+                    width: '100%',
                     ...(lineClampSx as any),
                     ...typographyProps.sx,
                 }}
