@@ -19,6 +19,7 @@ import Stack from '@mui/material/Stack';
 import { useTranslation } from 'react-i18next';
 
 import type { AthleteInfo } from '@hooks/useAthleteInfos';
+import { useDateFormatter } from '@hooks/useDateFormatter';
 import type { ProspectMetadataOption } from '@hooks/useProspectMetadataOptions';
 
 export interface AthleteInformationDialogValues {
@@ -62,6 +63,7 @@ export function AthleteInformationDialog({
   onSubmit,
 }: AthleteInformationDialogProps): React.JSX.Element {
   const { t } = useTranslation();
+  const fmtDate = useDateFormatter();
   const [values, setValues] = React.useState<AthleteInformationDialogValues>(DEFAULT_VALUES);
 
   const athleteName = React.useMemo(() => {
@@ -69,6 +71,14 @@ export function AthleteInformationDialog({
     const last = initial?.athlete?.last_name ?? '';
     return `${first} ${last}`.trim();
   }, [initial?.athlete?.first_name, initial?.athlete?.last_name]);
+  const createdAtLabel = React.useMemo(
+    () => (initial?.createdAt ? fmtDate(initial.createdAt) : ''),
+    [fmtDate, initial?.createdAt],
+  );
+  const updatedAtLabel = React.useMemo(
+    () => (initial?.updatedAt ? fmtDate(initial.updatedAt) : ''),
+    [fmtDate, initial?.updatedAt],
+  );
 
   React.useEffect(() => {
     if (open && initial) {
@@ -122,6 +132,24 @@ export function AthleteInformationDialog({
                 </Typography>
                 <Typography variant="body2">
                   {initial.athlete?.email || t('common.messages.no_value')}
+                </Typography>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="caption" color="text.secondary">
+                  {t('common.labels.created')}
+                </Typography>
+                <Typography variant="body2">
+                  {createdAtLabel || t('common.messages.no_value')}
+                </Typography>
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="caption" color="text.secondary">
+                  {t('common.labels.updated')}
+                </Typography>
+                <Typography variant="body2">
+                  {updatedAtLabel || t('common.messages.no_value')}
                 </Typography>
               </Grid>
             </Grid>
