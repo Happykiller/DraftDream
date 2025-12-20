@@ -52,7 +52,7 @@ export class ProspectObjectiveResolver {
   }
 
   @Query(() => ProspectObjectiveListGql, { name: 'prospectObjective_list' })
-  @Auth(Role.ADMIN, Role.COACH)
+  @Auth(Role.ADMIN, Role.COACH, Role.ATHLETE)
   async prospectObjective_list(
     @Args('input', { nullable: true }) input?: ListProspectObjectivesInput,
   ): Promise<ProspectObjectiveListGql> {

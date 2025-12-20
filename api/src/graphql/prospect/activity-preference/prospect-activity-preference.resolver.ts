@@ -52,7 +52,7 @@ export class ProspectActivityPreferenceResolver {
   }
 
   @Query(() => ProspectActivityPreferenceListGql, { name: 'prospectActivityPreference_list' })
-  @Auth(Role.ADMIN, Role.COACH)
+  @Auth(Role.ADMIN, Role.COACH, Role.ATHLETE)
   async prospectActivityPreference_list(
     @Args('input', { nullable: true }) input?: ListProspectActivityPreferencesInput,
   ): Promise<ProspectActivityPreferenceListGql> {

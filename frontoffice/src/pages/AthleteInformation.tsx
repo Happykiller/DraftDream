@@ -109,9 +109,6 @@ export function AthleteInformation(): React.JSX.Element {
         {/* General information */}
         <Stack spacing={3}>
           <Stack spacing={1}>
-            <Typography variant="h4" sx={{ fontWeight: 600 }}>
-              {t('athlete_information.title')}
-            </Typography>
             <Typography variant="body2" color="text.secondary">
               {t('athlete_information.subtitle')}
             </Typography>

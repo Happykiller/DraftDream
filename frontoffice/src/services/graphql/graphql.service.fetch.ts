@@ -96,7 +96,6 @@ export class GraphqlServiceFetch {
         method: 'POST',
         mode: 'cors',
         cache: 'no-cache',
-        credentials: 'include',
         headers,
         body: JSON.stringify(payload),
       });

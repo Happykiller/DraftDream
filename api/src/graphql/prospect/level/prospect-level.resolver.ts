@@ -52,7 +52,7 @@ export class ProspectLevelResolver {
   }
 
   @Query(() => ProspectLevelListGql, { name: 'prospectLevel_list' })
-  @Auth(Role.ADMIN, Role.COACH)
+  @Auth(Role.ADMIN, Role.COACH, Role.ATHLETE)
   async prospectLevel_list(
     @Args('input', { nullable: true }) input?: ListProspectLevelsInput,
   ): Promise<ProspectLevelListGql> {
