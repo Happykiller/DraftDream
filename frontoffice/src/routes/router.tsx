@@ -71,6 +71,20 @@ export const router = createBrowserRouter([
     ],
   },
   {
+    path: '/athlete-information',
+    element: <ProtectedLayout />,
+    loader: requireRoleLoader([UserType.Athlete]),
+    children: [
+      {
+        index: true,
+        lazy: async () => {
+          const mod = await import('@src/pages/AthleteInformation');
+          return { Component: withTitle(mod.AthleteInformation, 'athlete_information.title') };
+        },
+      },
+    ],
+  },
+  {
     path: '/sandbox',
     element: <ProtectedLayout />,
     loader: requireAuthLoader,

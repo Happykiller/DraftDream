@@ -108,7 +108,7 @@ export function useAthleteInfo({
         const result = await execute(() => athleteInfoUpdate(input));
 
         if (!result) {
-          const message = t('profile.information.notifications.update_failure');
+          const message = t('athlete_information.notifications.update_failure');
           setError(message);
           flashError(message);
           throw new Error(message);
@@ -118,7 +118,7 @@ export function useAthleteInfo({
         return result;
       } catch (caught: unknown) {
         console.error('[useAthleteInfo] Failed to update athlete info', caught);
-        const message = t('profile.information.notifications.update_failure');
+        const message = t('athlete_information.notifications.update_failure');
         setError(message);
         flashError(message);
         throw new Error(message);

@@ -26,13 +26,13 @@ export function useUserProfileUpdate(): UseUserProfileUpdateResult {
         const result = await execute(() => userUpdate(input));
 
         if (!result) {
-          const message = t('profile.information.notifications.update_failure');
+          const message = t('athlete_information.notifications.update_failure');
           flashError(message);
           throw new Error(message);
         }
       } catch (caught: unknown) {
         const message =
-          caught instanceof Error ? caught.message : t('profile.information.notifications.update_failure');
+          caught instanceof Error ? caught.message : t('athlete_information.notifications.update_failure');
         flashError(message);
         throw new Error(message);
       } finally {

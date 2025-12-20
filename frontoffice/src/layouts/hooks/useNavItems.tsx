@@ -8,6 +8,7 @@ import {
   FitnessCenter,
   Group,
   Home,
+  Info,
   RestaurantMenu,
   Settings,
 } from '@mui/icons-material';
@@ -65,6 +66,14 @@ function createNutritionAthleteItem(t: (key: string) => string): NavItem {
   };
 }
 
+function createAthleteInformationItem(t: (key: string) => string): NavItem {
+  return {
+    label: t('athlete_information.title'),
+    icon: <Info />,
+    path: '/athlete-information',
+  };
+}
+
 function createSandboxItem(t: (key: string) => string): NavItem {
   return { label: t('sandbox.title'), icon: <Settings />, path: '/sandbox' };
 }
@@ -98,7 +107,11 @@ export function buildNavItems(role: Role, t: (key: string) => string): NavItem[]
       break;
     }
     case UserType.Athlete: {
-      items.push(createProgramsAthleteItem(t), createNutritionAthleteItem(t));
+      items.push(
+        createProgramsAthleteItem(t),
+        createNutritionAthleteItem(t),
+        createAthleteInformationItem(t),
+      );
       break;
     }
     default: {
