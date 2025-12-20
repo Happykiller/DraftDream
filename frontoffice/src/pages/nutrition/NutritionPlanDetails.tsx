@@ -39,7 +39,6 @@ import type {
 } from '@hooks/nutrition/useMealPlans';
 import { useMealTypeIcon } from '@hooks/nutrition/useMealTypeIcon';
 import { computeDayNutritionSummary } from '@components/nutrition/mealPlanBuilderUtils';
-import { TextWithTooltip } from '@components/common/TextWithTooltip';
 
 import type {
   NutritionPlanDetailsLoaderResult,
@@ -118,39 +117,39 @@ export function NutritionPlanDetails(): React.JSX.Element {
     () =>
       mealPlan
         ? [
-            {
-              key: 'calories' as const,
-              label: t('nutrition-details.overview.nutrition_goals.calories_per_day.label'),
-              value: t('nutrition-details.overview.nutrition_goals.calories_per_day.value', {
-                value: formatNumber(mealPlan.calories, i18n.language),
-              }),
-              color: 'text.primary',
-            },
-            {
-              key: 'protein' as const,
-              label: t('nutrition-details.overview.nutrition_goals.protein.label'),
-              value: t('nutrition-details.overview.nutrition_goals.protein.value', {
-                value: formatNumber(mealPlan.proteinGrams, i18n.language),
-              }),
-              color: 'info.main',
-            },
-            {
-              key: 'carbs' as const,
-              label: t('nutrition-details.overview.nutrition_goals.carbs.label'),
-              value: t('nutrition-details.overview.nutrition_goals.carbs.value', {
-                value: formatNumber(mealPlan.carbGrams, i18n.language),
-              }),
-              color: 'success.main',
-            },
-            {
-              key: 'fats' as const,
-              label: t('nutrition-details.overview.nutrition_goals.fats.label'),
-              value: t('nutrition-details.overview.nutrition_goals.fats.value', {
-                value: formatNumber(mealPlan.fatGrams, i18n.language),
-              }),
-              color: 'warning.main',
-            },
-          ]
+          {
+            key: 'calories' as const,
+            label: t('nutrition-details.overview.nutrition_goals.calories_per_day.label'),
+            value: t('nutrition-details.overview.nutrition_goals.calories_per_day.value', {
+              value: formatNumber(mealPlan.calories, i18n.language),
+            }),
+            color: 'text.primary',
+          },
+          {
+            key: 'protein' as const,
+            label: t('nutrition-details.overview.nutrition_goals.protein.label'),
+            value: t('nutrition-details.overview.nutrition_goals.protein.value', {
+              value: formatNumber(mealPlan.proteinGrams, i18n.language),
+            }),
+            color: 'info.main',
+          },
+          {
+            key: 'carbs' as const,
+            label: t('nutrition-details.overview.nutrition_goals.carbs.label'),
+            value: t('nutrition-details.overview.nutrition_goals.carbs.value', {
+              value: formatNumber(mealPlan.carbGrams, i18n.language),
+            }),
+            color: 'success.main',
+          },
+          {
+            key: 'fats' as const,
+            label: t('nutrition-details.overview.nutrition_goals.fats.label'),
+            value: t('nutrition-details.overview.nutrition_goals.fats.value', {
+              value: formatNumber(mealPlan.fatGrams, i18n.language),
+            }),
+            color: 'warning.main',
+          },
+        ]
         : [],
     [i18n.language, mealPlan, t],
   );
@@ -651,12 +650,9 @@ function NutritionPlanDayCard({ day, locale, t }: NutritionPlanDayCardProps): Re
           </Box>
 
           <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-            <TextWithTooltip
-              tooltipTitle={day.label}
-              variant="h6"
-              sx={{ fontWeight: 700 }}
-              noWrap
-            />
+            <Typography variant="h6" sx={{ fontWeight: 700 }}>
+              {day.label}
+            </Typography>
             <Typography color="text.secondary" variant="body2">
               {t('nutrition-details.meals.day_header.meal_count', {
                 count: mealCount,
@@ -824,12 +820,9 @@ const NutritionPlanMealCard = React.memo(function NutritionPlanMealCard({
             </Tooltip>
 
             <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-              <TextWithTooltip
-                tooltipTitle={meal.label}
-                variant="subtitle1"
-                sx={{ fontWeight: 700 }}
-                noWrap
-              />
+              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                {meal.label}
+              </Typography>
               {meal.type?.label ? (
                 <Typography color="text.secondary" variant="body2">
                   {meal.type.label}
