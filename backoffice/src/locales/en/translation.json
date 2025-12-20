@@ -591,6 +591,9 @@
     "information": {
       "title": "Athlete information",
       "search_placeholder": "Search athletes...",
+      "dialog": {
+        "edit_title": "Edit athlete information"
+      },
       "table": {
         "columns": {
           "email": "Email",

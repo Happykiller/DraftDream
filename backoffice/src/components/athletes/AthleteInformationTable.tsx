@@ -1,8 +1,9 @@
 // src/components/athletes/AthleteInformationTable.tsx
 import * as React from 'react';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
-import { Box, Stack, TextField, useMediaQuery } from '@mui/material';
+import { Box, IconButton, Stack, TextField, Tooltip, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import EditIcon from '@mui/icons-material/Edit';
 import { useTranslation } from 'react-i18next';
 
 import type { AthleteInfo } from '@hooks/useAthleteInfos';
@@ -18,6 +19,7 @@ export interface AthleteInformationTableProps {
   onQueryChange: (q: string) => void;
   onPageChange: (page: number) => void; // 1-based
   onLimitChange: (limit: number) => void;
+  onEdit: (row: AthleteInfo) => void;
 }
 
 /** Presentational table to inspect athlete profiles. */
@@ -31,6 +33,7 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
   onQueryChange,
   onPageChange,
   onLimitChange,
+  onEdit,
 }: AthleteInformationTableProps): React.JSX.Element {
   const { t } = useTranslation();
   const fmtDate = useDateFormatter();
@@ -91,8 +94,26 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
           },
         ]
         : []),
+      {
+        field: 'actions',
+        headerName: t('common.labels.actions'),
+        sortable: false,
+        filterable: false,
+        renderCell: (params) => (
+          <Tooltip title={t('common.tooltips.edit')}>
+            <IconButton
+              size="small"
+              aria-label={`edit-athlete-info-${params.row.id}`}
+              onClick={() => onEdit(params.row)}
+            >
+              <EditIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        ),
+        minWidth: 120,
+      },
     ],
-    [fmtDate, isXl, t],
+    [fmtDate, isXl, onEdit, t],
   );
 
   return (

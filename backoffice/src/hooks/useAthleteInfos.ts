@@ -41,6 +41,9 @@ export interface AthleteInfo {
   levelId?: string | null;
   objectiveIds: string[];
   activityPreferenceIds: string[];
+  medicalConditions?: string | null;
+  allergies?: string | null;
+  notes?: string | null;
   createdBy: string;
   createdAt: string;
   updatedAt?: string | null;
@@ -58,6 +61,10 @@ interface AthleteInfoListPayload {
   };
 }
 
+type AthleteInfoUpdatePayload = {
+  athleteInfo_update: AthleteInfo | null;
+};
+
 const LIST_Q = `
   query ListAthleteInfos($input: ListAthleteInfosInput) {
     athleteInfo_list(input: $input) {
@@ -67,6 +74,9 @@ const LIST_Q = `
         levelId
         objectiveIds
         activityPreferenceIds
+        medicalConditions
+        allergies
+        notes
         createdBy
         createdAt
         updatedAt
@@ -92,6 +102,14 @@ const LIST_Q = `
   }
 `;
 
+const UPDATE_MUTATION = `
+  mutation UpdateAthleteInfo($input: UpdateAthleteInfoInput!) {
+    athleteInfo_update(input: $input) {
+      id
+    }
+  }
+`;
+
 export interface UseAthleteInfosParams {
   page: number;
   limit: number;
@@ -100,12 +118,24 @@ export interface UseAthleteInfosParams {
   userId?: string | null;
 }
 
+export interface AthleteInfoUpdateInput {
+  id: string;
+  userId?: string;
+  levelId?: string | null;
+  objectiveIds?: string[];
+  activityPreferenceIds?: string[];
+  medicalConditions?: string | null;
+  allergies?: string | null;
+  notes?: string | null;
+}
+
 export function useAthleteInfos({ page, limit, q, includeArchived, userId }: UseAthleteInfosParams) {
   const [items, setItems] = React.useState<AthleteInfo[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
   const { execute } = useAsyncTask();
   const flashError = useFlashStore((state) => state.error);
+  const flashSuccess = useFlashStore((state) => state.success);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
 
   const load = React.useCallback(
@@ -148,10 +178,34 @@ export function useAthleteInfos({ page, limit, q, includeArchived, userId }: Use
     void load({ page, limit, q, includeArchived, userId });
   }, [sig, load, page, limit, q, includeArchived, userId]);
 
+  const update = React.useCallback(
+    async (input: AthleteInfoUpdateInput) => {
+      setLoading(true);
+      try {
+        const { errors } = await execute(() =>
+          gql.send<AthleteInfoUpdatePayload>({
+            query: UPDATE_MUTATION,
+            variables: { input },
+            operationName: 'UpdateAthleteInfo',
+          }),
+        );
+        if (errors?.length) throw new Error(errors[0].message);
+        flashSuccess('Athlete information updated');
+        await load({ page, limit, q, includeArchived, userId });
+      } catch (error: any) {
+        flashError(error?.message ?? 'Failed to update athlete information');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [execute, flashError, flashSuccess, gql, includeArchived, limit, load, page, q, userId],
+  );
+
   return {
     items,
     total,
     loading,
+    update,
     reload: () => load({ page, limit, q, includeArchived, userId }),
   };
 }

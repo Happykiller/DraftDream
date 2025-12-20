@@ -592,6 +592,9 @@
     "information": {
       "title": "Informations athlètes",
       "search_placeholder": "Rechercher des athlètes...",
+      "dialog": {
+        "edit_title": "Modifier les informations de l'athlète"
+      },
       "table": {
         "columns": {
           "email": "Email",
