@@ -2,7 +2,9 @@
 import * as React from 'react';
 import {
   Alert,
+  Autocomplete,
   Box,
+  Button,
   Chip,
   Container,
   FormControl,
@@ -12,11 +14,17 @@ import {
   Paper,
   Select,
   Stack,
+  TextField,
   Typography,
 } from '@mui/material';
 import type { SelectChangeEvent } from '@mui/material/Select';
 import { useTranslation } from 'react-i18next';
 
+import { useAthleteInfo } from '@hooks/athletes/useAthleteInfo';
+import { useProspectMetadataOptions } from '@hooks/prospects/useProspectMetadataOptions';
+import { useFlashStore } from '@hooks/useFlashStore';
+import { useUser } from '@hooks/useUser';
+import { useUserProfileUpdate } from '@hooks/useUserProfileUpdate';
 import type { SessionStoreModel } from '@stores/session';
 import { session } from '@stores/session';
 
@@ -28,6 +36,7 @@ const HIGHLIGHT_KEYS = ['identity', 'security', 'support'] as const;
 export function Profile(): React.JSX.Element {
   const { t, i18n } = useTranslation();
   const snapshot = session();
+  const flashSuccess = useFlashStore((state) => state.success);
 
   const normalizeLanguage = React.useCallback((value: string | undefined) => value?.split('-')[0] ?? 'fr', []);
 
@@ -89,6 +98,35 @@ export function Profile(): React.JSX.Element {
 
     return sessionData.role.replace(/_/g, ' ');
   }, [sessionData.role]);
+  const isAthlete = sessionData.role === 'athlete';
+  const metadata = useProspectMetadataOptions();
+  const { user, loading: userLoading, error: userError, reload: reloadUser } = useUser({ skip: !isAthlete });
+  const {
+    athleteInfo,
+    loading: athleteInfoLoading,
+    error: athleteInfoError,
+    update: updateAthleteInfo,
+  } = useAthleteInfo({
+    userId: isAthlete ? sessionData.id : null,
+  });
+  const { update: updateUserProfile, loading: profileUpdating } = useUserProfileUpdate();
+  const [informationValues, setInformationValues] = React.useState({
+    email: '',
+    phone: '',
+    levelId: null as string | null,
+    objectiveIds: [] as string[],
+    activityPreferenceIds: [] as string[],
+    medicalConditions: '',
+    allergies: '',
+  });
+  const selectedObjectives = React.useMemo(
+    () => metadata.objectives.filter((item) => informationValues.objectiveIds.includes(item.id)),
+    [informationValues.objectiveIds, metadata.objectives],
+  );
+  const selectedActivityPreferences = React.useMemo(
+    () => metadata.activityPreferences.filter((item) => informationValues.activityPreferenceIds.includes(item.id)),
+    [informationValues.activityPreferenceIds, metadata.activityPreferences],
+  );
 
   const fullName = React.useMemo(() => {
     const nameParts = [sessionData.name_first, sessionData.name_last].filter(Boolean);
@@ -146,6 +184,78 @@ export function Profile(): React.JSX.Element {
       ? language
       : languageOptions[0][0];
   }, [language, languageOptions]);
+  const athleteFieldsDisabled = !athleteInfo || athleteInfoLoading;
+  const isInformationSubmitting = profileUpdating || athleteInfoLoading || userLoading;
+
+  React.useEffect(() => {
+    if (!user) return;
+    setInformationValues((prev) => ({
+      ...prev,
+      email: user.email ?? '',
+      phone: user.phone ?? '',
+    }));
+  }, [user]);
+
+  React.useEffect(() => {
+    if (!athleteInfo) return;
+    setInformationValues((prev) => ({
+      ...prev,
+      levelId: athleteInfo.levelId ?? null,
+      objectiveIds: athleteInfo.objectiveIds ?? [],
+      activityPreferenceIds: athleteInfo.activityPreferenceIds ?? [],
+      medicalConditions: athleteInfo.medicalConditions ?? '',
+      allergies: athleteInfo.allergies ?? '',
+    }));
+  }, [athleteInfo]);
+
+  const handleInformationChange = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const { name, value } = event.target;
+      setInformationValues((prev) => ({ ...prev, [name]: value }));
+    },
+    [],
+  );
+
+  const handleInformationSubmit = React.useCallback(
+    async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      if (!user) return;
+
+      try {
+        await updateUserProfile({
+          id: user.id,
+          email: informationValues.email.trim(),
+          phone: informationValues.phone?.trim() || null,
+        });
+
+        if (athleteInfo) {
+          await updateAthleteInfo({
+            id: athleteInfo.id,
+            levelId: informationValues.levelId,
+            objectiveIds: informationValues.objectiveIds,
+            activityPreferenceIds: informationValues.activityPreferenceIds,
+            medicalConditions: informationValues.medicalConditions.trim() || null,
+            allergies: informationValues.allergies.trim() || null,
+          });
+        }
+
+        await reloadUser();
+        flashSuccess(t('profile.information.notifications.update_success'));
+      } catch (error) {
+        return;
+      }
+    },
+    [
+      athleteInfo,
+      flashSuccess,
+      informationValues,
+      reloadUser,
+      t,
+      updateAthleteInfo,
+      updateUserProfile,
+      user,
+    ],
+  );
 
   return (
     <Box
@@ -161,7 +271,7 @@ export function Profile(): React.JSX.Element {
       <Container maxWidth="lg">
         {/* General information */}
         <Grid container spacing={{ xs: 6, md: 8 }} alignItems="stretch">
-          <Grid size={{xs: 12, md: 5}}>
+          <Grid size={{ xs: 12, md: 5 }}>
             <Stack spacing={4} sx={{ height: '100%' }}>
               <Stack spacing={2}>
                 <Typography variant="h3" sx={{ fontWeight: 600 }}>
@@ -218,7 +328,7 @@ export function Profile(): React.JSX.Element {
             </Stack>
           </Grid>
 
-          <Grid size={{xs: 12, md: 7}}>
+          <Grid size={{ xs: 12, md: 7 }}>
             <Stack spacing={3} sx={{ height: '100%' }}>
               <Paper
                 elevation={0}
@@ -273,6 +383,169 @@ export function Profile(): React.JSX.Element {
                   )}
                 </Stack>
               </Paper>
+
+              {isAthlete ? (
+                <Paper
+                  elevation={0}
+                  sx={{
+                    p: { xs: 3, md: 4 },
+                    borderRadius: 3,
+                    border: (theme) => `1px solid ${theme.palette.divider}`,
+                    backgroundColor: 'background.paper',
+                  }}
+                >
+                  <Stack spacing={2.5} component="form" onSubmit={handleInformationSubmit}>
+                    <Stack spacing={0.5}>
+                      <Typography variant="h6">{t('profile.information.title')}</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {t('profile.information.subtitle')}
+                      </Typography>
+                    </Stack>
+
+                    {userError ? (
+                      <Alert severity="warning" variant="outlined">
+                        {userError}
+                      </Alert>
+                    ) : null}
+
+                    {athleteInfoError ? (
+                      <Alert severity="warning" variant="outlined">
+                        {athleteInfoError}
+                      </Alert>
+                    ) : null}
+
+                    {!athleteInfo && !athleteInfoLoading ? (
+                      <Alert severity="info" variant="outlined">
+                        {t('profile.information.empty')}
+                      </Alert>
+                    ) : null}
+
+                    {/* General information */}
+                    <Grid container spacing={2}>
+                      <Grid size={{ xs: 12, md: 6 }}>
+                        <TextField
+                          label={t('profile.information.fields.email')}
+                          name="email"
+                          value={informationValues.email}
+                          onChange={handleInformationChange}
+                          required
+                          fullWidth
+                        />
+                      </Grid>
+                      <Grid size={{ xs: 12, md: 6 }}>
+                        <TextField
+                          label={t('profile.information.fields.phone')}
+                          name="phone"
+                          value={informationValues.phone}
+                          onChange={handleInformationChange}
+                          fullWidth
+                        />
+                      </Grid>
+                      <Grid size={{ xs: 12, md: 6 }}>
+                        <TextField
+                          select
+                          label={t('profile.information.fields.level')}
+                          name="levelId"
+                          value={informationValues.levelId ?? ''}
+                          onChange={(event) =>
+                            setInformationValues((prev) => ({
+                              ...prev,
+                              levelId: event.target.value ? String(event.target.value) : null,
+                            }))
+                          }
+                          disabled={athleteFieldsDisabled}
+                          fullWidth
+                        >
+                          <MenuItem value="">{t('profile.information.placeholders.select')}</MenuItem>
+                          {metadata.levels.map((level) => (
+                            <MenuItem key={level.id} value={level.id}>
+                              {level.label}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                      </Grid>
+                      <Grid size={{ xs: 12 }}>
+                        <Autocomplete
+                          multiple
+                          loading={metadata.loading}
+                          options={metadata.objectives}
+                          value={selectedObjectives}
+                          isOptionEqualToValue={(option, value) => option.id === value.id}
+                          onChange={(_, data) =>
+                            setInformationValues((prev) => ({
+                              ...prev,
+                              objectiveIds: data.map((item) => item.id),
+                            }))
+                          }
+                          getOptionLabel={(option) => option.label}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label={t('profile.information.fields.objectives')}
+                              placeholder={t('profile.information.placeholders.select')}
+                            />
+                          )}
+                          disabled={athleteFieldsDisabled}
+                        />
+                      </Grid>
+                      <Grid size={{ xs: 12 }}>
+                        <Autocomplete
+                          multiple
+                          loading={metadata.loading}
+                          options={metadata.activityPreferences}
+                          value={selectedActivityPreferences}
+                          isOptionEqualToValue={(option, value) => option.id === value.id}
+                          onChange={(_, data) =>
+                            setInformationValues((prev) => ({
+                              ...prev,
+                              activityPreferenceIds: data.map((item) => item.id),
+                            }))
+                          }
+                          getOptionLabel={(option) => option.label}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label={t('profile.information.fields.activity_preferences')}
+                              placeholder={t('profile.information.placeholders.select')}
+                            />
+                          )}
+                          disabled={athleteFieldsDisabled}
+                        />
+                      </Grid>
+                      <Grid size={{ xs: 12 }}>
+                        <TextField
+                          label={t('profile.information.fields.medical_conditions')}
+                          name="medicalConditions"
+                          value={informationValues.medicalConditions}
+                          onChange={handleInformationChange}
+                          fullWidth
+                          multiline
+                          minRows={2}
+                          disabled={athleteFieldsDisabled}
+                        />
+                      </Grid>
+                      <Grid size={{ xs: 12 }}>
+                        <TextField
+                          label={t('profile.information.fields.allergies')}
+                          name="allergies"
+                          value={informationValues.allergies}
+                          onChange={handleInformationChange}
+                          fullWidth
+                          multiline
+                          minRows={2}
+                          disabled={athleteFieldsDisabled}
+                        />
+                      </Grid>
+                    </Grid>
+
+                    <Stack direction="row" justifyContent="flex-end">
+                      <Button type="submit" variant="contained" disabled={isInformationSubmitting}>
+                        {t('profile.information.actions.save')}
+                      </Button>
+                    </Stack>
+                  </Stack>
+                </Paper>
+              ) : null}
 
               <Paper
                 elevation={0}

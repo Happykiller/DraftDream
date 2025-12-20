@@ -10,4 +10,6 @@ export interface AthleteInfo {
   activityPreferenceIds: string[];
   objectives?: ProspectObjectiveRelation[];
   activityPreferences?: ProspectActivityPreferenceRelation[];
+  medicalConditions?: string | null;
+  allergies?: string | null;
 }

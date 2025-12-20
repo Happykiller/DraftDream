@@ -398,6 +398,30 @@
       "emptyValue": "Not provided",
       "empty": "No session data is available yet. Sign in to populate your profile."
     },
+    "information": {
+      "title": "My information",
+      "subtitle": "Update your contact details and onboarding preferences.",
+      "fields": {
+        "email": "Email",
+        "phone": "Phone",
+        "level": "Level",
+        "objectives": "Objectives",
+        "activity_preferences": "Activity preferences",
+        "medical_conditions": "Medical conditions",
+        "allergies": "Allergies"
+      },
+      "placeholders": {
+        "select": "Select"
+      },
+      "actions": {
+        "save": "Save changes"
+      },
+      "notifications": {
+        "update_success": "Your information has been updated.",
+        "update_failure": "Unable to update your information."
+      },
+      "empty": "No athlete information is available yet."
+    },
     "snapshot": {
       "title": "Raw session payload",
       "description": "Complete JSON export of the values stored in src/stores/session.ts.",
