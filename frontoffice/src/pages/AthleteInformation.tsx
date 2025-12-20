@@ -19,7 +19,6 @@ import { useAthleteInfo } from '@hooks/athletes/useAthleteInfo';
 import { useProspectMetadataOptions } from '@hooks/prospects/useProspectMetadataOptions';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { useUser } from '@hooks/useUser';
-import { useUserProfileUpdate } from '@hooks/useUserProfileUpdate';
 import { session } from '@stores/session';
 
 /** Dedicated athlete information page for self-service updates. */
@@ -27,7 +26,7 @@ export function AthleteInformation(): React.JSX.Element {
   const { t } = useTranslation();
   const flashSuccess = useFlashStore((state) => state.success);
   const snapshot = session();
-  const { user, loading: userLoading, error: userError, reload: reloadUser } = useUser();
+  const { loading: userLoading, error: userError } = useUser();
   const {
     athleteInfo,
     loading: athleteInfoLoading,
@@ -35,10 +34,7 @@ export function AthleteInformation(): React.JSX.Element {
     update: updateAthleteInfo,
   } = useAthleteInfo({ userId: snapshot.id });
   const metadata = useProspectMetadataOptions();
-  const { update: updateUserProfile, loading: profileUpdating } = useUserProfileUpdate();
   const [values, setValues] = React.useState({
-    email: '',
-    phone: '',
     levelId: null as string | null,
     objectiveIds: [] as string[],
     activityPreferenceIds: [] as string[],
@@ -54,15 +50,6 @@ export function AthleteInformation(): React.JSX.Element {
     () => metadata.activityPreferences.filter((item) => values.activityPreferenceIds.includes(item.id)),
     [metadata.activityPreferences, values.activityPreferenceIds],
   );
-
-  React.useEffect(() => {
-    if (!user) return;
-    setValues((prev) => ({
-      ...prev,
-      email: user.email ?? '',
-      phone: user.phone ?? '',
-    }));
-  }, [user]);
 
   React.useEffect(() => {
     if (!athleteInfo) return;
@@ -87,15 +74,7 @@ export function AthleteInformation(): React.JSX.Element {
   const handleSubmit = React.useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      if (!user) return;
-
       try {
-        await updateUserProfile({
-          id: user.id,
-          email: values.email.trim(),
-          phone: values.phone?.trim() || null,
-        });
-
         if (athleteInfo) {
           await updateAthleteInfo({
             id: athleteInfo.id,
@@ -107,7 +86,6 @@ export function AthleteInformation(): React.JSX.Element {
           });
         }
 
-        await reloadUser();
         flashSuccess(t('athlete_information.notifications.update_success'));
       } catch {
         return;
@@ -116,17 +94,14 @@ export function AthleteInformation(): React.JSX.Element {
     [
       athleteInfo,
       flashSuccess,
-      reloadUser,
       t,
       updateAthleteInfo,
-      updateUserProfile,
-      user,
       values,
     ],
   );
 
   const athleteFieldsDisabled = !athleteInfo || athleteInfoLoading;
-  const isSubmitting = profileUpdating || athleteInfoLoading || userLoading;
+  const isSubmitting = athleteInfoLoading || userLoading;
 
   return (
     <Box sx={{ minHeight: '100vh', py: { xs: 4, md: 6 } }}>
@@ -172,25 +147,6 @@ export function AthleteInformation(): React.JSX.Element {
 
               {/* General information */}
               <Grid container spacing={2}>
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <TextField
-                    label={t('athlete_information.fields.email')}
-                    name="email"
-                    value={values.email}
-                    onChange={handleChange}
-                    required
-                    fullWidth
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <TextField
-                    label={t('athlete_information.fields.phone')}
-                    name="phone"
-                    value={values.phone}
-                    onChange={handleChange}
-                    fullWidth
-                  />
-                </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>
                   <TextField
                     select
