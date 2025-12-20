@@ -163,7 +163,7 @@ export const ProgramList = React.memo(function ProgramList({
 
       {/* Program grid */}
       {!loading && programs.length > 0 && (
-        <Grid container spacing={3}>
+        <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 3 }} sx={{ width: '100%', m: 0 }}>
           {programs.map((program) => (
             <Grid size={{ xs: 12, sm: 6, lg: 3 }} key={program.id}>
               <ProgramCard
