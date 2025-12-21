@@ -17,13 +17,13 @@ if (!container) {
 
 createRoot(container).render(
   <StrictMode>
-    <I18nProvider>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <I18nProvider>
         <HashRouter>
           <App />
         </HashRouter>
-      </ThemeProvider>
-    </I18nProvider>
+      </I18nProvider>
+    </ThemeProvider>
   </StrictMode>
 );
