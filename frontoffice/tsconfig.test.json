@@ -13,7 +13,12 @@
   "include": [
     "tests/**/*.ts",
     "src/layouts/hooks/useNavItems.tsx",
-    "src/layouts/hooks/useNavItems.ts"
+    "src/layouts/hooks/useNavItems.ts",
+    "src/commons/enums.ts"
   ],
-  "exclude": ["node_modules", "dist", "dist-tests"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "dist-tests"
+  ]
 }

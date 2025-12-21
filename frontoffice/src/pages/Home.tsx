@@ -14,9 +14,7 @@ export function Home(): React.JSX.Element {
   const role = session((state) => state.role);
 
   const isCoachView = role === UserType.Admin || role === UserType.Coach;
-  const title = isCoachView
-    ? t('dashboard.coach.title', 'Dashboard Coach')
-    : t('dashboard.athlete.title', 'Dashboard Athlete');
+
   const subtitle = isCoachView
     ? t('dashboard.coach.subtitle', "Gérez vos clients et programmes d'entraînement")
     : t('dashboard.athlete.subtitle', 'Consultez vos programmes et vos plans nutritionnels.');

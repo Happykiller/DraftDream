@@ -9,7 +9,6 @@ import {
   Card,
   CardContent,
   Divider,
-  Grid,
   Stack,
   Typography,
 } from '@mui/material';
@@ -143,32 +142,33 @@ export function ProgramDetails(): React.JSX.Element {
           }}
         >
           {/* General information */}
-          <Grid container
+          <Stack
+            direction="row"
+            spacing={2}
+            alignItems="center"
             sx={{
               backgroundColor: alpha(theme.palette.primary.main, 0.1),
               px: { xs: 2, sm: 3, md: 4 },
               py: { xs: 2, sm: 2.5 },
             }}>
-            <Grid size={2}>
-              <Box
-                aria-hidden
-                sx={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 2,
-                  bgcolor: 'primary.main',
-                  color: 'primary.contrastText',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                  boxShadow: '0 10px 20px rgba(25, 118, 210, 0.24)',
-                }}
-              >
-                <Visibility fontSize="medium" />
-              </Box>
-            </Grid>
-            <Grid size={10}>
+            <Box
+              aria-hidden
+              sx={{
+                width: 40,
+                height: 40,
+                borderRadius: 2,
+                bgcolor: 'primary.main',
+                color: 'primary.contrastText',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                boxShadow: '0 10px 20px rgba(25, 118, 210, 0.24)',
+              }}
+            >
+              <Visibility fontSize="medium" />
+            </Box>
+            <Box sx={{ flexGrow: 1, minWidth: 0 }}>
               <TextWithTooltip
                 tooltipTitle={program ? program.label : detailCopy.generic_title}
                 variant="h6"
@@ -183,8 +183,8 @@ export function ProgramDetails(): React.JSX.Element {
                   color="text.secondary"
                 />
               ) : null}
-            </Grid>
-          </Grid>
+            </Box>
+          </Stack>
 
           <Divider />
 

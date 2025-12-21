@@ -50,19 +50,19 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
         field: 'email',
         headerName: t('athletes.information.table.columns.email'),
         flex: 1,
-        valueGetter: (_value, row) => row.athlete?.email ?? '—',
+        valueGetter: (_value: unknown, row: AthleteInfo) => row.athlete?.email ?? '—',
       },
       {
         field: 'phone',
         headerName: t('athletes.information.table.columns.phone'),
         flex: 0.8,
-        valueGetter: (_value, row) => row.athlete?.phone ?? '—',
+        valueGetter: (_value: unknown, row: AthleteInfo) => row.athlete?.phone ?? '—',
       },
       {
         field: 'level',
         headerName: t('athletes.information.table.columns.level'),
         flex: 0.8,
-        valueGetter: (_value, row) => row.level?.label ?? '—',
+        valueGetter: (_value: unknown, row: AthleteInfo) => row.level?.label ?? '—',
         sortComparator: (a, b) => String(a).localeCompare(String(b)),
       },
       ...(isXl
@@ -71,13 +71,13 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
             field: 'company',
             headerName: t('athletes.information.table.columns.company'),
             flex: 1,
-            valueGetter: (_value, row) => row.athlete?.company?.name ?? '—',
+            valueGetter: (_value: unknown, row: AthleteInfo) => row.athlete?.company?.name ?? '—',
           },
           {
             field: 'address',
             headerName: t('athletes.information.table.columns.address'),
             flex: 1,
-            valueGetter: (_value, row) => {
+            valueGetter: (_value: unknown, row: AthleteInfo) => {
               const city = row?.athlete?.address?.city ?? '';
               const country = row?.athlete?.address?.country ?? '';
               const label = `${city}${city && country ? ', ' : ''}${country}`;
@@ -89,7 +89,7 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
             headerName: t('athletes.information.table.columns.updated_at'),
             flex: 1,
             minWidth: 180,
-            valueGetter: (_value, row) => row.updatedAt ?? row.athlete?.updatedAt ?? null,
+            valueGetter: (_value: unknown, row: AthleteInfo) => row.updatedAt ?? row.athlete?.updatedAt ?? null,
             valueFormatter: (p: any) => fmtDate(p),
           },
         ]

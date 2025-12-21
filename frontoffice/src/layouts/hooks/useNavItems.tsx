@@ -13,7 +13,7 @@ import {
   Settings,
 } from '@mui/icons-material';
 
-import { UserType } from '@src/commons/enums';
+import { UserType } from '../../commons/enums.js';
 
 export type NavItem = {
   label: string;

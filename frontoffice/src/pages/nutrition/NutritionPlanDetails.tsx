@@ -10,7 +10,6 @@ import {
   CardContent,
   CircularProgress,
   Divider,
-  Grid,
   Paper,
   Stack,
   Tab,
@@ -238,38 +237,39 @@ export function NutritionPlanDetails(): React.JSX.Element {
           }}
         >
           {/* General information */}
-          <Grid container
+          <Stack
+            direction="row"
+            spacing={2}
+            alignItems="center"
             sx={{
               backgroundColor: alpha(theme.palette.warning.main, 0.12),
               px: { xs: 2, sm: 3, md: 4 },
               py: { xs: 2, sm: 2.5 },
             }}
           >
-            <Grid size={2}>
-              <Box
-                aria-hidden
-                sx={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 2,
-                  bgcolor: 'warning.main',
-                  color: 'warning.contrastText',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                  boxShadow: `0 10px 20px ${alpha(theme.palette.warning.main, 0.24)}`,
-                }}
-              >
-                <RestaurantMenu fontSize="medium" />
-              </Box>
-            </Grid>
-            <Grid size={10}>
+            <Box
+              aria-hidden
+              sx={{
+                width: 40,
+                height: 40,
+                borderRadius: 2,
+                bgcolor: 'warning.main',
+                color: 'warning.contrastText',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                boxShadow: `0 10px 20px ${alpha(theme.palette.warning.main, 0.24)}`,
+              }}
+            >
+              <RestaurantMenu fontSize="medium" />
+            </Box>
+            <Box sx={{ flexGrow: 1, minWidth: 0 }}>
               <TextWithTooltip
                 tooltipTitle={headerTitle}
                 variant="h6"
                 sx={{
-                  fontWeight: 700
+                  fontWeight: 700,
                 }}
               />
               {mealPlan?.description ? (
@@ -279,8 +279,8 @@ export function NutritionPlanDetails(): React.JSX.Element {
                   color="text.secondary"
                 />
               ) : null}
-            </Grid>
-          </Grid>
+            </Box>
+          </Stack>
 
           <Divider />
 
