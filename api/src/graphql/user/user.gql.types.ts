@@ -38,7 +38,7 @@ export class UserGql {
   @Field({ nullable: true }) createdAt?: Date;
   @Field({ nullable: true }) updatedAt?: Date;
   @Field() is_active!: boolean;
-  @Field() createdBy!: string;  
+  @Field() createdBy!: string;
 }
 
 // --------- Inputs ----------
@@ -81,6 +81,16 @@ export class UpdateUserInput {
   @Field(() => AddressInput, { nullable: true }) address?: AddressInput;
   @Field(() => CompanyInput, { nullable: true }) company?: CompanyInput;
   @Field({ nullable: true }) is_active?: boolean; // NEW
+}
+
+@InputType()
+export class UpdateMeInput {
+  @Field({ nullable: true }) first_name?: string;
+  @Field({ nullable: true }) last_name?: string;
+  @Field({ nullable: true }) email?: string;
+  @Field({ nullable: true }) phone?: string;
+  @Field(() => AddressInput, { nullable: true }) address?: AddressInput;
+  @Field(() => CompanyInput, { nullable: true }) company?: CompanyInput;
 }
 
 @ObjectType()

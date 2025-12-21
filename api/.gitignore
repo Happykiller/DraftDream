@@ -13,3 +13,5 @@ src/config/prod.ts
 gqlschema.gql
 coverage/
 coverage_report.txt
+final_test_results.txt
+current_test_results.txt

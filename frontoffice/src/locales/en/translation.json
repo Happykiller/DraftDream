@@ -398,6 +398,37 @@
       "emptyValue": "Not provided",
       "empty": "No session data is available yet. Sign in to populate your profile."
     },
+    "section": {
+      "personal": "Personal Information",
+      "address": "Personal Address",
+      "company": "Company",
+      "companyAddress": "Company Address",
+      "settings": "Settings"
+    },
+    "field": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "phone": "Phone",
+      "addressName": "Address (Street, Number...)",
+      "city": "City",
+      "code": "Zip Code",
+      "country": "Country",
+      "companyName": "Company Name"
+    },
+    "actions": {
+      "changePassword": "Change password"
+    },
+    "password_dialog": {
+      "title": "Change password",
+      "new_password": "New password",
+      "confirm_password": "Confirm password",
+      "error_mismatch": "Passwords do not match."
+    },
+    "notifications": {
+      "update_success": "Profile updated successfully.",
+      "password_update_success": "Password updated successfully."
+    },
     "information": {
       "title": "My information",
       "subtitle": "Update your contact details and onboarding preferences.",
@@ -898,16 +929,16 @@
       "subtitle": "Assemble meal days and meals to craft a tailored plan.",
       "edit_subtitle": "Adjust existing meals and macros for your athlete.",
       "summary": {
-      "total_meals": "{{count}} meals in total",
-      "total_meals_one": "{{count}} meal in total",
-      "total_meals_other": "{{count}} meals in total",
-      "nutrition_title": "Nutrition summary",
-      "day_title": "Day summary",
-      "average_title": "Average / day",
-      "calories_label": "Calories",
-      "calories_unit": "kcal",
-      "protein_label": "Protein",
-      "protein_unit": "g",
+        "total_meals": "{{count}} meals in total",
+        "total_meals_one": "{{count}} meal in total",
+        "total_meals_other": "{{count}} meals in total",
+        "nutrition_title": "Nutrition summary",
+        "day_title": "Day summary",
+        "average_title": "Average / day",
+        "calories_label": "Calories",
+        "calories_unit": "kcal",
+        "protein_label": "Protein",
+        "protein_unit": "g",
         "carbs_label": "Carbs",
         "carbs_unit": "g",
         "fats_label": "Fats",

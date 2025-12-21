@@ -19,6 +19,7 @@ Create, read, update, and delete user accounts
 - Admin, Coach, and Athlete roles
 - Password hashing
 - User profiles
+- Self-update profile and password
 - CRUD operations
 
 ---

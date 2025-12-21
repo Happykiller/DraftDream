@@ -44,7 +44,19 @@ export function UsersPanel(): React.JSX.Element {
       password: v.password || '',
       confirm_password: v.confirm_password || undefined,
       is_active: v.is_active,
-      company: v.company_name ? { name: v.company_name } : undefined,
+      company: (v.company_name || v.company_address_name || v.company_address_city || v.company_address_code || v.company_address_country)
+        ? {
+          name: v.company_name || '',
+          address: (v.company_address_name || v.company_address_city || v.company_address_code || v.company_address_country)
+            ? {
+              name: v.company_address_name || '',
+              city: v.company_address_city || '',
+              code: v.company_address_code || '',
+              country: v.company_address_country || '',
+            }
+            : undefined,
+        }
+        : undefined,
       address: v.address_name || v.address_city || v.address_code || v.address_country
         ? {
           name: v.address_name || '',
@@ -67,7 +79,19 @@ export function UsersPanel(): React.JSX.Element {
       email: v.email,
       phone: v.phone || undefined,
       is_active: v.is_active,
-      company: v.company_name ? { name: v.company_name } : undefined,
+      company: (v.company_name || v.company_address_name || v.company_address_city || v.company_address_code || v.company_address_country)
+        ? {
+          name: v.company_name || '',
+          address: (v.company_address_name || v.company_address_city || v.company_address_code || v.company_address_country)
+            ? {
+              name: v.company_address_name || '',
+              city: v.company_address_city || '',
+              code: v.company_address_code || '',
+              country: v.company_address_country || '',
+            }
+            : undefined,
+        }
+        : undefined,
       address: v.address_name || v.address_city || v.address_code || v.address_country
         ? {
           name: v.address_name || '',

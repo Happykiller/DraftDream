@@ -10,6 +10,7 @@ import {
   CardContent,
   CircularProgress,
   Divider,
+  Grid,
   Paper,
   Stack,
   Tab,
@@ -43,6 +44,7 @@ import { computeDayNutritionSummary } from '@components/nutrition/mealPlanBuilde
 import type {
   NutritionPlanDetailsLoaderResult,
 } from './NutritionPlanDetails.loader';
+import { TextWithTooltip } from '@src/components/common/TextWithTooltip';
 
 function formatNumber(value: number, locale: string): string {
   try {
@@ -236,15 +238,14 @@ export function NutritionPlanDetails(): React.JSX.Element {
           }}
         >
           {/* General information */}
-          <Box
-            component="header"
+          <Grid container
             sx={{
               backgroundColor: alpha(theme.palette.warning.main, 0.12),
               px: { xs: 2, sm: 3, md: 4 },
               py: { xs: 2, sm: 2.5 },
             }}
           >
-            <Stack direction="row" spacing={2} alignItems="center">
+            <Grid size={2}>
               <Box
                 aria-hidden
                 sx={{
@@ -262,27 +263,24 @@ export function NutritionPlanDetails(): React.JSX.Element {
               >
                 <RestaurantMenu fontSize="medium" />
               </Box>
-              <Stack spacing={0.5} sx={{ minWidth: 0 }}>
-                <Typography
-                  variant="h5"
-                  sx={{ fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis' }}
-                  noWrap
-                >
-                  {headerTitle}
-                </Typography>
-                {mealPlan?.description ? (
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    noWrap
-                    sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
-                  >
-                    {mealPlan.description}
-                  </Typography>
-                ) : null}
-              </Stack>
-            </Stack>
-          </Box>
+            </Grid>
+            <Grid size={10}>
+              <TextWithTooltip
+                tooltipTitle={headerTitle}
+                variant="h6"
+                sx={{
+                  fontWeight: 700
+                }}
+              />
+              {mealPlan?.description ? (
+                <TextWithTooltip
+                  tooltipTitle={mealPlan.description}
+                  variant="body2"
+                  color="text.secondary"
+                />
+              ) : null}
+            </Grid>
+          </Grid>
 
           <Divider />
 

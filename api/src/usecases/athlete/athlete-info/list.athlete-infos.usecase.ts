@@ -45,14 +45,14 @@ export class ListAthleteInfosUsecase {
 
       if (isCoach) {
         if (isFilteringByUser) {
-          const hasLink = await this.hasCoachAthleteLink(session.userId, filters.userId as string);
+          const hasLink = await this.hasCoachAthleteLink(session.userId, filters.userId!);
           if (!hasLink) {
             return { items: [], total: 0, page: filters.page ?? 1, limit: filters.limit ?? 20 };
           }
         }
 
         const athleteIds = isFilteringByUser
-          ? [filters.userId as string]
+          ? [filters.userId!]
           : await this.listCoachAthleteIds(session.userId);
 
         if (!athleteIds.length) {

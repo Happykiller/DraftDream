@@ -5,10 +5,10 @@ import inversify from '@src/inversify/investify';
 import { Auth } from '@graphql/decorators/auth.decorator';
 import { mapUserUsecaseToGql } from '@graphql/user/user.mapper';
 import {
-  CreateUserInput, UserGql, UserPageGql, ListUsersInput, UpdateUserInput
+  CreateUserInput, UserGql, UserPageGql, ListUsersInput, UpdateUserInput, UpdateMeInput
 } from '@graphql/user/user.gql.types';
 import { UserUsecaseModel } from '@usecases/user/user.usecase.model';
-import { CreateUserUsecaseDto } from '@usecases/user/user.usecase.dto';
+import { CreateUserUsecaseDto, UpdateMeUsecaseDto } from '@usecases/user/user.usecase.dto';
 import { ListUserUsecaseDto, UpdateUserUsecaseDto, UpdateUserPasswordUsecaseDto } from '@usecases/user/user.usecase.dto';
 
 @Resolver(() => UserGql)
@@ -119,5 +119,36 @@ export class UserResolver {
   ): Promise<boolean> {
     const dto: UpdateUserPasswordUsecaseDto = { id, password };
     return inversify.updateUserPasswordUsecase.execute(dto);
+  }
+
+  @Mutation(() => UserGql, { name: 'me_update' })
+  @Auth(Role.ADMIN, Role.COACH, Role.ATHLETE)
+  async me_update(
+    @Args('input') input: UpdateMeInput,
+    @Context('req') req: any,
+  ): Promise<UserGql> {
+    const dto: UpdateMeUsecaseDto = {
+      first_name: input.first_name,
+      last_name: input.last_name,
+      email: input.email,
+      phone: input.phone,
+      address: input.address ? { ...input.address } : undefined,
+      company: input.company ? {
+        name: input.company.name,
+        address: input.company.address ? { ...input.company.address } : undefined,
+      } : undefined,
+    };
+
+    const updated: UserUsecaseModel = await inversify.updateMeUsecase.execute(req?.user?.id, dto);
+    return mapUserUsecaseToGql(updated);
+  }
+
+  @Mutation(() => Boolean, { name: 'me_update_password' })
+  @Auth(Role.ADMIN, Role.COACH, Role.ATHLETE)
+  async me_update_password(
+    @Args('password') password: string,
+    @Context('req') req: any,
+  ): Promise<boolean> {
+    return inversify.updateMePasswordUsecase.execute(req?.user?.id, password);
   }
 }

@@ -65,7 +65,7 @@ export const router = createBrowserRouter([
         path: '/profile',
         lazy: async () => {
           const mod = await import('@src/pages/Profile');
-          return { Component: withTitle(mod.Profile, 'profile.title') };
+          return { Component: mod.Profile };
         },
       },
     ],
@@ -189,7 +189,7 @@ export const router = createBrowserRouter([
     element: <ProtectedLayout />,
     loader: requireAuthLoader,
     children: [
-      { 
+      {
         index: true,
         lazy: async () => {
           const mod = await import('@src/pages/nutrition/NutritionPlansCoach');

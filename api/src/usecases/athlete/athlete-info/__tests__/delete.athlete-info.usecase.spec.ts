@@ -6,6 +6,7 @@ import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { BddServiceMongo } from '@services/db/mongo/db.service.mongo';
 import { BddServiceAthleteInfoMongo } from '@services/db/mongo/repositories/athlete-info.repository';
+import { BddServiceCoachAthleteMongo } from '@services/db/mongo/repositories/coach-athlete.repository';
 import { DeleteAthleteInfoUsecase } from '@usecases/athlete/athlete-info/delete.athlete-info.usecase';
 import { AthleteInfoUsecaseModel } from '@usecases/athlete/athlete-info/athlete-info.usecase.model';
 
@@ -17,6 +18,7 @@ describe('DeleteAthleteInfoUsecase', () => {
     let inversifyMock: MockProxy<Inversify>;
     let bddServiceMock: MockProxy<BddServiceMongo>;
     let repositoryMock: MockProxy<BddServiceAthleteInfoMongo>;
+    let coachAthleteRepositoryMock: MockProxy<BddServiceCoachAthleteMongo>;
     let loggerMock: MockProxy<LoggerMock>;
     let usecase: DeleteAthleteInfoUsecase;
 
@@ -36,11 +38,16 @@ describe('DeleteAthleteInfoUsecase', () => {
         inversifyMock = mock<Inversify>();
         bddServiceMock = mock<BddServiceMongo>();
         repositoryMock = mock<BddServiceAthleteInfoMongo>();
+        coachAthleteRepositoryMock = mock<BddServiceCoachAthleteMongo>();
         loggerMock = mock<LoggerMock>();
 
         (bddServiceMock as unknown as { athleteInfo: BddServiceAthleteInfoMongo }).athleteInfo = repositoryMock;
+        (bddServiceMock as unknown as { coachAthlete: BddServiceCoachAthleteMongo }).coachAthlete = coachAthleteRepositoryMock;
         inversifyMock.bddService = bddServiceMock as unknown as BddServiceMongo;
         inversifyMock.loggerService = loggerMock;
+
+        // Default mock for coachAthlete
+        (coachAthleteRepositoryMock.list as any).mockResolvedValue({ items: [], total: 0, page: 1, limit: 10 });
 
         usecase = new DeleteAthleteInfoUsecase(inversifyMock);
     });
@@ -70,6 +77,7 @@ describe('DeleteAthleteInfoUsecase', () => {
     it('should soft delete athlete info when user is the creator', async () => {
         (repositoryMock.get as any).mockResolvedValue(existingInfo);
         (repositoryMock.delete as any).mockResolvedValue(true);
+        (coachAthleteRepositoryMock.list as any).mockResolvedValue({ items: [{ athleteId: 'athlete-1' }], total: 1 });
 
         const result = await usecase.execute({
             id: 'info-1',

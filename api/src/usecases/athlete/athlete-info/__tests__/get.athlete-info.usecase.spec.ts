@@ -6,6 +6,7 @@ import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { BddServiceMongo } from '@services/db/mongo/db.service.mongo';
 import { BddServiceAthleteInfoMongo } from '@services/db/mongo/repositories/athlete-info.repository';
+import { BddServiceCoachAthleteMongo } from '@services/db/mongo/repositories/coach-athlete.repository';
 import { GetAthleteInfoUsecase } from '@usecases/athlete/athlete-info/get.athlete-info.usecase';
 import { AthleteInfoUsecaseModel } from '@usecases/athlete/athlete-info/athlete-info.usecase.model';
 
@@ -17,6 +18,7 @@ describe('GetAthleteInfoUsecase', () => {
     let inversifyMock: MockProxy<Inversify>;
     let bddServiceMock: MockProxy<BddServiceMongo>;
     let repositoryMock: MockProxy<BddServiceAthleteInfoMongo>;
+    let coachAthleteRepositoryMock: MockProxy<BddServiceCoachAthleteMongo>;
     let loggerMock: MockProxy<LoggerMock>;
     let usecase: GetAthleteInfoUsecase;
 
@@ -36,11 +38,16 @@ describe('GetAthleteInfoUsecase', () => {
         inversifyMock = mock<Inversify>();
         bddServiceMock = mock<BddServiceMongo>();
         repositoryMock = mock<BddServiceAthleteInfoMongo>();
+        coachAthleteRepositoryMock = mock<BddServiceCoachAthleteMongo>();
         loggerMock = mock<LoggerMock>();
 
         (bddServiceMock as unknown as { athleteInfo: BddServiceAthleteInfoMongo }).athleteInfo = repositoryMock;
+        (bddServiceMock as unknown as { coachAthlete: BddServiceCoachAthleteMongo }).coachAthlete = coachAthleteRepositoryMock;
         inversifyMock.bddService = bddServiceMock as unknown as BddServiceMongo;
         inversifyMock.loggerService = loggerMock;
+
+        // Default mock for coachAthlete
+        (coachAthleteRepositoryMock.list as any).mockResolvedValue({ items: [], total: 0, page: 1, limit: 10 });
 
         usecase = new GetAthleteInfoUsecase(inversifyMock);
     });
@@ -67,6 +74,7 @@ describe('GetAthleteInfoUsecase', () => {
 
     it('should get athlete info when user is the creator', async () => {
         (repositoryMock.get as any).mockResolvedValue(athleteInfo);
+        (coachAthleteRepositoryMock.list as any).mockResolvedValue({ items: [{ athleteId: 'athlete-1' }], total: 1 });
 
         const result = await usecase.execute({
             id: 'info-1',

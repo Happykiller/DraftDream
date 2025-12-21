@@ -49,7 +49,7 @@ const LIST_Q = `
       items {
         id type first_name last_name email phone
         is_active createdBy
-        company { name }
+        company { name address { name city code country } }
         address { name city code country }
         createdAt updatedAt
       }
@@ -63,7 +63,7 @@ const CREATE_M = `
     user_create(input: $input) {
       id type first_name last_name email phone
       is_active createdBy
-      company { name }
+      company { name address { name city code country } }
       address { name city code country }
       createdAt updatedAt
     }
@@ -75,7 +75,7 @@ const UPDATE_M = `
     user_update(input: $input) {
       id type first_name last_name email phone
       is_active createdBy
-      company { name }
+      company { name address { name city code country } }
       address { name city code country }
       createdAt updatedAt
     }

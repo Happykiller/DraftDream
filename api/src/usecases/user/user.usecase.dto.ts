@@ -56,6 +56,15 @@ export interface UpdateUserUsecaseDto {
   createdBy?: string;
 }
 
+export interface UpdateMeUsecaseDto {
+  first_name?: string;
+  last_name?: string;
+  email?: string;
+  phone?: string;
+  address?: AddressDto;
+  company?: CompanyDto;
+}
+
 export interface UpdateUserPasswordUsecaseDto {
   id: string;
   password: string;

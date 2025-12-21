@@ -1,46 +1,43 @@
 // src/pages/Profile.tsx
 import * as React from 'react';
 import {
-  Alert,
   Box,
-  Chip,
+  Button,
   Container,
   FormControl,
   Grid,
   InputLabel,
   MenuItem,
-  Paper,
   Select,
   Stack,
   TextField,
   Typography,
+  Divider,
 } from '@mui/material';
 import type { SelectChangeEvent } from '@mui/material/Select';
 import { useTranslation } from 'react-i18next';
 
-import type { SessionStoreModel } from '@stores/session';
-import { session } from '@stores/session';
-
-const HIGHLIGHT_KEYS = ['identity', 'security', 'support'] as const;
+import { useUser } from '@hooks/useUser';
+import { useMeUpdate, type UpdateMeInput, type AddressInput, type CompanyInput } from '@hooks/useMeUpdate';
+import { PasswordDialog } from '@components/profile/PasswordDialog';
+import { GlassCard } from '@components/common/GlassCard';
 
 /**
- * Profile page presenting the session snapshot with clear identity details and live language switching.
+ * Profile page for commercial Use.
  */
 export function Profile(): React.JSX.Element {
   const { t, i18n } = useTranslation();
-  const snapshot = session();
+  const { user, reload } = useUser();
+  const { updateMe, updatePassword, loading: updating } = useMeUpdate();
 
+  const [formData, setFormData] = React.useState<UpdateMeInput>({});
+  const [passwordDialogOpen, setPasswordDialogOpen] = React.useState(false);
+
+  // --- Language Handling (Preserved) ---
   const normalizeLanguage = React.useCallback((value: string | undefined) => value?.split('-')[0] ?? 'fr', []);
-
-  const sessionData = React.useMemo<Omit<SessionStoreModel, 'reset'>>(() => {
-    const { reset, ...rest } = snapshot;
-
-    return rest;
-  }, [snapshot]);
 
   const languagesDictionary = React.useMemo(() => {
     const dictionary = t('languages', { returnObjects: true }) as Record<string, string> | string;
-
     return typeof dictionary === 'string' ? {} : dictionary;
   }, [t]);
 
@@ -53,273 +50,300 @@ export function Profile(): React.JSX.Element {
   const handleLanguageChange = React.useCallback(
     (event: SelectChangeEvent<string>) => {
       const nextLanguage = event.target.value;
-
-      if (!nextLanguage || nextLanguage === language) {
-        return;
-      }
-
+      if (!nextLanguage || nextLanguage === language) return;
       setLanguage(nextLanguage);
       void i18n.changeLanguage(nextLanguage);
     },
     [i18n, language],
   );
 
-  const hasSessionData = React.useMemo(
-    () => Object.values(sessionData).some((value) => value !== null && value !== undefined && value !== ''),
-    [sessionData],
-  );
-
-  const formattedSnapshot = React.useMemo(() => JSON.stringify(sessionData, null, 2), [sessionData]);
-
-  const maskedAccessToken = React.useMemo(() => {
-    if (!sessionData.access_token) {
-      return t('profile.summary.emptyValue');
-    }
-
-    if (sessionData.access_token.length <= 12) {
-      return sessionData.access_token;
-    }
-
-    return `${sessionData.access_token.slice(0, 6)}…${sessionData.access_token.slice(-4)}`;
-  }, [sessionData.access_token, t]);
-
-  const roleLabel = React.useMemo(() => {
-    if (!sessionData.role) {
-      return null;
-    }
-
-    return sessionData.role.replace(/_/g, ' ');
-  }, [sessionData.role]);
-
-  const fullName = React.useMemo(() => {
-    const nameParts = [sessionData.name_first, sessionData.name_last].filter(Boolean);
-
-    if (nameParts.length === 0) {
-      return null;
-    }
-
-    return nameParts.join(' ');
-  }, [sessionData.name_first, sessionData.name_last]);
-
-  const summaryFields = React.useMemo(
-    () => [
-      {
-        key: 'name',
-        label: t('profile.summary.fields.name'),
-        value: fullName ?? t('profile.summary.emptyValue'),
-      },
-      {
-        key: 'id',
-        label: t('profile.summary.fields.id'),
-        value: sessionData.id ?? t('profile.summary.emptyValue'),
-      },
-      {
-        key: 'role',
-        label: t('profile.summary.fields.role'),
-        value: roleLabel ?? t('profile.summary.emptyValue'),
-      },
-      {
-        key: 'access_token',
-        label: t('profile.summary.fields.accessToken'),
-        value: maskedAccessToken,
-      },
-    ],
-    [fullName, maskedAccessToken, roleLabel, sessionData.id, t],
-  );
-
-  const highlightItems = React.useMemo(
-    () =>
-      HIGHLIGHT_KEYS.map((highlightKey) => ({
-        key: highlightKey,
-        label: t(`profile.hero.highlights.${highlightKey}`),
-      })),
-    [t],
-  );
-
   const languageOptions = React.useMemo(() => Object.entries(languagesDictionary), [languagesDictionary]);
-
   const activeLanguage = React.useMemo(() => {
-    if (languageOptions.length === 0) {
-      return '';
-    }
-
-    return languageOptions.some(([value]) => value === language)
-      ? language
-      : languageOptions[0][0];
+    if (languageOptions.length === 0) return '';
+    return languageOptions.some(([value]) => value === language) ? language : languageOptions[0][0];
   }, [language, languageOptions]);
+  // -------------------------------------
+
+  // Sync user data to form
+  React.useEffect(() => {
+    if (user) {
+      setFormData({
+        first_name: user.first_name || '',
+        last_name: user.last_name || '',
+        email: user.email || '',
+        phone: user.phone || '',
+        address: user.address ? {
+          name: user.address.name || '',
+          city: user.address.city || '',
+          code: user.address.code || '',
+          country: user.address.country || '',
+        } : { name: '', city: '', code: '', country: '' },
+        company: user.company ? {
+          name: user.company.name || '',
+          address: user.company.address ? {
+            name: user.company.address.name || '',
+            city: user.company.address.city || '',
+            code: user.company.address.code || '',
+            country: user.company.address.country || '',
+          } : { name: '', city: '', code: '', country: '' }
+        } : { name: '', address: { name: '', city: '', code: '', country: '' } }
+      });
+    }
+  }, [user]);
+
+  const handleInputChange = (field: keyof UpdateMeInput, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleAddressChange = (field: keyof AddressInput, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      address: { ...(prev.address as AddressInput), [field]: value },
+    }));
+  };
+
+  const handleCompanyChange = (field: keyof CompanyInput | 'address', value: string | AddressInput) => {
+    if (field === 'address') {
+      // managed separately
+      return;
+    }
+    setFormData((prev) => ({
+      ...prev,
+      company: {
+        ...(prev.company || { name: '', address: null }),
+        [field]: value as string,
+      },
+    }));
+  };
+
+  const handleCompanyAddressChange = (field: keyof AddressInput, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      company: {
+        ...(prev.company as CompanyInput),
+        address: { ...(prev.company?.address as AddressInput), [field]: value }
+      }
+    }));
+  };
+
+  const handleSave = async () => {
+    await updateMe(formData);
+    void reload();
+  };
+
+  const handlePasswordSubmit = async (password: string) => {
+    await updatePassword(password);
+  };
 
   return (
     <Box
       sx={{
         minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'stretch',
-        background: (theme) =>
-          `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.background.default} 45%, ${theme.palette.primary.light}22 100%)`,
         py: { xs: 6, md: 10 },
+        background: (theme) => theme.palette.background.default,
       }}
     >
       <Container maxWidth="lg">
-        {/* General information */}
-        <Grid container spacing={{ xs: 6, md: 8 }} alignItems="stretch">
-          <Grid size={{ xs: 12, md: 5 }}>
-            <Stack spacing={4} sx={{ height: '100%' }}>
-              <Stack spacing={2}>
-                <Typography variant="h3" sx={{ fontWeight: 600 }}>
-                  {t('profile.hero.title')}
+        <Grid container spacing={4}>
+          <Grid size={{ xs: 12, md: 8 }}>
+            <Stack spacing={4}>
+              {/* Personal Information */}
+              <GlassCard>
+                <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+                  {t('profile.section.personal', 'Personal Information')}
                 </Typography>
-                <Typography variant="body1" color="text.secondary">
-                  {t('profile.hero.subtitle')}
-                </Typography>
-              </Stack>
-
-              <Stack component="ul" spacing={1.5} sx={{ listStyle: 'none', m: 0, p: 0 }}>
-                {highlightItems.map((item) => (
-                  <Stack
-                    key={item.key}
-                    component="li"
-                    direction="row"
-                    spacing={1.5}
-                    alignItems="center"
-                  >
-                    <Box
-                      sx={{
-                        width: 10,
-                        height: 10,
-                        borderRadius: '50%',
-                        backgroundColor: 'primary.main',
-                        flexShrink: 0,
-                      }}
+                <Divider sx={{ mb: 3 }} />
+                <Grid container spacing={3}>
+                  <Grid size={{ xs: 12, md: 6 }}>
+                    <TextField
+                      fullWidth
+                      label={t('profile.field.firstName', 'First Name')}
+                      value={formData.first_name || ''}
+                      onChange={(e) => handleInputChange('first_name', e.target.value)}
                     />
-                    <Typography variant="body2" color="text.primary">
-                      {item.label}
-                    </Typography>
-                  </Stack>
-                ))}
-              </Stack>
+                  </Grid>
+                  <Grid size={{ xs: 12, md: 6 }}>
+                    <TextField
+                      fullWidth
+                      label={t('profile.field.lastName', 'Last Name')}
+                      value={formData.last_name || ''}
+                      onChange={(e) => handleInputChange('last_name', e.target.value)}
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 12, md: 6 }}>
+                    <TextField
+                      fullWidth
+                      label={t('profile.field.email', 'Email')}
+                      value={formData.email || ''}
+                      onChange={(e) => handleInputChange('email', e.target.value)}
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 12, md: 6 }}>
+                    <TextField
+                      fullWidth
+                      label={t('profile.field.phone', 'Phone')}
+                      value={formData.phone || ''}
+                      onChange={(e) => handleInputChange('phone', e.target.value)}
+                    />
+                  </Grid>
 
-              <FormControl fullWidth disabled={languageOptions.length === 0}>
-                <InputLabel id="profile-language-select-label">{t('profile.language.label')}</InputLabel>
-                <Select
-                  labelId="profile-language-select-label"
-                  label={t('profile.language.label')}
-                  value={activeLanguage}
-                  onChange={handleLanguageChange}
+                  {/* Personal Address */}
+                  <Grid size={12}>
+                    <Typography variant="subtitle1" sx={{ mt: 2, fontWeight: 500 }}>
+                      {t('profile.section.address', 'Address')}
+                    </Typography>
+                  </Grid>
+                  <Grid size={12}>
+                    <TextField
+                      fullWidth
+                      label={t('profile.field.addressName', 'Street Address')}
+                      value={formData.address?.name || ''}
+                      onChange={(e) => handleAddressChange('name', e.target.value)}
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 6, md: 4 }}>
+                    <TextField
+                      fullWidth
+                      label={t('profile.field.city', 'City')}
+                      value={formData.address?.city || ''}
+                      onChange={(e) => handleAddressChange('city', e.target.value)}
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 6, md: 4 }}>
+                    <TextField
+                      fullWidth
+                      label={t('profile.field.code', 'Zip Code')}
+                      value={formData.address?.code || ''}
+                      onChange={(e) => handleAddressChange('code', e.target.value)}
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 12, md: 4 }}>
+                    <TextField
+                      fullWidth
+                      label={t('profile.field.country', 'Country')}
+                      value={formData.address?.country || ''}
+                      onChange={(e) => handleAddressChange('country', e.target.value)}
+                    />
+                  </Grid>
+                </Grid>
+              </GlassCard>
+
+              {/* Company Information */}
+              <GlassCard>
+                <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+                  {t('profile.section.company', 'Company')}
+                </Typography>
+                <Divider sx={{ mb: 3 }} />
+                <Grid container spacing={3}>
+                  <Grid size={12}>
+                    <TextField
+                      fullWidth
+                      label={t('profile.field.companyName', 'Company Name')}
+                      value={formData.company?.name || ''}
+                      onChange={(e) => handleCompanyChange('name', e.target.value)}
+                    />
+                  </Grid>
+                  {/* Company Address */}
+                  <Grid size={12}>
+                    <Typography variant="subtitle1" sx={{ mt: 1, fontWeight: 500 }}>
+                      {t('profile.section.companyAddress', 'Company Address')}
+                    </Typography>
+                  </Grid>
+                  <Grid size={12}>
+                    <TextField
+                      fullWidth
+                      label={t('profile.field.addressName', 'Street Address')}
+                      value={formData.company?.address?.name || ''}
+                      onChange={(e) => handleCompanyAddressChange('name', e.target.value)}
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 6, md: 4 }}>
+                    <TextField
+                      fullWidth
+                      label={t('profile.field.city', 'City')}
+                      value={formData.company?.address?.city || ''}
+                      onChange={(e) => handleCompanyAddressChange('city', e.target.value)}
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 6, md: 4 }}>
+                    <TextField
+                      fullWidth
+                      label={t('profile.field.code', 'Zip Code')}
+                      value={formData.company?.address?.code || ''}
+                      onChange={(e) => handleCompanyAddressChange('code', e.target.value)}
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 12, md: 4 }}>
+                    <TextField
+                      fullWidth
+                      label={t('profile.field.country', 'Country')}
+                      value={formData.company?.address?.country || ''}
+                      onChange={(e) => handleCompanyAddressChange('country', e.target.value)}
+                    />
+                  </Grid>
+                </Grid>
+              </GlassCard>
+
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+                <Button
+                  variant="contained"
+                  size="large"
+                  onClick={handleSave}
+                  disabled={updating}
                 >
-                  {languageOptions.map(([value, label]) => (
-                    <MenuItem key={value} value={value}>
-                      {label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <Typography variant="caption" color="text.secondary">
-                {t('profile.language.helper')}
-              </Typography>
+                  {t('common.actions.save', 'Save Changes')}
+                </Button>
+              </Box>
             </Stack>
           </Grid>
 
-          <Grid size={{ xs: 12, md: 7 }}>
-            <Stack spacing={3} sx={{ height: '100%' }}>
-              <Paper
-                elevation={0}
-                sx={{
-                  p: { xs: 3, md: 4 },
-                  borderRadius: 3,
-                  border: (theme) => `1px solid ${theme.palette.divider}`,
-                  backgroundColor: 'background.paper',
-                }}
-              >
-                <Stack spacing={2.5}>
-                  <Stack spacing={0.5}>
-                    <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                      {t('profile.summary.title')}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {t('profile.summary.description')}
-                    </Typography>
-                  </Stack>
-
-                  {hasSessionData ? (
-                    <Stack spacing={2}>
-                      {summaryFields.map((field) => (
-                        <Stack
-                          key={field.key}
-                          direction={{ xs: 'column', sm: 'row' }}
-                          spacing={{ xs: 0.5, sm: 2 }}
-                          alignItems={{ xs: 'flex-start', sm: 'center' }}
-                        >
-                          <Typography variant="subtitle2" color="text.secondary" sx={{ minWidth: 140 }}>
-                            {field.label}
-                          </Typography>
-                          {field.key === 'role' && roleLabel ? (
-                            <Chip
-                              label={roleLabel}
-                              size="small"
-                              color="primary"
-                              sx={{ textTransform: 'capitalize', fontWeight: 600 }}
-                            />
-                          ) : (
-                            <Typography variant="body1" color="text.primary">
-                              {field.value}
-                            </Typography>
-                          )}
-                        </Stack>
-                      ))}
-                    </Stack>
-                  ) : (
-                    <Alert severity="info" variant="outlined">
-                      {t('profile.summary.empty')}
-                    </Alert>
-                  )}
-                </Stack>
-              </Paper>
-
-              <Paper
-                elevation={0}
-                sx={{
-                  p: { xs: 3, md: 4 },
-                  borderRadius: 3,
-                  border: (theme) => `1px solid ${theme.palette.divider}`,
-                  backgroundColor: 'background.paper',
-                }}
-              >
-                <Stack spacing={2}>
-                  <Stack spacing={0.5}>
-                    <Typography variant="h6">{t('profile.snapshot.title')}</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {t('profile.snapshot.description')}
-                    </Typography>
-                  </Stack>
-
-                  {hasSessionData ? (
-                    <Box
-                      component="pre"
-                      sx={{
-                        m: 0,
-                        p: 2,
-                        borderRadius: 2,
-                        overflowX: 'auto',
-                        fontFamily: 'Roboto Mono, monospace',
-                        fontSize: '0.85rem',
-                        backgroundColor: (theme) => theme.palette.action.hover,
-                        whiteSpace: 'pre-wrap',
-                        wordBreak: 'break-word',
-                      }}
+          {/* Sidebar / Settings */}
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Stack spacing={3}>
+              <GlassCard>
+                <Typography variant="h6" gutterBottom>
+                  {t('profile.section.settings', 'Settings')}
+                </Typography>
+                <Stack spacing={3}>
+                  <FormControl fullWidth disabled={languageOptions.length === 0}>
+                    <InputLabel id="profile-language-select-label">{t('profile.language.label')}</InputLabel>
+                    <Select
+                      labelId="profile-language-select-label"
+                      label={t('profile.language.label')}
+                      value={activeLanguage}
+                      onChange={handleLanguageChange}
                     >
-                      {formattedSnapshot}
-                    </Box>
-                  ) : (
-                    <Typography variant="body2" color="text.secondary">
-                      {t('profile.snapshot.empty')}
-                    </Typography>
-                  )}
+                      {languageOptions.map(([value, label]) => (
+                        <MenuItem key={value} value={value}>
+                          {label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+
+                  <Divider />
+
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    fullWidth
+                    onClick={() => setPasswordDialogOpen(true)}
+                  >
+                    {t('profile.actions.changePassword', 'Change Password')}
+                  </Button>
                 </Stack>
-              </Paper>
+              </GlassCard>
             </Stack>
           </Grid>
         </Grid>
       </Container>
+
+      <PasswordDialog
+        open={passwordDialogOpen}
+        onClose={() => setPasswordDialogOpen(false)}
+        onSubmit={handlePasswordSubmit}
+        loading={updating}
+      />
     </Box>
   );
 }

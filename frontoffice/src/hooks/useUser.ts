@@ -6,6 +6,18 @@ import { useAsyncTask } from '@hooks/useAsyncTask';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 import { session } from '@stores/session';
 
+export type UserProfileAddress = {
+  name: string;
+  city: string;
+  code: string;
+  country: string;
+};
+
+export type UserProfileCompany = {
+  name: string;
+  address?: UserProfileAddress | null;
+};
+
 export type UserProfile = {
   id: string;
   type: string;
@@ -13,6 +25,8 @@ export type UserProfile = {
   last_name: string;
   email: string;
   phone?: string | null;
+  address?: UserProfileAddress | null;
+  company?: UserProfileCompany | null;
   createdAt?: string | null;
   updatedAt?: string | null;
 };
@@ -30,6 +44,21 @@ const ME_QUERY = `
       last_name
       email
       phone
+      address {
+        name
+        city
+        code
+        country
+      }
+      company {
+        name
+        address {
+          name
+          city
+          code
+          country
+        }
+      }
       createdAt
       updatedAt
     }
@@ -54,33 +83,28 @@ export function useUser(options?: { skip?: boolean }): UseUserResult {
   const [error, setError] = React.useState<string | null>(null);
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
   const { execute } = useAsyncTask();
-  const mountedRef = React.useRef(true);
-  const initRef = React.useRef(false);
 
-  const runIfMounted = React.useCallback(
-    (callback: () => void) => {
-      if (mountedRef.current) callback();
-    },
-    [],
-  );
-
-  const load = React.useCallback(async () => {
-    runIfMounted(() => {
-      setLoading(true);
-      setError(null);
-    });
+  const load = React.useCallback(async (): Promise<UserProfile | null> => {
+    setLoading(true);
+    setError(null);
     try {
-      const { data, errors } = await execute(() =>
+      const response = await execute(() =>
         gql.send<MePayload>({
           query: ME_QUERY,
           operationName: 'Me',
         }),
       );
-      if (errors?.length) throw new Error(errors[0].message);
+      const { data, errors } = response;
+
+      if (errors?.length) {
+        console.error('[useUser] GraphQL Errors:', errors);
+        throw new Error(errors[0].message);
+      }
 
       const profile = data?.me ?? null;
+
+      // Sync session store
       if (profile) {
-        // Avoid store churn when the profile payload matches the persisted session.
         session.setState((previous) => {
           const next = {
             id: profile.id,
@@ -103,39 +127,58 @@ export function useUser(options?: { skip?: boolean }): UseUserResult {
         });
       }
 
-      runIfMounted(() => {
-        setUser(profile);
-        setError(null);
-      });
+      return profile;
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : 'Failed to load user profile';
-      runIfMounted(() => {
-        setUser(null);
-        setError(message);
-      });
+      throw new Error(message);
     } finally {
-      runIfMounted(() => setLoading(false));
+      setLoading(false);
     }
-  }, [execute, gql, runIfMounted]);
+  }, [execute, gql]);
 
+  // Fetch on mount with proper cleanup
   React.useEffect(() => {
     if (skip) return;
-    if (initRef.current) return;
-    initRef.current = true;
-    void load();
+
+    let cancelled = false;
+
+    const fetchUser = async () => {
+      try {
+        const profile = await load();
+        if (!cancelled) {
+          setUser(profile);
+          setError(null);
+        }
+      } catch (e: unknown) {
+        if (!cancelled) {
+          setUser(null);
+          setError(e instanceof Error ? e.message : 'Failed to load user profile');
+        }
+      }
+    };
+
+    void fetchUser();
+
+    return () => {
+      cancelled = true;
+    };
   }, [skip, load]);
 
-  React.useEffect(
-    () => () => {
-      mountedRef.current = false;
-    },
-    [],
-  );
+  const reload = React.useCallback(async () => {
+    try {
+      const profile = await load();
+      setUser(profile);
+      setError(null);
+    } catch (e: unknown) {
+      setUser(null);
+      setError(e instanceof Error ? e.message : 'Failed to load user profile');
+    }
+  }, [load]);
 
   return {
     user,
     loading,
     error,
-    reload: load,
+    reload,
   };
 }

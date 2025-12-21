@@ -452,6 +452,12 @@
   },
   "users": {
     "title": "Utilisateurs",
+    "sections": {
+      "info": "Informations",
+      "general": "Général",
+      "address": "Adresse",
+      "company": "Entreprise"
+    },
     "table": {
       "search_placeholder": "Rechercher des utilisateurs...",
       "new_button": "Nouvel utilisateur"

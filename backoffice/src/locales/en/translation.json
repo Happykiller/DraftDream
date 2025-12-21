@@ -451,6 +451,12 @@
   },
   "users": {
     "title": "Users",
+    "sections": {
+      "info": "Information",
+      "general": "General",
+      "address": "Address",
+      "company": "Company"
+    },
     "table": {
       "search_placeholder": "Search users...",
       "new_button": "New User"
