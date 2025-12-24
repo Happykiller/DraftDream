@@ -41,9 +41,9 @@ export function ProgramsAthlete(): React.JSX.Element {
       listLoading
         ? undefined
         : t('programs-athlete.list.result_count', {
-            count: programs.length,
-            total: totalPrograms,
-          }),
+          count: programs.length,
+          total: totalPrograms,
+        }),
     [listLoading, programs.length, t, totalPrograms],
   );
 
@@ -63,7 +63,6 @@ export function ProgramsAthlete(): React.JSX.Element {
       {/* General information */}
       <Stack spacing={3}>
         <Stack spacing={1}>
-          <Typography variant="h5">{t('nutrition-athlete.subtitle')}</Typography>
           <Typography color="text.secondary">{t('nutrition-athlete.subtitle')}</Typography>
         </Stack>
 

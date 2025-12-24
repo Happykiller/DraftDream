@@ -6,6 +6,7 @@ import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { BddServiceMongo } from '@services/db/mongo/db.service.mongo';
 import { BddServiceAthleteInfoMongo } from '@services/db/mongo/repositories/athlete-info.repository';
+import { BddServiceCoachAthleteMongo } from '@services/db/mongo/repositories/coach-athlete.repository';
 import { ListAthleteInfosUsecase } from '@usecases/athlete/athlete-info/list.athlete-infos.usecase';
 import { AthleteInfoUsecaseModel } from '@usecases/athlete/athlete-info/athlete-info.usecase.model';
 
@@ -17,6 +18,7 @@ describe('ListAthleteInfosUsecase', () => {
     let inversifyMock: MockProxy<Inversify>;
     let bddServiceMock: MockProxy<BddServiceMongo>;
     let repositoryMock: MockProxy<BddServiceAthleteInfoMongo>;
+    let coachAthleteRepositoryMock: MockProxy<BddServiceCoachAthleteMongo>;
     let loggerMock: MockProxy<LoggerMock>;
     let usecase: ListAthleteInfosUsecase;
 
@@ -49,11 +51,16 @@ describe('ListAthleteInfosUsecase', () => {
         inversifyMock = mock<Inversify>();
         bddServiceMock = mock<BddServiceMongo>();
         repositoryMock = mock<BddServiceAthleteInfoMongo>();
+        coachAthleteRepositoryMock = mock<BddServiceCoachAthleteMongo>();
         loggerMock = mock<LoggerMock>();
 
         (bddServiceMock as unknown as { athleteInfo: BddServiceAthleteInfoMongo }).athleteInfo = repositoryMock;
+        (bddServiceMock as unknown as { coachAthlete: BddServiceCoachAthleteMongo }).coachAthlete = coachAthleteRepositoryMock;
         inversifyMock.bddService = bddServiceMock as unknown as BddServiceMongo;
         inversifyMock.loggerService = loggerMock;
+
+        // Default mock for coachAthlete
+        (coachAthleteRepositoryMock.list as any).mockResolvedValue({ items: [], total: 0, page: 1, limit: 10 });
 
         usecase = new ListAthleteInfosUsecase(inversifyMock);
     });
@@ -101,6 +108,12 @@ describe('ListAthleteInfosUsecase', () => {
             page: 1,
             limit: 10,
         });
+        (coachAthleteRepositoryMock.list as any).mockResolvedValue({
+            items: [{ athleteId: 'athlete-1' }, { athleteId: 'athlete-2' }],
+            total: 2,
+            page: 1,
+            limit: 10,
+        });
 
         const result = await usecase.execute({
             limit: 10,
@@ -109,8 +122,7 @@ describe('ListAthleteInfosUsecase', () => {
         });
 
         expect(repositoryMock.list).toHaveBeenCalledWith({
-            userId: undefined,
-            createdBy: 'coach-1',
+            userIds: ['athlete-1', 'athlete-2'],
             includeArchived: false,
             limit: 10,
             page: 1,

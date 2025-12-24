@@ -189,7 +189,23 @@
     }
   },
   "home": {
-    "title": "Tableau de bord"
+    "title": "Tableau de bord",
+    "widgets": {
+      "total_users": "Utilisateurs totaux",
+      "total_prospects": "Prospects totaux",
+      "prospects_todo": "A faire",
+      "view_prospects": "Voir prospects",
+      "programs": "Programmes",
+      "nutrition_plans": "Plans nutrition",
+      "sessions_private": "Séances (Privé)",
+      "exercises_library": "Bibliothèque d'exercices",
+      "day_meals_private": "Journées repas (Privé)",
+      "completion": "Complétion",
+      "system_health": "Santé du système"
+    },
+    "chart": {
+      "vs_last_month": "vs mois dernier"
+    }
   },
   "clients": {
     "title": "Clients"
@@ -436,6 +452,12 @@
   },
   "users": {
     "title": "Utilisateurs",
+    "sections": {
+      "info": "Informations",
+      "general": "Général",
+      "address": "Adresse",
+      "company": "Entreprise"
+    },
     "table": {
       "search_placeholder": "Rechercher des utilisateurs...",
       "new_button": "Nouvel utilisateur"
@@ -445,7 +467,8 @@
     },
     "dialog": {
       "create_title": "Nouvel utilisateur",
-      "edit_title": "Modifier l'utilisateur"
+      "edit_title": "Modifier l'utilisateur",
+      "change_password": "Changer le mot de passe"
     },
     "confirm": {
       "delete_title": "Supprimer l'utilisateur",
@@ -568,6 +591,27 @@
   },
   "athletes": {
     "title": "Athlètes",
+    "nav": {
+      "liaison": "Liaison",
+      "information": "Information"
+    },
+    "information": {
+      "title": "Informations athlètes",
+      "search_placeholder": "Rechercher des athlètes...",
+      "dialog": {
+        "edit_title": "Modifier les informations de l'athlète"
+      },
+      "table": {
+        "columns": {
+          "email": "Email",
+          "phone": "Téléphone",
+          "level": "Niveau",
+          "company": "Entreprise",
+          "address": "Localisation",
+          "updated_at": "Mis à jour le"
+        }
+      }
+    },
     "table": {
       "create": "Nouvelle liaison",
       "no_note": "Aucune note",

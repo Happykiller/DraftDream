@@ -112,27 +112,47 @@ The user management feature allows administrators to create, read, and update us
 
 ---
 
-## Scenario: Update an existing user
+**And** other fields should remain unchanged
 
-**Given** a user exists with ID `user-42`
-**And** the user is a coach with email `sam.stone@example.com`
+---
 
-**When** an admin updates the user's information:
+## Scenario: User updates their own profile (Self-Update)
+
+**Given** a user is authenticated with ID `user-77`
+
+**When** the user updates their own information using `me_update`:
 ```json
 {
-  "id": "user-42",
-  "first_name": "Samuel",
-  "phone": "+33607080910"
+  "first_name": "Johnny",
+  "phone": "+33612345678"
 }
 ```
 
 **Then** the system should:
-1. Retrieve the existing user by ID
-2. Update only the provided fields
-3. Update the `updatedAt` timestamp
-4. Return the updated user
+1. Use the ID from the session context (`user-77`)
+2. Update only the allowed profile fields (`first_name`, `last_name`, `email`, `phone`, `address`, `company`)
+3. Prevent updating protected fields like `type` or `is_active`
+4. Update the `updatedAt` timestamp
+5. Return the updated user
 
-**And** other fields should remain unchanged
+---
+
+## Scenario: User updates their own password
+
+**Given** a user is authenticated with ID `user-77`
+
+**When** the user updates their password using `me_update_password`:
+```json
+{
+  "password": "NewSecurePassword!2025"
+}
+```
+
+**Then** the system should:
+1. Use the ID from the session context (`user-77`)
+2. Hash the new password using Argon2
+3. Update the password in the database
+4. Return `true` on success
 
 ---
 
@@ -221,9 +241,13 @@ includePassword: true
 - **Filters**: By type, active status, created date range
 
 ### Update User
-- **Use Case**: `UpdateUserUsecase`  
-- **Authorization**: ADMIN (any user), COACH/ATHLETE (own profile, limited fields)
-- **Validation**: Email uniqueness if changed
+- **Use Case**: `UpdateUserUsecase` (Admin), `UpdateMeUsecase` (Self)
+- **Authorization**: ADMIN (any user), COACH/ATHLETE (own profile via `me_update`)
+- **Validation**: Email uniqueness if changed, restricted fields for non-admins
+
+### Update Password
+- **Use Case**: `UpdateUserPasswordUsecase` (Admin), `UpdateMePasswordUsecase` (Self)
+- **Authorization**: ADMIN (any user), COACH/ATHLETE (own profile via `me_update_password`)
 
 ---
 
@@ -279,6 +303,27 @@ mutation UserUpdate($id: ID!, $input: UpdateUserInput!) {
     last_name
     updatedAt
   }
+}
+```
+
+### Self-Update Mutation
+```graphql
+mutation MeUpdate($input: UpdateMeInput!) {
+  me_update(input: $input) {
+    id
+    first_name
+    last_name
+    email
+    phone
+    updatedAt
+  }
+}
+```
+
+### Self-Update Password Mutation
+```graphql
+mutation MeUpdatePassword($password: String!) {
+  me_update_password(password: $password)
 }
 ```
 

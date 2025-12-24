@@ -1,6 +1,38 @@
 {
   "releases": [
     {
+      "version": "0.10.0",
+      "title": "Autonomie Utilisateur & Self-Service",
+      "date": "2025-12-21",
+      "global": [
+        "Autonomie complète pour les utilisateurs : mise à jour du profil et du mot de passe en self-service.",
+        "Nouveau design 'Glass' moderne et épuré pour une meilleure lisibilité.",
+        "Espace 'Mes Informations' dédié aux athlètes pour gérer santé, objectifs et préférences.",
+        "Constructeur nutritionnel enrichi avec résumés par jour et moyennes globales."
+      ],
+      "notes": "La version 0.10.0 marque un tournant vers plus d'autonomie pour vos utilisateurs. Nous introduisons des fonctionnalités majeures de 'Self-Service' permettant aux athlètes et aux coachs de gérer eux-mêmes leurs informations personnelles et leur sécurité. En parallèle, l'expérience visuelle a été modernisée avec une nouvelle interface épurée.",
+      "projects": {
+        "/api": [
+          "Support des mises à jour de profil et de mot de passe utilisateur (self-service).",
+          "Nouvelles fonctionnalités de suppression (soft/hard delete) des utilisateurs.",
+          "Mise à jour des dépendances cœurs (Mongoose, etc.) et nettoyage des champs obsolètes."
+        ],
+        "/backoffice": [
+          "Outils d'administration pour la réinitialisation de mot de passe et suppression de compte.",
+          "Nouveau design des cartes de login et widgets avec effet Glassmorphism."
+        ],
+        "/frontoffice": [
+          "Pages de profil éditables pour tous les utilisateurs.",
+          "Nouvelle navigation avec sous-menus dépliables (ex: section Athlètes).",
+          "Constructeur nutritionnel intelligent avec calculs en temps réel par jour.",
+          "Boutons d'action explicites remplaçant les icônes seules."
+        ],
+        "/showcase": [
+          "Mise à jour de la note de version."
+        ]
+      }
+    },
+    {
       "version": "0.9.0",
       "title": "Conversion Prospect & Suivi Athlète",
       "date": "2025-12-14",

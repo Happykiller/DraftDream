@@ -1,11 +1,12 @@
+import { Box, CircularProgress } from '@mui/material';
+import i18n from 'i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
+import Backend from 'i18next-http-backend';
 import {
   ReactNode,
   Suspense
 } from 'react';
-import i18n from 'i18next';
 import { initReactI18next, useTranslation } from 'react-i18next';
-import Backend from 'i18next-http-backend';
-import LanguageDetector from 'i18next-browser-languagedetector';
 
 export type Language = 'en' | 'fr';
 
@@ -50,7 +51,26 @@ export const supportedLanguages: readonly Language[] = ['en', 'fr'];
 
 export const I18nProvider = ({ children }: I18nProviderProps): ReactNode => {
   return (
-    <Suspense fallback="Loading...">
+    <Suspense
+      fallback={
+        <Box
+          sx={{
+            alignItems: 'center',
+            bgcolor: 'background.default',
+            display: 'flex',
+            height: '100vh',
+            justifyContent: 'center',
+            left: 0,
+            position: 'fixed',
+            top: 0,
+            width: '100vw',
+            zIndex: 9999
+          }}
+        >
+          <CircularProgress size={60} thickness={4} />
+        </Box>
+      }
+    >
       {children}
     </Suspense>
   );
@@ -69,7 +89,7 @@ export const useI18n = (): I18nContextValue => {
 
   // Wrapper to match the existing TranslateFunction signature
   const translate: TranslateFunction = (key, variables) => {
-    return t(key, variables as any) as string;
+    return t(key, variables as Record<string, unknown>) as string;
   };
 
   return {

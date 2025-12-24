@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { session } from '@stores/session';
 import { isSelectedPath } from '@layouts/navMatch';
 import { Sidebar } from '@layouts/components/Sidebar';
-import { useNavItems } from '@layouts/hooks/useNavItems';
+import { useNavItems, type NavItem } from '@layouts/hooks/useNavItems';
 import { DRAWER_WIDTH, RAIL_WIDTH } from '@layouts/tokens';
 import { LayoutAppBar } from '@layouts/components/LayoutAppBar';
 import { useMobileDrawer } from '@layouts/hooks/useMobileDrawer';
@@ -25,11 +25,16 @@ export function ProtectedLayout(): React.JSX.Element {
   const role = snap.role ?? 'guest';
 
   const items = useNavItems(role);
+  const flatItems = React.useMemo<NavItem[]>(() => {
+    const expand = (entries: NavItem[]): NavItem[] =>
+      entries.flatMap((item) => [item, ...(item.children ? expand(item.children) : [])]);
+    return expand(items);
+  }, [items]);
   const { open: mobileOpen, toggle, close } = useMobileDrawer();
 
   const current = React.useMemo(
-    () => items.find((item) => isSelectedPath(location.pathname, item.path)),
-    [items, location.pathname]
+    () => flatItems.find((item) => isSelectedPath(location.pathname, item.path)),
+    [flatItems, location.pathname]
   );
   const defaultTitle = t('home.title');
   const profileTitle = t('profile.title');

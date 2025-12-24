@@ -400,11 +400,90 @@
       "emptyValue": "Non renseigné",
       "empty": "Aucune donnée de session pour le moment. Connectez-vous pour afficher votre profil."
     },
+    "section": {
+      "personal": "Informations personnelles",
+      "address": "Adresse personnelle",
+      "company": "Entreprise",
+      "companyAddress": "Adresse de l'entreprise",
+      "settings": "Paramètres"
+    },
+    "field": {
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "email": "Email",
+      "phone": "Téléphone",
+      "addressName": "Adresse (Rue, Numéro...)",
+      "city": "Ville",
+      "code": "Code postal",
+      "country": "Pays",
+      "companyName": "Nom de l'entreprise"
+    },
+    "actions": {
+      "changePassword": "Changer le mot de passe"
+    },
+    "password_dialog": {
+      "title": "Changer le mot de passe",
+      "new_password": "Nouveau mot de passe",
+      "confirm_password": "Confirmer le mot de passe",
+      "error_mismatch": "Les mots de passe ne correspondent pas."
+    },
+    "notifications": {
+      "update_success": "Profil mis à jour avec succès.",
+      "password_update_success": "Mot de passe mis à jour avec succès."
+    },
+    "information": {
+      "title": "Mes informations",
+      "subtitle": "Mettez à jour vos coordonnées et vos préférences d'onboarding.",
+      "fields": {
+        "email": "Email",
+        "phone": "Téléphone",
+        "level": "Niveau",
+        "objectives": "Objectifs",
+        "activity_preferences": "Préférences d'activité",
+        "medical_conditions": "Informations médicales",
+        "allergies": "Allergies"
+      },
+      "placeholders": {
+        "select": "Sélectionner"
+      },
+      "actions": {
+        "save": "Enregistrer les modifications"
+      },
+      "notifications": {
+        "update_success": "Vos informations ont été mises à jour.",
+        "update_failure": "Impossible de mettre à jour vos informations."
+      },
+      "empty": "Aucune information d'athlète n'est disponible."
+    },
     "snapshot": {
       "title": "Payload brut de session",
       "description": "Export JSON complet des valeurs stockées dans src/stores/session.ts.",
       "empty": "Aucune donnée de session disponible"
     }
+  },
+  "athlete_information": {
+    "title": "Informations",
+    "subtitle": "Mettez à jour vos coordonnées et vos préférences d'onboarding.",
+    "fields": {
+      "email": "Email",
+      "phone": "Téléphone",
+      "level": "Niveau",
+      "objectives": "Objectifs",
+      "activity_preferences": "Préférences d'activité",
+      "medical_conditions": "Informations médicales",
+      "allergies": "Allergies"
+    },
+    "placeholders": {
+      "select": "Sélectionner"
+    },
+    "actions": {
+      "save": "Enregistrer les modifications"
+    },
+    "notifications": {
+      "update_success": "Vos informations ont été mises à jour.",
+      "update_failure": "Impossible de mettre à jour vos informations."
+    },
+    "empty": "Aucune information d'athlète n'est disponible."
   },
   "programs-coatch": {
     "title": "Programmes",
@@ -858,6 +937,7 @@
         "total_meals_one": "{{count}} repas au total",
         "total_meals_other": "{{count}} repas au total",
         "nutrition_title": "Résumé nutritionnel",
+        "day_title": "Résumé du jour",
         "average_title": "Moyenne / jour",
         "calories_label": "Calories",
         "calories_unit": "kcal",
@@ -1128,6 +1208,17 @@
         "meal_count": "({{count}} repas)",
         "meal_count_one": "({{count}} repas)",
         "meal_count_other": "({{count}} repas)"
+      },
+      "day_summary": {
+        "title": "Résumé du jour",
+        "calories_label": "Calories",
+        "calories_value": "{{value}} kcal",
+        "protein_label": "Protéines",
+        "protein_value": "{{value}} g",
+        "carbs_label": "Glucides",
+        "carbs_value": "{{value}} g",
+        "fats_label": "Lipides",
+        "fats_value": "{{value}} g"
       },
       "meal_card": {
         "calories": "{{value}} kcal",

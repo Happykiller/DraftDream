@@ -49,7 +49,7 @@ const LIST_Q = `
       items {
         id type first_name last_name email phone
         is_active createdBy
-        company { name }
+        company { name address { name city code country } }
         address { name city code country }
         createdAt updatedAt
       }
@@ -63,7 +63,7 @@ const CREATE_M = `
     user_create(input: $input) {
       id type first_name last_name email phone
       is_active createdBy
-      company { name }
+      company { name address { name city code country } }
       address { name city code country }
       createdAt updatedAt
     }
@@ -75,7 +75,7 @@ const UPDATE_M = `
     user_update(input: $input) {
       id type first_name last_name email phone
       is_active createdBy
-      company { name }
+      company { name address { name city code country } }
       address { name city code country }
       createdAt updatedAt
     }
@@ -85,6 +85,12 @@ const UPDATE_M = `
 const DELETE_M = `
   mutation DeleteUser($id: ID!) {
     user_delete(id: $id)
+  }
+`;
+
+const UPDATE_PASSWORD_M = `
+  mutation UpdateUserPassword($id: ID!, $password: String!) {
+    user_update_password(id: $id, password: $password)
   }
 `;
 
@@ -207,6 +213,30 @@ export function useUsers({ page, limit, q, type }: UseUsersParams) {
     [execute, gql, flashError, flashSuccess, load, page, limit, q, type]
   );
 
+  const updatePassword = React.useCallback(
+    async (id: string, password: string, confirm_password?: string) => {
+      if (confirm_password && password !== confirm_password) {
+        flashError('Passwords do not match');
+        return;
+      }
+      try {
+        const { errors } = await execute(() =>
+          gql.send<{ user_update_password: boolean }>({
+            query: UPDATE_PASSWORD_M,
+            variables: { id, password },
+            operationName: 'UpdateUserPassword',
+          }),
+        );
+        if (errors?.length) throw new Error(errors[0].message);
+        flashSuccess('Password updated');
+      } catch (e: any) {
+        flashError(e?.message ?? 'Password update failed');
+        throw e;
+      }
+    },
+    [execute, gql, flashError, flashSuccess]
+  );
+
   const remove = React.useCallback(
     async (id: string) => {
       try {
@@ -228,5 +258,5 @@ export function useUsers({ page, limit, q, type }: UseUsersParams) {
     [execute, gql, flashError, flashSuccess, load, page, limit, q, type]
   );
 
-  return { items, total, loading, create, update, remove, reload: () => load({ page, limit, q, type }) };
+  return { items, total, loading, create, update, updatePassword, remove, reload: () => load({ page, limit, q, type }) };
 }

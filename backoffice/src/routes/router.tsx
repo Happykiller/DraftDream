@@ -70,9 +70,20 @@ export const router = createBrowserRouter([
       },
       {
         path: '/athletes',
+        loader: () => redirect('/athletes/liaison'),
+      },
+      {
+        path: '/athletes/liaison',
         lazy: async () => {
           const mod = await import('@src/pages/Athletes');
           return { Component: mod.Athletes };
+        },
+      },
+      {
+        path: '/athletes/information',
+        lazy: async () => {
+          const mod = await import('@src/pages/AthleteInformation');
+          return { Component: mod.AthleteInformation };
         },
       },
       {

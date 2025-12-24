@@ -9,10 +9,10 @@ import {
   Button,
   Stack,
   Typography,
-  Paper,
   useMediaQuery,
   Container,
 } from '@mui/material';
+import { GlassCard } from '@components/common/GlassCard';
 import {
   Done,
   Visibility,
@@ -207,15 +207,13 @@ export function Login(): React.JSX.Element {
           </Container>
         ) : (
           // DESKTOP/TABLET LAYOUT (card + gradient bg)
-          <Paper
-            elevation={8}
+          <GlassCard
             sx={{
               width: '100%',
               maxWidth: 400,
               borderRadius: 2.5,
               px: { sm: 4 },
               py: { sm: 4 },
-              boxShadow: '0 10px 30px rgba(0,0,0,0.24), 0 6px 10px rgba(0,0,0,0.18)',
             }}
             role="dialog"
             aria-labelledby="login-title"
@@ -249,7 +247,7 @@ export function Login(): React.JSX.Element {
               ) : null}
               {FormContent}
             </Box>
-          </Paper>
+          </GlassCard>
         )}
       </Box>
 

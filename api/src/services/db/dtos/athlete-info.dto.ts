@@ -17,6 +17,7 @@ export interface GetAthleteInfoDto { id: string }
 
 export interface ListAthleteInfosDto {
   userId?: string;
+  userIds?: string[];
   createdBy?: string;
   includeArchived?: boolean;
   limit?: number;

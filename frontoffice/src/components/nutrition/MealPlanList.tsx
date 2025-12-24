@@ -4,7 +4,6 @@ import {
   CircularProgress,
   Grid,
   InputAdornment,
-  Paper,
   Stack,
   TextField,
   Typography,
@@ -13,6 +12,7 @@ import { alpha, useTheme } from '@mui/material/styles';
 
 import type { MealPlan } from '@hooks/nutrition/useMealPlans';
 
+import { GlassCard } from '../common/GlassCard';
 import { MealPlanCard, type MealPlanActionKey } from './MealPlanCard';
 
 export interface MealPlanListProps {
@@ -151,7 +151,10 @@ export const MealPlanList = React.memo(function MealPlanList({
                       </InputAdornment>
                     ) : undefined,
                 }}
-                sx={{ bgcolor: 'common.white' }}
+                sx={{
+                  bgcolor: theme => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'common.white',
+                  borderRadius: 1
+                }}
               />
             </Stack>
           ) : null}
@@ -195,28 +198,27 @@ export const MealPlanList = React.memo(function MealPlanList({
       ) : null}
 
       {showPlaceholder ? (
-        <Paper
+        <GlassCard
           sx={{
-            borderRadius: 3,
-            p: { xs: 3, md: 5 },
+            p: { xs: 4, md: 6 },
             textAlign: 'center',
-            bgcolor: alpha(theme.palette.primary.light, 0.08),
+            bgcolor: alpha(theme.palette.primary.light, 0.04),
           }}
         >
-          <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+          <Typography variant="h6" sx={{ fontWeight: 700, mb: 1.5 }}>
             {placeholderTitle}
           </Typography>
           {placeholderSubtitle ? (
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color="text.secondary" fontWeight={500}>
               {placeholderSubtitle}
             </Typography>
           ) : null}
           {placeholderHelper ? (
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5, fontStyle: 'italic' }}>
               {placeholderHelper}
             </Typography>
           ) : null}
-        </Paper>
+        </GlassCard>
       ) : null}
     </Stack>
   );

@@ -20,6 +20,9 @@ import { UpdateUserUsecase } from '@usecases/user/update.user.usecase';
 import { CreateUserUsecase } from '@usecases/user/create.user.usecase';
 import { DeleteUserUsecase } from '@usecases/user/delete.user.usecase';
 import { HardDeleteUserUsecase } from '@usecases/user/hard-delete.user.usecase';
+import { UpdateUserPasswordUsecase } from '@usecases/user/update-password.user.usecase';
+import { UpdateMeUsecase } from '@usecases/user/update-me.user.usecase';
+import { UpdateMePasswordUsecase } from '@usecases/user/update-me-password.user.usecase';
 import { GetMuscleUsecase } from '@src/usecases/sport/muscle/get.muscle.usecase';
 import { GetSessionUsecase } from '@src/usecases/sport/session/get.session.usecase';
 import { ListMusclesUsecase } from '@src/usecases/sport/muscle/list.muscles.usecase';
@@ -129,6 +132,9 @@ export class Inversify {
   createUserUsecase: CreateUserUsecase;
   deleteUserUsecase: DeleteUserUsecase;
   hardDeleteUserUsecase: HardDeleteUserUsecase;
+  updateUserPasswordUsecase: UpdateUserPasswordUsecase;
+  updateMeUsecase: UpdateMeUsecase;
+  updateMePasswordUsecase: UpdateMePasswordUsecase;
   getSessionUsecase: GetSessionUsecase;
   getProgramUsecase: GetProgramUsecase;
   getCategoryUsecase: GetCategoryUsecase;
@@ -248,6 +254,9 @@ export class Inversify {
     this.updateUserUsecase = new UpdateUserUsecase(this);
     this.deleteUserUsecase = new DeleteUserUsecase(this);
     this.hardDeleteUserUsecase = new HardDeleteUserUsecase(this);
+    this.updateUserPasswordUsecase = new UpdateUserPasswordUsecase(this);
+    this.updateMeUsecase = new UpdateMeUsecase(this);
+    this.updateMePasswordUsecase = new UpdateMePasswordUsecase(this);
     // usecases category
     this.getCategoryUsecase = new GetCategoryUsecase(this);
     this.createCategoryUsecase = new CreateCategoryUsecase(this);

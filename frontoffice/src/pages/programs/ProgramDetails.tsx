@@ -24,6 +24,7 @@ import { UserType } from '@src/commons/enums';
 import { session } from '@stores/session';
 
 import type { ProgramDetailsLoaderData } from './ProgramDetails.loader';
+import { TextWithTooltip } from '@src/components/common/TextWithTooltip';
 
 type ProgramDetailsCopy = {
   back_to_list: string;
@@ -78,12 +79,9 @@ export function ProgramDetails(): React.JSX.Element {
     }
 
     const athleteLabel = getProgramAthleteLabel(program);
-    const createdOn = formatProgramDate(program.createdAt, i18n.language);
 
-    return athleteLabel
-      ? t('programs-coatch.view.dialog.subtitle_with_athlete', { athlete: athleteLabel, date: createdOn })
-      : t('programs-coatch.view.dialog.subtitle_without_athlete', { date: createdOn });
-  }, [i18n.language, program, t]);
+    return athleteLabel || '';
+  }, [program]);
 
   const programUpdatedOn = React.useMemo(() => {
     if (!program) {
@@ -144,53 +142,49 @@ export function ProgramDetails(): React.JSX.Element {
           }}
         >
           {/* General information */}
-          <Box
-            component="header"
+          <Stack
+            direction="row"
+            spacing={2}
+            alignItems="center"
             sx={{
               backgroundColor: alpha(theme.palette.primary.main, 0.1),
               px: { xs: 2, sm: 3, md: 4 },
               py: { xs: 2, sm: 2.5 },
-            }}
-          >
-            <Stack direction="row" spacing={2} alignItems="center">
-              <Box
-                aria-hidden
+            }}>
+            <Box
+              aria-hidden
+              sx={{
+                width: 40,
+                height: 40,
+                borderRadius: 2,
+                bgcolor: 'primary.main',
+                color: 'primary.contrastText',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                boxShadow: '0 10px 20px rgba(25, 118, 210, 0.24)',
+              }}
+            >
+              <Visibility fontSize="medium" />
+            </Box>
+            <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+              <TextWithTooltip
+                tooltipTitle={program ? program.label : detailCopy.generic_title}
+                variant="h6"
                 sx={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 2,
-                  bgcolor: 'primary.main',
-                  color: 'primary.contrastText',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                  boxShadow: '0 10px 20px rgba(25, 118, 210, 0.24)',
+                  fontWeight: 700
                 }}
-              >
-                <Visibility fontSize="medium" />
-              </Box>
-              <Stack spacing={0.5} sx={{ minWidth: 0 }}>
-                <Typography
-                  variant="h5"
-                  sx={{ fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis' }}
-                  noWrap
-                >
-                  {program ? program.label : detailCopy.generic_title}
-                </Typography>
-                {programSubtitle ? (
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    noWrap
-                    sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
-                  >
-                    {programSubtitle}
-                  </Typography>
-                ) : null}
-              </Stack>
-            </Stack>
-          </Box>
+              />
+              {programSubtitle ? (
+                <TextWithTooltip
+                  tooltipTitle={programSubtitle}
+                  variant="body2"
+                  color="text.secondary"
+                />
+              ) : null}
+            </Box>
+          </Stack>
 
           <Divider />
 

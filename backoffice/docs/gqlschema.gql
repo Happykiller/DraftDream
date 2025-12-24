@@ -800,6 +800,11 @@ type Mutation {
   auth(input: AuthInput!): SessionGql!
   user_create(input: CreateUserInput!): UserGql!
   user_update(input: UpdateUserInput!): UserGql!
+  user_delete(id: ID!): Boolean!
+  user_hard_delete(id: ID!): Boolean!
+  user_update_password(id: ID!, password: String!): Boolean!
+  me_update(input: UpdateMeInput!): UserGql!
+  me_update_password(password: String!): Boolean!
   muscle_create(input: CreateMuscleInput!): MuscleGql
   muscle_update(input: UpdateMuscleInput!): MuscleGql
   muscle_delete(id: ID!): Boolean!
@@ -912,6 +917,15 @@ input UpdateUserInput {
   address: AddressInput
   company: CompanyInput
   is_active: Boolean
+}
+
+input UpdateMeInput {
+  first_name: String
+  last_name: String
+  email: String
+  phone: String
+  address: AddressInput
+  company: CompanyInput
 }
 
 input CreateMuscleInput {

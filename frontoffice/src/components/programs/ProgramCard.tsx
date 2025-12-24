@@ -4,8 +4,8 @@ import {
   Box,
   Chip,
   Divider,
+  Grid,
   IconButton,
-  Paper,
   Stack,
   Tooltip,
   Typography,
@@ -29,10 +29,12 @@ import type { Program } from '@src/hooks/programs/usePrograms';
 import { UserType } from '@src/commons/enums';
 import { session } from '@stores/session';
 
+import { GlassCard } from '../common/GlassCard';
 import { ProgramCloneDialog } from './ProgramCloneDialog';
 import { ProgramDeleteDialog } from './ProgramDeleteDialog';
 import { ProgramViewDialog } from './ProgramViewDialog';
 import { deriveProgramDifficulty, formatProgramDate } from './programFormatting';
+import { TextWithTooltip } from '../common/TextWithTooltip';
 
 interface ProgramCardProps {
   program: Program;
@@ -139,7 +141,7 @@ export const ProgramCard = React.memo(function ProgramCard({
       await onDelete(program.id);
       setIsDeleteDialogOpen(false);
     } catch (_error) {
-      // console.log('[ProgramCard] Failed to delete program', error);
+      console.log('[ProgramCard] Failed to delete program', _error);
     } finally {
       setIsDeleteSubmitting(false);
     }
@@ -255,13 +257,12 @@ export const ProgramCard = React.memo(function ProgramCard({
 
   return (
     <>
-      <Paper
-        elevation={0}
-        variant="dashboardSection"
+      <GlassCard
         sx={{
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
+          p: 2.5,
         }}
       >
         <Box
@@ -283,32 +284,33 @@ export const ProgramCard = React.memo(function ProgramCard({
                   left: 0,
                   right: 0,
                   height: theme.spacing(7),
-                  backgroundImage: `linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, ${theme.palette.background.paper} 75%)`,
+                  backgroundImage: theme.palette.mode === 'dark'
+                    ? `linear-gradient(180deg, rgba(30, 30, 30, 0) 0%, rgba(30, 30, 30, 0.9) 75%)`
+                    : `linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 75%)`,
                 },
               }
               : {}),
           })}
         >
           {/* Header */}
-          <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={2}>
+          <Grid container>
             {/* Program summary */}
-            <Stack flex={1} minWidth={0}>
-              <Typography variant="h6" sx={{ fontWeight: 600 }} noWrap>
-                {program.label}
-              </Typography>
-              <Typography
+            <Grid size={10}>
+              <TextWithTooltip
+                tooltipTitle={program.label}
+                variant="h6"
+                sx={{
+                  fontWeight: 700
+                }}
+              />
+              <TextWithTooltip
+                tooltipTitle={program.description || t('programs-coatch.list.no_description')}
                 variant="body2"
                 color="text.secondary"
-                sx={{
-                  minHeight: 40,
-                  mt: 0.75,
-                }}
-              >
-                {program.description || t('programs-coatch.list.no_description')}
-              </Typography>
+              />
               {(difficulty || athleteLabel) && (
                 <Stack
-                  spacing={0.5}
+                  spacing={0.75}
                   alignItems="flex-start"
                   sx={{ mt: difficulty ? 0.75 : 0 }}
                 >
@@ -318,9 +320,10 @@ export const ProgramCard = React.memo(function ProgramCard({
                         label={t(`programs-coatch.list.difficulty.${difficulty}`)}
                         size="small"
                         sx={(theme) => ({
-                          bgcolor: alpha(theme.palette.success.main, 0.16),
+                          bgcolor: alpha(theme.palette.success.main, 0.1),
                           color: theme.palette.success.main,
-                          fontWeight: 600,
+                          fontWeight: 700,
+                          border: `1px solid ${alpha(theme.palette.success.main, 0.2)}`,
                         })}
                       />
                     </Stack>
@@ -328,16 +331,16 @@ export const ProgramCard = React.memo(function ProgramCard({
                   {athleteLabel && (
                     <Stack direction="row" spacing={0.5} alignItems="center">
                       <PersonOutline fontSize="small" color="action" />
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant="caption" color="text.secondary" fontWeight={500}>
                         {athleteLabel}
                       </Typography>
                     </Stack>
                   )}
                 </Stack>
               )}
-            </Stack>
+            </Grid>
             {/* Actions */}
-            <Stack direction="row" spacing={0.5}>
+            <Grid size={2} display="flex" justifyContent="flex-end" alignItems="flex-start">
               {availableActions.map(({ key, color, Icon }) => {
                 const label = t(`programs-coatch.list.actions.${key}`);
                 const isDisabled =
@@ -359,11 +362,8 @@ export const ProgramCard = React.memo(function ProgramCard({
                       disabled={Boolean(isDisabled)}
                       sx={(theme) => ({
                         color: theme.palette.text.secondary,
-                        transition: theme.transitions.create(['color', 'background-color'], {
-                          duration: theme.transitions.duration.shorter,
-                        }),
                         '&:hover': {
-                          bgcolor: alpha(theme.palette[color].main, 0.12),
+                          bgcolor: alpha(theme.palette[color].main, 0.08),
                           color: theme.palette[color].main,
                         },
                       })}
@@ -373,26 +373,26 @@ export const ProgramCard = React.memo(function ProgramCard({
                   </Tooltip>
                 );
               })}
-            </Stack>
-          </Stack>
+            </Grid>
+          </Grid>
 
           {/* Metrics */}
           <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
-            <Stack direction="row" spacing={1} alignItems="center">
-              <CalendarMonthOutlined fontSize="small" color="action" />
-              <Typography variant="body2" color="text.secondary">
+            <Stack direction="row" spacing={0.75} alignItems="center">
+              <CalendarMonthOutlined fontSize="small" sx={{ opacity: 0.7 }} />
+              <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
                 {t('programs-coatch.list.duration_weeks', { count: program.duration })}
               </Typography>
             </Stack>
-            <Stack direction="row" spacing={1} alignItems="center">
-              <ScheduleOutlined fontSize="small" color="action" />
-              <Typography variant="body2" color="text.secondary">
+            <Stack direction="row" spacing={0.75} alignItems="center">
+              <ScheduleOutlined fontSize="small" sx={{ opacity: 0.7 }} />
+              <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
                 {t('programs-coatch.list.frequency_week', { count: program.frequency })}
               </Typography>
             </Stack>
-            <Stack direction="row" spacing={1} alignItems="center">
-              <CenterFocusStrongOutlined fontSize="small" color="action" />
-              <Typography variant="body2" color="text.secondary">
+            <Stack direction="row" spacing={0.75} alignItems="center">
+              <CenterFocusStrongOutlined fontSize="small" sx={{ opacity: 0.7 }} />
+              <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
                 {t('programs-coatch.list.sessions_summary', {
                   sessions: sessionsCount,
                   exercises: exercisesCount,
@@ -401,11 +401,11 @@ export const ProgramCard = React.memo(function ProgramCard({
             </Stack>
           </Stack>
 
-          <Divider flexItem />
+          <Divider sx={{ opacity: 0.6 }} />
 
           {/* Sessions preview */}
           <Stack spacing={1.5}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
               {t('programs-coatch.list.program_sessions_title')}
             </Typography>
             {program.sessions.length > 0 ? (
@@ -413,10 +413,10 @@ export const ProgramCard = React.memo(function ProgramCard({
                 {program.sessions.map((session) => (
                   <Stack key={session.id} spacing={1}>
                     <Stack direction="row" justifyContent="space-between" alignItems="baseline">
-                      <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 600 }} color="primary.main">
                         {session.label}
                       </Typography>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant="caption" color="text.secondary" fontWeight={500}>
                         {t('programs-coatch.list.session_exercises', {
                           count: session.exercises.length,
                         })}
@@ -442,7 +442,7 @@ export const ProgramCard = React.memo(function ProgramCard({
                           </Stack>
                         ))}
                         {session.exercises.length > 3 && (
-                          <Typography variant="caption" color="text.secondary">
+                          <Typography variant="caption" color="text.secondary" sx={{ fontStyle: 'italic', mt: 0.5 }}>
                             {t('programs-coatch.list.more_exercises', {
                               count: session.exercises.length - 3,
                             })}
@@ -454,35 +454,34 @@ export const ProgramCard = React.memo(function ProgramCard({
                 ))}
               </Stack>
             ) : (
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
                 {t('programs-coatch.list.no_sessions')}
               </Typography>
             )}
           </Stack>
 
-          <Divider flexItem />
+          <Divider sx={{ opacity: 0.6 }} />
 
           {/* Metadata */}
           <Stack
-            direction={{ xs: 'column', sm: 'row' }}
-            alignItems={{ xs: 'flex-start', sm: 'center' }}
-            justifyContent={{ xs: 'flex-start', sm: 'space-between' }}
-            spacing={{ xs: 1, sm: 3 }}
-            sx={{ width: '100%' }}
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            spacing={2}
+            sx={{ width: '100%', mt: 'auto' }}
           >
-            <Stack direction="row" spacing={1} alignItems="center">
-              <HistoryOutlined fontSize="small" color="action" />
+            <Stack direction="row" spacing={0.75} alignItems="center">
+              <HistoryOutlined fontSize="inherit" sx={{ opacity: 0.6, fontSize: '1rem' }} />
               <Typography variant="caption" color="text.secondary">
                 {t('programs-coatch.list.created_on', { date: createdOn })}
               </Typography>
             </Stack>
             <Stack
               direction="row"
-              spacing={1}
+              spacing={0.75}
               alignItems="center"
-              sx={{ ml: { xs: 0, sm: 'auto' } }}
             >
-              <UpdateOutlined fontSize="small" color="action" />
+              <UpdateOutlined fontSize="inherit" sx={{ opacity: 0.6, fontSize: '1rem' }} />
               <Typography variant="caption" color="text.secondary">
                 {t('programs-coatch.list.updated_on', { date: updatedOn })}
               </Typography>
@@ -492,7 +491,7 @@ export const ProgramCard = React.memo(function ProgramCard({
 
         {isOverflowing && (
           <>
-            <Divider flexItem sx={{ mt: 2 }} />
+            <Divider sx={{ mt: 2, opacity: 0.6 }} />
             <Stack direction="row" justifyContent="center" sx={{ pt: 1 }}>
               <Tooltip title={overflowToggleLabel}>
                 <IconButton
@@ -514,7 +513,7 @@ export const ProgramCard = React.memo(function ProgramCard({
             </Stack>
           </>
         )}
-      </Paper>
+      </GlassCard>
 
       {/* Clone dialog */}
       {allowedActions.includes('copy') && onClone && (

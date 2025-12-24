@@ -14,9 +14,7 @@ export function Home(): React.JSX.Element {
   const role = session((state) => state.role);
 
   const isCoachView = role === UserType.Admin || role === UserType.Coach;
-  const title = isCoachView
-    ? t('dashboard.coach.title', 'Dashboard Coach')
-    : t('dashboard.athlete.title', 'Dashboard Athlete');
+
   const subtitle = isCoachView
     ? t('dashboard.coach.subtitle', "Gérez vos clients et programmes d'entraînement")
     : t('dashboard.athlete.subtitle', 'Consultez vos programmes et vos plans nutritionnels.');
@@ -25,7 +23,6 @@ export function Home(): React.JSX.Element {
     <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
       {/* General information */}
       <Stack spacing={0.5}>
-        <Typography variant="h5">{title}</Typography>
         <Typography color="text.secondary" variant="body2">
           {subtitle}
         </Typography>

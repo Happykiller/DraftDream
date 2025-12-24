@@ -115,10 +115,10 @@ export function ProspectFormPanel({
   const subtitle = mode === 'edit' ? editSubtitle ?? copy.subtitle : copy.subtitle;
   const submitLabel = mode === 'edit' ? copy.fields.submitEdit : copy.fields.submitCreate;
   const HeaderIcon = mode === 'edit' ? Edit : Add;
-  const brandPrimary = theme.palette.primary.main;
-  const headerBackground = alpha(brandPrimary, 0.08);
-  const headerBorder = alpha(brandPrimary, 0.24);
-  const headerContrast = theme.palette.getContrastText(brandPrimary);
+  const brandColor = theme.palette.error.main;
+  const headerBackground = alpha(brandColor, 0.08);
+  const headerBorder = alpha(brandColor, 0.24);
+  const headerContrast = theme.palette.getContrastText(brandColor);
 
   return (
     <Stack
@@ -163,7 +163,7 @@ export function ProspectFormPanel({
                   width: 48,
                   height: 48,
                   borderRadius: 2,
-                  bgcolor: brandPrimary,
+                  bgcolor: brandColor,
                   color: headerContrast,
                   display: 'flex',
                   alignItems: 'center',
@@ -424,12 +424,12 @@ export function ProspectFormPanel({
 
             <Divider />
 
-            <Box component="footer" sx={{ p: 2, backgroundColor: 'background.default' }}>
+            <Box component="footer" sx={{ p: 2, backgroundColor: '#e0dcdce0' }}>
               <Stack direction="row" justifyContent="flex-end" spacing={2}>
                 <Button color="inherit" onClick={onCancel} disabled={submitting}>
                   {copy.fields.cancel}
                 </Button>
-                <Button type="submit" variant="contained" color="primary" disabled={submitting}>
+                <Button type="submit" variant="contained" color="error" disabled={submitting}>
                   {submitting ? `${submitLabel}…` : submitLabel}
                 </Button>
               </Stack>

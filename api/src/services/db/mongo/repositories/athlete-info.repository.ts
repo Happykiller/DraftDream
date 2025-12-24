@@ -139,6 +139,12 @@ export class BddServiceAthleteInfoMongo {
 
     const filter: Filter<AthleteInfoDoc> = {};
     if (userId?.trim()) filter.userId = userId.trim();
+    if (params.userIds?.length) {
+      const normalized = params.userIds.map((id) => id.trim()).filter(Boolean);
+      if (normalized.length) {
+        filter.userId = { $in: normalized } as any;
+      }
+    }
     if (createdBy?.trim()) filter.createdBy = createdBy.trim();
     if (!includeArchived) filter.deletedAt = { $exists: false } as any;
 

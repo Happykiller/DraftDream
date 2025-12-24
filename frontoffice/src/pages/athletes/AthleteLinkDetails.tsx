@@ -128,16 +128,6 @@ export function AthleteLinkDetails(): React.JSX.Element {
     return link.endDate ? formatDate(link.endDate) : t('athletes.details.fields.no_end_date');
   }, [formatDate, link, t]);
 
-  const athleteFirstName = React.useMemo(
-    () => link?.athlete?.first_name?.trim() || t('athletes.details.fields.no_first_name'),
-    [link?.athlete?.first_name, t],
-  );
-
-  const athleteLastName = React.useMemo(
-    () => link?.athlete?.last_name?.trim() || t('athletes.details.fields.no_last_name'),
-    [link?.athlete?.last_name, t],
-  );
-
   const athleteEmail = React.useMemo(
     () => link?.athlete?.email?.trim() || t('athletes.details.fields.no_email'),
     [link?.athlete?.email, t],
@@ -150,10 +140,10 @@ export function AthleteLinkDetails(): React.JSX.Element {
 
   const headerBackground = React.useMemo(
     () => ({
-      backgroundColor: alpha(theme.palette.info.main, 0.14),
-      color: theme.palette.info.contrastText,
+      backgroundColor: alpha(theme.palette.primary.main, 0.14),
+      color: theme.palette.primary.contrastText,
     }),
-    [theme.palette.info.contrastText, theme.palette.info.main],
+    [theme.palette.primary.contrastText, theme.palette.primary.main],
   );
 
   const { athleteInfo, loading: athleteInfoLoading, error: athleteInfoError } = useAthleteInfo({
@@ -195,9 +185,9 @@ export function AthleteLinkDetails(): React.JSX.Element {
       programsLoading
         ? undefined
         : t('athletes.details.programs.result_count', {
-            count: programs.length,
-            total: totalPrograms,
-          }),
+          count: programs.length,
+          total: totalPrograms,
+        }),
     [programs.length, programsLoading, t, totalPrograms],
   );
 
@@ -230,9 +220,9 @@ export function AthleteLinkDetails(): React.JSX.Element {
       mealPlansLoading
         ? undefined
         : t('athletes.details.nutritions.result_count', {
-            count: mealPlans.length,
-            total: totalMealPlans,
-          }),
+          count: mealPlans.length,
+          total: totalMealPlans,
+        }),
     [mealPlans.length, mealPlansLoading, t, totalMealPlans],
   );
 
@@ -410,12 +400,6 @@ export function AthleteLinkDetails(): React.JSX.Element {
                     </Typography>
 
                     <Grid container spacing={1.5} rowSpacing={2}>
-                      <Grid size={{ xs: 6, sm: 6 }}>
-                        {renderClientField(t('athletes.details.fields.first_name'), athleteFirstName)}
-                      </Grid>
-                      <Grid size={{ xs: 6, sm: 6 }}>
-                        {renderClientField(t('athletes.details.fields.last_name'), athleteLastName)}
-                      </Grid>
                       <Grid size={{ xs: 6, sm: 6 }}>
                         {renderClientField(t('athletes.details.fields.email'), athleteEmail)}
                       </Grid>

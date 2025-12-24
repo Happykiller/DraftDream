@@ -38,10 +38,12 @@ import type {
   MealPlanMealSnapshot,
 } from '@hooks/nutrition/useMealPlans';
 import { useMealTypeIcon } from '@hooks/nutrition/useMealTypeIcon';
+import { computeDayNutritionSummary } from '@components/nutrition/mealPlanBuilderUtils';
 
 import type {
   NutritionPlanDetailsLoaderResult,
 } from './NutritionPlanDetails.loader';
+import { TextWithTooltip } from '@src/components/common/TextWithTooltip';
 
 function formatNumber(value: number, locale: string): string {
   try {
@@ -116,39 +118,39 @@ export function NutritionPlanDetails(): React.JSX.Element {
     () =>
       mealPlan
         ? [
-            {
-              key: 'calories' as const,
-              label: t('nutrition-details.overview.nutrition_goals.calories_per_day.label'),
-              value: t('nutrition-details.overview.nutrition_goals.calories_per_day.value', {
-                value: formatNumber(mealPlan.calories, i18n.language),
-              }),
-              color: 'text.primary',
-            },
-            {
-              key: 'protein' as const,
-              label: t('nutrition-details.overview.nutrition_goals.protein.label'),
-              value: t('nutrition-details.overview.nutrition_goals.protein.value', {
-                value: formatNumber(mealPlan.proteinGrams, i18n.language),
-              }),
-              color: 'info.main',
-            },
-            {
-              key: 'carbs' as const,
-              label: t('nutrition-details.overview.nutrition_goals.carbs.label'),
-              value: t('nutrition-details.overview.nutrition_goals.carbs.value', {
-                value: formatNumber(mealPlan.carbGrams, i18n.language),
-              }),
-              color: 'success.main',
-            },
-            {
-              key: 'fats' as const,
-              label: t('nutrition-details.overview.nutrition_goals.fats.label'),
-              value: t('nutrition-details.overview.nutrition_goals.fats.value', {
-                value: formatNumber(mealPlan.fatGrams, i18n.language),
-              }),
-              color: 'warning.main',
-            },
-          ]
+          {
+            key: 'calories' as const,
+            label: t('nutrition-details.overview.nutrition_goals.calories_per_day.label'),
+            value: t('nutrition-details.overview.nutrition_goals.calories_per_day.value', {
+              value: formatNumber(mealPlan.calories, i18n.language),
+            }),
+            color: 'text.primary',
+          },
+          {
+            key: 'protein' as const,
+            label: t('nutrition-details.overview.nutrition_goals.protein.label'),
+            value: t('nutrition-details.overview.nutrition_goals.protein.value', {
+              value: formatNumber(mealPlan.proteinGrams, i18n.language),
+            }),
+            color: 'info.main',
+          },
+          {
+            key: 'carbs' as const,
+            label: t('nutrition-details.overview.nutrition_goals.carbs.label'),
+            value: t('nutrition-details.overview.nutrition_goals.carbs.value', {
+              value: formatNumber(mealPlan.carbGrams, i18n.language),
+            }),
+            color: 'success.main',
+          },
+          {
+            key: 'fats' as const,
+            label: t('nutrition-details.overview.nutrition_goals.fats.label'),
+            value: t('nutrition-details.overview.nutrition_goals.fats.value', {
+              value: formatNumber(mealPlan.fatGrams, i18n.language),
+            }),
+            color: 'warning.main',
+          },
+        ]
         : [],
     [i18n.language, mealPlan, t],
   );
@@ -235,53 +237,50 @@ export function NutritionPlanDetails(): React.JSX.Element {
           }}
         >
           {/* General information */}
-          <Box
-            component="header"
+          <Stack
+            direction="row"
+            spacing={2}
+            alignItems="center"
             sx={{
               backgroundColor: alpha(theme.palette.warning.main, 0.12),
               px: { xs: 2, sm: 3, md: 4 },
               py: { xs: 2, sm: 2.5 },
             }}
           >
-            <Stack direction="row" spacing={2} alignItems="center">
-              <Box
-                aria-hidden
+            <Box
+              aria-hidden
+              sx={{
+                width: 40,
+                height: 40,
+                borderRadius: 2,
+                bgcolor: 'warning.main',
+                color: 'warning.contrastText',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                boxShadow: `0 10px 20px ${alpha(theme.palette.warning.main, 0.24)}`,
+              }}
+            >
+              <RestaurantMenu fontSize="medium" />
+            </Box>
+            <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+              <TextWithTooltip
+                tooltipTitle={headerTitle}
+                variant="h6"
                 sx={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 2,
-                  bgcolor: 'warning.main',
-                  color: 'warning.contrastText',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                  boxShadow: `0 10px 20px ${alpha(theme.palette.warning.main, 0.24)}`,
+                  fontWeight: 700,
                 }}
-              >
-                <RestaurantMenu fontSize="medium" />
-              </Box>
-              <Stack spacing={0.5} sx={{ minWidth: 0 }}>
-                <Typography
-                  variant="h5"
-                  sx={{ fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis' }}
-                  noWrap
-                >
-                  {headerTitle}
-                </Typography>
-                {mealPlan?.description ? (
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    noWrap
-                    sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
-                  >
-                    {mealPlan.description}
-                  </Typography>
-                ) : null}
-              </Stack>
-            </Stack>
-          </Box>
+              />
+              {mealPlan?.description ? (
+                <TextWithTooltip
+                  tooltipTitle={mealPlan.description}
+                  variant="body2"
+                  color="text.secondary"
+                />
+              ) : null}
+            </Box>
+          </Stack>
 
           <Divider />
 
@@ -557,6 +556,58 @@ interface NutritionPlanDayCardProps {
 function NutritionPlanDayCard({ day, locale, t }: NutritionPlanDayCardProps): React.JSX.Element {
   const theme = useTheme();
   const mealCount = day.meals.length;
+  const daySummary = React.useMemo(
+    () => computeDayNutritionSummary(day),
+    [day],
+  );
+  const daySummaryItems = React.useMemo(
+    () => [
+      {
+        key: 'calories' as const,
+        label: t('nutrition-details.meals.day_summary.calories_label'),
+        value: t('nutrition-details.meals.day_summary.calories_value', {
+          value: formatNumber(daySummary.calories, locale),
+        }),
+        color: theme.palette.primary.main,
+      },
+      {
+        key: 'protein' as const,
+        label: t('nutrition-details.meals.day_summary.protein_label'),
+        value: t('nutrition-details.meals.day_summary.protein_value', {
+          value: formatNumber(daySummary.proteinGrams, locale),
+        }),
+        color: theme.palette.info.main,
+      },
+      {
+        key: 'carbs' as const,
+        label: t('nutrition-details.meals.day_summary.carbs_label'),
+        value: t('nutrition-details.meals.day_summary.carbs_value', {
+          value: formatNumber(daySummary.carbGrams, locale),
+        }),
+        color: theme.palette.success.main,
+      },
+      {
+        key: 'fats' as const,
+        label: t('nutrition-details.meals.day_summary.fats_label'),
+        value: t('nutrition-details.meals.day_summary.fats_value', {
+          value: formatNumber(daySummary.fatGrams, locale),
+        }),
+        color: theme.palette.warning.main,
+      },
+    ],
+    [
+      daySummary.calories,
+      daySummary.carbGrams,
+      daySummary.fatGrams,
+      daySummary.proteinGrams,
+      locale,
+      t,
+      theme.palette.info.main,
+      theme.palette.primary.main,
+      theme.palette.success.main,
+      theme.palette.warning.main,
+    ],
+  );
 
   return (
     <Card
@@ -597,11 +648,7 @@ function NutritionPlanDayCard({ day, locale, t }: NutritionPlanDayCardProps): Re
           </Box>
 
           <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-            <Typography
-              variant="h6"
-              sx={{ fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis' }}
-              noWrap
-            >
+            <Typography variant="h6" sx={{ fontWeight: 700 }}>
               {day.label}
             </Typography>
             <Typography color="text.secondary" variant="body2">
@@ -611,6 +658,39 @@ function NutritionPlanDayCard({ day, locale, t }: NutritionPlanDayCardProps): Re
             </Typography>
           </Box>
         </Stack>
+
+        <Box
+          sx={{
+            borderRadius: 2,
+            backgroundColor: alpha(theme.palette.primary.main, 0.04),
+            border: `1px solid ${alpha(theme.palette.primary.main, 0.16)}`,
+            px: { xs: 1.5, sm: 2 },
+            py: { xs: 1.25, sm: 1.5 },
+          }}
+        >
+          <Stack spacing={1}>
+            <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>
+              {t('nutrition-details.meals.day_summary.title')}
+            </Typography>
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={{ xs: 1.25, sm: 3 }}
+              useFlexGap
+              flexWrap="wrap"
+            >
+              {daySummaryItems.map((item) => (
+                <Stack key={item.key} spacing={0.25} sx={{ minWidth: { sm: 100 } }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 700, color: item.color }}>
+                    {item.value}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {item.label}
+                  </Typography>
+                </Stack>
+              ))}
+            </Stack>
+          </Stack>
+        </Box>
 
         {mealCount === 0 ? (
           <Typography color="text.secondary" variant="body2">
@@ -738,11 +818,7 @@ const NutritionPlanMealCard = React.memo(function NutritionPlanMealCard({
             </Tooltip>
 
             <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-              <Typography
-                variant="subtitle1"
-                sx={{ fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis' }}
-                noWrap
-              >
+              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
                 {meal.label}
               </Typography>
               {meal.type?.label ? (

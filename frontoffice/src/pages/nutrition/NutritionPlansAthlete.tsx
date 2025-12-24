@@ -54,9 +54,9 @@ export function NutritionPlansAthlete(): React.JSX.Element {
       loading
         ? undefined
         : t('nutrition-athlete.list.result_count', {
-            count: mealPlans.length,
-            total: totalMealPlans,
-          }),
+          count: mealPlans.length,
+          total: totalMealPlans,
+        }),
     [loading, mealPlans.length, t, totalMealPlans],
   );
 
@@ -75,7 +75,6 @@ export function NutritionPlansAthlete(): React.JSX.Element {
     <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
       {/* General information */}
       <Stack spacing={1}>
-        <Typography variant="h5">{t('nutrition-athlete.subtitle')}</Typography>
         <Typography color="text.secondary" variant="body2">
           {t('nutrition-athlete.helper')}
         </Typography>

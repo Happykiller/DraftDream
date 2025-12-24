@@ -19,29 +19,66 @@ export class UpdateAthleteInfoUsecase {
       }
 
       const isAdmin = session.role === Role.ADMIN;
-      if (!isAdmin && existing.createdBy !== session.userId) {
+      const isAthlete = session.role === Role.ATHLETE;
+      const isCoach = session.role === Role.COACH;
+
+      if (isAdmin) {
+        return await this.applyUpdate(existing, payload);
+      }
+
+      if (isAthlete && existing.userId !== session.userId) {
         return null;
       }
 
-      if (payload.userId && payload.userId !== existing.userId) {
-        await this.ensureAthlete(payload.userId);
+      if (isCoach) {
+        const hasLink = await this.hasCoachAthleteLink(session.userId, existing.userId);
+        if (!hasLink) {
+          return null;
+        }
       }
 
-      const updated = await this.inversify.bddService.athleteInfo.update(payload.id, {
-        userId: payload.userId,
-        levelId: payload.levelId ?? undefined,
-        objectiveIds: payload.objectiveIds?.filter(Boolean),
-        activityPreferenceIds: payload.activityPreferenceIds?.filter(Boolean),
-        medicalConditions: payload.medicalConditions ?? undefined,
-        allergies: payload.allergies ?? undefined,
-        notes: payload.notes ?? undefined,
-      });
+      if (!isCoach && !isAthlete && existing.createdBy !== session.userId) {
+        return null;
+      }
 
-      return updated ? { ...updated } : null;
+      return await this.applyUpdate(existing, payload);
     } catch (error: any) {
       this.inversify.loggerService.error(`UpdateAthleteInfoUsecase#execute => ${error?.message ?? error}`);
       throw normalizeError(error, ERRORS.UPDATE_ATHLETE_INFO_USECASE);
     }
+  }
+
+  private async applyUpdate(
+    existing: AthleteInfoUsecaseModel,
+    payload: Omit<UpdateAthleteInfoUsecaseDto, 'session'>,
+  ): Promise<AthleteInfoUsecaseModel | null> {
+    if (payload.userId && payload.userId !== existing.userId) {
+      await this.ensureAthlete(payload.userId);
+    }
+
+    const updated = await this.inversify.bddService.athleteInfo.update(payload.id, {
+      userId: payload.userId,
+      levelId: payload.levelId ?? undefined,
+      objectiveIds: payload.objectiveIds?.filter(Boolean),
+      activityPreferenceIds: payload.activityPreferenceIds?.filter(Boolean),
+      medicalConditions: payload.medicalConditions ?? undefined,
+      allergies: payload.allergies ?? undefined,
+      notes: payload.notes ?? undefined,
+    });
+
+    return updated ? { ...updated } : null;
+  }
+
+  private async hasCoachAthleteLink(coachId: string, athleteId: string): Promise<boolean> {
+    const result = await this.inversify.bddService.coachAthlete.list({
+      coachId,
+      athleteId,
+      is_active: true,
+      includeArchived: false,
+      limit: 1,
+      page: 1,
+    });
+    return result.total > 0;
   }
 
   private async ensureAthlete(userId: string): Promise<void> {

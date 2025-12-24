@@ -4,9 +4,14 @@ import { useTranslation } from 'react-i18next';
 
 import type { AthleteInfo } from '@app-types/athleteInfo';
 
-import { athleteInfoGetByUser } from '@services/graphql/athleteInfo.service';
+import {
+  athleteInfoGetByUser,
+  athleteInfoUpdate,
+  type AthleteInfoUpdateInput,
+} from '@services/graphql/athleteInfo.service';
 
 import { useAsyncTask } from '@hooks/useAsyncTask';
+import { useFlashStore } from '@hooks/useFlashStore';
 
 export interface UseAthleteInfoOptions {
   userId?: string | null;
@@ -19,6 +24,7 @@ export interface UseAthleteInfoResult {
   loading: boolean;
   error: string | null;
   reload: () => Promise<AthleteInfo | null>;
+  update: (input: AthleteInfoUpdateInput) => Promise<AthleteInfo | null>;
 }
 
 /** Fetches athlete information for the current athlete profile. */
@@ -29,6 +35,7 @@ export function useAthleteInfo({
 }: UseAthleteInfoOptions = {}): UseAthleteInfoResult {
   const { t } = useTranslation();
   const { execute } = useAsyncTask();
+  const flashError = useFlashStore((state) => state.error);
   const [athleteInfo, setAthleteInfo] = React.useState<AthleteInfo | null>(initialInfo);
   const [error, setError] = React.useState<string | null>(initialError);
   const [loading, setLoading] = React.useState(false);
@@ -92,5 +99,35 @@ export function useAthleteInfo({
     return load(userId);
   }, [userId, load]);
 
-  return { athleteInfo, loading, error, reload };
+  const update = React.useCallback(
+    async (input: AthleteInfoUpdateInput): Promise<AthleteInfo | null> => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const result = await execute(() => athleteInfoUpdate(input));
+
+        if (!result) {
+          const message = t('athlete_information.notifications.update_failure');
+          setError(message);
+          flashError(message);
+          throw new Error(message);
+        }
+
+        setAthleteInfo(result);
+        return result;
+      } catch (caught: unknown) {
+        console.error('[useAthleteInfo] Failed to update athlete info', caught);
+        const message = t('athlete_information.notifications.update_failure');
+        setError(message);
+        flashError(message);
+        throw new Error(message);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [execute, flashError, t],
+  );
+
+  return { athleteInfo, loading, error, reload, update };
 }

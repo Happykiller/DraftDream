@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Add, Refresh } from '@mui/icons-material';
 import {
+  Button,
   IconButton,
   Stack,
   Tooltip,
@@ -182,13 +183,16 @@ export function NutritionPlansCoach(): React.JSX.Element {
           <Typography variant="h5">{t('nutrition-coach.subtitle')}</Typography>
           <Stack alignItems="center" direction="row" spacing={1} sx={{ ml: 'auto' }}>
             <Tooltip title={t('nutrition-coach.actions.create')} arrow>
-              <IconButton
+              <Button
+                aria-label={t('nutrition-coach.actions.create')}
                 color="warning"
                 onClick={handleCreate}
-                aria-label={t('nutrition-coach.actions.create')}
+                size="small"
+                startIcon={<Add />}
+                variant="contained"
               >
-                <Add />
-              </IconButton>
+                {t('common.actions.create')}
+              </Button>
             </Tooltip>
             <Tooltip title={t('nutrition-coach.actions.refresh')} arrow>
               <IconButton

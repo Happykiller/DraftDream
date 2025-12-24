@@ -189,7 +189,23 @@
     }
   },
   "home": {
-    "title": "Dashboard"
+    "title": "Dashboard",
+    "widgets": {
+      "total_users": "Total Users",
+      "total_prospects": "Total Prospects",
+      "prospects_todo": "To do",
+      "view_prospects": "View prospects",
+      "programs": "Programs",
+      "nutrition_plans": "Nutrition Plans",
+      "sessions_private": "Sessions (Private)",
+      "exercises_library": "Exercises Library",
+      "day_meals_private": "Day Meals (Private)",
+      "completion": "Completion",
+      "system_health": "System Health"
+    },
+    "chart": {
+      "vs_last_month": "vs last month"
+    }
   },
   "clients": {
     "title": "Clients"
@@ -435,6 +451,12 @@
   },
   "users": {
     "title": "Users",
+    "sections": {
+      "info": "Information",
+      "general": "General",
+      "address": "Address",
+      "company": "Company"
+    },
     "table": {
       "search_placeholder": "Search users...",
       "new_button": "New User"
@@ -444,7 +466,8 @@
     },
     "dialog": {
       "create_title": "New User",
-      "edit_title": "Edit User"
+      "edit_title": "Edit User",
+      "change_password": "Change password"
     },
     "confirm": {
       "delete_title": "Delete User",
@@ -567,6 +590,27 @@
   },
   "athletes": {
     "title": "Athletes",
+    "nav": {
+      "liaison": "Liaison",
+      "information": "Information"
+    },
+    "information": {
+      "title": "Athlete information",
+      "search_placeholder": "Search athletes...",
+      "dialog": {
+        "edit_title": "Edit athlete information"
+      },
+      "table": {
+        "columns": {
+          "email": "Email",
+          "phone": "Phone",
+          "level": "Level",
+          "company": "Company",
+          "address": "Location",
+          "updated_at": "Updated on"
+        }
+      }
+    },
     "table": {
       "create": "New link",
       "no_note": "No note provided",

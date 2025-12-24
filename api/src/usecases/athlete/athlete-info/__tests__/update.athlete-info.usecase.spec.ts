@@ -7,6 +7,7 @@ import { Inversify } from '@src/inversify/investify';
 import { BddServiceMongo } from '@services/db/mongo/db.service.mongo';
 import { BddServiceAthleteInfoMongo } from '@services/db/mongo/repositories/athlete-info.repository';
 import { BddServiceUserMongo } from '@services/db/mongo/repositories/user.repository';
+import { BddServiceCoachAthleteMongo } from '@services/db/mongo/repositories/coach-athlete.repository';
 import { UpdateAthleteInfoUsecase } from '@usecases/athlete/athlete-info/update.athlete-info.usecase';
 import { AthleteInfoUsecaseModel } from '@usecases/athlete/athlete-info/athlete-info.usecase.model';
 import { User } from '@services/db/models/user.model';
@@ -20,6 +21,7 @@ describe('UpdateAthleteInfoUsecase', () => {
     let bddServiceMock: MockProxy<BddServiceMongo>;
     let athleteInfoRepositoryMock: MockProxy<BddServiceAthleteInfoMongo>;
     let userRepositoryMock: MockProxy<BddServiceUserMongo>;
+    let coachAthleteRepositoryMock: MockProxy<BddServiceCoachAthleteMongo>;
     let loggerMock: MockProxy<LoggerMock>;
     let usecase: UpdateAthleteInfoUsecase;
 
@@ -52,12 +54,17 @@ describe('UpdateAthleteInfoUsecase', () => {
         bddServiceMock = mock<BddServiceMongo>();
         athleteInfoRepositoryMock = mock<BddServiceAthleteInfoMongo>();
         userRepositoryMock = mock<BddServiceUserMongo>();
+        coachAthleteRepositoryMock = mock<BddServiceCoachAthleteMongo>();
         loggerMock = mock<LoggerMock>();
 
         (bddServiceMock as unknown as { athleteInfo: BddServiceAthleteInfoMongo }).athleteInfo = athleteInfoRepositoryMock;
         (bddServiceMock as unknown as { user: BddServiceUserMongo }).user = userRepositoryMock;
+        (bddServiceMock as unknown as { coachAthlete: BddServiceCoachAthleteMongo }).coachAthlete = coachAthleteRepositoryMock;
         inversifyMock.bddService = bddServiceMock as unknown as BddServiceMongo;
         inversifyMock.loggerService = loggerMock;
+
+        // Default mock for coachAthlete
+        (coachAthleteRepositoryMock.list as any).mockResolvedValue({ items: [], total: 0, page: 1, limit: 10 });
 
         usecase = new UpdateAthleteInfoUsecase(inversifyMock);
     });
@@ -90,6 +97,7 @@ describe('UpdateAthleteInfoUsecase', () => {
         const updatedInfo = { ...existingInfo, notes: 'Updated notes' };
         (athleteInfoRepositoryMock.get as any).mockResolvedValue(existingInfo);
         (athleteInfoRepositoryMock.update as any).mockResolvedValue(updatedInfo);
+        (coachAthleteRepositoryMock.list as any).mockResolvedValue({ items: [{ athleteId: 'athlete-1' }], total: 1 });
 
         const result = await usecase.execute({
             id: 'info-1',

@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { Box, Typography, Button, useTheme, Chip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   People,
   SportsGymnastics,
@@ -60,6 +61,7 @@ const getDistributionData = (items: any[], key: string, labelMap?: Record<string
 };
 
 export function Home(): React.JSX.Element {
+  const { t } = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
   // const { user: currentUser } = useUser();
@@ -97,12 +99,12 @@ export function Home(): React.JSX.Element {
 
   // Breakdowns
   const programDistribution = useMemo(() => {
-    return getDistributionData(programs, 'visibility', { 'PUBLIC': 'Public', 'PRIVATE': 'Private' });
-  }, [programs]);
+    return getDistributionData(programs, 'visibility', { 'PUBLIC': t('common.visibility.public'), 'PRIVATE': t('common.visibility.private') });
+  }, [programs, t]);
 
   const userDistribution = [
-    { name: 'Coaches', value: totalCoaches, color: theme.palette.secondary.main },
-    { name: 'Athletes', value: totalAthletes, color: theme.palette.primary.main },
+    { name: t('users.types.coach'), value: totalCoaches, color: theme.palette.secondary.main },
+    { name: t('users.types.athlete'), value: totalAthletes, color: theme.palette.primary.main },
   ];
 
 
@@ -114,82 +116,77 @@ export function Home(): React.JSX.Element {
         {/* --- Row 1: High Level Stats --- */}
 
         {/* Total Users & Split */}
-        <StatCard
-          title="Total Users"
+        <DistributionChartWidget
+          title={t('home.widgets.total_users')}
           value={totalCoaches + totalAthletes}
           icon={People}
           colSpan={1}
-          trend={{ value: 12, label: 'vs last month' }}
           color={theme.palette.info.main}
-        >
-          {/* Tiny Pie Chart for Ratio */}
-          <Box sx={{ height: 150, mt: 2 }}>
-            <DistributionChartWidget data={userDistribution} height={150} />
-          </Box>
-        </StatCard>
+          data={userDistribution}
+          height={150}
+        />
 
         {/* Prospects A Faire */}
-        {/* Prospects A Faire */}
-        <StatCard
-          title="A faire"
+        <ProspectsListWidget
+          title={t('home.widgets.prospects_todo')}
           value={myProspects.length}
           icon={TrendingUp}
           colSpan={1}
           color={theme.palette.warning.main}
+          prospects={myProspects}
         >
-          <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <ProspectsListWidget prospects={myProspects} />
-            <Button size="small" fullWidth onClick={() => navigate('/prospects')} sx={{ mt: 1 }}>
-              Voir prospects
-            </Button>
-          </Box>
-        </StatCard>
+          <Button size="small" fullWidth onClick={() => navigate('/prospects')} sx={{ mt: 1 }}>
+            {t('home.widgets.view_prospects')}
+          </Button>
+        </ProspectsListWidget>
 
         {/* Total Prospects Trend */}
-        <StatCard
-          title="Total Prospects"
+        <GrowthChartWidget
+          title={t('home.widgets.total_prospects')}
           value={totalProspects}
           icon={People}
           colSpan={1}
-        >
-          <GrowthChartWidget data={prospectsGrowth} height={80} color={theme.palette.success.main} />
-        </StatCard>
+          data={prospectsGrowth}
+          height={80}
+          color={theme.palette.success.main}
+        />
 
 
         {/* --- Row 2: Content Stats --- */}
 
         {/* Programs */}
-        <StatCard
-          title="Programs"
+        <GrowthChartWidget
+          title={t('home.widgets.programs')}
           value={totalPrograms}
           icon={FitnessCenter}
           colSpan={1}
           color={theme.palette.primary.main}
+          data={programsGrowth}
+          height={60}
         >
           <Box sx={{ display: 'flex', gap: 1, mt: 1, mb: 1 }}>
-            <Chip label={`${programDistribution.find(d => d.name === 'Public')?.value || 0} Public`} size="small" variant="outlined" />
-            <Chip label={`${programDistribution.find(d => d.name === 'Private')?.value || 0} Private`} size="small" variant="outlined" />
+            <Chip label={`${programDistribution.find(d => d.name === t('common.visibility.public'))?.value || 0} ${t('common.visibility.public')}`} size="small" variant="outlined" />
+            <Chip label={`${programDistribution.find(d => d.name === t('common.visibility.private'))?.value || 0} ${t('common.visibility.private')}`} size="small" variant="outlined" />
           </Box>
-          <GrowthChartWidget data={programsGrowth} height={60} color={theme.palette.primary.main} />
-        </StatCard>
+        </GrowthChartWidget>
 
         {/* Nutrition Plans */}
-        <StatCard
-          title="Nutrition Plans"
+        <GrowthChartWidget
+          title={t('home.widgets.nutrition_plans')}
           value={totalMealPlans}
           icon={Restaurant}
           colSpan={1}
           color={theme.palette.secondary.main}
-        >
-          <GrowthChartWidget data={nutritionGrowth} height={80} color={theme.palette.secondary.main} />
-        </StatCard>
+          data={nutritionGrowth}
+          height={80}
+        />
 
 
         {/* --- Row 3: Detail / Volume --- */}
 
         {/* Sessions */}
         <StatCard
-          title="Sessions (Private)"
+          title={t('home.widgets.sessions_private')}
           value={totalSessions}
           icon={Timer}
           colSpan={1}
@@ -198,7 +195,7 @@ export function Home(): React.JSX.Element {
 
         {/* Exercises */}
         <StatCard
-          title="Exercises Library"
+          title={t('home.widgets.exercises_library')}
           value={totalExercises}
           icon={SportsGymnastics}
           colSpan={1}
@@ -206,7 +203,7 @@ export function Home(): React.JSX.Element {
 
         {/* Meal Days */}
         <StatCard
-          title="Day Meals (Private)"
+          title={t('home.widgets.day_meals_private')}
           value={totalMealDays}
           icon={RestaurantMenu}
           colSpan={1}
@@ -214,13 +211,13 @@ export function Home(): React.JSX.Element {
 
         {/* Empty / Placeholder for Layout Balance or Future Widget */}
         <StatCard
-          title="Completion"
+          title={t('home.widgets.completion')}
           value="98%"
           icon={EventNote}
           colSpan={1}
           color={theme.palette.success.light}
         >
-          <Typography variant="caption" color="text.secondary">System Health</Typography>
+          <Typography variant="caption" color="text.secondary">{t('home.widgets.system_health')}</Typography>
         </StatCard>
 
       </DashboardLayout>

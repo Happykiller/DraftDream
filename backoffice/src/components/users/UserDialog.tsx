@@ -23,6 +23,11 @@ export interface UserDialogValues {
   confirm_password?: string;
   // minimal company/address for POC (optional fields)
   company_name?: string;
+  // company address
+  company_address_name?: string;
+  company_address_city?: string;
+  company_address_code?: string;
+  company_address_country?: string;
   address_name?: string;
   address_city?: string;
   address_code?: string;
@@ -47,6 +52,10 @@ const DEFAULTS: UserDialogValues = {
   password: '',
   confirm_password: '',
   company_name: '',
+  company_address_name: '',
+  company_address_city: '',
+  company_address_code: '',
+  company_address_country: '',
   address_name: '',
   address_city: '',
   address_code: '',
@@ -58,6 +67,7 @@ export function UserDialog({ open, mode, initial, onClose, onSubmit }: UserDialo
   const isEdit = mode === 'edit';
   const [values, setValues] = React.useState<UserDialogValues>(DEFAULTS);
   const formatDate = useDateFormatter();
+
 
   const formattedCreatedAt = React.useMemo(
     () => (initial?.createdAt ? formatDate(initial.createdAt) : '-'),
@@ -80,6 +90,10 @@ export function UserDialog({ open, mode, initial, onClose, onSubmit }: UserDialo
         password: '',
         confirm_password: '',
         company_name: initial.company?.name ?? '',
+        company_address_name: initial.company?.address?.name ?? '',
+        company_address_city: initial.company?.address?.city ?? '',
+        company_address_code: initial.company?.address?.code ?? '',
+        company_address_country: initial.company?.address?.country ?? '',
         address_name: initial.address?.name ?? '',
         address_city: initial.address?.city ?? '',
         address_code: initial.address?.code ?? '',
@@ -106,24 +120,39 @@ export function UserDialog({ open, mode, initial, onClose, onSubmit }: UserDialo
       <DialogTitle id="user-dialog-title">{isEdit ? t('users.dialog.edit_title') : t('users.dialog.create_title')}</DialogTitle>
       <DialogContent>
         <Stack component="form" onSubmit={submit} spacing={2} sx={{ mt: 1 }}>
-          {isEdit && initial ? (
-            <Stack spacing={1.5}>
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                <Stack flex={1} spacing={0.25}>
-                  <Typography variant="caption" color="text.secondary">
-                    {t('common.labels.created')}
-                  </Typography>
-                  <Typography variant="body2">{formattedCreatedAt}</Typography>
+
+          {/* Section 1: Automatic Fields (Read-only) - Edit Mode Only */}
+          {isEdit && initial && (
+            <>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>{t('users.sections.info')}</Typography>
+              <Stack spacing={1.5} sx={{ p: 1, bgcolor: 'action.hover', borderRadius: 1 }}>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <Stack flex={1} spacing={0.25}>
+                    <Typography variant="caption" color="text.secondary">ID</Typography>
+                    <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>{initial.id}</Typography>
+                  </Stack>
+                  <Stack flex={1} spacing={0.25}>
+                    <Typography variant="caption" color="text.secondary">{t('common.labels.creator')}</Typography>
+                    <Typography variant="body2">{initial.createdBy || '-'}</Typography>
+                  </Stack>
                 </Stack>
-                <Stack flex={1} spacing={0.25}>
-                  <Typography variant="caption" color="text.secondary">
-                    {t('common.labels.updated')}
-                  </Typography>
-                  <Typography variant="body2">{formattedUpdatedAt}</Typography>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <Stack flex={1} spacing={0.25}>
+                    <Typography variant="caption" color="text.secondary">{t('common.labels.created')}</Typography>
+                    <Typography variant="body2">{formattedCreatedAt}</Typography>
+                  </Stack>
+                  <Stack flex={1} spacing={0.25}>
+                    <Typography variant="caption" color="text.secondary">{t('common.labels.updated')}</Typography>
+                    <Typography variant="body2">{formattedUpdatedAt}</Typography>
+                  </Stack>
                 </Stack>
               </Stack>
-            </Stack>
-          ) : null}
+              <Divider />
+            </>
+          )}
+
+          {/* Section 2: General */}
+          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>{t('users.sections.general')}</Typography>
 
           <TextField select label={t('common.labels.type')} name="type" value={values.type} onChange={onChange} required fullWidth>
             {['coach', 'athlete', 'admin'].map((k) => (
@@ -154,18 +183,33 @@ export function UserDialog({ open, mode, initial, onClose, onSubmit }: UserDialo
           />
 
           <Divider />
-          <TextField label={t('common.labels.company')} name="company_name" value={values.company_name} onChange={onChange} fullWidth />
 
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+          {/* Section 3: Address */}
+          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>{t('users.sections.address')}</Typography>
+          <Stack spacing={2}>
             <TextField label={t('common.labels.address_name')} name="address_name" value={values.address_name} onChange={onChange} fullWidth />
-            <TextField label={t('common.labels.address_city')} name="address_city" value={values.address_city} onChange={onChange} fullWidth />
-          </Stack>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-            <TextField label={t('common.labels.address_code')} name="address_code" value={values.address_code} onChange={onChange} fullWidth />
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+              <TextField label={t('common.labels.address_city')} name="address_city" value={values.address_city} onChange={onChange} fullWidth />
+              <TextField label={t('common.labels.address_code')} name="address_code" value={values.address_code} onChange={onChange} fullWidth />
+            </Stack>
             <TextField label={t('common.labels.address_country')} name="address_country" value={values.address_country} onChange={onChange} fullWidth />
           </Stack>
 
-          <DialogActions sx={{ px: 0 }}>
+          <Divider />
+
+          {/* Section 4: Company */}
+          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>{t('users.sections.company')}</Typography>
+          <TextField label={t('common.labels.company')} name="company_name" value={values.company_name} onChange={onChange} fullWidth />
+          <Stack spacing={2} sx={{ mt: 2 }}>
+            <TextField label={t('common.labels.address_name')} name="company_address_name" value={values.company_address_name} onChange={onChange} fullWidth />
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+              <TextField label={t('common.labels.address_city')} name="company_address_city" value={values.company_address_city} onChange={onChange} fullWidth />
+              <TextField label={t('common.labels.address_code')} name="company_address_code" value={values.company_address_code} onChange={onChange} fullWidth />
+            </Stack>
+            <TextField label={t('common.labels.address_country')} name="company_address_country" value={values.company_address_country} onChange={onChange} fullWidth />
+          </Stack>
+
+          <DialogActions sx={{ px: 0, pt: 2 }}>
             <Button onClick={onClose} color="inherit">{t('common.buttons.cancel')}</Button>
             <Button type="submit" variant="contained">{isEdit ? t('common.buttons.save') : t('common.buttons.create')}</Button>
           </DialogActions>

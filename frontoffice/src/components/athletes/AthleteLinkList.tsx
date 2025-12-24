@@ -66,7 +66,10 @@ export const AthleteLinkList = React.memo(function AthleteLinkList({
           'aria-label': searchAriaLabel,
         }}
         size="small"
-        sx={{ bgcolor: 'common.white' }}
+        sx={{
+          bgcolor: theme => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'common.white',
+          borderRadius: 1
+        }}
       />
 
       {loading ? (

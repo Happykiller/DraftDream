@@ -9,11 +9,11 @@ import {
   Grid,
   InputLabel,
   MenuItem,
-  Paper,
   Select,
   Stack,
   Typography,
 } from '@mui/material';
+import { GlassCard } from '@components/common/GlassCard';
 import type { SelectChangeEvent } from '@mui/material/Select';
 import { useTranslation } from 'react-i18next';
 
@@ -161,7 +161,7 @@ export function Profile(): React.JSX.Element {
       <Container maxWidth="lg">
         {/* General information */}
         <Grid container spacing={{ xs: 6, md: 8 }} alignItems="stretch">
-          <Grid size={{xs: 12, md: 5}}>
+          <Grid size={{ xs: 12, md: 5 }}>
             <Stack spacing={4} sx={{ height: '100%' }}>
               <Stack spacing={2}>
                 <Typography variant="h3" sx={{ fontWeight: 600 }}>
@@ -218,15 +218,12 @@ export function Profile(): React.JSX.Element {
             </Stack>
           </Grid>
 
-          <Grid size={{xs: 12, md: 7}}>
+          <Grid size={{ xs: 12, md: 7 }}>
             <Stack spacing={3} sx={{ height: '100%' }}>
-              <Paper
-                elevation={0}
+              <GlassCard
                 sx={{
                   p: { xs: 3, md: 4 },
                   borderRadius: 3,
-                  border: (theme) => `1px solid ${theme.palette.divider}`,
-                  backgroundColor: 'background.paper',
                 }}
               >
                 <Stack spacing={2.5}>
@@ -272,15 +269,12 @@ export function Profile(): React.JSX.Element {
                     </Alert>
                   )}
                 </Stack>
-              </Paper>
+              </GlassCard>
 
-              <Paper
-                elevation={0}
+              <GlassCard
                 sx={{
                   p: { xs: 3, md: 4 },
                   borderRadius: 3,
-                  border: (theme) => `1px solid ${theme.palette.divider}`,
-                  backgroundColor: 'background.paper',
                 }}
               >
                 <Stack spacing={2}>
@@ -314,7 +308,7 @@ export function Profile(): React.JSX.Element {
                     </Typography>
                   )}
                 </Stack>
-              </Paper>
+              </GlassCard>
             </Stack>
           </Grid>
         </Grid>

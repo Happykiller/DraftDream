@@ -20,6 +20,7 @@ import type {
   MealPlanBuilderMeal,
 } from './mealPlanBuilderTypes';
 import { MealPlanBuilderPanelDraftMeal } from './MealPlanBuilderPanelDraftMeal';
+import { computeDayNutritionSummary } from './mealPlanBuilderUtils';
 
 type DayPatch = Partial<Pick<MealPlanBuilderDay, 'label' | 'description'>>;
 
@@ -60,6 +61,14 @@ export const MealPlanBuilderPanelDraftDay = React.memo(function MealPlanBuilderP
 }: MealPlanBuilderPanelDraftDayProps): React.JSX.Element {
   const theme = useTheme();
   const warningMain = theme.palette.warning.main;
+  const summaryBackground = React.useMemo(
+    () => alpha(theme.palette.primary.main, 0.04),
+    [theme.palette.primary.main],
+  );
+  const summaryBorder = React.useMemo(
+    () => alpha(theme.palette.primary.main, 0.16),
+    [theme.palette.primary.main],
+  );
 
   const interactiveSurfaceSx = React.useMemo(
     () => ({
@@ -240,6 +249,77 @@ export const MealPlanBuilderPanelDraftDay = React.memo(function MealPlanBuilderP
 
   const trimmedDayLabel = (day.label ?? '').trim();
   const trimmedDayDescription = (day.description ?? '').trim();
+  const macroFormatter = React.useMemo(
+    () =>
+      new Intl.NumberFormat(undefined, {
+        maximumFractionDigits: 1,
+        minimumFractionDigits: 0,
+      }),
+    [],
+  );
+  const daySummary = React.useMemo(
+    () => computeDayNutritionSummary(day),
+    [day],
+  );
+  const daySummaryEntries = React.useMemo(
+    () => {
+      const summaryCopy = builderCopy.summary;
+      const structureCopy = builderCopy.structure;
+
+      const caloriesLabel = summaryCopy?.calories_label ?? structureCopy.calories_label;
+      const proteinLabel = summaryCopy?.protein_label ?? structureCopy.protein_label;
+      const carbsLabel = summaryCopy?.carbs_label ?? structureCopy.carbs_label;
+      const fatsLabel = summaryCopy?.fats_label ?? structureCopy.fats_label;
+
+      return [
+        {
+          key: 'calories' as const,
+          label: caloriesLabel,
+          value: macroFormatter.format(daySummary.calories),
+          unit: summaryCopy?.calories_unit ?? 'kcal',
+          color: theme.palette.primary.main,
+        },
+        {
+          key: 'protein' as const,
+          label: proteinLabel,
+          value: macroFormatter.format(daySummary.proteinGrams),
+          unit: summaryCopy?.protein_unit ?? 'g',
+          color: theme.palette.info.main,
+        },
+        {
+          key: 'carbs' as const,
+          label: carbsLabel,
+          value: macroFormatter.format(daySummary.carbGrams),
+          unit: summaryCopy?.carbs_unit ?? 'g',
+          color: theme.palette.success.main,
+        },
+        {
+          key: 'fats' as const,
+          label: fatsLabel,
+          value: macroFormatter.format(daySummary.fatGrams),
+          unit: summaryCopy?.fats_unit ?? 'g',
+          color: theme.palette.warning.main,
+        },
+      ];
+    },
+    [
+      builderCopy.structure,
+      builderCopy.summary,
+      daySummary.calories,
+      daySummary.carbGrams,
+      daySummary.fatGrams,
+      daySummary.proteinGrams,
+      macroFormatter,
+      theme.palette.info.main,
+      theme.palette.primary.main,
+      theme.palette.success.main,
+      theme.palette.warning.main,
+    ],
+  );
+  const daySummaryTitle = React.useMemo(
+    () => builderCopy.summary?.day_title ?? builderCopy.summary?.nutrition_title,
+    [builderCopy.summary?.day_title, builderCopy.summary?.nutrition_title],
+  );
 
   return (
     <Card
@@ -380,6 +460,44 @@ export const MealPlanBuilderPanelDraftDay = React.memo(function MealPlanBuilderP
             </Box>
           </Typography>
         )}
+        <Box
+          sx={{
+            borderRadius: 2,
+            backgroundColor: summaryBackground,
+            border: `1px solid ${summaryBorder}`,
+            px: { xs: 1.25, md: 1.5 },
+            py: { xs: 1.25, md: 1.5 },
+          }}
+        >
+          <Stack spacing={1}>
+            {daySummaryTitle ? (
+              <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>
+                {daySummaryTitle}
+              </Typography>
+            ) : null}
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={{ xs: 1.5, sm: 3 }}
+              useFlexGap
+              flexWrap="wrap"
+            >
+              {daySummaryEntries.map((entry) => {
+                const displayValue = entry.unit ? `${entry.value}\u00a0${entry.unit}` : entry.value;
+
+                return (
+                  <Stack key={entry.key} spacing={0.25} sx={{ minWidth: { sm: 88 } }}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 700, color: entry.color }}>
+                      {displayValue}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {entry.label}
+                    </Typography>
+                  </Stack>
+                );
+              })}
+            </Stack>
+          </Stack>
+        </Box>
         <Divider flexItem sx={{ my: 1 }} />
         <Stack spacing={1.5}>
           {day.meals.length === 0 ? (

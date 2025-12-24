@@ -213,7 +213,11 @@ export function MealPlanBuilderPanel({
       }),
     [],
   );
-  const nutritionSummaryEntries = React.useMemo(
+  const totalDays = React.useMemo(
+    () => Math.max(days.length, 1),
+    [days.length],
+  );
+  const nutritionAverageEntries = React.useMemo(
     () => {
       const summaryCopy = builderCopy.summary;
       const structureCopy = builderCopy.structure;
@@ -227,28 +231,28 @@ export function MealPlanBuilderPanel({
         {
           key: 'calories' as const,
           label: caloriesLabel,
-          value: macroFormatter.format(nutritionSummary.calories),
+          value: macroFormatter.format(nutritionSummary.calories / totalDays),
           unit: summaryCopy?.calories_unit ?? 'kcal',
           color: theme.palette.primary.main,
         },
         {
           key: 'protein' as const,
           label: proteinLabel,
-          value: macroFormatter.format(nutritionSummary.proteinGrams),
+          value: macroFormatter.format(nutritionSummary.proteinGrams / totalDays),
           unit: summaryCopy?.protein_unit ?? 'g',
           color: theme.palette.info.main,
         },
         {
           key: 'carbs' as const,
           label: carbsLabel,
-          value: macroFormatter.format(nutritionSummary.carbGrams),
+          value: macroFormatter.format(nutritionSummary.carbGrams / totalDays),
           unit: summaryCopy?.carbs_unit ?? 'g',
           color: theme.palette.success.main,
         },
         {
           key: 'fats' as const,
           label: fatsLabel,
-          value: macroFormatter.format(nutritionSummary.fatGrams),
+          value: macroFormatter.format(nutritionSummary.fatGrams / totalDays),
           unit: summaryCopy?.fats_unit ?? 'g',
           color: theme.palette.warning.main,
         },
@@ -258,10 +262,11 @@ export function MealPlanBuilderPanel({
       builderCopy.structure,
       builderCopy.summary,
       macroFormatter,
-      nutritionSummary.carbGrams,
       nutritionSummary.calories,
+      nutritionSummary.carbGrams,
       nutritionSummary.fatGrams,
       nutritionSummary.proteinGrams,
+      totalDays,
       theme.palette.info.main,
       theme.palette.primary.main,
       theme.palette.success.main,
@@ -765,39 +770,6 @@ export function MealPlanBuilderPanel({
                               }}
                             >
                               <Stack spacing={1}>
-                                {builderCopy.summary?.nutrition_title ? (
-                                  <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>
-                                    {builderCopy.summary.nutrition_title}
-                                  </Typography>
-                                ) : null}
-                                <Stack
-                                  direction={{ xs: 'column', sm: 'row' }}
-                                  spacing={{ xs: 1.5, sm: 3 }}
-                                  useFlexGap
-                                  flexWrap="wrap"
-                                >
-                                  {nutritionSummaryEntries.map((entry) => {
-                                    const displayValue = entry.unit
-                                      ? `${entry.value}\u00a0${entry.unit}`
-                                      : entry.value;
-
-                                    return (
-                                      <Stack key={entry.key} spacing={0.25} sx={{ minWidth: { sm: 88 } }}>
-                                        <Typography variant="subtitle1" sx={{ fontWeight: 700, color: entry.color }}>
-                                          {displayValue}
-                                        </Typography>
-                                        <Typography variant="caption" color="text.secondary">
-                                          {entry.label}
-                                        </Typography>
-                                      </Stack>
-                                    );
-                                  })}
-                                </Stack>
-                              </Stack>
-
-                              <Divider />
-
-                              <Stack spacing={1}>
                                 <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>
                                   {t('nutrition-coach.builder.summary.average_title')}
                                 </Typography>
@@ -807,34 +779,10 @@ export function MealPlanBuilderPanel({
                                   useFlexGap
                                   flexWrap="wrap"
                                 >
-                                  {nutritionSummaryEntries.map((entry) => {
-                                    const totalDays = Math.max(days.length, 1);
-                                    // Parse back the formatted value (removing unit if attached, though value field here is formatted string)
-                                    // It's cleaner to re-calculate from raw numbers, but let's access raw validation first.
-                                    // Actually we can map over keys 'calories', 'protein', 'carbs', 'fats'
-
-                                    let rawValue = 0;
-                                    switch (entry.key) {
-                                      case 'calories':
-                                        rawValue = nutritionSummary.calories;
-                                        break;
-                                      case 'protein':
-                                        rawValue = nutritionSummary.proteinGrams;
-                                        break;
-                                      case 'carbs':
-                                        rawValue = nutritionSummary.carbGrams;
-                                        break;
-                                      case 'fats':
-                                        rawValue = nutritionSummary.fatGrams;
-                                        break;
-                                    }
-
-                                    const average = rawValue / totalDays;
-                                    const formattedAverage = macroFormatter.format(average);
-
+                                  {nutritionAverageEntries.map((entry) => {
                                     const displayValue = entry.unit
-                                      ? `${formattedAverage}\u00a0${entry.unit}`
-                                      : formattedAverage;
+                                      ? `${entry.value}\u00a0${entry.unit}`
+                                      : entry.value;
 
                                     return (
                                       <Stack key={entry.key} spacing={0.25} sx={{ minWidth: { sm: 88 } }}>

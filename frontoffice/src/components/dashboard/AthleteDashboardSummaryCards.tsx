@@ -1,15 +1,18 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent, Stack, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Box, Stack, Typography } from '@mui/material';
 import RestaurantMenuOutlinedIcon from '@mui/icons-material/RestaurantMenuOutlined';
 import FitnessCenterOutlinedIcon from '@mui/icons-material/FitnessCenterOutlined';
 
 import { useMealPlans } from '@hooks/nutrition/useMealPlans';
 import { usePrograms } from '@hooks/programs/usePrograms';
+import { GlassCard } from '../common/GlassCard';
 
 /** Summary cards dedicated to athletes. */
 export function AthleteDashboardSummaryCards(): React.JSX.Element {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const { total: programsCount, loading: programsLoading } = usePrograms({
     page: 1,
@@ -29,44 +32,38 @@ export function AthleteDashboardSummaryCards(): React.JSX.Element {
       value: programsCount,
       loading: programsLoading,
       icon: <FitnessCenterOutlinedIcon sx={{ color: 'warning.main', fontSize: 40 }} />,
+      path: '/programs-athlete',
     },
     {
       label: t('dashboard.summary.nutrition'),
       value: mealPlansCount,
       loading: mealPlansLoading,
       icon: <RestaurantMenuOutlinedIcon sx={{ color: 'success.main', fontSize: 40 }} />,
+      path: '/nutrition-athlete',
     },
   ];
 
   return (
-    <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} flexWrap="wrap" useFlexGap>
-      {/* General information */}
+    <Box
+      display="grid"
+      gridTemplateColumns={{ xs: '1fr', md: '1fr 1fr' }}
+      gap={3}
+    >
       {cards.map((card, index) => (
-        <Card
-          key={index}
-          elevation={0}
-          sx={{
-            border: '1px solid',
-            borderColor: 'divider',
-            flex: { xs: '1 1 100%', sm: '1 1 45%', md: '1 1 0' },
-            minWidth: 0,
-          }}
-        >
-          <CardContent>
-            <Stack direction="row" alignItems="center" spacing={2}>
-              {card.icon}
-              <Stack>
-                <Typography variant="subtitle2" color="text.secondary" noWrap>
-                  {card.label}
-                </Typography>
-                <Typography variant="h4" fontWeight="bold">
-                  {card.loading ? '-' : card.value}
-                </Typography>
-              </Stack>
+        <GlassCard key={index} onClick={() => navigate(card.path)}>
+          <Stack direction="row" alignItems="center" spacing={2}>
+            {card.icon}
+            <Stack>
+              <Typography variant="subtitle2" color="text.secondary" noWrap>
+                {card.label}
+              </Typography>
+              <Typography variant="h4" fontWeight="bold">
+                {card.loading ? '-' : card.value}
+              </Typography>
             </Stack>
-          </CardContent>
-        </Card>
+          </Stack>
+        </GlassCard>
       ))}
-    </Stack>
+    </Box>
   );
 }

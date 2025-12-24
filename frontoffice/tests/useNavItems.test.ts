@@ -15,9 +15,12 @@ describe('buildNavItems role permutations', () => {
   it('returns admin menu with all entries in order', () => {
     assert.deepEqual(extractPaths('admin'), [
       '/',
-      '/clients',
+      '/prospects',
+      '/athletes',
       '/programs-coach',
       '/programs-athlete',
+      '/nutrition-coach',
+      '/nutrition-athlete',
       '/sandbox',
     ]);
   });
@@ -25,8 +28,10 @@ describe('buildNavItems role permutations', () => {
   it('returns coach menu without admin/athlete exclusives', () => {
     assert.deepEqual(extractPaths('coach'), [
       '/',
-      '/clients',
+      '/prospects',
+      '/athletes',
       '/programs-coach',
+      '/nutrition-coach',
     ]);
   });
 
@@ -34,6 +39,8 @@ describe('buildNavItems role permutations', () => {
     assert.deepEqual(extractPaths('athlete'), [
       '/',
       '/programs-athlete',
+      '/nutrition-athlete',
+      '/athlete-information',
     ]);
   });
 });

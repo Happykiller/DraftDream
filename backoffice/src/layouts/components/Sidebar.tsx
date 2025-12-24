@@ -1,6 +1,9 @@
 // src/layouts/components/Sidebar.tsx
+import * as React from 'react';
 import {
   Box,
+  ButtonBase,
+  Collapse,
   Divider,
   List,
   ListItem,
@@ -8,12 +11,13 @@ import {
   ListItemIcon,
   ListItemText,
   Tooltip,
-  ButtonBase,
   Typography,
 } from '@mui/material';
 import { keyframes } from '@mui/system';
 import { useTranslation } from 'react-i18next';
+
 import type { NavItem } from '@layouts/hooks/useNavItems';
+import { isSelectedPath } from '@layouts/navMatch';
 import { dividerSx, gradientActive } from '@layouts/tokens';
 
 const pulse = keyframes`
@@ -21,6 +25,16 @@ const pulse = keyframes`
   50%  { transform: scale(1.25); opacity: 1; }
   100% { transform: scale(1); opacity: .85; }
 `;
+
+const isBranchActive = (item: NavItem, currentPath: string): boolean => {
+  if (isSelectedPath(currentPath, item.path)) {
+    return true;
+  }
+  if (item.children?.length) {
+    return item.children.some((child) => isBranchActive(child, currentPath));
+  }
+  return false;
+};
 
 export type SidebarProps = {
   items: NavItem[];
@@ -33,9 +47,126 @@ export type SidebarProps = {
 export function Sidebar({ items, currentPath, onSelectPath, onGoHome }: SidebarProps) {
   const { t } = useTranslation();
   const version = import.meta.env.VITE_APP_VERSION;
+  const [openBranch, setOpenBranch] = React.useState<Record<string, boolean>>({});
+
+  React.useEffect(() => {
+    setOpenBranch((prev) => {
+      const next = { ...prev };
+      const syncBranch = (item: NavItem) => {
+        if (item.children?.length && isBranchActive(item, currentPath)) {
+          next[item.path] = true;
+          item.children.forEach(syncBranch);
+        }
+      };
+
+      items.forEach(syncBranch);
+      return next;
+    });
+  }, [currentPath, items]);
+
+  const renderNavItem = (item: NavItem, depth = 0): React.ReactNode => {
+    const hasChildren = Boolean(item.children?.length);
+    const branchActive = isBranchActive(item, currentPath);
+    const open = hasChildren ? openBranch[item.path] ?? branchActive : false;
+    const isNested = depth > 0;
+
+    const handleClick = () => {
+      if (hasChildren) {
+        setOpenBranch((prev) => ({ ...prev, [item.path]: !open }));
+      }
+      onSelectPath(item.path, item.external);
+    };
+
+    return (
+      <Box key={item.path}>
+        <ListItem disablePadding sx={{ ml: { lg: isNested ? depth * 1.5 : 0 } }}>
+          <Tooltip title={item.label} placement="right" arrow>
+            <Box sx={{ width: '100%' }}>
+              <ListItemButton
+                onClick={handleClick}
+                selected={branchActive}
+                aria-current={branchActive ? 'page' : undefined}
+                aria-label={item.label}
+                sx={{
+                  width: '100%',
+                  mx: isNested ? 0.5 : 1,
+                  my: isNested ? 0.25 : 0.5,
+                  py: isNested ? 0.75 : 1,
+                  borderRadius: isNested ? 1.5 : 2,
+                  transition: 'transform 200ms ease, background-color 200ms ease',
+                  justifyContent: { xs: 'center', lg: 'flex-start' },
+                  pl: { lg: isNested ? 2 + depth : 2 },
+                  '&:hover': { transform: 'scale(1.02)', backgroundColor: 'rgba(255,255,255,0.06)' },
+                  '&.Mui-selected': {
+                    background: gradientActive,
+                    color: '#fff',
+                    '& .MuiListItemIcon-root': { color: '#fff' },
+                    '& .NavIconShape': {
+                      backgroundColor: 'rgba(255,255,255,0.2)',
+                      borderColor: 'rgba(255,255,255,0.35)',
+                    },
+                    boxShadow: '0 6px 20px rgba(220, 0, 35, 0.25)',
+                  },
+                }}
+              >
+                <ListItemIcon sx={{ minWidth: { xs: 'auto', lg: isNested ? 32 : 40 } }}>
+                  <Box
+                    className="NavIconShape"
+                    aria-hidden
+                    sx={{
+                      width: isNested ? 24 : 28,
+                      height: isNested ? 24 : 28,
+                      borderRadius: 1,
+                      display: 'grid',
+                      placeItems: 'center',
+                      backgroundColor: 'rgba(255,255,255,0.06)',
+                      border: '1px solid rgba(255,255,255,0.12)',
+                      color: branchActive ? '#fff' : 'grey.300',
+                      transition: 'background-color 200ms ease, color 200ms ease, border-color 200ms ease',
+                    }}
+                  >
+                    {item.icon}
+                  </Box>
+                </ListItemIcon>
+
+                <ListItemText
+                  primaryTypographyProps={{ variant: isNested ? 'body2' : 'body1', fontWeight: 500 }}
+                  primary={item.label}
+                  sx={{ display: { xs: 'none', lg: 'block' } }}
+                />
+
+                {branchActive && (
+                  <Box
+                    sx={{
+                      display: { xs: 'none', lg: 'block' },
+                      width: isNested ? 6 : 8,
+                      height: isNested ? 6 : 8,
+                      borderRadius: '50%',
+                      ml: 'auto',
+                      mr: 1,
+                      backgroundColor: '#fff',
+                      animation: `${pulse} 1.8s ease-in-out infinite`,
+                      ['@media (prefers-reduced-motion: reduce)']: { animation: 'none' },
+                    }}
+                  />
+                )}
+              </ListItemButton>
+            </Box>
+          </Tooltip>
+        </ListItem>
+
+        {hasChildren && (
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <List disablePadding>{item.children?.map((child) => renderNavItem(child, depth + 1))}</List>
+          </Collapse>
+        )}
+      </Box>
+    );
+  };
 
   return (
     <Box role="navigation" sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      {/* General information */}
       {/* Header/logo */}
       <Box sx={{ px: 2, py: 2, display: 'flex', alignItems: 'center', gap: 1.5 }}>
         <Tooltip title={t('sidebar.go_home')} arrow>
@@ -75,88 +206,7 @@ export function Sidebar({ items, currentPath, onSelectPath, onGoHome }: SidebarP
       <Divider sx={dividerSx} />
 
       {/* Menu */}
-      <List sx={{ flexGrow: 1, py: 1 }}>
-        {items.map((item) => {
-          const selected =
-            currentPath === item.path ||
-            (currentPath.startsWith(item.path) && item.path !== '/'); // light nested support
-
-          return (
-            <ListItem key={item.path} disablePadding>
-              <Tooltip title={item.label} placement="right" arrow>
-                <Box sx={{ width: '100%' }}>
-                  <ListItemButton
-                    onClick={() => onSelectPath(item.path, item.external)}
-                    selected={selected}
-                    aria-current={selected ? 'page' : undefined}
-                    aria-label={item.label}
-                    sx={{
-                      mx: 1,
-                      my: 0.5,
-                      borderRadius: 2,
-                      transition: 'transform 200ms ease, background-color 200ms ease',
-                      justifyContent: { xs: 'center', lg: 'flex-start' },
-                      '&:hover': { transform: 'scale(1.02)', backgroundColor: 'rgba(255,255,255,0.06)' },
-                      '&.Mui-selected': {
-                        background: gradientActive,
-                        color: '#fff',
-                        '& .MuiListItemIcon-root': { color: '#fff' },
-                        '& .NavIconShape': {
-                          backgroundColor: 'rgba(255,255,255,0.2)',
-                          borderColor: 'rgba(255,255,255,0.35)',
-                        },
-                        boxShadow: '0 6px 20px rgba(220, 0, 35, 0.25)',
-                      },
-                    }}
-                  >
-                    <ListItemIcon sx={{ minWidth: { xs: 'auto', lg: 40 } }}>
-                      <Box
-                        className="NavIconShape"
-                        aria-hidden
-                        sx={{
-                          width: 28,
-                          height: 28,
-                          borderRadius: 1,
-                          display: 'grid',
-                          placeItems: 'center',
-                          backgroundColor: 'rgba(255,255,255,0.06)',
-                          border: '1px solid rgba(255,255,255,0.12)',
-                          color: selected ? '#fff' : 'grey.300',
-                          transition: 'background-color 200ms ease, color 200ms ease, border-color 200ms ease',
-                        }}
-                      >
-                        {item.icon}
-                      </Box>
-                    </ListItemIcon>
-
-                    <ListItemText
-                      primaryTypographyProps={{ variant: 'body1', fontWeight: 500 }}
-                      primary={item.label}
-                      sx={{ display: { xs: 'none', lg: 'block' } }}
-                    />
-
-                    {selected && (
-                      <Box
-                        sx={{
-                          display: { xs: 'none', lg: 'block' },
-                          width: 8,
-                          height: 8,
-                          borderRadius: '50%',
-                          ml: 'auto',
-                          mr: 1,
-                          backgroundColor: '#fff',
-                          animation: `${pulse} 1.8s ease-in-out infinite`,
-                          ['@media (prefers-reduced-motion: reduce)']: { animation: 'none' },
-                        }}
-                      />
-                    )}
-                  </ListItemButton>
-                </Box>
-              </Tooltip>
-            </ListItem>
-          );
-        })}
-      </List>
+      <List sx={{ flexGrow: 1, py: 1, overflowX: 'hidden' }}>{items.map((item) => renderNavItem(item))}</List>
 
       <Divider sx={dividerSx} />
 

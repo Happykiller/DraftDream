@@ -32,6 +32,7 @@ export interface MealPlanBuilderCopy {
     total_meals_one?: string;
     total_meals_other?: string;
     nutrition_title?: string;
+    day_title?: string;
     calories_label?: string;
     calories_unit?: string;
     protein_label?: string;

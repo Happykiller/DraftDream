@@ -3,7 +3,6 @@ import { Search } from '@mui/icons-material';
 import {
   Grid,
   InputAdornment,
-  Paper,
   Stack,
   TextField,
   Typography,
@@ -13,6 +12,7 @@ import { alpha, useTheme } from '@mui/material/styles';
 import { ProgramCard, type ProgramActionKey } from '@components/programs/ProgramCard';
 
 import type { Program } from '@hooks/programs/usePrograms';
+import { GlassCard } from '../common/GlassCard';
 
 export interface ProgramListProps {
   programs: Program[];
@@ -139,7 +139,10 @@ export const ProgramList = React.memo(function ProgramList({
                       </InputAdornment>
                     ) : undefined,
                 }}
-                sx={{ bgcolor: 'common.white' }}
+                sx={{
+                  bgcolor: theme => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'common.white',
+                  borderRadius: 1
+                }}
               />
             </Stack>
           ) : null}
@@ -160,7 +163,7 @@ export const ProgramList = React.memo(function ProgramList({
 
       {/* Program grid */}
       {!loading && programs.length > 0 && (
-        <Grid container spacing={3}>
+        <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 3 }} sx={{ width: '100%', m: 0 }}>
           {programs.map((program) => (
             <Grid size={{ xs: 12, sm: 6, lg: 3 }} key={program.id}>
               <ProgramCard
@@ -179,26 +182,25 @@ export const ProgramList = React.memo(function ProgramList({
 
       {/* Empty state */}
       {showPlaceholder && (
-        <Paper
+        <GlassCard
           sx={{
-            borderRadius: 3,
-            p: { xs: 3, md: 5 },
+            p: { xs: 4, md: 6 },
             textAlign: 'center',
-            bgcolor: alpha(theme.palette.primary.light, 0.08),
+            bgcolor: alpha(theme.palette.primary.light, 0.04),
           }}
         >
-          <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+          <Typography variant="h6" sx={{ fontWeight: 700, mb: 1.5 }}>
             {placeholderTitle}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" color="text.secondary" fontWeight={500}>
             {placeholderSubtitle}
           </Typography>
           {placeholderHelper && (
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5, fontStyle: 'italic' }}>
               {placeholderHelper}
             </Typography>
           )}
-        </Paper>
+        </GlassCard>
       )}
     </Stack>
   );

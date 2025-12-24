@@ -52,7 +52,7 @@ export class ProspectSourceResolver {
   }
 
   @Query(() => ProspectSourceListGql, { name: 'prospectSource_list' })
-  @Auth(Role.ADMIN, Role.COACH)
+  @Auth(Role.ADMIN, Role.COACH, Role.ATHLETE)
   async prospectSource_list(
     @Args('input', { nullable: true }) input?: ListProspectSourcesInput,
   ): Promise<ProspectSourceListGql> {
