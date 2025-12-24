@@ -1,6 +1,38 @@
 {
   "releases": [
     {
+      "version": "0.10.0",
+      "title": "User Autonomy & Self-Service",
+      "date": "2025-12-21",
+      "global": [
+        "Complete user autonomy: self-service profile and password updates.",
+        "New modern 'Glass' design for improved readability.",
+        "Dedicated 'My Information' space for athletes to manage health, goals, and preferences.",
+        "Enhanced nutrition builder with daily summaries and global averages."
+      ],
+      "notes": "Version 0.10.0 marks a turning point towards greater autonomy for your users. We are introducing major 'Self-Service' features allowing athletes and coaches to manage their personal information and security themselves. In parallel, the visual experience has been modernized with a new streamlined interface.",
+      "projects": {
+        "/api": [
+          "Support for user profile and password updates (self-service).",
+          "New user deletion features (soft/hard delete).",
+          "Core dependency updates (Mongoose, etc.) and cleanup of obsolete fields."
+        ],
+        "/backoffice": [
+          "Administration tools for password reset and account deletion.",
+          "New design for login cards and widgets with Glassmorphism effect."
+        ],
+        "/frontoffice": [
+          "Editable profile pages for all users.",
+          "New navigation with collapsible sub-menus (e.g., Athletes section).",
+          "Intelligent nutrition builder with real-time daily calculations.",
+          "Explicit action buttons replacing standalone icons."
+        ],
+        "/showcase": [
+          "Release note update."
+        ]
+      }
+    },
+    {
       "version": "0.9.0",
       "title": "Prospect Conversion & Athlete Monitoring",
       "date": "2025-12-14",
