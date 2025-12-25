@@ -14,11 +14,6 @@ export function withTitle<T extends object>(
       document.title = `${title} - ${t('common.brand.full')}`;
     }, [title, t]);
 
-    return (
-      <React.Fragment>
-        {/* General information */}
-        <Component {...props} />
-      </React.Fragment>
-    );
+    return <Component {...props} />;
   };
 }
