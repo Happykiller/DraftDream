@@ -236,6 +236,7 @@ export function ProgramDialog({
 
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="program-dialog-title" fullWidth maxWidth="sm">
+      {/* General information */}
       <DialogTitle id="program-dialog-title">
         {isEdit ? t('programs.dialog.edit_title') : t('programs.dialog.create_title')}
       </DialogTitle>
@@ -279,7 +280,6 @@ export function ProgramDialog({
             </Stack>
           ) : null}
 
-          {/* General information */}
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             {/* Locale is stored per program because content differs between regions. */}
             <TextField

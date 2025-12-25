@@ -66,13 +66,13 @@ export function ProspectActivityPreferenceDialog({ open, mode, initial, onClose,
 
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="prospect-activity-preference-dialog">
+      {/* General information */}
       <DialogTitle id="prospect-activity-preference-dialog">
         {isEdit
           ? t('prospects.activity_preferences.dialog.edit_title')
           : t('prospects.activity_preferences.dialog.create_title')}
       </DialogTitle>
       <DialogContent>
-        {/* General information */}
         <Stack spacing={2} sx={{ mt: 1 }}>
           {isEdit && initial ? (
             <Stack spacing={1.5}>

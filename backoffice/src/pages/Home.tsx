@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Box, Typography, Button, useTheme, Chip } from '@mui/material';
+import { Box, Button, Chip, Typography, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -13,7 +13,7 @@ import {
   TrendingUp
 } from '@mui/icons-material';
 
-// Hooks
+import { ProspectStatus } from '@commons/prospects/status';
 
 import { useProspects } from '@hooks/useProspects';
 import { useUsers } from '@hooks/useUsers';
@@ -22,41 +22,68 @@ import { useSessions } from '@hooks/useSessions';
 import { useExercises } from '@hooks/useExercises';
 import { useMealPlans } from '@hooks/useMealPlans';
 import { useMealDays } from '@hooks/useMealDays';
-// import { ProspectStatus } from '@src/commons/prospects/status';
 
-// Components
 import { DashboardLayout } from '@components/dashboard/DashboardLayout';
 import { StatCard } from '@components/dashboard/widgets/StatCard';
 import { GrowthChartWidget } from '@components/dashboard/widgets/GrowthChartWidget';
 import { DistributionChartWidget } from '@components/dashboard/widgets/DistributionChartWidget';
 import { ProspectsListWidget } from '@components/dashboard/widgets/ProspectsListWidget';
 
-// Utility for aggregation (simple version)
-const getGrowthData = (items: any[], dateKey = 'createdAt') => {
-  if (!items || items.length === 0) return [];
+const PAGE_SIZE = 100;
+const MAX_TREND_ITEMS = 30;
 
-  // Sort by date
-  const sorted = [...items].sort((a, b) => new Date(a[dateKey]).getTime() - new Date(b[dateKey]).getTime());
-
-  // Take last 30 items or so for the trend
-  const recent = sorted.slice(-30);
-
-  return recent.map((item, index) => ({
-    name: new Date(item[dateKey]).toLocaleDateString(),
-    value: index + 1, // Cumulative count
-  }));
+type DatedItem = {
+  createdAt?: string | null;
 };
 
-const getDistributionData = (items: any[], key: string, labelMap?: Record<string, string>) => {
-  const counts: Record<string, number> = {};
-  items.forEach(item => {
-    const val = item[key] || 'Unknown';
-    counts[val] = (counts[val] || 0) + 1;
+type DistributionItem = {
+  visibility?: string | null;
+};
+
+type ChartPoint = {
+  name: string;
+  value: number;
+};
+
+// Build a cumulative trend dataset for the growth widgets.
+const getGrowthData = <T extends DatedItem>(items: T[], dateKey: keyof T = 'createdAt' as keyof T): ChartPoint[] => {
+  if (!items.length) return [];
+
+  const sorted = [...items].sort((a, b) => {
+    const left = a[dateKey] ? new Date(String(a[dateKey])).getTime() : 0;
+    const right = b[dateKey] ? new Date(String(b[dateKey])).getTime() : 0;
+    return left - right;
   });
 
-  return Object.keys(counts).map(k => ({
-    name: labelMap?.[k] || k,
-    value: counts[k]
+  const recent = sorted.slice(-MAX_TREND_ITEMS);
+
+  return recent.map((item, index) => {
+    const dateValue = item[dateKey];
+    const label = dateValue ? new Date(String(dateValue)).toLocaleDateString() : 'Unknown';
+
+    return {
+      name: label,
+      value: index + 1,
+    };
+  });
+};
+
+// Aggregate distribution values for the split widgets.
+const getDistributionData = <T extends DistributionItem>(
+  items: T[],
+  key: keyof T,
+  labelMap?: Record<string, string>,
+): ChartPoint[] => {
+  const counts = items.reduce<Record<string, number>>((accumulator, item) => {
+    const rawValue = item[key];
+    const value = rawValue ? String(rawValue) : 'Unknown';
+    accumulator[value] = (accumulator[value] ?? 0) + 1;
+    return accumulator;
+  }, {});
+
+  return Object.keys(counts).map((label) => ({
+    name: labelMap?.[label] ?? label,
+    value: counts[label],
   }));
 };
 
@@ -64,53 +91,52 @@ export function Home(): React.JSX.Element {
   const { t } = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
-  // const { user: currentUser } = useUser();
 
-  // -- Data Fetching --
+  const { items: prospects, total: totalProspects } = useProspects({ page: 1, limit: PAGE_SIZE, q: '' });
+  const { total: totalCoaches } = useUsers({ page: 1, limit: PAGE_SIZE, q: '', type: 'coach' });
+  const { total: totalAthletes } = useUsers({ page: 1, limit: PAGE_SIZE, q: '', type: 'athlete' });
+  const { items: programs, total: totalPrograms } = usePrograms({ page: 1, limit: PAGE_SIZE, q: '' });
+  const { total: totalSessions } = useSessions({ page: 1, limit: PAGE_SIZE, q: '' });
+  const { total: totalExercises } = useExercises({ page: 1, limit: PAGE_SIZE, q: '' });
+  const { items: mealPlans, total: totalMealPlans } = useMealPlans({ page: 1, limit: PAGE_SIZE, q: '' });
+  const { total: totalMealDays } = useMealDays({ page: 1, limit: PAGE_SIZE, q: '' });
 
-  // Prospects
-  const { items: prospects, total: totalProspects } = useProspects({ page: 1, limit: 100, q: '' });
-
-  // Users
-  const { total: totalCoaches } = useUsers({ page: 1, limit: 100, q: '', type: 'coach' });
-  const { total: totalAthletes } = useUsers({ page: 1, limit: 100, q: '', type: 'athlete' });
-
-  // Content
-  const { items: programs, total: totalPrograms } = usePrograms({ page: 1, limit: 100, q: '' });
-  const { total: totalSessions } = useSessions({ page: 1, limit: 100, q: '' });
-  const { total: totalExercises } = useExercises({ page: 1, limit: 100, q: '' });
-  const { items: mealPlans, total: totalMealPlans } = useMealPlans({ page: 1, limit: 100, q: '' });
-  const { total: totalMealDays } = useMealDays({ page: 1, limit: 100, q: '' });
-
-  // -- Derived Data for Widgets --
-
-  // "My Prospects" -> "A faire"
+  // Keep the list limited to actionable prospects.
   const myProspects = useMemo(() => {
-    // User requested "prospects au status 'todo'"
-    // We remove the check on currentUser?.id because we don't actually filter by user ownership yet
-    // and we want to show the prospects as soon as they are loaded.
-    return prospects.filter(p => p.status === 'TODO').slice(0, 5);
+    return prospects.filter((prospect) => prospect.status === ProspectStatus.TODO).slice(0, 5);
   }, [prospects]);
 
-  // Charts Data
   const prospectsGrowth = useMemo(() => getGrowthData(prospects), [prospects]);
   const programsGrowth = useMemo(() => getGrowthData(programs), [programs]);
   const nutritionGrowth = useMemo(() => getGrowthData(mealPlans), [mealPlans]);
 
-  // Breakdowns
   const programDistribution = useMemo(() => {
-    return getDistributionData(programs, 'visibility', { 'PUBLIC': t('common.visibility.public'), 'PRIVATE': t('common.visibility.private') });
+    return getDistributionData(programs, 'visibility', {
+      PUBLIC: t('common.visibility.public'),
+      PRIVATE: t('common.visibility.private'),
+    });
   }, [programs, t]);
+
+  const programVisibility = useMemo(() => {
+    const publicLabel = t('common.visibility.public');
+    const privateLabel = t('common.visibility.private');
+
+    return {
+      publicLabel,
+      privateLabel,
+      publicCount: programDistribution.find((item) => item.name === publicLabel)?.value ?? 0,
+      privateCount: programDistribution.find((item) => item.name === privateLabel)?.value ?? 0,
+    };
+  }, [programDistribution, t]);
 
   const userDistribution = [
     { name: t('users.types.coach'), value: totalCoaches, color: theme.palette.secondary.main },
     { name: t('users.types.athlete'), value: totalAthletes, color: theme.palette.primary.main },
   ];
 
-
   return (
     <React.Fragment>
-
+      {/* General information */}
       <DashboardLayout>
 
         {/* --- Row 1: High Level Stats --- */}
@@ -165,8 +191,16 @@ export function Home(): React.JSX.Element {
           height={60}
         >
           <Box sx={{ display: 'flex', gap: 1, mt: 1, mb: 1 }}>
-            <Chip label={`${programDistribution.find(d => d.name === t('common.visibility.public'))?.value || 0} ${t('common.visibility.public')}`} size="small" variant="outlined" />
-            <Chip label={`${programDistribution.find(d => d.name === t('common.visibility.private'))?.value || 0} ${t('common.visibility.private')}`} size="small" variant="outlined" />
+            <Chip
+              label={`${programVisibility.publicCount} ${programVisibility.publicLabel}`}
+              size="small"
+              variant="outlined"
+            />
+            <Chip
+              label={`${programVisibility.privateCount} ${programVisibility.privateLabel}`}
+              size="small"
+              variant="outlined"
+            />
           </Box>
         </GrowthChartWidget>
 

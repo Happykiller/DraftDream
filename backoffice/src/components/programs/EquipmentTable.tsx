@@ -104,6 +104,7 @@ export const EquipmentTable = React.memo(function EquipmentTable({
 
   return (
     <Box sx={{ width: '100%' }}>
+      {/* General information */}
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
         spacing={1}

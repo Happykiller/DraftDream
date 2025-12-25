@@ -17,12 +17,16 @@ export function ExercisesPanel(): React.JSX.Element {
   const { page, limit, q, setPage, setLimit, setQ } = useTabParams('exs');
   const [searchInput, setSearchInput] = React.useState(q);
   const debounced = useDebouncedValue(searchInput, 300);
-  React.useEffect(() => { if (debounced !== q) setQ(debounced); }, [debounced, q, setQ]);
+  React.useEffect(() => {
+    if (debounced !== q) {
+      setQ(debounced);
+    }
+  }, [debounced, q, setQ]);
 
   const { items, total, loading, create, update, remove } = useExercises({ page, limit, q });
   const { t } = useTranslation();
 
-  // Options (petites pages, à passer en async si volume ↑)
+  // Small datasets for select options; move to async search if volume grows.
   const cats = useCategories({ page: 1, limit: 100, q: '' });
   const musc = useMuscles({ page: 1, limit: 200, q: '' });
   const tags = useTags({ page: 1, limit: 200, q: '' });
@@ -91,7 +95,7 @@ export function ExercisesPanel(): React.JSX.Element {
     charge: v.charge || undefined,
     rest: v.rest ?? undefined,
     videoUrl: v.videoUrl || undefined,
-    // visibility modifiable selon schéma (oui) → on l’envoie si différent
+    // Visibility can be updated, so keep it aligned with the current form state.
     visibility: v.visibility,
     categoryIds: ids(v.categories),
     muscleIds: ids(v.muscles),
@@ -101,6 +105,7 @@ export function ExercisesPanel(): React.JSX.Element {
 
   return (
     <Box>
+      {/* General information */}
       <ExerciseTable
         rows={items}
         total={total}

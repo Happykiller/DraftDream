@@ -103,6 +103,7 @@ export const TagTable = React.memo(function TagTable({
 
   return (
     <Box sx={{ width: '100%' }}>
+      {/* General information */}
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
         spacing={1}

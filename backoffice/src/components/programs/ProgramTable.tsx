@@ -91,11 +91,14 @@ export const ProgramTable = React.memo(function ProgramTable({
             renderCell: (params) => {
               const count = params.row.sessions.length;
               return (
-                <Chip
-                  size="small"
-                  label={t('programs.table.sessions_linked', { count })}
-                  color={count > 0 ? 'primary' : 'default'}
-                />
+                <React.Fragment>
+                  {/* General information */}
+                  <Chip
+                    size="small"
+                    label={t('programs.table.sessions_linked', { count })}
+                    color={count > 0 ? 'primary' : 'default'}
+                  />
+                </React.Fragment>
               );
             },
           } satisfies GridColDef<Program>,

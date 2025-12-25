@@ -64,11 +64,11 @@ export function ProspectLevelDialog({ open, mode, initial, onClose, onSubmit }: 
 
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="prospect-level-dialog">
+      {/* General information */}
       <DialogTitle id="prospect-level-dialog">
         {isEdit ? t('prospects.levels.dialog.edit_title') : t('prospects.levels.dialog.create_title')}
       </DialogTitle>
       <DialogContent>
-        {/* General information */}
         <Stack spacing={2} sx={{ mt: 1 }}>
           {isEdit && initial ? (
             <Stack spacing={1.5}>

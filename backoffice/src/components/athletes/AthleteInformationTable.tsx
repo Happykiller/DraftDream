@@ -118,6 +118,7 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
 
   return (
     <Box sx={{ width: '100%' }}>
+      {/* General information */}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ mb: 1 }} alignItems={{ xs: 'stretch', sm: 'center' }}>
         <TextField
           placeholder={t('athletes.information.search_placeholder')}

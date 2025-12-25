@@ -25,6 +25,7 @@ export function CategoriesPanel(): React.JSX.Element {
 
   return (
     <Box>
+      {/* General information */}
       <CategoryTable
         rows={items}
         total={total}

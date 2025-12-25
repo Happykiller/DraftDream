@@ -22,6 +22,7 @@ export function TokenTypography({ theme, variant }: TokenTypographyProps) {
 
   return (
     <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
+      {/* General information */}
       <Stack spacing={1}>
         <Typography variant="subtitle2">typography.{variant}</Typography>
         <Typography variant={variant as any} component="p">

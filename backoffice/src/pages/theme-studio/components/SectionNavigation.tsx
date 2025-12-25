@@ -38,6 +38,7 @@ export function SectionNavigation({ sections, activeSection }: SectionNavigation
 
   return (
     <Paper variant="outlined" sx={{ p: 1.5, borderRadius: 3 }} role="navigation" aria-label="Theme studio sections">
+      {/* General information */}
       <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
         {sections.map((section) => {
           const selected = section.id === activeSection;

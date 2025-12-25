@@ -108,6 +108,7 @@ export function CategoryTable(props: CategoryTableProps): React.JSX.Element {
 
   return (
     <Box sx={{ width: '100%' }}>
+      {/* General information */}
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
         spacing={1}

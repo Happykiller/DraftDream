@@ -28,6 +28,7 @@ export const DistributionChartWidget: React.FC<DistributionChartWidgetProps> = (
 
     return (
         <StatCard {...statCardProps}>
+          {/* General information */}
             <Box sx={{ width: '100%', height: height, position: 'relative' }}>
                 <ResponsiveContainer width="100%" height="100%">
                     <PieChart>

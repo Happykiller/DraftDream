@@ -47,6 +47,7 @@ export const GlassCard: React.FC<GlassCardProps> = ({
             }}
             {...other}
         >
+            {/* General information */}
             {children}
         </Paper>
     );

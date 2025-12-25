@@ -79,6 +79,7 @@ export function MealTypeDialog({ open, mode, initial, onClose, onSubmit }: MealT
 
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="meal-type-dialog-title">
+      {/* General information */}
       <DialogTitle id="meal-type-dialog-title">
         {isEdit ? t('meals.mealTypes.dialog.edit_title') : t('meals.mealTypes.dialog.create_title')}
       </DialogTitle>
@@ -114,7 +115,6 @@ export function MealTypeDialog({ open, mode, initial, onClose, onSubmit }: MealT
             </Stack>
           ) : null}
 
-          {/* General information */}
           <TextField
             label={t('common.labels.label')}
             name="label"

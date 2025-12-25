@@ -11,6 +11,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
 
     return (
         <Container maxWidth="xl" sx={{ py: 4 }}>
+          {/* General information */}
             <Box
                 sx={{
                     display: 'grid',

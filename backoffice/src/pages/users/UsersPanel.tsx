@@ -116,6 +116,7 @@ export function UsersPanel(): React.JSX.Element {
 
   return (
     <Box>
+      {/* General information */}
       <UsersTable
         rows={items}
         total={total}

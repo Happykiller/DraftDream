@@ -88,7 +88,7 @@ export const router = createBrowserRouter([
       },
       {
         path: '/sandbox',
-        // 👇 IMPORTANT: enfant index pour /sandbox
+        // IMPORTANT: keep an index child for /sandbox routing.
         children: [
           {
             index: true,

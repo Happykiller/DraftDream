@@ -15,6 +15,7 @@ export function TokenSpacing({ label, pxValue, pxToRem, visualRadius = false }: 
   const remValue = pxToRem(pxValue);
   return (
     <Stack spacing={1} direction={{ xs: 'column', sm: 'row' }} alignItems="center" justifyContent="space-between">
+      {/* General information */}
       <Stack spacing={0.5} sx={{ minWidth: 200 }}>
         <Typography variant="subtitle2">{label}</Typography>
         <Typography variant="body2">

@@ -141,53 +141,56 @@ export const Input: React.FC<InputProps> = ({
   );
 
   return (
-    <TextField
-      {...rest}
-      fullWidth
-      autoComplete="off"
-      variant="outlined"
-      label={fullLabel}
-      type={isPassword ? (passVisible ? 'text' : 'password') : type}
-      error={!virgin && !state.valid}
-      value={state.value}
-      helperText={giveHelper()}
-      onChange={handleChange}
-      InputProps={{
-        startAdornment: startIcon ? (
-          <InputAdornment
-            position="start"
-            sx={{ color: theme.palette.text.secondary }}
-          >
-            {startIcon}
-          </InputAdornment>
-        ) : undefined,
-        endAdornment: renderEndAdornment(),
-      }}
-      sx={{
-        '.MuiOutlinedInput-root': {
-          backgroundColor: theme.palette.background.paper,
-          borderRadius: `${theme.shape.borderRadius}px`,
-          transition: 'all 0.2s ease-in-out',
-          '& fieldset': {
-            borderColor: theme.palette.divider,
+    <React.Fragment>
+      {/* General information */}
+      <TextField
+        {...rest}
+        fullWidth
+        autoComplete="off"
+        variant="outlined"
+        label={fullLabel}
+        type={isPassword ? (passVisible ? 'text' : 'password') : type}
+        error={!virgin && !state.valid}
+        value={state.value}
+        helperText={giveHelper()}
+        onChange={handleChange}
+        InputProps={{
+          startAdornment: startIcon ? (
+            <InputAdornment
+              position="start"
+              sx={{ color: theme.palette.text.secondary }}
+            >
+              {startIcon}
+            </InputAdornment>
+          ) : undefined,
+          endAdornment: renderEndAdornment(),
+        }}
+        sx={{
+          '.MuiOutlinedInput-root': {
+            backgroundColor: theme.palette.background.paper,
+            borderRadius: `${theme.shape.borderRadius}px`,
+            transition: 'all 0.2s ease-in-out',
+            '& fieldset': {
+              borderColor: theme.palette.divider,
+            },
+            '&:hover fieldset': {
+              borderColor: theme.palette.primary.light,
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: theme.palette.primary.main,
+              boxShadow: `0 0 0 2px ${theme.palette.primary.main}40`,
+            },
+            '&.Mui-error fieldset': {
+              borderColor: theme.palette.error.main,
+            },
           },
-          '&:hover fieldset': {
-            borderColor: theme.palette.primary.light,
+          input: {
+            color: theme.palette.text.primary,
+            backgroundColor: 'transparent',
+            py: 1.2,
           },
-          '&.Mui-focused fieldset': {
-            borderColor: theme.palette.primary.main,
-            boxShadow: `0 0 0 2px ${theme.palette.primary.main}40`,
-          },
-          '&.Mui-error fieldset': {
-            borderColor: theme.palette.error.main,
-          },
-        },
-        input: {
-          color: theme.palette.text.primary,
-          backgroundColor: 'transparent',
-          py: 1.2,
-        },
-      }}
-    />
+        }}
+      />
+    </React.Fragment>
   );
 };

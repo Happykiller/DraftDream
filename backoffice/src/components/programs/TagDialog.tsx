@@ -64,6 +64,7 @@ export function TagDialog({ open, mode, initial, onClose, onSubmit }: TagDialogP
 
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="tag-dialog-title">
+      {/* General information */}
       <DialogTitle id="tag-dialog-title">
         {isEdit ? t('programs.tags.dialog.edit_title') : t('programs.tags.dialog.create_title')}
       </DialogTitle>

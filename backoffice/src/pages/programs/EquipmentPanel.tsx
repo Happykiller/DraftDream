@@ -25,6 +25,7 @@ export function EquipmentPanel(): React.JSX.Element {
 
   return (
     <Box>
+      {/* General information */}
       <EquipmentTable
         rows={items}
         total={total}

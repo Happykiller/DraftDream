@@ -25,6 +25,7 @@ export function MusclesPanel(): React.JSX.Element {
 
   return (
     <Box>
+      {/* General information */}
       <MuscleTable
         rows={items}
         total={total}

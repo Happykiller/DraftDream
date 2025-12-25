@@ -162,6 +162,7 @@ export function Login(): React.JSX.Element {
         p: { xs: 2, sm: 3 },
       }}
     >
+      {/* General information */}
       <Box
         sx={{
           flexGrow: 1,

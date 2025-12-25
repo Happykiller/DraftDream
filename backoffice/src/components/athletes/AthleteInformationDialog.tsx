@@ -111,6 +111,7 @@ export function AthleteInformationDialog({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth aria-labelledby="athlete-information-dialog">
+      {/* General information */}
       <DialogTitle id="athlete-information-dialog">
         {t('athletes.information.dialog.edit_title')}
       </DialogTitle>
@@ -156,7 +157,6 @@ export function AthleteInformationDialog({
           </Stack>
         ) : null}
 
-        {/* General information */}
         <Box component="form" onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid size={{ xs: 12, md: 6 }}>

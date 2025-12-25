@@ -200,6 +200,7 @@ export function ExerciseDialog({
 
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="exercise-dialog-title" fullWidth maxWidth="md">
+      {/* General information */}
       <DialogTitle id="exercise-dialog-title">
         {title ?? (isEdit ? t('programs.exercises.dialog.edit_title') : t('programs.exercises.dialog.create_title'))}
       </DialogTitle>

@@ -192,6 +192,7 @@ export function SessionDialog({
 
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="session-dialog-title" fullWidth maxWidth="sm">
+      {/* General information */}
       <DialogTitle id="session-dialog-title">
         {isEdit ? t('programs.sessions.dialog.edit_title') : t('programs.sessions.dialog.create_title')}
       </DialogTitle>
@@ -232,7 +233,6 @@ export function SessionDialog({
             </Stack>
           ) : null}
 
-          {/* General information */}
           <TextField
             label={t('common.labels.label')}
             name="label"

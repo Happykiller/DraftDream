@@ -59,6 +59,7 @@ export function SessionsPanel(): React.JSX.Element {
 
   return (
     <Box>
+      {/* General information */}
       <SessionTables
         rows={items}
         total={total}

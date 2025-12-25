@@ -25,6 +25,7 @@ export function TagsPanel(): React.JSX.Element {
 
   return (
     <Box>
+      {/* General information */}
       <TagTable
         rows={items}
         total={total}

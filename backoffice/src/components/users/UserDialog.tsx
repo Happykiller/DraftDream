@@ -117,6 +117,7 @@ export function UserDialog({ open, mode, initial, onClose, onSubmit }: UserDialo
 
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="user-dialog-title" fullWidth maxWidth="sm">
+      {/* General information */}
       <DialogTitle id="user-dialog-title">{isEdit ? t('users.dialog.edit_title') : t('users.dialog.create_title')}</DialogTitle>
       <DialogContent>
         <Stack component="form" onSubmit={submit} spacing={2} sx={{ mt: 1 }}>

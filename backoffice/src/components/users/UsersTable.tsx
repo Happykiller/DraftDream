@@ -107,6 +107,7 @@ export const UsersTable = React.memo(function UsersTable({
 
   return (
     <Box sx={{ width: '100%' }}>
+      {/* General information */}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ mb: 1 }} alignItems={{ xs: 'stretch', sm: 'center' }}>
         <TextField
           placeholder={t('users.table.search_placeholder')}

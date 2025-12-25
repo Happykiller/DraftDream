@@ -125,6 +125,7 @@ export const SessionTables = React.memo(function SessionTables({
 
   return (
     <Box sx={{ width: '100%' }}>
+      {/* General information */}
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
         spacing={1}

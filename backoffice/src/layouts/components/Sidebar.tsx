@@ -79,6 +79,7 @@ export function Sidebar({ items, currentPath, onSelectPath, onGoHome }: SidebarP
 
     return (
       <Box key={item.path}>
+        {/* General information */}
         <ListItem disablePadding sx={{ ml: { lg: isNested ? depth * 1.5 : 0 } }}>
           <Tooltip title={item.label} placement="right" arrow>
             <Box sx={{ width: '100%' }}>
@@ -166,7 +167,6 @@ export function Sidebar({ items, currentPath, onSelectPath, onGoHome }: SidebarP
 
   return (
     <Box role="navigation" sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      {/* General information */}
       {/* Header/logo */}
       <Box sx={{ px: 2, py: 2, display: 'flex', alignItems: 'center', gap: 1.5 }}>
         <Tooltip title={t('sidebar.go_home')} arrow>

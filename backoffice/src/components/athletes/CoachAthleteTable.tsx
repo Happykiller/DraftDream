@@ -182,8 +182,8 @@ export function CoachAthleteTable(props: CoachAthleteTableProps): React.JSX.Elem
 
   return (
     <Box>
+      {/* General information */}
       <Stack spacing={2} sx={{ mb: 2 }}>
-        {/* General information */}
         <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
           <Autocomplete
             sx={{ minWidth: 220 }}

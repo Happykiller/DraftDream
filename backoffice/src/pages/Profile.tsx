@@ -158,8 +158,8 @@ export function Profile(): React.JSX.Element {
         py: { xs: 6, md: 10 },
       }}
     >
+      {/* General information */}
       <Container maxWidth="lg">
-        {/* General information */}
         <Grid container spacing={{ xs: 6, md: 8 }} alignItems="stretch">
           <Grid size={{ xs: 12, md: 5 }}>
             <Stack spacing={4} sx={{ height: '100%' }}>

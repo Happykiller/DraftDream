@@ -75,6 +75,7 @@ export function ProgramsPanel(): React.JSX.Element {
 
   return (
     <Box>
+      {/* General information */}
       <ProgramTable
         rows={items}
         total={total}
