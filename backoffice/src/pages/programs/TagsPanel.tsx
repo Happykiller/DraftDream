@@ -1,4 +1,3 @@
-// src/pages/programs/TagsPanel.tsx
 import * as React from 'react';
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';

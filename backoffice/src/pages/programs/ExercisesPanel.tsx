@@ -1,4 +1,3 @@
-// src/pages/programs/ExercisesPanel.tsx
 import * as React from 'react';
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -110,8 +109,8 @@ export function ExercisesPanel(): React.JSX.Element {
     rest: v.rest ?? undefined,
     videoUrl: v.videoUrl || undefined,
     visibility: v.visibility,
-    categoryIds: ids(v.categories),                   // required
-    muscleIds: ids(v.muscles),                        // required (non-empty)
+    categoryIds: ids(v.categories),
+    muscleIds: ids(v.muscles),
     equipmentIds: ids(v.equipment),
     tagIds: ids(v.tags),
   });
