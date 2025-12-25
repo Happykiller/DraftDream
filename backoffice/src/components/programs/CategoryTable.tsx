@@ -61,7 +61,7 @@ export function CategoryTable(props: CategoryTableProps): React.JSX.Element {
       {
         field: 'creator',
         headerName: t('common.labels.creator'),
-        valueGetter: (params: GridValueGetterParams<Category>) => params.value?.email ?? '—',
+        valueGetter: (value: GridValueGetterParams<Category>['value']) => value?.email ?? '—',
         flex: 1,
       },
       ...(isXl
@@ -69,14 +69,14 @@ export function CategoryTable(props: CategoryTableProps): React.JSX.Element {
           {
             field: 'createdAt',
             headerName: t('common.labels.created'),
-            valueFormatter: (params: GridValueFormatterParams<Category>) => fmtDate(params.value),
+            valueFormatter: (value: GridValueFormatterParams<Category>['value']) => fmtDate(value),
             flex: 1,
             minWidth: 170,
           },
           {
             field: 'updatedAt',
             headerName: t('common.labels.updated'),
-            valueFormatter: (params: GridValueFormatterParams<Category>) => fmtDate(params.value),
+            valueFormatter: (value: GridValueFormatterParams<Category>['value']) => fmtDate(value),
             flex: 1,
             minWidth: 170,
           },

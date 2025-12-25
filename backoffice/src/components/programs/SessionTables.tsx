@@ -53,7 +53,7 @@ export const SessionTables = React.memo(function SessionTables({
       field: 'durationMin',
       headerName: t('common.labels.duration_minutes'),
       width: 130,
-      valueFormatter: (params: GridValueFormatterParams<Session>) => `${params.value}`,
+      valueFormatter: (value: GridValueFormatterParams<Session>['value']) => `${value}`,
     },
     {
       field: 'exerciseIds',
@@ -80,7 +80,7 @@ export const SessionTables = React.memo(function SessionTables({
       headerName: t('common.labels.creator'),
       flex: 1,
       minWidth: 170,
-      valueFormatter: (params: GridValueFormatterParams<Session>) => params.value?.email ?? '',
+      valueFormatter: (value: GridValueFormatterParams<Session>['value']) => value?.email ?? '',
     },
     ...(isXl
       ? [
@@ -89,14 +89,14 @@ export const SessionTables = React.memo(function SessionTables({
           headerName: t('common.labels.created'),
           flex: 1,
           minWidth: 170,
-          valueFormatter: (params: GridValueFormatterParams<Session>) => fmtDate(params.value),
+          valueFormatter: (value: GridValueFormatterParams<Session>['value']) => fmtDate(value),
         },
         {
           field: 'updatedAt',
           headerName: t('common.labels.updated'),
           flex: 1,
           minWidth: 170,
-          valueFormatter: (params: GridValueFormatterParams<Session>) => fmtDate(params.value),
+          valueFormatter: (value: GridValueFormatterParams<Session>['value']) => fmtDate(value),
         },
       ]
       : []),

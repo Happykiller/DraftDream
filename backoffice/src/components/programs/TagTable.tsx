@@ -57,7 +57,7 @@ export const TagTable = React.memo(function TagTable({
     {
       field: 'creator',
       headerName: t('common.labels.creator'),
-      valueGetter: (params: GridValueGetterParams<Tag>) => params.value?.email ?? '—',
+      valueGetter: (value: GridValueGetterParams<Tag>['value']) => value?.email ?? '—',
       flex: 1,
     },
     ...(isXl
@@ -65,14 +65,14 @@ export const TagTable = React.memo(function TagTable({
         {
           field: 'createdAt',
           headerName: t('common.labels.created'),
-          valueFormatter: (params: GridValueFormatterParams<Tag>) => fmtDate(params.value),
+          valueFormatter: (value: GridValueFormatterParams<Tag>['value']) => fmtDate(value),
           flex: 1,
           minWidth: 170,
         },
         {
           field: 'updatedAt',
           headerName: t('common.labels.updated'),
-          valueFormatter: (params: GridValueFormatterParams<Tag>) => fmtDate(params.value),
+          valueFormatter: (value: GridValueFormatterParams<Tag>['value']) => fmtDate(value),
           flex: 1,
           minWidth: 170,
         },

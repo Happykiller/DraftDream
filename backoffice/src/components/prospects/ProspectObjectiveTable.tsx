@@ -52,7 +52,7 @@ export function ProspectObjectiveTable(props: ProspectObjectiveTableProps): Reac
       {
         field: 'creator',
         headerName: t('common.labels.creator'),
-        valueGetter: (params: GridValueGetterParams<ProspectObjective>) => params.value?.email ?? '—',
+        valueGetter: (value: GridValueGetterParams<ProspectObjective>['value']) => value?.email ?? '—',
         flex: 1,
       },
       ...(isXl
@@ -60,13 +60,13 @@ export function ProspectObjectiveTable(props: ProspectObjectiveTableProps): Reac
           {
             field: 'createdAt',
             headerName: t('common.labels.created'),
-            valueFormatter: (params: GridValueFormatterParams<ProspectObjective>) => fmtDate(params.value),
+            valueFormatter: (value: GridValueFormatterParams<ProspectObjective>['value']) => fmtDate(value),
             flex: 1,
           },
           {
             field: 'updatedAt',
             headerName: t('common.labels.updated'),
-            valueFormatter: (params: GridValueFormatterParams<ProspectObjective>) => fmtDate(params.value),
+            valueFormatter: (value: GridValueFormatterParams<ProspectObjective>['value']) => fmtDate(value),
             flex: 1,
           },
         ]

@@ -52,7 +52,7 @@ export function MealTable(props: MealTableProps): React.JSX.Element {
       {
         field: 'type',
         headerName: t('common.labels.type'),
-        valueGetter: (params: GridValueGetterParams<Meal>) => params.value?.label ?? '',
+        valueGetter: (value: GridValueGetterParams<Meal>['value']) => value?.label ?? '',
         flex: 1,
       },
       ...(isXl
@@ -67,7 +67,10 @@ export function MealTable(props: MealTableProps): React.JSX.Element {
       {
         field: 'creator',
         headerName: t('common.labels.creator'),
-        valueGetter: (params: GridValueGetterParams<Meal>) => params.row.creator?.email ?? '',
+        valueGetter: (
+          _value: GridValueGetterParams<Meal>['value'],
+          row: GridValueGetterParams<Meal>['row']
+        ) => row.creator?.email ?? '',
         flex: 1,
       },
       ...(isXl
@@ -75,13 +78,13 @@ export function MealTable(props: MealTableProps): React.JSX.Element {
           {
             field: 'createdAt',
             headerName: t('common.labels.created'),
-            valueFormatter: (params: GridValueFormatterParams<Meal>) => formatDate(params.value),
+            valueFormatter: (value: GridValueFormatterParams<Meal>['value']) => formatDate(value),
             flex: 1,
           },
           {
             field: 'updatedAt',
             headerName: t('common.labels.updated'),
-            valueFormatter: (params: GridValueFormatterParams<Meal>) => formatDate(params.value),
+            valueFormatter: (value: GridValueFormatterParams<Meal>['value']) => formatDate(value),
             flex: 1,
           },
         ]

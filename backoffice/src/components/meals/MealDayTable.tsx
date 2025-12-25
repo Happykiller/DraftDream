@@ -59,7 +59,7 @@ export function MealDayTable(props: MealDayTableProps): React.JSX.Element {
       {
         field: 'creator',
         headerName: t('common.labels.creator'),
-        valueGetter: (params: GridValueGetterParams<MealDay>) => params.value?.email ?? t('common.messages.unknown'),
+        valueGetter: (value: GridValueGetterParams<MealDay>['value']) => value?.email ?? t('common.messages.unknown'),
         flex: 1,
       },
       ...(isXl
@@ -67,14 +67,14 @@ export function MealDayTable(props: MealDayTableProps): React.JSX.Element {
           {
             field: 'createdAt',
             headerName: t('common.labels.created'),
-            valueFormatter: (params: GridValueFormatterParams<MealDay>) => formatDate(params.value),
+            valueFormatter: (value: GridValueFormatterParams<MealDay>['value']) => formatDate(value),
             flex: 1,
             minWidth: 170,
           },
           {
             field: 'updatedAt',
             headerName: t('common.labels.updated'),
-            valueFormatter: (params: GridValueFormatterParams<MealDay>) => formatDate(params.value),
+            valueFormatter: (value: GridValueFormatterParams<MealDay>['value']) => formatDate(value),
             flex: 1,
             minWidth: 170,
           },

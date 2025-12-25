@@ -79,7 +79,7 @@ export const ExerciseTable = React.memo(function ExerciseTable({
       headerName: t('common.labels.creator'),
       flex: 1,
       minWidth: 170,
-      valueFormatter: (params: GridValueFormatterParams<Exercise>) => params.value?.email ?? '',
+      valueFormatter: (value: GridValueFormatterParams<Exercise>['value']) => value?.email ?? '',
     },
     {
       field: 'visibility',
@@ -92,14 +92,14 @@ export const ExerciseTable = React.memo(function ExerciseTable({
         {
           field: 'createdAt',
           headerName: t('common.labels.created'),
-          valueFormatter: (params: GridValueFormatterParams<Exercise>) => fmtDate(params.value),
+          valueFormatter: (value: GridValueFormatterParams<Exercise>['value']) => fmtDate(value),
           flex: 1,
           minWidth: 170,
         },
         {
           field: 'updatedAt',
           headerName: t('common.labels.updated'),
-          valueFormatter: (params: GridValueFormatterParams<Exercise>) => fmtDate(params.value),
+          valueFormatter: (value: GridValueFormatterParams<Exercise>['value']) => fmtDate(value),
           flex: 1,
           minWidth: 170,
         },

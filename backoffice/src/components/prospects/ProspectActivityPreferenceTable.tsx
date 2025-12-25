@@ -53,7 +53,7 @@ export function ProspectActivityPreferenceTable(props: ProspectActivityPreferenc
       {
         field: 'creator',
         headerName: t('common.labels.creator'),
-        valueGetter: (params: GridValueGetterParams<ProspectActivityPreference>) => params.value?.email ?? '—',
+        valueGetter: (value: GridValueGetterParams<ProspectActivityPreference>['value']) => value?.email ?? '—',
         flex: 1,
       },
 
@@ -62,13 +62,13 @@ export function ProspectActivityPreferenceTable(props: ProspectActivityPreferenc
           {
             field: 'createdAt',
             headerName: t('common.labels.created'),
-            valueFormatter: (params: GridValueFormatterParams<ProspectActivityPreference>) => fmtDate(params.value),
+            valueFormatter: (value: GridValueFormatterParams<ProspectActivityPreference>['value']) => fmtDate(value),
             flex: 1,
           },
           {
             field: 'updatedAt',
             headerName: t('common.labels.updated'),
-            valueFormatter: (params: GridValueFormatterParams<ProspectActivityPreference>) => fmtDate(params.value),
+            valueFormatter: (value: GridValueFormatterParams<ProspectActivityPreference>['value']) => fmtDate(value),
             flex: 1,
           },
         ]

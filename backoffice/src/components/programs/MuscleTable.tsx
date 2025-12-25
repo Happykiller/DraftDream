@@ -60,7 +60,7 @@ export const MuscleTable = React.memo(function MuscleTable(props: MuscleTablePro
     {
       field: 'creator',
       headerName: t('common.labels.creator'),
-      valueGetter: (params: GridValueGetterParams<Muscle>) => params.value?.email ?? '—',
+      valueGetter: (value: GridValueGetterParams<Muscle>['value']) => value?.email ?? '—',
       flex: 1,
     },
     ...(isXl
@@ -68,14 +68,14 @@ export const MuscleTable = React.memo(function MuscleTable(props: MuscleTablePro
         {
           field: 'createdAt',
           headerName: t('common.labels.created'),
-          valueFormatter: (params: GridValueFormatterParams<Muscle>) => fmtDate(params.value),
+          valueFormatter: (value: GridValueFormatterParams<Muscle>['value']) => fmtDate(value),
           flex: 1,
           minWidth: 170,
         },
         {
           field: 'updatedAt',
           headerName: t('common.labels.updated'),
-          valueFormatter: (params: GridValueFormatterParams<Muscle>) => fmtDate(params.value),
+          valueFormatter: (value: GridValueFormatterParams<Muscle>['value']) => fmtDate(value),
           flex: 1,
           minWidth: 170,
         },

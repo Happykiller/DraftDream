@@ -68,13 +68,13 @@ export function MealTypeTable(props: MealTypeTableProps): React.JSX.Element {
           {
             field: 'createdAt',
             headerName: t('common.labels.created'),
-            valueFormatter: (params: GridValueFormatterParams<MealType>) => formatDate(params.value),
+            valueFormatter: (value: GridValueFormatterParams<MealType>['value']) => formatDate(value),
             flex: 1,
           },
           {
             field: 'updatedAt',
             headerName: t('common.labels.updated'),
-            valueFormatter: (params: GridValueFormatterParams<MealType>) => formatDate(params.value),
+            valueFormatter: (value: GridValueFormatterParams<MealType>['value']) => formatDate(value),
             flex: 1,
           },
         ]

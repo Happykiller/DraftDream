@@ -76,7 +76,10 @@ export const ProgramTable = React.memo(function ProgramTable({
       headerName: t('common.labels.athlete'),
       flex: 1,
       minWidth: 160,
-      valueGetter: (params: GridValueGetterParams<Program>) => params.value?.email ?? '',
+      valueGetter: (
+        _value: GridValueGetterParams<Program>['value'],
+        row: GridValueGetterParams<Program>['row']
+      ) => row.athlete?.email ?? '',
     },
     ...(isLargeUp
       ? [
@@ -107,7 +110,7 @@ export const ProgramTable = React.memo(function ProgramTable({
       headerName: t('common.labels.creator'),
       flex: 1,
       minWidth: 170,
-      valueFormatter: (params: GridValueFormatterParams<Program>) => params.value?.email ?? '',
+      valueFormatter: (value: GridValueFormatterParams<Program>['value']) => value?.email ?? '',
     },
     ...(isXlUp
       ? [
@@ -116,14 +119,14 @@ export const ProgramTable = React.memo(function ProgramTable({
             headerName: t('common.labels.created'),
             flex: 1,
             minWidth: 170,
-            valueFormatter: (params: GridValueFormatterParams<Program>) => fmtDate(params.value),
+            valueFormatter: (value: GridValueFormatterParams<Program>['value']) => fmtDate(value),
           },
           {
             field: 'updatedAt',
             headerName: t('common.labels.updated'),
             flex: 1,
             minWidth: 170,
-            valueFormatter: (params: GridValueFormatterParams<Program>) => fmtDate(params.value),
+            valueFormatter: (value: GridValueFormatterParams<Program>['value']) => fmtDate(value),
           },
         ]
       : []),

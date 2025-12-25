@@ -55,13 +55,13 @@ export function ProspectLevelTable(props: ProspectLevelTableProps): React.JSX.El
           {
             field: 'createdAt',
             headerName: t('common.labels.created'),
-            valueFormatter: (params: GridValueFormatterParams<ProspectLevel>) => fmtDate(params.value),
+            valueFormatter: (value: GridValueFormatterParams<ProspectLevel>['value']) => fmtDate(value),
             flex: 1,
           },
           {
             field: 'updatedAt',
             headerName: t('common.labels.updated'),
-            valueFormatter: (params: GridValueFormatterParams<ProspectLevel>) => fmtDate(params.value),
+            valueFormatter: (value: GridValueFormatterParams<ProspectLevel>['value']) => fmtDate(value),
             flex: 1,
           },
         ]

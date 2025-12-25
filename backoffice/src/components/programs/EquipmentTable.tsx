@@ -59,21 +59,21 @@ export const EquipmentTable = React.memo(function EquipmentTable({
       headerName: t('common.labels.creator'),
       flex: 1,
       minWidth: 180,
-      valueFormatter: (params: GridValueFormatterParams<Equipment>) => params.value?.email ?? '—',
+      valueFormatter: (value: GridValueFormatterParams<Equipment>['value']) => value?.email ?? '—',
     },
     ...(isXl
       ? [
         {
           field: 'createdAt',
           headerName: t('common.labels.created'),
-          valueFormatter: (params: GridValueFormatterParams<Equipment>) => fmtDate(params.value),
+          valueFormatter: (value: GridValueFormatterParams<Equipment>['value']) => fmtDate(value),
           flex: 1,
           minWidth: 180,
         },
         {
           field: 'updatedAt',
           headerName: t('common.labels.updated'),
-          valueFormatter: (params: GridValueFormatterParams<Equipment>) => fmtDate(params.value),
+          valueFormatter: (value: GridValueFormatterParams<Equipment>['value']) => fmtDate(value),
           flex: 1,
           minWidth: 180,
         },

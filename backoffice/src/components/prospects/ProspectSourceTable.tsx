@@ -55,13 +55,13 @@ export function ProspectSourceTable(props: ProspectSourceTableProps): React.JSX.
           {
             field: 'createdAt',
             headerName: t('common.labels.created'),
-            valueFormatter: (params: GridValueFormatterParams<ProspectSource>) => fmtDate(params.value),
+            valueFormatter: (value: GridValueFormatterParams<ProspectSource>['value']) => fmtDate(value),
             flex: 1,
           },
           {
             field: 'updatedAt',
             headerName: t('common.labels.updated'),
-            valueFormatter: (params: GridValueFormatterParams<ProspectSource>) => fmtDate(params.value),
+            valueFormatter: (value: GridValueFormatterParams<ProspectSource>['value']) => fmtDate(value),
             flex: 1,
           },
         ]

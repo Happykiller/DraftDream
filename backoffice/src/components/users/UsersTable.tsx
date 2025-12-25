@@ -45,8 +45,8 @@ export const UsersTable = React.memo(function UsersTable({
         headerName: t('common.labels.name'),
         flex: 1, // Reduced from 1.2
         minWidth: 150,
-        valueGetter: (params: GridValueGetterParams<User>) => {
-          const full = `${params.row?.first_name ?? ''} ${params.row?.last_name ?? ''}`.trim();
+        valueGetter: (_value: GridValueGetterParams<User>['value'], row: GridValueGetterParams<User>['row']) => {
+          const full = `${row?.first_name ?? ''} ${row?.last_name ?? ''}`.trim();
           return full || '—';
         },
         sortComparator: (a, b) => String(a).localeCompare(String(b)),
@@ -69,19 +69,19 @@ export const UsersTable = React.memo(function UsersTable({
             field: 'company',
             headerName: t('common.labels.company'),
             flex: 0.8,
-            valueGetter: (params: GridValueGetterParams<User>) => params.value?.name ?? '—',
+            valueGetter: (value: GridValueGetterParams<User>['value']) => value?.name ?? '—',
           },
           {
             field: 'createdAt',
             headerName: t('common.labels.created'),
             width: 150,
-            valueFormatter: (params: GridValueFormatterParams<User>) => fmtDate(params.value),
+            valueFormatter: (value: GridValueFormatterParams<User>['value']) => fmtDate(value),
           },
           {
             field: 'updatedAt',
             headerName: t('common.labels.updated'),
             width: 150,
-            valueFormatter: (params: GridValueFormatterParams<User>) => fmtDate(params.value),
+            valueFormatter: (value: GridValueFormatterParams<User>['value']) => fmtDate(value),
           },
         ]
         : []),
