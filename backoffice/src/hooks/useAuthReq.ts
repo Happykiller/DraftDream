@@ -4,8 +4,8 @@ import { session } from '@stores/session';
 import {
   AuthService,
   AUTH_ROLE_FORBIDDEN,
-  AuthCredentials,
 } from '@services/auth/auth.service';
+import type { AuthCredentials } from '@services/auth/auth.service';
 
 export const useAuthReq = () => {
   const authService = new AuthService();
