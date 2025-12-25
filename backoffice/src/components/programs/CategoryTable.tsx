@@ -2,7 +2,7 @@
 import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { DataGrid, type GridColDef } from '@mui/x-data-grid';
+import { DataGrid, type GridColDef, type GridValueFormatterParams, type GridValueGetterParams } from '@mui/x-data-grid';
 
 import { Box, Button, Stack, TextField, IconButton, Tooltip, useMediaQuery } from '@mui/material';
 import type { Theme } from '@mui/material';
@@ -61,7 +61,7 @@ export function CategoryTable(props: CategoryTableProps): React.JSX.Element {
       {
         field: 'creator',
         headerName: t('common.labels.creator'),
-        valueGetter: (params: any) => params?.email,
+        valueGetter: (params: GridValueGetterParams<Category>) => params.value?.email ?? '—',
         flex: 1,
       },
       ...(isXl
@@ -69,14 +69,14 @@ export function CategoryTable(props: CategoryTableProps): React.JSX.Element {
           {
             field: 'createdAt',
             headerName: t('common.labels.created'),
-            valueFormatter: (value: any) => fmtDate(value),
+            valueFormatter: (params: GridValueFormatterParams<Category>) => fmtDate(params.value),
             flex: 1,
             minWidth: 170,
           },
           {
             field: 'updatedAt',
             headerName: t('common.labels.updated'),
-            valueFormatter: (value: any) => fmtDate(value),
+            valueFormatter: (params: GridValueFormatterParams<Category>) => fmtDate(params.value),
             flex: 1,
             minWidth: 170,
           },

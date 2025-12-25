@@ -2,7 +2,7 @@
 import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { DataGrid, type GridColDef } from '@mui/x-data-grid';
+import { DataGrid, type GridColDef, type GridValueFormatterParams, type GridValueGetterParams } from '@mui/x-data-grid';
 import {
   Autocomplete,
   Box,
@@ -76,9 +76,7 @@ export const ProgramTable = React.memo(function ProgramTable({
       headerName: t('common.labels.athlete'),
       flex: 1,
       minWidth: 160,
-      valueGetter: (params: any) => {
-        return params?.email ?? ''
-      },
+      valueGetter: (params: GridValueGetterParams<Program>) => params.value?.email ?? '',
     },
     ...(isLargeUp
       ? [
@@ -109,7 +107,7 @@ export const ProgramTable = React.memo(function ProgramTable({
       headerName: t('common.labels.creator'),
       flex: 1,
       minWidth: 170,
-      valueFormatter: (params: any) => params?.email ?? '',
+      valueFormatter: (params: GridValueFormatterParams<Program>) => params.value?.email ?? '',
     },
     ...(isXlUp
       ? [
@@ -118,14 +116,14 @@ export const ProgramTable = React.memo(function ProgramTable({
             headerName: t('common.labels.created'),
             flex: 1,
             minWidth: 170,
-            valueFormatter: (params: any) => fmtDate(params),
+            valueFormatter: (params: GridValueFormatterParams<Program>) => fmtDate(params.value),
           },
           {
             field: 'updatedAt',
             headerName: t('common.labels.updated'),
             flex: 1,
             minWidth: 170,
-            valueFormatter: (params: any) => fmtDate(params),
+            valueFormatter: (params: GridValueFormatterParams<Program>) => fmtDate(params.value),
           },
         ]
       : []),

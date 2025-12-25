@@ -2,7 +2,7 @@
 import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { DataGrid, type GridColDef } from '@mui/x-data-grid';
+import { DataGrid, type GridColDef, type GridValueFormatterParams } from '@mui/x-data-grid';
 
 import { Box, Button, Chip, IconButton, Stack, TextField, Tooltip, useMediaQuery } from '@mui/material';
 import type { Theme } from '@mui/material';
@@ -53,7 +53,7 @@ export const SessionTables = React.memo(function SessionTables({
       field: 'durationMin',
       headerName: t('common.labels.duration_minutes'),
       width: 130,
-      valueFormatter: (value: any) => `${value}`,
+      valueFormatter: (params: GridValueFormatterParams<Session>) => `${params.value}`,
     },
     {
       field: 'exerciseIds',
@@ -80,7 +80,7 @@ export const SessionTables = React.memo(function SessionTables({
       headerName: t('common.labels.creator'),
       flex: 1,
       minWidth: 170,
-      valueFormatter: (p: any) => p?.email ?? '',
+      valueFormatter: (params: GridValueFormatterParams<Session>) => params.value?.email ?? '',
     },
     ...(isXl
       ? [
@@ -89,14 +89,14 @@ export const SessionTables = React.memo(function SessionTables({
           headerName: t('common.labels.created'),
           flex: 1,
           minWidth: 170,
-          valueFormatter: (p: any) => fmtDate(p),
+          valueFormatter: (params: GridValueFormatterParams<Session>) => fmtDate(params.value),
         },
         {
           field: 'updatedAt',
           headerName: t('common.labels.updated'),
           flex: 1,
           minWidth: 170,
-          valueFormatter: (p: any) => fmtDate(p),
+          valueFormatter: (params: GridValueFormatterParams<Session>) => fmtDate(params.value),
         },
       ]
       : []),

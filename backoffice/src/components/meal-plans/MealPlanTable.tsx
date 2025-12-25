@@ -4,7 +4,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { Box, Button, IconButton, Stack, TextField, Tooltip, Typography, useMediaQuery } from '@mui/material';
 import type { Theme } from '@mui/material';
-import { DataGrid, type GridColDef } from '@mui/x-data-grid';
+import { DataGrid, type GridColDef, type GridValueFormatterParams } from '@mui/x-data-grid';
 import { useTranslation } from 'react-i18next';
 
 import type { MealPlan } from '@hooks/useMealPlans';
@@ -95,13 +95,13 @@ export function MealPlanTable(props: MealPlanTableProps): React.JSX.Element {
             field: 'createdAt',
             headerName: t('common.labels.created'),
             flex: 1,
-            valueFormatter: (value: any) => formatDate(value as string),
+            valueFormatter: (params: GridValueFormatterParams<MealPlan>) => formatDate(params.value),
           },
           {
             field: 'updatedAt',
             headerName: t('common.labels.updated'),
             flex: 1,
-            valueFormatter: (value: any) => formatDate(value as string),
+            valueFormatter: (params: GridValueFormatterParams<MealPlan>) => formatDate(params.value),
           },
         ]
         : []),

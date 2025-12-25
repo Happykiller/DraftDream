@@ -2,7 +2,7 @@
 import * as React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { DataGrid, type GridColDef } from '@mui/x-data-grid';
+import { DataGrid, type GridColDef, type GridValueFormatterParams } from '@mui/x-data-grid';
 import { Box, Button, IconButton, Stack, TextField, Tooltip, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
@@ -55,13 +55,13 @@ export function ProspectSourceTable(props: ProspectSourceTableProps): React.JSX.
           {
             field: 'createdAt',
             headerName: t('common.labels.created'),
-            valueFormatter: (value: any) => fmtDate(value),
+            valueFormatter: (params: GridValueFormatterParams<ProspectSource>) => fmtDate(params.value),
             flex: 1,
           },
           {
             field: 'updatedAt',
             headerName: t('common.labels.updated'),
-            valueFormatter: (value: any) => fmtDate(value),
+            valueFormatter: (params: GridValueFormatterParams<ProspectSource>) => fmtDate(params.value),
             flex: 1,
           },
         ]

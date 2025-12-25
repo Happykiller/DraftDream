@@ -3,7 +3,7 @@ import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
-import { DataGrid, type GridColDef } from '@mui/x-data-grid';
+import { DataGrid, type GridColDef, type GridValueFormatterParams, type GridValueGetterParams } from '@mui/x-data-grid';
 import { Box, Button, Stack, TextField, IconButton, Tooltip, Chip, Select, MenuItem, FormControl, InputLabel, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
@@ -45,8 +45,8 @@ export const UsersTable = React.memo(function UsersTable({
         headerName: t('common.labels.name'),
         flex: 1, // Reduced from 1.2
         minWidth: 150,
-        valueGetter: (_value, row) => {
-          const full = `${row?.first_name ?? ''} ${row?.last_name ?? ''}`.trim();
+        valueGetter: (params: GridValueGetterParams<User>) => {
+          const full = `${params.row?.first_name ?? ''} ${params.row?.last_name ?? ''}`.trim();
           return full || '—';
         },
         sortComparator: (a, b) => String(a).localeCompare(String(b)),
@@ -69,10 +69,20 @@ export const UsersTable = React.memo(function UsersTable({
             field: 'company',
             headerName: t('common.labels.company'),
             flex: 0.8,
-            valueGetter: (p: any) => p?.name ?? '—',
+            valueGetter: (params: GridValueGetterParams<User>) => params.value?.name ?? '—',
           },
-          { field: 'createdAt', headerName: t('common.labels.created'), width: 150, valueFormatter: (p: any) => fmtDate(p) },
-          { field: 'updatedAt', headerName: t('common.labels.updated'), width: 150, valueFormatter: (p: any) => fmtDate(p) },
+          {
+            field: 'createdAt',
+            headerName: t('common.labels.created'),
+            width: 150,
+            valueFormatter: (params: GridValueFormatterParams<User>) => fmtDate(params.value),
+          },
+          {
+            field: 'updatedAt',
+            headerName: t('common.labels.updated'),
+            width: 150,
+            valueFormatter: (params: GridValueFormatterParams<User>) => fmtDate(params.value),
+          },
         ]
         : []),
       {

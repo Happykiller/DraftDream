@@ -2,7 +2,7 @@
 import * as React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { DataGrid, type GridColDef } from '@mui/x-data-grid';
+import { DataGrid, type GridColDef, type GridValueFormatterParams, type GridValueGetterParams } from '@mui/x-data-grid';
 import { Box, Button, IconButton, Stack, TextField, Tooltip, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
@@ -52,7 +52,7 @@ export function ProspectObjectiveTable(props: ProspectObjectiveTableProps): Reac
       {
         field: 'creator',
         headerName: t('common.labels.creator'),
-        valueGetter: (params: any) => params?.email,
+        valueGetter: (params: GridValueGetterParams<ProspectObjective>) => params.value?.email ?? '—',
         flex: 1,
       },
       ...(isXl
@@ -60,13 +60,13 @@ export function ProspectObjectiveTable(props: ProspectObjectiveTableProps): Reac
           {
             field: 'createdAt',
             headerName: t('common.labels.created'),
-            valueFormatter: (value: any) => fmtDate(value),
+            valueFormatter: (params: GridValueFormatterParams<ProspectObjective>) => fmtDate(params.value),
             flex: 1,
           },
           {
             field: 'updatedAt',
             headerName: t('common.labels.updated'),
-            valueFormatter: (value: any) => fmtDate(value),
+            valueFormatter: (params: GridValueFormatterParams<ProspectObjective>) => fmtDate(params.value),
             flex: 1,
           },
         ]
