@@ -602,6 +602,11 @@
         "create_title": "Créer une information athlète",
         "edit_title": "Modifier les informations de l'athlète"
       },
+      "confirm": {
+        "delete_title": "Archiver l'information athlète",
+        "delete_message": "Archiver cette information athlète ?",
+        "delete_confirm": "Archiver"
+      },
       "table": {
         "create": "Nouvelle information athlète",
         "columns": {

@@ -601,6 +601,11 @@
         "create_title": "Create athlete information",
         "edit_title": "Edit athlete information"
       },
+      "confirm": {
+        "delete_title": "Archive athlete information",
+        "delete_message": "Archive this athlete information entry?",
+        "delete_confirm": "Archive"
+      },
       "table": {
         "create": "New athlete information",
         "columns": {

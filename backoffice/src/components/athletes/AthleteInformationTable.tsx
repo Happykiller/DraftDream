@@ -3,6 +3,7 @@ import * as React from 'react';
 import { DataGrid, type GridColDef, type GridValueFormatterParams } from '@mui/x-data-grid';
 import { Box, Button, IconButton, Stack, TextField, Tooltip, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useTranslation } from 'react-i18next';
 
@@ -21,6 +22,7 @@ export interface AthleteInformationTableProps {
   onLimitChange: (limit: number) => void;
   onCreate: () => void;
   onEdit: (row: AthleteInfo) => void;
+  onDelete: (row: AthleteInfo) => void;
 }
 
 /** Presentational table to inspect athlete profiles. */
@@ -36,6 +38,7 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
   onLimitChange,
   onCreate,
   onEdit,
+  onDelete,
 }: AthleteInformationTableProps): React.JSX.Element {
   const { t } = useTranslation();
   const fmtDate = useDateFormatter();
@@ -102,20 +105,31 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
         sortable: false,
         filterable: false,
         renderCell: (params) => (
-          <Tooltip title={t('common.tooltips.edit')}>
-            <IconButton
-              size="small"
-              aria-label={`edit-athlete-info-${params.row.id}`}
-              onClick={() => onEdit(params.row)}
-            >
-              <EditIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
+          <Stack direction="row" spacing={0.5}>
+            <Tooltip title={t('common.tooltips.edit')}>
+              <IconButton
+                size="small"
+                aria-label={`edit-athlete-info-${params.row.id}`}
+                onClick={() => onEdit(params.row)}
+              >
+                <EditIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title={t('common.tooltips.delete')}>
+              <IconButton
+                size="small"
+                aria-label={`delete-athlete-info-${params.row.id}`}
+                onClick={() => onDelete(params.row)}
+              >
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </Stack>
         ),
         minWidth: 120,
       },
     ],
-    [fmtDate, isXl, onEdit, t],
+    [fmtDate, isXl, onDelete, onEdit, t],
   );
 
   return (

@@ -1,27 +1,31 @@
 // src/pages/AthleteInformation.tsx
 import * as React from 'react';
 import { Stack } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { AthleteInformationDialog, type AthleteInformationUserOption } from '@components/athletes/AthleteInformationDialog';
 import { AthleteInformationTable } from '@components/athletes/AthleteInformationTable';
-import { type AthleteInfo, useAthleteInfos } from '@hooks/useAthleteInfos';
+import { ConfirmDialog } from '@components/common/ConfirmDialog';
 import { useDebouncedValue } from '@hooks/useDebouncedValue';
+import { type AthleteInfo, useAthleteInfos } from '@hooks/useAthleteInfos';
 import { useProspectMetadataOptions } from '@hooks/useProspectMetadataOptions';
 import { useTabParams } from '@hooks/useTabParams';
 import { useUsers } from '@hooks/useUsers';
 
 export function AthleteInformation(): React.JSX.Element {
+  const { t } = useTranslation();
   const { page, limit, q, setPage, setLimit, setQ } = useTabParams('athinfo');
   const [searchInput, setSearchInput] = React.useState(q);
   const [editing, setEditing] = React.useState<AthleteInfo | null>(null);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [dialogMode, setDialogMode] = React.useState<'create' | 'edit'>('edit');
+  const [deleteId, setDeleteId] = React.useState<string | null>(null);
   const debounced = useDebouncedValue(searchInput, 300);
   React.useEffect(() => {
     if (debounced !== q) setQ(debounced);
   }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update } = useAthleteInfos({
+  const { items, total, loading, create, update, remove } = useAthleteInfos({
     page,
     limit,
     q: debounced,
@@ -50,6 +54,16 @@ export function AthleteInformation(): React.JSX.Element {
     setIsDialogOpen(true);
   };
 
+  const handleDelete = (row: AthleteInfo) => {
+    setDeleteId(row.id);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteId) return;
+    await remove(deleteId);
+    setDeleteId(null);
+  };
+
   const handleDialogClose = () => {
     setIsDialogOpen(false);
     setEditing(null);
@@ -70,6 +84,7 @@ export function AthleteInformation(): React.JSX.Element {
         onLimitChange={setLimit}
         onCreate={handleCreate}
         onEdit={handleEdit}
+        onDelete={handleDelete}
       />
       <AthleteInformationDialog
         open={isDialogOpen}
@@ -107,6 +122,14 @@ export function AthleteInformation(): React.JSX.Element {
             notes: values.notes ?? null,
           });
         }}
+      />
+      <ConfirmDialog
+        open={Boolean(deleteId)}
+        title={t('athletes.information.confirm.delete_title')}
+        message={t('athletes.information.confirm.delete_message')}
+        confirmLabel={t('athletes.information.confirm.delete_confirm')}
+        onClose={() => setDeleteId(null)}
+        onConfirm={confirmDelete}
       />
     </Stack>
   );
