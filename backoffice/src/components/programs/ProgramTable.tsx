@@ -154,6 +154,7 @@ export const ProgramTable = React.memo(function ProgramTable({
 
   return (
     <Box sx={{ width: '100%' }}>
+      {/* General information */}
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
         spacing={1}
