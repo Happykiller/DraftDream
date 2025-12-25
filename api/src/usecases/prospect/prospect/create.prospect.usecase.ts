@@ -1,4 +1,4 @@
-// src/usecases/client/client/create.client.usecase.ts
+// src/usecases/prospect/prospect/create.prospect.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
 import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
@@ -6,9 +6,15 @@ import { Inversify } from '@src/inversify/investify';
 import { ProspectUsecaseModel } from './prospect.usecase.model';
 import { CreateProspectUsecaseDto } from './prospect.usecase.dto';
 
+/**
+ * Handles prospect creation flows.
+ */
 export class CreateProspectUsecase {
-  constructor(private readonly inversify: Inversify) { }
+  constructor(private readonly inversify: Inversify) {}
 
+  /**
+   * Creates a new prospect record and initializes the workflow history.
+   */
   async execute(dto: CreateProspectUsecaseDto): Promise<ProspectUsecaseModel | null> {
     try {
       const createdAt = new Date();

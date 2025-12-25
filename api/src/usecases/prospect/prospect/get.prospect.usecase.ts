@@ -1,4 +1,4 @@
-// src/usecases/client/client/get.client.usecase.ts
+// src/usecases/prospect/prospect/get.prospect.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
 import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
@@ -7,9 +7,15 @@ import { Role } from '@src/common/role.enum';
 import { ProspectUsecaseModel } from './prospect.usecase.model';
 import { GetProspectUsecaseDto } from './prospect.usecase.dto';
 
+/**
+ * Retrieves a single prospect while enforcing ownership rules.
+ */
 export class GetProspectUsecase {
-  constructor(private readonly inversify: Inversify) { }
+  constructor(private readonly inversify: Inversify) {}
 
+  /**
+   * Returns the prospect when the session is authorized to view it.
+   */
   async execute(dto: GetProspectUsecaseDto): Promise<ProspectUsecaseModel | null> {
     try {
       const { session, ...payload } = dto;

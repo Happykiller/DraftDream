@@ -1,4 +1,4 @@
-// src/usecases/client/client/client.usecase.model.ts
+// src/usecases/prospect/prospect/prospect.usecase.model.ts
 import { ProspectStatus } from '@src/common/prospect-status.enum';
 
 export interface ProspectWorkflowEntryModel {

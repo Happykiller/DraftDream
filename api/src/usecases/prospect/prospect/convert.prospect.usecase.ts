@@ -5,6 +5,7 @@ import { ERRORS } from '@src/common/ERROR';
 import { ProspectStatus } from '@src/common/prospect-status.enum';
 import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
+import { Role } from '@src/common/role.enum';
 import { CoachAthleteUsecaseModel } from '@src/usecases/athlete/coach-athlete/coach-athlete.usecase.model';
 import { ConvertProspectToAthleteUsecaseDto } from '@src/usecases/prospect/prospect/prospect.usecase.dto';
 import { ProspectConversionUsecaseResult, ProspectUsecaseModel } from '@src/usecases/prospect/prospect/prospect.usecase.model';
@@ -93,10 +94,6 @@ export class ConvertProspectToAthleteUsecase {
     }
 
     const password = this.generateSecurePassword();
-    // Temporary logging to expose the generated password until delivery notifications are in place.
-    this.inversify.loggerService.info(
-      `[ProspectConversion] Temporary athlete password for ${params.email}: ${password}`,
-    );
     const athlete = await this.inversify.createUserUsecase.execute({
       type: 'athlete',
       first_name: params.prospect.firstName,
@@ -166,7 +163,7 @@ export class ConvertProspectToAthleteUsecase {
     }
 
     await this.inversify.createAthleteInfoUsecase.execute({
-      session: { userId: params.createdBy, role: 'ADMIN' as any }, // Assuming admin or authorized context for conversion
+      session: { userId: params.createdBy, role: Role.ADMIN },
       userId: params.userId,
       levelId: params.prospect.levelId,
       objectiveIds: params.prospect.objectiveIds,

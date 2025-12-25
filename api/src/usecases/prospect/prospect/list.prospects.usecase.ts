@@ -1,4 +1,4 @@
-// src/usecases/client/client/list.clients.usecase.ts
+// src/usecases/prospect/prospect/list.prospects.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
 import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
@@ -15,9 +15,15 @@ interface ListProspectsResult {
   limit: number;
 }
 
+/**
+ * Lists prospects with visibility constraints and related athlete insights.
+ */
 export class ListProspectsUsecase {
-  constructor(private readonly inversify: Inversify) { }
+  constructor(private readonly inversify: Inversify) {}
 
+  /**
+   * Applies session-based visibility and enriches prospects with athlete data.
+   */
   async execute(dto: ListProspectsUsecaseDto): Promise<ListProspectsResult> {
     try {
       const { session, ...filters } = dto;
