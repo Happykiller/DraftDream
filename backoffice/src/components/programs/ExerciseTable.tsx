@@ -3,7 +3,7 @@ import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { DataGrid, type GridColDef, type GridValueFormatterParams } from '@mui/x-data-grid';
+import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Button, Stack, TextField, IconButton, Tooltip, Chip, useMediaQuery } from '@mui/material';
 import type { Theme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -79,7 +79,7 @@ export const ExerciseTable = React.memo(function ExerciseTable({
       headerName: t('common.labels.creator'),
       flex: 1,
       minWidth: 170,
-      valueFormatter: (value: GridValueFormatterParams<Exercise>['value']) => value?.email ?? '',
+      valueFormatter: (value: any) => value?.email ?? '',
     },
     {
       field: 'visibility',
@@ -92,14 +92,14 @@ export const ExerciseTable = React.memo(function ExerciseTable({
         {
           field: 'createdAt',
           headerName: t('common.labels.created'),
-          valueFormatter: (value: GridValueFormatterParams<Exercise>['value']) => fmtDate(value),
+          valueFormatter: (value: any) => fmtDate(value),
           flex: 1,
           minWidth: 170,
         },
         {
           field: 'updatedAt',
           headerName: t('common.labels.updated'),
-          valueFormatter: (value: GridValueFormatterParams<Exercise>['value']) => fmtDate(value),
+          valueFormatter: (value: any) => fmtDate(value),
           flex: 1,
           minWidth: 170,
         },

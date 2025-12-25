@@ -29,63 +29,11 @@ import { GrowthChartWidget } from '@components/dashboard/widgets/GrowthChartWidg
 import { DistributionChartWidget } from '@components/dashboard/widgets/DistributionChartWidget';
 import { ProspectsListWidget } from '@components/dashboard/widgets/ProspectsListWidget';
 
-const PAGE_SIZE = 100;
-const MAX_TREND_ITEMS = 30;
-
-type DatedItem = {
-  createdAt?: string | null;
-};
-
-type DistributionItem = {
-  visibility?: string | null;
-};
-
-type ChartPoint = {
-  name: string;
-  value: number;
-};
-
-// Build a cumulative trend dataset for the growth widgets.
-const getGrowthData = <T extends DatedItem>(items: T[], dateKey: keyof T = 'createdAt' as keyof T): ChartPoint[] => {
-  if (!items.length) return [];
-
-  const sorted = [...items].sort((a, b) => {
-    const left = a[dateKey] ? new Date(String(a[dateKey])).getTime() : 0;
-    const right = b[dateKey] ? new Date(String(b[dateKey])).getTime() : 0;
-    return left - right;
-  });
-
-  const recent = sorted.slice(-MAX_TREND_ITEMS);
-
-  return recent.map((item, index) => {
-    const dateValue = item[dateKey];
-    const label = dateValue ? new Date(String(dateValue)).toLocaleDateString() : 'Unknown';
-
-    return {
-      name: label,
-      value: index + 1,
-    };
-  });
-};
-
-// Aggregate distribution values for the split widgets.
-const getDistributionData = <T extends DistributionItem>(
-  items: T[],
-  key: keyof T,
-  labelMap?: Record<string, string>,
-): ChartPoint[] => {
-  const counts = items.reduce<Record<string, number>>((accumulator, item) => {
-    const rawValue = item[key];
-    const value = rawValue ? String(rawValue) : 'Unknown';
-    accumulator[value] = (accumulator[value] ?? 0) + 1;
-    return accumulator;
-  }, {});
-
-  return Object.keys(counts).map((label) => ({
-    name: labelMap?.[label] ?? label,
-    value: counts[label],
-  }));
-};
+import {
+  getGrowthData,
+  getDistributionData,
+  PAGE_SIZE
+} from './Home.utils';
 
 export function Home(): React.JSX.Element {
   const { t } = useTranslation();

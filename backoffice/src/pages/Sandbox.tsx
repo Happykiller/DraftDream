@@ -45,7 +45,7 @@ export function Sandbox(): React.JSX.Element {
               entity={email}
               onChange={setEmail}
               require
-              virgin
+
             />
           </CardContent>
         </Card>

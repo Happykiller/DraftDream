@@ -23,7 +23,8 @@ interface InputProps extends Omit<TextFieldProps, 'onChange'> {
   startIcon?: React.ReactNode;
   onChange?: (entity: { value: string; valid: boolean }) => void;
   require?: boolean;
-  virgin?: boolean;
+  /* Controls if the field has been touched/modified by the user */
+  touched?: boolean;
   icons?: {
     visibility?: React.ReactNode;
     visibilityOff?: React.ReactNode;
@@ -46,7 +47,8 @@ export const Input: React.FC<InputProps> = ({
   startIcon,
   onChange,
   require = false,
-  virgin: virginProp = false,
+  /* Controls if the field has been touched/modified by the user */
+  touched: touchedProp = false,
   type = 'text',
   icons = {},
   endActions = [],
@@ -55,7 +57,7 @@ export const Input: React.FC<InputProps> = ({
   const theme = useTheme();
   const [state, setState] = React.useState(entity);
   const [passVisible, setPassVisible] = React.useState(false);
-  const [virgin, setVirgin] = React.useState(virginProp);
+  const [touched, setTouched] = React.useState(touchedProp);
   const isPassword = type === 'password';
 
   const fullLabel = (
@@ -69,6 +71,10 @@ export const Input: React.FC<InputProps> = ({
     setState(entity);
   }, [entity]);
 
+  /**
+   * Validates the input value against requirements.
+   * Checks for emptiness if required, and regex pattern matching.
+   */
   const calcValid = (value: string): boolean => {
     const v = value.trim();
     if (require && v.length === 0) return false;
@@ -80,14 +86,15 @@ export const Input: React.FC<InputProps> = ({
   };
 
   const giveHelper = () => {
-    if (!virgin && require && !state.valid) {
+    // Show error only if field has been touched and is invalid
+    if (touched && require && !state.valid) {
       return <Trans>common.field_incorrect</Trans>;
     }
     return null;
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setVirgin(false);
+    setTouched(true);
     const newValue = e.target.value;
     const isValid = calcValid(newValue);
     setState({ value: newValue, valid: isValid });
@@ -150,7 +157,7 @@ export const Input: React.FC<InputProps> = ({
         variant="outlined"
         label={fullLabel}
         type={isPassword ? (passVisible ? 'text' : 'password') : type}
-        error={!virgin && !state.valid}
+        error={touched && !state.valid}
         value={state.value}
         helperText={giveHelper()}
         onChange={handleChange}

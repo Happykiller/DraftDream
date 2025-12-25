@@ -2,7 +2,7 @@
 import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { DataGrid, type GridColDef, type GridValueFormatterParams, type GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 
 import { Box, Button, Stack, TextField, IconButton, Tooltip, useMediaQuery } from '@mui/material';
 import type { Theme } from '@mui/material';
@@ -60,7 +60,7 @@ export const MuscleTable = React.memo(function MuscleTable(props: MuscleTablePro
     {
       field: 'creator',
       headerName: t('common.labels.creator'),
-      valueGetter: (value: GridValueGetterParams<Muscle>['value']) => value?.email ?? '—',
+      valueGetter: (value: any) => value?.email ?? '—',
       flex: 1,
     },
     ...(isXl
@@ -68,14 +68,14 @@ export const MuscleTable = React.memo(function MuscleTable(props: MuscleTablePro
         {
           field: 'createdAt',
           headerName: t('common.labels.created'),
-          valueFormatter: (value: GridValueFormatterParams<Muscle>['value']) => fmtDate(value),
+          valueFormatter: (value: any) => fmtDate(value),
           flex: 1,
           minWidth: 170,
         },
         {
           field: 'updatedAt',
           headerName: t('common.labels.updated'),
-          valueFormatter: (value: GridValueFormatterParams<Muscle>['value']) => fmtDate(value),
+          valueFormatter: (value: any) => fmtDate(value),
           flex: 1,
           minWidth: 170,
         },

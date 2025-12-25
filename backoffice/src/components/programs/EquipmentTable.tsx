@@ -2,7 +2,7 @@
 import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { DataGrid, type GridColDef, type GridValueFormatterParams } from '@mui/x-data-grid';
+import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Button, Stack, TextField, IconButton, Tooltip, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -59,21 +59,21 @@ export const EquipmentTable = React.memo(function EquipmentTable({
       headerName: t('common.labels.creator'),
       flex: 1,
       minWidth: 180,
-      valueFormatter: (value: GridValueFormatterParams<Equipment>['value']) => value?.email ?? '—',
+      valueFormatter: (value: any) => value?.email ?? '—',
     },
     ...(isXl
       ? [
         {
           field: 'createdAt',
           headerName: t('common.labels.created'),
-          valueFormatter: (value: GridValueFormatterParams<Equipment>['value']) => fmtDate(value),
+          valueFormatter: (value: any) => fmtDate(value),
           flex: 1,
           minWidth: 180,
         },
         {
           field: 'updatedAt',
           headerName: t('common.labels.updated'),
-          valueFormatter: (value: GridValueFormatterParams<Equipment>['value']) => fmtDate(value),
+          valueFormatter: (value: any) => fmtDate(value),
           flex: 1,
           minWidth: 180,
         },

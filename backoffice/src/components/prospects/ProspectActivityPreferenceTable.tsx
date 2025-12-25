@@ -2,7 +2,7 @@
 import * as React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { DataGrid, type GridColDef, type GridValueFormatterParams, type GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Button, IconButton, Stack, TextField, Tooltip, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
@@ -53,7 +53,7 @@ export function ProspectActivityPreferenceTable(props: ProspectActivityPreferenc
       {
         field: 'creator',
         headerName: t('common.labels.creator'),
-        valueGetter: (value: GridValueGetterParams<ProspectActivityPreference>['value']) => value?.email ?? '—',
+        valueGetter: (value: any) => value?.email ?? '—',
         flex: 1,
       },
 
@@ -62,13 +62,13 @@ export function ProspectActivityPreferenceTable(props: ProspectActivityPreferenc
           {
             field: 'createdAt',
             headerName: t('common.labels.created'),
-            valueFormatter: (value: GridValueFormatterParams<ProspectActivityPreference>['value']) => fmtDate(value),
+            valueFormatter: (value: any) => fmtDate(value),
             flex: 1,
           },
           {
             field: 'updatedAt',
             headerName: t('common.labels.updated'),
-            valueFormatter: (value: GridValueFormatterParams<ProspectActivityPreference>['value']) => fmtDate(value),
+            valueFormatter: (value: any) => fmtDate(value),
             flex: 1,
           },
         ]

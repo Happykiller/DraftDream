@@ -100,7 +100,6 @@ export function Login(): React.JSX.Element {
           setFormEntities((prev) => ({ ...prev, email: entity }))
         }
         require
-        virgin
       />
 
       {/* Password */}
@@ -120,7 +119,6 @@ export function Login(): React.JSX.Element {
           setFormEntities((prev) => ({ ...prev, password: entity }))
         }
         require
-        virgin
       />
 
       {/* Submit */}

@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { DataGrid, type GridColDef, type GridValueFormatterParams, type GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Button, IconButton, Stack, TextField, Tooltip, Typography, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
@@ -59,7 +59,7 @@ export function MealDayTable(props: MealDayTableProps): React.JSX.Element {
       {
         field: 'creator',
         headerName: t('common.labels.creator'),
-        valueGetter: (value: GridValueGetterParams<MealDay>['value']) => value?.email ?? t('common.messages.unknown'),
+        valueGetter: (value: any) => value?.email ?? t('common.messages.unknown'),
         flex: 1,
       },
       ...(isXl
@@ -67,14 +67,14 @@ export function MealDayTable(props: MealDayTableProps): React.JSX.Element {
           {
             field: 'createdAt',
             headerName: t('common.labels.created'),
-            valueFormatter: (value: GridValueFormatterParams<MealDay>['value']) => formatDate(value),
+            valueFormatter: (value: any) => formatDate(value),
             flex: 1,
             minWidth: 170,
           },
           {
             field: 'updatedAt',
             headerName: t('common.labels.updated'),
-            valueFormatter: (value: GridValueFormatterParams<MealDay>['value']) => formatDate(value),
+            valueFormatter: (value: any) => formatDate(value),
             flex: 1,
             minWidth: 170,
           },

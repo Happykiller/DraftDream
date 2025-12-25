@@ -1,6 +1,6 @@
 // src/components/athletes/AthleteInformationTable.tsx
 import * as React from 'react';
-import { DataGrid, type GridColDef, type GridValueFormatterParams } from '@mui/x-data-grid';
+import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Button, IconButton, Stack, TextField, Tooltip, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -95,7 +95,7 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
             flex: 1,
             minWidth: 180,
             valueGetter: (_value: unknown, row: AthleteInfo) => row.updatedAt ?? row.athlete?.updatedAt ?? null,
-            valueFormatter: (value: GridValueFormatterParams<AthleteInfo>['value']) => fmtDate(value),
+            valueFormatter: (value: any) => fmtDate(value),
           },
         ]
         : []),

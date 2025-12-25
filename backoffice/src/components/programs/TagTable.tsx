@@ -1,6 +1,6 @@
 // src/components/programs/TagTable.tsx
 import * as React from 'react';
-import { DataGrid, type GridColDef, type GridValueFormatterParams, type GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Box, Button, Stack, TextField, IconButton, Tooltip, useMediaQuery } from '@mui/material';
@@ -57,7 +57,7 @@ export const TagTable = React.memo(function TagTable({
     {
       field: 'creator',
       headerName: t('common.labels.creator'),
-      valueGetter: (value: GridValueGetterParams<Tag>['value']) => value?.email ?? '—',
+      valueGetter: (value: any) => value?.email ?? '—',
       flex: 1,
     },
     ...(isXl
@@ -65,14 +65,14 @@ export const TagTable = React.memo(function TagTable({
         {
           field: 'createdAt',
           headerName: t('common.labels.created'),
-          valueFormatter: (value: GridValueFormatterParams<Tag>['value']) => fmtDate(value),
+          valueFormatter: (value: any) => fmtDate(value),
           flex: 1,
           minWidth: 170,
         },
         {
           field: 'updatedAt',
           headerName: t('common.labels.updated'),
-          valueFormatter: (value: GridValueFormatterParams<Tag>['value']) => fmtDate(value),
+          valueFormatter: (value: any) => fmtDate(value),
           flex: 1,
           minWidth: 170,
         },

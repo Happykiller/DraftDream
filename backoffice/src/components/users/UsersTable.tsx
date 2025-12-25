@@ -3,7 +3,7 @@ import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
-import { DataGrid, type GridColDef, type GridValueFormatterParams, type GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Button, Stack, TextField, IconButton, Tooltip, Chip, Select, MenuItem, FormControl, InputLabel, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
@@ -45,7 +45,7 @@ export const UsersTable = React.memo(function UsersTable({
         headerName: t('common.labels.name'),
         flex: 1, // Reduced from 1.2
         minWidth: 150,
-        valueGetter: (_value: GridValueGetterParams<User>['value'], row: GridValueGetterParams<User>['row']) => {
+        valueGetter: (_value: unknown, row: User) => {
           const full = `${row?.first_name ?? ''} ${row?.last_name ?? ''}`.trim();
           return full || '—';
         },
@@ -69,19 +69,19 @@ export const UsersTable = React.memo(function UsersTable({
             field: 'company',
             headerName: t('common.labels.company'),
             flex: 0.8,
-            valueGetter: (value: GridValueGetterParams<User>['value']) => value?.name ?? '—',
+            valueGetter: (value: { name: string } | null | undefined) => value?.name ?? '—',
           },
           {
             field: 'createdAt',
             headerName: t('common.labels.created'),
             width: 150,
-            valueFormatter: (value: GridValueFormatterParams<User>['value']) => fmtDate(value),
+            valueFormatter: (value: string) => fmtDate(value),
           },
           {
             field: 'updatedAt',
             headerName: t('common.labels.updated'),
             width: 150,
-            valueFormatter: (value: GridValueFormatterParams<User>['value']) => fmtDate(value),
+            valueFormatter: (value: string) => fmtDate(value),
           },
         ]
         : []),

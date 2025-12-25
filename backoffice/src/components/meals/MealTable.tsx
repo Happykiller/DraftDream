@@ -4,7 +4,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { Box, Button, IconButton, Stack, TextField, Tooltip, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { DataGrid, type GridColDef, type GridValueFormatterParams, type GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { useTranslation } from 'react-i18next';
 
 import type { Meal } from '@hooks/useMeals';
@@ -52,7 +52,7 @@ export function MealTable(props: MealTableProps): React.JSX.Element {
       {
         field: 'type',
         headerName: t('common.labels.type'),
-        valueGetter: (value: GridValueGetterParams<Meal>['value']) => value?.label ?? '',
+        valueGetter: (value: any) => value?.label ?? '',
         flex: 1,
       },
       ...(isXl
@@ -68,8 +68,8 @@ export function MealTable(props: MealTableProps): React.JSX.Element {
         field: 'creator',
         headerName: t('common.labels.creator'),
         valueGetter: (
-          _value: GridValueGetterParams<Meal>['value'],
-          row: GridValueGetterParams<Meal>['row']
+          _value: any,
+          row: any
         ) => row.creator?.email ?? '',
         flex: 1,
       },
@@ -78,13 +78,13 @@ export function MealTable(props: MealTableProps): React.JSX.Element {
           {
             field: 'createdAt',
             headerName: t('common.labels.created'),
-            valueFormatter: (value: GridValueFormatterParams<Meal>['value']) => formatDate(value),
+            valueFormatter: (value: any) => formatDate(value),
             flex: 1,
           },
           {
             field: 'updatedAt',
             headerName: t('common.labels.updated'),
-            valueFormatter: (value: GridValueFormatterParams<Meal>['value']) => formatDate(value),
+            valueFormatter: (value: any) => formatDate(value),
             flex: 1,
           },
         ]
