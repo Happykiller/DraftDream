@@ -598,9 +598,11 @@
       "title": "Athlete information",
       "search_placeholder": "Search athletes...",
       "dialog": {
+        "create_title": "Create athlete information",
         "edit_title": "Edit athlete information"
       },
       "table": {
+        "create": "New athlete information",
         "columns": {
           "email": "Email",
           "phone": "Phone",

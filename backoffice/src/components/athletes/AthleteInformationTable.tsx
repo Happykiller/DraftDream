@@ -1,7 +1,7 @@
 // src/components/athletes/AthleteInformationTable.tsx
 import * as React from 'react';
 import { DataGrid, type GridColDef, type GridValueFormatterParams } from '@mui/x-data-grid';
-import { Box, IconButton, Stack, TextField, Tooltip, useMediaQuery } from '@mui/material';
+import { Box, Button, IconButton, Stack, TextField, Tooltip, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import EditIcon from '@mui/icons-material/Edit';
 import { useTranslation } from 'react-i18next';
@@ -19,6 +19,7 @@ export interface AthleteInformationTableProps {
   onQueryChange: (q: string) => void;
   onPageChange: (page: number) => void; // 1-based
   onLimitChange: (limit: number) => void;
+  onCreate: () => void;
   onEdit: (row: AthleteInfo) => void;
 }
 
@@ -33,6 +34,7 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
   onQueryChange,
   onPageChange,
   onLimitChange,
+  onCreate,
   onEdit,
 }: AthleteInformationTableProps): React.JSX.Element {
   const { t } = useTranslation();
@@ -128,6 +130,10 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
           size="small"
           sx={{ maxWidth: 360 }}
         />
+        <Box sx={{ flex: 1 }} />
+        <Button variant="contained" onClick={onCreate}>
+          {t('athletes.information.table.create')}
+        </Button>
       </Stack>
 
       <DataGrid

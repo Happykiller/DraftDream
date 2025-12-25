@@ -599,9 +599,11 @@
       "title": "Informations athlètes",
       "search_placeholder": "Rechercher des athlètes...",
       "dialog": {
+        "create_title": "Créer une information athlète",
         "edit_title": "Modifier les informations de l'athlète"
       },
       "table": {
+        "create": "Nouvelle information athlète",
         "columns": {
           "email": "Email",
           "phone": "Téléphone",
