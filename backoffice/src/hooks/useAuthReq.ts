@@ -54,7 +54,6 @@ export const useAuthReq = () => {
           error: CODES.AUTH_FAIL_WRONG_ROLE,
         };
       }
-      }
 
       return {
         message: CODES.AUTH_FAIL_WRONG_CREDENTIAL,
