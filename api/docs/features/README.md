@@ -52,6 +52,11 @@ Training program creation and organization
 - Slug auto-generation
 - Program duration and structure
 
+#### [Program Record Management](./program-record-management.md)
+Track athlete program execution state
+- Start, pause, and finish program records
+- Athlete ownership and admin oversight
+
 #### Session Management
 Individual training sessions within programs
 - Exercise composition

@@ -18,6 +18,7 @@ import migration0014 from './migrations/0014_create_prospects';
 import migration0015 from './migrations/0015_create_coach_athletes';
 import migration0016 from './migrations/0016_add_visibility_to_sessions';
 import migration0017 from './migrations/0017_create_athlete_infos';
+import migration0018 from './migrations/0018_create_program_records';
 
 export interface Migration {
   id: string;
@@ -50,6 +51,7 @@ export class MongoMigrationRunner {
       migration0015,
       migration0016,
       migration0017,
+      migration0018,
     ];
   }
 
@@ -94,4 +96,3 @@ export class MongoMigrationRunner {
     }
   }
 }
-

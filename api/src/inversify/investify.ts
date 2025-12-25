@@ -40,6 +40,10 @@ import { ListProgramsUsecase } from '@src/usecases/sport/program/list.programs.u
 import { DeleteProgramUsecase } from '@src/usecases/sport/program/delete.program.usecase';
 import { UpdateProgramUsecase } from '@src/usecases/sport/program/update.program.usecase';
 import { CreateProgramUsecase } from '@src/usecases/sport/program/create.program.usecase';
+import { GetProgramRecordUsecase } from '@src/usecases/sport/program-record/get.program-record.usecase';
+import { ListProgramRecordsUsecase } from '@src/usecases/sport/program-record/list.program-records.usecase';
+import { UpdateProgramRecordUsecase } from '@src/usecases/sport/program-record/update.program-record.usecase';
+import { CreateProgramRecordUsecase } from '@src/usecases/sport/program-record/create.program-record.usecase';
 import { GetEquipmentUsecase } from '@src/usecases/sport/equipment/get.equipment.usecase';
 import { ListExercisesUsecase } from '@src/usecases/sport/exercise/list.exercises.usecase';
 import { ListCategoriesUsecase } from '@src/usecases/sport/category/list.category.usecase';
@@ -146,14 +150,18 @@ export class Inversify {
   createMuscleUsecase: CreateMuscleUsecase;
   listSessionsUsecase: ListSessionsUsecase;
   listProgramsUsecase: ListProgramsUsecase;
+  listProgramRecordsUsecase: ListProgramRecordsUsecase;
   listEquipmentUsecase: ListEquipmentUsecase;
   listExercisesUsecase: ListExercisesUsecase;
   createSessionUsecase: CreateSessionUsecase;
   deleteSessionUsecase: DeleteSessionUsecase;
   updateSessionUsecase: UpdateSessionUsecase;
   createProgramUsecase: CreateProgramUsecase;
+  createProgramRecordUsecase: CreateProgramRecordUsecase;
   deleteProgramUsecase: DeleteProgramUsecase;
   updateProgramUsecase: UpdateProgramUsecase;
+  updateProgramRecordUsecase: UpdateProgramRecordUsecase;
+  getProgramRecordUsecase: GetProgramRecordUsecase;
   updateCategoryUsecase: UpdateCategoryUsecase;
   createCategoryUsecase: CreateCategoryUsecase;
   listCategoriesUsecase: ListCategoriesUsecase;
@@ -293,6 +301,11 @@ export class Inversify {
     this.createProgramUsecase = new CreateProgramUsecase(this);
     this.updateProgramUsecase = new UpdateProgramUsecase(this);
     this.deleteProgramUsecase = new DeleteProgramUsecase(this);
+    // usecases program records
+    this.getProgramRecordUsecase = new GetProgramRecordUsecase(this);
+    this.listProgramRecordsUsecase = new ListProgramRecordsUsecase(this);
+    this.createProgramRecordUsecase = new CreateProgramRecordUsecase(this);
+    this.updateProgramRecordUsecase = new UpdateProgramRecordUsecase(this);
     // usecases client objective
     this.getClientObjectiveUsecase = new GetProspectObjectiveUsecase(this);
     this.createClientObjectiveUsecase = new CreateProspectObjectiveUsecase(this);

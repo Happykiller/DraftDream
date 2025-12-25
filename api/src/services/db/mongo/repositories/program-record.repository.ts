@@ -1,0 +1,233 @@
+// src/services/db/mongo/repositories/program-record.repository.ts
+import {
+  Collection,
+  Db,
+  Filter,
+  ObjectId,
+  Sort,
+} from 'mongodb';
+
+import inversify from '@src/inversify/investify';
+
+import { ProgramRecordState } from '@src/common/program-record-state.enum';
+import { ProgramRecord } from '@services/db/models/program-record.model';
+import {
+  CreateProgramRecordDto,
+  GetProgramRecordDto,
+  ListProgramRecordsDto,
+  UpdateProgramRecordDto,
+} from '@services/db/dtos/program-record.dto';
+
+interface ProgramRecordDoc {
+  _id: ObjectId;
+  userId: string;
+  programId: string;
+  state: ProgramRecordState;
+  createdBy: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date;
+  schemaVersion: number;
+}
+
+/**
+ * MongoDB repository for tracking athlete program execution records.
+ */
+export class BddServiceProgramRecordMongo {
+  private col(): Collection<ProgramRecordDoc> {
+    return inversify.mongo.collection<ProgramRecordDoc>('program_records');
+  }
+
+  /**
+   * Ensures indexes exist for program record documents.
+   */
+  async ensureIndexes(db?: Db): Promise<void> {
+    try {
+      const collection = db ? db.collection<ProgramRecordDoc>('program_records') : this.col();
+      await collection.createIndexes([
+        {
+          key: { userId: 1, programId: 1 },
+          name: 'program_records_user_program_unique',
+          unique: true,
+          partialFilterExpression: { deletedAt: { $eq: null } },
+        },
+        { key: { userId: 1 }, name: 'program_records_userId' },
+        { key: { programId: 1 }, name: 'program_records_programId' },
+        { key: { state: 1 }, name: 'program_records_state' },
+        { key: { updatedAt: -1 }, name: 'program_records_updatedAt' },
+      ]);
+    } catch (error) {
+      this.handleError('ensureIndexes', error);
+    }
+  }
+
+  /**
+   * Persists a new program record.
+   */
+  async create(dto: CreateProgramRecordDto): Promise<ProgramRecord | null> {
+    const userId = this.normalizeId(dto.userId);
+    const programId = this.normalizeId(dto.programId);
+    const createdBy = this.normalizeId(dto.createdBy);
+    if (!userId || !programId || !createdBy) {
+      throw new Error('INVALID_PROGRAM_RECORD_REFERENCE');
+    }
+
+    const now = new Date();
+    const doc: Omit<ProgramRecordDoc, '_id'> = {
+      userId,
+      programId,
+      state: dto.state,
+      createdBy,
+      createdAt: now,
+      updatedAt: now,
+      schemaVersion: 1,
+    };
+
+    try {
+      const res = await this.col().insertOne(doc as ProgramRecordDoc);
+      return this.toModel({ _id: res.insertedId, ...doc } as ProgramRecordDoc);
+    } catch (error) {
+      if (this.isDuplicateError(error)) return null;
+      this.handleError('create', error);
+    }
+  }
+
+  /**
+   * Retrieves a program record by its identifier.
+   */
+  async get(dto: GetProgramRecordDto): Promise<ProgramRecord | null> {
+    try {
+      const _id = this.toObjectId(dto.id);
+      const doc = await this.col().findOne({ _id, deletedAt: { $exists: false } });
+      return doc ? this.toModel(doc) : null;
+    } catch (error) {
+      this.handleError('get', error);
+    }
+  }
+
+  /**
+   * Retrieves a program record for a given user and program pair.
+   */
+  async getByUserProgram(params: { userId: string; programId: string }): Promise<ProgramRecord | null> {
+    try {
+      const userId = this.normalizeId(params.userId);
+      const programId = this.normalizeId(params.programId);
+      if (!userId || !programId) {
+        throw new Error('INVALID_PROGRAM_RECORD_REFERENCE');
+      }
+      const doc = await this.col().findOne({
+        userId,
+        programId,
+        deletedAt: { $exists: false },
+      });
+      return doc ? this.toModel(doc) : null;
+    } catch (error) {
+      this.handleError('getByUserProgram', error);
+    }
+  }
+
+  /**
+   * Lists program records matching provided filters.
+   */
+  async list(params: ListProgramRecordsDto = {}) {
+    const {
+      userId,
+      programId,
+      state,
+      createdBy,
+      includeArchived = false,
+      limit = 20,
+      page = 1,
+      sort = { updatedAt: -1 } as Record<string, 1 | -1>,
+    } = params;
+
+    const filter: Filter<ProgramRecordDoc> = {};
+    if (userId?.trim()) filter.userId = userId.trim();
+    if (programId?.trim()) filter.programId = programId.trim();
+    if (state) filter.state = state;
+    if (createdBy?.trim()) filter.createdBy = createdBy.trim();
+    if (!includeArchived) filter.deletedAt = { $exists: false } as any;
+
+    try {
+      const collection = this.col();
+      const cursor = collection
+        .find(filter)
+        .sort(sort as Sort)
+        .skip((page - 1) * limit)
+        .limit(limit);
+
+      const [rows, total] = await Promise.all([
+        cursor.toArray(),
+        collection.countDocuments(filter),
+      ]);
+
+      return {
+        items: rows.map(this.toModel),
+        total,
+        page,
+        limit,
+      };
+    } catch (error) {
+      this.handleError('list', error);
+    }
+  }
+
+  /**
+   * Updates the record state for the given identifier.
+   */
+  async update(id: string, patch: UpdateProgramRecordDto): Promise<ProgramRecord | null> {
+    const _id = this.toObjectId(id);
+    const $set: Partial<ProgramRecordDoc> = { updatedAt: new Date() };
+
+    if (patch.state !== undefined) {
+      $set.state = patch.state;
+    }
+
+    try {
+      const updated = await this.col().findOneAndUpdate(
+        { _id, deletedAt: { $exists: false } },
+        { $set },
+        { returnDocument: 'after' },
+      );
+      return updated ? this.toModel(updated) : null;
+    } catch (error) {
+      if (this.isDuplicateError(error)) return null;
+      this.handleError('update', error);
+    }
+  }
+
+  private toObjectId(id: string): ObjectId {
+    if (!ObjectId.isValid(id)) {
+      throw new Error('INVALID_ID');
+    }
+    return new ObjectId(id);
+  }
+
+  private toModel(doc: ProgramRecordDoc): ProgramRecord {
+    return {
+      id: doc._id.toHexString(),
+      userId: doc.userId,
+      programId: doc.programId,
+      state: doc.state,
+      createdBy: doc.createdBy,
+      createdAt: doc.createdAt,
+      updatedAt: doc.updatedAt,
+      deletedAt: doc.deletedAt,
+    };
+  }
+
+  private normalizeId(value?: string | null): string | undefined {
+    const trimmed = value?.trim();
+    return trimmed?.length ? trimmed : undefined;
+  }
+
+  private isDuplicateError(error: any): boolean {
+    return error?.code === 11000;
+  }
+
+  private handleError(method: string, error: any): never {
+    const message = error?.message ?? error;
+    inversify.loggerService.error(`[program-record.repository] ${method} => ${message}`);
+    throw error;
+  }
+}
