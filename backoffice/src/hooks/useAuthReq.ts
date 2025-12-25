@@ -1,14 +1,17 @@
 // src\hooks\useAuthReq.ts
-import { session } from '@stores/session';
 import { CODES } from '@src/commons/CODES';
-import inversify from '@src/commons/inversify';
+import { session } from '@stores/session';
+import {
+  AuthService,
+  AUTH_ROLE_FORBIDDEN,
+  AuthCredentials,
+} from '@services/auth/auth.service';
 
 export const useAuthReq = () => {
-  const execute = async (dto: {
-    email: string;
-    password: string;
-  }): Promise<{
-    message: keyof typeof CODES,
+  const authService = new AuthService();
+
+  const execute = async (dto: AuthCredentials): Promise<{
+    message: keyof typeof CODES;
     data?: {
       access_token: string;
       id: string;
@@ -16,60 +19,47 @@ export const useAuthReq = () => {
       name_last: string;
       mail: string;
       role: string;
-    },
-    error?: string
+    };
+    error?: string;
   }> => {
     try {
-      const auth: any = await inversify.graphqlService.send(
-        {
-          operationName: 'Auth',
-          variables: { input: dto },
-          query: `mutation Auth($input: AuthInput!) { auth(input: $input) { access_token } }`
-        }
-      );
+      const { accessToken, profile } = await authService.authenticate(dto);
+      session.setState({ access_token: accessToken });
 
-      if (auth.errors) {
-        throw new Error(auth.errors[0].message);
-      }
+      session.setState({
+        id: profile.id,
+        name_first: profile.first_name,
+        name_last: profile.last_name,
+        role: profile.type,
+      });
 
-      const { access_token } = auth.data.auth;
-      session.setState({ access_token });
+      return {
+        message: CODES.SUCCESS,
+        data: {
+          access_token: accessToken,
+          id: profile.id,
+          name_first: profile.first_name,
+          name_last: profile.last_name,
+          mail: profile.email,
+          role: profile.type,
+        },
+      };
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : CODES.AUTH_FAIL_WRONG_CREDENTIAL;
 
-      const who: any = await inversify.graphqlService.send(
-        {
-          operationName: 'Me',
-          query: `query Me { me { id type first_name last_name email phone createdAt updatedAt } }`
-        }
-      );
-
-      // 3) Role check
-      if (who.data.me.type !== 'admin') {
-        // reset session and return a deterministic forbidden error
+      if (message === AUTH_ROLE_FORBIDDEN) {
         session.getState().reset();
         return {
           message: CODES.AUTH_FAIL_WRONG_ROLE,
           error: CODES.AUTH_FAIL_WRONG_ROLE,
         };
       }
-
-      session.setState({ id: who.data.me.id, name_first: who.data.me.first_name, name_last: who.data.me.last_name, role: who.data.me.type });
-
-      return {
-        message: CODES.SUCCESS,
-        data: {
-          access_token
-          , id: who.data.me.id
-          , name_first: who.data.me.first_name
-          , name_last: who.data.me.last_name
-          , mail: who.data.me.email
-          , role: who.data.me.type
-        }
       }
-    } catch (e: any) {
+
       return {
         message: CODES.AUTH_FAIL_WRONG_CREDENTIAL,
-        error: e.message
-      }
+        error: message,
+      };
     }
   };
 
