@@ -2,9 +2,10 @@
 import * as React from 'react';
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+
 import { useDebouncedValue } from '@hooks/useDebouncedValue';
 import { useTabParams } from '@hooks/useTabParams';
-import { useExercises } from '@hooks/useExercises';
+import { useExercises, type Exercise } from '@hooks/useExercises';
 import { ExerciseTable } from '@components/programs/ExerciseTable';
 import { ExerciseDialog, type ExerciseDialogValues, type RefEntity } from '@components/programs/ExerciseDialog';
 import { ConfirmDialog } from '@components/common/ConfirmDialog';
@@ -53,6 +54,37 @@ export function ExercisesPanel(): React.JSX.Element {
   const [editId, setEditId] = React.useState<string | null>(null);
   const [deleteId, setDeleteId] = React.useState<string | null>(null);
   const [duplicateId, setDuplicateId] = React.useState<string | null>(null);
+  // Map backend exercises into dialog-friendly values safely.
+  const toDialogValues = (exercise?: Exercise): ExerciseDialogValues | undefined => {
+    if (!exercise) return undefined;
+    const toRefs = (
+      entities?: Array<{ id: string; slug: string; label?: string | null; locale?: string | null }> | null,
+    ): RefEntity[] =>
+      entities?.map((item) => ({
+        id: item.id,
+        slug: item.slug,
+        label: item.label ?? item.slug,
+        locale: item.locale ?? undefined,
+      })) ?? [];
+
+    return {
+      locale: exercise.locale,
+      label: exercise.label,
+      series: exercise.series,
+      repetitions: exercise.repetitions,
+      description: exercise.description ?? '',
+      instructions: exercise.instructions ?? '',
+      charge: exercise.charge ?? '',
+      rest: exercise.rest ?? null,
+      videoUrl: exercise.videoUrl ?? '',
+      visibility: exercise.visibility,
+      categories: toRefs(exercise.categories),
+      muscles: toRefs(exercise.muscles),
+      equipment: toRefs(exercise.equipment),
+      tags: toRefs(exercise.tags),
+    };
+  };
+
   const editing = React.useMemo(() => items.find(i => i.id === editId), [items, editId]);
   const duplicating = React.useMemo(() => {
     if (!duplicateId) return undefined;
@@ -136,7 +168,8 @@ export function ExercisesPanel(): React.JSX.Element {
       <ExerciseDialog
         open={!!editId}
         mode="edit"
-        initial={editing as any}
+        initial={toDialogValues(editing)}
+        details={editing}
         categoryOptions={categoryOptions}
         muscleOptions={muscleOptions}
         tagOptions={tagOptions}
@@ -149,7 +182,7 @@ export function ExercisesPanel(): React.JSX.Element {
         open={!!duplicateId}
         mode="create"
         title={t('programs.exercises.dialog.duplicate_title')}
-        initial={duplicating as any}
+        initial={toDialogValues(duplicating)}
         categoryOptions={categoryOptions}
         muscleOptions={muscleOptions}
         tagOptions={tagOptions}
