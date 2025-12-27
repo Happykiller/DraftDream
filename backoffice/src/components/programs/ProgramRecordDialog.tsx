@@ -58,8 +58,8 @@ export function ProgramRecordDialog({
   onSubmit,
 }: ProgramRecordDialogProps): React.JSX.Element {
   const [values, setValues] = React.useState<ProgramRecordDialogValues>(DEFAULT_VALUES);
-  const [selectedProgram, setSelectedProgram] = React.useState<ProgramOption | null>(null);
-  const [selectedAthlete, setSelectedAthlete] = React.useState<AthleteOption | null>(null);
+  const [selectedProgramId, setSelectedProgramId] = React.useState<string | null>(null);
+  const [selectedAthleteId, setSelectedAthleteId] = React.useState<string | null>(null);
   const [programSearch, setProgramSearch] = React.useState('');
   const [athleteSearch, setAthleteSearch] = React.useState('');
   const isEdit = mode === 'edit';
@@ -95,28 +95,52 @@ export function ProgramRecordDialog({
       })),
     [athleteItems],
   );
+  const selectedProgramOption = React.useMemo<ProgramOption | null>(() => {
+    if (!selectedProgramId) return null;
+    return programOptions.find((option) => option.id === selectedProgramId)
+      ?? { id: selectedProgramId, label: selectedProgramId };
+  }, [programOptions, selectedProgramId]);
+  const selectedAthleteOption = React.useMemo<AthleteOption | null>(() => {
+    if (!selectedAthleteId) return null;
+    return athleteOptions.find((option) => option.id === selectedAthleteId)
+      ?? { id: selectedAthleteId, label: selectedAthleteId };
+  }, [athleteOptions, selectedAthleteId]);
 
   React.useEffect(() => {
+    if (!open) return;
     if (isEdit && initial) {
       setValues({
         userId: initial.userId,
         programId: initial.programId,
         state: initial.state,
       });
-      setSelectedProgram({
-        id: initial.programId,
-        label: programOptions.find((option) => option.id === initial.programId)?.label ?? initial.programId,
-      });
-      setSelectedAthlete({
-        id: initial.userId,
-        label: athleteOptions.find((option) => option.id === initial.userId)?.label ?? initial.userId,
-      });
-    } else {
-      setValues(DEFAULT_VALUES);
-      setSelectedProgram(null);
-      setSelectedAthlete(null);
+      setSelectedProgramId(initial.programId);
+      setSelectedAthleteId(initial.userId);
+      setProgramSearch(initial.programId);
+      setAthleteSearch(initial.userId);
+      return;
     }
-  }, [athleteOptions, initial, isEdit, open, programOptions]);
+    // Reset only when opening a create dialog to avoid wiping active selections.
+    setValues(DEFAULT_VALUES);
+    setSelectedProgramId(null);
+    setSelectedAthleteId(null);
+    setProgramSearch('');
+    setAthleteSearch('');
+  }, [initial, isEdit, open]);
+
+  React.useEffect(() => {
+    if (!isEdit || !open || !selectedProgramId) return;
+    if (programSearch !== selectedProgramId) return;
+    const match = programOptions.find((option) => option.id === selectedProgramId);
+    if (match) setProgramSearch(match.label);
+  }, [isEdit, open, programOptions, programSearch, selectedProgramId]);
+
+  React.useEffect(() => {
+    if (!isEdit || !open || !selectedAthleteId) return;
+    if (athleteSearch !== selectedAthleteId) return;
+    const match = athleteOptions.find((option) => option.id === selectedAthleteId);
+    if (match) setAthleteSearch(match.label);
+  }, [athleteOptions, athleteSearch, isEdit, open, selectedAthleteId]);
 
   const stateOptions = React.useMemo(
     () => [
@@ -133,12 +157,14 @@ export function ProgramRecordDialog({
   };
 
   const handleProgramChange = (_: unknown, option: ProgramOption | null) => {
-    setSelectedProgram(option);
+    setSelectedProgramId(option?.id ?? null);
+    setProgramSearch(option?.label ?? '');
     setValues((prev) => ({ ...prev, programId: option?.id ?? '' }));
   };
 
   const handleAthleteChange = (_: unknown, option: AthleteOption | null) => {
-    setSelectedAthlete(option);
+    setSelectedAthleteId(option?.id ?? null);
+    setAthleteSearch(option?.label ?? '');
     setValues((prev) => ({ ...prev, userId: option?.id ?? '' }));
   };
 
@@ -205,7 +231,7 @@ export function ProgramRecordDialog({
           </TextField>
           <Autocomplete
             options={programOptions}
-            value={selectedProgram}
+            value={selectedProgramOption}
             onChange={handleProgramChange}
             inputValue={programSearch}
             onInputChange={(_, value) => setProgramSearch(value)}
@@ -230,7 +256,7 @@ export function ProgramRecordDialog({
           />
           <Autocomplete
             options={athleteOptions}
-            value={selectedAthlete}
+            value={selectedAthleteOption}
             onChange={handleAthleteChange}
             inputValue={athleteSearch}
             onInputChange={(_, value) => setAthleteSearch(value)}
