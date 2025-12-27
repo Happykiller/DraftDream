@@ -154,7 +154,13 @@ export function ProgramRecordDialog({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} aria-labelledby="program-record-dialog-title">
+    <Dialog
+      open={open}
+      onClose={onClose}
+      aria-labelledby="program-record-dialog-title"
+      fullWidth
+      maxWidth="md"
+    >
       {/* General information */}
       <DialogTitle id="program-record-dialog-title">
         {isEdit
