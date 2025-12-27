@@ -217,6 +217,29 @@ type ProgramListGql {
   limit: Int!
 }
 
+type ProgramRecordGql {
+  id: ID!
+  userId: ID!
+  programId: ID!
+  state: ProgramRecordStateEnum!
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum ProgramRecordStateEnum {
+  CREATE
+  IDLE
+  SAVE
+}
+
+type ProgramRecordListGql {
+  items: [ProgramRecordGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
 type ExerciseGql {
   id: ID!
   slug: String!
@@ -583,6 +606,8 @@ type Query {
   session_list(input: ListSessionsInput): SessionListGql!
   program_get(id: ID!): ProgramGql
   program_list(input: ListProgramsInput): ProgramListGql!
+  programRecord_get(id: ID!): ProgramRecordGql
+  programRecord_list(input: ListProgramRecordsInput): ProgramRecordListGql!
   category_get(id: ID!): CategoryGql
   category_list(input: ListCategoriesInput): CategoryListGql!
   prospectObjective_get(id: ID!): ProspectObjectiveGql
@@ -659,6 +684,15 @@ input ListProgramsInput {
   createdBy: String
   visibility: MealPlanVisibility
   userId: ID
+  limit: Int
+  page: Int
+}
+
+input ListProgramRecordsInput {
+  userId: ID
+  programId: ID
+  state: ProgramRecordStateEnum
+  includeArchived: Boolean
   limit: Int
   page: Int
 }
@@ -816,6 +850,8 @@ type Mutation {
   program_update(input: UpdateProgramInput!): ProgramGql
   program_softDelete(id: ID!): Boolean!
   program_delete(id: ID!): Boolean!
+  programRecord_create(input: CreateProgramRecordInput!): ProgramRecordGql
+  programRecord_updateState(input: UpdateProgramRecordInput!): ProgramRecordGql
   category_create(input: CreateCategoryInput!): CategoryGql
   category_update(input: UpdateCategoryInput!): CategoryGql
   category_delete(id: ID!): Boolean!
@@ -1014,6 +1050,17 @@ input UpdateProgramInput {
   sessionIds: [ID!]
   sessions: [ProgramSessionInput!]
   userId: ID
+}
+
+input CreateProgramRecordInput {
+  programId: ID!
+  userId: ID
+  state: ProgramRecordStateEnum
+}
+
+input UpdateProgramRecordInput {
+  id: ID!
+  state: ProgramRecordStateEnum!
 }
 
 input CreateCategoryInput {
