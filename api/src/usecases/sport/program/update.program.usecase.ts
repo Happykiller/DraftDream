@@ -1,5 +1,6 @@
 // src\\usecases\\program\\update.program.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { Role } from '@src/common/role.enum';
 import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { buildSlug } from '@src/common/slug.util';
@@ -12,15 +13,43 @@ export class UpdateProgramUsecase {
 
   async execute(id: string, dto: UpdateProgramUsecaseDto): Promise<ProgramUsecaseModel | null> {
     try {
-      const toUpdate: UpdateProgramUsecaseDto & { slug?: string } = { ...dto };
-      if (dto.label) {
-        toUpdate.slug = buildSlug({ label: dto.label, fallback: 'program', locale: dto.locale });
+      const { session, ...payload } = dto;
+
+      // Fetch existing program to check ownership
+      const existing = await this.inversify.bddService.program.get({ id });
+      if (!existing) {
+        return null;
       }
-      if (dto.sessions) {
-        toUpdate.sessions = dto.sessions.map((session) => {
+
+      // Authorization check: only creator or admin can update
+      const isAdmin = session.role === Role.ADMIN;
+      const isCreator = existing.createdBy === session.userId;
+      if (!isAdmin && !isCreator) {
+        throw new Error(ERRORS.UPDATE_PROGRAM_FORBIDDEN);
+      }
+
+      // Enforce visibility rules: only admins can set PUBLIC visibility
+      if (payload.visibility === 'PUBLIC' && session.role !== Role.ADMIN) {
+        throw new Error(ERRORS.UPDATE_PROGRAM_FORBIDDEN);
+      }
+
+      // Build update payload without session
+      const toUpdate: Partial<typeof payload> & { slug?: string } = {};
+      if (payload.label !== undefined) {
+        toUpdate.label = payload.label;
+        toUpdate.slug = buildSlug({ label: payload.label, fallback: 'program', locale: payload.locale });
+      }
+      if (payload.locale !== undefined) toUpdate.locale = payload.locale;
+      if (payload.duration !== undefined) toUpdate.duration = payload.duration;
+      if (payload.frequency !== undefined) toUpdate.frequency = payload.frequency;
+      if (payload.description !== undefined) toUpdate.description = payload.description;
+      if (payload.visibility !== undefined) toUpdate.visibility = payload.visibility;
+      if (payload.userId !== undefined) toUpdate.userId = payload.userId;
+      if (payload.sessions !== undefined) {
+        toUpdate.sessions = payload.sessions.map((sessionItem) => {
           return {
-            ...session,
-            slug: buildSlug({ label: session.label, fallback: 'session', locale: session.locale ?? dto.locale }),
+            ...sessionItem,
+            slug: buildSlug({ label: sessionItem.label, fallback: 'session', locale: sessionItem.locale ?? payload.locale }),
           };
         });
       }

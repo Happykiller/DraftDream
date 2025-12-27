@@ -20,6 +20,7 @@ export interface ListProgramRecordsDto {
   includeArchived?: boolean;
   limit?: number;
   page?: number;
+  sort?: Record<string, 1 | -1>;
 }
 
 export interface UpdateProgramRecordDto {

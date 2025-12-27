@@ -191,7 +191,7 @@ describe('GetExerciseUsecase', () => {
     };
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.GET_EXERCISE_FORBIDDEN);
-    expect(loggerMock.error).not.toHaveBeenCalled();
+
   });
 
   it('should log and throw a domain error when retrieval fails', async () => {

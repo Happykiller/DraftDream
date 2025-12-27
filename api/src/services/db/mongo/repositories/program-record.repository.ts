@@ -162,7 +162,7 @@ export class BddServiceProgramRecordMongo {
       ]);
 
       return {
-        items: rows.map(this.toModel),
+        items: rows.map((doc) => this.toModel(doc)),
         total,
         page,
         limit,

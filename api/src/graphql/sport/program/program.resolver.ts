@@ -52,6 +52,7 @@ export class ProgramResolver {
       defaultLocale: input.locale,
     });
     const payload = {
+      session,
       locale: input.locale,
       label: input.label,
       visibility: this.normalizeProgramVisibility(input.visibility) ?? 'PRIVATE',
@@ -78,6 +79,7 @@ export class ProgramResolver {
       defaultLocale: input.locale,
     });
     const updateDto: any = {
+      session,
       locale: input.locale,
       label: input.label,
       visibility: this.normalizeProgramVisibility(input.visibility),

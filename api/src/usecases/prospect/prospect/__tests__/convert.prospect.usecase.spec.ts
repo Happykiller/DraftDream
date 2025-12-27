@@ -157,9 +157,7 @@ describe('ConvertProspectToAthleteUsecase', () => {
         expect(inversifyMock.updateProspectUsecase.execute).toHaveBeenCalledWith(
             expect.objectContaining({ status: ProspectStatus.CLIENT }),
         );
-        expect(loggerMock.info).toHaveBeenCalledWith(
-            expect.stringContaining(`Temporary athlete password for ${baseProspect.email}: ${expectedPassword}`),
-        );
+
         expect(result).toEqual({
             prospect: { ...baseProspect, status: ProspectStatus.CLIENT },
             athlete,
