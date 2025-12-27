@@ -212,6 +212,11 @@ export function ProgramRecordDialog({
             getOptionLabel={(option) => option.label}
             isOptionEqualToValue={(option, value) => option.id === value.id}
             disabled={isEdit}
+            renderOption={(props, option) => (
+              <li {...props} key={option.id}>
+                {option.label}
+              </li>
+            )}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -232,6 +237,11 @@ export function ProgramRecordDialog({
             getOptionLabel={(option) => option.label}
             isOptionEqualToValue={(option, value) => option.id === value.id}
             disabled={isEdit}
+            renderOption={(props, option) => (
+              <li {...props} key={option.id}>
+                {option.label}
+              </li>
+            )}
             renderInput={(params) => (
               <TextField
                 {...params}
