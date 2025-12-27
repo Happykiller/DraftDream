@@ -319,6 +319,10 @@
       "labels": {
         "state": "État"
       },
+      "placeholders": {
+        "program": "Rechercher des programmes...",
+        "athlete": "Rechercher des athlètes..."
+      },
       "filters": {
         "user": "ID utilisateur",
         "program": "ID programme",

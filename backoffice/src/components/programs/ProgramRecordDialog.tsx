@@ -1,6 +1,7 @@
 // src/components/programs/ProgramRecordDialog.tsx
 import * as React from 'react';
 import {
+  Autocomplete,
   Button,
   Dialog,
   DialogActions,
@@ -13,8 +14,21 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import type { ProgramRecord, ProgramRecordState } from '@hooks/useProgramRecords';
+import { useDebouncedValue } from '@hooks/useDebouncedValue';
 import { useDateFormatter } from '@hooks/useDateFormatter';
+import { usePrograms } from '@hooks/usePrograms';
+import { useUsers } from '@hooks/useUsers';
+import type { ProgramRecord, ProgramRecordState } from '@hooks/useProgramRecords';
+
+interface ProgramOption {
+  id: string;
+  label: string;
+}
+
+interface AthleteOption {
+  id: string;
+  label: string;
+}
 
 export interface ProgramRecordDialogValues {
   userId: string;
@@ -44,9 +58,22 @@ export function ProgramRecordDialog({
   onSubmit,
 }: ProgramRecordDialogProps): React.JSX.Element {
   const [values, setValues] = React.useState<ProgramRecordDialogValues>(DEFAULT_VALUES);
+  const [selectedProgram, setSelectedProgram] = React.useState<ProgramOption | null>(null);
+  const [selectedAthlete, setSelectedAthlete] = React.useState<AthleteOption | null>(null);
+  const [programSearch, setProgramSearch] = React.useState('');
+  const [athleteSearch, setAthleteSearch] = React.useState('');
   const isEdit = mode === 'edit';
   const { t } = useTranslation();
   const formatDate = useDateFormatter();
+  const debouncedProgramSearch = useDebouncedValue(programSearch, 300);
+  const debouncedAthleteSearch = useDebouncedValue(athleteSearch, 300);
+  const { items: programItems } = usePrograms({ page: 1, limit: 10, q: debouncedProgramSearch });
+  const { items: athleteItems } = useUsers({
+    page: 1,
+    limit: 10,
+    q: debouncedAthleteSearch,
+    type: 'athlete',
+  });
 
   const formattedCreatedAt = React.useMemo(
     () => (initial?.createdAt ? formatDate(initial.createdAt) : '-'),
@@ -56,6 +83,18 @@ export function ProgramRecordDialog({
     () => (initial?.updatedAt ? formatDate(initial.updatedAt) : '-'),
     [formatDate, initial?.updatedAt],
   );
+  const programOptions = React.useMemo<ProgramOption[]>(
+    () => programItems.map((program) => ({ id: program.id, label: program.label })),
+    [programItems],
+  );
+  const athleteOptions = React.useMemo<AthleteOption[]>(
+    () =>
+      athleteItems.map((athlete) => ({
+        id: athlete.id,
+        label: `${athlete.first_name} ${athlete.last_name} (${athlete.email})`,
+      })),
+    [athleteItems],
+  );
 
   React.useEffect(() => {
     if (isEdit && initial) {
@@ -64,10 +103,20 @@ export function ProgramRecordDialog({
         programId: initial.programId,
         state: initial.state,
       });
+      setSelectedProgram({
+        id: initial.programId,
+        label: programOptions.find((option) => option.id === initial.programId)?.label ?? initial.programId,
+      });
+      setSelectedAthlete({
+        id: initial.userId,
+        label: athleteOptions.find((option) => option.id === initial.userId)?.label ?? initial.userId,
+      });
     } else {
       setValues(DEFAULT_VALUES);
+      setSelectedProgram(null);
+      setSelectedAthlete(null);
     }
-  }, [initial, isEdit, open]);
+  }, [athleteOptions, initial, isEdit, open, programOptions]);
 
   const stateOptions = React.useMemo(
     () => [
@@ -81,6 +130,16 @@ export function ProgramRecordDialog({
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setValues((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleProgramChange = (_: unknown, option: ProgramOption | null) => {
+    setSelectedProgram(option);
+    setValues((prev) => ({ ...prev, programId: option?.id ?? '' }));
+  };
+
+  const handleAthleteChange = (_: unknown, option: AthleteOption | null) => {
+    setSelectedAthlete(option);
+    setValues((prev) => ({ ...prev, userId: option?.id ?? '' }));
   };
 
   const submit = async (event: React.FormEvent) => {
@@ -124,26 +183,6 @@ export function ProgramRecordDialog({
           ) : null}
 
           <TextField
-            label={t('common.labels.user')}
-            name="userId"
-            value={values.userId}
-            onChange={handleChange}
-            inputProps={{ 'aria-label': 'program-record-user' }}
-            required
-            fullWidth
-            disabled={isEdit}
-          />
-          <TextField
-            label={t('common.labels.program')}
-            name="programId"
-            value={values.programId}
-            onChange={handleChange}
-            inputProps={{ 'aria-label': 'program-record-program' }}
-            required
-            fullWidth
-            disabled={isEdit}
-          />
-          <TextField
             select
             label={t('programs.records.labels.state')}
             name="state"
@@ -158,6 +197,46 @@ export function ProgramRecordDialog({
               </MenuItem>
             ))}
           </TextField>
+          <Autocomplete
+            options={programOptions}
+            value={selectedProgram}
+            onChange={handleProgramChange}
+            inputValue={programSearch}
+            onInputChange={(_, value) => setProgramSearch(value)}
+            getOptionLabel={(option) => option.label}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            disabled={isEdit}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={t('common.labels.program')}
+                placeholder={t('programs.records.placeholders.program')}
+                inputProps={{ ...params.inputProps, 'aria-label': 'program-record-program' }}
+                required
+                fullWidth
+              />
+            )}
+          />
+          <Autocomplete
+            options={athleteOptions}
+            value={selectedAthlete}
+            onChange={handleAthleteChange}
+            inputValue={athleteSearch}
+            onInputChange={(_, value) => setAthleteSearch(value)}
+            getOptionLabel={(option) => option.label}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            disabled={isEdit}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={t('common.labels.athlete')}
+                placeholder={t('programs.records.placeholders.athlete')}
+                inputProps={{ ...params.inputProps, 'aria-label': 'program-record-user' }}
+                required
+                fullWidth
+              />
+            )}
+          />
           <DialogActions sx={{ px: 0 }}>
             <Button onClick={onClose} color="inherit">
               {t('common.buttons.cancel')}
