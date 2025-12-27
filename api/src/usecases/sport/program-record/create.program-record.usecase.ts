@@ -72,6 +72,10 @@ export class CreateProgramRecordUsecase {
       return null;
     }
 
+    if (session.role === Role.ADMIN) {
+      return program;
+    }
+
     if (!program.userId) {
       if (session.role === Role.ATHLETE) {
         throw new Error(ERRORS.FORBIDDEN);
