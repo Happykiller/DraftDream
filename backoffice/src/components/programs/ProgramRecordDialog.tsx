@@ -14,7 +14,6 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import { useDebouncedValue } from '@hooks/useDebouncedValue';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 import { usePrograms } from '@hooks/usePrograms';
 import { useUsers } from '@hooks/useUsers';
@@ -60,18 +59,14 @@ export function ProgramRecordDialog({
   const [values, setValues] = React.useState<ProgramRecordDialogValues>(DEFAULT_VALUES);
   const [selectedProgramId, setSelectedProgramId] = React.useState<string | null>(null);
   const [selectedAthleteId, setSelectedAthleteId] = React.useState<string | null>(null);
-  const [programSearch, setProgramSearch] = React.useState('');
-  const [athleteSearch, setAthleteSearch] = React.useState('');
   const isEdit = mode === 'edit';
   const { t } = useTranslation();
   const formatDate = useDateFormatter();
-  const debouncedProgramSearch = useDebouncedValue(programSearch, 300);
-  const debouncedAthleteSearch = useDebouncedValue(athleteSearch, 300);
-  const { items: programItems } = usePrograms({ page: 1, limit: 10, q: debouncedProgramSearch });
+  const { items: programItems } = usePrograms({ page: 1, limit: 50, q: '' });
   const { items: athleteItems } = useUsers({
     page: 1,
-    limit: 10,
-    q: debouncedAthleteSearch,
+    limit: 50,
+    q: '',
     type: 'athlete',
   });
 
@@ -116,31 +111,12 @@ export function ProgramRecordDialog({
       });
       setSelectedProgramId(initial.programId);
       setSelectedAthleteId(initial.userId);
-      setProgramSearch(initial.programId);
-      setAthleteSearch(initial.userId);
       return;
     }
-    // Reset only when opening a create dialog to avoid wiping active selections.
     setValues(DEFAULT_VALUES);
     setSelectedProgramId(null);
     setSelectedAthleteId(null);
-    setProgramSearch('');
-    setAthleteSearch('');
   }, [initial, isEdit, open]);
-
-  React.useEffect(() => {
-    if (!isEdit || !open || !selectedProgramId) return;
-    if (programSearch !== selectedProgramId) return;
-    const match = programOptions.find((option) => option.id === selectedProgramId);
-    if (match) setProgramSearch(match.label);
-  }, [isEdit, open, programOptions, programSearch, selectedProgramId]);
-
-  React.useEffect(() => {
-    if (!isEdit || !open || !selectedAthleteId) return;
-    if (athleteSearch !== selectedAthleteId) return;
-    const match = athleteOptions.find((option) => option.id === selectedAthleteId);
-    if (match) setAthleteSearch(match.label);
-  }, [athleteOptions, athleteSearch, isEdit, open, selectedAthleteId]);
 
   const stateOptions = React.useMemo(
     () => [
@@ -158,13 +134,11 @@ export function ProgramRecordDialog({
 
   const handleProgramChange = (_: unknown, option: ProgramOption | null) => {
     setSelectedProgramId(option?.id ?? null);
-    setProgramSearch(option?.label ?? '');
     setValues((prev) => ({ ...prev, programId: option?.id ?? '' }));
   };
 
   const handleAthleteChange = (_: unknown, option: AthleteOption | null) => {
     setSelectedAthleteId(option?.id ?? null);
-    setAthleteSearch(option?.label ?? '');
     setValues((prev) => ({ ...prev, userId: option?.id ?? '' }));
   };
 
@@ -233,8 +207,6 @@ export function ProgramRecordDialog({
             options={programOptions}
             value={selectedProgramOption}
             onChange={handleProgramChange}
-            inputValue={programSearch}
-            onInputChange={(_, value) => setProgramSearch(value)}
             getOptionLabel={(option) => option.label}
             isOptionEqualToValue={(option, value) => option.id === value.id}
             disabled={isEdit}
@@ -258,8 +230,6 @@ export function ProgramRecordDialog({
             options={athleteOptions}
             value={selectedAthleteOption}
             onChange={handleAthleteChange}
-            inputValue={athleteSearch}
-            onInputChange={(_, value) => setAthleteSearch(value)}
             getOptionLabel={(option) => option.label}
             isOptionEqualToValue={(option, value) => option.id === value.id}
             disabled={isEdit}
