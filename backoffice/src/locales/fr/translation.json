@@ -61,6 +61,7 @@
       "address_country": "Pays",
       "user": "Utilisateur",
       "athlete": "Athlète",
+      "program": "Programme",
       "user_optional": "Utilisateur (optionnel)",
       "athlete_optional": "Athlète (optionnel)",
       "description": "Description",
@@ -220,6 +221,7 @@
       "muscles": "Muscles",
       "tags": "Tags",
       "equipment": "Équipement",
+      "records": "Enregistrements",
       "aria_label": "Sections des programmes"
     },
     "table": {
@@ -309,6 +311,28 @@
       },
       "confirm": {
         "delete_title": "Supprimer l'exercice"
+      }
+    },
+    "records": {
+      "title": "Enregistrements",
+      "create": "Nouvel enregistrement",
+      "labels": {
+        "state": "État"
+      },
+      "filters": {
+        "user": "ID utilisateur",
+        "program": "ID programme",
+        "state": "État",
+        "state_all": "Tous les états"
+      },
+      "states": {
+        "create": "Créé",
+        "idle": "En pause",
+        "save": "Terminé"
+      },
+      "dialog": {
+        "create_title": "Nouvel enregistrement",
+        "edit_title": "Modifier l'enregistrement"
       }
     }
   },

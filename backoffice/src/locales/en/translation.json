@@ -61,6 +61,7 @@
       "address_country": "Country",
       "user": "User",
       "athlete": "Athlete",
+      "program": "Program",
       "user_optional": "User (optional)",
       "athlete_optional": "Athlete (optional)",
       "description": "Description",
@@ -220,6 +221,7 @@
       "muscles": "Muscles",
       "tags": "Tags",
       "equipment": "Equipment",
+      "records": "Records",
       "aria_label": "Program sections"
     },
     "table": {
@@ -309,6 +311,28 @@
       },
       "confirm": {
         "delete_title": "Delete exercise"
+      }
+    },
+    "records": {
+      "title": "Records",
+      "create": "New Record",
+      "labels": {
+        "state": "State"
+      },
+      "filters": {
+        "user": "User ID",
+        "program": "Program ID",
+        "state": "State",
+        "state_all": "All states"
+      },
+      "states": {
+        "create": "Created",
+        "idle": "Paused",
+        "save": "Finished"
+      },
+      "dialog": {
+        "create_title": "New Record",
+        "edit_title": "Edit Record"
       }
     }
   },
