@@ -73,6 +73,18 @@ const UPDATE_M = `
   }
 `;
 
+const DELETE_M = `
+  mutation DeleteProgramRecord($id: ID!) {
+    programRecord_delete(id: $id)
+  }
+`;
+
+const HARD_DELETE_M = `
+  mutation HardDeleteProgramRecord($id: ID!) {
+    programRecord_hardDelete(id: $id)
+  }
+`;
+
 export interface UseProgramRecordsParams {
   page: number; // 1-based
   limit: number;
@@ -162,5 +174,47 @@ export function useProgramRecords({ page, limit, userId, programId, state }: Use
     [execute, gql, flashError, flashSuccess, load]
   );
 
-  return { items, total, loading, create, update, reload: load };
+  const deleteRecord = React.useCallback(
+    async (id: string) => {
+      try {
+        const { errors } = await execute(() =>
+          gql.send<{ programRecord_delete: boolean }>({
+            query: DELETE_M,
+            variables: { id },
+            operationName: 'DeleteProgramRecord',
+          }),
+        );
+        if (errors?.length) throw new Error(errors[0].message);
+        flashSuccess('Program record deleted');
+        await load();
+      } catch (e: any) {
+        flashError(e?.message ?? 'Delete failed');
+        throw e;
+      }
+    },
+    [execute, gql, flashError, flashSuccess, load]
+  );
+
+  const hardDeleteRecord = React.useCallback(
+    async (id: string) => {
+      try {
+        const { errors } = await execute(() =>
+          gql.send<{ programRecord_hardDelete: boolean }>({
+            query: HARD_DELETE_M,
+            variables: { id },
+            operationName: 'HardDeleteProgramRecord',
+          }),
+        );
+        if (errors?.length) throw new Error(errors[0].message);
+        flashSuccess('Program record hard deleted');
+        await load();
+      } catch (e: any) {
+        flashError(e?.message ?? 'Hard delete failed');
+        throw e;
+      }
+    },
+    [execute, gql, flashError, flashSuccess, load]
+  );
+
+  return { items, total, loading, create, update, deleteRecord, hardDeleteRecord, reload: load };
 }

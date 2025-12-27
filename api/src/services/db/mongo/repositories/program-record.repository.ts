@@ -2,6 +2,7 @@
 import {
   Collection,
   Db,
+  DeleteResult,
   Filter,
   ObjectId,
   Sort,
@@ -193,6 +194,35 @@ export class BddServiceProgramRecordMongo {
     } catch (error) {
       if (this.isDuplicateError(error)) return null;
       this.handleError('update', error);
+    }
+  }
+
+  /**
+   * Soft deletes a program record by setting deletedAt.
+   */
+  async softDelete(id: string): Promise<boolean> {
+    const _id = this.toObjectId(id);
+    try {
+      const res = await this.col().updateOne(
+        { _id, deletedAt: { $exists: false } },
+        { $set: { deletedAt: new Date() } },
+      );
+      return res.modifiedCount > 0;
+    } catch (error) {
+      this.handleError('softDelete', error);
+    }
+  }
+
+  /**
+   * Hard deletes a program record effectively removing it from the database.
+   */
+  async hardDelete(id: string): Promise<boolean> {
+    const _id = this.toObjectId(id);
+    try {
+      const res: DeleteResult = await this.col().deleteOne({ _id });
+      return res.deletedCount > 0;
+    } catch (error) {
+      this.handleError('hardDelete', error);
     }
   }
 

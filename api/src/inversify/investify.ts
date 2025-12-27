@@ -44,6 +44,8 @@ import { GetProgramRecordUsecase } from '@src/usecases/sport/program-record/get.
 import { ListProgramRecordsUsecase } from '@src/usecases/sport/program-record/list.program-records.usecase';
 import { UpdateProgramRecordUsecase } from '@src/usecases/sport/program-record/update.program-record.usecase';
 import { CreateProgramRecordUsecase } from '@src/usecases/sport/program-record/create.program-record.usecase';
+import { DeleteProgramRecordUsecase } from '@src/usecases/sport/program-record/delete.program-record.usecase';
+import { HardDeleteProgramRecordUsecase } from '@src/usecases/sport/program-record/hard-delete.program-record.usecase';
 import { GetEquipmentUsecase } from '@src/usecases/sport/equipment/get.equipment.usecase';
 import { ListExercisesUsecase } from '@src/usecases/sport/exercise/list.exercises.usecase';
 import { ListCategoriesUsecase } from '@src/usecases/sport/category/list.category.usecase';
@@ -161,6 +163,8 @@ export class Inversify {
   deleteProgramUsecase: DeleteProgramUsecase;
   updateProgramUsecase: UpdateProgramUsecase;
   updateProgramRecordUsecase: UpdateProgramRecordUsecase;
+  deleteProgramRecordUsecase: DeleteProgramRecordUsecase;
+  hardDeleteProgramRecordUsecase: HardDeleteProgramRecordUsecase;
   getProgramRecordUsecase: GetProgramRecordUsecase;
   updateCategoryUsecase: UpdateCategoryUsecase;
   createCategoryUsecase: CreateCategoryUsecase;
@@ -306,6 +310,8 @@ export class Inversify {
     this.listProgramRecordsUsecase = new ListProgramRecordsUsecase(this);
     this.createProgramRecordUsecase = new CreateProgramRecordUsecase(this);
     this.updateProgramRecordUsecase = new UpdateProgramRecordUsecase(this);
+    this.deleteProgramRecordUsecase = new DeleteProgramRecordUsecase(this);
+    this.hardDeleteProgramRecordUsecase = new HardDeleteProgramRecordUsecase(this);
     // usecases client objective
     this.getClientObjectiveUsecase = new GetProspectObjectiveUsecase(this);
     this.createClientObjectiveUsecase = new CreateProspectObjectiveUsecase(this);

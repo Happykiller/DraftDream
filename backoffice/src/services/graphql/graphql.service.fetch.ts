@@ -122,6 +122,12 @@ export class GraphqlServiceFetch {
       return { data: null as any, errors: [{ message: 'UNAUTHORIZED' }] };
     }
 
+    // HTTP-level 403 (Forbidden) - often used for expired sessions or invalid permissions
+    if (response.status === 403) {
+      this.handleUnauthorized('HTTP 403');
+      return { data: null as any, errors: [{ message: 'FORBIDDEN' }] };
+    }
+
     let json: GraphQLResponse<TData>;
     try {
       json = (await response.json()) as GraphQLResponse<TData>;

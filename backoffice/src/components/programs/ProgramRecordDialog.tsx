@@ -15,8 +15,8 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { useDateFormatter } from '@hooks/useDateFormatter';
-import { usePrograms } from '@hooks/usePrograms';
-import { useUsers } from '@hooks/useUsers';
+import type { Program } from '@hooks/usePrograms';
+import type { User } from '@hooks/useUsers';
 import type { ProgramRecord, ProgramRecordState } from '@hooks/useProgramRecords';
 
 interface ProgramOption {
@@ -39,6 +39,8 @@ export interface ProgramRecordDialogProps {
   open: boolean;
   mode: 'create' | 'edit';
   initial?: ProgramRecord | null;
+  programs: Program[];
+  users: User[];
   onClose: () => void;
   onSubmit: (values: ProgramRecordDialogValues) => Promise<void> | void;
 }
@@ -53,6 +55,8 @@ export function ProgramRecordDialog({
   open,
   mode,
   initial,
+  programs,
+  users,
   onClose,
   onSubmit,
 }: ProgramRecordDialogProps): React.JSX.Element {
@@ -62,13 +66,6 @@ export function ProgramRecordDialog({
   const isEdit = mode === 'edit';
   const { t } = useTranslation();
   const formatDate = useDateFormatter();
-  const { items: programItems } = usePrograms({ page: 1, limit: 50, q: '' });
-  const { items: athleteItems } = useUsers({
-    page: 1,
-    limit: 50,
-    q: '',
-    type: 'athlete',
-  });
 
   const formattedCreatedAt = React.useMemo(
     () => (initial?.createdAt ? formatDate(initial.createdAt) : '-'),
@@ -79,16 +76,16 @@ export function ProgramRecordDialog({
     [formatDate, initial?.updatedAt],
   );
   const programOptions = React.useMemo<ProgramOption[]>(
-    () => programItems.map((program) => ({ id: program.id, label: program.label })),
-    [programItems],
+    () => programs.map((program) => ({ id: program.id, label: program.label })),
+    [programs],
   );
   const athleteOptions = React.useMemo<AthleteOption[]>(
     () =>
-      athleteItems.map((athlete) => ({
+      users.map((athlete) => ({
         id: athlete.id,
         label: `${athlete.first_name} ${athlete.last_name} (${athlete.email})`,
       })),
-    [athleteItems],
+    [users],
   );
   const selectedProgramOption = React.useMemo<ProgramOption | null>(() => {
     if (!selectedProgramId) return null;
@@ -161,7 +158,6 @@ export function ProgramRecordDialog({
       fullWidth
       maxWidth="md"
     >
-      {/* General information */}
       <DialogTitle id="program-record-dialog-title">
         {isEdit
           ? t('programs.records.dialog.edit_title')

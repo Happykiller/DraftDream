@@ -49,6 +49,26 @@ export class ProgramRecordResolver {
     return updated ? mapProgramRecordUsecaseToGql(updated) : null;
   }
 
+  @Mutation(() => Boolean, { name: 'programRecord_delete' })
+  @Auth(Role.ADMIN, Role.COACH, Role.ATHLETE)
+  async programRecord_delete(
+    @Args('id', { type: () => ID }) id: string,
+    @Context('req') req: any,
+  ): Promise<boolean> {
+    const session = this.extractSession(req);
+    return inversify.deleteProgramRecordUsecase.execute({ id, session });
+  }
+
+  @Mutation(() => Boolean, { name: 'programRecord_hardDelete' })
+  @Auth(Role.ADMIN, Role.COACH, Role.ATHLETE)
+  async programRecord_hardDelete(
+    @Args('id', { type: () => ID }) id: string,
+    @Context('req') req: any,
+  ): Promise<boolean> {
+    const session = this.extractSession(req);
+    return inversify.hardDeleteProgramRecordUsecase.execute({ id, session });
+  }
+
   @Query(() => ProgramRecordGql, { name: 'programRecord_get', nullable: true })
   @Auth(Role.ADMIN, Role.COACH, Role.ATHLETE)
   async programRecord_get(

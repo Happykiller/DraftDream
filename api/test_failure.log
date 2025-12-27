@@ -1,0 +1,125 @@
+
+> api@0.12.0 test
+> jest src/usecases/sport/program-record/__tests__/delete.program-record.usecase.spec.ts src/usecases/sport/program-record/__tests__/hard-delete.program-record.usecase.spec.ts
+
+FAIL src/usecases/sport/program-record/__tests__/hard-delete.program-record.usecase.spec.ts
+  ● HardDeleteProgramRecordUsecase › should hard delete a program record if user is owner
+
+    expect(received).toHaveBeenCalledWith(...expected)
+
+    Matcher error: received value must be a mock or spy function
+
+    Received has type:  function
+    Received has value: [Function fn]
+
+    [0m [90m 58 |[39m
+     [90m 59 |[39m         expect(result)[33m.[39mtoBe([36mtrue[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 60 |[39m         expect(programRecordRepositoryMock[33m.[39mhardDelete)[33m.[39mtoHaveBeenCalledWith([32m'record-1'[39m)[33m;[39m
+     [90m    |[39m                                                        [31m[1m^[22m[39m
+     [90m 61 |[39m     })[33m;[39m
+     [90m 62 |[39m
+     [90m 63 |[39m     it([32m'should hard delete a program record if user is admin'[39m[33m,[39m [36masync[39m () [33m=>[39m {[0m
+
+      at Object.<anonymous> (src/usecases/sport/program-record/__tests__/hard-delete.program-record.usecase.spec.ts:60:56)
+
+  ● HardDeleteProgramRecordUsecase › should hard delete a program record if user is admin
+
+    expect(received).toHaveBeenCalledWith(...expected)
+
+    Matcher error: received value must be a mock or spy function
+
+    Received has type:  function
+    Received has value: [Function fn]
+
+    [0m [90m 71 |[39m
+     [90m 72 |[39m         expect(result)[33m.[39mtoBe([36mtrue[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 73 |[39m         expect(programRecordRepositoryMock[33m.[39mhardDelete)[33m.[39mtoHaveBeenCalledWith([32m'record-1'[39m)[33m;[39m
+     [90m    |[39m                                                        [31m[1m^[22m[39m
+     [90m 74 |[39m     })[33m;[39m
+     [90m 75 |[39m
+     [90m 76 |[39m     it([32m'should throw unauthorized if user is not owner and not admin'[39m[33m,[39m [36masync[39m () [33m=>[39m {[0m
+
+      at Object.<anonymous> (src/usecases/sport/program-record/__tests__/hard-delete.program-record.usecase.spec.ts:73:56)
+
+  ● HardDeleteProgramRecordUsecase › should throw unauthorized if user is not owner and not admin
+
+    expect(received).not.toHaveBeenCalled()
+
+    Matcher error: received value must be a mock or spy function
+
+    Received has type:  function
+    Received has value: [Function fn]
+
+    [0m [90m 84 |[39m         )[33m.[39mrejects[33m.[39mtoThrow([33mUnauthorizedException[39m)[33m;[39m
+     [90m 85 |[39m
+    [31m[1m>[22m[39m[90m 86 |[39m         expect(programRecordRepositoryMock[33m.[39mhardDelete)[33m.[39mnot[33m.[39mtoHaveBeenCalled()[33m;[39m
+     [90m    |[39m                                                            [31m[1m^[22m[39m
+     [90m 87 |[39m     })[33m;[39m
+     [90m 88 |[39m
+     [90m 89 |[39m     it([32m'should throw error if record not found'[39m[33m,[39m [36masync[39m () [33m=>[39m {[0m
+
+      at Object.<anonymous> (src/usecases/sport/program-record/__tests__/hard-delete.program-record.usecase.spec.ts:86:60)
+
+FAIL src/usecases/sport/program-record/__tests__/delete.program-record.usecase.spec.ts
+  ● DeleteProgramRecordUsecase › should soft delete a program record if user is owner
+
+    expect(received).toHaveBeenCalledWith(...expected)
+
+    Matcher error: received value must be a mock or spy function
+
+    Received has type:  function
+    Received has value: [Function fn]
+
+    [0m [90m 58 |[39m
+     [90m 59 |[39m         expect(result)[33m.[39mtoBe([36mtrue[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 60 |[39m         expect(programRecordRepositoryMock[33m.[39msoftDelete)[33m.[39mtoHaveBeenCalledWith([32m'record-1'[39m)[33m;[39m
+     [90m    |[39m                                                        [31m[1m^[22m[39m
+     [90m 61 |[39m     })[33m;[39m
+     [90m 62 |[39m
+     [90m 63 |[39m     it([32m'should soft delete a program record if user is admin'[39m[33m,[39m [36masync[39m () [33m=>[39m {[0m
+
+      at Object.<anonymous> (src/usecases/sport/program-record/__tests__/delete.program-record.usecase.spec.ts:60:56)
+
+  ● DeleteProgramRecordUsecase › should soft delete a program record if user is admin
+
+    expect(received).toHaveBeenCalledWith(...expected)
+
+    Matcher error: received value must be a mock or spy function
+
+    Received has type:  function
+    Received has value: [Function fn]
+
+    [0m [90m 71 |[39m
+     [90m 72 |[39m         expect(result)[33m.[39mtoBe([36mtrue[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 73 |[39m         expect(programRecordRepositoryMock[33m.[39msoftDelete)[33m.[39mtoHaveBeenCalledWith([32m'record-1'[39m)[33m;[39m
+     [90m    |[39m                                                        [31m[1m^[22m[39m
+     [90m 74 |[39m     })[33m;[39m
+     [90m 75 |[39m
+     [90m 76 |[39m     it([32m'should throw unauthorized if user is not owner and not admin'[39m[33m,[39m [36masync[39m () [33m=>[39m {[0m
+
+      at Object.<anonymous> (src/usecases/sport/program-record/__tests__/delete.program-record.usecase.spec.ts:73:56)
+
+  ● DeleteProgramRecordUsecase › should throw unauthorized if user is not owner and not admin
+
+    expect(received).not.toHaveBeenCalled()
+
+    Matcher error: received value must be a mock or spy function
+
+    Received has type:  function
+    Received has value: [Function fn]
+
+    [0m [90m 84 |[39m         )[33m.[39mrejects[33m.[39mtoThrow([33mUnauthorizedException[39m)[33m;[39m
+     [90m 85 |[39m
+    [31m[1m>[22m[39m[90m 86 |[39m         expect(programRecordRepositoryMock[33m.[39msoftDelete)[33m.[39mnot[33m.[39mtoHaveBeenCalled()[33m;[39m
+     [90m    |[39m                                                            [31m[1m^[22m[39m
+     [90m 87 |[39m     })[33m;[39m
+     [90m 88 |[39m
+     [90m 89 |[39m     it([32m'should throw error if record not found'[39m[33m,[39m [36masync[39m () [33m=>[39m {[0m
+
+      at Object.<anonymous> (src/usecases/sport/program-record/__tests__/delete.program-record.usecase.spec.ts:86:60)
+
+Test Suites: 2 failed, 2 total
+Tests:       6 failed, 3 passed, 9 total
+Snapshots:   0 total
+Time:        2.505 s, estimated 3 s
+Ran all test suites matching src/usecases/sport/program-record/__tests__/delete.program-record.usecase.spec.ts|src/usecases/sport/program-record/__tests__/hard-delete.program-record.usecase.spec.ts.

@@ -40,6 +40,10 @@ describe('UpdateProgramUsecase', () => {
         exercises: [],
       },
     ],
+    session: {
+      userId: 'coach-123',
+      role: 'COACH' as any,
+    },
   } as UpdateProgramUsecaseDto;
 
   const now = new Date('2024-01-01T00:00:00.000Z');
@@ -89,6 +93,7 @@ describe('UpdateProgramUsecase', () => {
 
   beforeEach(() => {
     programRepositoryMock = {
+      get: createMockFn(),
       update: createMockFn(),
     } as unknown as BddServiceProgramMongo;
 
@@ -113,12 +118,14 @@ describe('UpdateProgramUsecase', () => {
   });
 
   it('should update and map the program', async () => {
+    asMock(programRepositoryMock.get).mockResolvedValue({ createdBy: dto.session.userId } as Program);
     asMock(programRepositoryMock.update).mockResolvedValue(program);
 
     const result = await usecase.execute(id, dto);
 
+    const { session: _session, ...payload } = dto;
     expect(asMock(programRepositoryMock.update).mock.calls[0][1]).toEqual({
-      ...dto,
+      ...payload,
       slug: 'updated-program',
       sessions: dto.sessions ? [
         {
@@ -131,6 +138,7 @@ describe('UpdateProgramUsecase', () => {
   });
 
   it('should return null when repository returns null', async () => {
+    asMock(programRepositoryMock.get).mockResolvedValue({ createdBy: dto.session.userId } as Program);
     asMock(programRepositoryMock.update).mockResolvedValue(null);
 
     const result = await usecase.execute(id, dto);
@@ -140,6 +148,7 @@ describe('UpdateProgramUsecase', () => {
 
   it('should log and throw a domain error when repository throws', async () => {
     const failure = new Error('update failure');
+    asMock(programRepositoryMock.get).mockResolvedValue({ createdBy: dto.session.userId } as Program);
     asMock(programRepositoryMock.update).mockRejectedValue(failure);
 
     await expect(usecase.execute(id, dto)).rejects.toThrow(ERRORS.UPDATE_PROGRAM_USECASE);

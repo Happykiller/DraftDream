@@ -852,6 +852,8 @@ type Mutation {
   program_delete(id: ID!): Boolean!
   programRecord_create(input: CreateProgramRecordInput!): ProgramRecordGql
   programRecord_updateState(input: UpdateProgramRecordInput!): ProgramRecordGql
+  programRecord_delete(id: ID!): Boolean!
+  programRecord_hardDelete(id: ID!): Boolean!
   category_create(input: CreateCategoryInput!): CategoryGql
   category_update(input: UpdateCategoryInput!): CategoryGql
   category_delete(id: ID!): Boolean!

@@ -34,3 +34,8 @@ export interface UpdateProgramRecordUsecaseDto {
   state: ProgramRecordState;
   session: UsecaseSession;
 }
+
+export interface DeleteProgramRecordUsecaseDto {
+  id: string;
+  session: UsecaseSession;
+}

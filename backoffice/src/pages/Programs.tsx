@@ -27,7 +27,6 @@ export function Programs(): React.JSX.Element {
 
   return (
     <Stack spacing={3} sx={{ mt: 3, width: '100%' }}>
-      {/* General information */}
       <Tabs
         value={tab}
         onChange={(_, v) => setTab(v)}
