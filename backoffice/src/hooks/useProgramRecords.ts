@@ -6,7 +6,7 @@ import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
-export type ProgramRecordState = 'CREATE' | 'IDLE' | 'SAVE';
+export type ProgramRecordState = 'CREATE' | 'DRAFT' | 'FINISH';
 
 export interface ProgramRecord {
   id: string;

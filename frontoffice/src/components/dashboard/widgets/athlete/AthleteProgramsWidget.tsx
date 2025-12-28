@@ -32,12 +32,12 @@ export function AthleteProgramsWidget(): React.JSX.Element {
         let mounted = true;
         const fetchRecords = async () => {
             const { items: createdItems } = await listRecords({ limit: 50, state: ProgramRecordState.CREATE });
-            const { items: idleItems } = await listRecords({ limit: 50, state: ProgramRecordState.IDLE });
+            const { items: draftItems } = await listRecords({ limit: 50, state: ProgramRecordState.DRAFT });
 
             if (!mounted) return;
 
             const activeMap = new Map<string, ProgramRecord>();
-            [...createdItems, ...idleItems].forEach(record => {
+            [...createdItems, ...draftItems].forEach(record => {
                 // Key: programId_sessionId
                 const key = `${record.programId}_${record.sessionId}`;
                 activeMap.set(key, record);

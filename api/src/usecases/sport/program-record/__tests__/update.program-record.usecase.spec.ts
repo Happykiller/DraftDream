@@ -34,7 +34,7 @@ describe('UpdateProgramRecordUsecase', () => {
 
   const updatedRecord: ProgramRecord = {
     ...record,
-    state: ProgramRecordState.IDLE,
+    state: ProgramRecordState.DRAFT,
     updatedAt: new Date('2024-01-03T00:00:00.000Z'),
   };
 
@@ -70,7 +70,7 @@ describe('UpdateProgramRecordUsecase', () => {
 
     const dto: UpdateProgramRecordUsecaseDto = {
       id: 'record-1',
-      state: ProgramRecordState.IDLE,
+      state: ProgramRecordState.DRAFT,
       session: { userId: 'athlete-1', role: Role.ATHLETE },
     };
 
@@ -79,7 +79,7 @@ describe('UpdateProgramRecordUsecase', () => {
     expect(result).toEqual(expected);
     expect(asMock(programRecordRepositoryMock.update).mock.calls[0][0]).toBe('record-1');
     expect(asMock(programRecordRepositoryMock.update).mock.calls[0][1]).toEqual({
-      state: ProgramRecordState.IDLE,
+      state: ProgramRecordState.DRAFT,
     });
   });
 
@@ -88,7 +88,7 @@ describe('UpdateProgramRecordUsecase', () => {
 
     const dto: UpdateProgramRecordUsecaseDto = {
       id: 'record-1',
-      state: ProgramRecordState.IDLE,
+      state: ProgramRecordState.DRAFT,
       session: { userId: 'athlete-1', role: Role.ATHLETE },
     };
 

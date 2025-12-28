@@ -333,8 +333,8 @@
       },
       "states": {
         "create": "Créé",
-        "idle": "En pause",
-        "save": "Terminé"
+        "draft": "Brouillon",
+        "finish": "Terminé"
       },
       "dialog": {
         "create_title": "Nouvel enregistrement",

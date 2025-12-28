@@ -54,7 +54,7 @@ Training program creation and organization
 
 #### [Program Record Management](./program-record-management.md)
 Track athlete program execution state
-- Start, pause, and finish program records
+- Start, draft, and finish program records
 - Athlete ownership and admin oversight
 
 #### Session Management

@@ -8,8 +8,8 @@ import { session } from '@stores/session';
 
 export const ProgramRecordState = {
     CREATE: 'CREATE',
-    IDLE: 'IDLE',
-    SAVE: 'SAVE',
+    DRAFT: 'DRAFT',
+    FINISH: 'FINISH',
 } as const;
 
 export type ProgramRecordState = typeof ProgramRecordState[keyof typeof ProgramRecordState];

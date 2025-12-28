@@ -142,8 +142,8 @@ export function ProgramRecordDialog({
   const stateOptions = React.useMemo(
     () => [
       { value: 'CREATE' as const, label: t('programs.records.states.create') },
-      { value: 'IDLE' as const, label: t('programs.records.states.idle') },
-      { value: 'SAVE' as const, label: t('programs.records.states.save') },
+      { value: 'DRAFT' as const, label: t('programs.records.states.draft') },
+      { value: 'FINISH' as const, label: t('programs.records.states.finish') },
     ],
     [t],
   );

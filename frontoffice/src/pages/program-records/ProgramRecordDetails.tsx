@@ -87,20 +87,20 @@ export function ProgramRecordDetails(): React.JSX.Element {
     }
 
     const renderFooter = () => {
-        if (record.state === ProgramRecordState.CREATE || record.state === ProgramRecordState.IDLE) {
+        if (record.state === ProgramRecordState.CREATE || record.state === ProgramRecordState.DRAFT) {
             return (
                 <Stack direction="row" spacing={2}>
                     <Button
                         variant="outlined"
                         color="primary"
-                        onClick={() => handleUpdateState(ProgramRecordState.IDLE)}
+                        onClick={() => handleUpdateState(ProgramRecordState.DRAFT)}
                     >
                         {t('common.actions.save', 'Save')}
                     </Button>
                     <Button
                         variant="contained"
                         color="primary"
-                        onClick={() => handleUpdateState(ProgramRecordState.SAVE)}
+                        onClick={() => handleUpdateState(ProgramRecordState.FINISH)}
                     >
                         {t('common.actions.finish', 'Finish')}
                     </Button>

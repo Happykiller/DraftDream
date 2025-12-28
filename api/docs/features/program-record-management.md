@@ -1,7 +1,7 @@
 # Program Record Management
 
 ## Description
-Program records track the execution status of a training program assigned to an athlete. They allow an athlete to start a program, pause it, and mark it as finished using explicit state transitions.
+Program records track the execution status of a training program assigned to an athlete. They allow an athlete to start a program, save it as a draft, and mark it as finished using explicit state transitions.
 
 ## Roles
 - **Admin**: Can create, read, list, and update program records for any athlete.
@@ -19,17 +19,17 @@ Scenario: Athlete starts an assigned program
 ```
 
 ```gherkin
-Scenario: Athlete pauses an active program
+Scenario: Athlete saves a program as draft
   Given an athlete has an existing program record
-  When the athlete updates the record state to IDLE
-  Then the record state becomes IDLE
+  When the athlete updates the record state to DRAFT
+  Then the record state becomes DRAFT
 ```
 
 ```gherkin
 Scenario: Athlete finishes a program
   Given an athlete has an existing program record
-  When the athlete updates the record state to SAVE
-  Then the record state becomes SAVE
+  When the athlete updates the record state to FINISH
+  Then the record state becomes FINISH
 ```
 
 ```gherkin
@@ -42,7 +42,7 @@ Scenario: Athlete cannot modify another athlete's record
 
 ## Business Rules
 - A program record is uniquely identified by the pair `(userId, programId)`.
-- Only `CREATE`, `IDLE`, and `SAVE` states are valid.
+- Only `CREATE`, `DRAFT`, and `FINISH` states are valid.
 - Athletes can only manage records tied to their own user id.
 - Records can only be created when the program is accessible to the requester.
 

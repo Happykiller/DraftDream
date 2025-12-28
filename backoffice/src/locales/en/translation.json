@@ -333,8 +333,8 @@
       },
       "states": {
         "create": "Created",
-        "idle": "Paused",
-        "save": "Finished"
+        "draft": "Draft",
+        "finish": "Finished"
       },
       "dialog": {
         "create_title": "New Record",

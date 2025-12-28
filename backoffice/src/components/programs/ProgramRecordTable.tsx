@@ -73,8 +73,8 @@ export const ProgramRecordTable = React.memo(function ProgramRecordTable({
   const stateLabelMap = React.useMemo(
     () => ({
       CREATE: t('programs.records.states.create'),
-      IDLE: t('programs.records.states.idle'),
-      SAVE: t('programs.records.states.save'),
+      DRAFT: t('programs.records.states.draft'),
+      FINISH: t('programs.records.states.finish'),
     }),
     [t],
   );
@@ -244,8 +244,8 @@ export const ProgramRecordTable = React.memo(function ProgramRecordTable({
         >
           <MenuItem value="">{t('programs.records.filters.state_all')}</MenuItem>
           <MenuItem value="CREATE">{stateLabelMap.CREATE}</MenuItem>
-          <MenuItem value="IDLE">{stateLabelMap.IDLE}</MenuItem>
-          <MenuItem value="SAVE">{stateLabelMap.SAVE}</MenuItem>
+          <MenuItem value="DRAFT">{stateLabelMap.DRAFT}</MenuItem>
+          <MenuItem value="FINISH">{stateLabelMap.FINISH}</MenuItem>
         </TextField>
         <Box sx={{ flex: 1 }} />
         <Button startIcon={<RefreshIcon />} onClick={onRefresh} sx={{ mr: 1 }}>

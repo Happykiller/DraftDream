@@ -230,8 +230,8 @@ type ProgramRecordGql {
 
 enum ProgramRecordStateEnum {
   CREATE
-  IDLE
-  SAVE
+  DRAFT
+  FINISH
 }
 
 type ProgramRecordListGql {
