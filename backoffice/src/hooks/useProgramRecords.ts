@@ -12,6 +12,7 @@ export interface ProgramRecord {
   id: string;
   userId: string;
   programId: string;
+  sessionId: string;
   state: ProgramRecordState;
   createdAt: string;
   updatedAt: string;
@@ -36,6 +37,7 @@ const LIST_Q = `
         id
         userId
         programId
+        sessionId
         state
         createdAt
         updatedAt
@@ -53,6 +55,7 @@ const CREATE_M = `
       id
       userId
       programId
+      sessionId
       state
       createdAt
       updatedAt
@@ -133,7 +136,7 @@ export function useProgramRecords({ page, limit, userId, programId, state }: Use
   React.useEffect(() => { void load(); }, [load]);
 
   const create = React.useCallback(
-    async (input: { userId: string; programId: string; state?: ProgramRecordState }) => {
+    async (input: { userId: string; programId: string; sessionId: string; state?: ProgramRecordState }) => {
       try {
         const { errors } = await execute(() =>
           gql.send<CreateProgramRecordPayload>({

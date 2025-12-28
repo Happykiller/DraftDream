@@ -62,6 +62,7 @@
       "user": "Utilisateur",
       "athlete": "Athlète",
       "program": "Programme",
+      "session": "Séance",
       "user_optional": "Utilisateur (optionnel)",
       "athlete_optional": "Athlète (optionnel)",
       "description": "Description",
@@ -321,6 +322,7 @@
       },
       "placeholders": {
         "program": "Rechercher des programmes...",
+        "session": "Rechercher des séances...",
         "athlete": "Rechercher des athlètes..."
       },
       "filters": {

@@ -23,6 +23,7 @@ interface ProgramRecordDoc {
   _id: ObjectId;
   userId: string;
   programId: string;
+  sessionId: string;
   state: ProgramRecordState;
   createdBy: string;
   createdAt: Date;
@@ -30,6 +31,7 @@ interface ProgramRecordDoc {
   deletedAt?: Date;
   schemaVersion: number;
 }
+
 
 /**
  * MongoDB repository for tracking athlete program execution records.
@@ -45,18 +47,21 @@ export class BddServiceProgramRecordMongo {
   async ensureIndexes(db?: Db): Promise<void> {
     try {
       const collection = db ? db.collection<ProgramRecordDoc>('program_records') : this.col();
+      // Drop the old unique index to allow multiple records for the same session
+      try {
+        await collection.dropIndex('program_records_user_program_session_unique');
+      } catch (e) {
+        // Ignore error if index does not exist
+      }
+
       await collection.createIndexes([
-        {
-          key: { userId: 1, programId: 1 },
-          name: 'program_records_user_program_unique',
-          unique: true,
-          partialFilterExpression: { deletedAt: { $eq: null } },
-        },
         { key: { userId: 1 }, name: 'program_records_userId' },
         { key: { programId: 1 }, name: 'program_records_programId' },
+        { key: { sessionId: 1 }, name: 'program_records_sessionId' },
         { key: { state: 1 }, name: 'program_records_state' },
         { key: { updatedAt: -1 }, name: 'program_records_updatedAt' },
       ]);
+
     } catch (error) {
       this.handleError('ensureIndexes', error);
     }
@@ -68,8 +73,9 @@ export class BddServiceProgramRecordMongo {
   async create(dto: CreateProgramRecordDto): Promise<ProgramRecord | null> {
     const userId = this.normalizeId(dto.userId);
     const programId = this.normalizeId(dto.programId);
+    const sessionId = this.normalizeId(dto.sessionId);
     const createdBy = this.normalizeId(dto.createdBy);
-    if (!userId || !programId || !createdBy) {
+    if (!userId || !programId || !sessionId || !createdBy) {
       throw new Error('INVALID_PROGRAM_RECORD_REFERENCE');
     }
 
@@ -77,12 +83,14 @@ export class BddServiceProgramRecordMongo {
     const doc: Omit<ProgramRecordDoc, '_id'> = {
       userId,
       programId,
+      sessionId,
       state: dto.state,
       createdBy,
       createdAt: now,
       updatedAt: now,
       schemaVersion: 1,
     };
+
 
     try {
       const res = await this.col().insertOne(doc as ProgramRecordDoc);
@@ -109,18 +117,21 @@ export class BddServiceProgramRecordMongo {
   /**
    * Retrieves a program record for a given user and program pair.
    */
-  async getByUserProgram(params: { userId: string; programId: string }): Promise<ProgramRecord | null> {
+  async getByUserProgram(params: { userId: string; programId: string; sessionId: string }): Promise<ProgramRecord | null> {
     try {
       const userId = this.normalizeId(params.userId);
       const programId = this.normalizeId(params.programId);
-      if (!userId || !programId) {
+      const sessionId = this.normalizeId(params.sessionId);
+      if (!userId || !programId || !sessionId) {
         throw new Error('INVALID_PROGRAM_RECORD_REFERENCE');
       }
       const doc = await this.col().findOne({
         userId,
         programId,
+        sessionId,
         deletedAt: { $exists: false },
       });
+
       return doc ? this.toModel(doc) : null;
     } catch (error) {
       this.handleError('getByUserProgram', error);
@@ -134,6 +145,7 @@ export class BddServiceProgramRecordMongo {
     const {
       userId,
       programId,
+      sessionId,
       state,
       createdBy,
       includeArchived = false,
@@ -145,6 +157,7 @@ export class BddServiceProgramRecordMongo {
     const filter: Filter<ProgramRecordDoc> = {};
     if (userId?.trim()) filter.userId = userId.trim();
     if (programId?.trim()) filter.programId = programId.trim();
+    if (sessionId?.trim()) filter.sessionId = sessionId.trim();
     if (state) filter.state = state;
     if (createdBy?.trim()) filter.createdBy = createdBy.trim();
     if (!includeArchived) filter.deletedAt = { $exists: false } as any;
@@ -238,6 +251,7 @@ export class BddServiceProgramRecordMongo {
       id: doc._id.toHexString(),
       userId: doc.userId,
       programId: doc.programId,
+      sessionId: doc.sessionId,
       state: doc.state,
       createdBy: doc.createdBy,
       createdAt: doc.createdAt,

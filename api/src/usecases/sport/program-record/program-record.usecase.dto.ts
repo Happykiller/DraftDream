@@ -10,9 +10,11 @@ export interface UsecaseSession {
 export interface CreateProgramRecordUsecaseDto {
   userId?: string;
   programId: string;
+  sessionId: string;
   state?: ProgramRecordState;
   session: UsecaseSession;
 }
+
 
 export interface GetProgramRecordUsecaseDto {
   id: string;
@@ -22,6 +24,7 @@ export interface GetProgramRecordUsecaseDto {
 export interface ListProgramRecordsUsecaseDto {
   userId?: string;
   programId?: string;
+  sessionId?: string;
   state?: ProgramRecordState;
   includeArchived?: boolean;
   limit?: number;

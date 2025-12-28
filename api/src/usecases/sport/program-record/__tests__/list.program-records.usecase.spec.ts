@@ -26,6 +26,7 @@ describe('ListProgramRecordsUsecase', () => {
     id: 'record-1',
     userId: 'athlete-1',
     programId: 'program-1',
+    sessionId: 'session-1',
     state: ProgramRecordState.CREATE,
     createdBy: 'coach-1',
     createdAt: new Date('2024-01-02T00:00:00.000Z'),
@@ -77,6 +78,7 @@ describe('ListProgramRecordsUsecase', () => {
     expect(asMock(programRecordRepositoryMock.list).mock.calls[0][0]).toEqual({
       userId: 'athlete-1',
       programId: 'program-1',
+      sessionId: undefined,
       state: undefined,
       includeArchived: false,
       limit: undefined,
@@ -107,6 +109,7 @@ describe('ListProgramRecordsUsecase', () => {
     expect(asMock(programRecordRepositoryMock.list).mock.calls[0][0]).toEqual({
       userId: 'athlete-1',
       programId: undefined,
+      sessionId: undefined,
       state: ProgramRecordState.CREATE,
       includeArchived: true,
       limit: 10,

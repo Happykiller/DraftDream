@@ -5,6 +5,7 @@ export interface ProgramRecordUsecaseModel {
   id: string;
   userId: string;
   programId: string;
+  sessionId: string;
   state: ProgramRecordState;
   createdBy: string;
   createdAt: Date;

@@ -1,0 +1,15 @@
+
+> api@0.12.0 test
+> jest src/usecases/sport/program-record/__tests__/create.program-record.usecase.spec.ts
+
+PASS src/usecases/sport/program-record/__tests__/create.program-record.usecase.spec.ts
+  CreateProgramRecordUsecase
+    √ should create a program record for an athlete (2 ms)
+    √ should create a new record even if one already exists
+    √ should forbid athletes creating records for other users (5 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        2.209 s
+Ran all test suites matching src/usecases/sport/program-record/__tests__/create.program-record.usecase.spec.ts.

@@ -27,8 +27,10 @@ describe('CreateProgramRecordUsecase', () => {
   const session = { userId: 'athlete-1', role: Role.ATHLETE };
   const dto: CreateProgramRecordUsecaseDto = {
     programId: 'program-1',
+    sessionId: 'session-1',
     session,
   };
+
 
   const program: ProgramUsecaseModel = {
     id: 'program-1',
@@ -49,7 +51,9 @@ describe('CreateProgramRecordUsecase', () => {
     id: 'record-1',
     userId: 'athlete-1',
     programId: 'program-1',
+    sessionId: 'session-1',
     state: ProgramRecordState.CREATE,
+
     createdBy: 'athlete-1',
     createdAt: new Date('2024-01-02T00:00:00.000Z'),
     updatedAt: new Date('2024-01-02T00:00:00.000Z'),
@@ -93,28 +97,33 @@ describe('CreateProgramRecordUsecase', () => {
     expect(asMock(programRecordRepositoryMock.create).mock.calls[0][0]).toEqual({
       userId: 'athlete-1',
       programId: 'program-1',
+      sessionId: 'session-1',
       state: ProgramRecordState.CREATE,
       createdBy: 'athlete-1',
     });
+
   });
 
-  it('should return the existing record when one already exists', async () => {
+  it('should create a new record even if one already exists', async () => {
     asMock(inversifyMock.getProgramUsecase.execute).mockResolvedValue(program);
-    asMock(programRecordRepositoryMock.getByUserProgram).mockResolvedValue(record);
+    // even if repository conceptually has a record, we expect create to be called
+    asMock(programRecordRepositoryMock.create).mockResolvedValue(record);
 
     const result = await usecase.execute(dto);
 
     expect(result).toEqual(expected);
-    expect(asMock(programRecordRepositoryMock.create).mock.calls.length).toBe(0);
+    expect(asMock(programRecordRepositoryMock.create).mock.calls.length).toBe(1);
   });
 
   it('should forbid athletes creating records for other users', async () => {
     await expect(
       usecase.execute({
         programId: 'program-1',
+        sessionId: 'session-1',
         userId: 'athlete-2',
         session,
       }),
+
     ).rejects.toThrow(ERRORS.FORBIDDEN);
   });
 });

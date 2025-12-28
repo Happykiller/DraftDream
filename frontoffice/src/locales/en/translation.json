@@ -12,11 +12,17 @@
     "field_incorrect": "Incorrect field",
     "unexpected_error": "Unexpected error, please try again.",
     "loading": "Loading...",
+    "play": "Start",
+    "resume": "Resume",
+    "not_found": "Not found",
+    "no_content": "No content available",
+    "back_to_home": "Back to Home",
     "actions": {
       "retry": "Retry",
       "cancel": "Cancel",
       "create": "Create",
-      "save": "Save"
+      "save": "Save",
+      "finish": "Finish"
     }
   },
   "languages": {
@@ -1308,6 +1314,11 @@
     "loading_user": "Loading profile…",
     "unknown_user": "Unknown user",
     "open_profile": "Open profile"
+  },
+  "program_record": {
+    "details": {
+      "title": "Session Details"
+    }
   },
   "ERRORS": {
     "INVALID_CREDENTIALS": "Invalid credentials."

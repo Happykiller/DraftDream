@@ -17,7 +17,7 @@ import { ProgramRecordUsecaseModel } from './program-record.usecase.model';
  * Starts a program record for an athlete.
  */
 export class CreateProgramRecordUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   /**
    * Creates a program record or returns the existing one for the same user/program.
@@ -32,20 +32,16 @@ export class CreateProgramRecordUsecase {
         return null;
       }
 
-      const existing = await this.inversify.bddService.programRecord.getByUserProgram({
-        userId,
-        programId: dto.programId,
-      });
-      if (existing) {
-        return mapProgramRecordToUsecase(existing);
-      }
+
 
       const created = await this.inversify.bddService.programRecord.create({
         userId,
         programId: dto.programId,
+        sessionId: dto.sessionId,
         state: dto.state ?? ProgramRecordState.CREATE,
         createdBy: dto.session.userId,
       });
+
 
       return created ? mapProgramRecordToUsecase(created) : null;
     } catch (error: any) {

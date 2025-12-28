@@ -62,6 +62,7 @@
       "user": "User",
       "athlete": "Athlete",
       "program": "Program",
+      "session": "Session",
       "user_optional": "User (optional)",
       "athlete_optional": "Athlete (optional)",
       "description": "Description",
@@ -321,6 +322,7 @@
       },
       "placeholders": {
         "program": "Search programs...",
+        "session": "Search sessions...",
         "athlete": "Search athletes..."
       },
       "filters": {

@@ -28,9 +28,11 @@ export class ProgramRecordResolver {
     const created = await inversify.createProgramRecordUsecase.execute({
       userId: input.userId,
       programId: input.programId,
+      sessionId: input.sessionId,
       state: input.state ?? undefined,
       session,
     });
+
     return created ? mapProgramRecordUsecaseToGql(created) : null;
   }
 
@@ -90,6 +92,7 @@ export class ProgramRecordResolver {
     const result = await inversify.listProgramRecordsUsecase.execute({
       userId: input?.userId,
       programId: input?.programId,
+      sessionId: input?.sessionId,
       state: input?.state,
       includeArchived: input?.includeArchived,
       limit: input?.limit,

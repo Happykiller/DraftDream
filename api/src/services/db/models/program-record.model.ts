@@ -5,9 +5,11 @@ export interface ProgramRecord {
   id: string;
   userId: string;
   programId: string;
+  sessionId: string;
   state: ProgramRecordState;
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
 }
+

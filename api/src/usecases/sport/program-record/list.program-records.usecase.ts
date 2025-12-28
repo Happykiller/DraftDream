@@ -19,7 +19,7 @@ interface ListProgramRecordsResult {
  * Lists program records with session-based filtering.
  */
 export class ListProgramRecordsUsecase {
-  constructor(private readonly inversify: Inversify) {}
+  constructor(private readonly inversify: Inversify) { }
 
   /**
    * Applies ownership constraints and returns paginated results.
@@ -32,6 +32,7 @@ export class ListProgramRecordsUsecase {
       const result = await this.inversify.bddService.programRecord.list({
         userId: isAdmin ? filters.userId : session.userId,
         programId: filters.programId,
+        sessionId: filters.sessionId,
         state: filters.state,
         includeArchived: isAdmin ? filters.includeArchived : false,
         limit: filters.limit,

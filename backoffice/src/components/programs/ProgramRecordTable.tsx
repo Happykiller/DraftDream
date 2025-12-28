@@ -4,6 +4,7 @@ import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import {
   Autocomplete,
   Box,
@@ -44,6 +45,7 @@ export interface ProgramRecordTableProps {
   onFiltersChange: (filters: ProgramRecordTableFilters) => void;
   onPageChange: (page: number) => void; // 1-based
   onLimitChange: (limit: number) => void;
+  onRefresh: () => void;
 }
 
 export const ProgramRecordTable = React.memo(function ProgramRecordTable({
@@ -62,6 +64,7 @@ export const ProgramRecordTable = React.memo(function ProgramRecordTable({
   onFiltersChange,
   onPageChange,
   onLimitChange,
+  onRefresh,
 }: ProgramRecordTableProps): React.JSX.Element {
   const { t } = useTranslation();
   const formatDate = useDateFormatter();
@@ -96,6 +99,19 @@ export const ProgramRecordTable = React.memo(function ProgramRecordTable({
         valueFormatter: (value: string) => {
           const program = programs.find((p) => p.id === value);
           return program ? program.label : value;
+        },
+      },
+      {
+        field: 'sessionId',
+        headerName: t('common.labels.session'),
+        flex: 1,
+        minWidth: 180,
+        valueFormatter: (value: string) => {
+          for (const program of programs) {
+            const session = program.sessions.find((s) => s.id === value);
+            if (session) return session.label;
+          }
+          return value;
         },
       },
       {
@@ -232,6 +248,9 @@ export const ProgramRecordTable = React.memo(function ProgramRecordTable({
           <MenuItem value="SAVE">{stateLabelMap.SAVE}</MenuItem>
         </TextField>
         <Box sx={{ flex: 1 }} />
+        <Button startIcon={<RefreshIcon />} onClick={onRefresh} sx={{ mr: 1 }}>
+          {t('common.buttons.refresh', 'Refresh')}
+        </Button>
         <Button variant="contained" onClick={onCreate}>
           {t('programs.records.create')}
         </Button>

@@ -221,6 +221,7 @@ type ProgramRecordGql {
   id: ID!
   userId: ID!
   programId: ID!
+  sessionId: String!
   state: ProgramRecordStateEnum!
   createdBy: String!
   createdAt: DateTime!
@@ -691,6 +692,7 @@ input ListProgramsInput {
 input ListProgramRecordsInput {
   userId: ID
   programId: ID
+  sessionId: String
   state: ProgramRecordStateEnum
   includeArchived: Boolean
   limit: Int
@@ -1056,6 +1058,7 @@ input UpdateProgramInput {
 
 input CreateProgramRecordInput {
   programId: ID!
+  sessionId: String!
   userId: ID
   state: ProgramRecordStateEnum
 }

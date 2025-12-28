@@ -29,9 +29,15 @@ interface AthleteOption {
   label: string;
 }
 
+interface SessionOption {
+  id: string;
+  label: string;
+}
+
 export interface ProgramRecordDialogValues {
   userId: string;
   programId: string;
+  sessionId: string;
   state: ProgramRecordState;
 }
 
@@ -48,6 +54,7 @@ export interface ProgramRecordDialogProps {
 const DEFAULT_VALUES: ProgramRecordDialogValues = {
   userId: '',
   programId: '',
+  sessionId: '',
   state: 'CREATE',
 };
 
@@ -62,6 +69,7 @@ export function ProgramRecordDialog({
 }: ProgramRecordDialogProps): React.JSX.Element {
   const [values, setValues] = React.useState<ProgramRecordDialogValues>(DEFAULT_VALUES);
   const [selectedProgramId, setSelectedProgramId] = React.useState<string | null>(null);
+  const [selectedSessionId, setSelectedSessionId] = React.useState<string | null>(null);
   const [selectedAthleteId, setSelectedAthleteId] = React.useState<string | null>(null);
   const isEdit = mode === 'edit';
   const { t } = useTranslation();
@@ -92,6 +100,19 @@ export function ProgramRecordDialog({
     return programOptions.find((option) => option.id === selectedProgramId)
       ?? { id: selectedProgramId, label: selectedProgramId };
   }, [programOptions, selectedProgramId]);
+
+  const sessionOptions = React.useMemo<SessionOption[]>(() => {
+    if (!selectedProgramId) return [];
+    const program = programs.find((p) => p.id === selectedProgramId);
+    return program?.sessions.map((s) => ({ id: s.id, label: s.label })) ?? [];
+  }, [programs, selectedProgramId]);
+
+  const selectedSessionOption = React.useMemo<SessionOption | null>(() => {
+    if (!selectedSessionId) return null;
+    return sessionOptions.find((option) => option.id === selectedSessionId)
+      ?? { id: selectedSessionId, label: selectedSessionId }; // Fallback to ID if not found (e.g. if searching not fully loaded, though sessions are inside program)
+  }, [sessionOptions, selectedSessionId]);
+
   const selectedAthleteOption = React.useMemo<AthleteOption | null>(() => {
     if (!selectedAthleteId) return null;
     return athleteOptions.find((option) => option.id === selectedAthleteId)
@@ -104,14 +125,17 @@ export function ProgramRecordDialog({
       setValues({
         userId: initial.userId,
         programId: initial.programId,
+        sessionId: initial.sessionId,
         state: initial.state,
       });
       setSelectedProgramId(initial.programId);
+      setSelectedSessionId(initial.sessionId);
       setSelectedAthleteId(initial.userId);
       return;
     }
     setValues(DEFAULT_VALUES);
     setSelectedProgramId(null);
+    setSelectedSessionId(null);
     setSelectedAthleteId(null);
   }, [initial, isEdit, open]);
 
@@ -131,7 +155,13 @@ export function ProgramRecordDialog({
 
   const handleProgramChange = (_: unknown, option: ProgramOption | null) => {
     setSelectedProgramId(option?.id ?? null);
-    setValues((prev) => ({ ...prev, programId: option?.id ?? '' }));
+    setSelectedSessionId(null); // Reset session when program changes
+    setValues((prev) => ({ ...prev, programId: option?.id ?? '', sessionId: '' }));
+  };
+
+  const handleSessionChange = (_: unknown, option: SessionOption | null) => {
+    setSelectedSessionId(option?.id ?? null);
+    setValues((prev) => ({ ...prev, sessionId: option?.id ?? '' }));
   };
 
   const handleAthleteChange = (_: unknown, option: AthleteOption | null) => {
@@ -141,11 +171,12 @@ export function ProgramRecordDialog({
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!values.userId.trim() || !values.programId.trim()) return;
+    if (!values.userId.trim() || !values.programId.trim() || !values.sessionId.trim()) return;
     await onSubmit({
       ...values,
       userId: values.userId.trim(),
       programId: values.programId.trim(),
+      sessionId: values.sessionId.trim(),
     });
     onClose();
   };
@@ -217,6 +248,29 @@ export function ProgramRecordDialog({
                 label={t('common.labels.program')}
                 placeholder={t('programs.records.placeholders.program')}
                 inputProps={{ ...params.inputProps, 'aria-label': 'program-record-program' }}
+                required
+                fullWidth
+              />
+            )}
+          />
+          <Autocomplete
+            options={sessionOptions}
+            value={selectedSessionOption}
+            onChange={handleSessionChange}
+            getOptionLabel={(option) => option.label}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            disabled={isEdit || !selectedProgramId}
+            renderOption={(props, option) => (
+              <li {...props} key={option.id}>
+                {option.label}
+              </li>
+            )}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={t('common.labels.session')}
+                placeholder={t('programs.records.placeholders.session')}
+                inputProps={{ ...params.inputProps, 'aria-label': 'program-record-session' }}
                 required
                 fullWidth
               />

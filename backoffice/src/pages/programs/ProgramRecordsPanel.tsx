@@ -20,7 +20,7 @@ export function ProgramRecordsPanel(): React.JSX.Element {
   const debouncedUserId = useDebouncedValue(filters.userId, 300);
   const debouncedProgramId = useDebouncedValue(filters.programId, 300);
 
-  const { items, total, loading, create, update, deleteRecord, hardDeleteRecord } = useProgramRecords({
+  const { items, total, loading, create, update, deleteRecord, hardDeleteRecord, reload } = useProgramRecords({
     page,
     limit,
     userId: debouncedUserId || undefined,
@@ -60,6 +60,7 @@ export function ProgramRecordsPanel(): React.JSX.Element {
         onFiltersChange={setFilters}
         onPageChange={setPage}
         onLimitChange={setLimit}
+        onRefresh={reload}
       />
 
       <ProgramRecordDialog

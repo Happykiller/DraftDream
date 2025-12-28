@@ -12,11 +12,17 @@
     "field_incorrect": "Champ incorrect",
     "unexpected_error": "Erreur inattendue, veuillez réessayer.",
     "loading": "Chargement...",
+    "play": "Démarrer",
+    "resume": "Reprendre",
+    "not_found": "Introuvable",
+    "no_content": "Aucun contenu disponible",
+    "back_to_home": "Retour à l'accueil",
     "actions": {
       "retry": "Réessayer",
       "cancel": "Annuler",
       "create": "Créer",
-      "save": "Enregistrer"
+      "save": "Enregistrer",
+      "finish": "Finir"
     }
   },
   "languages": {
@@ -1312,6 +1318,11 @@
     "loading_user": "Chargement du profil…",
     "unknown_user": "Utilisateur inconnu",
     "open_profile": "Ouvrir le profil"
+  },
+  "program_record": {
+    "details": {
+      "title": "Détails de la séance"
+    }
   },
   "ERRORS": {
     "INVALID_CREDENTIALS": "Identifiants invalides."

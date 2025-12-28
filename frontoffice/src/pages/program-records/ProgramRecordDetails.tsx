@@ -1,0 +1,137 @@
+import * as React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate, useParams } from 'react-router-dom';
+import {
+    Box,
+    Button,
+    CircularProgress,
+    Typography,
+    Stack,
+} from '@mui/material';
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
+
+import {
+    useProgramRecords,
+    type ProgramRecord,
+    ProgramRecordState
+} from '@hooks/program-records/useProgramRecords';
+import { useProgram } from '@hooks/programs/useProgram';
+import { FixedPageLayout } from '@src/components/common/FixedPageLayout';
+
+export function ProgramRecordDetails(): React.JSX.Element {
+    const { t } = useTranslation();
+    const navigate = useNavigate();
+    const { recordId } = useParams<{ recordId: string }>();
+
+    const { get: getRecord, updateState } = useProgramRecords();
+    const [record, setRecord] = React.useState<ProgramRecord | null>(null);
+    const [recordLoading, setRecordLoading] = React.useState(true);
+
+    const fetchRecord = React.useCallback(() => {
+        if (!recordId) return;
+        setRecordLoading(true);
+        getRecord(recordId)
+            .then(setRecord)
+            .finally(() => setRecordLoading(false));
+    }, [recordId, getRecord]);
+
+    // Fetch Record on mount
+    React.useEffect(() => {
+        fetchRecord();
+    }, [fetchRecord]);
+
+    // Fetch Program once we have the record
+    const { program, loading: programLoading } = useProgram({
+        programId: record?.programId ?? null
+    });
+
+    const loading = recordLoading || programLoading;
+
+    // Derive Labels
+    const programLabel = program?.label ?? '-';
+    const sessionLabel = React.useMemo(() => {
+        if (!program || !record) return '';
+        const foundSession = program.sessions.find(s => s.id === record.sessionId);
+        return foundSession?.label ?? record.sessionId;
+    }, [program, record]);
+
+    const handleBackToHome = () => {
+        navigate('/');
+    };
+
+    const handleUpdateState = async (newState: ProgramRecordState) => {
+        if (!record) return;
+        try {
+            await updateState(record.id, newState);
+            navigate('/');
+        } catch (error) {
+            console.error("Failed to update state", error);
+        }
+    };
+
+    if (loading) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+                <CircularProgress />
+            </Box>
+        );
+    }
+
+    // If loading finished but no record found
+    if (!record) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+                <Typography>{t('common.not_found', 'Record not found')}</Typography>
+            </Box>
+        );
+    }
+
+    const renderFooter = () => {
+        if (record.state === ProgramRecordState.CREATE || record.state === ProgramRecordState.IDLE) {
+            return (
+                <Stack direction="row" spacing={2}>
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => handleUpdateState(ProgramRecordState.IDLE)}
+                    >
+                        {t('common.actions.save', 'Save')}
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleUpdateState(ProgramRecordState.SAVE)}
+                    >
+                        {t('common.actions.finish', 'Finish')}
+                    </Button>
+                </Stack>
+            );
+        }
+
+        return (
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={handleBackToHome}
+            >
+                {t('common.back_to_home', 'Back to Home')}
+            </Button>
+        );
+    };
+
+    return (
+        <FixedPageLayout
+            title={sessionLabel}
+            subtitle={programLabel}
+            icon={<PlayCircleOutlineIcon fontSize="medium" />}
+            footer={renderFooter()}
+        >
+            <Box sx={{ p: 3, textAlign: 'center', color: 'text.secondary' }}>
+                {/* Empty content for now */}
+                <Typography>
+                    {t('common.no_content', 'No content available yet')}
+                </Typography>
+            </Box>
+        </FixedPageLayout>
+    );
+}

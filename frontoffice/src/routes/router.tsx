@@ -185,6 +185,22 @@ export const router = createBrowserRouter([
     ],
   },
   {
+    path: '/program-record/:recordId',
+    element: <ProtectedLayout />,
+    loader: requireAuthLoader,
+    children: [
+      {
+        index: true,
+        lazy: async () => {
+          const mod = await import('@src/pages/program-records/ProgramRecordDetails');
+          return {
+            Component: withTitle(mod.ProgramRecordDetails, 'program_record.details.title'),
+          };
+        },
+      },
+    ],
+  },
+  {
     path: '/nutrition-coach',
     element: <ProtectedLayout />,
     loader: requireAuthLoader,

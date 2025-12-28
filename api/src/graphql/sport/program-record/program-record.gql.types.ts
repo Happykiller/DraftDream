@@ -14,6 +14,7 @@ export class ProgramRecordGql {
   @Field(() => ID) id!: string;
   @Field(() => ID) userId!: string;
   @Field(() => ID) programId!: string;
+  @Field(() => String) sessionId!: string;
   @Field(() => ProgramRecordStateEnum) state!: ProgramRecordStateEnum;
   @Field() createdBy!: string;
   @Field() createdAt!: Date;
@@ -23,6 +24,7 @@ export class ProgramRecordGql {
 @InputType()
 export class CreateProgramRecordInput {
   @Field(() => ID) programId!: string;
+  @Field(() => String) sessionId!: string;
   @Field(() => ID, { nullable: true }) userId?: string;
   @Field(() => ProgramRecordStateEnum, { nullable: true }) state?: ProgramRecordStateEnum;
 }
@@ -37,6 +39,7 @@ export class UpdateProgramRecordInput {
 export class ListProgramRecordsInput {
   @Field(() => ID, { nullable: true }) userId?: string;
   @Field(() => ID, { nullable: true }) programId?: string;
+  @Field(() => String, { nullable: true }) sessionId?: string;
   @Field(() => ProgramRecordStateEnum, { nullable: true }) state?: ProgramRecordStateEnum;
   @Field({ nullable: true }) includeArchived?: boolean;
   @Field(() => Int, { nullable: true }) limit?: number;
