@@ -82,6 +82,11 @@ Personalized nutrition plans for clients
 - Meal types (breakfast, lunch, dinner)
 - Nutritional information
 
+#### [Meal Record Management](./meal-record-management.md)
+Track athlete meal plan meal execution state
+- Start, draft, and finish meal records
+- Athlete ownership and admin oversight
+
 #### Meal Management
 Individual meals and recipes
 - Ingredients
