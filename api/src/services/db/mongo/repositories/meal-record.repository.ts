@@ -12,6 +12,7 @@ import inversify from '@src/inversify/investify';
 
 import { MealRecordState } from '@src/common/meal-record-state.enum';
 import { MealRecord } from '@services/db/models/meal-record.model';
+import type { MealPlanMealSnapshot } from '@services/db/models/meal-plan.model';
 import {
   CreateMealRecordDto,
   GetMealRecordDto,
@@ -25,6 +26,7 @@ interface MealRecordDoc {
   mealPlanId: string;
   mealDayId: string;
   mealId: string;
+  mealSnapshot?: MealPlanMealSnapshot;
   state: MealRecordState;
   createdBy: string;
   createdAt: Date;
@@ -79,11 +81,12 @@ export class BddServiceMealRecordMongo {
       mealPlanId,
       mealDayId,
       mealId,
+      mealSnapshot: dto.mealSnapshot,
       state: dto.state,
       createdBy,
       createdAt: now,
       updatedAt: now,
-      schemaVersion: 1,
+      schemaVersion: 2,
     };
 
     try {
@@ -225,6 +228,7 @@ export class BddServiceMealRecordMongo {
       mealPlanId: doc.mealPlanId,
       mealDayId: doc.mealDayId,
       mealId: doc.mealId,
+      mealSnapshot: doc.mealSnapshot,
       state: doc.state,
       createdBy: doc.createdBy,
       createdAt: doc.createdAt,

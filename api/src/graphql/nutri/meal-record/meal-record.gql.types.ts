@@ -2,6 +2,7 @@
 import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 
 import { MealRecordStateEnum } from './meal-record.enum';
+import { MealPlanMealSnapshotGql } from '@graphql/nutri/meal-plan/meal-plan.gql.types';
 
 /**
  * GraphQL output model for meal records.
@@ -13,6 +14,7 @@ export class MealRecordGql {
   @Field(() => ID) mealPlanId!: string;
   @Field(() => ID) mealDayId!: string;
   @Field(() => ID) mealId!: string;
+  @Field(() => MealPlanMealSnapshotGql, { nullable: true }) mealSnapshot?: MealPlanMealSnapshotGql | null;
   @Field(() => MealRecordStateEnum) state!: MealRecordStateEnum;
   @Field(() => ID) createdBy!: string;
   @Field() createdAt!: Date;

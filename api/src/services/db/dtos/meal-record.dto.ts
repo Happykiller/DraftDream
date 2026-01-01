@@ -1,11 +1,13 @@
 // src/services/db/dtos/meal-record.dto.ts
 import { MealRecordState } from '@src/common/meal-record-state.enum';
+import type { MealPlanMealSnapshot } from '@src/services/db/models/meal-plan.model';
 
 export interface CreateMealRecordDto {
   userId: string;
   mealPlanId: string;
   mealDayId: string;
   mealId: string;
+  mealSnapshot?: MealPlanMealSnapshot;
   state: MealRecordState;
   createdBy: string;
 }

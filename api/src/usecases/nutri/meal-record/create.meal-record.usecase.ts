@@ -5,6 +5,7 @@ import { MealRecordState } from '@src/common/meal-record-state.enum';
 import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { MealPlanUsecaseModel } from '@src/usecases/nutri/meal-plan/meal-plan.usecase.model';
+import type { MealRecordMealSnapshotUsecaseModel } from '@src/usecases/nutri/meal-record/meal-record.usecase.model';
 import { mapMealRecordToUsecase } from '@src/usecases/nutri/meal-record/meal-record.mapper';
 
 import {
@@ -32,7 +33,8 @@ export class CreateMealRecordUsecase {
         return null;
       }
 
-      if (!this.hasMealInPlan(mealPlan, dto.mealDayId, dto.mealId)) {
+      const mealSnapshot = this.getMealSnapshot(mealPlan, dto.mealDayId, dto.mealId);
+      if (!mealSnapshot) {
         return null;
       }
 
@@ -41,6 +43,7 @@ export class CreateMealRecordUsecase {
         mealPlanId: dto.mealPlanId,
         mealDayId: dto.mealDayId,
         mealId: dto.mealId,
+        mealSnapshot,
         state: dto.state ?? MealRecordState.CREATE,
         createdBy: dto.session.userId,
       });
@@ -81,16 +84,28 @@ export class CreateMealRecordUsecase {
     return mealPlan;
   }
 
-  private hasMealInPlan(
+  private getMealSnapshot(
     mealPlan: MealPlanUsecaseModel,
     mealDayId: string,
     mealId: string,
-  ): boolean {
-    const day = mealPlan.days.find((candidate) => candidate.id === mealDayId);
+  ): MealRecordMealSnapshotUsecaseModel | null {
+    const day = mealPlan.days.find(
+      (candidate) => candidate.id === mealDayId || candidate.templateMealDayId === mealDayId,
+    );
     if (!day) {
-      return false;
+      return null;
     }
 
-    return day.meals.some((meal) => meal.id === mealId);
+    const meal = day.meals.find(
+      (candidate) => candidate.id === mealId || candidate.templateMealId === mealId,
+    );
+    if (!meal) {
+      return null;
+    }
+
+    return {
+      ...meal,
+      type: { ...meal.type },
+    };
   }
 }
