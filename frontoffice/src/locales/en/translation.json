@@ -1320,6 +1320,11 @@
       "title": "Session Details"
     }
   },
+  "meal_record": {
+    "details": {
+      "title": "Meal Details"
+    }
+  },
   "ERRORS": {
     "INVALID_CREDENTIALS": "Invalid credentials."
   },

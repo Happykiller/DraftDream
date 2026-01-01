@@ -1,10 +1,14 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Box, CircularProgress, Divider, Stack, Typography } from '@mui/material';
+import { Box, CircularProgress, Divider, IconButton, Stack, Typography } from '@mui/material';
 import CircleIcon from '@mui/icons-material/Circle';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import RestaurantMenuOutlinedIcon from '@mui/icons-material/RestaurantMenuOutlined';
+import Tooltip from '@mui/material/Tooltip';
 
+import { useMealRecords, MealRecordState, type MealRecord } from '@hooks/nutrition/useMealRecords';
 import { useMealPlans, type MealPlan, type MealPlanDaySnapshot, type MealPlanMealSnapshot } from '@hooks/nutrition/useMealPlans';
 import { GlassCard } from '../../../common/GlassCard';
 import { TextWithTooltip } from '../../../common/TextWithTooltip';
@@ -12,12 +16,68 @@ import { TextWithTooltip } from '../../../common/TextWithTooltip';
 export function AthleteNutritionWidget(): React.JSX.Element {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const { create: createRecord, list: listRecords } = useMealRecords();
 
     const { items: mealPlans, loading } = useMealPlans({
         page: 1,
         limit: 3,
         q: '',
     });
+
+    const [activeRecords, setActiveRecords] = React.useState<Map<string, MealRecord>>(new Map());
+    const [recordsLoading, setRecordsLoading] = React.useState(true);
+
+    // Fetch active meal records
+    React.useEffect(() => {
+        let mounted = true;
+        const fetchRecords = async () => {
+            const { items: createdItems } = await listRecords({ limit: 50, state: MealRecordState.CREATE });
+            const { items: draftItems } = await listRecords({ limit: 50, state: MealRecordState.DRAFT });
+
+            if (!mounted) return;
+
+            const activeMap = new Map<string, MealRecord>();
+            [...createdItems, ...draftItems].forEach((record) => {
+                const key = `${record.mealPlanId}_${record.mealDayId}_${record.mealId}`;
+                activeMap.set(key, record);
+            });
+            setActiveRecords(activeMap);
+            setRecordsLoading(false);
+        };
+        fetchRecords();
+        return () => { mounted = false; };
+    }, [listRecords]);
+
+    const handlePlayOrResume = React.useCallback(
+        async (
+            event: React.MouseEvent,
+            mealPlanId: string,
+            mealDayId: string | null,
+            mealId: string | null,
+        ) => {
+            event.stopPropagation();
+
+            if (!mealDayId || !mealId) {
+                return;
+            }
+
+            const key = `${mealPlanId}_${mealDayId}_${mealId}`;
+            const existingRecord = activeRecords.get(key);
+
+            if (existingRecord) {
+                navigate(`/meal-record/${existingRecord.id}`);
+                return;
+            }
+
+            try {
+                const record = await createRecord({ mealPlanId, mealDayId, mealId });
+                navigate(`/meal-record/${record.id}`);
+            } catch (error) {
+                // Error handled in hook
+            }
+        },
+        [activeRecords, createRecord, navigate],
+    );
 
     const dayPrefix = t('nutrition-coach.builder.structure.day_prefix');
     const mealPrefix = t('nutrition-coach.builder.structure.meal_prefix');
@@ -54,6 +114,8 @@ export function AthleteNutritionWidget(): React.JSX.Element {
         return mealPlan.id || `${index}`;
     }, []);
 
+    const isLoading = loading || recordsLoading;
+
     return (
         <GlassCard onClick={() => navigate('/nutrition-athlete')}>
             <Stack spacing={2}>
@@ -65,7 +127,7 @@ export function AthleteNutritionWidget(): React.JSX.Element {
                     </Typography>
                 </Stack>
 
-                {loading ? (
+                {isLoading ? (
                     <Box display="flex" justifyContent="center" p={2}>
                         <CircularProgress size={24} color="success" />
                     </Box>
@@ -108,22 +170,56 @@ export function AthleteNutritionWidget(): React.JSX.Element {
                                                     </Typography>
                                                 ) : (
                                                     <Stack spacing={0.5} pl={3}>
-                                                        {day.meals.map((meal, mealIndex) => (
-                                                            <Stack
-                                                                key={getMealKey(meal, mealIndex)}
-                                                                direction="row"
-                                                                alignItems="center"
-                                                                spacing={1}
-                                                            >
-                                                                <CircleIcon sx={{ fontSize: 5, color: 'text.disabled' }} />
-                                                                <TextWithTooltip
-                                                                    tooltipTitle={getMealLabel(meal, mealIndex)}
-                                                                    maxLines={1}
-                                                                    variant="caption"
-                                                                    color="text.secondary"
-                                                                />
-                                                            </Stack>
-                                                        ))}
+                                                        {day.meals.map((meal, mealIndex) => {
+                                                            const mealDayId = day.id ?? day.templateMealDayId ?? null;
+                                                            const mealId = meal.id ?? meal.templateMealId ?? null;
+                                                            const recordKey = mealDayId && mealId
+                                                                ? `${mealPlan.id}_${mealDayId}_${mealId}`
+                                                                : null;
+                                                            const isActive = recordKey ? activeRecords.has(recordKey) : false;
+                                                            const tooltipText = isActive
+                                                                ? t('common.resume', 'Resume')
+                                                                : t('common.play', 'Start');
+
+                                                            return (
+                                                                <Stack
+                                                                    key={getMealKey(meal, mealIndex)}
+                                                                    direction="row"
+                                                                    alignItems="center"
+                                                                    spacing={1}
+                                                                >
+                                                                    <Tooltip title={tooltipText}>
+                                                                        <span>
+                                                                            <IconButton
+                                                                                size="small"
+                                                                                color="primary"
+                                                                                onClick={(event) => handlePlayOrResume(
+                                                                                    event,
+                                                                                    mealPlan.id,
+                                                                                    mealDayId,
+                                                                                    mealId,
+                                                                                )}
+                                                                                sx={{ p: 0.5 }}
+                                                                                disabled={!mealDayId || !mealId}
+                                                                            >
+                                                                                {isActive ? (
+                                                                                    <PlayCircleIcon fontSize="small" />
+                                                                                ) : (
+                                                                                    <PlayArrowIcon fontSize="small" />
+                                                                                )}
+                                                                            </IconButton>
+                                                                        </span>
+                                                                    </Tooltip>
+                                                                    <CircleIcon sx={{ fontSize: 5, color: 'text.disabled' }} />
+                                                                    <TextWithTooltip
+                                                                        tooltipTitle={getMealLabel(meal, mealIndex)}
+                                                                        maxLines={1}
+                                                                        variant="caption"
+                                                                        color="text.secondary"
+                                                                    />
+                                                                </Stack>
+                                                            );
+                                                        })}
                                                     </Stack>
                                                 )}
                                             </Stack>

@@ -201,6 +201,22 @@ export const router = createBrowserRouter([
     ],
   },
   {
+    path: '/meal-record/:recordId',
+    element: <ProtectedLayout />,
+    loader: requireAuthLoader,
+    children: [
+      {
+        index: true,
+        lazy: async () => {
+          const mod = await import('@src/pages/nutrition-records/MealRecordDetails');
+          return {
+            Component: withTitle(mod.MealRecordDetails, 'meal_record.details.title'),
+          };
+        },
+      },
+    ],
+  },
+  {
     path: '/nutrition-coach',
     element: <ProtectedLayout />,
     loader: requireAuthLoader,

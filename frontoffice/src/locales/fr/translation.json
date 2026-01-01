@@ -1324,6 +1324,11 @@
       "title": "Détails de la séance"
     }
   },
+  "meal_record": {
+    "details": {
+      "title": "Détails du repas"
+    }
+  },
   "ERRORS": {
     "INVALID_CREDENTIALS": "Identifiants invalides."
   },
