@@ -83,10 +83,6 @@ export function AthleteNutritionWidget(): React.JSX.Element {
                                     variant="subtitle1"
                                     fontWeight="bold"
                                 />
-                                <Typography variant="caption" color="text.secondary">
-                                    {t('nutrition-coach.list.plan_length')}: {mealPlan.days.length}
-                                </Typography>
-
                                 {mealPlan.days.length === 0 ? (
                                     <Typography variant="caption" color="text.disabled" pl={2}>
                                         {t('nutrition-coach.list.no_days')}
@@ -104,9 +100,6 @@ export function AthleteNutritionWidget(): React.JSX.Element {
                                                         fontWeight="bold"
                                                         color="text.primary"
                                                     />
-                                                    <Typography variant="caption" color="text.secondary">
-                                                        {t('nutrition-coach.list.day_meal_count', { count: day.meals.length })}
-                                                    </Typography>
                                                 </Stack>
 
                                                 {day.meals.length === 0 ? (
