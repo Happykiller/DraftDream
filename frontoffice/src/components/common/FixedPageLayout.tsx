@@ -7,6 +7,12 @@ export interface FixedPageLayoutProps {
     title: string;
     subtitle?: string;
     icon?: React.ReactNode;
+    headerProps?: {
+        backgroundColor?: string;
+        iconBackgroundColor?: string;
+        iconColor?: string;
+        iconBoxShadow?: string;
+    };
     footer?: React.ReactNode;
     children: React.ReactNode;
 }
@@ -15,10 +21,15 @@ export function FixedPageLayout({
     title,
     subtitle,
     icon,
+    headerProps,
     footer,
     children,
 }: FixedPageLayoutProps): React.JSX.Element {
     const theme = useTheme();
+    const headerBackground = headerProps?.backgroundColor ?? alpha(theme.palette.primary.main, 0.1);
+    const iconBackground = headerProps?.iconBackgroundColor ?? 'primary.main';
+    const iconColor = headerProps?.iconColor ?? 'primary.contrastText';
+    const iconShadow = headerProps?.iconBoxShadow ?? '0 10px 20px rgba(25, 118, 210, 0.24)';
 
     return (
         <Stack
@@ -57,7 +68,7 @@ export function FixedPageLayout({
                         spacing={2}
                         alignItems="center"
                         sx={{
-                            backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                            backgroundColor: headerBackground,
                             px: { xs: 2, sm: 3, md: 4 },
                             py: { xs: 2, sm: 2.5 },
                         }}
@@ -69,13 +80,13 @@ export function FixedPageLayout({
                                     width: 40,
                                     height: 40,
                                     borderRadius: 2,
-                                    bgcolor: 'primary.main',
-                                    color: 'primary.contrastText',
+                                    bgcolor: iconBackground,
+                                    color: iconColor,
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     flexShrink: 0,
-                                    boxShadow: '0 10px 20px rgba(25, 118, 210, 0.24)',
+                                    boxShadow: iconShadow,
                                 }}
                             >
                                 {icon}

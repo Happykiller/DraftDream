@@ -8,6 +8,7 @@ import {
     Stack,
     Typography,
 } from '@mui/material';
+import { alpha, useTheme } from '@mui/material/styles';
 import RestaurantMenuOutlinedIcon from '@mui/icons-material/RestaurantMenuOutlined';
 
 import { useMealPlan } from '@hooks/nutrition/useMealPlan';
@@ -25,6 +26,15 @@ export function MealRecordDetails(): React.JSX.Element {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { recordId } = useParams<{ recordId: string }>();
+    const theme = useTheme();
+    const headerBackground = React.useMemo(
+        () => alpha(theme.palette.warning.main, 0.12),
+        [theme.palette.warning.main],
+    );
+    const iconBoxShadow = React.useMemo(
+        () => `0 10px 20px ${alpha(theme.palette.warning.main, 0.24)}`,
+        [theme.palette.warning.main],
+    );
 
     const { get: getRecord, updateState } = useMealRecords();
     const [record, setRecord] = React.useState<MealRecord | null>(null);
@@ -146,6 +156,12 @@ export function MealRecordDetails(): React.JSX.Element {
             subtitle={`${mealPlanLabel} · ${dayLabel}`}
             icon={<RestaurantMenuOutlinedIcon fontSize="medium" />}
             footer={renderFooter()}
+            headerProps={{
+                backgroundColor: headerBackground,
+                iconBackgroundColor: 'warning.main',
+                iconColor: 'warning.contrastText',
+                iconBoxShadow,
+            }}
         >
             {/* General information */}
             <Box sx={{ p: 3, textAlign: 'center', color: 'text.secondary' }}>
