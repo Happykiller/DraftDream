@@ -32,8 +32,6 @@ interface Option {
 export interface MealRecordTableFilters {
   userId: string;
   mealPlanId: string;
-  mealDayId: string;
-  mealId: string;
   state: MealRecordState | '';
 }
 
@@ -215,26 +213,6 @@ export const MealRecordTable = React.memo(function MealRecordTable({
     [users],
   );
 
-  const selectedMealPlan = React.useMemo(
-    () => mealPlans.find((plan) => plan.id === filters.mealPlanId),
-    [filters.mealPlanId, mealPlans],
-  );
-
-  const dayOptions = React.useMemo<Option[]>(() => {
-    if (!selectedMealPlan) return [];
-    return selectedMealPlan.days.map((day) => ({ id: day.id, label: day.label }));
-  }, [selectedMealPlan]);
-
-  const mealOptions = React.useMemo<Option[]>(() => {
-    if (!selectedMealPlan) return [];
-    const selectedDay = selectedMealPlan.days.find((day) => day.id === filters.mealDayId);
-    const meals = selectedDay
-      ? selectedDay.meals
-      : selectedMealPlan.days.flatMap((day) => day.meals);
-    const unique = new Map(meals.map((meal) => [meal.id, meal]));
-    return Array.from(unique.values()).map((meal) => ({ id: meal.id, label: meal.label }));
-  }, [filters.mealDayId, selectedMealPlan]);
-
   const selectedAthlete = React.useMemo(
     () => athleteOptions.find((option) => option.id === filters.userId) || null,
     [athleteOptions, filters.userId],
@@ -245,37 +223,8 @@ export const MealRecordTable = React.memo(function MealRecordTable({
     [mealPlanOptions, filters.mealPlanId],
   );
 
-  const selectedMealDayOption = React.useMemo(
-    () => dayOptions.find((option) => option.id === filters.mealDayId) || null,
-    [dayOptions, filters.mealDayId],
-  );
-
-  const selectedMealOption = React.useMemo(
-    () => mealOptions.find((option) => option.id === filters.mealId) || null,
-    [mealOptions, filters.mealId],
-  );
-
   const handleFilterChange = (partial: Partial<MealRecordTableFilters>) => {
     onFiltersChange({ ...filters, ...partial });
-  };
-
-  const handleMealPlanChange = (_: unknown, option: Option | null) => {
-    handleFilterChange({
-      mealPlanId: option?.id ?? '',
-      mealDayId: '',
-      mealId: '',
-    });
-  };
-
-  const handleMealDayChange = (_: unknown, option: Option | null) => {
-    handleFilterChange({
-      mealDayId: option?.id ?? '',
-      mealId: '',
-    });
-  };
-
-  const handleMealChange = (_: unknown, option: Option | null) => {
-    handleFilterChange({ mealId: option?.id ?? '' });
   };
 
   return (
@@ -298,28 +247,10 @@ export const MealRecordTable = React.memo(function MealRecordTable({
         <Autocomplete
           options={mealPlanOptions}
           value={selectedMealPlanOption}
-          onChange={handleMealPlanChange}
+          onChange={(_, newValue) => handleFilterChange({ mealPlanId: newValue?.id || '' })}
           sx={{ minWidth: 200 }}
           size="small"
           renderInput={(params) => <TextField {...params} label={t('common.labels.meal_plan')} />}
-        />
-        <Autocomplete
-          options={dayOptions}
-          value={selectedMealDayOption}
-          onChange={handleMealDayChange}
-          sx={{ minWidth: 200 }}
-          size="small"
-          disabled={!filters.mealPlanId}
-          renderInput={(params) => <TextField {...params} label={t('common.labels.meal_day')} />}
-        />
-        <Autocomplete
-          options={mealOptions}
-          value={selectedMealOption}
-          onChange={handleMealChange}
-          sx={{ minWidth: 200 }}
-          size="small"
-          disabled={!filters.mealPlanId}
-          renderInput={(params) => <TextField {...params} label={t('common.labels.meal')} />}
         />
         <TextField
           select
@@ -336,11 +267,13 @@ export const MealRecordTable = React.memo(function MealRecordTable({
           <MenuItem value="FINISH">{stateLabelMap.FINISH}</MenuItem>
         </TextField>
         <Box sx={{ flex: 1 }} />
-        <Button startIcon={<RefreshIcon />} onClick={onRefresh} sx={{ mr: 1 }}>
-          {t('common.buttons.refresh')}
-        </Button>
+        <Tooltip title={t('common.buttons.refresh')}>
+          <IconButton onClick={onRefresh} sx={{ mr: 1 }} aria-label="refresh-meal-records">
+            <RefreshIcon />
+          </IconButton>
+        </Tooltip>
         <Button variant="contained" onClick={onCreate}>
-          {t('meals.records.create')}
+          {t('common.buttons.create')}
         </Button>
       </Stack>
 

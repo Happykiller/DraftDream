@@ -99,8 +99,6 @@ export interface UseMealRecordsParams {
   limit: number;
   userId?: string;
   mealPlanId?: string;
-  mealDayId?: string;
-  mealId?: string;
   state?: MealRecordState;
 }
 
@@ -109,8 +107,6 @@ export function useMealRecords({
   limit,
   userId,
   mealPlanId,
-  mealDayId,
-  mealId,
   state,
 }: UseMealRecordsParams) {
   const [items, setItems] = React.useState<MealRecord[]>([]);
@@ -133,8 +129,6 @@ export function useMealRecords({
               limit,
               userId: userId || undefined,
               mealPlanId: mealPlanId || undefined,
-              mealDayId: mealDayId || undefined,
-              mealId: mealId || undefined,
               state: state || undefined,
             },
           },
@@ -150,7 +144,7 @@ export function useMealRecords({
     } finally {
       setLoading(false);
     }
-  }, [execute, gql, page, limit, userId, mealPlanId, mealDayId, mealId, state, flashError]);
+  }, [execute, gql, page, limit, userId, mealPlanId, state, flashError]);
 
   React.useEffect(() => { void load(); }, [load]);
 

@@ -14,8 +14,6 @@ import { useUsers } from '@hooks/useUsers';
 const DEFAULT_FILTERS = {
   userId: '',
   mealPlanId: '',
-  mealDayId: '',
-  mealId: '',
   state: '' as MealRecordState | '',
 };
 
@@ -25,16 +23,12 @@ export function MealRecordsPanel(): React.JSX.Element {
   const [filters, setFilters] = React.useState(DEFAULT_FILTERS);
   const debouncedUserId = useDebouncedValue(filters.userId, 300);
   const debouncedMealPlanId = useDebouncedValue(filters.mealPlanId, 300);
-  const debouncedMealDayId = useDebouncedValue(filters.mealDayId, 300);
-  const debouncedMealId = useDebouncedValue(filters.mealId, 300);
 
   const { items, total, loading, create, update, deleteRecord, hardDeleteRecord, reload } = useMealRecords({
     page,
     limit,
     userId: debouncedUserId || undefined,
     mealPlanId: debouncedMealPlanId || undefined,
-    mealDayId: debouncedMealDayId || undefined,
-    mealId: debouncedMealId || undefined,
     state: filters.state || undefined,
   });
 
