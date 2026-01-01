@@ -23,6 +23,7 @@
       "add": "Ajouter",
       "edit": "Modifier",
       "new": "Nouveau",
+      "refresh": "Rafraîchir",
       "success": "Succès",
       "error": "Erreur",
       "warning": "Avertissement",
@@ -62,6 +63,9 @@
       "user": "Utilisateur",
       "athlete": "Athlète",
       "program": "Programme",
+      "meal_plan": "Plan alimentaire",
+      "meal_day": "Journée",
+      "meal": "Repas",
       "session": "Séance",
       "user_optional": "Utilisateur (optionnel)",
       "athlete_optional": "Athlète (optionnel)",
@@ -339,6 +343,9 @@
       "dialog": {
         "create_title": "Nouvel enregistrement",
         "edit_title": "Modifier l'enregistrement"
+      },
+      "confirm": {
+        "delete_title": "Supprimer l'enregistrement"
       }
     }
   },
@@ -347,9 +354,39 @@
     "tabs": {
       "meals": "Repas",
       "mealPlans": "Plans nutrition",
+      "records": "Enregistrements",
       "mealDays": "Journées de repas",
       "mealTypes": "Types de repas",
       "aria_label": "Sections nutrition"
+    },
+    "records": {
+      "title": "Enregistrements",
+      "create": "Nouvel enregistrement",
+      "labels": {
+        "state": "Statut"
+      },
+      "placeholders": {
+        "meal_plan": "Rechercher des plans nutrition...",
+        "meal_day": "Rechercher des journées...",
+        "meal": "Rechercher des repas...",
+        "athlete": "Rechercher des athlètes..."
+      },
+      "filters": {
+        "state": "Statut",
+        "state_all": "Tous les statuts"
+      },
+      "states": {
+        "create": "Créé",
+        "draft": "Brouillon",
+        "finish": "Terminé"
+      },
+      "dialog": {
+        "create_title": "Nouvel enregistrement",
+        "edit_title": "Modifier l'enregistrement"
+      },
+      "confirm": {
+        "delete_title": "Supprimer l'enregistrement"
+      }
     },
     "mealPlans": {
       "title": "Plans nutrition",

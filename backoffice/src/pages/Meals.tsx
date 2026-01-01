@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { MealDaysPanel } from '@pages/meals/MealDaysPanel';
 import { MealPlansPanel } from '@pages/meals/MealPlansPanel';
+import { MealRecordsPanel } from '@pages/meals/MealRecordsPanel';
 import { MealsPanel } from '@pages/meals/MealsPanel';
 import { MealTypesPanel } from '@pages/meals/MealTypesPanel';
 
@@ -35,12 +36,14 @@ export function Meals(): React.JSX.Element {
         scrollButtons="auto"
       >
         <Tab value="meal-plans" label={t('meals.tabs.mealPlans')} />
+        <Tab value="records" label={t('meals.tabs.records')} />
         <Tab value="meal-days" label={t('meals.tabs.mealDays')} />
         <Tab value="meals" label={t('meals.tabs.meals')} />
         <Tab value="meal-types" label={t('meals.tabs.mealTypes')} />
       </Tabs>
 
       {tab === 'meal-plans' && <MealPlansPanel />}
+      {tab === 'records' && <MealRecordsPanel />}
       {tab === 'meals' && <MealsPanel />}
       {tab === 'meal-days' && <MealDaysPanel />}
       {tab === 'meal-types' && <MealTypesPanel />}

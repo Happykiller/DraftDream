@@ -1,34 +1,44 @@
 import * as React from 'react';
-import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { ConfirmDialog } from '@components/common/ConfirmDialog';
-import { ProgramRecordDialog } from '@components/programs/ProgramRecordDialog';
-import { ProgramRecordTable } from '@components/programs/ProgramRecordTable';
+import { MealRecordDialog } from '@components/meal-records/MealRecordDialog';
+import { MealRecordTable } from '@components/meal-records/MealRecordTable';
 import { useDebouncedValue } from '@hooks/useDebouncedValue';
-import { useProgramRecords, type ProgramRecordState } from '@hooks/useProgramRecords';
-import { usePrograms } from '@hooks/usePrograms';
+import { useMealPlans } from '@hooks/useMealPlans';
+import { useMealRecords, type MealRecordState } from '@hooks/useMealRecords';
 import { useTabParams } from '@hooks/useTabParams';
 import { useUsers } from '@hooks/useUsers';
 
-const DEFAULT_FILTERS = { userId: '', programId: '', state: '' as ProgramRecordState | '' };
+const DEFAULT_FILTERS = {
+  userId: '',
+  mealPlanId: '',
+  mealDayId: '',
+  mealId: '',
+  state: '' as MealRecordState | '',
+};
 
-export function ProgramRecordsPanel(): React.JSX.Element {
+export function MealRecordsPanel(): React.JSX.Element {
   const { t } = useTranslation();
-  const { page, limit, setPage, setLimit } = useTabParams('program_record');
+  const { page, limit, setPage, setLimit } = useTabParams('meal_record');
   const [filters, setFilters] = React.useState(DEFAULT_FILTERS);
   const debouncedUserId = useDebouncedValue(filters.userId, 300);
-  const debouncedProgramId = useDebouncedValue(filters.programId, 300);
+  const debouncedMealPlanId = useDebouncedValue(filters.mealPlanId, 300);
+  const debouncedMealDayId = useDebouncedValue(filters.mealDayId, 300);
+  const debouncedMealId = useDebouncedValue(filters.mealId, 300);
 
-  const { items, total, loading, create, update, deleteRecord, hardDeleteRecord, reload } = useProgramRecords({
+  const { items, total, loading, create, update, deleteRecord, hardDeleteRecord, reload } = useMealRecords({
     page,
     limit,
     userId: debouncedUserId || undefined,
-    programId: debouncedProgramId || undefined,
+    mealPlanId: debouncedMealPlanId || undefined,
+    mealDayId: debouncedMealDayId || undefined,
+    mealId: debouncedMealId || undefined,
     state: filters.state || undefined,
   });
 
-  const { items: programs } = usePrograms({ page: 1, limit: 100, q: '' });
+  const { items: mealPlans } = useMealPlans({ page: 1, limit: 100, q: '' });
   const { items: users } = useUsers({ page: 1, limit: 100, q: '', type: 'athlete' });
 
   const [openCreate, setOpenCreate] = React.useState(false);
@@ -44,14 +54,15 @@ export function ProgramRecordsPanel(): React.JSX.Element {
 
   return (
     <Box>
-      <ProgramRecordTable
+      {/* General information */}
+      <MealRecordTable
         rows={items}
         total={total}
         page={page}
         limit={limit}
         loading={loading}
         filters={filters}
-        programs={programs}
+        mealPlans={mealPlans}
         users={users}
         onCreate={() => setOpenCreate(true)}
         onEdit={(row) => setEditId(row.id)}
@@ -63,20 +74,20 @@ export function ProgramRecordsPanel(): React.JSX.Element {
         onRefresh={reload}
       />
 
-      <ProgramRecordDialog
+      <MealRecordDialog
         open={openCreate}
         mode="create"
-        programs={programs}
+        mealPlans={mealPlans}
         users={users}
         onClose={() => setOpenCreate(false)}
         onSubmit={(values) => create(values)}
       />
 
-      <ProgramRecordDialog
+      <MealRecordDialog
         open={!!editId}
         mode="edit"
         initial={editing}
-        programs={programs}
+        mealPlans={mealPlans}
         users={users}
         onClose={() => setEditId(null)}
         onSubmit={(values) => (editId ? update({ id: editId, state: values.state }) : undefined)}
@@ -84,7 +95,7 @@ export function ProgramRecordsPanel(): React.JSX.Element {
 
       <ConfirmDialog
         open={!!deleteId}
-        title={deleteType === 'hard' ? t('common.buttons.delete') : t('programs.records.confirm.delete_title')}
+        title={deleteType === 'hard' ? t('common.buttons.delete') : t('meals.records.confirm.delete_title')}
         message={
           deleteType === 'hard'
             ? t('common.messages.confirm_deletion_warning')

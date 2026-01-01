@@ -23,6 +23,7 @@
       "add": "Add",
       "edit": "Edit",
       "new": "New",
+      "refresh": "Refresh",
       "success": "Success",
       "error": "Error",
       "warning": "Warning",
@@ -62,6 +63,9 @@
       "user": "User",
       "athlete": "Athlete",
       "program": "Program",
+      "meal_plan": "Meal plan",
+      "meal_day": "Meal day",
+      "meal": "Meal",
       "session": "Session",
       "user_optional": "User (optional)",
       "athlete_optional": "Athlete (optional)",
@@ -339,6 +343,9 @@
       "dialog": {
         "create_title": "New Record",
         "edit_title": "Edit Record"
+      },
+      "confirm": {
+        "delete_title": "Delete record"
       }
     }
   },
@@ -347,9 +354,39 @@
     "tabs": {
       "meals": "Meals",
       "mealPlans": "Meal plans",
+      "records": "Records",
       "mealDays": "Meal days",
       "mealTypes": "Meal types",
       "aria_label": "Nutrition sections"
+    },
+    "records": {
+      "title": "Records",
+      "create": "New record",
+      "labels": {
+        "state": "State"
+      },
+      "placeholders": {
+        "meal_plan": "Search meal plans...",
+        "meal_day": "Search meal days...",
+        "meal": "Search meals...",
+        "athlete": "Search athletes..."
+      },
+      "filters": {
+        "state": "State",
+        "state_all": "All states"
+      },
+      "states": {
+        "create": "Created",
+        "draft": "Draft",
+        "finish": "Finished"
+      },
+      "dialog": {
+        "create_title": "New record",
+        "edit_title": "Edit record"
+      },
+      "confirm": {
+        "delete_title": "Delete record"
+      }
     },
     "mealPlans": {
       "title": "Meal plans",

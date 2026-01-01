@@ -249,7 +249,7 @@ export const ProgramRecordTable = React.memo(function ProgramRecordTable({
         </TextField>
         <Box sx={{ flex: 1 }} />
         <Button startIcon={<RefreshIcon />} onClick={onRefresh} sx={{ mr: 1 }}>
-          {t('common.buttons.refresh', 'Refresh')}
+          {t('common.buttons.refresh')}
         </Button>
         <Button variant="contained" onClick={onCreate}>
           {t('programs.records.create')}
