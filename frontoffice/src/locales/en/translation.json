@@ -1323,6 +1323,11 @@
   "meal_record": {
     "details": {
       "title": "Meal Details"
+    },
+    "form": {
+      "comment_label": "Comment",
+      "comment_placeholder": "Share your feedback about this meal...",
+      "satisfaction_label": "Satisfaction rating"
     }
   },
   "ERRORS": {

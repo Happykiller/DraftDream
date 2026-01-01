@@ -7,8 +7,10 @@ import {
     CircularProgress,
     Card,
     CardContent,
+    Rating,
     Stack,
     Tooltip,
+    TextField,
     Typography,
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
@@ -51,6 +53,8 @@ export function MealRecordDetails(): React.JSX.Element {
     const { get: getRecord, updateState } = useMealRecords();
     const [record, setRecord] = React.useState<MealRecord | null>(null);
     const [recordLoading, setRecordLoading] = React.useState(true);
+    const [comment, setComment] = React.useState('');
+    const [satisfactionRating, setSatisfactionRating] = React.useState<number | null>(null);
 
     const fetchRecord = React.useCallback(() => {
         if (!recordId) return;
@@ -64,6 +68,11 @@ export function MealRecordDetails(): React.JSX.Element {
     React.useEffect(() => {
         fetchRecord();
     }, [fetchRecord]);
+
+    React.useEffect(() => {
+        setComment(record?.comment ?? '');
+        setSatisfactionRating(record?.satisfactionRating ?? null);
+    }, [record]);
 
     const { mealPlan, loading: mealPlanLoading } = useMealPlan({
         mealPlanId: record?.mealPlanId ?? null,
@@ -161,11 +170,22 @@ export function MealRecordDetails(): React.JSX.Element {
     const handleUpdateState = async (newState: MealRecordState) => {
         if (!record) return;
         try {
-            await updateState(record.id, newState);
+            await updateState(record.id, newState, {
+                comment: comment.trim() || undefined,
+                satisfactionRating: satisfactionRating ?? undefined,
+            });
             navigate('/');
         } catch (error) {
             console.error('Failed to update meal record state', error);
         }
+    };
+
+    const handleCommentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setComment(event.target.value);
+    };
+
+    const handleRatingChange = (_event: React.SyntheticEvent, value: number | null) => {
+        setSatisfactionRating(value);
     };
 
     if (loading) {
@@ -233,120 +253,152 @@ export function MealRecordDetails(): React.JSX.Element {
             {/* General information */}
             <Box sx={{ p: 3 }}>
                 {mealSnapshot ? (
-                    <Card
-                        variant="outlined"
-                        sx={{
-                            borderRadius: 2,
-                            borderColor: alpha(theme.palette.grey[500], 0.2),
-                            boxShadow: `0 12px 32px ${alpha(theme.palette.grey[500], 0.1)}`,
-                        }}
-                    >
-                        <CardContent
+                    <Stack spacing={3}>
+                        <Card
+                            variant="outlined"
                             sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: 2,
-                                '&:last-child': { pb: 2 },
+                                borderRadius: 2,
+                                borderColor: alpha(theme.palette.grey[500], 0.2),
+                                boxShadow: `0 12px 32px ${alpha(theme.palette.grey[500], 0.1)}`,
                             }}
                         >
-                            <Stack
-                                direction={{ xs: 'column', sm: 'row' }}
-                                spacing={2}
-                                alignItems={{ xs: 'flex-start', sm: 'center' }}
-                                justifyContent="space-between"
+                            <CardContent
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: 2,
+                                    '&:last-child': { pb: 2 },
+                                }}
                             >
                                 <Stack
-                                    direction="row"
-                                    spacing={1.5}
-                                    alignItems="center"
-                                    sx={{ flexGrow: 1, minWidth: 0 }}
+                                    direction={{ xs: 'column', sm: 'row' }}
+                                    spacing={2}
+                                    alignItems={{ xs: 'flex-start', sm: 'center' }}
+                                    justifyContent="space-between"
                                 >
-                                    <Tooltip title={mealTypeLabel} placement="top" arrow>
-                                        <Box
-                                            aria-hidden
-                                            sx={{
-                                                width: 40,
-                                                height: 40,
-                                                borderRadius: 2,
-                                                bgcolor: alpha(theme.palette.primary.main, 0.12),
-                                                color: theme.palette.primary.main,
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                flexShrink: 0,
-                                            }}
-                                        >
-                                            <MealTypeIcon fontSize="small" />
-                                        </Box>
-                                    </Tooltip>
+                                    <Stack
+                                        direction="row"
+                                        spacing={1.5}
+                                        alignItems="center"
+                                        sx={{ flexGrow: 1, minWidth: 0 }}
+                                    >
+                                        <Tooltip title={mealTypeLabel} placement="top" arrow>
+                                            <Box
+                                                aria-hidden
+                                                sx={{
+                                                    width: 40,
+                                                    height: 40,
+                                                    borderRadius: 2,
+                                                    bgcolor: alpha(theme.palette.primary.main, 0.12),
+                                                    color: theme.palette.primary.main,
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    flexShrink: 0,
+                                                }}
+                                            >
+                                                <MealTypeIcon fontSize="small" />
+                                            </Box>
+                                        </Tooltip>
 
-                                    <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-                                        <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                                            {mealSnapshot.label}
-                                        </Typography>
-                                        {mealSnapshot.type?.label ? (
-                                            <Typography color="text.secondary" variant="body2">
-                                                {mealSnapshot.type.label}
+                                        <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+                                            <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                                                {mealSnapshot.label}
                                             </Typography>
-                                        ) : null}
-                                    </Box>
+                                            {mealSnapshot.type?.label ? (
+                                                <Typography color="text.secondary" variant="body2">
+                                                    {mealSnapshot.type.label}
+                                                </Typography>
+                                            ) : null}
+                                        </Box>
+                                    </Stack>
+
+                                    <Typography
+                                        variant="subtitle1"
+                                        sx={{ fontWeight: 700, color: 'text.primary', whiteSpace: 'nowrap' }}
+                                    >
+                                        {mealCaloriesLabel}
+                                    </Typography>
                                 </Stack>
 
-                                <Typography
-                                    variant="subtitle1"
-                                    sx={{ fontWeight: 700, color: 'text.primary', whiteSpace: 'nowrap' }}
-                                >
-                                    {mealCaloriesLabel}
-                                </Typography>
-                            </Stack>
+                                {mealSnapshot.description ? (
+                                    <Typography color="text.secondary" variant="body2">
+                                        {mealSnapshot.description}
+                                    </Typography>
+                                ) : null}
 
-                            {mealSnapshot.description ? (
-                                <Typography color="text.secondary" variant="body2">
-                                    {mealSnapshot.description}
-                                </Typography>
-                            ) : null}
+                                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ flexWrap: 'wrap' }}>
+                                    {macroItems.map((macro) => (
+                                        <Box
+                                            key={macro.key}
+                                            sx={{
+                                                flex: 1,
+                                                minWidth: { xs: '100%', sm: 160 },
+                                                borderRadius: 2,
+                                                bgcolor: macro.background,
+                                                px: { xs: 1.5, sm: 2 },
+                                                py: 1.5,
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                gap: 0.5,
+                                            }}
+                                        >
+                                            <Typography variant="subtitle2" sx={{ fontWeight: 700, color: macro.valueColor }}>
+                                                {macro.value}
+                                            </Typography>
+                                            <Typography variant="caption" sx={{ fontWeight: 600, color: macro.labelColor }}>
+                                                {macro.label}
+                                            </Typography>
+                                        </Box>
+                                    ))}
+                                </Stack>
 
-                            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ flexWrap: 'wrap' }}>
-                                {macroItems.map((macro) => (
-                                    <Box
-                                        key={macro.key}
-                                        sx={{
-                                            flex: 1,
-                                            minWidth: { xs: '100%', sm: 160 },
-                                            borderRadius: 2,
-                                            bgcolor: macro.background,
-                                            px: { xs: 1.5, sm: 2 },
-                                            py: 1.5,
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            gap: 0.5,
-                                        }}
-                                    >
-                                        <Typography variant="subtitle2" sx={{ fontWeight: 700, color: macro.valueColor }}>
-                                            {macro.value}
+                                {mealSnapshot.foods ? (
+                                    <Box>
+                                        <Typography
+                                            variant="body2"
+                                            sx={{ fontWeight: 600, color: 'text.secondary', mb: 0.5 }}
+                                        >
+                                            {t('nutrition-details.meals.meal_card.foods_label')}
                                         </Typography>
-                                        <Typography variant="caption" sx={{ fontWeight: 600, color: macro.labelColor }}>
-                                            {macro.label}
+                                        <Typography variant="body2" color="text.primary" sx={{ whiteSpace: 'pre-line' }}>
+                                            {mealSnapshot.foods}
                                         </Typography>
                                     </Box>
-                                ))}
-                            </Stack>
-
-                            {mealSnapshot.foods ? (
-                                <Box>
-                                    <Typography
-                                        variant="body2"
-                                        sx={{ fontWeight: 600, color: 'text.secondary', mb: 0.5 }}
-                                    >
-                                        {t('nutrition-details.meals.meal_card.foods_label')}
+                                ) : null}
+                            </CardContent>
+                        </Card>
+                        <Card
+                            variant="outlined"
+                            sx={{
+                                borderRadius: 2,
+                                borderColor: alpha(theme.palette.grey[500], 0.2),
+                            }}
+                        >
+                            <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                <Stack spacing={1}>
+                                    <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                                        {t('meal_record.form.satisfaction_label')}
                                     </Typography>
-                                    <Typography variant="body2" color="text.primary" sx={{ whiteSpace: 'pre-line' }}>
-                                        {mealSnapshot.foods}
-                                    </Typography>
-                                </Box>
-                            ) : null}
-                        </CardContent>
-                    </Card>
+                                    <Rating
+                                        value={satisfactionRating}
+                                        onChange={handleRatingChange}
+                                        max={5}
+                                        size="large"
+                                    />
+                                </Stack>
+                                <TextField
+                                    label={t('meal_record.form.comment_label')}
+                                    placeholder={t('meal_record.form.comment_placeholder')}
+                                    value={comment}
+                                    onChange={handleCommentChange}
+                                    multiline
+                                    minRows={4}
+                                    fullWidth
+                                />
+                            </CardContent>
+                        </Card>
+                    </Stack>
                 ) : (
                     <Box sx={{ textAlign: 'center', color: 'text.secondary' }}>
                         <Typography>

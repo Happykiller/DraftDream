@@ -23,6 +23,8 @@ export interface MealRecord {
     mealDayId: string;
     mealId: string;
     mealSnapshot?: MealPlanMealSnapshot | null;
+    comment?: string | null;
+    satisfactionRating?: number | null;
     state: MealRecordState;
     createdAt: string;
     updatedAt: string;
@@ -60,6 +62,8 @@ const LIST_QUERY = `
             visibility
           }
         }
+        comment
+        satisfactionRating
         state
         createdAt
         updatedAt
@@ -98,6 +102,8 @@ const CREATE_MUTATION = `
           visibility
         }
       }
+      comment
+      satisfactionRating
       state
       createdAt
       updatedAt
@@ -132,6 +138,8 @@ const UPDATE_STATE_MUTATION = `
           visibility
         }
       }
+      comment
+      satisfactionRating
       state
       createdAt
       updatedAt
@@ -166,6 +174,8 @@ const GET_QUERY = `
           visibility
         }
       }
+      comment
+      satisfactionRating
       state
       createdAt
       updatedAt
@@ -202,7 +212,13 @@ export function useMealRecords() {
     );
 
     const create = React.useCallback(
-        async (input: { mealPlanId: string; mealDayId: string; mealId: string }): Promise<MealRecord> => {
+        async (input: {
+            mealPlanId: string;
+            mealDayId: string;
+            mealId: string;
+            comment?: string;
+            satisfactionRating?: number;
+        }): Promise<MealRecord> => {
             try {
                 const { data, errors } = await execute(() =>
                     gql.send<CreateMealRecordPayload>({
@@ -214,6 +230,8 @@ export function useMealRecords() {
                                 mealPlanId: input.mealPlanId,
                                 mealDayId: input.mealDayId,
                                 mealId: input.mealId,
+                                comment: input.comment,
+                                satisfactionRating: input.satisfactionRating,
                             },
                         },
                     }),
@@ -237,7 +255,11 @@ export function useMealRecords() {
     );
 
     const updateState = React.useCallback(
-        async (id: string, state: MealRecordState): Promise<MealRecord> => {
+        async (
+            id: string,
+            state: MealRecordState,
+            payload?: { comment?: string; satisfactionRating?: number },
+        ): Promise<MealRecord> => {
             try {
                 const { data, errors } = await execute(() =>
                     gql.send<UpdateMealRecordStatePayload>({
@@ -247,6 +269,8 @@ export function useMealRecords() {
                             input: {
                                 id,
                                 state,
+                                comment: payload?.comment,
+                                satisfactionRating: payload?.satisfactionRating,
                             },
                         },
                     }),

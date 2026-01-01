@@ -1327,6 +1327,11 @@
   "meal_record": {
     "details": {
       "title": "Détails du repas"
+    },
+    "form": {
+      "comment_label": "Commentaire",
+      "comment_placeholder": "Partagez votre avis sur ce repas...",
+      "satisfaction_label": "Note de satisfaction"
     }
   },
   "ERRORS": {
