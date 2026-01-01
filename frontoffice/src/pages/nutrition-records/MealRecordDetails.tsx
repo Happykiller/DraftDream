@@ -123,14 +123,14 @@ export function MealRecordDetails(): React.JSX.Element {
                 <Stack direction="row" spacing={2}>
                     <Button
                         variant="outlined"
-                        color="primary"
+                        color="warning"
                         onClick={() => handleUpdateState(MealRecordState.DRAFT)}
                     >
                         {t('common.actions.save', 'Save')}
                     </Button>
                     <Button
                         variant="contained"
-                        color="primary"
+                        color="warning"
                         onClick={() => handleUpdateState(MealRecordState.FINISH)}
                     >
                         {t('common.actions.finish', 'Finish')}
@@ -142,7 +142,7 @@ export function MealRecordDetails(): React.JSX.Element {
         return (
             <Button
                 variant="contained"
-                color="primary"
+                color="warning"
                 onClick={handleBackToHome}
             >
                 {t('common.back_to_home', 'Back to Home')}
