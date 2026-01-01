@@ -248,11 +248,13 @@ export const ProgramRecordTable = React.memo(function ProgramRecordTable({
           <MenuItem value="FINISH">{stateLabelMap.FINISH}</MenuItem>
         </TextField>
         <Box sx={{ flex: 1 }} />
-        <Button startIcon={<RefreshIcon />} onClick={onRefresh} sx={{ mr: 1 }}>
-          {t('common.buttons.refresh')}
-        </Button>
+        <Tooltip title={t('common.buttons.refresh')}>
+          <IconButton onClick={onRefresh} sx={{ mr: 1 }} aria-label="refresh-program-records">
+            <RefreshIcon />
+          </IconButton>
+        </Tooltip>
         <Button variant="contained" onClick={onCreate}>
-          {t('programs.records.create')}
+          {t('common.buttons.create')}
         </Button>
       </Stack>
 

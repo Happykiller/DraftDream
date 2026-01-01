@@ -35,13 +35,13 @@ export function Programs(): React.JSX.Element {
         scrollButtons="auto"
       >
         <Tab value="programs" label={t('programs.tabs.programs')} />
+        <Tab value="records" label={t('programs.tabs.records')} />
         <Tab value="sessions" label={t('programs.tabs.sessions')} />
         <Tab value="exercices" label={t('programs.tabs.exercises')} />
         <Tab value="categories" label={t('programs.tabs.categories')} />
         <Tab value="muscles" label={t('programs.tabs.muscles')} />
         <Tab value="equipment" label={t('programs.tabs.equipment')} />
         <Tab value="tags" label={t('programs.tabs.tags')} />
-        <Tab value="records" label={t('programs.tabs.records')} />
       </Tabs>
 
       {tab === 'categories' && <CategoriesPanel />}
