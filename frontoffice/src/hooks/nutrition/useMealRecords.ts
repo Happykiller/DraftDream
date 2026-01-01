@@ -4,6 +4,7 @@ import inversify from '@src/commons/inversify';
 
 import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
+import type { MealPlanMealSnapshot } from '@hooks/nutrition/useMealPlans';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 import { session } from '@stores/session';
 
@@ -21,6 +22,7 @@ export interface MealRecord {
     mealPlanId: string;
     mealDayId: string;
     mealId: string;
+    mealSnapshot?: MealPlanMealSnapshot | null;
     state: MealRecordState;
     createdAt: string;
     updatedAt: string;
@@ -39,6 +41,25 @@ const LIST_QUERY = `
         mealPlanId
         mealDayId
         mealId
+        mealSnapshot {
+          id
+          templateMealId
+          locale
+          label
+          description
+          foods
+          calories
+          proteinGrams
+          carbGrams
+          fatGrams
+          type {
+            id
+            templateMealTypeId
+            locale
+            label
+            visibility
+          }
+        }
         state
         createdAt
         updatedAt
@@ -58,6 +79,25 @@ const CREATE_MUTATION = `
       mealPlanId
       mealDayId
       mealId
+      mealSnapshot {
+        id
+        templateMealId
+        locale
+        label
+        description
+        foods
+        calories
+        proteinGrams
+        carbGrams
+        fatGrams
+        type {
+          id
+          templateMealTypeId
+          locale
+          label
+          visibility
+        }
+      }
       state
       createdAt
       updatedAt
@@ -73,6 +113,25 @@ const UPDATE_STATE_MUTATION = `
       mealPlanId
       mealDayId
       mealId
+      mealSnapshot {
+        id
+        templateMealId
+        locale
+        label
+        description
+        foods
+        calories
+        proteinGrams
+        carbGrams
+        fatGrams
+        type {
+          id
+          templateMealTypeId
+          locale
+          label
+          visibility
+        }
+      }
       state
       createdAt
       updatedAt
@@ -88,6 +147,25 @@ const GET_QUERY = `
       mealPlanId
       mealDayId
       mealId
+      mealSnapshot {
+        id
+        templateMealId
+        locale
+        label
+        description
+        foods
+        calories
+        proteinGrams
+        carbGrams
+        fatGrams
+        type {
+          id
+          templateMealTypeId
+          locale
+          label
+          visibility
+        }
+      }
       state
       createdAt
       updatedAt

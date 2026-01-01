@@ -5,13 +5,17 @@ import {
     Box,
     Button,
     CircularProgress,
+    Card,
+    CardContent,
     Stack,
+    Tooltip,
     Typography,
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import RestaurantMenuOutlinedIcon from '@mui/icons-material/RestaurantMenuOutlined';
 
 import { useMealPlan } from '@hooks/nutrition/useMealPlan';
+import { useMealTypeIcon } from '@hooks/nutrition/useMealTypeIcon';
 import {
     MealRecordState,
     type MealRecord,
@@ -19,11 +23,19 @@ import {
 } from '@hooks/nutrition/useMealRecords';
 import { FixedPageLayout } from '@src/components/common/FixedPageLayout';
 
+function formatNumber(value: number, locale: string): string {
+    try {
+        return new Intl.NumberFormat(locale).format(value);
+    } catch (_error) {
+        return value.toString();
+    }
+}
+
 /**
  * Shows meal record details and allows state transitions for athlete meal records.
  */
 export function MealRecordDetails(): React.JSX.Element {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const navigate = useNavigate();
     const { recordId } = useParams<{ recordId: string }>();
     const theme = useTheme();
@@ -62,6 +74,7 @@ export function MealRecordDetails(): React.JSX.Element {
     const dayPrefix = t('nutrition-coach.builder.structure.day_prefix');
     const mealPrefix = t('nutrition-coach.builder.structure.meal_prefix');
     const mealPlanLabel = mealPlan?.label ?? '-';
+    const mealSnapshotLabel = record?.mealSnapshot?.label?.trim();
 
     const dayLabel = React.useMemo(() => {
         if (!mealPlan || !record) return '-';
@@ -74,6 +87,7 @@ export function MealRecordDetails(): React.JSX.Element {
     }, [dayPrefix, mealPlan, record]);
 
     const mealLabel = React.useMemo(() => {
+        if (mealSnapshotLabel) return mealSnapshotLabel;
         if (!mealPlan || !record) return '-';
         const dayIndex = mealPlan.days.findIndex(
             (candidate) => candidate.id === record.mealDayId || candidate.templateMealDayId === record.mealDayId,
@@ -85,7 +99,60 @@ export function MealRecordDetails(): React.JSX.Element {
         const meal = day && mealIndex >= 0 ? day.meals[mealIndex] : null;
         const label = meal?.label?.trim();
         return label || `${mealPrefix} ${Math.max(mealIndex + 1, 1)}`;
-    }, [mealPrefix, mealPlan, record]);
+    }, [mealPrefix, mealPlan, mealSnapshotLabel, record]);
+
+    const mealSnapshot = record?.mealSnapshot ?? null;
+    const mealTypeLabel = mealSnapshot?.type?.label ?? t('nutrition-details.meals.meal_card.type_fallback');
+    const MealTypeIcon = useMealTypeIcon(mealSnapshot?.type?.icon);
+    const macroItems = React.useMemo(() => {
+        if (!mealSnapshot) return [];
+
+        return [
+            {
+                key: 'protein' as const,
+                label: t('nutrition-details.meals.meal_card.macros.protein.label'),
+                value: t('nutrition-details.meals.meal_card.macros.protein.value', {
+                    value: formatNumber(mealSnapshot.proteinGrams, i18n.language),
+                }),
+                background: alpha(theme.palette.info.main, 0.12),
+                valueColor: theme.palette.info.main,
+                labelColor: alpha(theme.palette.info.main, 0.9),
+            },
+            {
+                key: 'carbs' as const,
+                label: t('nutrition-details.meals.meal_card.macros.carbs.label'),
+                value: t('nutrition-details.meals.meal_card.macros.carbs.value', {
+                    value: formatNumber(mealSnapshot.carbGrams, i18n.language),
+                }),
+                background: alpha(theme.palette.success.main, 0.12),
+                valueColor: theme.palette.success.main,
+                labelColor: alpha(theme.palette.success.main, 0.9),
+            },
+            {
+                key: 'fats' as const,
+                label: t('nutrition-details.meals.meal_card.macros.fats.label'),
+                value: t('nutrition-details.meals.meal_card.macros.fats.value', {
+                    value: formatNumber(mealSnapshot.fatGrams, i18n.language),
+                }),
+                background: alpha(theme.palette.warning.main, 0.16),
+                valueColor: theme.palette.warning.main,
+                labelColor: alpha(theme.palette.warning.main, 0.9),
+            },
+        ];
+    }, [
+        i18n.language,
+        mealSnapshot,
+        t,
+        theme.palette.info.main,
+        theme.palette.success.main,
+        theme.palette.warning.main,
+    ]);
+    const mealCaloriesLabel = React.useMemo(() => {
+        if (!mealSnapshot) return '-';
+        return t('nutrition-details.meals.meal_card.calories', {
+            value: formatNumber(mealSnapshot.calories, i18n.language),
+        });
+    }, [i18n.language, mealSnapshot, t]);
 
     const handleBackToHome = () => {
         navigate('/');
@@ -164,10 +231,129 @@ export function MealRecordDetails(): React.JSX.Element {
             }}
         >
             {/* General information */}
-            <Box sx={{ p: 3, textAlign: 'center', color: 'text.secondary' }}>
-                <Typography>
-                    {t('common.no_content', 'No content available yet')}
-                </Typography>
+            <Box sx={{ p: 3 }}>
+                {mealSnapshot ? (
+                    <Card
+                        variant="outlined"
+                        sx={{
+                            borderRadius: 2,
+                            borderColor: alpha(theme.palette.grey[500], 0.2),
+                            boxShadow: `0 12px 32px ${alpha(theme.palette.grey[500], 0.1)}`,
+                        }}
+                    >
+                        <CardContent
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: 2,
+                                '&:last-child': { pb: 2 },
+                            }}
+                        >
+                            <Stack
+                                direction={{ xs: 'column', sm: 'row' }}
+                                spacing={2}
+                                alignItems={{ xs: 'flex-start', sm: 'center' }}
+                                justifyContent="space-between"
+                            >
+                                <Stack
+                                    direction="row"
+                                    spacing={1.5}
+                                    alignItems="center"
+                                    sx={{ flexGrow: 1, minWidth: 0 }}
+                                >
+                                    <Tooltip title={mealTypeLabel} placement="top" arrow>
+                                        <Box
+                                            aria-hidden
+                                            sx={{
+                                                width: 40,
+                                                height: 40,
+                                                borderRadius: 2,
+                                                bgcolor: alpha(theme.palette.primary.main, 0.12),
+                                                color: theme.palette.primary.main,
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                flexShrink: 0,
+                                            }}
+                                        >
+                                            <MealTypeIcon fontSize="small" />
+                                        </Box>
+                                    </Tooltip>
+
+                                    <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+                                        <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                                            {mealSnapshot.label}
+                                        </Typography>
+                                        {mealSnapshot.type?.label ? (
+                                            <Typography color="text.secondary" variant="body2">
+                                                {mealSnapshot.type.label}
+                                            </Typography>
+                                        ) : null}
+                                    </Box>
+                                </Stack>
+
+                                <Typography
+                                    variant="subtitle1"
+                                    sx={{ fontWeight: 700, color: 'text.primary', whiteSpace: 'nowrap' }}
+                                >
+                                    {mealCaloriesLabel}
+                                </Typography>
+                            </Stack>
+
+                            {mealSnapshot.description ? (
+                                <Typography color="text.secondary" variant="body2">
+                                    {mealSnapshot.description}
+                                </Typography>
+                            ) : null}
+
+                            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ flexWrap: 'wrap' }}>
+                                {macroItems.map((macro) => (
+                                    <Box
+                                        key={macro.key}
+                                        sx={{
+                                            flex: 1,
+                                            minWidth: { xs: '100%', sm: 160 },
+                                            borderRadius: 2,
+                                            bgcolor: macro.background,
+                                            px: { xs: 1.5, sm: 2 },
+                                            py: 1.5,
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            gap: 0.5,
+                                        }}
+                                    >
+                                        <Typography variant="subtitle2" sx={{ fontWeight: 700, color: macro.valueColor }}>
+                                            {macro.value}
+                                        </Typography>
+                                        <Typography variant="caption" sx={{ fontWeight: 600, color: macro.labelColor }}>
+                                            {macro.label}
+                                        </Typography>
+                                    </Box>
+                                ))}
+                            </Stack>
+
+                            {mealSnapshot.foods ? (
+                                <Box>
+                                    <Typography
+                                        variant="body2"
+                                        sx={{ fontWeight: 600, color: 'text.secondary', mb: 0.5 }}
+                                    >
+                                        {t('nutrition-details.meals.meal_card.foods_label')}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.primary" sx={{ whiteSpace: 'pre-line' }}>
+                                        {mealSnapshot.foods}
+                                    </Typography>
+                                </Box>
+                            ) : null}
+                        </CardContent>
+                    </Card>
+                ) : (
+                    <Box sx={{ textAlign: 'center', color: 'text.secondary' }}>
+                        <Typography>
+                            {t('common.no_content', 'No content available yet')}
+                        </Typography>
+                    </Box>
+                )}
             </Box>
         </FixedPageLayout>
     );
