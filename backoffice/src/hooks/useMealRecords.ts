@@ -15,6 +15,8 @@ export interface MealRecord {
   mealPlanId: string;
   mealDayId: string;
   mealId: string;
+  comment?: string | null;
+  satisfactionRating?: number | null;
   state: MealRecordState;
   createdAt: string;
   updatedAt: string;
@@ -41,6 +43,8 @@ const LIST_QUERY = `
         mealPlanId
         mealDayId
         mealId
+        comment
+        satisfactionRating
         state
         createdAt
         updatedAt
@@ -60,6 +64,8 @@ const CREATE_MUTATION = `
       mealPlanId
       mealDayId
       mealId
+      comment
+      satisfactionRating
       state
       createdAt
       updatedAt
@@ -75,6 +81,8 @@ const UPDATE_MUTATION = `
       mealPlanId
       mealDayId
       mealId
+      comment
+      satisfactionRating
       state
       createdAt
       updatedAt
@@ -154,6 +162,8 @@ export function useMealRecords({
       mealPlanId: string;
       mealDayId: string;
       mealId: string;
+      comment?: string;
+      satisfactionRating?: number;
       state?: MealRecordState;
     }) => {
       try {
@@ -177,7 +187,7 @@ export function useMealRecords({
   );
 
   const update = React.useCallback(
-    async (input: { id: string; state: MealRecordState }) => {
+    async (input: { id: string; state: MealRecordState; comment?: string; satisfactionRating?: number }) => {
       try {
         const { errors } = await execute(() =>
           gql.send<UpdateMealRecordPayload>({

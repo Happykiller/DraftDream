@@ -363,13 +363,17 @@
       "title": "Records",
       "create": "New record",
       "labels": {
-        "state": "State"
+        "state": "State",
+        "comment": "Comment",
+        "satisfaction_rating": "Satisfaction rating"
       },
       "placeholders": {
         "meal_plan": "Search meal plans...",
         "meal_day": "Search meal days...",
         "meal": "Search meals...",
-        "athlete": "Search athletes..."
+        "athlete": "Search athletes...",
+        "comment": "Add a comment...",
+        "satisfaction_rating": "Rate satisfaction (0-10)"
       },
       "filters": {
         "state": "State",

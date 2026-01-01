@@ -84,7 +84,16 @@ export function MealRecordsPanel(): React.JSX.Element {
         mealPlans={mealPlans}
         users={users}
         onClose={() => setEditId(null)}
-        onSubmit={(values) => (editId ? update({ id: editId, state: values.state }) : undefined)}
+        onSubmit={(values) => (
+          editId
+            ? update({
+              id: editId,
+              state: values.state,
+              comment: values.comment,
+              satisfactionRating: values.satisfactionRating,
+            })
+            : undefined
+        )}
       />
 
       <ConfirmDialog

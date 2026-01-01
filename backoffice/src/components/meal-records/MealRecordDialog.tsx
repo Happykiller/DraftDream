@@ -29,6 +29,18 @@ export interface MealRecordDialogValues {
   mealPlanId: string;
   mealDayId: string;
   mealId: string;
+  comment?: string;
+  satisfactionRating?: number;
+  state: MealRecordState;
+}
+
+interface MealRecordDialogFormValues {
+  userId: string;
+  mealPlanId: string;
+  mealDayId: string;
+  mealId: string;
+  comment: string;
+  satisfactionRating: string;
   state: MealRecordState;
 }
 
@@ -42,11 +54,13 @@ export interface MealRecordDialogProps {
   onSubmit: (values: MealRecordDialogValues) => Promise<void> | void;
 }
 
-const DEFAULT_VALUES: MealRecordDialogValues = {
+const DEFAULT_VALUES: MealRecordDialogFormValues = {
   userId: '',
   mealPlanId: '',
   mealDayId: '',
   mealId: '',
+  comment: '',
+  satisfactionRating: '',
   state: 'CREATE',
 };
 
@@ -59,7 +73,7 @@ export function MealRecordDialog({
   onClose,
   onSubmit,
 }: MealRecordDialogProps): React.JSX.Element {
-  const [values, setValues] = React.useState<MealRecordDialogValues>(DEFAULT_VALUES);
+  const [values, setValues] = React.useState<MealRecordDialogFormValues>(DEFAULT_VALUES);
   const [selectedMealPlanId, setSelectedMealPlanId] = React.useState<string | null>(null);
   const [selectedMealDayId, setSelectedMealDayId] = React.useState<string | null>(null);
   const [selectedMealId, setSelectedMealId] = React.useState<string | null>(null);
@@ -138,6 +152,10 @@ export function MealRecordDialog({
         mealPlanId: initial.mealPlanId,
         mealDayId: initial.mealDayId,
         mealId: initial.mealId,
+        comment: initial.comment ?? '',
+        satisfactionRating: initial.satisfactionRating !== null && initial.satisfactionRating !== undefined
+          ? String(initial.satisfactionRating)
+          : '',
         state: initial.state,
       });
       setSelectedMealPlanId(initial.mealPlanId);
@@ -165,6 +183,12 @@ export function MealRecordDialog({
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setValues((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleRatingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    const normalized = value.replace(/[^\d]/g, '');
+    setValues((prev) => ({ ...prev, satisfactionRating: normalized }));
   };
 
   const handleMealPlanChange = (_: unknown, option: Option | null) => {
@@ -215,6 +239,10 @@ export function MealRecordDialog({
       mealPlanId: values.mealPlanId.trim(),
       mealDayId: values.mealDayId.trim(),
       mealId: values.mealId.trim(),
+      comment: values.comment.trim() || undefined,
+      satisfactionRating: values.satisfactionRating.trim()
+        ? Number(values.satisfactionRating.trim())
+        : undefined,
     });
     onClose();
   };
@@ -360,6 +388,26 @@ export function MealRecordDialog({
                 fullWidth
               />
             )}
+          />
+          <TextField
+            label={t('meals.records.labels.satisfaction_rating')}
+            name="satisfactionRating"
+            value={values.satisfactionRating}
+            onChange={handleRatingChange}
+            placeholder={t('meals.records.placeholders.satisfaction_rating')}
+            type="number"
+            inputProps={{ min: 0, max: 10, 'aria-label': 'meal-record-satisfaction-rating' }}
+            fullWidth
+          />
+          <TextField
+            label={t('meals.records.labels.comment')}
+            name="comment"
+            value={values.comment}
+            onChange={handleChange}
+            placeholder={t('meals.records.placeholders.comment')}
+            multiline
+            minRows={3}
+            fullWidth
           />
           <DialogActions sx={{ px: 0 }}>
             <Button onClick={onClose} color="inherit">

@@ -363,13 +363,17 @@
       "title": "Enregistrements",
       "create": "Nouvel enregistrement",
       "labels": {
-        "state": "Statut"
+        "state": "Statut",
+        "comment": "Commentaire",
+        "satisfaction_rating": "Note de satisfaction"
       },
       "placeholders": {
         "meal_plan": "Rechercher des plans nutrition...",
         "meal_day": "Rechercher des journées...",
         "meal": "Rechercher des repas...",
-        "athlete": "Rechercher des athlètes..."
+        "athlete": "Rechercher des athlètes...",
+        "comment": "Ajouter un commentaire...",
+        "satisfaction_rating": "Noter la satisfaction (0-10)"
       },
       "filters": {
         "state": "Statut",
