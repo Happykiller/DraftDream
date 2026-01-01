@@ -7,6 +7,7 @@ import { BddServiceMuscleMongo } from '@services/db/mongo/repositories/muscle.re
 import { BddServiceSessionMongo } from '@services/db/mongo/repositories/session.repository';
 import { BddServiceProgramMongo } from '@services/db/mongo/repositories/program.repository';
 import { BddServiceProgramRecordMongo } from '@services/db/mongo/repositories/program-record.repository';
+import { BddServiceMealRecordMongo } from '@services/db/mongo/repositories/meal-record.repository';
 import { BddServiceCategoryMongo } from '@services/db/mongo/repositories/category.repository';
 import { BddServiceProspectObjectiveMongo } from '@services/db/mongo/repositories/prospect/objective.repository';
 import { BddServiceProspectActivityPreferenceMongo } from '@services/db/mongo/repositories/prospect/activity-preference.repository';
@@ -34,6 +35,7 @@ export class BddServiceMongo {
   readonly session: BddServiceSessionMongo;
   readonly program: BddServiceProgramMongo;
   readonly programRecord: BddServiceProgramRecordMongo;
+  readonly mealRecord: BddServiceMealRecordMongo;
   readonly category: BddServiceCategoryMongo;
   readonly prospectObjective: BddServiceProspectObjectiveMongo;
   readonly prospectActivityPreference: BddServiceProspectActivityPreferenceMongo;
@@ -57,6 +59,7 @@ export class BddServiceMongo {
     this.session = new BddServiceSessionMongo();
     this.program = new BddServiceProgramMongo();
     this.programRecord = new BddServiceProgramRecordMongo();
+    this.mealRecord = new BddServiceMealRecordMongo();
     this.category = new BddServiceCategoryMongo();
     this.prospectObjective = new BddServiceProspectObjectiveMongo();
     this.prospectActivityPreference = new BddServiceProspectActivityPreferenceMongo();

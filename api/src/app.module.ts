@@ -24,6 +24,7 @@ import { MealTypeModule } from '@src/graphql/nutri/meal-type/meal-type.module';
 import { MealDayModule } from '@src/graphql/nutri/meal-day/meal-day.module';
 import { MealModule } from '@src/graphql/nutri/meal/meal.module';
 import { MealPlanModule } from '@src/graphql/nutri/meal-plan/meal-plan.module';
+import { MealRecordModule } from '@src/graphql/nutri/meal-record/meal-record.module';
 import { CoachAthleteModule } from '@graphql/athlete/coach-athlete/coach-athlete.module';
 import { AthleteInfoModule } from '@graphql/athlete/athlete-info/athlete-info.module';
 
@@ -50,6 +51,7 @@ import { AthleteInfoModule } from '@graphql/athlete/athlete-info/athlete-info.mo
     MealDayModule,
     MealModule,
     MealPlanModule,
+    MealRecordModule,
     CoachAthleteModule,
     AthleteInfoModule,
     GraphQLModule.forRoot<MercuriusDriverConfig>({
