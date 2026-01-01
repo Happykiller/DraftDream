@@ -45,6 +45,8 @@ export const mapMealRecordUsecaseToGql = (model: MealRecordUsecaseModel): MealRe
   mealDayId: model.mealDayId,
   mealId: model.mealId,
   mealSnapshot: mapMealSnapshot(model.mealSnapshot ?? null),
+  comment: model.comment,
+  satisfactionRating: model.satisfactionRating,
   state: model.state,
   createdBy: model.createdBy,
   createdAt: model.createdAt,

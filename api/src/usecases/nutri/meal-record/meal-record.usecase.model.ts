@@ -11,6 +11,8 @@ export interface MealRecordUsecaseModel {
   mealDayId: string;
   mealId: string;
   mealSnapshot?: MealRecordMealSnapshotUsecaseModel;
+  comment?: string;
+  satisfactionRating?: number;
   state: MealRecordState;
   createdBy: string;
   createdAt: Date;

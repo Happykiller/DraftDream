@@ -33,6 +33,8 @@ export class UpdateMealRecordUsecase {
 
       const updated = await this.inversify.bddService.mealRecord.update(payload.id, {
         state: payload.state,
+        comment: payload.comment,
+        satisfactionRating: payload.satisfactionRating,
       });
 
       return updated ? mapMealRecordToUsecase(updated) : null;

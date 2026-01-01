@@ -44,6 +44,8 @@ export class CreateMealRecordUsecase {
         mealDayId: dto.mealDayId,
         mealId: dto.mealId,
         mealSnapshot,
+        comment: dto.comment,
+        satisfactionRating: dto.satisfactionRating,
         state: dto.state ?? MealRecordState.CREATE,
         createdBy: dto.session.userId,
       });

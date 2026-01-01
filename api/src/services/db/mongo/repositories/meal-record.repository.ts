@@ -27,6 +27,8 @@ interface MealRecordDoc {
   mealDayId: string;
   mealId: string;
   mealSnapshot?: MealPlanMealSnapshot;
+  comment?: string;
+  satisfactionRating?: number;
   state: MealRecordState;
   createdBy: string;
   createdAt: Date;
@@ -82,11 +84,13 @@ export class BddServiceMealRecordMongo {
       mealDayId,
       mealId,
       mealSnapshot: dto.mealSnapshot,
+      comment: dto.comment,
+      satisfactionRating: dto.satisfactionRating,
       state: dto.state,
       createdBy,
       createdAt: now,
       updatedAt: now,
-      schemaVersion: 2,
+      schemaVersion: 3,
     };
 
     try {
@@ -171,6 +175,12 @@ export class BddServiceMealRecordMongo {
     if (patch.state !== undefined) {
       $set.state = patch.state;
     }
+    if (patch.comment !== undefined) {
+      $set.comment = patch.comment;
+    }
+    if (patch.satisfactionRating !== undefined) {
+      $set.satisfactionRating = patch.satisfactionRating;
+    }
 
     try {
       const updated = await this.col().findOneAndUpdate(
@@ -229,6 +239,8 @@ export class BddServiceMealRecordMongo {
       mealDayId: doc.mealDayId,
       mealId: doc.mealId,
       mealSnapshot: doc.mealSnapshot,
+      comment: doc.comment,
+      satisfactionRating: doc.satisfactionRating,
       state: doc.state,
       createdBy: doc.createdBy,
       createdAt: doc.createdAt,

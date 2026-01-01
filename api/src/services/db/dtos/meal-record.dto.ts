@@ -8,6 +8,8 @@ export interface CreateMealRecordDto {
   mealDayId: string;
   mealId: string;
   mealSnapshot?: MealPlanMealSnapshot;
+  comment?: string;
+  satisfactionRating?: number;
   state: MealRecordState;
   createdBy: string;
 }
@@ -31,4 +33,6 @@ export interface ListMealRecordsDto {
 
 export interface UpdateMealRecordDto {
   state?: MealRecordState;
+  comment?: string;
+  satisfactionRating?: number;
 }

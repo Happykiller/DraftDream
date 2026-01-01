@@ -12,6 +12,8 @@ export interface CreateMealRecordUsecaseDto {
   mealPlanId: string;
   mealDayId: string;
   mealId: string;
+  comment?: string;
+  satisfactionRating?: number;
   state?: MealRecordState;
   session: UsecaseSession;
 }
@@ -36,6 +38,8 @@ export interface ListMealRecordsUsecaseDto {
 export interface UpdateMealRecordUsecaseDto {
   id: string;
   state: MealRecordState;
+  comment?: string;
+  satisfactionRating?: number;
   session: UsecaseSession;
 }
 

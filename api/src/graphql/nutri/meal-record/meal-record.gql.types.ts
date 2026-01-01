@@ -15,6 +15,8 @@ export class MealRecordGql {
   @Field(() => ID) mealDayId!: string;
   @Field(() => ID) mealId!: string;
   @Field(() => MealPlanMealSnapshotGql, { nullable: true }) mealSnapshot?: MealPlanMealSnapshotGql | null;
+  @Field(() => String, { nullable: true }) comment?: string;
+  @Field(() => Int, { nullable: true }) satisfactionRating?: number;
   @Field(() => MealRecordStateEnum) state!: MealRecordStateEnum;
   @Field(() => ID) createdBy!: string;
   @Field() createdAt!: Date;
@@ -32,6 +34,8 @@ export class CreateMealRecordInput {
   @Field(() => ID) mealDayId!: string;
   @Field(() => ID) mealId!: string;
   @Field(() => MealRecordStateEnum, { nullable: true }) state?: MealRecordStateEnum;
+  @Field(() => String, { nullable: true }) comment?: string;
+  @Field(() => Int, { nullable: true }) satisfactionRating?: number;
 }
 
 /**
@@ -41,6 +45,8 @@ export class CreateMealRecordInput {
 export class UpdateMealRecordInput {
   @Field(() => ID) id!: string;
   @Field(() => MealRecordStateEnum) state!: MealRecordStateEnum;
+  @Field(() => String, { nullable: true }) comment?: string;
+  @Field(() => Int, { nullable: true }) satisfactionRating?: number;
 }
 
 /**

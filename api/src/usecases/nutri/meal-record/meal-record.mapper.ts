@@ -13,6 +13,8 @@ export const mapMealRecordToUsecase = (record: MealRecord): MealRecordUsecaseMod
   mealDayId: record.mealDayId,
   mealId: record.mealId,
   mealSnapshot: record.mealSnapshot,
+  comment: record.comment,
+  satisfactionRating: record.satisfactionRating,
   state: record.state,
   createdBy: record.createdBy,
   createdAt: record.createdAt,

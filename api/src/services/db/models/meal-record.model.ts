@@ -9,6 +9,8 @@ export interface MealRecord {
   mealDayId: string;
   mealId: string;
   mealSnapshot?: MealPlanMealSnapshot;
+  comment?: string;
+  satisfactionRating?: number;
   state: MealRecordState;
   createdBy: string;
   createdAt: Date;

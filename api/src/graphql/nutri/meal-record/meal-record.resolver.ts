@@ -36,6 +36,8 @@ export class MealRecordResolver {
       mealPlanId: input.mealPlanId,
       mealDayId: input.mealDayId,
       mealId: input.mealId,
+      comment: input.comment,
+      satisfactionRating: input.satisfactionRating,
       state: input.state ?? undefined,
       session,
     });
@@ -56,6 +58,8 @@ export class MealRecordResolver {
     const updated = await inversify.updateMealRecordUsecase.execute({
       id: input.id,
       state: input.state,
+      comment: input.comment,
+      satisfactionRating: input.satisfactionRating,
       session,
     });
     return updated ? mapMealRecordUsecaseToGql(updated) : null;
