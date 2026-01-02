@@ -245,6 +245,13 @@ export function ProgramRecordDetails(): React.JSX.Element {
                 <Stack direction="row" spacing={2}>
                     <Button
                         variant="outlined"
+                        color="inherit"
+                        onClick={handleBackToHome}
+                    >
+                        {t('common.actions.cancel', 'Cancel')}
+                    </Button>
+                    <Button
+                        variant="outlined"
                         color="primary"
                         onClick={() => handleUpdateState(ProgramRecordState.DRAFT)}
                     >
@@ -255,7 +262,7 @@ export function ProgramRecordDetails(): React.JSX.Element {
                         color="primary"
                         onClick={() => handleUpdateState(ProgramRecordState.FINISH)}
                     >
-                        {t('common.actions.finish', 'Finish')}
+                        {t('common.actions.complete', 'Complete')}
                     </Button>
                 </Stack>
             );
