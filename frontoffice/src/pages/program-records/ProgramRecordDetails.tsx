@@ -286,16 +286,9 @@ export function ProgramRecordDetails(): React.JSX.Element {
                                                         })}
                                                     >
                                                         <Stack spacing={1.5}>
-                                                            <Stack spacing={0.25}>
-                                                                <Typography variant="caption" color="text.secondary">
-                                                                    {t('programs-coatch.view.exercises.exercise_label', {
-                                                                        index: exerciseIndex + 1,
-                                                                    })}
-                                                                </Typography>
-                                                                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                                                                    {exercise.label}
-                                                                </Typography>
-                                                            </Stack>
+                                                            <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                                                                {exerciseIndex + 1}. {exercise.label}
+                                                            </Typography>
                                                             {exercise.description ? (
                                                                 <Typography variant="body2" color="text.secondary">
                                                                     {exercise.description}
