@@ -11,6 +11,8 @@ export interface CreateProgramRecordUsecaseDto {
   userId?: string;
   programId: string;
   sessionId: string;
+  comment?: string;
+  satisfactionRating?: number;
   state?: ProgramRecordState;
   session: UsecaseSession;
 }
@@ -35,6 +37,8 @@ export interface ListProgramRecordsUsecaseDto {
 export interface UpdateProgramRecordUsecaseDto {
   id: string;
   state: ProgramRecordState;
+  comment?: string;
+  satisfactionRating?: number;
   session: UsecaseSession;
 }
 

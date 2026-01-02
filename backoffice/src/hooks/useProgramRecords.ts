@@ -13,6 +13,8 @@ export interface ProgramRecord {
   userId: string;
   programId: string;
   sessionId: string;
+  comment?: string | null;
+  satisfactionRating?: number | null;
   state: ProgramRecordState;
   createdAt: string;
   updatedAt: string;
@@ -38,6 +40,8 @@ const LIST_Q = `
         userId
         programId
         sessionId
+        comment
+        satisfactionRating
         state
         createdAt
         updatedAt
@@ -56,6 +60,8 @@ const CREATE_M = `
       userId
       programId
       sessionId
+      comment
+      satisfactionRating
       state
       createdAt
       updatedAt
@@ -70,6 +76,8 @@ const UPDATE_M = `
       userId
       programId
       state
+      comment
+      satisfactionRating
       createdAt
       updatedAt
     }
@@ -136,7 +144,14 @@ export function useProgramRecords({ page, limit, userId, programId, state }: Use
   React.useEffect(() => { void load(); }, [load]);
 
   const create = React.useCallback(
-    async (input: { userId: string; programId: string; sessionId: string; state?: ProgramRecordState }) => {
+    async (input: {
+      userId: string;
+      programId: string;
+      sessionId: string;
+      comment?: string;
+      satisfactionRating?: number;
+      state?: ProgramRecordState;
+    }) => {
       try {
         const { errors } = await execute(() =>
           gql.send<CreateProgramRecordPayload>({
@@ -157,7 +172,7 @@ export function useProgramRecords({ page, limit, userId, programId, state }: Use
   );
 
   const update = React.useCallback(
-    async (input: { id: string; state: ProgramRecordState }) => {
+    async (input: { id: string; state: ProgramRecordState; comment?: string; satisfactionRating?: number }) => {
       try {
         const { errors } = await execute(() =>
           gql.send<UpdateProgramRecordPayload>({

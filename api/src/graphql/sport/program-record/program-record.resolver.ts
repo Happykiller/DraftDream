@@ -29,6 +29,8 @@ export class ProgramRecordResolver {
       userId: input.userId,
       programId: input.programId,
       sessionId: input.sessionId,
+      comment: input.comment,
+      satisfactionRating: input.satisfactionRating,
       state: input.state ?? undefined,
       session,
     });
@@ -46,6 +48,8 @@ export class ProgramRecordResolver {
     const updated = await inversify.updateProgramRecordUsecase.execute({
       id: input.id,
       state: input.state,
+      comment: input.comment,
+      satisfactionRating: input.satisfactionRating,
       session,
     });
     return updated ? mapProgramRecordUsecaseToGql(updated) : null;

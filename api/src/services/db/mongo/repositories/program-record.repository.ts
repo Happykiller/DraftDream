@@ -24,6 +24,8 @@ interface ProgramRecordDoc {
   userId: string;
   programId: string;
   sessionId: string;
+  comment?: string;
+  satisfactionRating?: number;
   state: ProgramRecordState;
   createdBy: string;
   createdAt: Date;
@@ -84,11 +86,13 @@ export class BddServiceProgramRecordMongo {
       userId,
       programId,
       sessionId,
+      comment: dto.comment,
+      satisfactionRating: dto.satisfactionRating,
       state: dto.state,
       createdBy,
       createdAt: now,
       updatedAt: now,
-      schemaVersion: 1,
+      schemaVersion: 2,
     };
 
 
@@ -196,6 +200,12 @@ export class BddServiceProgramRecordMongo {
     if (patch.state !== undefined) {
       $set.state = patch.state;
     }
+    if (patch.comment !== undefined) {
+      $set.comment = patch.comment;
+    }
+    if (patch.satisfactionRating !== undefined) {
+      $set.satisfactionRating = patch.satisfactionRating;
+    }
 
     try {
       const updated = await this.col().findOneAndUpdate(
@@ -252,6 +262,8 @@ export class BddServiceProgramRecordMongo {
       userId: doc.userId,
       programId: doc.programId,
       sessionId: doc.sessionId,
+      comment: doc.comment,
+      satisfactionRating: doc.satisfactionRating,
       state: doc.state,
       createdBy: doc.createdBy,
       createdAt: doc.createdAt,

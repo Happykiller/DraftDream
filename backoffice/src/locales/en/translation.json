@@ -322,12 +322,16 @@
       "title": "Records",
       "create": "New Record",
       "labels": {
-        "state": "State"
+        "state": "State",
+        "comment": "Comment",
+        "satisfaction_rating": "Satisfaction rating"
       },
       "placeholders": {
         "program": "Search programs...",
         "session": "Search sessions...",
-        "athlete": "Search athletes..."
+        "athlete": "Search athletes...",
+        "comment": "Add a comment...",
+        "satisfaction_rating": "Rate satisfaction (0-10)"
       },
       "filters": {
         "user": "User ID",

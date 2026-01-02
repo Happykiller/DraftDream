@@ -1322,6 +1322,11 @@
   "program_record": {
     "details": {
       "title": "Détails de la séance"
+    },
+    "form": {
+      "comment_label": "Commentaire",
+      "comment_placeholder": "Partagez votre avis sur cette séance...",
+      "satisfaction_label": "Note de satisfaction"
     }
   },
   "meal_record": {

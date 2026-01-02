@@ -19,6 +19,8 @@ export interface ProgramRecord {
     userId: string;
     programId: string;
     sessionId: string;
+    comment?: string | null;
+    satisfactionRating?: number | null;
     state: ProgramRecordState;
     createdAt: string;
     updatedAt: string;
@@ -35,6 +37,8 @@ const CREATE_M = `
       userId
       programId
       sessionId
+      comment
+      satisfactionRating
       state
       createdAt
       updatedAt
@@ -47,6 +51,8 @@ const UPDATE_STATE_M = `
     programRecord_updateState(input: $input) {
       id
       state
+      comment
+      satisfactionRating
       updatedAt
     }
   }
@@ -59,6 +65,8 @@ const GET_Q = `
       userId
       programId
       sessionId
+      comment
+      satisfactionRating
       state
       createdAt
       updatedAt
@@ -95,7 +103,11 @@ export function useProgramRecords() {
     );
 
     const create = React.useCallback(
-        async (programId: string, sessionId: string): Promise<ProgramRecord> => {
+        async (
+            programId: string,
+            sessionId: string,
+            payload?: { comment?: string; satisfactionRating?: number },
+        ): Promise<ProgramRecord> => {
             try {
                 const { data, errors } = await execute(() =>
                     gql.send<CreateProgramRecordPayload>({
@@ -106,6 +118,8 @@ export function useProgramRecords() {
                                 userId,
                                 programId,
                                 sessionId,
+                                comment: payload?.comment,
+                                satisfactionRating: payload?.satisfactionRating,
                             },
                         },
                     })
@@ -129,7 +143,11 @@ export function useProgramRecords() {
     );
 
     const updateState = React.useCallback(
-        async (id: string, state: ProgramRecordState): Promise<ProgramRecord> => {
+        async (
+            id: string,
+            state: ProgramRecordState,
+            payload?: { comment?: string; satisfactionRating?: number },
+        ): Promise<ProgramRecord> => {
             try {
                 const { data, errors } = await execute(() =>
                     gql.send<UpdateProgramRecordStatePayload>({
@@ -139,6 +157,8 @@ export function useProgramRecords() {
                             input: {
                                 id,
                                 state,
+                                comment: payload?.comment,
+                                satisfactionRating: payload?.satisfactionRating,
                             },
                         },
                     })
@@ -174,6 +194,8 @@ export function useProgramRecords() {
                                 userId
                                 programId
                                 sessionId
+                                comment
+                                satisfactionRating
                                 state
                                 createdAt
                                 updatedAt

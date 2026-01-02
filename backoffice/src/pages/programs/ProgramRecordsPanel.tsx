@@ -79,7 +79,16 @@ export function ProgramRecordsPanel(): React.JSX.Element {
         programs={programs}
         users={users}
         onClose={() => setEditId(null)}
-        onSubmit={(values) => (editId ? update({ id: editId, state: values.state }) : undefined)}
+        onSubmit={(values) => (
+          editId
+            ? update({
+              id: editId,
+              state: values.state,
+              comment: values.comment,
+              satisfactionRating: values.satisfactionRating,
+            })
+            : undefined
+        )}
       />
 
       <ConfirmDialog

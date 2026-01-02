@@ -5,6 +5,8 @@ export interface CreateProgramRecordDto {
   userId: string;
   programId: string;
   sessionId: string;
+  comment?: string;
+  satisfactionRating?: number;
   state: ProgramRecordState;
   createdBy: string;
 }
@@ -29,4 +31,6 @@ export interface ListProgramRecordsDto {
 
 export interface UpdateProgramRecordDto {
   state?: ProgramRecordState;
+  comment?: string;
+  satisfactionRating?: number;
 }

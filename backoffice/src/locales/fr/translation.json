@@ -322,12 +322,16 @@
       "title": "Enregistrements",
       "create": "Nouvel enregistrement",
       "labels": {
-        "state": "État"
+        "state": "État",
+        "comment": "Commentaire",
+        "satisfaction_rating": "Note de satisfaction"
       },
       "placeholders": {
         "program": "Rechercher des programmes...",
         "session": "Rechercher des séances...",
-        "athlete": "Rechercher des athlètes..."
+        "athlete": "Rechercher des athlètes...",
+        "comment": "Ajouter un commentaire...",
+        "satisfaction_rating": "Noter la satisfaction (0-10)"
       },
       "filters": {
         "user": "ID utilisateur",

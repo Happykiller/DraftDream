@@ -15,6 +15,8 @@ export class ProgramRecordGql {
   @Field(() => ID) userId!: string;
   @Field(() => ID) programId!: string;
   @Field(() => String) sessionId!: string;
+  @Field(() => String, { nullable: true }) comment?: string;
+  @Field(() => Int, { nullable: true }) satisfactionRating?: number;
   @Field(() => ProgramRecordStateEnum) state!: ProgramRecordStateEnum;
   @Field() createdBy!: string;
   @Field() createdAt!: Date;
@@ -27,12 +29,16 @@ export class CreateProgramRecordInput {
   @Field(() => String) sessionId!: string;
   @Field(() => ID, { nullable: true }) userId?: string;
   @Field(() => ProgramRecordStateEnum, { nullable: true }) state?: ProgramRecordStateEnum;
+  @Field(() => String, { nullable: true }) comment?: string;
+  @Field(() => Int, { nullable: true }) satisfactionRating?: number;
 }
 
 @InputType()
 export class UpdateProgramRecordInput {
   @Field(() => ID) id!: string;
   @Field(() => ProgramRecordStateEnum) state!: ProgramRecordStateEnum;
+  @Field(() => String, { nullable: true }) comment?: string;
+  @Field(() => Int, { nullable: true }) satisfactionRating?: number;
 }
 
 @InputType()

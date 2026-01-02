@@ -7,6 +7,8 @@ export const mapProgramRecordUsecaseToGql = (model: ProgramRecordUsecaseModel): 
   userId: model.userId,
   programId: model.programId,
   sessionId: model.sessionId,
+  comment: model.comment,
+  satisfactionRating: model.satisfactionRating,
   state: model.state,
   createdBy: model.createdBy,
   createdAt: model.createdAt,

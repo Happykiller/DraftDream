@@ -5,6 +5,8 @@ import {
     Box,
     Button,
     CircularProgress,
+    Rating,
+    TextField,
     Typography,
     Stack,
 } from '@mui/material';
@@ -26,6 +28,8 @@ export function ProgramRecordDetails(): React.JSX.Element {
     const { get: getRecord, updateState } = useProgramRecords();
     const [record, setRecord] = React.useState<ProgramRecord | null>(null);
     const [recordLoading, setRecordLoading] = React.useState(true);
+    const [comment, setComment] = React.useState('');
+    const [satisfactionRating, setSatisfactionRating] = React.useState<number | null>(null);
 
     const fetchRecord = React.useCallback(() => {
         if (!recordId) return;
@@ -39,6 +43,11 @@ export function ProgramRecordDetails(): React.JSX.Element {
     React.useEffect(() => {
         fetchRecord();
     }, [fetchRecord]);
+
+    React.useEffect(() => {
+        setComment(record?.comment ?? '');
+        setSatisfactionRating(record?.satisfactionRating ?? null);
+    }, [record]);
 
     // Fetch Program once we have the record
     const { program, loading: programLoading } = useProgram({
@@ -62,11 +71,22 @@ export function ProgramRecordDetails(): React.JSX.Element {
     const handleUpdateState = async (newState: ProgramRecordState) => {
         if (!record) return;
         try {
-            await updateState(record.id, newState);
+            await updateState(record.id, newState, {
+                comment: comment.trim() || undefined,
+                satisfactionRating: satisfactionRating ?? undefined,
+            });
             navigate('/');
         } catch (error) {
-            console.error("Failed to update state", error);
+            console.error('Failed to update state', error);
         }
+    };
+
+    const handleCommentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setComment(event.target.value);
+    };
+
+    const handleRatingChange = (_event: React.SyntheticEvent, value: number | null) => {
+        setSatisfactionRating(value);
     };
 
     if (loading) {
@@ -126,11 +146,30 @@ export function ProgramRecordDetails(): React.JSX.Element {
             icon={<PlayCircleOutlineIcon fontSize="medium" />}
             footer={renderFooter()}
         >
-            <Box sx={{ p: 3, textAlign: 'center', color: 'text.secondary' }}>
-                {/* Empty content for now */}
-                <Typography>
-                    {t('common.no_content', 'No content available yet')}
-                </Typography>
+            {/* General information */}
+            <Box sx={{ p: 3 }}>
+                <Stack spacing={2}>
+                    <Stack spacing={1}>
+                        <Typography variant="subtitle1" fontWeight="bold">
+                            {t('program_record.form.satisfaction_label')}
+                        </Typography>
+                        <Rating
+                            value={satisfactionRating}
+                            onChange={handleRatingChange}
+                            max={5}
+                            size="large"
+                        />
+                    </Stack>
+                    <TextField
+                        label={t('program_record.form.comment_label')}
+                        placeholder={t('program_record.form.comment_placeholder')}
+                        value={comment}
+                        onChange={handleCommentChange}
+                        multiline
+                        minRows={4}
+                        fullWidth
+                    />
+                </Stack>
             </Box>
         </FixedPageLayout>
     );

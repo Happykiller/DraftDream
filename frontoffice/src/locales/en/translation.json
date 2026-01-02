@@ -1318,6 +1318,11 @@
   "program_record": {
     "details": {
       "title": "Session Details"
+    },
+    "form": {
+      "comment_label": "Comment",
+      "comment_placeholder": "Share your feedback about this session...",
+      "satisfaction_label": "Satisfaction rating"
     }
   },
   "meal_record": {
