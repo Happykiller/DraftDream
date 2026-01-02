@@ -8,6 +8,7 @@ export const mapProgramRecordToUsecase = (record: ProgramRecord): ProgramRecordU
   userId: record.userId,
   programId: record.programId,
   sessionId: record.sessionId,
+  sessionSnapshot: record.sessionSnapshot,
   comment: record.comment,
   satisfactionRating: record.satisfactionRating,
   state: record.state,

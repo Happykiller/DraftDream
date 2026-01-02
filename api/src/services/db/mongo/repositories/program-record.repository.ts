@@ -12,6 +12,7 @@ import inversify from '@src/inversify/investify';
 
 import { ProgramRecordState } from '@src/common/program-record-state.enum';
 import { ProgramRecord } from '@services/db/models/program-record.model';
+import type { ProgramSessionSnapshot } from '@services/db/models/program.model';
 import {
   CreateProgramRecordDto,
   GetProgramRecordDto,
@@ -24,6 +25,7 @@ interface ProgramRecordDoc {
   userId: string;
   programId: string;
   sessionId: string;
+  sessionSnapshot?: ProgramSessionSnapshot;
   comment?: string;
   satisfactionRating?: number;
   state: ProgramRecordState;
@@ -86,13 +88,14 @@ export class BddServiceProgramRecordMongo {
       userId,
       programId,
       sessionId,
+      sessionSnapshot: dto.sessionSnapshot,
       comment: dto.comment,
       satisfactionRating: dto.satisfactionRating,
       state: dto.state,
       createdBy,
       createdAt: now,
       updatedAt: now,
-      schemaVersion: 2,
+      schemaVersion: 3,
     };
 
 
@@ -206,6 +209,12 @@ export class BddServiceProgramRecordMongo {
     if (patch.satisfactionRating !== undefined) {
       $set.satisfactionRating = patch.satisfactionRating;
     }
+    if (patch.comment !== undefined) {
+      $set.comment = patch.comment;
+    }
+    if (patch.satisfactionRating !== undefined) {
+      $set.satisfactionRating = patch.satisfactionRating;
+    }
 
     try {
       const updated = await this.col().findOneAndUpdate(
@@ -262,6 +271,7 @@ export class BddServiceProgramRecordMongo {
       userId: doc.userId,
       programId: doc.programId,
       sessionId: doc.sessionId,
+      sessionSnapshot: doc.sessionSnapshot,
       comment: doc.comment,
       satisfactionRating: doc.satisfactionRating,
       state: doc.state,

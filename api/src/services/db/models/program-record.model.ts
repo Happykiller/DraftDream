@@ -1,11 +1,13 @@
 // src/services/db/models/program-record.model.ts
 import { ProgramRecordState } from '@src/common/program-record-state.enum';
+import type { ProgramSessionSnapshot } from '@services/db/models/program.model';
 
 export interface ProgramRecord {
   id: string;
   userId: string;
   programId: string;
   sessionId: string;
+  sessionSnapshot?: ProgramSessionSnapshot;
   comment?: string;
   satisfactionRating?: number;
   state: ProgramRecordState;

@@ -5,10 +5,14 @@ import {
     Box,
     Button,
     CircularProgress,
+    Chip,
+    Divider,
+    Grid,
+    Paper,
     Rating,
+    Stack,
     TextField,
     Typography,
-    Stack,
 } from '@mui/material';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 
@@ -59,7 +63,11 @@ export function ProgramRecordDetails(): React.JSX.Element {
     // Derive Labels
     const programLabel = program?.label ?? '-';
     const sessionLabel = React.useMemo(() => {
-        if (!program || !record) return '';
+        if (!record) return '';
+        if (record.sessionSnapshot?.label) {
+            return record.sessionSnapshot.label;
+        }
+        if (!program) return '';
         const foundSession = program.sessions.find(s => s.id === record.sessionId);
         return foundSession?.label ?? record.sessionId;
     }, [program, record]);
@@ -88,6 +96,30 @@ export function ProgramRecordDetails(): React.JSX.Element {
     const handleRatingChange = (_event: React.SyntheticEvent, value: number | null) => {
         setSatisfactionRating(value);
     };
+
+    const formatRestDuration = React.useCallback(
+        (restSeconds?: number | null) => {
+            if (!restSeconds || restSeconds <= 0) {
+                return null;
+            }
+
+            const minutes = Math.floor(restSeconds / 60);
+            const seconds = restSeconds % 60;
+
+            if (minutes > 0 && seconds > 0) {
+                return t('programs-coatch.view.exercises.rest_duration.minutes_seconds', { minutes, seconds });
+            }
+
+            if (minutes > 0) {
+                return t('programs-coatch.view.exercises.rest_duration.minutes', { count: minutes });
+            }
+
+            return t('programs-coatch.view.exercises.rest_duration.seconds', { count: seconds });
+        },
+        [t],
+    );
+
+    const sessionSnapshot = record?.sessionSnapshot ?? null;
 
     if (loading) {
         return (
@@ -148,7 +180,122 @@ export function ProgramRecordDetails(): React.JSX.Element {
         >
             {/* General information */}
             <Box sx={{ p: 3 }}>
-                <Stack spacing={2}>
+                <Stack spacing={3}>
+                    {sessionSnapshot ? (
+                        <Paper
+                            variant="outlined"
+                            sx={(theme) => ({
+                                borderRadius: 2.5,
+                                p: { xs: 2.5, md: 3 },
+                                bgcolor: theme.palette.background.paper,
+                                borderColor: theme.palette.divider,
+                                boxShadow: '0 20px 40px rgba(15, 23, 42, 0.06)',
+                            })}
+                        >
+                            <Stack spacing={2.5}>
+                                <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" spacing={1.5}>
+                                    <Stack direction="row" spacing={1.5} alignItems="center">
+                                        <Chip
+                                            label={t('programs-coatch.view.sessions.session_label', { index: 1 })}
+                                            color="success"
+                                            variant="filled"
+                                            sx={{ fontWeight: 700 }}
+                                        />
+                                        <Stack spacing={0.5}>
+                                            <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                                                {sessionSnapshot.label}
+                                            </Typography>
+                                            <Typography variant="body2" color="text.secondary">
+                                                {t('programs-coatch.view.session_duration', {
+                                                    duration: sessionSnapshot.durationMin,
+                                                })}{' '}
+                                                •{' '}
+                                                {t('programs-coatch.view.stats.exercises_value', {
+                                                    count: sessionSnapshot.exercises.length,
+                                                })}
+                                            </Typography>
+                                        </Stack>
+                                    </Stack>
+                                    {sessionSnapshot.description ? (
+                                        <Typography variant="body2" color="text.secondary" sx={{ maxWidth: { md: '45%', lg: '40%' } }}>
+                                            {sessionSnapshot.description}
+                                        </Typography>
+                                    ) : null}
+                                </Stack>
+
+                                <Divider flexItem />
+
+                                {sessionSnapshot.exercises.length > 0 ? (
+                                    <Grid container spacing={{ xs: 2, md: 2.5 }}>
+                                        {sessionSnapshot.exercises.map((exercise, exerciseIndex) => {
+                                            const restLabel = formatRestDuration(exercise.restSeconds);
+                                            return (
+                                                <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={exercise.id}>
+                                                    <Paper
+                                                        variant="outlined"
+                                                        sx={(theme) => ({
+                                                            borderRadius: 2,
+                                                            p: 2,
+                                                            height: '100%',
+                                                            borderColor: theme.palette.divider,
+                                                        })}
+                                                    >
+                                                        <Stack spacing={1.5}>
+                                                            <Stack spacing={0.25}>
+                                                                <Typography variant="caption" color="text.secondary">
+                                                                    {t('programs-coatch.view.exercises.exercise_label', {
+                                                                        index: exerciseIndex + 1,
+                                                                    })}
+                                                                </Typography>
+                                                                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                                                                    {exercise.label}
+                                                                </Typography>
+                                                            </Stack>
+                                                            {exercise.description ? (
+                                                                <Typography variant="body2" color="text.secondary">
+                                                                    {exercise.description}
+                                                                </Typography>
+                                                            ) : null}
+                                                            <Stack spacing={0.75}>
+                                                                {exercise.series ? (
+                                                                    <Typography variant="body2">
+                                                                        {t('programs-coatch.view.exercises.series')}: {exercise.series}
+                                                                    </Typography>
+                                                                ) : null}
+                                                                {exercise.repetitions ? (
+                                                                    <Typography variant="body2">
+                                                                        {t('programs-coatch.view.exercises.repetitions')}: {exercise.repetitions}
+                                                                    </Typography>
+                                                                ) : null}
+                                                                {exercise.charge ? (
+                                                                    <Typography variant="body2">
+                                                                        {t('programs-coatch.view.exercises.charge')}: {exercise.charge}
+                                                                    </Typography>
+                                                                ) : null}
+                                                                {restLabel ? (
+                                                                    <Typography variant="body2">
+                                                                        {t('programs-coatch.view.exercises.rest')}: {restLabel}
+                                                                    </Typography>
+                                                                ) : null}
+                                                            </Stack>
+                                                        </Stack>
+                                                    </Paper>
+                                                </Grid>
+                                            );
+                                        })}
+                                    </Grid>
+                                ) : (
+                                    <Typography variant="body2" color="text.secondary">
+                                        {t('programs-coatch.view.session_no_exercises')}
+                                    </Typography>
+                                )}
+                            </Stack>
+                        </Paper>
+                    ) : (
+                        <Typography variant="body2" color="text.secondary">
+                            {t('programs-coatch.list.no_sessions')}
+                        </Typography>
+                    )}
                     <Stack spacing={1}>
                         <Typography variant="subtitle1" fontWeight="bold">
                             {t('program_record.form.satisfaction_label')}

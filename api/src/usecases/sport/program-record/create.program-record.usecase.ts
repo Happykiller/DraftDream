@@ -6,6 +6,7 @@ import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { mapProgramRecordToUsecase } from '@src/usecases/sport/program-record/program-record.mapper';
 import { ProgramUsecaseModel } from '@src/usecases/sport/program/program.usecase.model';
+import type { ProgramRecordSessionSnapshotUsecaseModel } from '@src/usecases/sport/program-record/program-record.usecase.model';
 
 import {
   CreateProgramRecordUsecaseDto,
@@ -34,10 +35,16 @@ export class CreateProgramRecordUsecase {
 
 
 
+      const sessionSnapshot = this.getSessionSnapshot(program, dto.sessionId);
+      if (!sessionSnapshot) {
+        return null;
+      }
+
       const created = await this.inversify.bddService.programRecord.create({
         userId,
         programId: dto.programId,
         sessionId: dto.sessionId,
+        sessionSnapshot,
         comment: dto.comment,
         satisfactionRating: dto.satisfactionRating,
         state: dto.state ?? ProgramRecordState.CREATE,
@@ -86,5 +93,22 @@ export class CreateProgramRecordUsecase {
     }
 
     return program;
+  }
+
+  private getSessionSnapshot(
+    program: ProgramUsecaseModel,
+    sessionId: string,
+  ): ProgramRecordSessionSnapshotUsecaseModel | null {
+    const session = program.sessions.find(
+      (candidate) => candidate.id === sessionId || candidate.templateSessionId === sessionId,
+    );
+    if (!session) {
+      return null;
+    }
+
+    return {
+      ...session,
+      exercises: session.exercises.map((exercise) => ({ ...exercise })),
+    };
   }
 }

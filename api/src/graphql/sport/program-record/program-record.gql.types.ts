@@ -8,6 +8,7 @@ import {
 } from '@nestjs/graphql';
 
 import { ProgramRecordStateEnum } from './program-record.enum';
+import { ProgramSessionGql } from '@graphql/sport/program/program.gql.types';
 
 @ObjectType()
 export class ProgramRecordGql {
@@ -15,6 +16,7 @@ export class ProgramRecordGql {
   @Field(() => ID) userId!: string;
   @Field(() => ID) programId!: string;
   @Field(() => String) sessionId!: string;
+  @Field(() => ProgramSessionGql, { nullable: true }) sessionSnapshot?: ProgramSessionGql | null;
   @Field(() => String, { nullable: true }) comment?: string;
   @Field(() => Int, { nullable: true }) satisfactionRating?: number;
   @Field(() => ProgramRecordStateEnum) state!: ProgramRecordStateEnum;

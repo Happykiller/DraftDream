@@ -21,9 +21,38 @@ export interface ProgramRecord {
     sessionId: string;
     comment?: string | null;
     satisfactionRating?: number | null;
+    sessionSnapshot?: ProgramRecordSessionSnapshot | null;
     state: ProgramRecordState;
     createdAt: string;
     updatedAt: string;
+}
+
+export interface ProgramRecordExerciseSnapshot {
+    id: string;
+    templateExerciseId?: string | null;
+    label: string;
+    description?: string | null;
+    instructions?: string | null;
+    series?: string | null;
+    repetitions?: string | null;
+    charge?: string | null;
+    restSeconds?: number | null;
+    videoUrl?: string | null;
+    categoryIds?: string[] | null;
+    muscleIds?: string[] | null;
+    equipmentIds?: string[] | null;
+    tagIds?: string[] | null;
+}
+
+export interface ProgramRecordSessionSnapshot {
+    id: string;
+    templateSessionId?: string | null;
+    slug?: string | null;
+    locale?: string | null;
+    label: string;
+    durationMin: number;
+    description?: string | null;
+    exercises: ProgramRecordExerciseSnapshot[];
 }
 
 type CreateProgramRecordPayload = { programRecord_create: ProgramRecord };
@@ -37,6 +66,31 @@ const CREATE_M = `
       userId
       programId
       sessionId
+      sessionSnapshot {
+        id
+        templateSessionId
+        slug
+        locale
+        label
+        durationMin
+        description
+        exercises {
+          id
+          templateExerciseId
+          label
+          description
+          instructions
+          series
+          repetitions
+          charge
+          restSeconds
+          videoUrl
+          categoryIds
+          muscleIds
+          equipmentIds
+          tagIds
+        }
+      }
       comment
       satisfactionRating
       state
@@ -51,6 +105,31 @@ const UPDATE_STATE_M = `
     programRecord_updateState(input: $input) {
       id
       state
+      sessionSnapshot {
+        id
+        templateSessionId
+        slug
+        locale
+        label
+        durationMin
+        description
+        exercises {
+          id
+          templateExerciseId
+          label
+          description
+          instructions
+          series
+          repetitions
+          charge
+          restSeconds
+          videoUrl
+          categoryIds
+          muscleIds
+          equipmentIds
+          tagIds
+        }
+      }
       comment
       satisfactionRating
       updatedAt
@@ -65,6 +144,31 @@ const GET_Q = `
       userId
       programId
       sessionId
+      sessionSnapshot {
+        id
+        templateSessionId
+        slug
+        locale
+        label
+        durationMin
+        description
+        exercises {
+          id
+          templateExerciseId
+          label
+          description
+          instructions
+          series
+          repetitions
+          charge
+          restSeconds
+          videoUrl
+          categoryIds
+          muscleIds
+          equipmentIds
+          tagIds
+        }
+      }
       comment
       satisfactionRating
       state
@@ -194,6 +298,31 @@ export function useProgramRecords() {
                                 userId
                                 programId
                                 sessionId
+                                sessionSnapshot {
+                                  id
+                                  templateSessionId
+                                  slug
+                                  locale
+                                  label
+                                  durationMin
+                                  description
+                                  exercises {
+                                    id
+                                    templateExerciseId
+                                    label
+                                    description
+                                    instructions
+                                    series
+                                    repetitions
+                                    charge
+                                    restSeconds
+                                    videoUrl
+                                    categoryIds
+                                    muscleIds
+                                    equipmentIds
+                                    tagIds
+                                  }
+                                }
                                 comment
                                 satisfactionRating
                                 state
