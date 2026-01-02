@@ -5,8 +5,6 @@ import {
     Box,
     Button,
     CircularProgress,
-    Chip,
-    Divider,
     Grid,
     Paper,
     Rating,
@@ -193,38 +191,6 @@ export function ProgramRecordDetails(): React.JSX.Element {
                             })}
                         >
                             <Stack spacing={2.5}>
-                                <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" spacing={1.5}>
-                                    <Stack direction="row" spacing={1.5} alignItems="center">
-                                        <Chip
-                                            label={t('programs-coatch.view.sessions.session_label', { index: 1 })}
-                                            color="success"
-                                            variant="filled"
-                                            sx={{ fontWeight: 700 }}
-                                        />
-                                        <Stack spacing={0.5}>
-                                            <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                                                {sessionSnapshot.label}
-                                            </Typography>
-                                            <Typography variant="body2" color="text.secondary">
-                                                {t('programs-coatch.view.session_duration', {
-                                                    duration: sessionSnapshot.durationMin,
-                                                })}{' '}
-                                                •{' '}
-                                                {t('programs-coatch.view.stats.exercises_value', {
-                                                    count: sessionSnapshot.exercises.length,
-                                                })}
-                                            </Typography>
-                                        </Stack>
-                                    </Stack>
-                                    {sessionSnapshot.description ? (
-                                        <Typography variant="body2" color="text.secondary" sx={{ maxWidth: { md: '45%', lg: '40%' } }}>
-                                            {sessionSnapshot.description}
-                                        </Typography>
-                                    ) : null}
-                                </Stack>
-
-                                <Divider flexItem />
-
                                 {sessionSnapshot.exercises.length > 0 ? (
                                     <Grid container spacing={{ xs: 2, md: 2.5 }}>
                                         {sessionSnapshot.exercises.map((exercise, exerciseIndex) => {
