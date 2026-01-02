@@ -836,6 +836,7 @@
         "session_label": "Séance {{index}}"
       },
       "exercises": {
+        "exercise_label": "Exercice {{index}}",
         "series": "Séries",
         "repetitions": "Répétitions",
         "rest": "Repos",

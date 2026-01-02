@@ -832,6 +832,7 @@
         "session_label": "Session {{index}}"
       },
       "exercises": {
+        "exercise_label": "Exercise {{index}}",
         "series": "Sets",
         "repetitions": "Reps",
         "rest": "Rest",
