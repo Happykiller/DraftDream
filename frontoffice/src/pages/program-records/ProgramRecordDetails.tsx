@@ -289,6 +289,28 @@ export function ProgramRecordDetails(): React.JSX.Element {
             {/* General information */}
             <Box sx={{ p: 3 }}>
                 <Stack spacing={3}>
+                    <Paper
+                        variant="outlined"
+                        sx={(theme) => ({
+                            borderRadius: 2.5,
+                            p: { xs: 2.5, md: 3 },
+                            bgcolor: theme.palette.background.paper,
+                            borderColor: theme.palette.divider,
+                            boxShadow: '0 20px 40px rgba(15, 23, 42, 0.06)',
+                        })}
+                    >
+                        <Stack spacing={1}>
+                            <Typography variant="subtitle1" fontWeight="bold">
+                                {t('program_record.form.satisfaction_label')}
+                            </Typography>
+                            <Rating
+                                value={satisfactionRating}
+                                onChange={handleRatingChange}
+                                max={5}
+                                size="large"
+                            />
+                        </Stack>
+                    </Paper>
                     {sessionSnapshot ? (
                         <Paper
                             variant="outlined"
@@ -405,26 +427,26 @@ export function ProgramRecordDetails(): React.JSX.Element {
                             {t('programs-coatch.list.no_sessions')}
                         </Typography>
                     )}
-                    <Stack spacing={1}>
-                        <Typography variant="subtitle1" fontWeight="bold">
-                            {t('program_record.form.satisfaction_label')}
-                        </Typography>
-                        <Rating
-                            value={satisfactionRating}
-                            onChange={handleRatingChange}
-                            max={5}
-                            size="large"
+                    <Paper
+                        variant="outlined"
+                        sx={(theme) => ({
+                            borderRadius: 2.5,
+                            p: { xs: 2.5, md: 3 },
+                            bgcolor: theme.palette.background.paper,
+                            borderColor: theme.palette.divider,
+                            boxShadow: '0 20px 40px rgba(15, 23, 42, 0.06)',
+                        })}
+                    >
+                        <TextField
+                            label={t('program_record.form.comment_label')}
+                            placeholder={t('program_record.form.comment_placeholder')}
+                            value={comment}
+                            onChange={handleCommentChange}
+                            multiline
+                            minRows={4}
+                            fullWidth
                         />
-                    </Stack>
-                    <TextField
-                        label={t('program_record.form.comment_label')}
-                        placeholder={t('program_record.form.comment_placeholder')}
-                        value={comment}
-                        onChange={handleCommentChange}
-                        multiline
-                        minRows={4}
-                        fullWidth
-                    />
+                    </Paper>
                 </Stack>
             </Box>
         </FixedPageLayout>
