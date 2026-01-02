@@ -302,21 +302,6 @@ export function ProgramRecordDetails(): React.JSX.Element {
                                                                 </Typography>
                                                             ) : null}
                                                             <Stack spacing={0.75}>
-                                                                {exercise.series ? (
-                                                                    <Typography variant="body2">
-                                                                        {t('programs-coatch.view.exercises.series')}: {exercise.series}
-                                                                    </Typography>
-                                                                ) : null}
-                                                                {exercise.repetitions ? (
-                                                                    <Typography variant="body2">
-                                                                        {t('programs-coatch.view.exercises.repetitions')}: {exercise.repetitions}
-                                                                    </Typography>
-                                                                ) : null}
-                                                                {exercise.charge ? (
-                                                                    <Typography variant="body2">
-                                                                        {t('programs-coatch.view.exercises.charge')}: {exercise.charge}
-                                                                    </Typography>
-                                                                ) : null}
                                                                 {restLabel ? (
                                                                     <Typography variant="body2">
                                                                         {t('programs-coatch.view.exercises.rest')}: {restLabel}
