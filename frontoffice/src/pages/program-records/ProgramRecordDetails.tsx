@@ -275,7 +275,7 @@ export function ProgramRecordDetails(): React.JSX.Element {
                                             );
                                             const sets = exerciseRecord?.sets ?? [];
                                             return (
-                                                <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={exercise.id}>
+                                                <Grid size={{ xs: 12, md: 6, xxl: 3 }} key={exercise.id}>
                                                     <Paper
                                                         variant="outlined"
                                                         sx={(theme) => ({

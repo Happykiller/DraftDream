@@ -8,6 +8,15 @@ declare module '@mui/material/Paper' {
 }
 
 declare module '@mui/material/styles' {
+  interface BreakpointOverrides {
+    xs: true;
+    sm: true;
+    md: true;
+    lg: true;
+    xl: true;
+    xxl: true;
+  }
+
   interface Palette {
     backgroundColor: string;
   }
@@ -23,6 +32,16 @@ const baseThemeOptions: ThemeOptions = {
       main: '#1976d2',
     },
     backgroundColor: '#F9FAFB',
+  },
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 900,
+      lg: 1200,
+      xl: 1536,
+      xxl: 1920,
+    },
   },
   components: {
     MuiPaper: {
