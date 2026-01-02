@@ -29,6 +29,7 @@ export class ProgramRecordResolver {
       userId: input.userId,
       programId: input.programId,
       sessionId: input.sessionId,
+      recordData: input.recordData ?? undefined,
       comment: input.comment,
       satisfactionRating: input.satisfactionRating,
       state: input.state ?? undefined,
@@ -48,6 +49,7 @@ export class ProgramRecordResolver {
     const updated = await inversify.updateProgramRecordUsecase.execute({
       id: input.id,
       state: input.state,
+      recordData: input.recordData ?? undefined,
       comment: input.comment,
       satisfactionRating: input.satisfactionRating,
       session,

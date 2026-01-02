@@ -17,6 +17,7 @@ import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import {
     useProgramRecords,
     type ProgramRecord,
+    type ProgramRecordData,
     ProgramRecordState
 } from '@hooks/program-records/useProgramRecords';
 import { useProgram } from '@hooks/programs/useProgram';
@@ -32,6 +33,7 @@ export function ProgramRecordDetails(): React.JSX.Element {
     const [recordLoading, setRecordLoading] = React.useState(true);
     const [comment, setComment] = React.useState('');
     const [satisfactionRating, setSatisfactionRating] = React.useState<number | null>(null);
+    const [recordData, setRecordData] = React.useState<ProgramRecordData | null>(null);
 
     const fetchRecord = React.useCallback(() => {
         if (!recordId) return;
@@ -80,6 +82,7 @@ export function ProgramRecordDetails(): React.JSX.Element {
             await updateState(record.id, newState, {
                 comment: comment.trim() || undefined,
                 satisfactionRating: satisfactionRating ?? undefined,
+                recordData: recordData ?? undefined,
             });
             navigate('/');
         } catch (error) {
@@ -93,6 +96,33 @@ export function ProgramRecordDetails(): React.JSX.Element {
 
     const handleRatingChange = (_event: React.SyntheticEvent, value: number | null) => {
         setSatisfactionRating(value);
+    };
+
+    const handleSeriesFieldChange = (
+        exerciseId: string,
+        setIndex: number,
+        field: 'repetitions' | 'charge',
+    ) => (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value;
+        setRecordData((previous) => {
+            if (!previous) return previous;
+            return {
+                exercises: previous.exercises.map((exercise) => {
+                    if (exercise.exerciseId !== exerciseId) {
+                        return exercise;
+                    }
+
+                    return {
+                        ...exercise,
+                        sets: exercise.sets.map((set) => (
+                            set.index === setIndex
+                                ? { ...set, [field]: value }
+                                : set
+                        )),
+                    };
+                }),
+            };
+        });
     };
 
     const formatRestDuration = React.useCallback(
@@ -118,6 +148,51 @@ export function ProgramRecordDetails(): React.JSX.Element {
     );
 
     const sessionSnapshot = record?.sessionSnapshot ?? null;
+
+    const getSeriesCount = React.useCallback((series?: string | null): number => {
+        if (!series) {
+            return 0;
+        }
+
+        const match = series.match(/\d+/);
+        return match ? Number(match[0]) : 0;
+    }, []);
+
+    const buildRecordData = React.useCallback(
+        (snapshot: ProgramRecord['sessionSnapshot'], existingRecordData?: ProgramRecordData | null): ProgramRecordData => ({
+            exercises: (snapshot?.exercises ?? []).map((exercise) => {
+                const existingExercise = existingRecordData?.exercises.find(
+                    (candidate) => candidate.exerciseId === exercise.id
+                );
+                const seriesCount = getSeriesCount(exercise.series);
+                const fallbackCount = existingExercise?.sets.length ?? 0;
+                const setsCount = seriesCount > 0 ? seriesCount : fallbackCount;
+                const sets = Array.from({ length: setsCount }, (_value, index) => {
+                    const setIndex = index + 1;
+                    const existingSet = existingExercise?.sets.find((candidate) => candidate.index === setIndex);
+                    return {
+                        index: setIndex,
+                        repetitions: existingSet?.repetitions ?? exercise.repetitions ?? '',
+                        charge: existingSet?.charge ?? exercise.charge ?? '',
+                    };
+                });
+
+                return {
+                    exerciseId: exercise.id,
+                    sets,
+                };
+            }),
+        }),
+        [getSeriesCount],
+    );
+
+    React.useEffect(() => {
+        if (!sessionSnapshot) {
+            setRecordData(null);
+            return;
+        }
+        setRecordData(buildRecordData(sessionSnapshot, record?.recordData ?? null));
+    }, [buildRecordData, record?.recordData, sessionSnapshot]);
 
     if (loading) {
         return (
@@ -195,6 +270,10 @@ export function ProgramRecordDetails(): React.JSX.Element {
                                     <Grid container spacing={{ xs: 2, md: 2.5 }}>
                                         {sessionSnapshot.exercises.map((exercise, exerciseIndex) => {
                                             const restLabel = formatRestDuration(exercise.restSeconds);
+                                            const exerciseRecord = recordData?.exercises.find(
+                                                (candidate) => candidate.exerciseId === exercise.id
+                                            );
+                                            const sets = exerciseRecord?.sets ?? [];
                                             return (
                                                 <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={exercise.id}>
                                                     <Paper
@@ -244,6 +323,46 @@ export function ProgramRecordDetails(): React.JSX.Element {
                                                                     </Typography>
                                                                 ) : null}
                                                             </Stack>
+                                                            {sets.length > 0 ? (
+                                                                <Stack spacing={1.5}>
+                                                                    <Typography variant="subtitle2" fontWeight={600}>
+                                                                        {t('program_record.form.record_data_title')}
+                                                                    </Typography>
+                                                                    {sets.map((set) => (
+                                                                        <Stack spacing={1} key={`${exercise.id}-set-${set.index}`}>
+                                                                            <Typography variant="body2" fontWeight={600}>
+                                                                                {t('program_record.form.series_label', { index: set.index })}
+                                                                            </Typography>
+                                                                            <Grid container spacing={1.5}>
+                                                                                <Grid size={{ xs: 12, sm: 6 }}>
+                                                                                    <TextField
+                                                                                        label={t('program_record.form.repetitions_label')}
+                                                                                        value={set.repetitions ?? ''}
+                                                                                        onChange={handleSeriesFieldChange(
+                                                                                            exercise.id,
+                                                                                            set.index,
+                                                                                            'repetitions',
+                                                                                        )}
+                                                                                        fullWidth
+                                                                                    />
+                                                                                </Grid>
+                                                                                <Grid size={{ xs: 12, sm: 6 }}>
+                                                                                    <TextField
+                                                                                        label={t('program_record.form.charge_label')}
+                                                                                        value={set.charge ?? ''}
+                                                                                        onChange={handleSeriesFieldChange(
+                                                                                            exercise.id,
+                                                                                            set.index,
+                                                                                            'charge',
+                                                                                        )}
+                                                                                        fullWidth
+                                                                                    />
+                                                                                </Grid>
+                                                                            </Grid>
+                                                                        </Stack>
+                                                                    ))}
+                                                                </Stack>
+                                                            ) : null}
                                                         </Stack>
                                                     </Paper>
                                                 </Grid>

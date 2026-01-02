@@ -1,7 +1,7 @@
 # Program Record Management
 
 ## Description
-Program records track the execution status of a training program assigned to an athlete. They allow an athlete to start a program, save it as a draft, and mark it as finished using explicit state transitions.
+Program records track the execution status of a training program assigned to an athlete. They allow an athlete to start a program, save it as a draft, and mark it as finished using explicit state transitions. Records also persist per-exercise set data (repetitions and load) so athletes can log what they actually performed.
 
 ## Roles
 - **Admin**: Can create, read, list, and update program records for any athlete.
@@ -23,6 +23,7 @@ Scenario: Athlete saves a program as draft
   Given an athlete has an existing program record
   When the athlete updates the record state to DRAFT
   Then the record state becomes DRAFT
+  And the record stores the logged sets for each exercise
 ```
 
 ```gherkin
@@ -45,6 +46,7 @@ Scenario: Athlete cannot modify another athlete's record
 - Only `CREATE`, `DRAFT`, and `FINISH` states are valid.
 - Athletes can only manage records tied to their own user id.
 - Records can only be created when the program is accessible to the requester.
+- Record data captures sets per exercise with repetitions and load values.
 
 ## CRUD Operations
 | Operation | Use Case | Authorization | Notes |
@@ -52,7 +54,7 @@ Scenario: Athlete cannot modify another athlete's record
 | Create | `CreateProgramRecordUsecase` | Admin, Coach, Athlete | Default state is `CREATE` when not provided |
 | Read | `GetProgramRecordUsecase` | Admin, Athlete (self) | Returns null when not authorized |
 | List | `ListProgramRecordsUsecase` | Admin, Athlete (self) | Athletes only see their own records |
-| Update | `UpdateProgramRecordUsecase` | Admin, Athlete (self) | Updates the record state |
+| Update | `UpdateProgramRecordUsecase` | Admin, Athlete (self) | Updates the record state and record data |
 
 ## GraphQL Operations
 
@@ -76,6 +78,16 @@ mutation UpdateProgramRecord($input: UpdateProgramRecordInput!) {
   programRecord_updateState(input: $input) {
     id
     state
+    recordData {
+      exercises {
+        exerciseId
+        sets {
+          index
+          repetitions
+          charge
+        }
+      }
+    }
     updatedAt
   }
 }

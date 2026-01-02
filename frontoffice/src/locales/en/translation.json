@@ -1323,7 +1323,11 @@
     "form": {
       "comment_label": "Comment",
       "comment_placeholder": "Share your feedback about this session...",
-      "satisfaction_label": "Satisfaction rating"
+      "satisfaction_label": "Satisfaction rating",
+      "record_data_title": "Recorded sets",
+      "series_label": "Set {{index}}",
+      "repetitions_label": "Repetitions",
+      "charge_label": "Load"
     }
   },
   "meal_record": {

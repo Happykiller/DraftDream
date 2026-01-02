@@ -3,7 +3,12 @@ import {
   ProgramSessionExerciseGql,
   ProgramSessionGql,
 } from '@graphql/sport/program/program.gql.types';
-import { ProgramRecordGql } from '@graphql/sport/program-record/program-record.gql.types';
+import {
+  ProgramRecordDataGql,
+  ProgramRecordExerciseRecordDataGql,
+  ProgramRecordExerciseSetDataGql,
+  ProgramRecordGql,
+} from '@graphql/sport/program-record/program-record.gql.types';
 import type {
   ProgramExerciseUsecaseModel,
   ProgramSessionUsecaseModel,
@@ -44,12 +49,43 @@ const mapSession = (session?: ProgramSessionUsecaseModel | null): ProgramSession
   };
 };
 
+const mapExerciseSetRecord = (set: {
+  index: number;
+  repetitions?: string;
+  charge?: string;
+}): ProgramRecordExerciseSetDataGql => ({
+  index: set.index,
+  repetitions: set.repetitions,
+  charge: set.charge,
+});
+
+const mapExerciseRecord = (exercise: {
+  exerciseId: string;
+  sets: { index: number; repetitions?: string; charge?: string }[];
+}): ProgramRecordExerciseRecordDataGql => ({
+  exerciseId: exercise.exerciseId,
+  sets: exercise.sets.map(mapExerciseSetRecord),
+});
+
+const mapRecordData = (recordData?: {
+  exercises: { exerciseId: string; sets: { index: number; repetitions?: string; charge?: string }[] }[];
+} | null): ProgramRecordDataGql | null => {
+  if (!recordData) {
+    return null;
+  }
+
+  return {
+    exercises: recordData.exercises.map(mapExerciseRecord),
+  };
+};
+
 export const mapProgramRecordUsecaseToGql = (model: ProgramRecordUsecaseModel): ProgramRecordGql => ({
   id: model.id,
   userId: model.userId,
   programId: model.programId,
   sessionId: model.sessionId,
   sessionSnapshot: mapSession(model.sessionSnapshot ?? null),
+  recordData: mapRecordData(model.recordData ?? null),
   comment: model.comment,
   satisfactionRating: model.satisfactionRating,
   state: model.state,

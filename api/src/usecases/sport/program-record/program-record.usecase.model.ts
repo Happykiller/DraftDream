@@ -4,12 +4,28 @@ import type { ProgramSessionUsecaseModel } from '@src/usecases/sport/program/pro
 
 export type ProgramRecordSessionSnapshotUsecaseModel = ProgramSessionUsecaseModel;
 
+export interface ProgramRecordExerciseSetUsecaseModel {
+  index: number;
+  repetitions?: string;
+  charge?: string;
+}
+
+export interface ProgramRecordExerciseRecordUsecaseModel {
+  exerciseId: string;
+  sets: ProgramRecordExerciseSetUsecaseModel[];
+}
+
+export interface ProgramRecordDataUsecaseModel {
+  exercises: ProgramRecordExerciseRecordUsecaseModel[];
+}
+
 export interface ProgramRecordUsecaseModel {
   id: string;
   userId: string;
   programId: string;
   sessionId: string;
   sessionSnapshot?: ProgramRecordSessionSnapshotUsecaseModel;
+  recordData?: ProgramRecordDataUsecaseModel;
   comment?: string;
   satisfactionRating?: number;
   state: ProgramRecordState;

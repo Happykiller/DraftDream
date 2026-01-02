@@ -45,6 +45,7 @@ export class CreateProgramRecordUsecase {
         programId: dto.programId,
         sessionId: dto.sessionId,
         sessionSnapshot,
+        recordData: dto.recordData,
         comment: dto.comment,
         satisfactionRating: dto.satisfactionRating,
         state: dto.state ?? ProgramRecordState.CREATE,

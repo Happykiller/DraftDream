@@ -9,6 +9,18 @@ export const mapProgramRecordToUsecase = (record: ProgramRecord): ProgramRecordU
   programId: record.programId,
   sessionId: record.sessionId,
   sessionSnapshot: record.sessionSnapshot,
+  recordData: record.recordData
+    ? {
+      exercises: record.recordData.exercises.map((exercise) => ({
+        exerciseId: exercise.exerciseId,
+        sets: exercise.sets.map((set) => ({
+          index: set.index,
+          repetitions: set.repetitions,
+          charge: set.charge,
+        })),
+      })),
+    }
+    : undefined,
   comment: record.comment,
   satisfactionRating: record.satisfactionRating,
   state: record.state,

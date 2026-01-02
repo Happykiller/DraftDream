@@ -1,12 +1,14 @@
 // src/services/db/dtos/program-record.dto.ts
 import { ProgramRecordState } from '@src/common/program-record-state.enum';
 import type { ProgramSessionSnapshot } from '@services/db/models/program.model';
+import type { ProgramRecordData } from '@services/db/models/program-record.model';
 
 export interface CreateProgramRecordDto {
   userId: string;
   programId: string;
   sessionId: string;
   sessionSnapshot?: ProgramSessionSnapshot;
+  recordData?: ProgramRecordData;
   comment?: string;
   satisfactionRating?: number;
   state: ProgramRecordState;
@@ -33,6 +35,7 @@ export interface ListProgramRecordsDto {
 
 export interface UpdateProgramRecordDto {
   state?: ProgramRecordState;
+  recordData?: ProgramRecordData;
   comment?: string;
   satisfactionRating?: number;
 }

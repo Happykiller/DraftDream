@@ -11,7 +11,10 @@ import {
 import inversify from '@src/inversify/investify';
 
 import { ProgramRecordState } from '@src/common/program-record-state.enum';
-import { ProgramRecord } from '@services/db/models/program-record.model';
+import {
+  ProgramRecord,
+  ProgramRecordData,
+} from '@services/db/models/program-record.model';
 import type { ProgramSessionSnapshot } from '@services/db/models/program.model';
 import {
   CreateProgramRecordDto,
@@ -26,6 +29,7 @@ interface ProgramRecordDoc {
   programId: string;
   sessionId: string;
   sessionSnapshot?: ProgramSessionSnapshot;
+  recordData?: ProgramRecordData;
   comment?: string;
   satisfactionRating?: number;
   state: ProgramRecordState;
@@ -89,13 +93,14 @@ export class BddServiceProgramRecordMongo {
       programId,
       sessionId,
       sessionSnapshot: dto.sessionSnapshot,
+      recordData: dto.recordData,
       comment: dto.comment,
       satisfactionRating: dto.satisfactionRating,
       state: dto.state,
       createdBy,
       createdAt: now,
       updatedAt: now,
-      schemaVersion: 3,
+      schemaVersion: 4,
     };
 
 
@@ -203,11 +208,8 @@ export class BddServiceProgramRecordMongo {
     if (patch.state !== undefined) {
       $set.state = patch.state;
     }
-    if (patch.comment !== undefined) {
-      $set.comment = patch.comment;
-    }
-    if (patch.satisfactionRating !== undefined) {
-      $set.satisfactionRating = patch.satisfactionRating;
+    if (patch.recordData !== undefined) {
+      $set.recordData = patch.recordData;
     }
     if (patch.comment !== undefined) {
       $set.comment = patch.comment;
@@ -272,6 +274,7 @@ export class BddServiceProgramRecordMongo {
       programId: doc.programId,
       sessionId: doc.sessionId,
       sessionSnapshot: doc.sessionSnapshot,
+      recordData: doc.recordData,
       comment: doc.comment,
       satisfactionRating: doc.satisfactionRating,
       state: doc.state,

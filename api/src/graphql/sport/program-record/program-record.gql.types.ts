@@ -17,6 +17,7 @@ export class ProgramRecordGql {
   @Field(() => ID) programId!: string;
   @Field(() => String) sessionId!: string;
   @Field(() => ProgramSessionGql, { nullable: true }) sessionSnapshot?: ProgramSessionGql | null;
+  @Field(() => ProgramRecordDataGql, { nullable: true }) recordData?: ProgramRecordDataGql | null;
   @Field(() => String, { nullable: true }) comment?: string;
   @Field(() => Int, { nullable: true }) satisfactionRating?: number;
   @Field(() => ProgramRecordStateEnum) state!: ProgramRecordStateEnum;
@@ -25,12 +26,49 @@ export class ProgramRecordGql {
   @Field() updatedAt!: Date;
 }
 
+@ObjectType()
+export class ProgramRecordExerciseSetDataGql {
+  @Field(() => Int) index!: number;
+  @Field(() => String, { nullable: true }) repetitions?: string;
+  @Field(() => String, { nullable: true }) charge?: string;
+}
+
+@ObjectType()
+export class ProgramRecordExerciseRecordDataGql {
+  @Field(() => ID) exerciseId!: string;
+  @Field(() => [ProgramRecordExerciseSetDataGql]) sets!: ProgramRecordExerciseSetDataGql[];
+}
+
+@ObjectType()
+export class ProgramRecordDataGql {
+  @Field(() => [ProgramRecordExerciseRecordDataGql]) exercises!: ProgramRecordExerciseRecordDataGql[];
+}
+
+@InputType()
+export class ProgramRecordExerciseSetDataInput {
+  @Field(() => Int) index!: number;
+  @Field(() => String, { nullable: true }) repetitions?: string;
+  @Field(() => String, { nullable: true }) charge?: string;
+}
+
+@InputType()
+export class ProgramRecordExerciseRecordDataInput {
+  @Field(() => ID) exerciseId!: string;
+  @Field(() => [ProgramRecordExerciseSetDataInput]) sets!: ProgramRecordExerciseSetDataInput[];
+}
+
+@InputType()
+export class ProgramRecordDataInput {
+  @Field(() => [ProgramRecordExerciseRecordDataInput]) exercises!: ProgramRecordExerciseRecordDataInput[];
+}
+
 @InputType()
 export class CreateProgramRecordInput {
   @Field(() => ID) programId!: string;
   @Field(() => String) sessionId!: string;
   @Field(() => ID, { nullable: true }) userId?: string;
   @Field(() => ProgramRecordStateEnum, { nullable: true }) state?: ProgramRecordStateEnum;
+  @Field(() => ProgramRecordDataInput, { nullable: true }) recordData?: ProgramRecordDataInput;
   @Field(() => String, { nullable: true }) comment?: string;
   @Field(() => Int, { nullable: true }) satisfactionRating?: number;
 }
@@ -39,6 +77,7 @@ export class CreateProgramRecordInput {
 export class UpdateProgramRecordInput {
   @Field(() => ID) id!: string;
   @Field(() => ProgramRecordStateEnum) state!: ProgramRecordStateEnum;
+  @Field(() => ProgramRecordDataInput, { nullable: true }) recordData?: ProgramRecordDataInput;
   @Field(() => String, { nullable: true }) comment?: string;
   @Field(() => Int, { nullable: true }) satisfactionRating?: number;
 }

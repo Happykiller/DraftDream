@@ -1327,7 +1327,11 @@
     "form": {
       "comment_label": "Commentaire",
       "comment_placeholder": "Partagez votre avis sur cette séance...",
-      "satisfaction_label": "Note de satisfaction"
+      "satisfaction_label": "Note de satisfaction",
+      "record_data_title": "Séries enregistrées",
+      "series_label": "Série {{index}}",
+      "repetitions_label": "Répétitions",
+      "charge_label": "Charge"
     }
   },
   "meal_record": {

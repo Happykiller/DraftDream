@@ -33,6 +33,7 @@ export class UpdateProgramRecordUsecase {
 
       const updated = await this.inversify.bddService.programRecord.update(payload.id, {
         state: payload.state,
+        recordData: payload.recordData,
         comment: payload.comment,
         satisfactionRating: payload.satisfactionRating,
       });
