@@ -12,15 +12,15 @@ import { ProgramRecordUsecaseModel } from '@src/usecases/sport/program-record/pr
 
 const mapExercise = (exercise: ProgramExerciseUsecaseModel): ProgramSessionExerciseGql => ({
   id: exercise.id,
-  templateExerciseId: exercise.templateExerciseId ?? null,
+  templateExerciseId: exercise.templateExerciseId ?? undefined,
   label: exercise.label,
-  description: exercise.description ?? null,
-  instructions: exercise.instructions ?? null,
-  series: exercise.series ?? null,
-  repetitions: exercise.repetitions ?? null,
-  charge: exercise.charge ?? null,
-  restSeconds: exercise.restSeconds ?? null,
-  videoUrl: exercise.videoUrl ?? null,
+  description: exercise.description ?? undefined,
+  instructions: exercise.instructions ?? undefined,
+  series: exercise.series ?? undefined,
+  repetitions: exercise.repetitions ?? undefined,
+  charge: exercise.charge ?? undefined,
+  restSeconds: exercise.restSeconds ?? undefined,
+  videoUrl: exercise.videoUrl ?? undefined,
   categoryIds: exercise.categoryIds ?? [],
   muscleIds: exercise.muscleIds ?? [],
   equipmentIds: exercise.equipmentIds ?? [],
@@ -34,12 +34,12 @@ const mapSession = (session?: ProgramSessionUsecaseModel | null): ProgramSession
 
   return {
     id: session.id,
-    templateSessionId: session.templateSessionId ?? null,
-    slug: session.slug ?? null,
-    locale: session.locale ?? null,
+    templateSessionId: session.templateSessionId ?? undefined,
+    slug: session.slug ?? undefined,
+    locale: session.locale ?? undefined,
     label: session.label,
     durationMin: session.durationMin,
-    description: session.description ?? null,
+    description: session.description ?? undefined,
     exercises: (session.exercises ?? []).map(mapExercise),
   };
 };
