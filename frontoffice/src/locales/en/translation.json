@@ -1327,7 +1327,8 @@
       "record_data_title": "Recorded sets",
       "series_label": "Set {{index}}",
       "repetitions_label": "Repetitions",
-      "charge_label": "Load"
+      "charge_label": "Load",
+      "done_label": "Done"
     }
   },
   "meal_record": {

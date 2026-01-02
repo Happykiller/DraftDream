@@ -32,6 +32,7 @@ export interface ProgramRecordExerciseSet {
     index: number;
     repetitions?: string | null;
     charge?: string | null;
+    done?: boolean | null;
 }
 
 export interface ProgramRecordExerciseRecordData {
@@ -114,6 +115,7 @@ const CREATE_M = `
             index
             repetitions
             charge
+            done
           }
         }
       }
@@ -163,6 +165,7 @@ const UPDATE_STATE_M = `
             index
             repetitions
             charge
+            done
           }
         }
       }
@@ -212,6 +215,7 @@ const GET_Q = `
             index
             repetitions
             charge
+            done
           }
         }
       }
@@ -377,6 +381,7 @@ export function useProgramRecords() {
                                       index
                                       repetitions
                                       charge
+                                      done
                                     }
                                   }
                                 }

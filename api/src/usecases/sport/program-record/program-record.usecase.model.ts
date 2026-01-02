@@ -8,6 +8,7 @@ export interface ProgramRecordExerciseSetUsecaseModel {
   index: number;
   repetitions?: string;
   charge?: string;
+  done?: boolean;
 }
 
 export interface ProgramRecordExerciseRecordUsecaseModel {

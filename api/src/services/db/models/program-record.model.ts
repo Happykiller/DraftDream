@@ -6,6 +6,7 @@ export interface ProgramRecordExerciseSetData {
   index: number;
   repetitions?: string;
   charge?: string;
+  done?: boolean;
 }
 
 export interface ProgramRecordExerciseRecordData {

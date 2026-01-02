@@ -31,6 +31,7 @@ export class ProgramRecordExerciseSetDataGql {
   @Field(() => Int) index!: number;
   @Field(() => String, { nullable: true }) repetitions?: string;
   @Field(() => String, { nullable: true }) charge?: string;
+  @Field(() => Boolean, { nullable: true }) done?: boolean;
 }
 
 @ObjectType()
@@ -49,6 +50,7 @@ export class ProgramRecordExerciseSetDataInput {
   @Field(() => Int) index!: number;
   @Field(() => String, { nullable: true }) repetitions?: string;
   @Field(() => String, { nullable: true }) charge?: string;
+  @Field(() => Boolean, { nullable: true }) done?: boolean;
 }
 
 @InputType()

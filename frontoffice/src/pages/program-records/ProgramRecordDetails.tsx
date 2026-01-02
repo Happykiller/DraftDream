@@ -4,7 +4,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import {
     Box,
     Button,
+    Checkbox,
     CircularProgress,
+    FormControlLabel,
     Grid,
     Paper,
     Rating,
@@ -125,6 +127,31 @@ export function ProgramRecordDetails(): React.JSX.Element {
         });
     };
 
+    const handleSeriesDoneChange = (exerciseId: string, setIndex: number) => (
+        event: React.ChangeEvent<HTMLInputElement>,
+    ) => {
+        const checked = event.target.checked;
+        setRecordData((previous) => {
+            if (!previous) return previous;
+            return {
+                exercises: previous.exercises.map((exercise) => {
+                    if (exercise.exerciseId !== exerciseId) {
+                        return exercise;
+                    }
+
+                    return {
+                        ...exercise,
+                        sets: exercise.sets.map((set) => (
+                            set.index === setIndex
+                                ? { ...set, done: checked }
+                                : set
+                        )),
+                    };
+                }),
+            };
+        });
+    };
+
     const formatRestDuration = React.useCallback(
         (restSeconds?: number | null) => {
             if (!restSeconds || restSeconds <= 0) {
@@ -174,6 +201,7 @@ export function ProgramRecordDetails(): React.JSX.Element {
                         index: setIndex,
                         repetitions: existingSet?.repetitions ?? exercise.repetitions ?? '',
                         charge: existingSet?.charge ?? exercise.charge ?? '',
+                        done: existingSet?.done ?? false,
                     };
                 });
 
@@ -334,6 +362,20 @@ export function ProgramRecordDetails(): React.JSX.Element {
                                                                                             'charge',
                                                                                         )}
                                                                                         fullWidth
+                                                                                    />
+                                                                                </Grid>
+                                                                                <Grid size={{ xs: 12 }}>
+                                                                                    <FormControlLabel
+                                                                                        control={(
+                                                                                            <Checkbox
+                                                                                                checked={Boolean(set.done)}
+                                                                                                onChange={handleSeriesDoneChange(
+                                                                                                    exercise.id,
+                                                                                                    set.index,
+                                                                                                )}
+                                                                                            />
+                                                                                        )}
+                                                                                        label={t('program_record.form.done_label')}
                                                                                     />
                                                                                 </Grid>
                                                                             </Grid>

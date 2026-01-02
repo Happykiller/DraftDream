@@ -53,22 +53,24 @@ const mapExerciseSetRecord = (set: {
   index: number;
   repetitions?: string;
   charge?: string;
+  done?: boolean;
 }): ProgramRecordExerciseSetDataGql => ({
   index: set.index,
   repetitions: set.repetitions,
   charge: set.charge,
+  done: set.done,
 });
 
 const mapExerciseRecord = (exercise: {
   exerciseId: string;
-  sets: { index: number; repetitions?: string; charge?: string }[];
+  sets: { index: number; repetitions?: string; charge?: string; done?: boolean }[];
 }): ProgramRecordExerciseRecordDataGql => ({
   exerciseId: exercise.exerciseId,
   sets: exercise.sets.map(mapExerciseSetRecord),
 });
 
 const mapRecordData = (recordData?: {
-  exercises: { exerciseId: string; sets: { index: number; repetitions?: string; charge?: string }[] }[];
+  exercises: { exerciseId: string; sets: { index: number; repetitions?: string; charge?: string; done?: boolean }[] }[];
 } | null): ProgramRecordDataGql | null => {
   if (!recordData) {
     return null;

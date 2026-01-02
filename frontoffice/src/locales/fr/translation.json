@@ -1331,7 +1331,8 @@
       "record_data_title": "Séries enregistrées",
       "series_label": "Série {{index}}",
       "repetitions_label": "Répétitions",
-      "charge_label": "Charge"
+      "charge_label": "Charge",
+      "done_label": "Fait"
     }
   },
   "meal_record": {
