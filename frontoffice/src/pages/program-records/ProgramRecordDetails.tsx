@@ -6,12 +6,12 @@ import {
     Button,
     Checkbox,
     CircularProgress,
-    FormControlLabel,
     Grid,
     Paper,
     Rating,
     Stack,
     TextField,
+    Tooltip,
     Typography,
 } from '@mui/material';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
@@ -340,7 +340,7 @@ export function ProgramRecordDetails(): React.JSX.Element {
                                                                                 {t('program_record.form.series_label', { index: set.index })}
                                                                             </Typography>
                                                                             <Grid container spacing={1.5}>
-                                                                                <Grid size={{ xs: 12, sm: 6 }}>
+                                                                                <Grid size={{ xs: 5 }}>
                                                                                     <TextField
                                                                                         label={t('program_record.form.repetitions_label')}
                                                                                         value={set.repetitions ?? ''}
@@ -352,7 +352,7 @@ export function ProgramRecordDetails(): React.JSX.Element {
                                                                                         fullWidth
                                                                                     />
                                                                                 </Grid>
-                                                                                <Grid size={{ xs: 12, sm: 6 }}>
+                                                                                <Grid size={{ xs: 5 }}>
                                                                                     <TextField
                                                                                         label={t('program_record.form.charge_label')}
                                                                                         value={set.charge ?? ''}
@@ -364,19 +364,16 @@ export function ProgramRecordDetails(): React.JSX.Element {
                                                                                         fullWidth
                                                                                     />
                                                                                 </Grid>
-                                                                                <Grid size={{ xs: 12 }}>
-                                                                                    <FormControlLabel
-                                                                                        control={(
-                                                                                            <Checkbox
-                                                                                                checked={Boolean(set.done)}
-                                                                                                onChange={handleSeriesDoneChange(
-                                                                                                    exercise.id,
-                                                                                                    set.index,
-                                                                                                )}
-                                                                                            />
-                                                                                        )}
-                                                                                        label={t('program_record.form.done_label')}
-                                                                                    />
+                                                                                <Grid size={{ xs: 2 }} display="flex" alignItems="center">
+                                                                                    <Tooltip title={t('program_record.form.done_label')}>
+                                                                                        <Checkbox
+                                                                                            checked={Boolean(set.done)}
+                                                                                            onChange={handleSeriesDoneChange(
+                                                                                                exercise.id,
+                                                                                                set.index,
+                                                                                            )}
+                                                                                        />
+                                                                                    </Tooltip>
                                                                                 </Grid>
                                                                             </Grid>
                                                                         </Stack>
