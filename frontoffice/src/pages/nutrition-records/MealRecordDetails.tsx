@@ -14,7 +14,11 @@ import {
     Typography,
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import RestaurantMenuOutlinedIcon from '@mui/icons-material/RestaurantMenuOutlined';
+import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 
 import { useMealPlan } from '@hooks/nutrition/useMealPlan';
 import { useMealTypeIcon } from '@hooks/nutrition/useMealTypeIcon';
@@ -208,22 +212,56 @@ export function MealRecordDetails(): React.JSX.Element {
         if (record.state === MealRecordState.CREATE || record.state === MealRecordState.DRAFT) {
             return (
                 <Stack direction="row" spacing={2}>
-                    <Button variant="text" color="inherit" onClick={handleBackToHome}>
-                        {t('common.actions.cancel')}
+                    <Button
+                        variant="text"
+                        color="inherit"
+                        onClick={handleBackToHome}
+                        aria-label={t('common.actions.cancel')}
+                        sx={{ gap: 1 }}
+                    >
+                        <Box
+                            component="span"
+                            sx={{ display: { xs: 'inline-flex', lg: 'none', xl: 'inline-flex' } }}
+                        >
+                            <CloseRoundedIcon fontSize="small" />
+                        </Box>
+                        <Box component="span" sx={{ display: { xs: 'none', lg: 'inline', xl: 'inline' } }}>
+                            {t('common.actions.cancel')}
+                        </Box>
                     </Button>
                     <Button
                         variant="outlined"
                         color="warning"
                         onClick={() => handleUpdateState(MealRecordState.DRAFT)}
+                        aria-label={t('common.actions.save')}
+                        sx={{ gap: 1 }}
                     >
-                        {t('common.actions.save')}
+                        <Box
+                            component="span"
+                            sx={{ display: { xs: 'inline-flex', lg: 'none', xl: 'inline-flex' } }}
+                        >
+                            <SaveOutlinedIcon fontSize="small" />
+                        </Box>
+                        <Box component="span" sx={{ display: { xs: 'none', lg: 'inline', xl: 'inline' } }}>
+                            {t('common.actions.save')}
+                        </Box>
                     </Button>
                     <Button
                         variant="contained"
                         color="warning"
                         onClick={() => handleUpdateState(MealRecordState.FINISH)}
+                        aria-label={t('meal_record.actions.taken')}
+                        sx={{ gap: 1 }}
                     >
-                        {t('meal_record.actions.taken')}
+                        <Box
+                            component="span"
+                            sx={{ display: { xs: 'inline-flex', lg: 'none', xl: 'inline-flex' } }}
+                        >
+                            <CheckCircleOutlineIcon fontSize="small" />
+                        </Box>
+                        <Box component="span" sx={{ display: { xs: 'none', lg: 'inline', xl: 'inline' } }}>
+                            {t('meal_record.actions.taken')}
+                        </Box>
                     </Button>
                 </Stack>
             );
@@ -234,8 +272,18 @@ export function MealRecordDetails(): React.JSX.Element {
                 variant="contained"
                 color="warning"
                 onClick={handleBackToHome}
+                aria-label={t('common.back_to_home')}
+                sx={{ gap: 1 }}
             >
-                {t('common.back_to_home')}
+                <Box
+                    component="span"
+                    sx={{ display: { xs: 'inline-flex', lg: 'none', xl: 'inline-flex' } }}
+                >
+                    <HomeOutlinedIcon fontSize="small" />
+                </Box>
+                <Box component="span" sx={{ display: { xs: 'none', lg: 'inline', xl: 'inline' } }}>
+                    {t('common.back_to_home')}
+                </Box>
             </Button>
         );
     };
