@@ -1344,6 +1344,9 @@
     "details": {
       "title": "Détails du repas"
     },
+    "actions": {
+      "taken": "Pris"
+    },
     "form": {
       "comment_label": "Commentaire",
       "comment_placeholder": "Partagez votre avis sur ce repas...",

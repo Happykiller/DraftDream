@@ -199,7 +199,7 @@ export function MealRecordDetails(): React.JSX.Element {
     if (!record) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-                <Typography>{t('common.not_found', 'Record not found')}</Typography>
+                <Typography>{t('common.not_found')}</Typography>
             </Box>
         );
     }
@@ -208,19 +208,22 @@ export function MealRecordDetails(): React.JSX.Element {
         if (record.state === MealRecordState.CREATE || record.state === MealRecordState.DRAFT) {
             return (
                 <Stack direction="row" spacing={2}>
+                    <Button variant="text" color="inherit" onClick={handleBackToHome}>
+                        {t('common.actions.cancel')}
+                    </Button>
                     <Button
                         variant="outlined"
                         color="warning"
                         onClick={() => handleUpdateState(MealRecordState.DRAFT)}
                     >
-                        {t('common.actions.save', 'Save')}
+                        {t('common.actions.save')}
                     </Button>
                     <Button
                         variant="contained"
                         color="warning"
                         onClick={() => handleUpdateState(MealRecordState.FINISH)}
                     >
-                        {t('common.actions.finish', 'Finish')}
+                        {t('meal_record.actions.taken')}
                     </Button>
                 </Stack>
             );
@@ -232,7 +235,7 @@ export function MealRecordDetails(): React.JSX.Element {
                 color="warning"
                 onClick={handleBackToHome}
             >
-                {t('common.back_to_home', 'Back to Home')}
+                {t('common.back_to_home')}
             </Button>
         );
     };
@@ -402,7 +405,7 @@ export function MealRecordDetails(): React.JSX.Element {
                 ) : (
                     <Box sx={{ textAlign: 'center', color: 'text.secondary' }}>
                         <Typography>
-                            {t('common.no_content', 'No content available yet')}
+                            {t('common.no_content')}
                         </Typography>
                     </Box>
                 )}

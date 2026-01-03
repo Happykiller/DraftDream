@@ -1340,6 +1340,9 @@
     "details": {
       "title": "Meal Details"
     },
+    "actions": {
+      "taken": "Taken"
+    },
     "form": {
       "comment_label": "Comment",
       "comment_placeholder": "Share your feedback about this meal...",
