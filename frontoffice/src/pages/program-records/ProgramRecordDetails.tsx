@@ -224,6 +224,36 @@ export function ProgramRecordDetails(): React.JSX.Element {
             totalExercisesCount: recordDataExercises.length,
         };
     }, [recordDataExercises]);
+    const durationLabel = (
+        <Box component="span">
+            <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>
+                {t('program_record.form.duration_label_short')}
+            </Box>
+            <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
+                {t('program_record.form.duration_label')}
+            </Box>
+        </Box>
+    );
+    const difficultyLabel = (
+        <Box component="span">
+            <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>
+                {t('program_record.form.difficulty_label_short')}
+            </Box>
+            <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
+                {t('program_record.form.difficulty_label')}
+            </Box>
+        </Box>
+    );
+    const satisfactionLabel = (
+        <Box component="span">
+            <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>
+                {t('program_record.form.satisfaction_label_short')}
+            </Box>
+            <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
+                {t('program_record.form.satisfaction_label')}
+            </Box>
+        </Box>
+    );
 
     const getSeriesCount = React.useCallback((series?: string | null): number => {
         if (!series) {
@@ -431,7 +461,7 @@ export function ProgramRecordDetails(): React.JSX.Element {
                         <Grid container spacing={2} alignItems="center">
                             <Grid size={{ xs: 12, md: 4 }}>
                                 <TextField
-                                    label={t('program_record.form.duration_label')}
+                                    label={durationLabel}
                                     value={durationMinutes}
                                     onChange={handleDurationChange}
                                     type="number"
@@ -442,7 +472,7 @@ export function ProgramRecordDetails(): React.JSX.Element {
                             <Grid size={{ xs: 12, md: 4 }}>
                                 <Stack spacing={1}>
                                     <Typography variant="subtitle1" fontWeight="bold">
-                                        {t('program_record.form.difficulty_label')}
+                                        {difficultyLabel}
                                     </Typography>
                                     <Rating
                                         value={difficultyRating}
@@ -455,7 +485,7 @@ export function ProgramRecordDetails(): React.JSX.Element {
                             <Grid size={{ xs: 12, md: 4 }}>
                                 <Stack spacing={1}>
                                     <Typography variant="subtitle1" fontWeight="bold">
-                                        {t('program_record.form.satisfaction_label')}
+                                        {satisfactionLabel}
                                     </Typography>
                                     <Rating
                                         value={satisfactionRating}
