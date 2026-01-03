@@ -32,6 +32,8 @@ export class ProgramRecordResolver {
       recordData: input.recordData ?? undefined,
       comment: input.comment,
       satisfactionRating: input.satisfactionRating,
+      durationMinutes: input.durationMinutes,
+      difficultyRating: input.difficultyRating,
       state: input.state ?? undefined,
       session,
     });
@@ -52,6 +54,8 @@ export class ProgramRecordResolver {
       recordData: input.recordData ?? undefined,
       comment: input.comment,
       satisfactionRating: input.satisfactionRating,
+      durationMinutes: input.durationMinutes,
+      difficultyRating: input.difficultyRating,
       session,
     });
     return updated ? mapProgramRecordUsecaseToGql(updated) : null;

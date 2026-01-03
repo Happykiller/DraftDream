@@ -46,7 +46,8 @@ Scenario: Athlete cannot modify another athlete's record
 - Only `CREATE`, `DRAFT`, and `FINISH` states are valid.
 - Athletes can only manage records tied to their own user id.
 - Records can only be created when the program is accessible to the requester.
-- Record data captures sets per exercise with repetitions, load, and done values.
+- Record data captures sets per exercise with repetitions, load, done values, plus exercise notes.
+- Records can store duration (minutes) and a difficulty rating.
 
 ## CRUD Operations
 | Operation | Use Case | Authorization | Notes |
@@ -81,6 +82,7 @@ mutation UpdateProgramRecord($input: UpdateProgramRecordInput!) {
     recordData {
       exercises {
         exerciseId
+        notes
         sets {
           index
           repetitions
@@ -89,6 +91,8 @@ mutation UpdateProgramRecord($input: UpdateProgramRecordInput!) {
         }
       }
     }
+    durationMinutes
+    difficultyRating
     updatedAt
   }
 }

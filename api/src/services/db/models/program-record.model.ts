@@ -11,6 +11,7 @@ export interface ProgramRecordExerciseSetData {
 
 export interface ProgramRecordExerciseRecordData {
   exerciseId: string;
+  notes?: string;
   sets: ProgramRecordExerciseSetData[];
 }
 
@@ -27,6 +28,8 @@ export interface ProgramRecord {
   recordData?: ProgramRecordData;
   comment?: string;
   satisfactionRating?: number;
+  durationMinutes?: number;
+  difficultyRating?: number;
   state: ProgramRecordState;
   createdBy: string;
   createdAt: Date;

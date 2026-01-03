@@ -32,6 +32,8 @@ interface ProgramRecordDoc {
   recordData?: ProgramRecordData;
   comment?: string;
   satisfactionRating?: number;
+  durationMinutes?: number;
+  difficultyRating?: number;
   state: ProgramRecordState;
   createdBy: string;
   createdAt: Date;
@@ -96,6 +98,8 @@ export class BddServiceProgramRecordMongo {
       recordData: dto.recordData,
       comment: dto.comment,
       satisfactionRating: dto.satisfactionRating,
+      durationMinutes: dto.durationMinutes,
+      difficultyRating: dto.difficultyRating,
       state: dto.state,
       createdBy,
       createdAt: now,
@@ -217,6 +221,12 @@ export class BddServiceProgramRecordMongo {
     if (patch.satisfactionRating !== undefined) {
       $set.satisfactionRating = patch.satisfactionRating;
     }
+    if (patch.durationMinutes !== undefined) {
+      $set.durationMinutes = patch.durationMinutes;
+    }
+    if (patch.difficultyRating !== undefined) {
+      $set.difficultyRating = patch.difficultyRating;
+    }
 
     try {
       const updated = await this.col().findOneAndUpdate(
@@ -277,6 +287,8 @@ export class BddServiceProgramRecordMongo {
       recordData: doc.recordData,
       comment: doc.comment,
       satisfactionRating: doc.satisfactionRating,
+      durationMinutes: doc.durationMinutes,
+      difficultyRating: doc.difficultyRating,
       state: doc.state,
       createdBy: doc.createdBy,
       createdAt: doc.createdAt,

@@ -36,6 +36,8 @@ export class UpdateProgramRecordUsecase {
         recordData: payload.recordData,
         comment: payload.comment,
         satisfactionRating: payload.satisfactionRating,
+        durationMinutes: payload.durationMinutes,
+        difficultyRating: payload.difficultyRating,
       });
 
       return updated ? mapProgramRecordToUsecase(updated) : null;

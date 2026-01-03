@@ -21,6 +21,8 @@ export interface ProgramRecord {
     sessionId: string;
     comment?: string | null;
     satisfactionRating?: number | null;
+    durationMinutes?: number | null;
+    difficultyRating?: number | null;
     sessionSnapshot?: ProgramRecordSessionSnapshot | null;
     recordData?: ProgramRecordData | null;
     state: ProgramRecordState;
@@ -37,6 +39,7 @@ export interface ProgramRecordExerciseSet {
 
 export interface ProgramRecordExerciseRecordData {
     exerciseId: string;
+    notes?: string | null;
     sets: ProgramRecordExerciseSet[];
 }
 
@@ -111,6 +114,7 @@ const CREATE_M = `
       recordData {
         exercises {
           exerciseId
+          notes
           sets {
             index
             repetitions
@@ -121,6 +125,8 @@ const CREATE_M = `
       }
       comment
       satisfactionRating
+      durationMinutes
+      difficultyRating
       state
       createdAt
       updatedAt
@@ -161,6 +167,7 @@ const UPDATE_STATE_M = `
       recordData {
         exercises {
           exerciseId
+          notes
           sets {
             index
             repetitions
@@ -171,6 +178,8 @@ const UPDATE_STATE_M = `
       }
       comment
       satisfactionRating
+      durationMinutes
+      difficultyRating
       updatedAt
     }
   }
@@ -211,6 +220,7 @@ const GET_Q = `
       recordData {
         exercises {
           exerciseId
+          notes
           sets {
             index
             repetitions
@@ -221,6 +231,8 @@ const GET_Q = `
       }
       comment
       satisfactionRating
+      durationMinutes
+      difficultyRating
       state
       createdAt
       updatedAt
@@ -300,7 +312,13 @@ export function useProgramRecords() {
         async (
             id: string,
             state: ProgramRecordState,
-            payload?: { comment?: string; satisfactionRating?: number; recordData?: ProgramRecordData },
+            payload?: {
+                comment?: string;
+                satisfactionRating?: number;
+                durationMinutes?: number;
+                difficultyRating?: number;
+                recordData?: ProgramRecordData;
+            },
         ): Promise<ProgramRecord> => {
             try {
                 const { data, errors } = await execute(() =>
@@ -313,6 +331,8 @@ export function useProgramRecords() {
                                 state,
                                 comment: payload?.comment,
                                 satisfactionRating: payload?.satisfactionRating,
+                                durationMinutes: payload?.durationMinutes,
+                                difficultyRating: payload?.difficultyRating,
                                 recordData: payload?.recordData,
                             },
                         },
@@ -377,6 +397,7 @@ export function useProgramRecords() {
                                 recordData {
                                   exercises {
                                     exerciseId
+                                    notes
                                     sets {
                                       index
                                       repetitions
@@ -387,6 +408,8 @@ export function useProgramRecords() {
                                 }
                                 comment
                                 satisfactionRating
+                                durationMinutes
+                                difficultyRating
                                 state
                                 createdAt
                                 updatedAt

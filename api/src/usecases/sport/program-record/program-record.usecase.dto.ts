@@ -15,6 +15,8 @@ export interface CreateProgramRecordUsecaseDto {
   recordData?: ProgramRecordDataUsecaseModel;
   comment?: string;
   satisfactionRating?: number;
+  durationMinutes?: number;
+  difficultyRating?: number;
   state?: ProgramRecordState;
   session: UsecaseSession;
 }
@@ -42,6 +44,8 @@ export interface UpdateProgramRecordUsecaseDto {
   recordData?: ProgramRecordDataUsecaseModel;
   comment?: string;
   satisfactionRating?: number;
+  durationMinutes?: number;
+  difficultyRating?: number;
   session: UsecaseSession;
 }
 

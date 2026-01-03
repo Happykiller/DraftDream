@@ -1333,7 +1333,10 @@
       "series_label": "Série {{index}}",
       "repetitions_label": "Répétitions",
       "charge_label": "Charge",
-      "done_label": "Fait"
+      "done_label": "Fait",
+      "duration_label": "Durée (minutes)",
+      "difficulty_label": "Niveau de difficulté",
+      "exercise_notes_label": "Notes"
     }
   },
   "meal_record": {

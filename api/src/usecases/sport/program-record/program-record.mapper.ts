@@ -13,6 +13,7 @@ export const mapProgramRecordToUsecase = (record: ProgramRecord): ProgramRecordU
     ? {
       exercises: record.recordData.exercises.map((exercise) => ({
         exerciseId: exercise.exerciseId,
+        notes: exercise.notes,
         sets: exercise.sets.map((set) => ({
           index: set.index,
           repetitions: set.repetitions,
@@ -24,6 +25,8 @@ export const mapProgramRecordToUsecase = (record: ProgramRecord): ProgramRecordU
     : undefined,
   comment: record.comment,
   satisfactionRating: record.satisfactionRating,
+  durationMinutes: record.durationMinutes,
+  difficultyRating: record.difficultyRating,
   state: record.state,
   createdBy: record.createdBy,
   createdAt: record.createdAt,

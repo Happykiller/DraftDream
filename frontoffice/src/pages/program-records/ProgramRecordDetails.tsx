@@ -35,6 +35,8 @@ export function ProgramRecordDetails(): React.JSX.Element {
     const [recordLoading, setRecordLoading] = React.useState(true);
     const [comment, setComment] = React.useState('');
     const [satisfactionRating, setSatisfactionRating] = React.useState<number | null>(null);
+    const [durationMinutes, setDurationMinutes] = React.useState('');
+    const [difficultyRating, setDifficultyRating] = React.useState<number | null>(null);
     const [recordData, setRecordData] = React.useState<ProgramRecordData | null>(null);
 
     const fetchRecord = React.useCallback(() => {
@@ -53,6 +55,8 @@ export function ProgramRecordDetails(): React.JSX.Element {
     React.useEffect(() => {
         setComment(record?.comment ?? '');
         setSatisfactionRating(record?.satisfactionRating ?? null);
+        setDurationMinutes(record?.durationMinutes ? String(record.durationMinutes) : '');
+        setDifficultyRating(record?.difficultyRating ?? null);
     }, [record]);
 
     // Fetch Program once we have the record
@@ -84,6 +88,8 @@ export function ProgramRecordDetails(): React.JSX.Element {
             await updateState(record.id, newState, {
                 comment: comment.trim() || undefined,
                 satisfactionRating: satisfactionRating ?? undefined,
+                durationMinutes: durationMinutes ? Number(durationMinutes) : undefined,
+                difficultyRating: difficultyRating ?? undefined,
                 recordData: recordData ?? undefined,
             });
             navigate('/');
@@ -98,6 +104,14 @@ export function ProgramRecordDetails(): React.JSX.Element {
 
     const handleRatingChange = (_event: React.SyntheticEvent, value: number | null) => {
         setSatisfactionRating(value);
+    };
+
+    const handleDifficultyChange = (_event: React.SyntheticEvent, value: number | null) => {
+        setDifficultyRating(value);
+    };
+
+    const handleDurationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setDurationMinutes(event.target.value);
     };
 
     const handleSeriesFieldChange = (
@@ -148,6 +162,22 @@ export function ProgramRecordDetails(): React.JSX.Element {
                         )),
                     };
                 }),
+            };
+        });
+    };
+
+    const handleExerciseNotesChange = (exerciseId: string) => (
+        event: React.ChangeEvent<HTMLInputElement>,
+    ) => {
+        const value = event.target.value;
+        setRecordData((previous) => {
+            if (!previous) return previous;
+            return {
+                exercises: previous.exercises.map((exercise) => (
+                    exercise.exerciseId === exerciseId
+                        ? { ...exercise, notes: value }
+                        : exercise
+                )),
             };
         });
     };
@@ -207,6 +237,7 @@ export function ProgramRecordDetails(): React.JSX.Element {
 
                 return {
                     exerciseId: exercise.id,
+                    notes: existingExercise?.notes ?? '',
                     sets,
                 };
             }),
@@ -299,16 +330,37 @@ export function ProgramRecordDetails(): React.JSX.Element {
                             boxShadow: '0 20px 40px rgba(15, 23, 42, 0.06)',
                         })}
                     >
-                        <Stack spacing={1}>
-                            <Typography variant="subtitle1" fontWeight="bold">
-                                {t('program_record.form.satisfaction_label')}
-                            </Typography>
-                            <Rating
-                                value={satisfactionRating}
-                                onChange={handleRatingChange}
-                                max={5}
-                                size="large"
+                        <Stack spacing={2}>
+                            <Stack spacing={1}>
+                                <Typography variant="subtitle1" fontWeight="bold">
+                                    {t('program_record.form.satisfaction_label')}
+                                </Typography>
+                                <Rating
+                                    value={satisfactionRating}
+                                    onChange={handleRatingChange}
+                                    max={5}
+                                    size="large"
+                                />
+                            </Stack>
+                            <TextField
+                                label={t('program_record.form.duration_label')}
+                                value={durationMinutes}
+                                onChange={handleDurationChange}
+                                type="number"
+                                inputProps={{ min: 0 }}
+                                fullWidth
                             />
+                            <Stack spacing={1}>
+                                <Typography variant="subtitle1" fontWeight="bold">
+                                    {t('program_record.form.difficulty_label')}
+                                </Typography>
+                                <Rating
+                                    value={difficultyRating}
+                                    onChange={handleDifficultyChange}
+                                    max={5}
+                                    size="large"
+                                />
+                            </Stack>
                         </Stack>
                     </Paper>
                     {sessionSnapshot ? (
@@ -331,6 +383,7 @@ export function ProgramRecordDetails(): React.JSX.Element {
                                                 (candidate) => candidate.exerciseId === exercise.id
                                             );
                                             const sets = exerciseRecord?.sets ?? [];
+                                            const exerciseNotes = exerciseRecord?.notes ?? '';
                                             return (
                                                 <Grid size={{ xs: 12, md: 6, xxl: 3 }} key={exercise.id}>
                                                     <Paper
@@ -409,6 +462,14 @@ export function ProgramRecordDetails(): React.JSX.Element {
                                                                     ))}
                                                                 </Stack>
                                                             ) : null}
+                                                            <TextField
+                                                                label={t('program_record.form.exercise_notes_label')}
+                                                                value={exerciseNotes}
+                                                                onChange={handleExerciseNotesChange(exercise.id)}
+                                                                multiline
+                                                                minRows={2}
+                                                                fullWidth
+                                                            />
                                                         </Stack>
                                                     </Paper>
                                                 </Grid>

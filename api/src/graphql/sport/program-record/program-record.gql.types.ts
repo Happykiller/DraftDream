@@ -20,6 +20,8 @@ export class ProgramRecordGql {
   @Field(() => ProgramRecordDataGql, { nullable: true }) recordData?: ProgramRecordDataGql | null;
   @Field(() => String, { nullable: true }) comment?: string;
   @Field(() => Int, { nullable: true }) satisfactionRating?: number;
+  @Field(() => Int, { nullable: true }) durationMinutes?: number;
+  @Field(() => Int, { nullable: true }) difficultyRating?: number;
   @Field(() => ProgramRecordStateEnum) state!: ProgramRecordStateEnum;
   @Field() createdBy!: string;
   @Field() createdAt!: Date;
@@ -37,6 +39,7 @@ export class ProgramRecordExerciseSetDataGql {
 @ObjectType()
 export class ProgramRecordExerciseRecordDataGql {
   @Field(() => ID) exerciseId!: string;
+  @Field(() => String, { nullable: true }) notes?: string;
   @Field(() => [ProgramRecordExerciseSetDataGql]) sets!: ProgramRecordExerciseSetDataGql[];
 }
 
@@ -56,6 +59,7 @@ export class ProgramRecordExerciseSetDataInput {
 @InputType()
 export class ProgramRecordExerciseRecordDataInput {
   @Field(() => ID) exerciseId!: string;
+  @Field(() => String, { nullable: true }) notes?: string;
   @Field(() => [ProgramRecordExerciseSetDataInput]) sets!: ProgramRecordExerciseSetDataInput[];
 }
 
@@ -73,6 +77,8 @@ export class CreateProgramRecordInput {
   @Field(() => ProgramRecordDataInput, { nullable: true }) recordData?: ProgramRecordDataInput;
   @Field(() => String, { nullable: true }) comment?: string;
   @Field(() => Int, { nullable: true }) satisfactionRating?: number;
+  @Field(() => Int, { nullable: true }) durationMinutes?: number;
+  @Field(() => Int, { nullable: true }) difficultyRating?: number;
 }
 
 @InputType()
@@ -82,6 +88,8 @@ export class UpdateProgramRecordInput {
   @Field(() => ProgramRecordDataInput, { nullable: true }) recordData?: ProgramRecordDataInput;
   @Field(() => String, { nullable: true }) comment?: string;
   @Field(() => Int, { nullable: true }) satisfactionRating?: number;
+  @Field(() => Int, { nullable: true }) durationMinutes?: number;
+  @Field(() => Int, { nullable: true }) difficultyRating?: number;
 }
 
 @InputType()

@@ -13,6 +13,7 @@ export interface ProgramRecordExerciseSetUsecaseModel {
 
 export interface ProgramRecordExerciseRecordUsecaseModel {
   exerciseId: string;
+  notes?: string;
   sets: ProgramRecordExerciseSetUsecaseModel[];
 }
 
@@ -29,6 +30,8 @@ export interface ProgramRecordUsecaseModel {
   recordData?: ProgramRecordDataUsecaseModel;
   comment?: string;
   satisfactionRating?: number;
+  durationMinutes?: number;
+  difficultyRating?: number;
   state: ProgramRecordState;
   createdBy: string;
   createdAt: Date;

@@ -63,14 +63,20 @@ const mapExerciseSetRecord = (set: {
 
 const mapExerciseRecord = (exercise: {
   exerciseId: string;
+  notes?: string;
   sets: { index: number; repetitions?: string; charge?: string; done?: boolean }[];
 }): ProgramRecordExerciseRecordDataGql => ({
   exerciseId: exercise.exerciseId,
+  notes: exercise.notes,
   sets: exercise.sets.map(mapExerciseSetRecord),
 });
 
 const mapRecordData = (recordData?: {
-  exercises: { exerciseId: string; sets: { index: number; repetitions?: string; charge?: string; done?: boolean }[] }[];
+  exercises: {
+    exerciseId: string;
+    notes?: string;
+    sets: { index: number; repetitions?: string; charge?: string; done?: boolean }[];
+  }[];
 } | null): ProgramRecordDataGql | null => {
   if (!recordData) {
     return null;
@@ -90,6 +96,8 @@ export const mapProgramRecordUsecaseToGql = (model: ProgramRecordUsecaseModel): 
   recordData: mapRecordData(model.recordData ?? null),
   comment: model.comment,
   satisfactionRating: model.satisfactionRating,
+  durationMinutes: model.durationMinutes,
+  difficultyRating: model.difficultyRating,
   state: model.state,
   createdBy: model.createdBy,
   createdAt: model.createdAt,

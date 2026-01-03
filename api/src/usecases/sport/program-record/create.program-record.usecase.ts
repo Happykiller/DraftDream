@@ -48,6 +48,8 @@ export class CreateProgramRecordUsecase {
         recordData: dto.recordData,
         comment: dto.comment,
         satisfactionRating: dto.satisfactionRating,
+        durationMinutes: dto.durationMinutes,
+        difficultyRating: dto.difficultyRating,
         state: dto.state ?? ProgramRecordState.CREATE,
         createdBy: dto.session.userId,
       });

@@ -11,6 +11,8 @@ export interface CreateProgramRecordDto {
   recordData?: ProgramRecordData;
   comment?: string;
   satisfactionRating?: number;
+  durationMinutes?: number;
+  difficultyRating?: number;
   state: ProgramRecordState;
   createdBy: string;
 }
@@ -38,4 +40,6 @@ export interface UpdateProgramRecordDto {
   recordData?: ProgramRecordData;
   comment?: string;
   satisfactionRating?: number;
+  durationMinutes?: number;
+  difficultyRating?: number;
 }

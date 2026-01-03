@@ -1329,7 +1329,10 @@
       "series_label": "Set {{index}}",
       "repetitions_label": "Repetitions",
       "charge_label": "Load",
-      "done_label": "Done"
+      "done_label": "Done",
+      "duration_label": "Duration (minutes)",
+      "difficulty_label": "Difficulty rating",
+      "exercise_notes_label": "Notes"
     }
   },
   "meal_record": {
