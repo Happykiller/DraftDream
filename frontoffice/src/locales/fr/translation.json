@@ -1337,6 +1337,7 @@
       "done_label": "Fait",
       "duration_label": "Durée (minutes)",
       "duration_label_short": "Durée",
+      "duration_placeholder": "minutes",
       "difficulty_label": "Niveau de difficulté",
       "difficulty_label_short": "Difficulté",
       "exercise_notes_label": "Notes",

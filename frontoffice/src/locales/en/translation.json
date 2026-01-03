@@ -1333,6 +1333,7 @@
       "done_label": "Done",
       "duration_label": "Duration (minutes)",
       "duration_label_short": "Duration",
+      "duration_placeholder": "minutes",
       "difficulty_label": "Difficulty rating",
       "difficulty_label_short": "Difficulty",
       "exercise_notes_label": "Notes",

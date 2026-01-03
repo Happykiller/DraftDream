@@ -462,11 +462,14 @@ export function ProgramRecordDetails(): React.JSX.Element {
                             <Grid size={{ xs: 4, md: 4 }}>
                                 <TextField
                                     label={durationLabel}
+                                    placeholder={t('program_record.form.duration_placeholder')}
                                     value={durationMinutes}
                                     onChange={handleDurationChange}
                                     type="number"
                                     inputProps={{ min: 0 }}
                                     InputLabelProps={{ sx: { whiteSpace: 'nowrap' } }}
+                                    size="small"
+                                    sx={{ maxWidth: { xs: 140, sm: 180 } }}
                                     fullWidth
                                 />
                             </Grid>
