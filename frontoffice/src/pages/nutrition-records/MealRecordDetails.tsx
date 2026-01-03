@@ -262,6 +262,27 @@ export function MealRecordDetails(): React.JSX.Element {
                             sx={{
                                 borderRadius: 2,
                                 borderColor: alpha(theme.palette.grey[500], 0.2),
+                            }}
+                        >
+                            <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                <Stack spacing={1}>
+                                    <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                                        {t('meal_record.form.satisfaction_label')}
+                                    </Typography>
+                                    <Rating
+                                        value={satisfactionRating}
+                                        onChange={handleRatingChange}
+                                        max={5}
+                                        size="large"
+                                    />
+                                </Stack>
+                            </CardContent>
+                        </Card>
+                        <Card
+                            variant="outlined"
+                            sx={{
+                                borderRadius: 2,
+                                borderColor: alpha(theme.palette.grey[500], 0.2),
                                 boxShadow: `0 12px 32px ${alpha(theme.palette.grey[500], 0.1)}`,
                             }}
                         >
@@ -369,27 +390,6 @@ export function MealRecordDetails(): React.JSX.Element {
                                         </Typography>
                                     </Box>
                                 ) : null}
-                            </CardContent>
-                        </Card>
-                        <Card
-                            variant="outlined"
-                            sx={{
-                                borderRadius: 2,
-                                borderColor: alpha(theme.palette.grey[500], 0.2),
-                            }}
-                        >
-                            <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                <Stack spacing={1}>
-                                    <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                                        {t('meal_record.form.satisfaction_label')}
-                                    </Typography>
-                                    <Rating
-                                        value={satisfactionRating}
-                                        onChange={handleRatingChange}
-                                        max={5}
-                                        size="large"
-                                    />
-                                </Stack>
                             </CardContent>
                         </Card>
                         <Card
