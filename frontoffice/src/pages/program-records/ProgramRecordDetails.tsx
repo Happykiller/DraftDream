@@ -462,8 +462,8 @@ export function ProgramRecordDetails(): React.JSX.Element {
                             boxShadow: '0 20px 40px rgba(15, 23, 42, 0.06)',
                         })}
                     >
-                        <Grid container spacing={2} alignItems="center" wrap="nowrap">
-                            <Grid size={{ xs: 4, md: 4 }}>
+                        <Grid container spacing={2} alignItems="center">
+                            <Grid size={{ xs: 12, sm: 4 }}>
                                 <TextField
                                     label={durationLabel}
                                     placeholder={t('program_record.form.duration_placeholder')}
@@ -477,7 +477,7 @@ export function ProgramRecordDetails(): React.JSX.Element {
                                     fullWidth
                                 />
                             </Grid>
-                            <Grid size={{ xs: 4, md: 4 }}>
+                            <Grid size={{ xs: 6, sm: 4 }}>
                                 <Stack spacing={1}>
                                     <Typography variant="subtitle1" fontWeight="bold" noWrap>
                                         {difficultyLabel}
@@ -490,7 +490,7 @@ export function ProgramRecordDetails(): React.JSX.Element {
                                     />
                                 </Stack>
                             </Grid>
-                            <Grid size={{ xs: 4, md: 4 }}>
+                            <Grid size={{ xs: 6, sm: 4 }}>
                                 <Stack spacing={1}>
                                     <Typography variant="subtitle1" fontWeight="bold" noWrap>
                                         {satisfactionLabel}
