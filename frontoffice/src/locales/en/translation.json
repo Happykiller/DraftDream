@@ -1344,7 +1344,8 @@
       "taken": "Taken"
     },
     "form": {
-      "comment_label": "Comment",
+      "comment_label": "Add a note",
+      "comment_subtitle": "Want to share feedback?",
       "comment_placeholder": "Share your feedback about this meal...",
       "satisfaction_label": "Satisfaction rating"
     }

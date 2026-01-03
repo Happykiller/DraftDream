@@ -390,6 +390,24 @@ export function MealRecordDetails(): React.JSX.Element {
                                         size="large"
                                     />
                                 </Stack>
+                            </CardContent>
+                        </Card>
+                        <Card
+                            variant="outlined"
+                            sx={{
+                                borderRadius: 2,
+                                borderColor: alpha(theme.palette.grey[500], 0.2),
+                            }}
+                        >
+                            <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                <Stack spacing={0.5}>
+                                    <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                                        {t('meal_record.form.comment_label')}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        {t('meal_record.form.comment_subtitle')}
+                                    </Typography>
+                                </Stack>
                                 <TextField
                                     label={t('meal_record.form.comment_label')}
                                     placeholder={t('meal_record.form.comment_placeholder')}
