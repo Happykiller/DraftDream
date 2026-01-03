@@ -351,13 +351,13 @@ export function MealRecordDetails(): React.JSX.Element {
                                     </Typography>
                                 ) : null}
 
-                                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ flexWrap: 'wrap' }}>
+                                <Stack direction="row" spacing={1.5} sx={{ flexWrap: 'nowrap' }}>
                                     {macroItems.map((macro) => (
                                         <Box
                                             key={macro.key}
                                             sx={{
                                                 flex: 1,
-                                                minWidth: { xs: '100%', sm: 160 },
+                                                minWidth: 0,
                                                 borderRadius: 2,
                                                 bgcolor: macro.background,
                                                 px: { xs: 1.5, sm: 2 },
