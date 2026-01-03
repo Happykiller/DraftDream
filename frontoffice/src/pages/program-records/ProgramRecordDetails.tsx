@@ -324,21 +324,27 @@ export function ProgramRecordDetails(): React.JSX.Element {
     }
 
     const renderFooter = () => {
-        const progressCountLabel = `${completedExercisesCount}/${totalExercisesCount}`;
         const progressLabel = t('program_record.form.completed_exercises_label');
+        const progressCountLabel = `${completedExercisesCount}/${totalExercisesCount} ${progressLabel}`;
         if (record.state === ProgramRecordState.CREATE || record.state === ProgramRecordState.DRAFT) {
             return (
                 <Box sx={{ width: '100%' }}>
                     <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
                         <Stack spacing={0.25}>
+                            <Tooltip title={progressCountLabel} placement="top" arrow>
+                                <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                    sx={{ display: { xs: 'block', sm: 'none' } }}
+                                >
+                                    {`${completedExercisesCount}/${totalExercisesCount}`}
+                                </Typography>
+                            </Tooltip>
                             <Typography
-                                variant="caption"
+                                variant="body2"
                                 color="text.secondary"
-                                sx={{ display: { xs: 'block', sm: 'none' } }}
+                                sx={{ display: { xs: 'none', sm: 'block' } }}
                             >
-                                {progressLabel}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
                                 {progressCountLabel}
                             </Typography>
                         </Stack>
@@ -404,14 +410,20 @@ export function ProgramRecordDetails(): React.JSX.Element {
             <Box sx={{ width: '100%' }}>
                 <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
                     <Stack spacing={0.25}>
+                        <Tooltip title={progressCountLabel} placement="top" arrow>
+                            <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{ display: { xs: 'block', sm: 'none' } }}
+                            >
+                                {`${completedExercisesCount}/${totalExercisesCount}`}
+                            </Typography>
+                        </Tooltip>
                         <Typography
-                            variant="caption"
+                            variant="body2"
                             color="text.secondary"
-                            sx={{ display: { xs: 'block', sm: 'none' } }}
+                            sx={{ display: { xs: 'none', sm: 'block' } }}
                         >
-                            {progressLabel}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
                             {progressCountLabel}
                         </Typography>
                     </Stack>

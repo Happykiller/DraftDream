@@ -1342,7 +1342,7 @@
       "difficulty_label_short": "Difficulté",
       "exercise_notes_label": "Notes",
       "completed_exercises": "Exercices terminés : {{count}}",
-      "completed_exercises_label": "Exercices terminés"
+      "completed_exercises_label": "Exercices terminées"
     }
   },
   "meal_record": {
