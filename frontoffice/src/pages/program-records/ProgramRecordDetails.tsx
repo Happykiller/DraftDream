@@ -14,7 +14,11 @@ import {
     Tooltip,
     Typography,
 } from '@mui/material';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
+import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 
 import {
     useProgramRecords,
@@ -297,22 +301,52 @@ export function ProgramRecordDetails(): React.JSX.Element {
                                 variant="outlined"
                                 color="inherit"
                                 onClick={handleBackToHome}
+                                aria-label={t('common.actions.cancel')}
+                                sx={{ gap: 1 }}
                             >
-                                {t('common.actions.cancel', 'Cancel')}
+                                <Box
+                                    component="span"
+                                    sx={{ display: { xs: 'inline-flex', lg: 'none', xl: 'inline-flex' } }}
+                                >
+                                    <CloseRoundedIcon fontSize="small" />
+                                </Box>
+                                <Box component="span" sx={{ display: { xs: 'none', lg: 'inline', xl: 'inline' } }}>
+                                    {t('common.actions.cancel')}
+                                </Box>
                             </Button>
                             <Button
                                 variant="outlined"
                                 color="primary"
                                 onClick={() => handleUpdateState(ProgramRecordState.DRAFT)}
+                                aria-label={t('common.actions.save')}
+                                sx={{ gap: 1 }}
                             >
-                                {t('common.actions.save', 'Save')}
+                                <Box
+                                    component="span"
+                                    sx={{ display: { xs: 'inline-flex', lg: 'none', xl: 'inline-flex' } }}
+                                >
+                                    <SaveOutlinedIcon fontSize="small" />
+                                </Box>
+                                <Box component="span" sx={{ display: { xs: 'none', lg: 'inline', xl: 'inline' } }}>
+                                    {t('common.actions.save')}
+                                </Box>
                             </Button>
                             <Button
                                 variant="contained"
                                 color="primary"
                                 onClick={() => handleUpdateState(ProgramRecordState.FINISH)}
+                                aria-label={t('common.actions.complete')}
+                                sx={{ gap: 1 }}
                             >
-                                {t('common.actions.complete', 'Complete')}
+                                <Box
+                                    component="span"
+                                    sx={{ display: { xs: 'inline-flex', lg: 'none', xl: 'inline-flex' } }}
+                                >
+                                    <CheckCircleOutlineIcon fontSize="small" />
+                                </Box>
+                                <Box component="span" sx={{ display: { xs: 'none', lg: 'inline', xl: 'inline' } }}>
+                                    {t('common.actions.complete')}
+                                </Box>
                             </Button>
                         </Stack>
                     </Stack>
@@ -330,8 +364,18 @@ export function ProgramRecordDetails(): React.JSX.Element {
                         variant="contained"
                         color="primary"
                         onClick={handleBackToHome}
+                        aria-label={t('common.back_to_home')}
+                        sx={{ gap: 1 }}
                     >
-                        {t('common.back_to_home', 'Back to Home')}
+                        <Box
+                            component="span"
+                            sx={{ display: { xs: 'inline-flex', lg: 'none', xl: 'inline-flex' } }}
+                        >
+                            <HomeOutlinedIcon fontSize="small" />
+                        </Box>
+                        <Box component="span" sx={{ display: { xs: 'none', lg: 'inline', xl: 'inline' } }}>
+                            {t('common.back_to_home')}
+                        </Box>
                     </Button>
                 </Stack>
             </Box>
