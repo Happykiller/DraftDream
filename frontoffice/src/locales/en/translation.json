@@ -1333,7 +1333,8 @@
       "duration_label": "Duration (minutes)",
       "difficulty_label": "Difficulty rating",
       "exercise_notes_label": "Notes",
-      "completed_exercises": "Exercises completed: {{count}}"
+      "completed_exercises": "Exercises completed: {{count}}",
+      "completed_exercises_label": "Exercises completed"
     }
   },
   "meal_record": {

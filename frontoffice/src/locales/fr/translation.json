@@ -1337,7 +1337,8 @@
       "duration_label": "Durée (minutes)",
       "difficulty_label": "Niveau de difficulté",
       "exercise_notes_label": "Notes",
-      "completed_exercises": "Exercices terminés : {{count}}"
+      "completed_exercises": "Exercices terminés : {{count}}",
+      "completed_exercises_label": "Exercices terminés"
     }
   },
   "meal_record": {

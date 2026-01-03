@@ -210,7 +210,7 @@ export function ProgramRecordDetails(): React.JSX.Element {
 
     const sessionSnapshot = record?.sessionSnapshot ?? null;
     const recordDataExercises = recordData?.exercises ?? [];
-    const { donePercentage, completedExercisesCount } = React.useMemo(() => {
+    const { donePercentage, completedExercisesCount, totalExercisesCount } = React.useMemo(() => {
         const allSets = recordDataExercises.flatMap((exercise) => exercise.sets ?? []);
         const totalSets = allSets.length;
         const doneSets = allSets.filter((set) => set.done).length;
@@ -218,7 +218,11 @@ export function ProgramRecordDetails(): React.JSX.Element {
         const completedCount = recordDataExercises.filter(
             (exercise) => exercise.sets.length > 0 && exercise.sets.every((set) => set.done),
         ).length;
-        return { donePercentage: percentage, completedExercisesCount: completedCount };
+        return {
+            donePercentage: percentage,
+            completedExercisesCount: completedCount,
+            totalExercisesCount: recordDataExercises.length,
+        };
     }, [recordDataExercises]);
 
     const getSeriesCount = React.useCallback((series?: string | null): number => {
@@ -286,16 +290,24 @@ export function ProgramRecordDetails(): React.JSX.Element {
     }
 
     const renderFooter = () => {
-        const progressLabel = t('program_record.form.completed_exercises', {
-            count: completedExercisesCount,
-        });
+        const progressCountLabel = `${completedExercisesCount}/${totalExercisesCount}`;
+        const progressLabel = t('program_record.form.completed_exercises_label');
         if (record.state === ProgramRecordState.CREATE || record.state === ProgramRecordState.DRAFT) {
             return (
                 <Box sx={{ width: '100%' }}>
                     <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
-                        <Typography variant="body2" color="text.secondary">
-                            {progressLabel}
-                        </Typography>
+                        <Stack spacing={0.25}>
+                            <Typography
+                                variant="caption"
+                                color="text.secondary"
+                                sx={{ display: { xs: 'block', sm: 'none' } }}
+                            >
+                                {progressLabel}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                {progressCountLabel}
+                            </Typography>
+                        </Stack>
                         <Stack direction="row" spacing={2}>
                             <Button
                                 variant="outlined"
@@ -357,9 +369,18 @@ export function ProgramRecordDetails(): React.JSX.Element {
         return (
             <Box sx={{ width: '100%' }}>
                 <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
-                    <Typography variant="body2" color="text.secondary">
-                        {progressLabel}
-                    </Typography>
+                    <Stack spacing={0.25}>
+                        <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            sx={{ display: { xs: 'block', sm: 'none' } }}
+                        >
+                            {progressLabel}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            {progressCountLabel}
+                        </Typography>
+                    </Stack>
                     <Button
                         variant="contained"
                         color="primary"
