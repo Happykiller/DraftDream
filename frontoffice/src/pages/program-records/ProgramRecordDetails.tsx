@@ -330,38 +330,44 @@ export function ProgramRecordDetails(): React.JSX.Element {
                             boxShadow: '0 20px 40px rgba(15, 23, 42, 0.06)',
                         })}
                     >
-                        <Stack spacing={2}>
-                            <Stack spacing={1}>
-                                <Typography variant="subtitle1" fontWeight="bold">
-                                    {t('program_record.form.satisfaction_label')}
-                                </Typography>
-                                <Rating
-                                    value={satisfactionRating}
-                                    onChange={handleRatingChange}
-                                    max={5}
-                                    size="large"
+                        <Grid container spacing={2} alignItems="center">
+                            <Grid size={{ xs: 12, md: 4 }}>
+                                <TextField
+                                    label={t('program_record.form.duration_label')}
+                                    value={durationMinutes}
+                                    onChange={handleDurationChange}
+                                    type="number"
+                                    inputProps={{ min: 0 }}
+                                    fullWidth
                                 />
-                            </Stack>
-                            <TextField
-                                label={t('program_record.form.duration_label')}
-                                value={durationMinutes}
-                                onChange={handleDurationChange}
-                                type="number"
-                                inputProps={{ min: 0 }}
-                                fullWidth
-                            />
-                            <Stack spacing={1}>
-                                <Typography variant="subtitle1" fontWeight="bold">
-                                    {t('program_record.form.difficulty_label')}
-                                </Typography>
-                                <Rating
-                                    value={difficultyRating}
-                                    onChange={handleDifficultyChange}
-                                    max={5}
-                                    size="large"
-                                />
-                            </Stack>
-                        </Stack>
+                            </Grid>
+                            <Grid size={{ xs: 12, md: 4 }}>
+                                <Stack spacing={1}>
+                                    <Typography variant="subtitle1" fontWeight="bold">
+                                        {t('program_record.form.difficulty_label')}
+                                    </Typography>
+                                    <Rating
+                                        value={difficultyRating}
+                                        onChange={handleDifficultyChange}
+                                        max={5}
+                                        size="large"
+                                    />
+                                </Stack>
+                            </Grid>
+                            <Grid size={{ xs: 12, md: 4 }}>
+                                <Stack spacing={1}>
+                                    <Typography variant="subtitle1" fontWeight="bold">
+                                        {t('program_record.form.satisfaction_label')}
+                                    </Typography>
+                                    <Rating
+                                        value={satisfactionRating}
+                                        onChange={handleRatingChange}
+                                        max={5}
+                                        size="large"
+                                    />
+                                </Stack>
+                            </Grid>
+                        </Grid>
                     </Paper>
                     {sessionSnapshot ? (
                         <Paper
