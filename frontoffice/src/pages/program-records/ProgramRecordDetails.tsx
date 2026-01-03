@@ -183,7 +183,11 @@ export function ProgramRecordDetails(): React.JSX.Element {
     };
 
     const handleDurationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setDurationMinutes(event.target.value);
+        const nextValue = event.target.value;
+        if (!/^\d{0,2}$/.test(nextValue)) {
+            return;
+        }
+        setDurationMinutes(nextValue);
     };
 
     const formatRestDuration = React.useCallback(
@@ -466,7 +470,7 @@ export function ProgramRecordDetails(): React.JSX.Element {
                                     value={durationMinutes}
                                     onChange={handleDurationChange}
                                     type="number"
-                                    inputProps={{ min: 0 }}
+                                    inputProps={{ min: 0, max: 99, inputMode: 'numeric', pattern: '\\d*' }}
                                     InputLabelProps={{ sx: { whiteSpace: 'nowrap' } }}
                                     size="small"
                                     sx={{ maxWidth: { xs: 140, sm: 180 } }}
