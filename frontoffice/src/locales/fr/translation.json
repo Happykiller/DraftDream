@@ -1326,7 +1326,7 @@
       "title": "Détails de la séance"
     },
     "form": {
-      "comment_label": "Commentaire",
+      "comment_label": "Commentaires",
       "comment_placeholder": "Partagez votre avis sur cette séance...",
       "satisfaction_label": "Note de satisfaction",
       "record_data_title": "Séries enregistrées",
@@ -1336,7 +1336,8 @@
       "done_label": "Fait",
       "duration_label": "Durée (minutes)",
       "difficulty_label": "Niveau de difficulté",
-      "exercise_notes_label": "Notes"
+      "exercise_notes_label": "Notes",
+      "completed_exercises": "Exercices terminés : {{count}}"
     }
   },
   "meal_record": {

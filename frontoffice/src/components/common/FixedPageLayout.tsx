@@ -13,6 +13,7 @@ export interface FixedPageLayoutProps {
         iconColor?: string;
         iconBoxShadow?: string;
     };
+    headerRight?: React.ReactNode;
     footer?: React.ReactNode;
     children: React.ReactNode;
 }
@@ -22,6 +23,7 @@ export function FixedPageLayout({
     subtitle,
     icon,
     headerProps,
+    headerRight,
     footer,
     children,
 }: FixedPageLayoutProps): React.JSX.Element {
@@ -108,6 +110,11 @@ export function FixedPageLayout({
                                 />
                             )}
                         </Box>
+                        {headerRight ? (
+                            <Box sx={{ flexShrink: 0 }}>
+                                {headerRight}
+                            </Box>
+                        ) : null}
                     </Stack>
 
                     <Divider />

@@ -4,14 +4,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import {
     Box,
     Button,
-    Checkbox,
     CircularProgress,
     Grid,
     Paper,
     Rating,
     Stack,
     TextField,
-    Tooltip,
     Typography,
 } from '@mui/material';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
@@ -114,97 +112,18 @@ export function ProgramRecordDetails(): React.JSX.Element {
         setDurationMinutes(event.target.value);
     };
 
-    const handleSeriesFieldChange = (
-        exerciseId: string,
-        setIndex: number,
-        field: 'repetitions' | 'charge',
-    ) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.value;
-        setRecordData((previous) => {
-            if (!previous) return previous;
-            return {
-                exercises: previous.exercises.map((exercise) => {
-                    if (exercise.exerciseId !== exerciseId) {
-                        return exercise;
-                    }
-
-                    return {
-                        ...exercise,
-                        sets: exercise.sets.map((set) => (
-                            set.index === setIndex
-                                ? { ...set, [field]: value }
-                                : set
-                        )),
-                    };
-                }),
-            };
-        });
-    };
-
-    const handleSeriesDoneChange = (exerciseId: string, setIndex: number) => (
-        event: React.ChangeEvent<HTMLInputElement>,
-    ) => {
-        const checked = event.target.checked;
-        setRecordData((previous) => {
-            if (!previous) return previous;
-            return {
-                exercises: previous.exercises.map((exercise) => {
-                    if (exercise.exerciseId !== exerciseId) {
-                        return exercise;
-                    }
-
-                    return {
-                        ...exercise,
-                        sets: exercise.sets.map((set) => (
-                            set.index === setIndex
-                                ? { ...set, done: checked }
-                                : set
-                        )),
-                    };
-                }),
-            };
-        });
-    };
-
-    const handleExerciseNotesChange = (exerciseId: string) => (
-        event: React.ChangeEvent<HTMLInputElement>,
-    ) => {
-        const value = event.target.value;
-        setRecordData((previous) => {
-            if (!previous) return previous;
-            return {
-                exercises: previous.exercises.map((exercise) => (
-                    exercise.exerciseId === exerciseId
-                        ? { ...exercise, notes: value }
-                        : exercise
-                )),
-            };
-        });
-    };
-
-    const formatRestDuration = React.useCallback(
-        (restSeconds?: number | null) => {
-            if (!restSeconds || restSeconds <= 0) {
-                return null;
-            }
-
-            const minutes = Math.floor(restSeconds / 60);
-            const seconds = restSeconds % 60;
-
-            if (minutes > 0 && seconds > 0) {
-                return t('programs-coatch.view.exercises.rest_duration.minutes_seconds', { minutes, seconds });
-            }
-
-            if (minutes > 0) {
-                return t('programs-coatch.view.exercises.rest_duration.minutes', { count: minutes });
-            }
-
-            return t('programs-coatch.view.exercises.rest_duration.seconds', { count: seconds });
-        },
-        [t],
-    );
-
     const sessionSnapshot = record?.sessionSnapshot ?? null;
+    const recordDataExercises = recordData?.exercises ?? [];
+    const { donePercentage, completedExercisesCount } = React.useMemo(() => {
+        const allSets = recordDataExercises.flatMap((exercise) => exercise.sets ?? []);
+        const totalSets = allSets.length;
+        const doneSets = allSets.filter((set) => set.done).length;
+        const percentage = totalSets > 0 ? Math.round((doneSets / totalSets) * 100) : 0;
+        const completedCount = recordDataExercises.filter(
+            (exercise) => exercise.sets.length > 0 && exercise.sets.every((set) => set.done),
+        ).length;
+        return { donePercentage: percentage, completedExercisesCount: completedCount };
+    }, [recordDataExercises]);
 
     const getSeriesCount = React.useCallback((series?: string | null): number => {
         if (!series) {
@@ -271,42 +190,59 @@ export function ProgramRecordDetails(): React.JSX.Element {
     }
 
     const renderFooter = () => {
+        const progressLabel = t('program_record.form.completed_exercises', {
+            count: completedExercisesCount,
+        });
         if (record.state === ProgramRecordState.CREATE || record.state === ProgramRecordState.DRAFT) {
             return (
-                <Stack direction="row" spacing={2}>
-                    <Button
-                        variant="outlined"
-                        color="inherit"
-                        onClick={handleBackToHome}
-                    >
-                        {t('common.actions.cancel', 'Cancel')}
-                    </Button>
-                    <Button
-                        variant="outlined"
-                        color="primary"
-                        onClick={() => handleUpdateState(ProgramRecordState.DRAFT)}
-                    >
-                        {t('common.actions.save', 'Save')}
-                    </Button>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => handleUpdateState(ProgramRecordState.FINISH)}
-                    >
-                        {t('common.actions.complete', 'Complete')}
-                    </Button>
-                </Stack>
+                <Box sx={{ width: '100%' }}>
+                    <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
+                        <Typography variant="body2" color="text.secondary">
+                            {progressLabel}
+                        </Typography>
+                        <Stack direction="row" spacing={2}>
+                            <Button
+                                variant="outlined"
+                                color="inherit"
+                                onClick={handleBackToHome}
+                            >
+                                {t('common.actions.cancel', 'Cancel')}
+                            </Button>
+                            <Button
+                                variant="outlined"
+                                color="primary"
+                                onClick={() => handleUpdateState(ProgramRecordState.DRAFT)}
+                            >
+                                {t('common.actions.save', 'Save')}
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => handleUpdateState(ProgramRecordState.FINISH)}
+                            >
+                                {t('common.actions.complete', 'Complete')}
+                            </Button>
+                        </Stack>
+                    </Stack>
+                </Box>
             );
         }
 
         return (
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={handleBackToHome}
-            >
-                {t('common.back_to_home', 'Back to Home')}
-            </Button>
+            <Box sx={{ width: '100%' }}>
+                <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
+                    <Typography variant="body2" color="text.secondary">
+                        {progressLabel}
+                    </Typography>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleBackToHome}
+                    >
+                        {t('common.back_to_home', 'Back to Home')}
+                    </Button>
+                </Stack>
+            </Box>
         );
     };
 
@@ -315,6 +251,11 @@ export function ProgramRecordDetails(): React.JSX.Element {
             title={sessionLabel}
             subtitle={programLabel}
             icon={<PlayCircleOutlineIcon fontSize="medium" />}
+            headerRight={(
+                <Typography variant="subtitle1" fontWeight={700}>
+                    {donePercentage}%
+                </Typography>
+            )}
             footer={renderFooter()}
         >
             {/* General information */}
@@ -369,127 +310,7 @@ export function ProgramRecordDetails(): React.JSX.Element {
                             </Grid>
                         </Grid>
                     </Paper>
-                    {sessionSnapshot ? (
-                        <Paper
-                            variant="outlined"
-                            sx={(theme) => ({
-                                borderRadius: 2.5,
-                                p: { xs: 2.5, md: 3 },
-                                bgcolor: theme.palette.background.paper,
-                                borderColor: theme.palette.divider,
-                                boxShadow: '0 20px 40px rgba(15, 23, 42, 0.06)',
-                            })}
-                        >
-                            <Stack spacing={2.5}>
-                                {sessionSnapshot.exercises.length > 0 ? (
-                                    <Grid container spacing={{ xs: 2, md: 2.5 }}>
-                                        {sessionSnapshot.exercises.map((exercise, exerciseIndex) => {
-                                            const restLabel = formatRestDuration(exercise.restSeconds);
-                                            const exerciseRecord = recordData?.exercises.find(
-                                                (candidate) => candidate.exerciseId === exercise.id
-                                            );
-                                            const sets = exerciseRecord?.sets ?? [];
-                                            const exerciseNotes = exerciseRecord?.notes ?? '';
-                                            return (
-                                                <Grid size={{ xs: 12, md: 6, xxl: 3 }} key={exercise.id}>
-                                                    <Paper
-                                                        variant="outlined"
-                                                        sx={(theme) => ({
-                                                            borderRadius: 2,
-                                                            p: 2,
-                                                            height: '100%',
-                                                            borderColor: theme.palette.divider,
-                                                        })}
-                                                    >
-                                                        <Stack spacing={1.5}>
-                                                            <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                                                                {exerciseIndex + 1}. {exercise.label}
-                                                            </Typography>
-                                                            {exercise.description ? (
-                                                                <Typography variant="body2" color="text.secondary">
-                                                                    {exercise.description}
-                                                                </Typography>
-                                                            ) : null}
-                                                            <Stack spacing={0.75}>
-                                                                {restLabel ? (
-                                                                    <Typography variant="body2">
-                                                                        {t('programs-coatch.view.exercises.rest')}: {restLabel}
-                                                                    </Typography>
-                                                                ) : null}
-                                                            </Stack>
-                                                            {sets.length > 0 ? (
-                                                                <Stack spacing={1.5}>
-                                                                    <Typography variant="subtitle2" fontWeight={600}>
-                                                                        {t('program_record.form.record_data_title')}
-                                                                    </Typography>
-                                                                    {sets.map((set) => (
-                                                                        <Stack spacing={1} key={`${exercise.id}-set-${set.index}`}>
-                                                                            <Typography variant="body2" fontWeight={600}>
-                                                                                {t('program_record.form.series_label', { index: set.index })}
-                                                                            </Typography>
-                                                                            <Grid container spacing={1.5}>
-                                                                                <Grid size={{ xs: 5 }}>
-                                                                                    <TextField
-                                                                                        label={t('program_record.form.repetitions_label')}
-                                                                                        value={set.repetitions ?? ''}
-                                                                                        onChange={handleSeriesFieldChange(
-                                                                                            exercise.id,
-                                                                                            set.index,
-                                                                                            'repetitions',
-                                                                                        )}
-                                                                                        fullWidth
-                                                                                    />
-                                                                                </Grid>
-                                                                                <Grid size={{ xs: 5 }}>
-                                                                                    <TextField
-                                                                                        label={t('program_record.form.charge_label')}
-                                                                                        value={set.charge ?? ''}
-                                                                                        onChange={handleSeriesFieldChange(
-                                                                                            exercise.id,
-                                                                                            set.index,
-                                                                                            'charge',
-                                                                                        )}
-                                                                                        fullWidth
-                                                                                    />
-                                                                                </Grid>
-                                                                                <Grid size={{ xs: 2 }} display="flex" alignItems="center">
-                                                                                    <Tooltip title={t('program_record.form.done_label')}>
-                                                                                        <Checkbox
-                                                                                            checked={Boolean(set.done)}
-                                                                                            onChange={handleSeriesDoneChange(
-                                                                                                exercise.id,
-                                                                                                set.index,
-                                                                                            )}
-                                                                                        />
-                                                                                    </Tooltip>
-                                                                                </Grid>
-                                                                            </Grid>
-                                                                        </Stack>
-                                                                    ))}
-                                                                </Stack>
-                                                            ) : null}
-                                                            <TextField
-                                                                label={t('program_record.form.exercise_notes_label')}
-                                                                value={exerciseNotes}
-                                                                onChange={handleExerciseNotesChange(exercise.id)}
-                                                                multiline
-                                                                minRows={2}
-                                                                fullWidth
-                                                            />
-                                                        </Stack>
-                                                    </Paper>
-                                                </Grid>
-                                            );
-                                        })}
-                                    </Grid>
-                                ) : (
-                                    <Typography variant="body2" color="text.secondary">
-                                        {t('programs-coatch.view.session_no_exercises')}
-                                    </Typography>
-                                )}
-                            </Stack>
-                        </Paper>
-                    ) : (
+                    {sessionSnapshot ? null : (
                         <Typography variant="body2" color="text.secondary">
                             {t('programs-coatch.list.no_sessions')}
                         </Typography>

@@ -1322,7 +1322,7 @@
       "title": "Session Details"
     },
     "form": {
-      "comment_label": "Comment",
+      "comment_label": "Comments",
       "comment_placeholder": "Share your feedback about this session...",
       "satisfaction_label": "Satisfaction rating",
       "record_data_title": "Recorded sets",
@@ -1332,7 +1332,8 @@
       "done_label": "Done",
       "duration_label": "Duration (minutes)",
       "difficulty_label": "Difficulty rating",
-      "exercise_notes_label": "Notes"
+      "exercise_notes_label": "Notes",
+      "completed_exercises": "Exercises completed: {{count}}"
     }
   },
   "meal_record": {
