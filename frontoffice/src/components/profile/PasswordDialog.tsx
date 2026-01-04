@@ -1,14 +1,14 @@
 import * as React from 'react';
 import {
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    TextField,
-    Stack,
-    Alert,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  Stack,
+  Alert,
 } from '@mui/material';
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import { useTranslation } from 'react-i18next';
 
 export interface PasswordDialogProps {
@@ -73,12 +73,12 @@ export function PasswordDialog({ open, loading, onClose, onSubmit }: PasswordDia
                 </Stack>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose} disabled={loading}>
+                <ResponsiveButton onClick={handleClose} disabled={loading}>
                     {t('common.actions.cancel')}
-                </Button>
-                <Button onClick={handleSubmit} variant="contained" disabled={loading || !password}>
+                </ResponsiveButton>
+                <ResponsiveButton onClick={handleSubmit} variant="contained" disabled={loading || !password}>
                     {t('common.actions.save')}
-                </Button>
+                </ResponsiveButton>
             </DialogActions>
         </Dialog>
     );

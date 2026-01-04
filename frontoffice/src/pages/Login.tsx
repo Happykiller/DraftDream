@@ -6,13 +6,13 @@ import { useTheme } from '@mui/material/styles';
 import {
   Alert,
   Box,
-  Button,
   Stack,
   Typography,
   Paper,
   useMediaQuery,
   Container,
 } from '@mui/material';
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import {
   Done,
   Visibility,
@@ -123,11 +123,10 @@ export function Login(): React.JSX.Element {
       />
 
       {/* Submit */}
-      <Button
+      <ResponsiveButton
         type="submit"
         variant="contained"
         fullWidth
-        startIcon={<Done fontSize="small" />}
         disabled={!canSubmit}
         aria-disabled={!canSubmit}
         sx={{
@@ -136,9 +135,9 @@ export function Login(): React.JSX.Element {
           fontWeight: 700,
           letterSpacing: 0.6,
         }}
+        label={t('login.button')}
       >
-        <Trans>login.button</Trans>
-      </Button>
+      </ResponsiveButton>
     </Stack>
   );
 

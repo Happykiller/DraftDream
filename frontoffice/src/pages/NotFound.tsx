@@ -1,18 +1,18 @@
 // src/pages/NotFound.tsx
 import * as React from 'react';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import {
   Box,
-  Button,
   Container,
   Paper,
   Stack,
   Typography,
   useMediaQuery,
 } from '@mui/material';
-import { SearchOff, Home } from '@mui/icons-material';
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
+import { SearchOff } from '@mui/icons-material';
 import { gradients } from '@src/theme';
 
 /**
@@ -22,6 +22,7 @@ import { gradients } from '@src/theme';
  * - Accessible: h1 semantics, labeled region, clear CTAs
  */
 export function NotFound(): React.JSX.Element {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -122,15 +123,14 @@ function Content({ onGoHome, isMobile = false }: ContentProps): React.JSX.Elemen
       </Box>
 
       {/* CTA */}
-      <Button
+      <ResponsiveButton
         variant="contained"
-        startIcon={<Home fontSize="small" />}
         onClick={onGoHome}
         autoFocus
         sx={{ textTransform: 'uppercase', py: 1.1, fontWeight: 700, letterSpacing: 0.6 }}
+        label={t('sidebar.go_home')}
       >
-        <Trans>sidebar.go_home</Trans>
-      </Button>
+      </ResponsiveButton>
     </Stack>
   );
 }

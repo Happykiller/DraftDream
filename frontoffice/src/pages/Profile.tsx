@@ -2,7 +2,6 @@
 import * as React from 'react';
 import {
   Box,
-  Button,
   Container,
   FormControl,
   Grid,
@@ -15,6 +14,7 @@ import {
   Divider,
 } from '@mui/material';
 import type { SelectChangeEvent } from '@mui/material/Select';
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import { useTranslation } from 'react-i18next';
 
 import { useUser } from '@hooks/useUser';
@@ -285,14 +285,14 @@ export function Profile(): React.JSX.Element {
               </GlassCard>
 
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-                <Button
+                <ResponsiveButton
                   variant="contained"
                   size="large"
                   onClick={handleSave}
                   disabled={updating}
                 >
                   {t('common.actions.save', 'Save Changes')}
-                </Button>
+                </ResponsiveButton>
               </Box>
             </Stack>
           </Grid>
@@ -323,14 +323,14 @@ export function Profile(): React.JSX.Element {
 
                   <Divider />
 
-                  <Button
+                  <ResponsiveButton
                     variant="outlined"
                     color="primary"
                     fullWidth
                     onClick={() => setPasswordDialogOpen(true)}
                   >
                     {t('profile.actions.changePassword', 'Change Password')}
-                  </Button>
+                  </ResponsiveButton>
                 </Stack>
               </GlassCard>
             </Stack>

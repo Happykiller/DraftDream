@@ -2,7 +2,11 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoaderData, useNavigate } from 'react-router-dom';
-import { Alert, Button, Stack } from '@mui/material';
+import {
+  Alert,
+  Stack,
+} from '@mui/material';
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 
 import { ProspectFormPanel, type ProspectFormCopy } from '@components/prospects/ProspectFormPanel';
 import { useProspectFormValues, type ProspectFormValues } from '@components/prospects/prospectFormValues';
@@ -66,9 +70,9 @@ export function ProspectEdit(): React.JSX.Element {
     return (
       <Stack spacing={2} sx={{ mt: 4, alignItems: 'center' }}>
         <Alert severity="error">{t('prospects.form.not_found')}</Alert>
-        <Button variant="contained" onClick={() => navigate('/prospects')}>
+        <ResponsiveButton variant="contained" onClick={() => navigate('/prospects')}>
           {t('prospects.actions.back_to_list')}
-        </Button>
+        </ResponsiveButton>
       </Stack>
     );
   }

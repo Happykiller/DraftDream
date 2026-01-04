@@ -2,8 +2,14 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Add, Refresh } from '@mui/icons-material';
-import { Button, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import { Refresh } from '@mui/icons-material';
+import {
+  IconButton,
+  Stack,
+  Tooltip,
+  Typography,
+} from '@mui/material';
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 
 import { ProgramList } from '@components/programs/ProgramList';
 import { type BuilderCopy } from '@components/programs/ProgramBuilderPanel';
@@ -160,18 +166,15 @@ export function ProgramsCoach(): React.JSX.Element {
           <Typography variant="h5">{t('programs-coatch.subtitle')}</Typography>
 
           <Stack alignItems="center" direction="row" spacing={1} sx={{ ml: 'auto' }}>
-            <Tooltip title={t('programs-coatch.actions.open_builder')} arrow>
-              <Button
-                aria-label={t('programs-coatch.actions.open_builder')}
-                color="success"
-                onClick={handleCreateProgram}
-                size="small"
-                startIcon={<Add />}
-                variant="contained"
-              >
-                {t('common.actions.create')}
-              </Button>
-            </Tooltip>
+            <ResponsiveButton
+              aria-label={t('programs-coatch.actions.open_builder')}
+              color="success"
+              onClick={handleCreateProgram}
+              size="small"
+              variant="contained"
+            >
+              {t('common.actions.create')}
+            </ResponsiveButton>
             <Tooltip title={t('programs-coatch.actions.refresh')} arrow>
               <IconButton
                 aria-label={t('programs-coatch.actions.refresh')}

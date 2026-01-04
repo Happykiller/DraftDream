@@ -2,11 +2,11 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Autocomplete,
-  Button,
   Stack,
   TextField,
   Typography,
 } from '@mui/material';
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import ContentCopy from '@mui/icons-material/ContentCopy';
 
 import inversify from '@src/commons/inversify';
@@ -284,13 +284,13 @@ export function ProgramCloneDialog({
 
   const dialogActions = (
     <>
-      <Button onClick={handleDialogClose} disabled={cloneLoading} color="inherit">
+      <ResponsiveButton onClick={handleDialogClose} disabled={cloneLoading} color="inherit">
         {cloneDialogCancel}
-      </Button>
-      <Button type="submit" variant="contained" color="success" disabled={cloneLoading}>
+      </ResponsiveButton>
+      <ResponsiveButton type="submit" variant="contained" color="success" disabled={cloneLoading}>
         {cloneLoading && activeCloneAction === 'copy' ? cloneDialogCopying : cloneDialogCopy}
-      </Button>
-      <Button
+      </ResponsiveButton>
+      <ResponsiveButton
         type="button"
         variant="contained"
         color="primary"
@@ -302,7 +302,7 @@ export function ProgramCloneDialog({
         {cloneLoading && activeCloneAction === 'copy_and_open'
           ? cloneDialogCopyingAndOpen
           : cloneDialogCopyAndOpen}
-      </Button>
+      </ResponsiveButton>
     </>
   );
 

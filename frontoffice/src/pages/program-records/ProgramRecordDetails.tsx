@@ -2,18 +2,18 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-    Box,
-    Button,
-    Checkbox,
-    CircularProgress,
-    Grid,
-    Paper,
-    Rating,
-    Stack,
-    TextField,
-    Tooltip,
-    Typography,
+  Box,
+  Checkbox,
+  CircularProgress,
+  Grid,
+  Paper,
+  Rating,
+  Stack,
+  TextField,
+  Tooltip,
+  Typography,
 } from '@mui/material';
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -349,7 +349,7 @@ export function ProgramRecordDetails(): React.JSX.Element {
                             </Typography>
                         </Stack>
                         <Stack direction="row" spacing={2}>
-                            <Button
+                            <ResponsiveButton
                                 variant="outlined"
                                 color="inherit"
                                 onClick={handleBackToHome}
@@ -365,8 +365,8 @@ export function ProgramRecordDetails(): React.JSX.Element {
                                 <Box component="span" sx={{ display: { xs: 'none', lg: 'inline', xl: 'inline' } }}>
                                     {t('common.actions.cancel')}
                                 </Box>
-                            </Button>
-                            <Button
+                            </ResponsiveButton>
+                            <ResponsiveButton
                                 variant="outlined"
                                 color="primary"
                                 onClick={() => handleUpdateState(ProgramRecordState.DRAFT)}
@@ -382,8 +382,8 @@ export function ProgramRecordDetails(): React.JSX.Element {
                                 <Box component="span" sx={{ display: { xs: 'none', lg: 'inline', xl: 'inline' } }}>
                                     {t('common.actions.save')}
                                 </Box>
-                            </Button>
-                            <Button
+                            </ResponsiveButton>
+                            <ResponsiveButton
                                 variant="contained"
                                 color="primary"
                                 onClick={() => handleUpdateState(ProgramRecordState.FINISH)}
@@ -399,7 +399,7 @@ export function ProgramRecordDetails(): React.JSX.Element {
                                 <Box component="span" sx={{ display: { xs: 'none', lg: 'inline', xl: 'inline' } }}>
                                     {t('common.actions.complete')}
                                 </Box>
-                            </Button>
+                            </ResponsiveButton>
                         </Stack>
                     </Stack>
                 </Box>
@@ -427,7 +427,7 @@ export function ProgramRecordDetails(): React.JSX.Element {
                             {progressCountLabel}
                         </Typography>
                     </Stack>
-                    <Button
+                    <ResponsiveButton
                         variant="contained"
                         color="primary"
                         onClick={handleBackToHome}
@@ -443,7 +443,7 @@ export function ProgramRecordDetails(): React.JSX.Element {
                         <Box component="span" sx={{ display: { xs: 'none', lg: 'inline', xl: 'inline' } }}>
                             {t('common.back_to_home')}
                         </Box>
-                    </Button>
+                    </ResponsiveButton>
                 </Stack>
             </Box>
         );

@@ -5,7 +5,6 @@ import { Visibility } from '@mui/icons-material';
 import {
   Alert,
   Box,
-  Button,
   Card,
   CardContent,
   Divider,
@@ -13,6 +12,7 @@ import {
   Typography,
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 
 import { ProgramViewContent } from '@src/components/programs/ProgramViewContent';
@@ -243,14 +243,14 @@ export function ProgramDetails(): React.JSX.Element {
                 <Box sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }} />
               )}
 
-              <Button
+              <ResponsiveButton
                 variant="contained"
                 color="primary"
                 onClick={handleBackToList}
                 sx={{ alignSelf: { xs: 'stretch', sm: 'center' } }}
               >
                 {detailCopy.back_to_list}
-              </Button>
+              </ResponsiveButton>
             </Stack>
           </Box>
         </Card>

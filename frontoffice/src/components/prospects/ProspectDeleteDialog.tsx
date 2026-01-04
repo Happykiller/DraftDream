@@ -1,15 +1,16 @@
 // src/components/prospects/ProspectDeleteDialog.tsx
 import * as React from 'react';
 
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { DeleteOutline } from '@mui/icons-material';
 import {
-  Button,
   Stack,
   Typography,
 } from '@mui/material';
 import type { DialogProps } from '@mui/material/Dialog';
 
 import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 
 import type { Prospect } from '@app-types/prospects';
 
@@ -90,12 +91,21 @@ export function ProspectDeleteDialog({
       description={description}
       actions={
         <>
-          <Button onClick={handleCancelClick} disabled={loading} color="inherit">
-            {copy.actions.cancel}
-          </Button>
-          <Button onClick={handleConfirmClick} color="error" variant="contained" disabled={loading}>
-            {loading ? copy.actions.confirming : copy.actions.confirm}
-          </Button>
+          <ResponsiveButton
+            onClick={handleCancelClick}
+            disabled={loading}
+            color="inherit"
+            label={copy.actions.cancel}
+            icon={<CloseRoundedIcon fontSize="small" />}
+          />
+          <ResponsiveButton
+            onClick={handleConfirmClick}
+            color="error"
+            variant="contained"
+            disabled={loading}
+            label={loading ? copy.actions.confirming : copy.actions.confirm}
+            icon={<DeleteOutline fontSize="small" />}
+          />
         </>
       }
     >

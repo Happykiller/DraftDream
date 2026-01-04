@@ -1,7 +1,11 @@
 // src/pages/ProgramCoachEdit.tsx
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Button, Stack } from '@mui/material';
+import {
+  Alert,
+  Stack,
+} from '@mui/material';
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 
 import { ProgramBuilderPanel, type BuilderCopy } from '@src/components/programs/ProgramBuilderPanel';
@@ -70,17 +74,17 @@ export function ProgramCoachEdit(): React.JSX.Element {
         <Alert severity="error">{error ?? t('programs-details.errors.load_failed')}</Alert>
 
         <Stack direction="row" spacing={2}>
-          <Button
+          <ResponsiveButton
             variant="contained"
             color="primary"
             onClick={handleRetry}
             disabled={!programId}
           >
             {t('common.actions.retry')}
-          </Button>
-          <Button variant="outlined" color="primary" onClick={handleCancel}>
+          </ResponsiveButton>
+          <ResponsiveButton variant="outlined" color="primary" onClick={handleCancel}>
             {t('programs-coatch.view.actions.back_to_list')}
-          </Button>
+          </ResponsiveButton>
         </Stack>
       </Stack>
     );

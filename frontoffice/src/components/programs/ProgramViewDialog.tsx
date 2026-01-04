@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@mui/material';
+import {
+  ,
+} from '@mui/material';
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import { VisibilityOutlined } from '@mui/icons-material';
 
 import type { Program } from '@hooks/programs/usePrograms';
@@ -51,9 +54,9 @@ export function ProgramViewDialog({ open, program, onClose }: ProgramViewDialogP
       description={dialogDescription}
       icon={<VisibilityOutlined fontSize="small" />}
       actions={
-        <Button onClick={onClose} variant="contained" color="primary">
+        <ResponsiveButton onClick={onClose} variant="contained" color="primary">
           {t('programs-coatch.view.actions.close')}
-        </Button>
+        </ResponsiveButton>
       }
       actionsProps={{
         sx: {

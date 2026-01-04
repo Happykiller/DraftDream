@@ -3,7 +3,6 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 import {
-  ArrowBack,
   CalendarMonth,
   EventBusy,
   EventNote,
@@ -16,7 +15,6 @@ import {
 import {
   Alert,
   Box,
-  Button,
   Card,
   CardContent,
   Chip,
@@ -29,6 +27,7 @@ import {
   Typography,
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 
 import { getAthleteDisplayName } from '@components/athletes/athleteLinkUtils';
 import { TextWithTooltip } from '@components/common/TextWithTooltip';
@@ -678,15 +677,14 @@ export function AthleteLinkDetails(): React.JSX.Element {
                 <Box sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }} />
               )}
 
-              <Button
+              <ResponsiveButton
                 variant="contained"
                 color="info"
                 onClick={handleBack}
-                startIcon={<ArrowBack />}
                 sx={{ alignSelf: { xs: 'stretch', sm: 'center' } }}
               >
                 {t('athletes.details.actions.back_to_list')}
-              </Button>
+              </ResponsiveButton>
             </Stack>
           </Box>
         </Card>

@@ -2,10 +2,11 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Edit } from '@mui/icons-material';
-import { Box, Button, MenuItem, Stack, TextField, Typography } from '@mui/material';
+import { Box, MenuItem, Stack, TextField, Typography } from '@mui/material';
 
 import { useMealTypes } from '@hooks/nutrition/useMealTypes';
 
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
 
 import type { MealPlanMealTypeSnapshot } from '@hooks/nutrition/useMealPlans';
@@ -189,12 +190,12 @@ export function MealPlanBuilderEditDraftMealDialog({
       description={description}
       actions={
         <>
-          <Button onClick={handleClose} color="inherit">
+          <ResponsiveButton onClick={handleClose} color="inherit">
             {t('common.actions.cancel')}
-          </Button>
-          <Button color="warning" type="submit" variant="contained" disabled={isSubmitDisabled} startIcon={<Edit />}>
+          </ResponsiveButton>
+          <ResponsiveButton color="warning" type="submit" variant="contained" disabled={isSubmitDisabled}>
             {t('common.actions.save')}
-          </Button>
+          </ResponsiveButton>
         </>
       }
       dialogProps={{ maxWidth: 'sm' }}
@@ -276,4 +277,3 @@ export function MealPlanBuilderEditDraftMealDialog({
     </ProgramDialogLayout>
   );
 }
-

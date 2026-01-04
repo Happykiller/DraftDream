@@ -1,7 +1,12 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
-import { Button, Chip, Stack, TextField } from '@mui/material';
+import {
+  Chip,
+  Stack,
+  TextField,
+} from '@mui/material';
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import { Add, Edit } from '@mui/icons-material';
 
 import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
@@ -677,18 +682,17 @@ export function ProgramBuilderCreateExerciseDialog({
 
   const dialogActions = (
     <>
-      <Button onClick={onClose} disabled={submitting} color="inherit">
+      <ResponsiveButton onClick={onClose} disabled={submitting} color="inherit">
         {cancelLabel}
-      </Button>
-      <Button
+      </ResponsiveButton>
+      <ResponsiveButton
         type="submit"
         variant="contained"
-        startIcon={isEditMode ? <Edit /> : <Add />}
         disabled={isSubmitDisabled}
         color="success"
       >
         {submitLabel}
-      </Button>
+      </ResponsiveButton>
     </>
   );
 

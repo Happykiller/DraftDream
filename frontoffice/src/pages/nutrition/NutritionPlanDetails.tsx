@@ -5,7 +5,6 @@ import type { TFunction } from 'i18next';
 import {
   Alert,
   Box,
-  Button,
   Card,
   CardContent,
   CircularProgress,
@@ -18,6 +17,7 @@ import {
   Typography,
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import {
   CalendarMonth,
   EditSquare as EditSquareIcon,
@@ -528,14 +528,14 @@ export function NutritionPlanDetails(): React.JSX.Element {
                 <Box sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }} />
               )}
 
-              <Button
+              <ResponsiveButton
                 variant="contained"
                 color="warning"
                 onClick={handleBack}
                 sx={{ alignSelf: { xs: 'stretch', sm: 'center' } }}
               >
                 {backToListLabel}
-              </Button>
+              </ResponsiveButton>
             </Stack>
           </Box>
         </Card>

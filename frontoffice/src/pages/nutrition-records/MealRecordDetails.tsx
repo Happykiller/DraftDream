@@ -2,18 +2,18 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-    Box,
-    Button,
-    CircularProgress,
-    Card,
-    CardContent,
-    Rating,
-    Stack,
-    Tooltip,
-    TextField,
-    Typography,
+  Box,
+  CircularProgress,
+  Card,
+  CardContent,
+  Rating,
+  Stack,
+  Tooltip,
+  TextField,
+  Typography,
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -212,7 +212,7 @@ export function MealRecordDetails(): React.JSX.Element {
         if (record.state === MealRecordState.CREATE || record.state === MealRecordState.DRAFT) {
             return (
                 <Stack direction="row" spacing={2}>
-                    <Button
+                    <ResponsiveButton
                         variant="text"
                         color="inherit"
                         onClick={handleBackToHome}
@@ -228,8 +228,8 @@ export function MealRecordDetails(): React.JSX.Element {
                         <Box component="span" sx={{ display: { xs: 'none', lg: 'inline', xl: 'inline' } }}>
                             {t('common.actions.cancel')}
                         </Box>
-                    </Button>
-                    <Button
+                    </ResponsiveButton>
+                    <ResponsiveButton
                         variant="outlined"
                         color="warning"
                         onClick={() => handleUpdateState(MealRecordState.DRAFT)}
@@ -245,8 +245,8 @@ export function MealRecordDetails(): React.JSX.Element {
                         <Box component="span" sx={{ display: { xs: 'none', lg: 'inline', xl: 'inline' } }}>
                             {t('common.actions.save')}
                         </Box>
-                    </Button>
-                    <Button
+                    </ResponsiveButton>
+                    <ResponsiveButton
                         variant="contained"
                         color="warning"
                         onClick={() => handleUpdateState(MealRecordState.FINISH)}
@@ -262,13 +262,13 @@ export function MealRecordDetails(): React.JSX.Element {
                         <Box component="span" sx={{ display: { xs: 'none', lg: 'inline', xl: 'inline' } }}>
                             {t('meal_record.actions.taken')}
                         </Box>
-                    </Button>
+                    </ResponsiveButton>
                 </Stack>
             );
         }
 
         return (
-            <Button
+            <ResponsiveButton
                 variant="contained"
                 color="warning"
                 onClick={handleBackToHome}
@@ -284,7 +284,7 @@ export function MealRecordDetails(): React.JSX.Element {
                 <Box component="span" sx={{ display: { xs: 'none', lg: 'inline', xl: 'inline' } }}>
                     {t('common.back_to_home')}
                 </Box>
-            </Button>
+            </ResponsiveButton>
         );
     };
 

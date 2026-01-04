@@ -3,7 +3,6 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
-  Button,
   IconButton,
   Menu,
   MenuItem,
@@ -13,7 +12,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import QueryStatsOutlinedIcon from '@mui/icons-material/QueryStatsOutlined';
@@ -213,18 +212,15 @@ export function Prospects(): React.JSX.Element {
             spacing={1}
             width={{ xs: '100%', md: 'auto' }}
           >
-            <Tooltip title={t('prospects.actions.create_lead')} arrow>
-              <Button
-                aria-label={t('prospects.actions.create_lead')}
-                color="error"
-                onClick={() => handleCreateProspect(ProspectStatus.LEAD)}
-                size="small"
-                startIcon={<AddIcon />}
-                variant="contained"
-              >
-                {t('common.actions.create')}
-              </Button>
-            </Tooltip>
+            <ResponsiveButton
+              aria-label={t('prospects.actions.create_lead')}
+              color="error"
+              onClick={() => handleCreateProspect(ProspectStatus.LEAD)}
+              size="small"
+              variant="contained"
+            >
+              {t('common.actions.create')}
+            </ResponsiveButton>
 
             <Tooltip title={t('prospects.workflow.summary.actions.refresh')} arrow>
               <IconButton

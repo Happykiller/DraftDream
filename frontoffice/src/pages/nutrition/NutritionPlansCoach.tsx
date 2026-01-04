@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Add, Refresh } from '@mui/icons-material';
+import { Refresh } from '@mui/icons-material';
 import {
-  Button,
   IconButton,
   Stack,
   Tooltip,
   Typography,
 } from '@mui/material';
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import { useNavigate } from 'react-router-dom';
 
 import { MealPlanList } from '@components/nutrition/MealPlanList';
@@ -182,18 +182,15 @@ export function NutritionPlansCoach(): React.JSX.Element {
         >
           <Typography variant="h5">{t('nutrition-coach.subtitle')}</Typography>
           <Stack alignItems="center" direction="row" spacing={1} sx={{ ml: 'auto' }}>
-            <Tooltip title={t('nutrition-coach.actions.create')} arrow>
-              <Button
-                aria-label={t('nutrition-coach.actions.create')}
-                color="warning"
-                onClick={handleCreate}
-                size="small"
-                startIcon={<Add />}
-                variant="contained"
-              >
-                {t('common.actions.create')}
-              </Button>
-            </Tooltip>
+            <ResponsiveButton
+              aria-label={t('nutrition-coach.actions.create')}
+              color="warning"
+              onClick={handleCreate}
+              size="small"
+              variant="contained"
+            >
+              {t('common.actions.create')}
+            </ResponsiveButton>
             <Tooltip title={t('nutrition-coach.actions.refresh')} arrow>
               <IconButton
                 aria-label={t('nutrition-coach.actions.refresh')}
