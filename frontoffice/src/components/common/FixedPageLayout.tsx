@@ -102,6 +102,7 @@ export function FixedPageLayout({
                                 minWidth: 0,
                                 display: 'flex',
                                 flexDirection: 'column',
+                                width: '1px',
                             }}
                         >
                             <TextWithTooltip
