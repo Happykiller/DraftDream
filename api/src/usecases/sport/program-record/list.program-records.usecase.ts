@@ -31,7 +31,7 @@ export class ListProgramRecordsUsecase {
       const isCoach = session.role === Role.COACH;
 
       const result = await this.inversify.bddService.programRecord.list({
-        userId: isAdmin || isCoach ? filters.userId ?? session.userId : session.userId,
+        userId: isAdmin ? filters.userId : (isCoach ? filters.userId ?? session.userId : session.userId),
         programId: filters.programId,
         sessionId: filters.sessionId,
         state: filters.state,
