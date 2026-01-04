@@ -514,6 +514,8 @@
         "program_name_label": "Nom du programme",
         "duration_label": "Duree (sem.)",
         "frequency_label": "Freq./sem.",
+        "start_date_label": "Date de début",
+        "end_date_label": "Date de fin",
         "description_label": "Description",
         "description_placeholder": "Objectifs et details...",
         "search_placeholder": "Rechercher une séance...",
@@ -758,9 +760,13 @@
         "information": {
           "duration": "Durée",
           "frequency": "Fréquence",
+          "start_date": "Date de début",
+          "end_date": "Date de fin",
           "difficulty": "Niveau",
           "athlete": "Athlète assigné",
-          "no_athlete": "Non assigné"
+          "no_athlete": "Non assigné",
+          "no_start_date": "Non définie",
+          "no_end_date": "Non définie"
         },
         "stats": {
           "sessions": "Nombre de séances",
@@ -805,9 +811,13 @@
       "information": {
         "duration": "Durée",
         "frequency": "Fréquence",
+        "start_date": "Date de début",
+        "end_date": "Date de fin",
         "difficulty": "Niveau",
         "athlete": "Athlète assigné",
-        "no_athlete": "Non assigné"
+        "no_athlete": "Non assigné",
+        "no_start_date": "Non définie",
+        "no_end_date": "Non définie"
       },
       "stats": {
         "sessions": "Nombre de séances",
@@ -963,7 +973,9 @@
         "plan_name_label": "Nom du plan",
         "plan_name_default": "Plan nutritionel",
         "plan_description_label": "Notes",
-        "plan_description_placeholder": "Objectifs, recommandations et notes..."
+        "plan_description_placeholder": "Objectifs, recommandations et notes...",
+        "start_date_label": "Date de début",
+        "end_date_label": "Date de fin"
       },
       "day_library": {
         "title": "Bibliothèque de journées",
@@ -1113,7 +1125,11 @@
       "collapse_details": "Réduire les détails",
       "metadata": {
         "created_on": "Créé le {{date}}",
-        "creator": "Par {{name}}"
+        "creator": "Par {{name}}",
+        "start_date": "Date de début : {{date}}",
+        "end_date": "Date de fin : {{date}}",
+        "no_start_date": "Date de début non définie",
+        "no_end_date": "Date de fin non définie"
       }
     },
     "macros": {
@@ -1203,7 +1219,16 @@
         "average_calories": {
           "label": "Calories moyennes",
           "value": "{{value}} kcal/jour"
-        }
+        },
+        "start_date": {
+          "label": "Date de début",
+          "value": "{{date}}"
+        },
+        "end_date": {
+          "label": "Date de fin",
+          "value": "{{date}}"
+        },
+        "not_set": "Non définie"
       },
       "coach_notes": {
         "empty": "Aucune note du coach pour le moment."

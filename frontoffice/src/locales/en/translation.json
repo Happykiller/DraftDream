@@ -512,6 +512,8 @@
         "program_name_label": "Program name",
         "duration_label": "Duration (weeks)",
         "frequency_label": "Freq./week",
+        "start_date_label": "Start date",
+        "end_date_label": "End date",
         "search_placeholder": "Search a session...",
         "filter_label": "Category",
         "filter_all": "All categories",
@@ -754,9 +756,13 @@
         "information": {
           "duration": "Duration",
           "frequency": "Frequency",
+          "start_date": "Start date",
+          "end_date": "End date",
           "difficulty": "Level",
           "athlete": "Assigned athlete",
-          "no_athlete": "Not assigned"
+          "no_athlete": "Not assigned",
+          "no_start_date": "Not set",
+          "no_end_date": "Not set"
         },
         "stats": {
           "sessions": "Number of sessions",
@@ -801,9 +807,13 @@
       "information": {
         "duration": "Duration",
         "frequency": "Frequency",
+        "start_date": "Start date",
+        "end_date": "End date",
         "difficulty": "Level",
         "athlete": "Assigned athlete",
-        "no_athlete": "Not assigned"
+        "no_athlete": "Not assigned",
+        "no_start_date": "Not set",
+        "no_end_date": "Not set"
       },
       "stats": {
         "sessions": "Number of sessions",
@@ -959,7 +969,9 @@
         "plan_name_label": "Plan name",
         "plan_name_default": "Nutrition plan",
         "plan_description_label": "Notes",
-        "plan_description_placeholder": "Objectives, guidance and notes..."
+        "plan_description_placeholder": "Objectives, guidance and notes...",
+        "start_date_label": "Start date",
+        "end_date_label": "End date"
       },
       "day_library": {
         "title": "Meal day library",
@@ -1109,7 +1121,11 @@
       "collapse_details": "Collapse details",
       "metadata": {
         "created_on": "Created on {{date}}",
-        "creator": "By {{name}}"
+        "creator": "By {{name}}",
+        "start_date": "Start date: {{date}}",
+        "end_date": "End date: {{date}}",
+        "no_start_date": "Start date not set",
+        "no_end_date": "End date not set"
       }
     },
     "macros": {
@@ -1199,7 +1215,16 @@
         "average_calories": {
           "label": "Average calories",
           "value": "{{value}} kcal/day"
-        }
+        },
+        "start_date": {
+          "label": "Start date",
+          "value": "{{date}}"
+        },
+        "end_date": {
+          "label": "End date",
+          "value": "{{date}}"
+        },
+        "not_set": "Not set"
       },
       "coach_notes": {
         "empty": "No coach notes have been added yet."

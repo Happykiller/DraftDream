@@ -123,6 +123,8 @@ export function ProgramsCoach(): React.JSX.Element {
         duration: baseProgram.duration,
         frequency: baseProgram.frequency,
         description: baseProgram.description ?? '',
+        startDate: baseProgram.startDate ?? undefined,
+        endDate: baseProgram.endDate ?? undefined,
         sessions: sessionSnapshots,
         sessionIds: baseProgram.sessions.map((session) => session.id),
         userId: payload.athleteId,

@@ -100,6 +100,8 @@
       "activity_preferences": "Préférences d'activité",
       "budget": "Budget",
       "desired_start_date": "Date de début souhaitée",
+      "start_date": "Date de début",
+      "end_date": "Date de fin",
       "medical_conditions": "Conditions médicales",
       "allergies": "Allergies",
       "notes": "Notes",

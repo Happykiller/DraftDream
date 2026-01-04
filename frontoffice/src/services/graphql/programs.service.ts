@@ -15,6 +15,8 @@ const PROGRAM_GET_Q = `
       duration
       frequency
       description
+      startDate
+      endDate
       sessions {
         id
         templateSessionId

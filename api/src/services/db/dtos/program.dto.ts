@@ -33,6 +33,8 @@ export interface CreateProgramDto {
   label: string;
   duration: number;
   frequency: number;
+  startDate?: Date;
+  endDate?: Date;
   description?: string;
   visibility?: 'PRIVATE' | 'PUBLIC';
   /** Snapshot of sessions attached to the program. */
@@ -65,6 +67,8 @@ export type UpdateProgramDto = Partial<{
   label: string;
   duration: number;
   frequency: number;
+  startDate: Date | null;
+  endDate: Date | null;
   description: string;
   visibility: 'PRIVATE' | 'PUBLIC';
   /** Replace the whole snapshot definition. */

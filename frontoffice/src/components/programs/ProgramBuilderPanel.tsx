@@ -872,6 +872,28 @@ export function ProgramBuilderPanel({
                             sx={{ backgroundColor: theme.palette.background.default }}
                           />
                         </Stack>
+                        <Stack direction="row" spacing={1.5}>
+                          <TextField
+                            label={builderCopy.config.start_date_label}
+                            size="small"
+                            fullWidth
+                            type="date"
+                            value={form.startDate}
+                            onChange={handleFormChange('startDate')}
+                            InputLabelProps={{ shrink: true }}
+                            sx={{ backgroundColor: theme.palette.background.default }}
+                          />
+                          <TextField
+                            label={builderCopy.config.end_date_label}
+                            size="small"
+                            fullWidth
+                            type="date"
+                            value={form.endDate}
+                            onChange={handleFormChange('endDate')}
+                            InputLabelProps={{ shrink: true }}
+                            sx={{ backgroundColor: theme.palette.background.default }}
+                          />
+                        </Stack>
                       </CardContent>
                     </Card>
 

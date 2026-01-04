@@ -42,6 +42,8 @@ export class UpdateProgramUsecase {
       if (payload.locale !== undefined) toUpdate.locale = payload.locale;
       if (payload.duration !== undefined) toUpdate.duration = payload.duration;
       if (payload.frequency !== undefined) toUpdate.frequency = payload.frequency;
+      if (payload.startDate !== undefined) toUpdate.startDate = payload.startDate;
+      if (payload.endDate !== undefined) toUpdate.endDate = payload.endDate;
       if (payload.description !== undefined) toUpdate.description = payload.description;
       if (payload.visibility !== undefined) toUpdate.visibility = payload.visibility;
       if (payload.userId !== undefined) toUpdate.userId = payload.userId;

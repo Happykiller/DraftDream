@@ -9,6 +9,8 @@ describe('mapMealPlanUsecaseToGql', () => {
   it('normalizes nullable fields and nested snapshots', () => {
     const createdAt = new Date('2023-08-01T00:00:00.000Z');
     const updatedAt = new Date('2023-08-02T00:00:00.000Z');
+    const startDate = new Date('2023-08-03T00:00:00.000Z');
+    const endDate = new Date('2023-09-01T00:00:00.000Z');
 
     const model: MealPlanUsecaseModel = {
       id: 'meal-plan-1',
@@ -17,6 +19,8 @@ describe('mapMealPlanUsecaseToGql', () => {
       label: 'Prise de masse',
       description: 'Mass gain plan',
       visibility: 'PRIVATE',
+      startDate,
+      endDate,
       calories: 3000,
       proteinGrams: 200,
       carbGrams: 320,
@@ -69,6 +73,8 @@ describe('mapMealPlanUsecaseToGql', () => {
       label: 'Prise de masse',
       description: 'Mass gain plan',
       visibility: MealPlanVisibility.PRIVATE,
+      startDate,
+      endDate,
       calories: 3000,
       proteinGrams: 200,
       carbGrams: 320,

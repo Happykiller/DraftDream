@@ -21,7 +21,7 @@ import {
 
 import type { Program, ProgramSession, ProgramSessionExercise } from '@hooks/programs/usePrograms';
 
-import { deriveProgramDifficulty } from './programFormatting';
+import { deriveProgramDifficulty, formatProgramDate } from './programFormatting';
 import {
   formatProgramDurationLabel,
   getProgramAthleteLabel,
@@ -64,7 +64,7 @@ export function ProgramViewContent({
   activeTab,
   onTabChange,
 }: ProgramViewContentProps): React.JSX.Element {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const sessionsCount = program.sessions.length;
   const exercisesCount = program.sessions.reduce(
@@ -88,6 +88,14 @@ export function ProgramViewContent({
     () => formatProgramDurationLabel(averageDurationMinutes, t),
     [averageDurationMinutes, t],
   );
+  const startDateLabel = React.useMemo(
+    () => (program.startDate ? formatProgramDate(program.startDate, i18n.language) : null),
+    [i18n.language, program.startDate],
+  );
+  const endDateLabel = React.useMemo(
+    () => (program.endDate ? formatProgramDate(program.endDate, i18n.language) : null),
+    [i18n.language, program.endDate],
+  );
 
   const overviewInfoItems = React.useMemo<OverviewInfoItem[]>(() => {
     const items: OverviewInfoItem[] = [
@@ -105,6 +113,22 @@ export function ProgramViewContent({
         value: t('programs-coatch.list.frequency_week', { count: program.frequency }),
         fallback: '',
         Icon: ScheduleOutlined,
+        isChip: false,
+      },
+      {
+        key: 'startDate',
+        label: t('programs-coatch.view.information.start_date'),
+        value: startDateLabel,
+        fallback: t('programs-coatch.view.information.no_start_date'),
+        Icon: CalendarMonthOutlined,
+        isChip: false,
+      },
+      {
+        key: 'endDate',
+        label: t('programs-coatch.view.information.end_date'),
+        value: endDateLabel,
+        fallback: t('programs-coatch.view.information.no_end_date'),
+        Icon: CalendarMonthOutlined,
         isChip: false,
       },
       {
@@ -129,7 +153,7 @@ export function ProgramViewContent({
     }
 
     return items;
-  }, [athleteLabel, difficulty, program.duration, program.frequency, t]);
+  }, [athleteLabel, difficulty, endDateLabel, program.duration, program.frequency, startDateLabel, t]);
 
   const statsItems = React.useMemo<ProgramStatItem[]>(
     () => [

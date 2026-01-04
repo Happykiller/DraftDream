@@ -136,6 +136,8 @@ export function NutritionPlansCoach(): React.JSX.Element {
         locale,
         label: payload.label,
         description: basePlan.description ?? '',
+        startDate: basePlan.startDate ?? undefined,
+        endDate: basePlan.endDate ?? undefined,
         calories: basePlan.calories,
         proteinGrams: basePlan.proteinGrams,
         carbGrams: basePlan.carbGrams,

@@ -59,6 +59,8 @@ interface MealPlanDoc {
   label: string;
   description?: string;
   visibility: 'PRIVATE' | 'PUBLIC';
+  startDate?: Date;
+  endDate?: Date;
   calories: number;
   proteinGrams: number;
   carbGrams: number;
@@ -108,6 +110,8 @@ export class BddServiceMealPlanMongo {
       label: dto.label.trim(),
       description: dto.description,
       visibility: dto.visibility === 'PUBLIC' ? 'PUBLIC' : 'PRIVATE',
+      startDate: dto.startDate,
+      endDate: dto.endDate,
       calories: Math.round(dto.calories),
       proteinGrams: Math.round(dto.proteinGrams),
       carbGrams: Math.round(dto.carbGrams),
@@ -226,6 +230,20 @@ export class BddServiceMealPlanMongo {
     if (patch.visibility !== undefined) {
       $set.visibility = patch.visibility;
     }
+    if (patch.startDate !== undefined) {
+      if (patch.startDate === null) {
+        $unset.startDate = '';
+      } else {
+        $set.startDate = patch.startDate;
+      }
+    }
+    if (patch.endDate !== undefined) {
+      if (patch.endDate === null) {
+        $unset.endDate = '';
+      } else {
+        $set.endDate = patch.endDate;
+      }
+    }
     if (patch.calories !== undefined) $set.calories = Math.round(patch.calories);
     if (patch.proteinGrams !== undefined) $set.proteinGrams = Math.round(patch.proteinGrams);
     if (patch.carbGrams !== undefined) $set.carbGrams = Math.round(patch.carbGrams);
@@ -321,6 +339,8 @@ export class BddServiceMealPlanMongo {
     label: doc.label,
     description: doc.description,
     visibility: (doc.visibility?.toUpperCase() as 'PRIVATE' | 'PUBLIC') ?? 'PRIVATE',
+    startDate: doc.startDate,
+    endDate: doc.endDate,
     calories: doc.calories,
     proteinGrams: doc.proteinGrams,
     carbGrams: doc.carbGrams,

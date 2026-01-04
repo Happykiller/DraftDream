@@ -616,6 +616,26 @@ export function MealPlanBuilderPanel({
                             />
                           )}
                         />
+                        <Stack direction="row" spacing={1.5}>
+                          <TextField
+                            label={builderCopy.config.start_date_label}
+                            size="small"
+                            fullWidth
+                            type="date"
+                            value={form.startDate}
+                            onChange={handleFormChange('startDate')}
+                            InputLabelProps={{ shrink: true }}
+                          />
+                          <TextField
+                            label={builderCopy.config.end_date_label}
+                            size="small"
+                            fullWidth
+                            type="date"
+                            value={form.endDate}
+                            onChange={handleFormChange('endDate')}
+                            InputLabelProps={{ shrink: true }}
+                          />
+                        </Stack>
                         <TextField
                           label={builderCopy.config.plan_description_label}
                           value={form.description}

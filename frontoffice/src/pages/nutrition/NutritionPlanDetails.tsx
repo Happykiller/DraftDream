@@ -188,6 +188,20 @@ export function NutritionPlanDetails(): React.JSX.Element {
       date: formatMealPlanDate(mealPlan.createdAt, i18n.language),
     });
   }, [i18n.language, mealPlan, t]);
+  const startDateLabel = React.useMemo(() => {
+    if (!mealPlan?.startDate) {
+      return null;
+    }
+
+    return formatMealPlanDate(mealPlan.startDate, i18n.language);
+  }, [i18n.language, mealPlan?.startDate]);
+  const endDateLabel = React.useMemo(() => {
+    if (!mealPlan?.endDate) {
+      return null;
+    }
+
+    return formatMealPlanDate(mealPlan.endDate, i18n.language);
+  }, [i18n.language, mealPlan?.endDate]);
 
   const handleBack = React.useCallback(() => {
     navigate(isCoachView ? '/nutrition-coach' : '/nutrition-athlete');
@@ -442,6 +456,40 @@ export function NutritionPlanDetails(): React.JSX.Element {
                                             i18n.language,
                                           ),
                                         })}
+                                      </Typography>
+                                    </Stack>
+                                    <Stack
+                                      direction="row"
+                                      alignItems="center"
+                                      justifyContent="space-between"
+                                      spacing={1.5}
+                                    >
+                                      <Typography variant="body2" color="text.secondary">
+                                        {t('nutrition-details.overview.plan_stats.start_date.label')}
+                                      </Typography>
+                                      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                                        {startDateLabel
+                                          ? t('nutrition-details.overview.plan_stats.start_date.value', {
+                                            date: startDateLabel,
+                                          })
+                                          : t('nutrition-details.overview.plan_stats.not_set')}
+                                      </Typography>
+                                    </Stack>
+                                    <Stack
+                                      direction="row"
+                                      alignItems="center"
+                                      justifyContent="space-between"
+                                      spacing={1.5}
+                                    >
+                                      <Typography variant="body2" color="text.secondary">
+                                        {t('nutrition-details.overview.plan_stats.end_date.label')}
+                                      </Typography>
+                                      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                                        {endDateLabel
+                                          ? t('nutrition-details.overview.plan_stats.end_date.value', {
+                                            date: endDateLabel,
+                                          })
+                                          : t('nutrition-details.overview.plan_stats.not_set')}
                                       </Typography>
                                     </Stack>
                                   </Stack>

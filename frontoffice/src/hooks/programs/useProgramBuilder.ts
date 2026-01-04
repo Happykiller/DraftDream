@@ -42,6 +42,8 @@ const INITIAL_FORM_STATE: ProgramForm = {
   programName: '',
   duration: '',
   frequency: '',
+  startDate: '',
+  endDate: '',
 };
 
 function hasNonEmptyText(value?: string | null): boolean {
@@ -56,6 +58,32 @@ function hasAnyLabeledItems(
   }
 
   return items.some((item) => Boolean(item?.label && item.label.trim().length > 0));
+}
+
+function formatDateInput(value?: string | null): string {
+  if (!value) {
+    return '';
+  }
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return '';
+  }
+
+  return parsed.toISOString().slice(0, 10);
+}
+
+function normalizeDateInput(value?: string | null): string | undefined {
+  if (!value) {
+    return undefined;
+  }
+
+  const parsed = new Date(`${value}T00:00:00.000Z`);
+  if (Number.isNaN(parsed.getTime())) {
+    return undefined;
+  }
+
+  return parsed.toISOString();
 }
 
 /**
@@ -1346,6 +1374,9 @@ export function useProgramBuilder(
           }),
         }));
 
+        const startDate = normalizeDateInput(form.startDate);
+        const endDate = normalizeDateInput(form.endDate);
+
         if (mode === 'edit' && program) {
           await updateProgram({
             id: program.id,
@@ -1355,6 +1386,8 @@ export function useProgramBuilder(
             duration,
             frequency,
             description: programDescription.trim() || '',
+            startDate,
+            endDate,
             sessionIds: sessions.map((session) => session.sessionId),
             sessions: sessionSnapshots,
             userId: form.athlete || null,
@@ -1368,6 +1401,8 @@ export function useProgramBuilder(
             duration,
             frequency,
             description: programDescription.trim() || '',
+            startDate,
+            endDate,
             sessionIds: sessions.map((session) => session.sessionId),
             sessions: sessionSnapshots,
             userId: form.athlete || null,
@@ -1385,6 +1420,8 @@ export function useProgramBuilder(
       createProgram,
       flashError,
       form.athlete,
+      form.endDate,
+      form.startDate,
       i18n.language,
       mode,
       onCancel,
@@ -1434,6 +1471,8 @@ export function useProgramBuilder(
       programName: program.label,
       duration: program.duration != null ? String(program.duration) : '',
       frequency: program.frequency != null ? String(program.frequency) : '',
+      startDate: formatDateInput(program.startDate),
+      endDate: formatDateInput(program.endDate),
     });
     setProgramDescription(program.description ?? '');
 

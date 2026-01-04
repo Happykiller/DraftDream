@@ -49,6 +49,8 @@ export interface Program {
   duration: number;
   frequency: number;
   description?: string | null;
+  startDate?: string | null;
+  endDate?: string | null;
   userId?: string | null;
   athlete?: ProgramCreator | null;
   createdBy: string;
@@ -83,6 +85,8 @@ const LIST_Q = `
         duration
         frequency
         description
+        startDate
+        endDate
         visibility
         sessions {
           id templateSessionId slug locale label durationMin description
@@ -115,6 +119,8 @@ const CREATE_M = `
       duration
       frequency
       description
+      startDate
+      endDate
       visibility
       sessions {
         id templateSessionId slug locale label durationMin description
@@ -143,6 +149,8 @@ const UPDATE_M = `
       duration
       frequency
       description
+      startDate
+      endDate
       visibility
       sessions {
         id templateSessionId slug locale label durationMin description
@@ -223,6 +231,8 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
       duration: number;
       frequency: number;
       description?: string;
+      startDate?: string;
+      endDate?: string;
       sessionIds?: string[];
       sessions?: ProgramSession[];
       userId?: string | null;
@@ -283,6 +293,8 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
       duration?: number;
       frequency?: number;
       description?: string | null;
+      startDate?: string | null;
+      endDate?: string | null;
       sessionIds?: string[];
       sessions?: ProgramSession[];
       userId?: string | null;

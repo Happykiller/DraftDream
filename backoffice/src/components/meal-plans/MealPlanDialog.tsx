@@ -80,6 +80,8 @@ export interface MealPlanDialogValues {
   locale: string;
   label: string;
   description: string;
+  startDate: string;
+  endDate: string;
   calories: number;
   proteinGrams: number;
   carbGrams: number;
@@ -108,6 +110,8 @@ const DEFAULT_VALUES: MealPlanDialogValues = {
   locale: 'en',
   label: '',
   description: '',
+  startDate: '',
+  endDate: '',
   calories: 0,
   proteinGrams: 0,
   carbGrams: 0,
@@ -156,6 +160,19 @@ function cloneDay(option: MealPlanDialogDayOption): MealPlanDialogDay {
   };
 }
 
+function formatDateInput(value?: string | null): string {
+  if (!value) {
+    return '';
+  }
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return '';
+  }
+
+  return parsed.toISOString().slice(0, 10);
+}
+
 function toDialogValues(initial: MealPlan, userOptions: MealPlanDialogUserOption[]): MealPlanDialogValues {
   const user: MealPlanDialogUserOption | null = (() => {
     if (initial.athlete) {
@@ -171,6 +188,8 @@ function toDialogValues(initial: MealPlan, userOptions: MealPlanDialogUserOption
     locale: initial.locale,
     label: initial.label,
     description: initial.description ?? '',
+    startDate: formatDateInput(initial.startDate),
+    endDate: formatDateInput(initial.endDate),
     calories: initial.calories,
     proteinGrams: initial.proteinGrams,
     carbGrams: initial.carbGrams,
@@ -555,6 +574,27 @@ export function MealPlanDialog({
               minRows={2}
               fullWidth
             />
+
+            <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+              <TextField
+                label={t('common.labels.start_date')}
+                name="startDate"
+                type="date"
+                value={values.startDate}
+                onChange={handleFieldChange}
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+              />
+              <TextField
+                label={t('common.labels.end_date')}
+                name="endDate"
+                type="date"
+                value={values.endDate}
+                onChange={handleFieldChange}
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+              />
+            </Stack>
 
             <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
               <TextField

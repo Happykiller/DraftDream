@@ -59,6 +59,8 @@ export class ProgramResolver {
       duration: input.duration,
       frequency: input.frequency,
       description: input.description,
+      startDate: input.startDate ?? undefined,
+      endDate: input.endDate ?? undefined,
       sessions,
       userId: input.userId === undefined ? undefined : input.userId,
       createdBy: session.userId,
@@ -86,6 +88,8 @@ export class ProgramResolver {
       duration: input.duration,
       frequency: input.frequency,
       description: input.description ?? undefined,
+      startDate: input.startDate === undefined ? undefined : input.startDate ?? null,
+      endDate: input.endDate === undefined ? undefined : input.endDate ?? null,
       sessions,
       userId: input.userId === undefined ? undefined : input.userId,
     };

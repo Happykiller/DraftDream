@@ -7,6 +7,8 @@ describe('mapMealPlanToUsecase', () => {
   it('maps nested meal plan snapshots to the use case model', () => {
     const createdAt = new Date('2024-12-01T12:00:00.000Z');
     const updatedAt = new Date('2024-12-02T12:00:00.000Z');
+    const startDate = new Date('2024-12-03T00:00:00.000Z');
+    const endDate = new Date('2025-01-15T00:00:00.000Z');
 
     const plan: MealPlan = {
       id: 'meal-plan-1',
@@ -15,6 +17,8 @@ describe('mapMealPlanToUsecase', () => {
       label: 'Sèche',
       description: 'Meal plan for cutting phase',
       visibility: 'PUBLIC',
+      startDate,
+      endDate,
       calories: 2200,
       proteinGrams: 180,
       carbGrams: 200,
@@ -68,6 +72,8 @@ describe('mapMealPlanToUsecase', () => {
       label: 'Sèche',
       description: 'Meal plan for cutting phase',
       visibility: 'PUBLIC',
+      startDate,
+      endDate,
       calories: 2200,
       proteinGrams: 180,
       carbGrams: 200,
