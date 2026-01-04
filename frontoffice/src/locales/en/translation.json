@@ -368,11 +368,30 @@
           "unknown": "Not provided"
         }
       },
+      "meal_records": {
+        "empty": "No meal feedback available yet.",
+        "comment_fallback": "No comment provided",
+        "fields": {
+          "meal_plan": "Meal plan",
+          "created_at": "Created on",
+          "updated_at": "Last updated",
+          "satisfaction": "Satisfaction score",
+          "comment": "Comment"
+        },
+        "satisfaction_value": "{{value}} / 5",
+        "satisfaction_missing": "Not provided",
+        "status": {
+          "finish": "Completed",
+          "draft": "In progress",
+          "create": "Created"
+        }
+      },
       "tabs": {
         "overview": "Overview",
         "programs": "Programs",
         "nutritions": "Nutritions",
         "sessions": "Session feedback",
+        "meal_records": "Meal feedback",
         "programs_helper": "Attach training programs to this athlete to track their progress.",
         "nutritions_helper": "Link nutrition plans to centralize the athlete's dietary follow-up."
       },

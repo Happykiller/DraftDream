@@ -28,9 +28,10 @@ export class ListMealRecordsUsecase {
     try {
       const { session, ...filters } = dto;
       const isAdmin = session.role === Role.ADMIN;
+      const isCoach = session.role === Role.COACH;
 
       const result = await this.inversify.bddService.mealRecord.list({
-        userId: isAdmin ? filters.userId : session.userId,
+        userId: isAdmin ? filters.userId : (isCoach ? filters.userId ?? session.userId : session.userId),
         mealPlanId: filters.mealPlanId,
         mealDayId: filters.mealDayId,
         mealId: filters.mealId,

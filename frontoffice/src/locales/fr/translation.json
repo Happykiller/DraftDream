@@ -370,11 +370,30 @@
           "unknown": "Non renseignée"
         }
       },
+      "meal_records": {
+        "empty": "Aucun retour repas disponible pour le moment.",
+        "comment_fallback": "Aucun commentaire transmis",
+        "fields": {
+          "meal_plan": "Plan nutritionnel",
+          "created_at": "Date de création",
+          "updated_at": "Dernière mise à jour",
+          "satisfaction": "Note de satisfaction",
+          "comment": "Commentaire"
+        },
+        "satisfaction_value": "{{value}} / 5",
+        "satisfaction_missing": "Non renseignée",
+        "status": {
+          "finish": "Terminé",
+          "draft": "En cours",
+          "create": "Créé"
+        }
+      },
       "tabs": {
         "overview": "Vue d'ensemble",
         "programs": "Programmes",
         "nutritions": "Nutritions",
         "sessions": "Retour sessions",
+        "meal_records": "Retour repas",
         "programs_helper": "Associez vos programmes d'entraînement à cet athlète pour suivre sa progression.",
         "nutritions_helper": "Reliez les plans nutritionnels à cet athlète pour centraliser son suivi alimentaire."
       },

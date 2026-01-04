@@ -30,6 +30,7 @@ import {
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
+import { MealRecordPreviewGrid } from '@components/athletes/MealRecordPreviewGrid';
 import { ProgramRecordPreviewGrid } from '@components/athletes/ProgramRecordPreviewGrid';
 
 import { getAthleteDisplayName } from '@components/athletes/athleteLinkUtils';
@@ -41,10 +42,11 @@ import { useAthleteInfo } from '@hooks/athletes/useAthleteInfo';
 import { useCoachAthleteLink } from '@hooks/athletes/useCoachAthleteLink';
 import { usePrograms, type Program } from '@hooks/programs/usePrograms';
 import { useMealPlans, type MealPlan } from '@hooks/nutrition/useMealPlans';
+import { useMealRecords, type MealRecord } from '@hooks/nutrition/useMealRecords';
 import { useProgramRecords, type ProgramRecord } from '@hooks/program-records/useProgramRecords';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 
-type AthleteLinkTab = 'overview' | 'programs' | 'nutritions' | 'sessions';
+type AthleteLinkTab = 'overview' | 'programs' | 'nutritions' | 'sessions' | 'meal-records';
 
 interface TabPanelProps {
   readonly value: AthleteLinkTab;
@@ -198,6 +200,21 @@ export function AthleteLinkDetails(): React.JSX.Element {
     enabled: Boolean(athleteId),
   });
 
+  const { items: mealPlansLookup } = useMealPlans({
+    page: 1,
+    limit: 100,
+    q: '',
+    userId: athleteId ?? undefined,
+    enabled: Boolean(athleteId),
+  });
+
+  const mealPlanLabelById = React.useMemo(() => {
+    return mealPlansLookup.reduce<Record<string, string>>((accumulator, mealPlan) => {
+      accumulator[mealPlan.id] = mealPlan.label;
+      return accumulator;
+    }, {});
+  }, [mealPlansLookup]);
+
   const { items: programsLookup } = usePrograms({
     page: 1,
     limit: 100,
@@ -216,6 +233,10 @@ export function AthleteLinkDetails(): React.JSX.Element {
   const { list: listProgramRecords } = useProgramRecords();
   const [programRecords, setProgramRecords] = React.useState<ProgramRecord[]>([]);
   const [programRecordsLoading, setProgramRecordsLoading] = React.useState(false);
+
+  const { list: listMealRecords } = useMealRecords();
+  const [mealRecords, setMealRecords] = React.useState<MealRecord[]>([]);
+  const [mealRecordsLoading, setMealRecordsLoading] = React.useState(false);
 
   const nutritionEmptyState = React.useMemo(
     () =>
@@ -280,6 +301,18 @@ export function AthleteLinkDetails(): React.JSX.Element {
       .then(({ items }) => setProgramRecords(items))
       .finally(() => setProgramRecordsLoading(false));
   }, [athleteId, listProgramRecords]);
+
+  React.useEffect(() => {
+    if (!athleteId) {
+      setMealRecords([]);
+      return;
+    }
+
+    setMealRecordsLoading(true);
+    listMealRecords({ userId: athleteId, limit: 12, page: 1 })
+      .then(({ items }) => setMealRecords(items))
+      .finally(() => setMealRecordsLoading(false));
+  }, [athleteId, listMealRecords]);
 
   const handleViewProgram = React.useCallback(
     (program: Program) => {
@@ -569,6 +602,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
                   <Tab value="programs" label={t('athletes.details.tabs.programs')} />
                   <Tab value="nutritions" label={t('athletes.details.tabs.nutritions')} />
                   <Tab value="sessions" label={t('athletes.details.tabs.sessions')} />
+                  <Tab value="meal-records" label={t('athletes.details.tabs.meal_records')} />
                 </Tabs>
 
                 <Divider />
@@ -684,6 +718,19 @@ export function AthleteLinkDetails(): React.JSX.Element {
                           records={programRecords}
                           loading={programRecordsLoading}
                           programLabelById={programLabelById}
+                          formatDate={formatDate}
+                        />
+                      </Box>
+                    ) : null}
+                  </TabPanel>
+
+                  <TabPanel value="meal-records" currentTab={currentTab}>
+                    {link ? (
+                      <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3 } }}>
+                        <MealRecordPreviewGrid
+                          records={mealRecords}
+                          loading={mealRecordsLoading}
+                          mealPlanLabelById={mealPlanLabelById}
                           formatDate={formatDate}
                         />
                       </Box>
