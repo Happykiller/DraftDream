@@ -1,17 +1,17 @@
 import * as React from 'react';
+import Tooltip from '@mui/material/Tooltip';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Box, CircularProgress, Divider, IconButton, Stack, Typography } from '@mui/material';
+import ReplayIcon from '@mui/icons-material/Replay';
 import CircleIcon from '@mui/icons-material/Circle';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import RestaurantMenuOutlinedIcon from '@mui/icons-material/RestaurantMenuOutlined';
-import Tooltip from '@mui/material/Tooltip';
+import { Box, CircularProgress, Divider, IconButton, Stack, Typography } from '@mui/material';
 
+import { GlassCard } from '@components/common/GlassCard';
+import { TextWithTooltip } from '@components/common/TextWithTooltip';
 import { useMealRecords, MealRecordState, type MealRecord } from '@hooks/nutrition/useMealRecords';
 import { useMealPlans, type MealPlan, type MealPlanDaySnapshot, type MealPlanMealSnapshot } from '@hooks/nutrition/useMealPlans';
-import { GlassCard } from '../../../common/GlassCard';
-import { TextWithTooltip } from '../../../common/TextWithTooltip';
 
 export function AthleteNutritionWidget(): React.JSX.Element {
     const { t } = useTranslation();
@@ -203,7 +203,7 @@ export function AthleteNutritionWidget(): React.JSX.Element {
                                                                                 disabled={!mealDayId || !mealId}
                                                                             >
                                                                                 {isActive ? (
-                                                                                    <PlayCircleIcon fontSize="small" />
+                                                                                    <ReplayIcon fontSize="small" />
                                                                                 ) : (
                                                                                     <PlayArrowIcon fontSize="small" />
                                                                                 )}

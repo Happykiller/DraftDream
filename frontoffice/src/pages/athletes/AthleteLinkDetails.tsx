@@ -4,11 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 import {
   CalendarMonth,
+  Email,
   EventBusy,
   EventNote,
   Mail,
   MonitorHeart,
   Notes,
+  Phone,
   TrackChanges,
   Visibility,
 } from '@mui/icons-material';
@@ -20,17 +22,18 @@ import {
   Chip,
   CircularProgress,
   Divider,
-  Grid,
+
   Stack,
   Tab,
   Tabs,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
 
 import { getAthleteDisplayName } from '@components/athletes/athleteLinkUtils';
-import { TextWithTooltip } from '@components/common/TextWithTooltip';
+
 import { MealPlanList } from '@components/nutrition/MealPlanList';
 import { ProgramList } from '@components/programs/ProgramList';
 import type { AthleteLinkDetailsLoaderResult } from '@pages/athletes/AthleteLinkDetails.loader';
@@ -57,8 +60,6 @@ function TabPanel({ value, currentTab, children }: TabPanelProps): React.JSX.Ele
   return <Box sx={{ height: '100%' }}>{children}</Box>;
 }
 
-
-
 interface ProgramTabEmptyState {
   readonly title: string;
   readonly description: string;
@@ -77,8 +78,6 @@ interface MacroLabels {
   readonly carbs: string;
   readonly fats: string;
 }
-
-
 
 /** Dedicated page showing the details of a coach-athlete link. */
 export function AthleteLinkDetails(): React.JSX.Element {
@@ -264,17 +263,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
     [navigate],
   );
 
-  const renderClientField = React.useCallback(
-    (label: string, value: string) => (
-      <Stack spacing={0.5} alignItems="flex-start" sx={{ minWidth: 0 }}>
-        <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, letterSpacing: 0.4 }}>
-          {label}
-        </Typography>
-        <TextWithTooltip tooltipTitle={value} variant="body2" sx={{ width: '100%' }} />
-      </Stack>
-    ),
-    [],
-  );
+
 
   return (
     <Stack
@@ -398,14 +387,20 @@ export function AthleteLinkDetails(): React.JSX.Element {
                       {t('athletes.details.client_sheet_title')}
                     </Typography>
 
-                    <Grid container spacing={1.5} rowSpacing={2}>
-                      <Grid size={{ xs: 6, sm: 6 }}>
-                        {renderClientField(t('athletes.details.fields.email'), athleteEmail)}
-                      </Grid>
-                      <Grid size={{ xs: 6, sm: 6 }}>
-                        {renderClientField(t('athletes.details.fields.phone'), athletePhone)}
-                      </Grid>
-                    </Grid>
+                    <Stack spacing={1}>
+                      <Stack direction="row" spacing={1} alignItems="center">
+                        <Tooltip title={t('athletes.details.fields.email')}>
+                          <Email color="primary" fontSize="small" />
+                        </Tooltip>
+                        <Typography variant="body2">{athleteEmail}</Typography>
+                      </Stack>
+                      <Stack direction="row" spacing={1} alignItems="center">
+                        <Tooltip title={t('athletes.details.fields.phone')}>
+                          <Phone color="primary" fontSize="small" />
+                        </Tooltip>
+                        <Typography variant="body2">{athletePhone}</Typography>
+                      </Stack>
+                    </Stack>
 
                     <Card
                       variant="outlined"

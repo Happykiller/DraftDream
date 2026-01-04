@@ -1,17 +1,17 @@
 import * as React from 'react';
+import Tooltip from '@mui/material/Tooltip';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Box, CircularProgress, Divider, IconButton, Stack, Typography } from '@mui/material';
-import FitnessCenterOutlinedIcon from '@mui/icons-material/FitnessCenterOutlined';
+import ReplayIcon from '@mui/icons-material/Replay';
 import CircleIcon from '@mui/icons-material/Circle';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import PlayCircleIcon from '@mui/icons-material/PlayCircle';
+import FitnessCenterOutlinedIcon from '@mui/icons-material/FitnessCenterOutlined';
+import { Box, CircularProgress, Divider, IconButton, Stack, Typography } from '@mui/material';
 
+import { GlassCard } from '@components/common/GlassCard';
 import { usePrograms } from '@hooks/programs/usePrograms';
+import { TextWithTooltip } from '@components/common/TextWithTooltip';
 import { useProgramRecords, ProgramRecordState, type ProgramRecord } from '@hooks/program-records/useProgramRecords';
-import { GlassCard } from '../../../common/GlassCard';
-import { TextWithTooltip } from '../../../common/TextWithTooltip';
-import Tooltip from '@mui/material/Tooltip';
 
 export function AthleteProgramsWidget(): React.JSX.Element {
     const { t } = useTranslation();
@@ -124,7 +124,7 @@ export function AthleteProgramsWidget(): React.JSX.Element {
                                                             sx={{ p: 0.5 }}
                                                         >
                                                             {isActive ? (
-                                                                <PlayCircleIcon fontSize="small" />
+                                                                <ReplayIcon fontSize="small" />
                                                             ) : (
                                                                 <PlayArrowIcon fontSize="small" />
                                                             )}
