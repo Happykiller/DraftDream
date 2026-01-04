@@ -94,7 +94,14 @@ export function FixedPageLayout({
                                 {icon}
                             </Box>
                         )}
-                        <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+                        <Box
+                            sx={{
+                                flexGrow: 1,
+                                minWidth: 0,
+                                maxWidth: { xs: '100%', sm: '50%' },
+                                flexBasis: { xs: '100%', sm: '50%' },
+                            }}
+                        >
                             <TextWithTooltip
                                 tooltipTitle={title}
                                 variant="h6"
