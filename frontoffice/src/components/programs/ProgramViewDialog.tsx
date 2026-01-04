@@ -1,11 +1,8 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  ,
-} from '@mui/material';
-import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import { VisibilityOutlined } from '@mui/icons-material';
 
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import type { Program } from '@hooks/programs/usePrograms';
 
 import { ProgramDialogLayout } from './ProgramDialogLayout';
