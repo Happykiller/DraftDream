@@ -342,10 +342,53 @@
           "fats": "Lipides"
         }
       },
+      "sessions": {
+        "title": "Retours sessions",
+        "helper": "Consultez les retours récents pour ajuster la charge et la progression de l'athlète.",
+        "fields": {
+          "program": "Programme",
+          "created_at": "Date de création",
+          "updated_at": "Dernière mise à jour",
+          "satisfaction": "Note de satisfaction",
+          "difficulty": "Difficulté",
+          "duration": "Durée",
+          "comment": "Commentaire"
+        },
+        "satisfaction_value": "{{value}} / 5",
+        "duration_value": "{{count}} min",
+        "status": {
+          "completed": "Terminé",
+          "missed": "Manqué",
+          "in_progress": "En cours"
+        },
+        "difficulty": {
+          "easy": "Facile",
+          "moderate": "Modérée",
+          "hard": "Difficile"
+        },
+        "samples": {
+          "session_1": {
+            "label": "Renforcement haut du corps",
+            "program": "Programme Force 8 semaines",
+            "comment": "Bonne énergie, légère fatigue en fin de séance mais très motivé."
+          },
+          "session_2": {
+            "label": "Cardio HIIT express",
+            "program": "Programme Perte de poids",
+            "comment": "Rythme intense, besoin d'un temps de récupération plus long."
+          },
+          "session_3": {
+            "label": "Mobilité & récupération",
+            "program": "Programme Posture & mobilité",
+            "comment": "Séance courte, sensation de relâchement mais manque de focus."
+          }
+        }
+      },
       "tabs": {
         "overview": "Vue d'ensemble",
         "programs": "Programmes",
         "nutritions": "Nutritions",
+        "sessions": "Retour sessions",
         "programs_helper": "Associez vos programmes d'entraînement à cet athlète pour suivre sa progression.",
         "nutritions_helper": "Reliez les plans nutritionnels à cet athlète pour centraliser son suivi alimentaire."
       },

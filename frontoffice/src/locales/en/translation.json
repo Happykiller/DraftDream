@@ -340,10 +340,53 @@
           "fats": "Fats"
         }
       },
+      "sessions": {
+        "title": "Session feedback",
+        "helper": "Review recent feedback to fine-tune the athlete's load and progress.",
+        "fields": {
+          "program": "Program",
+          "created_at": "Created on",
+          "updated_at": "Last updated",
+          "satisfaction": "Satisfaction score",
+          "difficulty": "Difficulty",
+          "duration": "Duration",
+          "comment": "Comment"
+        },
+        "satisfaction_value": "{{value}} / 5",
+        "duration_value": "{{count}} min",
+        "status": {
+          "completed": "Completed",
+          "missed": "Missed",
+          "in_progress": "In progress"
+        },
+        "difficulty": {
+          "easy": "Easy",
+          "moderate": "Moderate",
+          "hard": "Hard"
+        },
+        "samples": {
+          "session_1": {
+            "label": "Upper-body strength",
+            "program": "8-week Strength program",
+            "comment": "Great energy, a little fatigue at the end but highly motivated."
+          },
+          "session_2": {
+            "label": "HIIT cardio blast",
+            "program": "Weight loss program",
+            "comment": "Very intense pace, needs a longer recovery window."
+          },
+          "session_3": {
+            "label": "Mobility & recovery",
+            "program": "Posture & mobility program",
+            "comment": "Short session, felt more relaxed but focus was missing."
+          }
+        }
+      },
       "tabs": {
         "overview": "Overview",
         "programs": "Programs",
         "nutritions": "Nutritions",
+        "sessions": "Session feedback",
         "programs_helper": "Attach training programs to this athlete to track their progress.",
         "nutritions_helper": "Link nutrition plans to centralize the athlete's dietary follow-up."
       },

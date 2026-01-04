@@ -7,11 +7,17 @@ import {
   Email,
   EventBusy,
   EventNote,
+  FitnessCenter,
+  HourglassBottom,
   Mail,
   MonitorHeart,
   Notes,
   Phone,
+  RateReview,
+  StarBorder,
   TrackChanges,
+  TrendingUp,
+  Update,
   Visibility,
 } from '@mui/icons-material';
 import {
@@ -22,7 +28,7 @@ import {
   Chip,
   CircularProgress,
   Divider,
-
+  Grid,
   Stack,
   Tab,
   Tabs,
@@ -31,6 +37,7 @@ import {
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
+import { GlassCard } from '@components/common/GlassCard';
 
 import { getAthleteDisplayName } from '@components/athletes/athleteLinkUtils';
 
@@ -43,7 +50,10 @@ import { usePrograms, type Program } from '@hooks/programs/usePrograms';
 import { useMealPlans, type MealPlan } from '@hooks/nutrition/useMealPlans';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 
-type AthleteLinkTab = 'overview' | 'programs' | 'nutritions';
+type AthleteLinkTab = 'overview' | 'programs' | 'nutritions' | 'sessions';
+
+type SessionStatus = 'completed' | 'missed' | 'in_progress';
+type SessionDifficulty = 'easy' | 'moderate' | 'hard';
 
 interface TabPanelProps {
   readonly value: AthleteLinkTab;
@@ -77,6 +87,19 @@ interface MacroLabels {
   readonly protein: string;
   readonly carbs: string;
   readonly fats: string;
+}
+
+interface SessionFeedbackRecord {
+  readonly id: string;
+  readonly sessionLabel: string;
+  readonly programLabel: string;
+  readonly status: SessionStatus;
+  readonly createdAt: string;
+  readonly updatedAt: string;
+  readonly satisfactionScore: number;
+  readonly difficulty: SessionDifficulty;
+  readonly durationMinutes: number;
+  readonly comment: string;
 }
 
 /** Dedicated page showing the details of a coach-athlete link. */
@@ -222,6 +245,67 @@ export function AthleteLinkDetails(): React.JSX.Element {
           total: totalMealPlans,
         }),
     [mealPlans.length, mealPlansLoading, t, totalMealPlans],
+  );
+
+  const sessionStatusLabels = React.useMemo(
+    () => ({
+      completed: { label: t('athletes.details.sessions.status.completed'), color: 'success' as const },
+      missed: { label: t('athletes.details.sessions.status.missed'), color: 'error' as const },
+      in_progress: { label: t('athletes.details.sessions.status.in_progress'), color: 'warning' as const },
+    }),
+    [t],
+  );
+
+  const sessionDifficultyLabels = React.useMemo(
+    () => ({
+      easy: t('athletes.details.sessions.difficulty.easy'),
+      moderate: t('athletes.details.sessions.difficulty.moderate'),
+      hard: t('athletes.details.sessions.difficulty.hard'),
+    }),
+    [t],
+  );
+
+  /** Local session feedback preview data until API integration is available. */
+  const sessionFeedbacks = React.useMemo<SessionFeedbackRecord[]>(
+    () => [
+      {
+        id: 'session-feedback-1',
+        sessionLabel: t('athletes.details.sessions.samples.session_1.label'),
+        programLabel: t('athletes.details.sessions.samples.session_1.program'),
+        status: 'completed',
+        createdAt: '2024-06-05T08:30:00.000Z',
+        updatedAt: '2024-06-06T10:20:00.000Z',
+        satisfactionScore: 4.6,
+        difficulty: 'moderate',
+        durationMinutes: 55,
+        comment: t('athletes.details.sessions.samples.session_1.comment'),
+      },
+      {
+        id: 'session-feedback-2',
+        sessionLabel: t('athletes.details.sessions.samples.session_2.label'),
+        programLabel: t('athletes.details.sessions.samples.session_2.program'),
+        status: 'in_progress',
+        createdAt: '2024-06-11T12:10:00.000Z',
+        updatedAt: '2024-06-12T09:45:00.000Z',
+        satisfactionScore: 4.0,
+        difficulty: 'hard',
+        durationMinutes: 70,
+        comment: t('athletes.details.sessions.samples.session_2.comment'),
+      },
+      {
+        id: 'session-feedback-3',
+        sessionLabel: t('athletes.details.sessions.samples.session_3.label'),
+        programLabel: t('athletes.details.sessions.samples.session_3.program'),
+        status: 'missed',
+        createdAt: '2024-06-16T18:05:00.000Z',
+        updatedAt: '2024-06-17T07:50:00.000Z',
+        satisfactionScore: 3.4,
+        difficulty: 'easy',
+        durationMinutes: 40,
+        comment: t('athletes.details.sessions.samples.session_3.comment'),
+      },
+    ],
+    [t],
   );
 
   const finalError = error ?? loaderError;
@@ -536,6 +620,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
                   <Tab value="overview" label={t('athletes.details.tabs.overview')} />
                   <Tab value="programs" label={t('athletes.details.tabs.programs')} />
                   <Tab value="nutritions" label={t('athletes.details.tabs.nutritions')} />
+                  <Tab value="sessions" label={t('athletes.details.tabs.sessions')} />
                 </Tabs>
 
                 <Divider />
@@ -640,6 +725,124 @@ export function AthleteLinkDetails(): React.JSX.Element {
                           searchQuery={nutritionSearchQuery}
                           resultCountLabel={nutritionResultCountLabel}
                         />
+                      </Box>
+                    ) : null}
+                  </TabPanel>
+
+                  <TabPanel value="sessions" currentTab={currentTab}>
+                    {link ? (
+                      <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3 } }}>
+                        <Stack spacing={2.5}>
+                          <Stack spacing={0.5}>
+                            <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                              {t('athletes.details.sessions.title')}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              {t('athletes.details.sessions.helper')}
+                            </Typography>
+                          </Stack>
+
+                          <Grid container spacing={{ xs: 2, md: 2.5 }}>
+                            {sessionFeedbacks.map((session) => {
+                              const statusConfig = sessionStatusLabels[session.status];
+
+                              return (
+                                <Grid key={session.id} size={{ xs: 12, sm: 6, md: 4 }}>
+                                  <GlassCard sx={{ height: '100%' }}>
+                                    <Stack spacing={2}>
+                                      <Stack
+                                        direction="row"
+                                        spacing={1}
+                                        alignItems="center"
+                                        justifyContent="space-between"
+                                      >
+                                        <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                                          {session.sessionLabel}
+                                        </Typography>
+                                        <Chip color={statusConfig.color} label={statusConfig.label} size="small" />
+                                      </Stack>
+
+                                      <Stack spacing={1.25}>
+                                        <Stack direction="row" spacing={1} alignItems="center">
+                                          <Tooltip title={t('athletes.details.sessions.fields.program')}>
+                                            <FitnessCenter color="primary" fontSize="small" />
+                                          </Tooltip>
+                                          <Typography variant="body2">{session.programLabel}</Typography>
+                                        </Stack>
+
+                                        <Stack direction="row" spacing={1} alignItems="center">
+                                          <Tooltip title={t('athletes.details.sessions.fields.created_at')}>
+                                            <CalendarMonth color="action" fontSize="small" />
+                                          </Tooltip>
+                                          <Typography variant="body2">
+                                            {formatDate(session.createdAt)}
+                                          </Typography>
+                                        </Stack>
+
+                                        <Stack direction="row" spacing={1} alignItems="center">
+                                          <Tooltip title={t('athletes.details.sessions.fields.updated_at')}>
+                                            <Update color="action" fontSize="small" />
+                                          </Tooltip>
+                                          <Typography variant="body2">
+                                            {formatDate(session.updatedAt)}
+                                          </Typography>
+                                        </Stack>
+
+                                        <Stack direction="row" spacing={1} alignItems="center">
+                                          <Tooltip title={t('athletes.details.sessions.fields.satisfaction')}>
+                                            <StarBorder color="warning" fontSize="small" />
+                                          </Tooltip>
+                                          <Typography variant="body2">
+                                            {t('athletes.details.sessions.satisfaction_value', {
+                                              value: session.satisfactionScore.toFixed(1),
+                                            })}
+                                          </Typography>
+                                        </Stack>
+
+                                        <Stack direction="row" spacing={1} alignItems="center">
+                                          <Tooltip title={t('athletes.details.sessions.fields.difficulty')}>
+                                            <TrendingUp color="info" fontSize="small" />
+                                          </Tooltip>
+                                          <Typography variant="body2">
+                                            {sessionDifficultyLabels[session.difficulty]}
+                                          </Typography>
+                                        </Stack>
+
+                                        <Stack direction="row" spacing={1} alignItems="center">
+                                          <Tooltip title={t('athletes.details.sessions.fields.duration')}>
+                                            <HourglassBottom color="action" fontSize="small" />
+                                          </Tooltip>
+                                          <Typography variant="body2">
+                                            {t('athletes.details.sessions.duration_value', {
+                                              count: session.durationMinutes,
+                                            })}
+                                          </Typography>
+                                        </Stack>
+
+                                        <Stack direction="row" spacing={1} alignItems="flex-start">
+                                          <Tooltip title={t('athletes.details.sessions.fields.comment')}>
+                                            <RateReview color="action" fontSize="small" sx={{ mt: 0.2 }} />
+                                          </Tooltip>
+                                          <Typography
+                                            variant="body2"
+                                            sx={{
+                                              display: '-webkit-box',
+                                              WebkitLineClamp: 2,
+                                              WebkitBoxOrient: 'vertical',
+                                              overflow: 'hidden',
+                                            }}
+                                          >
+                                            {session.comment}
+                                          </Typography>
+                                        </Stack>
+                                      </Stack>
+                                    </Stack>
+                                  </GlassCard>
+                                </Grid>
+                              );
+                            })}
+                          </Grid>
+                        </Stack>
                       </Box>
                     ) : null}
                   </TabPanel>
