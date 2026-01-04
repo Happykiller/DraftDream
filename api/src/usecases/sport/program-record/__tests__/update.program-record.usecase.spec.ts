@@ -26,6 +26,7 @@ describe('UpdateProgramRecordUsecase', () => {
     id: 'record-1',
     userId: 'athlete-1',
     programId: 'program-1',
+    sessionId: 'session-1',
     state: ProgramRecordState.CREATE,
     createdBy: 'athlete-1',
     createdAt: new Date('2024-01-02T00:00:00.000Z'),

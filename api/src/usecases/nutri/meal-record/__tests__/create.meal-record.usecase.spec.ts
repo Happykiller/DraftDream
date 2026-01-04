@@ -116,6 +116,18 @@ describe('CreateMealRecordUsecase', () => {
       mealPlanId: 'plan-1',
       mealDayId: 'day-1',
       mealId: 'meal-1',
+      mealSnapshot: {
+        id: 'meal-1',
+        label: 'Breakfast',
+        foods: 'Eggs',
+        calories: 300,
+        proteinGrams: 20,
+        carbGrams: 10,
+        fatGrams: 15,
+        type: { label: 'Breakfast' },
+      },
+      comment: undefined,
+      satisfactionRating: undefined,
       state: MealRecordState.CREATE,
       createdBy: 'athlete-1',
     });
