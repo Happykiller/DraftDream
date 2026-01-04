@@ -38,6 +38,7 @@ import {
 import { alpha, useTheme } from '@mui/material/styles';
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import { GlassCard } from '@components/common/GlassCard';
+import { TextWithTooltip } from '@components/common/TextWithTooltip';
 
 import { getAthleteDisplayName } from '@components/athletes/athleteLinkUtils';
 
@@ -735,9 +736,11 @@ export function AthleteLinkDetails(): React.JSX.Element {
                                         alignItems="center"
                                         justifyContent="space-between"
                                       >
-                                        <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                                          {sessionLabel}
-                                        </Typography>
+                                        <TextWithTooltip
+                                          tooltipTitle={sessionLabel}
+                                          variant="subtitle1"
+                                          sx={{ fontWeight: 700, flex: 1, minWidth: 0 }}
+                                        />
                                         {statusConfig ? (
                                           <Chip color={statusConfig.color} label={statusConfig.label} size="small" />
                                         ) : null}
@@ -748,7 +751,11 @@ export function AthleteLinkDetails(): React.JSX.Element {
                                           <Tooltip title={t('athletes.details.sessions.fields.program')}>
                                             <FitnessCenter color="primary" fontSize="small" />
                                           </Tooltip>
-                                          <Typography variant="body2">{programLabel}</Typography>
+                                          <TextWithTooltip
+                                            tooltipTitle={programLabel}
+                                            variant="body2"
+                                            sx={{ minWidth: 0 }}
+                                          />
                                         </Stack>
 
                                         <Stack direction="row" spacing={1} alignItems="center">
