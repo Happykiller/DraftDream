@@ -4,10 +4,16 @@ import type { MealPlanMealUsecaseModel } from '@src/usecases/nutri/meal-plan/mea
 
 export type MealRecordMealSnapshotUsecaseModel = MealPlanMealUsecaseModel;
 
+export interface MealPlanSnapshotUsecaseModel {
+  id: string;
+  label: string;
+}
+
 export interface MealRecordUsecaseModel {
   id: string;
   userId: string;
   mealPlanId: string;
+  mealPlanSnapshot?: MealPlanSnapshotUsecaseModel;
   mealDayId: string;
   mealId: string;
   mealSnapshot?: MealRecordMealSnapshotUsecaseModel;

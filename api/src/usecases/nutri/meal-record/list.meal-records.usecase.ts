@@ -5,8 +5,8 @@ import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { mapMealRecordToUsecase } from '@src/usecases/nutri/meal-record/meal-record.mapper';
 
-import { ListMealRecordsUsecaseDto } from './meal-record.usecase.dto';
-import { MealRecordUsecaseModel } from './meal-record.usecase.model';
+import { ListMealRecordsUsecaseDto, UsecaseSession } from './meal-record.usecase.dto';
+import { MealPlanSnapshotUsecaseModel, MealRecordUsecaseModel } from './meal-record.usecase.model';
 
 interface ListMealRecordsResult {
   items: MealRecordUsecaseModel[];
@@ -41,8 +41,14 @@ export class ListMealRecordsUsecase {
         page: filters.page,
       });
 
+      const mappedRecords = result.items.map(mapMealRecordToUsecase);
+      const mealPlanSnapshots = await this.loadMealPlanSnapshots(mappedRecords, session);
+
       return {
-        items: result.items.map(mapMealRecordToUsecase),
+        items: mappedRecords.map((record) => ({
+          ...record,
+          mealPlanSnapshot: mealPlanSnapshots[record.mealPlanId],
+        })),
         total: result.total,
         page: result.page,
         limit: result.limit,
@@ -51,5 +57,26 @@ export class ListMealRecordsUsecase {
       this.inversify.loggerService.error(`ListMealRecordsUsecase#execute => ${error?.message ?? error}`);
       throw normalizeError(error, ERRORS.LIST_MEAL_RECORDS_USECASE);
     }
+  }
+
+  private async loadMealPlanSnapshots(
+    records: MealRecordUsecaseModel[],
+    session: UsecaseSession,
+  ): Promise<Record<string, MealPlanSnapshotUsecaseModel>> {
+    const uniqueIds = Array.from(new Set(records.map((record) => record.mealPlanId)));
+    const snapshots = await Promise.all(
+      uniqueIds.map(async (mealPlanId) => {
+        const mealPlan = await this.inversify.getMealPlanUsecase.execute({ id: mealPlanId, session });
+        return mealPlan ? { id: mealPlan.id, label: mealPlan.label } : null;
+      }),
+    );
+
+    return uniqueIds.reduce<Record<string, MealPlanSnapshotUsecaseModel>>((accumulator, mealPlanId, index) => {
+      const snapshot = snapshots[index];
+      if (snapshot) {
+        accumulator[mealPlanId] = snapshot;
+      }
+      return accumulator;
+    }, {});
   }
 }

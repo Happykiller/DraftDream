@@ -200,21 +200,6 @@ export function AthleteLinkDetails(): React.JSX.Element {
     enabled: Boolean(athleteId),
   });
 
-  const { items: mealPlansLookup } = useMealPlans({
-    page: 1,
-    limit: 100,
-    q: '',
-    userId: athleteId ?? undefined,
-    enabled: Boolean(athleteId),
-  });
-
-  const mealPlanLabelById = React.useMemo(() => {
-    return mealPlansLookup.reduce<Record<string, string>>((accumulator, mealPlan) => {
-      accumulator[mealPlan.id] = mealPlan.label;
-      return accumulator;
-    }, {});
-  }, [mealPlansLookup]);
-
   const { items: programsLookup } = usePrograms({
     page: 1,
     limit: 100,
@@ -730,7 +715,6 @@ export function AthleteLinkDetails(): React.JSX.Element {
                         <MealRecordPreviewGrid
                           records={mealRecords}
                           loading={mealRecordsLoading}
-                          mealPlanLabelById={mealPlanLabelById}
                           formatDate={formatDate}
                         />
                       </Box>

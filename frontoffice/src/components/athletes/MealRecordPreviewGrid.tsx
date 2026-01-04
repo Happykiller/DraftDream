@@ -22,7 +22,6 @@ import { MealRecordState, type MealRecord } from '@hooks/nutrition/useMealRecord
 interface MealRecordPreviewGridProps {
   readonly records: MealRecord[];
   readonly loading: boolean;
-  readonly mealPlanLabelById: Record<string, string>;
   readonly formatDate: (value: string) => string;
 }
 
@@ -30,7 +29,6 @@ interface MealRecordPreviewGridProps {
 export function MealRecordPreviewGrid({
   records,
   loading,
-  mealPlanLabelById,
   formatDate,
 }: MealRecordPreviewGridProps): React.JSX.Element {
   const { t } = useTranslation();
@@ -59,7 +57,6 @@ export function MealRecordPreviewGrid({
         {records.map((record) => {
           const statusConfig = statusLabels[record.state];
           const mealLabel = record.mealSnapshot?.label ?? record.mealId;
-          const mealPlanLabel = mealPlanLabelById[record.mealPlanId] ?? record.mealPlanId;
           const satisfactionScore = record.satisfactionRating ?? null;
           const comment = record.comment?.trim() || t('athletes.details.meal_records.comment_fallback');
 
@@ -83,7 +80,11 @@ export function MealRecordPreviewGrid({
                       <Tooltip title={t('athletes.details.meal_records.fields.meal_plan')}>
                         <Restaurant color="primary" fontSize="small" />
                       </Tooltip>
-                      <TextWithTooltip tooltipTitle={mealPlanLabel} variant="body2" sx={{ minWidth: 0 }} />
+                      <TextWithTooltip
+                        tooltipTitle={record.mealPlanSnapshot?.label ?? record.mealPlanId}
+                        variant="body2"
+                        sx={{ minWidth: 0 }}
+                      />
                     </Stack>
 
                     <Stack direction="row" spacing={1} alignItems="center">

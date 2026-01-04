@@ -1,5 +1,5 @@
 // src/graphql/nutri/meal-record/meal-record.mapper.ts
-import { MealRecordGql } from '@graphql/nutri/meal-record/meal-record.gql.types';
+import { MealRecordGql, MealPlanSnapshotGql } from '@graphql/nutri/meal-record/meal-record.gql.types';
 import { MealPlanMealSnapshotGql, MealPlanMealTypeSnapshotGql } from '@graphql/nutri/meal-plan/meal-plan.gql.types';
 import { MealTypeVisibility } from '@graphql/nutri/meal-type/meal-type.gql.types';
 import type { MealPlanMealTypeUsecaseModel } from '@src/usecases/nutri/meal-plan/meal-plan.usecase.model';
@@ -38,10 +38,24 @@ const mapMealSnapshot = (meal?: MealRecordUsecaseModel['mealSnapshot'] | null): 
   };
 };
 
+const mapMealPlanSnapshot = (
+  snapshot?: MealRecordUsecaseModel['mealPlanSnapshot'] | null,
+): MealPlanSnapshotGql | null => {
+  if (!snapshot) {
+    return null;
+  }
+
+  return {
+    id: snapshot.id,
+    label: snapshot.label,
+  };
+};
+
 export const mapMealRecordUsecaseToGql = (model: MealRecordUsecaseModel): MealRecordGql => ({
   id: model.id,
   userId: model.userId,
   mealPlanId: model.mealPlanId,
+  mealPlanSnapshot: mapMealPlanSnapshot(model.mealPlanSnapshot ?? null),
   mealDayId: model.mealDayId,
   mealId: model.mealId,
   mealSnapshot: mapMealSnapshot(model.mealSnapshot ?? null),
