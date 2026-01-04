@@ -65,14 +65,16 @@ export function FixedPageLayout({
                     }}
                 >
                     {/* Header */}
-                    <Stack
-                        direction="row"
-                        spacing={2}
-                        alignItems="center"
+                    <Box
                         sx={{
                             backgroundColor: headerBackground,
                             px: { xs: 2, sm: 3, md: 4 },
                             py: { xs: 2, sm: 2.5 },
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 2,
+                            width: '100%',
+                            overflow: 'hidden',
                         }}
                     >
                         {icon && (
@@ -96,9 +98,10 @@ export function FixedPageLayout({
                         )}
                         <Box
                             sx={{
-                                flexGrow: 1,
+                                flex: 1,
                                 minWidth: 0,
-                                overflow: 'hidden',
+                                display: 'flex',
+                                flexDirection: 'column',
                             }}
                         >
                             <TextWithTooltip
@@ -106,6 +109,8 @@ export function FixedPageLayout({
                                 variant="h6"
                                 sx={{
                                     fontWeight: 700,
+                                    lineHeight: 1.2,
+                                    display: 'block',
                                 }}
                             />
                             {subtitle && (
@@ -113,15 +118,19 @@ export function FixedPageLayout({
                                     tooltipTitle={subtitle}
                                     variant="body2"
                                     color="text.secondary"
+                                    sx={{
+                                        mt: 0.5,
+                                        display: 'block',
+                                    }}
                                 />
                             )}
                         </Box>
                         {headerRight ? (
-                            <Box sx={{ flexShrink: 0 }}>
+                            <Box sx={{ flexShrink: 0, ml: 'auto' }}>
                                 {headerRight}
                             </Box>
                         ) : null}
-                    </Stack>
+                    </Box>
 
                     <Divider />
 

@@ -191,14 +191,23 @@ export class ProgramResolver {
 
     if (!sessionIds?.length) return [];
 
-    const sessions = await Promise.all(
-      sessionIds.map((id) =>
-        inversify.getSessionUsecase.execute({
+    // Fetch sessions, filtering out any that don't exist or can't be accessed
+    const sessionPromises = sessionIds.map(async (id) => {
+      try {
+        return await inversify.getSessionUsecase.execute({
           id,
           session: userSession,
-        }),
-      ),
-    );
+        });
+      } catch (error) {
+        // Log warning but don't fail the entire operation
+        inversify.loggerService.warn?.(
+          `Failed to fetch session ${id}: ${error instanceof Error ? error.message : String(error)}`
+        );
+        return null;
+      }
+    });
+
+    const sessions = await Promise.all(sessionPromises);
 
     const resolved: ProgramSessionSnapshotUsecaseDto[] = [];
 

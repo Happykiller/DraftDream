@@ -60,7 +60,7 @@ export class BddServiceProgramRecordMongo {
       // Drop the old unique index to allow multiple records for the same session
       try {
         await collection.dropIndex('program_records_user_program_session_unique');
-      } catch (e) {
+      } catch {
         // Ignore error if index does not exist
       }
 
