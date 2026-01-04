@@ -7,17 +7,11 @@ import {
   Email,
   EventBusy,
   EventNote,
-  FitnessCenter,
-  HourglassBottom,
   Mail,
   MonitorHeart,
   Notes,
   Phone,
-  RateReview,
-  StarBorder,
   TrackChanges,
-  TrendingUp,
-  Update,
   Visibility,
 } from '@mui/icons-material';
 import {
@@ -28,7 +22,6 @@ import {
   Chip,
   CircularProgress,
   Divider,
-  Grid,
   Stack,
   Tab,
   Tabs,
@@ -37,8 +30,7 @@ import {
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
-import { GlassCard } from '@components/common/GlassCard';
-import { TextWithTooltip } from '@components/common/TextWithTooltip';
+import { ProgramRecordPreviewGrid } from '@components/athletes/ProgramRecordPreviewGrid';
 
 import { getAthleteDisplayName } from '@components/athletes/athleteLinkUtils';
 
@@ -49,7 +41,7 @@ import { useAthleteInfo } from '@hooks/athletes/useAthleteInfo';
 import { useCoachAthleteLink } from '@hooks/athletes/useCoachAthleteLink';
 import { usePrograms, type Program } from '@hooks/programs/usePrograms';
 import { useMealPlans, type MealPlan } from '@hooks/nutrition/useMealPlans';
-import { useProgramRecords, ProgramRecordState, type ProgramRecord } from '@hooks/program-records/useProgramRecords';
+import { useProgramRecords, type ProgramRecord } from '@hooks/program-records/useProgramRecords';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 
 type AthleteLinkTab = 'overview' | 'programs' | 'nutritions' | 'sessions';
@@ -251,27 +243,6 @@ export function AthleteLinkDetails(): React.JSX.Element {
         }),
     [mealPlans.length, mealPlansLoading, t, totalMealPlans],
   );
-
-  const sessionStatusLabels = React.useMemo(
-    () => ({
-      [ProgramRecordState.FINISH]: { label: t('athletes.details.sessions.status.finish'), color: 'success' as const },
-      [ProgramRecordState.DRAFT]: { label: t('athletes.details.sessions.status.draft'), color: 'warning' as const },
-      [ProgramRecordState.CREATE]: { label: t('athletes.details.sessions.status.create'), color: 'info' as const },
-    }),
-    [t],
-  );
-
-  const resolveDifficultyLabel = React.useCallback(
-    (value?: number | null) => {
-      if (value == null) return t('athletes.details.sessions.difficulty.unknown');
-      if (value <= 2) return t('athletes.details.sessions.difficulty.easy');
-      if (value <= 4) return t('athletes.details.sessions.difficulty.moderate');
-      return t('athletes.details.sessions.difficulty.hard');
-    },
-    [t],
-  );
-
-  const sessionRecordsEmpty = programRecords.length === 0 && !programRecordsLoading;
 
   const finalError = error ?? loaderError;
   const showEmptyState = !loading && !link && finalError !== null;
@@ -709,130 +680,12 @@ export function AthleteLinkDetails(): React.JSX.Element {
                   <TabPanel value="sessions" currentTab={currentTab}>
                     {link ? (
                       <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3 } }}>
-                        <Stack spacing={2.5}>
-                          {sessionRecordsEmpty ? (
-                            <Typography variant="body2" color="text.secondary">
-                              {t('athletes.details.sessions.empty')}
-                            </Typography>
-                          ) : null}
-
-                          <Grid container spacing={{ xs: 2, md: 2.5 }}>
-                            {programRecords.map((session) => {
-                              const statusConfig = sessionStatusLabels[session.state];
-                              const sessionLabel = session.sessionSnapshot?.label ?? session.sessionId;
-                              const programLabel = programLabelById[session.programId] ?? session.programId;
-                              const satisfactionScore = session.satisfactionRating ?? null;
-                              const durationValue = session.durationMinutes ?? session.sessionSnapshot?.durationMin ?? null;
-                              const difficultyLabel = resolveDifficultyLabel(session.difficultyRating);
-                              const comment = session.comment?.trim() || t('athletes.details.sessions.comment_fallback');
-
-                              return (
-                                <Grid key={session.id} size={{ xs: 12, sm: 6, md: 4 }}>
-                                  <GlassCard sx={{ height: '100%' }}>
-                                    <Stack spacing={2}>
-                                      <Stack
-                                        direction="row"
-                                        spacing={1}
-                                        alignItems="center"
-                                        justifyContent="space-between"
-                                      >
-                                        <TextWithTooltip
-                                          tooltipTitle={sessionLabel}
-                                          variant="subtitle1"
-                                          sx={{ fontWeight: 700, flex: 1, minWidth: 0 }}
-                                        />
-                                        {statusConfig ? (
-                                          <Chip color={statusConfig.color} label={statusConfig.label} size="small" />
-                                        ) : null}
-                                      </Stack>
-
-                                      <Stack spacing={1.25}>
-                                        <Stack direction="row" spacing={1} alignItems="center">
-                                          <Tooltip title={t('athletes.details.sessions.fields.program')}>
-                                            <FitnessCenter color="primary" fontSize="small" />
-                                          </Tooltip>
-                                          <TextWithTooltip
-                                            tooltipTitle={programLabel}
-                                            variant="body2"
-                                            sx={{ minWidth: 0 }}
-                                          />
-                                        </Stack>
-
-                                        <Stack direction="row" spacing={1} alignItems="center">
-                                          <Tooltip title={t('athletes.details.sessions.fields.created_at')}>
-                                            <CalendarMonth color="action" fontSize="small" />
-                                          </Tooltip>
-                                          <Typography variant="body2">
-                                            {formatDate(session.createdAt)}
-                                          </Typography>
-                                        </Stack>
-
-                                        <Stack direction="row" spacing={1} alignItems="center">
-                                          <Tooltip title={t('athletes.details.sessions.fields.updated_at')}>
-                                            <Update color="action" fontSize="small" />
-                                          </Tooltip>
-                                          <Typography variant="body2">
-                                            {formatDate(session.updatedAt)}
-                                          </Typography>
-                                        </Stack>
-
-                                        <Stack direction="row" spacing={1} alignItems="center">
-                                          <Tooltip title={t('athletes.details.sessions.fields.satisfaction')}>
-                                            <StarBorder color="warning" fontSize="small" />
-                                          </Tooltip>
-                                          <Typography variant="body2">
-                                            {satisfactionScore !== null
-                                              ? t('athletes.details.sessions.satisfaction_value', {
-                                                value: satisfactionScore.toFixed(1),
-                                              })
-                                              : t('athletes.details.sessions.satisfaction_missing')}
-                                          </Typography>
-                                        </Stack>
-
-                                        <Stack direction="row" spacing={1} alignItems="center">
-                                          <Tooltip title={t('athletes.details.sessions.fields.difficulty')}>
-                                            <TrendingUp color="info" fontSize="small" />
-                                          </Tooltip>
-                                          <Typography variant="body2">{difficultyLabel}</Typography>
-                                        </Stack>
-
-                                        <Stack direction="row" spacing={1} alignItems="center">
-                                          <Tooltip title={t('athletes.details.sessions.fields.duration')}>
-                                            <HourglassBottom color="action" fontSize="small" />
-                                          </Tooltip>
-                                          <Typography variant="body2">
-                                            {durationValue !== null
-                                              ? t('athletes.details.sessions.duration_value', {
-                                                count: durationValue,
-                                              })
-                                              : t('athletes.details.sessions.duration_missing')}
-                                          </Typography>
-                                        </Stack>
-
-                                        <Stack direction="row" spacing={1} alignItems="flex-start">
-                                          <Tooltip title={t('athletes.details.sessions.fields.comment')}>
-                                            <RateReview color="action" fontSize="small" sx={{ mt: 0.2 }} />
-                                          </Tooltip>
-                                          <Typography
-                                            variant="body2"
-                                            sx={{
-                                              display: '-webkit-box',
-                                              WebkitLineClamp: 2,
-                                              WebkitBoxOrient: 'vertical',
-                                              overflow: 'hidden',
-                                            }}
-                                          >
-                                            {comment}
-                                          </Typography>
-                                        </Stack>
-                                      </Stack>
-                                    </Stack>
-                                  </GlassCard>
-                                </Grid>
-                              );
-                            })}
-                          </Grid>
-                        </Stack>
+                        <ProgramRecordPreviewGrid
+                          records={programRecords}
+                          loading={programRecordsLoading}
+                          programLabelById={programLabelById}
+                          formatDate={formatDate}
+                        />
                       </Box>
                     ) : null}
                   </TabPanel>
