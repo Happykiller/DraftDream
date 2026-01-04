@@ -20,10 +20,10 @@ import UploadIcon from '@mui/icons-material/Upload';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
   Box,
+  Button,
   Tooltip,
   type ButtonProps,
 } from '@mui/material';
-import { ResponsiveButton } from '@components/common/ResponsiveButton';
 
 export interface ResponsiveButtonProps extends ButtonProps {
     label?: string;
@@ -90,7 +90,7 @@ export function ResponsiveButton({
     return (
         <Tooltip title={tooltipTitle} arrow>
             <Box component="span" sx={{ display: 'inline-flex' }}>
-                <ResponsiveButton
+                <Button
                     {...buttonProps}
                     aria-label={tooltipTitle}
                     sx={{ gap: 1, ...sx }}
@@ -101,7 +101,7 @@ export function ResponsiveButton({
                     <Box component="span" sx={{ display: { xs: 'none', sm: 'inline', xl: 'inline' } }}>
                         {resolvedLabel}
                     </Box>
-                </ResponsiveButton>
+                </Button>
             </Box>
         </Tooltip>
     );
