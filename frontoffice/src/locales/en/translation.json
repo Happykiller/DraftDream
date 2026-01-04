@@ -341,8 +341,8 @@
         }
       },
       "sessions": {
-        "title": "Session feedback",
-        "helper": "Review recent feedback to fine-tune the athlete's load and progress.",
+        "empty": "No session feedback available yet.",
+        "comment_fallback": "No comment provided",
         "fields": {
           "program": "Program",
           "created_at": "Created on",
@@ -353,33 +353,19 @@
           "comment": "Comment"
         },
         "satisfaction_value": "{{value}} / 5",
+        "satisfaction_missing": "Not provided",
         "duration_value": "{{count}} min",
+        "duration_missing": "Not provided",
         "status": {
-          "completed": "Completed",
-          "missed": "Missed",
-          "in_progress": "In progress"
+          "finish": "Completed",
+          "draft": "In progress",
+          "create": "Created"
         },
         "difficulty": {
           "easy": "Easy",
           "moderate": "Moderate",
-          "hard": "Hard"
-        },
-        "samples": {
-          "session_1": {
-            "label": "Upper-body strength",
-            "program": "8-week Strength program",
-            "comment": "Great energy, a little fatigue at the end but highly motivated."
-          },
-          "session_2": {
-            "label": "HIIT cardio blast",
-            "program": "Weight loss program",
-            "comment": "Very intense pace, needs a longer recovery window."
-          },
-          "session_3": {
-            "label": "Mobility & recovery",
-            "program": "Posture & mobility program",
-            "comment": "Short session, felt more relaxed but focus was missing."
-          }
+          "hard": "Hard",
+          "unknown": "Not provided"
         }
       },
       "tabs": {

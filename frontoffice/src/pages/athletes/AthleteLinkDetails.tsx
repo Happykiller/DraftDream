@@ -48,12 +48,10 @@ import { useAthleteInfo } from '@hooks/athletes/useAthleteInfo';
 import { useCoachAthleteLink } from '@hooks/athletes/useCoachAthleteLink';
 import { usePrograms, type Program } from '@hooks/programs/usePrograms';
 import { useMealPlans, type MealPlan } from '@hooks/nutrition/useMealPlans';
+import { useProgramRecords, ProgramRecordState, type ProgramRecord } from '@hooks/program-records/useProgramRecords';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 
 type AthleteLinkTab = 'overview' | 'programs' | 'nutritions' | 'sessions';
-
-type SessionStatus = 'completed' | 'missed' | 'in_progress';
-type SessionDifficulty = 'easy' | 'moderate' | 'hard';
 
 interface TabPanelProps {
   readonly value: AthleteLinkTab;
@@ -87,19 +85,6 @@ interface MacroLabels {
   readonly protein: string;
   readonly carbs: string;
   readonly fats: string;
-}
-
-interface SessionFeedbackRecord {
-  readonly id: string;
-  readonly sessionLabel: string;
-  readonly programLabel: string;
-  readonly status: SessionStatus;
-  readonly createdAt: string;
-  readonly updatedAt: string;
-  readonly satisfactionScore: number;
-  readonly difficulty: SessionDifficulty;
-  readonly durationMinutes: number;
-  readonly comment: string;
 }
 
 /** Dedicated page showing the details of a coach-athlete link. */
@@ -220,6 +205,25 @@ export function AthleteLinkDetails(): React.JSX.Element {
     enabled: Boolean(athleteId),
   });
 
+  const { items: programsLookup } = usePrograms({
+    page: 1,
+    limit: 100,
+    q: '',
+    userId: athleteId ?? undefined,
+    enabled: Boolean(athleteId),
+  });
+
+  const programLabelById = React.useMemo(() => {
+    return programsLookup.reduce<Record<string, string>>((accumulator, program) => {
+      accumulator[program.id] = program.label;
+      return accumulator;
+    }, {});
+  }, [programsLookup]);
+
+  const { list: listProgramRecords } = useProgramRecords();
+  const [programRecords, setProgramRecords] = React.useState<ProgramRecord[]>([]);
+  const [programRecordsLoading, setProgramRecordsLoading] = React.useState(false);
+
   const nutritionEmptyState = React.useMemo(
     () =>
       t('athletes.details.nutritions.empty_state', {
@@ -249,64 +253,24 @@ export function AthleteLinkDetails(): React.JSX.Element {
 
   const sessionStatusLabels = React.useMemo(
     () => ({
-      completed: { label: t('athletes.details.sessions.status.completed'), color: 'success' as const },
-      missed: { label: t('athletes.details.sessions.status.missed'), color: 'error' as const },
-      in_progress: { label: t('athletes.details.sessions.status.in_progress'), color: 'warning' as const },
+      [ProgramRecordState.FINISH]: { label: t('athletes.details.sessions.status.finish'), color: 'success' as const },
+      [ProgramRecordState.DRAFT]: { label: t('athletes.details.sessions.status.draft'), color: 'warning' as const },
+      [ProgramRecordState.CREATE]: { label: t('athletes.details.sessions.status.create'), color: 'info' as const },
     }),
     [t],
   );
 
-  const sessionDifficultyLabels = React.useMemo(
-    () => ({
-      easy: t('athletes.details.sessions.difficulty.easy'),
-      moderate: t('athletes.details.sessions.difficulty.moderate'),
-      hard: t('athletes.details.sessions.difficulty.hard'),
-    }),
+  const resolveDifficultyLabel = React.useCallback(
+    (value?: number | null) => {
+      if (value == null) return t('athletes.details.sessions.difficulty.unknown');
+      if (value <= 2) return t('athletes.details.sessions.difficulty.easy');
+      if (value <= 4) return t('athletes.details.sessions.difficulty.moderate');
+      return t('athletes.details.sessions.difficulty.hard');
+    },
     [t],
   );
 
-  /** Local session feedback preview data until API integration is available. */
-  const sessionFeedbacks = React.useMemo<SessionFeedbackRecord[]>(
-    () => [
-      {
-        id: 'session-feedback-1',
-        sessionLabel: t('athletes.details.sessions.samples.session_1.label'),
-        programLabel: t('athletes.details.sessions.samples.session_1.program'),
-        status: 'completed',
-        createdAt: '2024-06-05T08:30:00.000Z',
-        updatedAt: '2024-06-06T10:20:00.000Z',
-        satisfactionScore: 4.6,
-        difficulty: 'moderate',
-        durationMinutes: 55,
-        comment: t('athletes.details.sessions.samples.session_1.comment'),
-      },
-      {
-        id: 'session-feedback-2',
-        sessionLabel: t('athletes.details.sessions.samples.session_2.label'),
-        programLabel: t('athletes.details.sessions.samples.session_2.program'),
-        status: 'in_progress',
-        createdAt: '2024-06-11T12:10:00.000Z',
-        updatedAt: '2024-06-12T09:45:00.000Z',
-        satisfactionScore: 4.0,
-        difficulty: 'hard',
-        durationMinutes: 70,
-        comment: t('athletes.details.sessions.samples.session_2.comment'),
-      },
-      {
-        id: 'session-feedback-3',
-        sessionLabel: t('athletes.details.sessions.samples.session_3.label'),
-        programLabel: t('athletes.details.sessions.samples.session_3.program'),
-        status: 'missed',
-        createdAt: '2024-06-16T18:05:00.000Z',
-        updatedAt: '2024-06-17T07:50:00.000Z',
-        satisfactionScore: 3.4,
-        difficulty: 'easy',
-        durationMinutes: 40,
-        comment: t('athletes.details.sessions.samples.session_3.comment'),
-      },
-    ],
-    [t],
-  );
+  const sessionRecordsEmpty = programRecords.length === 0 && !programRecordsLoading;
 
   const finalError = error ?? loaderError;
   const showEmptyState = !loading && !link && finalError !== null;
@@ -332,6 +296,18 @@ export function AthleteLinkDetails(): React.JSX.Element {
     setProgramSearchQuery('');
     setNutritionSearchQuery('');
   }, [athleteId]);
+
+  React.useEffect(() => {
+    if (!athleteId) {
+      setProgramRecords([]);
+      return;
+    }
+
+    setProgramRecordsLoading(true);
+    listProgramRecords({ userId: athleteId, limit: 12, page: 1 })
+      .then(({ items }) => setProgramRecords(items))
+      .finally(() => setProgramRecordsLoading(false));
+  }, [athleteId, listProgramRecords]);
 
   const handleViewProgram = React.useCallback(
     (program: Program) => {
@@ -733,18 +709,21 @@ export function AthleteLinkDetails(): React.JSX.Element {
                     {link ? (
                       <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3 } }}>
                         <Stack spacing={2.5}>
-                          <Stack spacing={0.5}>
-                            <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                              {t('athletes.details.sessions.title')}
-                            </Typography>
+                          {sessionRecordsEmpty ? (
                             <Typography variant="body2" color="text.secondary">
-                              {t('athletes.details.sessions.helper')}
+                              {t('athletes.details.sessions.empty')}
                             </Typography>
-                          </Stack>
+                          ) : null}
 
                           <Grid container spacing={{ xs: 2, md: 2.5 }}>
-                            {sessionFeedbacks.map((session) => {
-                              const statusConfig = sessionStatusLabels[session.status];
+                            {programRecords.map((session) => {
+                              const statusConfig = sessionStatusLabels[session.state];
+                              const sessionLabel = session.sessionSnapshot?.label ?? session.sessionId;
+                              const programLabel = programLabelById[session.programId] ?? session.programId;
+                              const satisfactionScore = session.satisfactionRating ?? null;
+                              const durationValue = session.durationMinutes ?? session.sessionSnapshot?.durationMin ?? null;
+                              const difficultyLabel = resolveDifficultyLabel(session.difficultyRating);
+                              const comment = session.comment?.trim() || t('athletes.details.sessions.comment_fallback');
 
                               return (
                                 <Grid key={session.id} size={{ xs: 12, sm: 6, md: 4 }}>
@@ -757,9 +736,11 @@ export function AthleteLinkDetails(): React.JSX.Element {
                                         justifyContent="space-between"
                                       >
                                         <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                                          {session.sessionLabel}
+                                          {sessionLabel}
                                         </Typography>
-                                        <Chip color={statusConfig.color} label={statusConfig.label} size="small" />
+                                        {statusConfig ? (
+                                          <Chip color={statusConfig.color} label={statusConfig.label} size="small" />
+                                        ) : null}
                                       </Stack>
 
                                       <Stack spacing={1.25}>
@@ -767,7 +748,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
                                           <Tooltip title={t('athletes.details.sessions.fields.program')}>
                                             <FitnessCenter color="primary" fontSize="small" />
                                           </Tooltip>
-                                          <Typography variant="body2">{session.programLabel}</Typography>
+                                          <Typography variant="body2">{programLabel}</Typography>
                                         </Stack>
 
                                         <Stack direction="row" spacing={1} alignItems="center">
@@ -793,9 +774,11 @@ export function AthleteLinkDetails(): React.JSX.Element {
                                             <StarBorder color="warning" fontSize="small" />
                                           </Tooltip>
                                           <Typography variant="body2">
-                                            {t('athletes.details.sessions.satisfaction_value', {
-                                              value: session.satisfactionScore.toFixed(1),
-                                            })}
+                                            {satisfactionScore !== null
+                                              ? t('athletes.details.sessions.satisfaction_value', {
+                                                value: satisfactionScore.toFixed(1),
+                                              })
+                                              : t('athletes.details.sessions.satisfaction_missing')}
                                           </Typography>
                                         </Stack>
 
@@ -803,9 +786,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
                                           <Tooltip title={t('athletes.details.sessions.fields.difficulty')}>
                                             <TrendingUp color="info" fontSize="small" />
                                           </Tooltip>
-                                          <Typography variant="body2">
-                                            {sessionDifficultyLabels[session.difficulty]}
-                                          </Typography>
+                                          <Typography variant="body2">{difficultyLabel}</Typography>
                                         </Stack>
 
                                         <Stack direction="row" spacing={1} alignItems="center">
@@ -813,9 +794,11 @@ export function AthleteLinkDetails(): React.JSX.Element {
                                             <HourglassBottom color="action" fontSize="small" />
                                           </Tooltip>
                                           <Typography variant="body2">
-                                            {t('athletes.details.sessions.duration_value', {
-                                              count: session.durationMinutes,
-                                            })}
+                                            {durationValue !== null
+                                              ? t('athletes.details.sessions.duration_value', {
+                                                count: durationValue,
+                                              })
+                                              : t('athletes.details.sessions.duration_missing')}
                                           </Typography>
                                         </Stack>
 
@@ -832,7 +815,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
                                               overflow: 'hidden',
                                             }}
                                           >
-                                            {session.comment}
+                                            {comment}
                                           </Typography>
                                         </Stack>
                                       </Stack>

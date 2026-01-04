@@ -343,8 +343,8 @@
         }
       },
       "sessions": {
-        "title": "Retours sessions",
-        "helper": "Consultez les retours récents pour ajuster la charge et la progression de l'athlète.",
+        "empty": "Aucun retour de séance disponible pour le moment.",
+        "comment_fallback": "Aucun commentaire transmis",
         "fields": {
           "program": "Programme",
           "created_at": "Date de création",
@@ -355,33 +355,19 @@
           "comment": "Commentaire"
         },
         "satisfaction_value": "{{value}} / 5",
+        "satisfaction_missing": "Non renseignée",
         "duration_value": "{{count}} min",
+        "duration_missing": "Non renseignée",
         "status": {
-          "completed": "Terminé",
-          "missed": "Manqué",
-          "in_progress": "En cours"
+          "finish": "Terminé",
+          "draft": "En cours",
+          "create": "Créé"
         },
         "difficulty": {
           "easy": "Facile",
           "moderate": "Modérée",
-          "hard": "Difficile"
-        },
-        "samples": {
-          "session_1": {
-            "label": "Renforcement haut du corps",
-            "program": "Programme Force 8 semaines",
-            "comment": "Bonne énergie, légère fatigue en fin de séance mais très motivé."
-          },
-          "session_2": {
-            "label": "Cardio HIIT express",
-            "program": "Programme Perte de poids",
-            "comment": "Rythme intense, besoin d'un temps de récupération plus long."
-          },
-          "session_3": {
-            "label": "Mobilité & récupération",
-            "program": "Programme Posture & mobilité",
-            "comment": "Séance courte, sensation de relâchement mais manque de focus."
-          }
+          "hard": "Difficile",
+          "unknown": "Non renseignée"
         }
       },
       "tabs": {
