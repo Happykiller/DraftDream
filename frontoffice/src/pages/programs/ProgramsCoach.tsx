@@ -147,10 +147,8 @@ export function ProgramsCoach(): React.JSX.Element {
   const handlePrefetch = React.useCallback((action: 'view' | 'edit') => {
     if (action === 'edit') {
       void import('@src/pages/programs/ProgramCoachEdit');
-      void import('@src/pages/programs/ProgramCoachEdit.loader');
     } else if (action === 'view') {
       void import('@src/pages/programs/ProgramDetails');
-      void import('@src/pages/programs/ProgramDetails.loader');
     }
   }, []);
 

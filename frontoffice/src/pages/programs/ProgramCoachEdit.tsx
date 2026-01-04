@@ -6,20 +6,17 @@ import {
   Stack,
 } from '@mui/material';
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
-import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { ProgramBuilderPanel, type BuilderCopy } from '@src/components/programs/ProgramBuilderPanel';
 
 import { useProgram } from '@src/hooks/programs/useProgram';
-
-import type { ProgramCoachEditLoaderData } from './ProgramCoachEdit.loader';
 
 /** Program editing flow dedicated to coaches. */
 export function ProgramCoachEdit(): React.JSX.Element {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { programId } = useParams<{ programId: string }>();
-  const loaderData = useLoaderData() as ProgramCoachEditLoaderData;
 
   const builderCopy = React.useMemo(
     () =>
@@ -29,23 +26,7 @@ export function ProgramCoachEdit(): React.JSX.Element {
     [t],
   );
 
-  const initialError = React.useMemo(() => {
-    if (loaderData.status === 'not_found') {
-      return t('programs-details.errors.not_found');
-    }
-
-    if (loaderData.status === 'error') {
-      return t('programs-details.errors.load_failed');
-    }
-
-    return null;
-  }, [loaderData.status, t]);
-
-  const { program, loading, error, reload } = useProgram({
-    programId,
-    initialProgram: loaderData.program,
-    initialError,
-  });
+  const { program, loading, error, reload } = useProgram({ programId });
 
   const handleCancel = React.useCallback(() => {
     navigate('/programs-coach');

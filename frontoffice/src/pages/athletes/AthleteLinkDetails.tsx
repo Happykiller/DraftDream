@@ -1,7 +1,7 @@
 // src/pages/athletes/AthleteLinkDetails.tsx
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   CalendarMonth,
   Email,
@@ -37,7 +37,6 @@ import { getAthleteDisplayName } from '@components/athletes/athleteLinkUtils';
 
 import { MealPlanList } from '@components/nutrition/MealPlanList';
 import { ProgramList } from '@components/programs/ProgramList';
-import type { AthleteLinkDetailsLoaderResult } from '@pages/athletes/AthleteLinkDetails.loader';
 import { useAthleteInfo } from '@hooks/athletes/useAthleteInfo';
 import { useCoachAthleteLink } from '@hooks/athletes/useCoachAthleteLink';
 import { usePrograms, type Program } from '@hooks/programs/usePrograms';
@@ -88,22 +87,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
   const navigate = useNavigate();
   const theme = useTheme();
   const { linkId } = useParams<{ linkId: string }>();
-  const loaderData = useLoaderData() as AthleteLinkDetailsLoaderResult;
-  const loaderError = React.useMemo(() => {
-    if (loaderData.status === 'not_found') {
-      return t('athletes.details.errors.not_found');
-    }
-    if (loaderData.status === 'error') {
-      return t('athletes.details.errors.load_failed');
-    }
-    return null;
-  }, [loaderData.status, t]);
-
-  const { link, loading, error } = useCoachAthleteLink({
-    linkId,
-    initialLink: loaderData.link,
-    initialError: loaderError,
-  });
+  const { link, loading, error } = useCoachAthleteLink({ linkId });
   const formatDate = useDateFormatter({ options: { day: '2-digit', month: '2-digit', year: 'numeric' } });
 
   const displayName = React.useMemo(
@@ -250,8 +234,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
     [mealPlans.length, mealPlansLoading, t, totalMealPlans],
   );
 
-  const finalError = error ?? loaderError;
-  const showEmptyState = !loading && !link && finalError !== null;
+  const showEmptyState = !loading && !link && error !== null;
   const [currentTab, setCurrentTab] = React.useState<AthleteLinkTab>('overview');
 
   const handleBack = React.useCallback(() => {
@@ -429,7 +412,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
                   </Stack>
                 ) : null}
 
-                {showEmptyState ? <Alert severity="error">{finalError}</Alert> : null}
+                {showEmptyState ? <Alert severity="error">{error}</Alert> : null}
 
                 {link ? (
                   <Stack spacing={2}>

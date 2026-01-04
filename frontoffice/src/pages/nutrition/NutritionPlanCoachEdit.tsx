@@ -2,20 +2,20 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Stack } from '@mui/material';
-import { useNavigate, useParams, useRouteLoaderData } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { MealPlanBuilderPanel } from '@components/nutrition/MealPlanBuilderPanel';
 
 import type { MealPlanBuilderCopy } from '@components/nutrition/mealPlanBuilderTypes';
 import type { MealPlan } from '@hooks/nutrition/useMealPlans';
-import type { NutritionPlanCoachEditLoaderResult } from './NutritionPlanCoachEdit.loader';
+import { useMealPlan } from '@hooks/nutrition/useMealPlan';
 
 /** Nutrition plan edition flow for coaches. */
 export function NutritionPlanCoachEdit(): React.JSX.Element {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { mealPlanId } = useParams<{ mealPlanId: string }>();
-  const loaderData = useRouteLoaderData('nutrition-plan-edit') as NutritionPlanCoachEditLoaderResult | undefined;
+  const { mealPlan, loading, error } = useMealPlan({ mealPlanId });
 
   const builderCopy = React.useMemo(
     () =>
@@ -36,32 +36,15 @@ export function NutritionPlanCoachEdit(): React.JSX.Element {
     [navigate],
   );
 
-  if (!mealPlanId) {
-    return (
-      <Stack spacing={2} sx={{ p: 3 }}>
-        {/* General information */}
-        <Alert severity="error">{t('nutrition-details.errors.not_found')}</Alert>
-      </Stack>
-    );
+  if (loading) {
+    return <></>; // Global loader overlay will show
   }
 
-  if (!loaderData) {
+  if (!mealPlan || error) {
     return (
       <Stack spacing={2} sx={{ p: 3 }}>
         {/* General information */}
-        <Alert severity="error">{t('nutrition-details.errors.load_failed')}</Alert>
-      </Stack>
-    );
-  }
-
-  if (loaderData.error) {
-    const message = loaderData.error === 'not_found'
-      ? t('nutrition-details.errors.not_found')
-      : t('nutrition-details.errors.load_failed');
-    return (
-      <Stack spacing={2} sx={{ p: 3 }}>
-        {/* General information */}
-        <Alert severity="error">{message}</Alert>
+        <Alert severity="error">{error || t('nutrition-details.errors.load_failed')}</Alert>
       </Stack>
     );
   }
@@ -71,7 +54,7 @@ export function NutritionPlanCoachEdit(): React.JSX.Element {
       {/* General information */}
       <MealPlanBuilderPanel
         builderCopy={builderCopy}
-        mealPlan={loaderData.mealPlan ?? undefined}
+        mealPlan={mealPlan}
         onCancel={handleCancel}
         onUpdated={handleUpdated}
       />
