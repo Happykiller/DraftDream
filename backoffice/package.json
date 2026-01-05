@@ -24,7 +24,7 @@
     "react-i18next": "^16.5.1",
     "react-router-dom": "^7.11.0",
     "recharts": "^3.6.0",
-    "typescript-eslint": "^8.51.0",
+    "typescript-eslint": "^8.52.0",
     "zustand": "^5.0.9"
   },
   "devDependencies": {

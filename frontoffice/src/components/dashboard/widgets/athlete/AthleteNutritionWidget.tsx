@@ -12,11 +12,13 @@ import { GlassCard } from '@components/common/GlassCard';
 import { TextWithTooltip } from '@components/common/TextWithTooltip';
 import { useMealRecords, MealRecordState, type MealRecord } from '@hooks/nutrition/useMealRecords';
 import { useMealPlans, type MealPlan, type MealPlanDaySnapshot, type MealPlanMealSnapshot } from '@hooks/nutrition/useMealPlans';
+import { useAsyncTask } from '@hooks/useAsyncTask';
 
 export function AthleteNutritionWidget(): React.JSX.Element {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { create: createRecord, list: listRecords } = useMealRecords();
+    const { execute: runTask } = useAsyncTask();
 
     const { items: mealPlans, loading } = useMealPlans({
         page: 1,
@@ -31,8 +33,8 @@ export function AthleteNutritionWidget(): React.JSX.Element {
     React.useEffect(() => {
         let mounted = true;
         const fetchRecords = async () => {
-            const { items: createdItems } = await listRecords({ limit: 50, state: MealRecordState.CREATE });
-            const { items: draftItems } = await listRecords({ limit: 50, state: MealRecordState.DRAFT });
+            const { items: createdItems } = await runTask(() => listRecords({ limit: 50, state: MealRecordState.CREATE }));
+            const { items: draftItems } = await runTask(() => listRecords({ limit: 50, state: MealRecordState.DRAFT }));
 
             if (!mounted) return;
 
@@ -70,10 +72,10 @@ export function AthleteNutritionWidget(): React.JSX.Element {
             }
 
             try {
-                const record = await createRecord({ mealPlanId, mealDayId, mealId });
+                const record = await runTask(() => createRecord({ mealPlanId, mealDayId, mealId }));
                 navigate(`/meal-record/${record.id}`);
-            } catch (error) {
-                // Error handled in hook
+            } catch {
+                // Error handled in hook/task
             }
         },
         [activeRecords, createRecord, navigate],

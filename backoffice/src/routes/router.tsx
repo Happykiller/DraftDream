@@ -37,35 +37,35 @@ export const router = createBrowserRouter([
         index: true,
         lazy: async () => {
           const mod = await import('@src/pages/Home');
-          return { Component: mod.Home };
+          return { Component: withTitle(mod.Home, 'home.title') };
         },
       },
       {
         path: '/profile',
         lazy: async () => {
           const mod = await import('@src/pages/Profile');
-          return { Component: mod.Profile };
+          return { Component: withTitle(mod.Profile, 'profile.title') };
         },
       },
       {
         path: '/programs',
         lazy: async () => {
           const mod = await import('@src/pages/Programs');
-          return { Component: mod.Programs };
+          return { Component: withTitle(mod.Programs, 'programs.title') };
         },
       },
       {
         path: '/meals',
         lazy: async () => {
           const mod = await import('@src/pages/Meals');
-          return { Component: mod.Meals };
+          return { Component: withTitle(mod.Meals, 'meals.title') };
         },
       },
       {
         path: '/prospects',
         lazy: async () => {
           const mod = await import('@src/pages/Prospects');
-          return { Component: mod.Prospects };
+          return { Component: withTitle(mod.Prospects, 'prospects.title') };
         },
       },
       {
@@ -76,14 +76,14 @@ export const router = createBrowserRouter([
         path: '/athletes/liaison',
         lazy: async () => {
           const mod = await import('@src/pages/Athletes');
-          return { Component: mod.Athletes };
+          return { Component: withTitle(mod.Athletes, 'athletes.liaison.title') };
         },
       },
       {
         path: '/athletes/information',
         lazy: async () => {
           const mod = await import('@src/pages/AthleteInformation');
-          return { Component: mod.AthleteInformation };
+          return { Component: withTitle(mod.AthleteInformation, 'athlete_information.title') };
         },
       },
       {
@@ -94,7 +94,7 @@ export const router = createBrowserRouter([
             index: true,
             lazy: async () => {
               const mod = await import('@src/pages/Sandbox');
-              return { Component: mod.Sandbox };
+              return { Component: withTitle(mod.Sandbox, 'sandbox.title') };
             },
           },
         ],
@@ -103,14 +103,14 @@ export const router = createBrowserRouter([
         path: '/theme-studio',
         lazy: async () => {
           const mod = await import('@src/pages/ThemeStudio');
-          return { Component: mod.ThemeStudio };
+          return { Component: withTitle(mod.ThemeStudio, 'theme_studio.title') };
         },
       },
       {
         path: '/users',
         lazy: async () => {
           const mod = await import('@src/pages/Users');
-          return { Component: mod.Users };
+          return { Component: withTitle(mod.Users, 'users.title') };
         },
       },
     ],
@@ -120,7 +120,7 @@ export const router = createBrowserRouter([
     HydrateFallback: AppFallback,
     lazy: async () => {
       const mod = await import('@src/pages/NotFound');
-      return { Component: mod.NotFound };
+      return { Component: withTitle(mod.NotFound, 'not_found.title') };
     },
   },
 ]);

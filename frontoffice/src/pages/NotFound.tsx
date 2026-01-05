@@ -22,7 +22,6 @@ import { gradients } from '@src/theme';
  * - Accessible: h1 semantics, labeled region, clear CTAs
  */
 export function NotFound(): React.JSX.Element {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -88,6 +87,7 @@ type ContentProps = {
 
 /** Extracted inner content for clarity and testability */
 function Content({ onGoHome, isMobile = false }: ContentProps): React.JSX.Element {
+  const { t } = useTranslation();
   return (
     <Stack spacing={2.5} alignItems="center" textAlign="center">
       {/* Illustration */}

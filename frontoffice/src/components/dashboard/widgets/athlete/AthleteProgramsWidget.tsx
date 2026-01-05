@@ -12,11 +12,13 @@ import { GlassCard } from '@components/common/GlassCard';
 import { usePrograms } from '@hooks/programs/usePrograms';
 import { TextWithTooltip } from '@components/common/TextWithTooltip';
 import { useProgramRecords, ProgramRecordState, type ProgramRecord } from '@hooks/program-records/useProgramRecords';
+import { useAsyncTask } from '@hooks/useAsyncTask';
 
 export function AthleteProgramsWidget(): React.JSX.Element {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { create: createRecord, list: listRecords } = useProgramRecords();
+    const { execute: runTask } = useAsyncTask();
 
     const { items: programs, loading: programsLoading } = usePrograms({
         page: 1,
@@ -31,8 +33,8 @@ export function AthleteProgramsWidget(): React.JSX.Element {
     React.useEffect(() => {
         let mounted = true;
         const fetchRecords = async () => {
-            const { items: createdItems } = await listRecords({ limit: 50, state: ProgramRecordState.CREATE });
-            const { items: draftItems } = await listRecords({ limit: 50, state: ProgramRecordState.DRAFT });
+            const { items: createdItems } = await runTask(() => listRecords({ limit: 50, state: ProgramRecordState.CREATE }));
+            const { items: draftItems } = await runTask(() => listRecords({ limit: 50, state: ProgramRecordState.DRAFT }));
 
             if (!mounted) return;
 
@@ -61,10 +63,10 @@ export function AthleteProgramsWidget(): React.JSX.Element {
         } else {
             // Create (Play)
             try {
-                const record = await createRecord(programId, sessionId);
+                const record = await runTask(() => createRecord(programId, sessionId));
                 navigate(`/program-record/${record.id}`);
-            } catch (err) {
-                // Error handled in hook
+            } catch {
+                // Error handled in hook/task
             }
         }
     }, [createRecord, navigate, activeRecords]);

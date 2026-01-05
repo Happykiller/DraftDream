@@ -111,13 +111,13 @@ export function MealRecordDialog({
 
   const dayOptions = React.useMemo<Option[]>(() => {
     if (!selectedMealPlan) return [];
-    return selectedMealPlan.days.map((day) => ({ id: day.id, label: day.label }));
+    return selectedMealPlan.days.map((day) => ({ id: day.id ?? '', label: day.label }));
   }, [selectedMealPlan]);
 
   const mealOptions = React.useMemo<Option[]>(() => {
     if (!selectedMealPlan || !selectedMealDayId) return [];
     const selectedDay = selectedMealPlan.days.find((day) => day.id === selectedMealDayId);
-    return selectedDay?.meals.map((meal) => ({ id: meal.id, label: meal.label })) ?? [];
+    return selectedDay?.meals.map((meal) => ({ id: meal.id ?? '', label: meal.label })) ?? [];
   }, [selectedMealDayId, selectedMealPlan]);
 
   const selectedMealPlanOption = React.useMemo<Option | null>(() => {
