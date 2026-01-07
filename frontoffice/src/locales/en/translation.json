@@ -565,7 +565,7 @@
         "search_placeholder": "Search a session...",
         "filter_label": "Category",
         "filter_all": "All categories",
-        "button_create": "Create a session"
+        "button_create": "Add empty session"
       },
       "templates_title": "Session templates",
       "templates_subtitle": "Choose a template from the list or click to add it.",

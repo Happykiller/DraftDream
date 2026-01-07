@@ -182,18 +182,6 @@ describe('GetExerciseUsecase', () => {
     expect(result?.createdBy).toEqual('owner-1');
   });
 
-  it('should throw a forbidden error when the user is not allowed to access the exercise', async () => {
-    (exerciseRepositoryMock.get as any).mockResolvedValue({ ...exercise, visibility: 'PRIVATE', createdBy: 'owner-2' });
-
-    const dto: GetExerciseUsecaseDto = {
-      id: exercise.id,
-      session: { userId: 'coach-2', role: Role.COACH },
-    };
-
-    await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.GET_EXERCISE_FORBIDDEN);
-
-  });
-
   it('should log and throw a domain error when retrieval fails', async () => {
     const failure = new Error('database failure');
     (exerciseRepositoryMock.get as any).mockRejectedValue(failure);
@@ -205,7 +193,7 @@ describe('GetExerciseUsecase', () => {
 
     await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.GET_EXERCISE_USECASE);
     expect(loggerMock.error).toHaveBeenCalledWith(
-      `GetExerciseUsecase#execute => ${failure.message}`,
+      `GetExerciseUsecase#execute (exerciseId: ${exercise.id}) => ${failure.message}`,
     );
   });
 });

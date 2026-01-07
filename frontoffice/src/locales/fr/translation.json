@@ -569,7 +569,7 @@
         "search_placeholder": "Rechercher une séance...",
         "filter_label": "Categorie",
         "filter_all": "Toutes categories",
-        "button_create": "Creer une séance"
+        "button_create": "Ajouter une séance vide"
       },
       "templates_title": "Bibliotheque de séances",
       "templates_subtitle": "Choisissez une séance dans la liste ou cliquez pour l'ajouter.",
@@ -610,7 +610,7 @@
         "type_public": "Public",
         "limit_hint": "Affichage des 10 exercices maximum triés par ordre alphabétique.",
         "empty_state": "Aucun exercice ne correspond à vos filtres.",
-        "button_create": "Creer un exercice",
+        "button_create": "Nouvel exercice",
         "refresh_label": "Recharger les exercices",
         "subtitle": "Ajoutez un exercice à une séance pour l'intégrer.",
         "sets_label": " séries",

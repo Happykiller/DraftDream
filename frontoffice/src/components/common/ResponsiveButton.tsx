@@ -19,10 +19,10 @@ import SearchIcon from '@mui/icons-material/Search';
 import UploadIcon from '@mui/icons-material/Upload';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
-  Box,
-  Button,
-  Tooltip,
-  type ButtonProps,
+    Box,
+    Button,
+    Tooltip,
+    type ButtonProps,
 } from '@mui/material';
 
 export interface ResponsiveButtonProps extends ButtonProps {
@@ -89,11 +89,17 @@ export function ResponsiveButton({
 
     return (
         <Tooltip title={tooltipTitle} arrow>
-            <Box component="span" sx={{ display: 'inline-flex' }}>
+            <Box
+                component="span"
+                sx={{
+                    display: buttonProps.fullWidth ? 'flex' : 'inline-flex',
+                    width: buttonProps.fullWidth ? '100%' : 'auto',
+                }}
+            >
                 <Button
                     {...buttonProps}
                     aria-label={tooltipTitle}
-                    sx={{ gap: 1, ...sx }}
+                    sx={{ gap: 1, flexGrow: buttonProps.fullWidth ? 1 : 0, ...sx }}
                 >
                     <Box component="span" sx={{ display: { xs: 'inline-flex', sm: 'none', xl: 'inline-flex' } }}>
                         {resolvedIcon}
