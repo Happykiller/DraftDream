@@ -44,6 +44,10 @@ export interface Program {
   duration: number;
   /** Number of training sessions per week. */
   frequency: number;
+  /** Optional start date of the program (day precision). */
+  startDate?: Date;
+  /** Optional end date of the program (day precision). */
+  endDate?: Date;
   description?: string;
   /** Snapshot of the program structure with editable sessions/exercises. */
   sessions: ProgramSessionSnapshot[];

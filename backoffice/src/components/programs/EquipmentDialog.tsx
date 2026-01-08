@@ -64,6 +64,7 @@ export function EquipmentDialog({ open, mode, initial, onClose, onSubmit }: Equi
 
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="equipment-dialog-title">
+      {/* General information */}
       <DialogTitle id="equipment-dialog-title">
         {isEdit ? t('programs.equipment.dialog.edit_title') : t('programs.equipment.dialog.create_title')}
       </DialogTitle>

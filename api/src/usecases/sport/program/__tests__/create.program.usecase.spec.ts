@@ -47,6 +47,10 @@ describe('CreateProgramUsecase', () => {
       },
     ],
     createdBy: 'coach-123',
+    session: {
+      userId: 'coach-123',
+      role: 'COACH' as any,
+    },
   } as CreateProgramUsecaseDto;
 
   const now = new Date('2024-01-01T00:00:00.000Z');
@@ -168,8 +172,9 @@ describe('CreateProgramUsecase', () => {
 
     const result = await usecase.execute(dto);
 
+    const { session: _session, ...payload } = dto;
     expect(asMock(programRepositoryMock.create).mock.calls[0][0]).toEqual({
-      ...dto,
+      ...payload,
       slug: 'strength',
       sessions: [
         {

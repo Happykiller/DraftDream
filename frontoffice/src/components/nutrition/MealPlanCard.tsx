@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import {
+  CalendarMonthOutlined,
   ContentCopyOutlined,
   DeleteOutline,
   EditOutlined,
@@ -223,6 +224,14 @@ export const MealPlanCard = React.memo(function MealPlanCard({
     () => formatMealPlanDate(mealPlan.createdAt, i18n.language),
     [i18n.language, mealPlan.createdAt],
   );
+  const startDateLabel = React.useMemo(
+    () => (mealPlan.startDate ? formatMealPlanDate(mealPlan.startDate, i18n.language) : null),
+    [i18n.language, mealPlan.startDate],
+  );
+  const endDateLabel = React.useMemo(
+    () => (mealPlan.endDate ? formatMealPlanDate(mealPlan.endDate, i18n.language) : null),
+    [i18n.language, mealPlan.endDate],
+  );
   const planAssignmentLabel = athleteLabel
     ? t('nutrition-coach.list.plan_for', { name: athleteLabel })
     : t('nutrition-coach.list.plan_unassigned');
@@ -296,7 +305,7 @@ export const MealPlanCard = React.memo(function MealPlanCard({
       await onDelete(mealPlan);
       setIsDeleteDialogOpen(false);
     } catch (_error) {
-      console.log('[MealPlanCard] Failed to delete meal plan', _error);
+      // Error handled by hook
     } finally {
       setIsDeleteSubmitting(false);
     }
@@ -643,6 +652,22 @@ export const MealPlanCard = React.memo(function MealPlanCard({
             spacing={{ xs: 1, sm: 3 }}
             sx={{ width: '100%' }}
           >
+            <Stack direction="row" spacing={1} alignItems="center">
+              <CalendarMonthOutlined fontSize="small" color="action" />
+              <Typography variant="caption" color="text.secondary">
+                {startDateLabel
+                  ? t('nutrition-coach.list.metadata.start_date', { date: startDateLabel })
+                  : t('nutrition-coach.list.metadata.no_start_date')}
+              </Typography>
+            </Stack>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <CalendarMonthOutlined fontSize="small" color="action" />
+              <Typography variant="caption" color="text.secondary">
+                {endDateLabel
+                  ? t('nutrition-coach.list.metadata.end_date', { date: endDateLabel })
+                  : t('nutrition-coach.list.metadata.no_end_date')}
+              </Typography>
+            </Stack>
             <Stack direction="row" spacing={1} alignItems="center">
               <HistoryOutlined fontSize="small" color="action" />
               <Typography variant="caption" color="text.secondary">

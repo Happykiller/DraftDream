@@ -11,6 +11,7 @@ import { EquipmentPanel } from '@pages/programs/EquipmentPanel';
 import { ExercisesPanel } from '@pages/programs/ExercisesPanel';
 import { CategoriesPanel } from '@pages/programs/CategoriesPanel';
 import { ProgramsPanel } from '@pages/programs/ProgramsPanel';
+import { ProgramRecordsPanel } from '@pages/programs/ProgramRecordsPanel';
 
 export function Programs(): React.JSX.Element {
   const { t } = useTranslation();
@@ -34,6 +35,7 @@ export function Programs(): React.JSX.Element {
         scrollButtons="auto"
       >
         <Tab value="programs" label={t('programs.tabs.programs')} />
+        <Tab value="records" label={t('programs.tabs.records')} />
         <Tab value="sessions" label={t('programs.tabs.sessions')} />
         <Tab value="exercices" label={t('programs.tabs.exercises')} />
         <Tab value="categories" label={t('programs.tabs.categories')} />
@@ -49,6 +51,7 @@ export function Programs(): React.JSX.Element {
       {tab === 'exercices' && <ExercisesPanel />}
       {tab === 'sessions' && <SessionsPanel />}
       {tab === 'programs' && <ProgramsPanel />}
+      {tab === 'records' && <ProgramRecordsPanel />}
     </Stack>
   );
 }

@@ -218,6 +218,7 @@ export function MealDayDialog({
 
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="meal-day-dialog-title" fullWidth maxWidth="md">
+      {/* General information */}
       <DialogTitle id="meal-day-dialog-title">
         {isEdit ? t('meals.mealDays.dialog.edit_title') : t('meals.mealDays.dialog.create_title')}
       </DialogTitle>
@@ -259,7 +260,6 @@ export function MealDayDialog({
             </Stack>
           ) : null}
 
-          {/* General information */}
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <TextField
               select

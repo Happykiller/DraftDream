@@ -41,6 +41,8 @@ export interface MealPlanUsecaseModel {
   label: string;
   description?: string;
   visibility: 'PRIVATE' | 'PUBLIC';
+  startDate?: Date;
+  endDate?: Date;
   calories: number;
   proteinGrams: number;
   carbGrams: number;

@@ -1,4 +1,3 @@
-// src/pages/programs/ProgramsPanel.tsx
 import * as React from 'react';
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -11,6 +10,19 @@ import { useUsers } from '@hooks/useUsers';
 import { ProgramTable } from '@components/programs/ProgramTable';
 import { ProgramDialog, type ProgramSessionOption, type ProgramDialogValues, type ProgramUserOption } from '@components/programs/ProgramDialog';
 import { ConfirmDialog } from '@components/common/ConfirmDialog';
+
+function normalizeDateInput(value: string): string | undefined {
+  if (!value) {
+    return undefined;
+  }
+
+  const parsed = new Date(`${value}T00:00:00.000Z`);
+  if (Number.isNaN(parsed.getTime())) {
+    return undefined;
+  }
+
+  return parsed.toISOString();
+}
 
 export function ProgramsPanel(): React.JSX.Element {
   const { t } = useTranslation();
@@ -55,6 +67,8 @@ export function ProgramsPanel(): React.JSX.Element {
     label: values.label,
     duration: values.duration,
     frequency: values.frequency,
+    startDate: normalizeDateInput(values.startDate),
+    endDate: normalizeDateInput(values.endDate),
     description: values.description ? values.description : undefined,
     sessionIds: values.sessions.map((session) => session.id),
     userId: values.user?.id ?? undefined,
@@ -67,6 +81,8 @@ export function ProgramsPanel(): React.JSX.Element {
     label: values.label,
     duration: values.duration,
     frequency: values.frequency,
+    startDate: values.startDate ? normalizeDateInput(values.startDate) : null,
+    endDate: values.endDate ? normalizeDateInput(values.endDate) : null,
     description: values.description ? values.description : undefined,
     sessionIds: values.sessions.map((session) => session.id),
     userId: values.user?.id ?? undefined,
@@ -75,6 +91,7 @@ export function ProgramsPanel(): React.JSX.Element {
 
   return (
     <Box>
+      {/* General information */}
       <ProgramTable
         rows={items}
         total={total}

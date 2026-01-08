@@ -1,4 +1,3 @@
-// ⚠️ Comment in English: Self-contained Users panel with its own URL params (usr_*).
 import * as React from 'react';
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +11,7 @@ import { ConfirmDialog } from '@components/common/ConfirmDialog';
 
 export function UsersPanel(): React.JSX.Element {
   const { t } = useTranslation();
+  // Keep URL params scoped to this tab so filters don't collide with other panels.
   const { page, limit, q, type, setPage, setLimit, setQ, setType } = useTabParams('usr');
   const [searchInput, setSearchInput] = React.useState(q);
   const debounced = useDebouncedValue(searchInput, 300);
@@ -24,7 +24,7 @@ export function UsersPanel(): React.JSX.Element {
     type: type as 'athlete' | 'coach' | 'admin' | undefined
   });
 
-  // Dialog states
+  // Track each dialog independently to avoid cross-triggered UI state.
   const [openCreate, setOpenCreate] = React.useState(false);
   const [editId, setEditId] = React.useState<string | null>(null);
   const [deleteId, setDeleteId] = React.useState<string | null>(null);
@@ -33,7 +33,7 @@ export function UsersPanel(): React.JSX.Element {
   const editing = React.useMemo(() => items.find((i) => i.id === editId), [items, editId]);
   const passwordUser = React.useMemo(() => items.find((i) => i.id === passwordId), [items, passwordId]);
 
-  // Create handler: map dialog values → GQL input
+  // Normalize optional fields so the API receives consistent payloads.
   const handleCreate = async (v: UserDialogValues) => {
     await create({
       type: v.type,
@@ -68,7 +68,7 @@ export function UsersPanel(): React.JSX.Element {
     });
   };
 
-  // Update handler: map dialog values → GQL input (no password)
+  // Avoid sending password fields when updating profile details.
   const handleUpdate = async (v: UserDialogValues) => {
     if (!editId) return;
     await update({
@@ -116,6 +116,7 @@ export function UsersPanel(): React.JSX.Element {
 
   return (
     <Box>
+      {/* General information */}
       <UsersTable
         rows={items}
         total={total}

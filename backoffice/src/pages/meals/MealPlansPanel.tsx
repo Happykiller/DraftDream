@@ -1,4 +1,3 @@
-// src/pages/meals/MealPlansPanel.tsx
 import * as React from 'react';
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -19,6 +18,19 @@ import { useMealPlans } from '@hooks/useMealPlans';
 import { useMeals } from '@hooks/useMeals';
 import { useTabParams } from '@hooks/useTabParams';
 import { useUsers } from '@hooks/useUsers';
+
+function normalizeDateInput(value: string): string | undefined {
+  if (!value) {
+    return undefined;
+  }
+
+  const parsed = new Date(`${value}T00:00:00.000Z`);
+  if (Number.isNaN(parsed.getTime())) {
+    return undefined;
+  }
+
+  return parsed.toISOString();
+}
 
 function toMealPlanMutationDay(day: MealPlanDialogDay) {
   return {
@@ -149,16 +161,18 @@ export function MealPlansPanel(): React.JSX.Element {
       locale: values.locale,
       label: values.label,
       description: values.description ? values.description : undefined,
+      startDate: normalizeDateInput(values.startDate),
+      endDate: normalizeDateInput(values.endDate),
       calories: values.calories,
       proteinGrams: values.proteinGrams,
       carbGrams: values.carbGrams,
-    fatGrams: values.fatGrams,
-    userId: values.user?.id ?? undefined,
-    days: values.days.map(toMealPlanMutationDay),
-    visibility: values.visibility,
-  }),
-  [],
-);
+      fatGrams: values.fatGrams,
+      userId: values.user?.id ?? undefined,
+      days: values.days.map(toMealPlanMutationDay),
+      visibility: values.visibility,
+    }),
+    [],
+  );
 
   const toUpdateInput = React.useCallback(
     (id: string, values: MealPlanDialogValues) => ({
@@ -166,16 +180,18 @@ export function MealPlansPanel(): React.JSX.Element {
       locale: values.locale,
       label: values.label,
       description: values.description ? values.description : undefined,
+      startDate: values.startDate ? normalizeDateInput(values.startDate) : null,
+      endDate: values.endDate ? normalizeDateInput(values.endDate) : null,
       calories: values.calories,
       proteinGrams: values.proteinGrams,
       carbGrams: values.carbGrams,
-    fatGrams: values.fatGrams,
-    userId: values.user?.id ?? undefined,
-    days: values.days.map(toMealPlanMutationDay),
-    visibility: values.visibility,
-  }),
-  [],
-);
+      fatGrams: values.fatGrams,
+      userId: values.user?.id ?? undefined,
+      days: values.days.map(toMealPlanMutationDay),
+      visibility: values.visibility,
+    }),
+    [],
+  );
 
   return (
     <Box>

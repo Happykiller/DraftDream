@@ -84,6 +84,7 @@ export function LayoutAppBar({
         },
       }}
     >
+      {/* General information */}
       <Toolbar>
         {isMobile && (
           <IconButton

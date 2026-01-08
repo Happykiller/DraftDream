@@ -23,6 +23,7 @@
       "add": "Add",
       "edit": "Edit",
       "new": "New",
+      "refresh": "Refresh",
       "success": "Success",
       "error": "Error",
       "warning": "Warning",
@@ -61,6 +62,11 @@
       "address_country": "Country",
       "user": "User",
       "athlete": "Athlete",
+      "program": "Program",
+      "meal_plan": "Meal plan",
+      "meal_day": "Meal day",
+      "meal": "Meal",
+      "session": "Session",
       "user_optional": "User (optional)",
       "athlete_optional": "Athlete (optional)",
       "description": "Description",
@@ -94,6 +100,8 @@
       "activity_preferences": "Activity preferences",
       "budget": "Budget",
       "desired_start_date": "Desired start date",
+      "start_date": "Start date",
+      "end_date": "End date",
       "medical_conditions": "Medical conditions",
       "allergies": "Allergies",
       "notes": "Notes",
@@ -220,6 +228,7 @@
       "muscles": "Muscles",
       "tags": "Tags",
       "equipment": "Equipment",
+      "records": "Records",
       "aria_label": "Program sections"
     },
     "table": {
@@ -310,6 +319,40 @@
       "confirm": {
         "delete_title": "Delete exercise"
       }
+    },
+    "records": {
+      "title": "Records",
+      "create": "New Record",
+      "labels": {
+        "state": "State",
+        "comment": "Comment",
+        "satisfaction_rating": "Satisfaction rating"
+      },
+      "placeholders": {
+        "program": "Search programs...",
+        "session": "Search sessions...",
+        "athlete": "Search athletes...",
+        "comment": "Add a comment...",
+        "satisfaction_rating": "Rate satisfaction (0-10)"
+      },
+      "filters": {
+        "user": "User ID",
+        "program": "Program ID",
+        "state": "State",
+        "state_all": "All states"
+      },
+      "states": {
+        "create": "Created",
+        "draft": "Draft",
+        "finish": "Finished"
+      },
+      "dialog": {
+        "create_title": "New Record",
+        "edit_title": "Edit Record"
+      },
+      "confirm": {
+        "delete_title": "Delete record"
+      }
     }
   },
   "meals": {
@@ -317,9 +360,43 @@
     "tabs": {
       "meals": "Meals",
       "mealPlans": "Meal plans",
+      "records": "Records",
       "mealDays": "Meal days",
       "mealTypes": "Meal types",
       "aria_label": "Nutrition sections"
+    },
+    "records": {
+      "title": "Records",
+      "create": "New record",
+      "labels": {
+        "state": "State",
+        "comment": "Comment",
+        "satisfaction_rating": "Satisfaction rating"
+      },
+      "placeholders": {
+        "meal_plan": "Search meal plans...",
+        "meal_day": "Search meal days...",
+        "meal": "Search meals...",
+        "athlete": "Search athletes...",
+        "comment": "Add a comment...",
+        "satisfaction_rating": "Rate satisfaction (0-10)"
+      },
+      "filters": {
+        "state": "State",
+        "state_all": "All states"
+      },
+      "states": {
+        "create": "Created",
+        "draft": "Draft",
+        "finish": "Finished"
+      },
+      "dialog": {
+        "create_title": "New record",
+        "edit_title": "Edit record"
+      },
+      "confirm": {
+        "delete_title": "Delete record"
+      }
     },
     "mealPlans": {
       "title": "Meal plans",
@@ -598,9 +675,16 @@
       "title": "Athlete information",
       "search_placeholder": "Search athletes...",
       "dialog": {
+        "create_title": "Create athlete information",
         "edit_title": "Edit athlete information"
       },
+      "confirm": {
+        "delete_title": "Archive athlete information",
+        "delete_message": "Archive this athlete information entry?",
+        "delete_confirm": "Archive"
+      },
       "table": {
+        "create": "New athlete information",
         "columns": {
           "email": "Email",
           "phone": "Phone",

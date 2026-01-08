@@ -106,6 +106,7 @@ export function CoachAthleteDialog(props: CoachAthleteDialogProps): React.JSX.El
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth aria-labelledby="coach-athlete-dialog-title">
+      {/* General information */}
       <form onSubmit={handleSubmit}>
         <DialogTitle id="coach-athlete-dialog-title">
           {isEdit ? t('athletes.dialog.edit_title') : t('athletes.dialog.create_title')}
@@ -129,7 +130,6 @@ export function CoachAthleteDialog(props: CoachAthleteDialogProps): React.JSX.El
               </Stack>
             ) : null}
 
-            {/* General information */}
             <Autocomplete
               value={values.coach}
               onChange={(_, value) => setValues((prev) => ({ ...prev, coach: value }))}

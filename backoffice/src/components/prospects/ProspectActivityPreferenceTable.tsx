@@ -53,7 +53,7 @@ export function ProspectActivityPreferenceTable(props: ProspectActivityPreferenc
       {
         field: 'creator',
         headerName: t('common.labels.creator'),
-        valueGetter: (params: any) => params?.email,
+        valueGetter: (value: any) => value?.email ?? '—',
         flex: 1,
       },
 
@@ -141,4 +141,3 @@ export function ProspectActivityPreferenceTable(props: ProspectActivityPreferenc
     </Box>
   );
 }
-

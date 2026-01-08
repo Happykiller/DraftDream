@@ -12,6 +12,7 @@ type TokenShadowProps = {
 export function TokenShadow({ label, shadow }: TokenShadowProps) {
   return (
     <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
+      {/* General information */}
       <Stack spacing={1} alignItems="flex-start">
         <Typography variant="subtitle2">{label}</Typography>
         <Box

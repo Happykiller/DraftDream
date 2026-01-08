@@ -31,6 +31,7 @@ export function ConfirmDialog({
 
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="confirm-title" aria-describedby="confirm-desc">
+      {/* General information */}
       <DialogTitle id="confirm-title">{resolvedTitle}</DialogTitle>
       <DialogContent>
         <Typography id="confirm-desc">{resolvedMessage}</Typography>

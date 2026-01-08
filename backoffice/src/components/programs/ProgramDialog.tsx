@@ -39,6 +39,8 @@ export interface ProgramDialogValues {
   label: string;
   duration: number;
   frequency: number;
+  startDate: string;
+  endDate: string;
   description: string;
   sessions: ProgramSessionOption[];
   user: ProgramUserOption | null;
@@ -60,6 +62,8 @@ const DEFAULT_VALUES: ProgramDialogValues = {
   label: '',
   duration: 4,
   frequency: 3,
+  startDate: '',
+  endDate: '',
   description: '',
   sessions: [],
   user: null,
@@ -90,6 +94,19 @@ function mergeSessionOptions(
       return byId.get(templateId) ?? null;
     })
     .filter((option): option is ProgramSessionOption => Boolean(option));
+}
+
+function formatDateInput(value?: string | null): string {
+  if (!value) {
+    return '';
+  }
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return '';
+  }
+
+  return parsed.toISOString().slice(0, 10);
 }
 
 export function ProgramDialog({
@@ -129,6 +146,8 @@ export function ProgramDialog({
         label: initial.label,
         duration: initial.duration,
         frequency: initial.frequency,
+        startDate: formatDateInput(initial.startDate),
+        endDate: formatDateInput(initial.endDate),
         description: initial.description ?? '',
         sessions: mergeSessionOptions(initial.sessions, sessionOptions),
         user: ((): ProgramUserOption | null => {
@@ -236,6 +255,7 @@ export function ProgramDialog({
 
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="program-dialog-title" fullWidth maxWidth="sm">
+      {/* General information */}
       <DialogTitle id="program-dialog-title">
         {isEdit ? t('programs.dialog.edit_title') : t('programs.dialog.create_title')}
       </DialogTitle>
@@ -279,7 +299,6 @@ export function ProgramDialog({
             </Stack>
           ) : null}
 
-          {/* General information */}
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             {/* Locale is stored per program because content differs between regions. */}
             <TextField
@@ -333,16 +352,36 @@ export function ProgramDialog({
               required
               fullWidth
               inputProps={{ min: 1 }}
-            />
-            <TextField
-              label={t('common.labels.frequency_per_week')}
-              name="frequency"
-              type="number"
+          />
+          <TextField
+            label={t('common.labels.frequency_per_week')}
+            name="frequency"
+            type="number"
               value={values.frequency}
               onChange={handleChange}
               required
               fullWidth
-              inputProps={{ min: 1 }}
+            inputProps={{ min: 1 }}
+          />
+        </Stack>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+            <TextField
+              label={t('common.labels.start_date')}
+              name="startDate"
+              type="date"
+              value={values.startDate}
+              onChange={handleChange}
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+            />
+            <TextField
+              label={t('common.labels.end_date')}
+              name="endDate"
+              type="date"
+              value={values.endDate}
+              onChange={handleChange}
+              fullWidth
+              InputLabelProps={{ shrink: true }}
             />
           </Stack>
 

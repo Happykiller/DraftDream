@@ -76,9 +76,10 @@ export const ProgramTable = React.memo(function ProgramTable({
       headerName: t('common.labels.athlete'),
       flex: 1,
       minWidth: 160,
-      valueGetter: (params: any) => {
-        return params?.email ?? ''
-      },
+      valueGetter: (
+        _value: any,
+        row: any
+      ) => row.athlete?.email ?? '',
     },
     ...(isLargeUp
       ? [
@@ -91,11 +92,14 @@ export const ProgramTable = React.memo(function ProgramTable({
             renderCell: (params) => {
               const count = params.row.sessions.length;
               return (
-                <Chip
-                  size="small"
-                  label={t('programs.table.sessions_linked', { count })}
-                  color={count > 0 ? 'primary' : 'default'}
-                />
+                <React.Fragment>
+                  {/* General information */}
+                  <Chip
+                    size="small"
+                    label={t('programs.table.sessions_linked', { count })}
+                    color={count > 0 ? 'primary' : 'default'}
+                  />
+                </React.Fragment>
               );
             },
           } satisfies GridColDef<Program>,
@@ -106,7 +110,7 @@ export const ProgramTable = React.memo(function ProgramTable({
       headerName: t('common.labels.creator'),
       flex: 1,
       minWidth: 170,
-      valueFormatter: (params: any) => params?.email ?? '',
+      valueFormatter: (value: any) => value?.email ?? '',
     },
     ...(isXlUp
       ? [
@@ -115,14 +119,14 @@ export const ProgramTable = React.memo(function ProgramTable({
             headerName: t('common.labels.created'),
             flex: 1,
             minWidth: 170,
-            valueFormatter: (params: any) => fmtDate(params),
+            valueFormatter: (value: any) => fmtDate(value),
           },
           {
             field: 'updatedAt',
             headerName: t('common.labels.updated'),
             flex: 1,
             minWidth: 170,
-            valueFormatter: (params: any) => fmtDate(params),
+            valueFormatter: (value: any) => fmtDate(value),
           },
         ]
       : []),
@@ -151,6 +155,7 @@ export const ProgramTable = React.memo(function ProgramTable({
 
   return (
     <Box sx={{ width: '100%' }}>
+      {/* General information */}
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
         spacing={1}

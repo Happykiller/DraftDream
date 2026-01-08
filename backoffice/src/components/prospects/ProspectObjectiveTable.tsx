@@ -52,7 +52,7 @@ export function ProspectObjectiveTable(props: ProspectObjectiveTableProps): Reac
       {
         field: 'creator',
         headerName: t('common.labels.creator'),
-        valueGetter: (params: any) => params?.email,
+        valueGetter: (value: any) => value?.email ?? '—',
         flex: 1,
       },
       ...(isXl

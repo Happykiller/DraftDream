@@ -52,12 +52,15 @@ export class ProgramResolver {
       defaultLocale: input.locale,
     });
     const payload = {
+      session,
       locale: input.locale,
       label: input.label,
       visibility: this.normalizeProgramVisibility(input.visibility) ?? 'PRIVATE',
       duration: input.duration,
       frequency: input.frequency,
       description: input.description,
+      startDate: input.startDate ?? undefined,
+      endDate: input.endDate ?? undefined,
       sessions,
       userId: input.userId === undefined ? undefined : input.userId,
       createdBy: session.userId,
@@ -78,12 +81,15 @@ export class ProgramResolver {
       defaultLocale: input.locale,
     });
     const updateDto: any = {
+      session,
       locale: input.locale,
       label: input.label,
       visibility: this.normalizeProgramVisibility(input.visibility),
       duration: input.duration,
       frequency: input.frequency,
       description: input.description ?? undefined,
+      startDate: input.startDate === undefined ? undefined : input.startDate ?? null,
+      endDate: input.endDate === undefined ? undefined : input.endDate ?? null,
       sessions,
       userId: input.userId === undefined ? undefined : input.userId,
     };
@@ -189,14 +195,23 @@ export class ProgramResolver {
 
     if (!sessionIds?.length) return [];
 
-    const sessions = await Promise.all(
-      sessionIds.map((id) =>
-        inversify.getSessionUsecase.execute({
+    // Fetch sessions, filtering out any that don't exist or can't be accessed
+    const sessionPromises = sessionIds.map(async (id) => {
+      try {
+        return await inversify.getSessionUsecase.execute({
           id,
           session: userSession,
-        }),
-      ),
-    );
+        });
+      } catch (error) {
+        // Log warning but don't fail the entire operation
+        inversify.loggerService.warn?.(
+          `Failed to fetch session ${id}: ${error instanceof Error ? error.message : String(error)}`
+        );
+        return null;
+      }
+    });
+
+    const sessions = await Promise.all(sessionPromises);
 
     const resolved: ProgramSessionSnapshotUsecaseDto[] = [];
 

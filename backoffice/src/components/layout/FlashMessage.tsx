@@ -22,6 +22,7 @@ export const FlashMessage: React.FC<FlashMessageProps> = ({ icons = {}, maxVisib
 
   return (
     <Stack spacing={1} sx={{ position: 'fixed', zIndex: 1300, ...anchorOriginToPosition(anchorOrigin) }}>
+      {/* General information */}
       {visibleQueue.map(({ id, msg, severity }) => (
         <Collapse in key={id}>
           <Alert

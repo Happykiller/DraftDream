@@ -45,7 +45,7 @@ export const UsersTable = React.memo(function UsersTable({
         headerName: t('common.labels.name'),
         flex: 1, // Reduced from 1.2
         minWidth: 150,
-        valueGetter: (_value, row) => {
+        valueGetter: (_value: unknown, row: User) => {
           const full = `${row?.first_name ?? ''} ${row?.last_name ?? ''}`.trim();
           return full || '—';
         },
@@ -69,10 +69,20 @@ export const UsersTable = React.memo(function UsersTable({
             field: 'company',
             headerName: t('common.labels.company'),
             flex: 0.8,
-            valueGetter: (p: any) => p?.name ?? '—',
+            valueGetter: (value: { name: string } | null | undefined) => value?.name ?? '—',
           },
-          { field: 'createdAt', headerName: t('common.labels.created'), width: 150, valueFormatter: (p: any) => fmtDate(p) },
-          { field: 'updatedAt', headerName: t('common.labels.updated'), width: 150, valueFormatter: (p: any) => fmtDate(p) },
+          {
+            field: 'createdAt',
+            headerName: t('common.labels.created'),
+            width: 150,
+            valueFormatter: (value: string) => fmtDate(value),
+          },
+          {
+            field: 'updatedAt',
+            headerName: t('common.labels.updated'),
+            width: 150,
+            valueFormatter: (value: string) => fmtDate(value),
+          },
         ]
         : []),
       {
@@ -107,6 +117,7 @@ export const UsersTable = React.memo(function UsersTable({
 
   return (
     <Box sx={{ width: '100%' }}>
+      {/* General information */}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ mb: 1 }} alignItems={{ xs: 'stretch', sm: 'center' }}>
         <TextField
           placeholder={t('users.table.search_placeholder')}

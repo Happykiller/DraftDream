@@ -31,6 +31,7 @@ export const GrowthChartWidget: React.FC<GrowthChartWidgetProps> = ({
 
     return (
         <StatCard color={color} {...statCardProps}>
+          {/* General information */}
             <div style={{ width: '100%', height: height }}>
                 <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={data}>

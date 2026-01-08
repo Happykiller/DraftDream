@@ -1,8 +1,9 @@
 // src/components/athletes/AthleteInformationTable.tsx
 import * as React from 'react';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
-import { Box, IconButton, Stack, TextField, Tooltip, useMediaQuery } from '@mui/material';
+import { Box, Button, IconButton, Stack, TextField, Tooltip, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useTranslation } from 'react-i18next';
 
@@ -19,7 +20,9 @@ export interface AthleteInformationTableProps {
   onQueryChange: (q: string) => void;
   onPageChange: (page: number) => void; // 1-based
   onLimitChange: (limit: number) => void;
+  onCreate: () => void;
   onEdit: (row: AthleteInfo) => void;
+  onDelete: (row: AthleteInfo) => void;
 }
 
 /** Presentational table to inspect athlete profiles. */
@@ -33,7 +36,9 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
   onQueryChange,
   onPageChange,
   onLimitChange,
+  onCreate,
   onEdit,
+  onDelete,
 }: AthleteInformationTableProps): React.JSX.Element {
   const { t } = useTranslation();
   const fmtDate = useDateFormatter();
@@ -90,7 +95,7 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
             flex: 1,
             minWidth: 180,
             valueGetter: (_value: unknown, row: AthleteInfo) => row.updatedAt ?? row.athlete?.updatedAt ?? null,
-            valueFormatter: (p: any) => fmtDate(p),
+            valueFormatter: (value: any) => fmtDate(value),
           },
         ]
         : []),
@@ -100,24 +105,36 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
         sortable: false,
         filterable: false,
         renderCell: (params) => (
-          <Tooltip title={t('common.tooltips.edit')}>
-            <IconButton
-              size="small"
-              aria-label={`edit-athlete-info-${params.row.id}`}
-              onClick={() => onEdit(params.row)}
-            >
-              <EditIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
+          <Stack direction="row" spacing={0.5}>
+            <Tooltip title={t('common.tooltips.edit')}>
+              <IconButton
+                size="small"
+                aria-label={`edit-athlete-info-${params.row.id}`}
+                onClick={() => onEdit(params.row)}
+              >
+                <EditIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title={t('common.tooltips.delete')}>
+              <IconButton
+                size="small"
+                aria-label={`delete-athlete-info-${params.row.id}`}
+                onClick={() => onDelete(params.row)}
+              >
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </Stack>
         ),
         minWidth: 120,
       },
     ],
-    [fmtDate, isXl, onEdit, t],
+    [fmtDate, isXl, onDelete, onEdit, t],
   );
 
   return (
     <Box sx={{ width: '100%' }}>
+      {/* General information */}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ mb: 1 }} alignItems={{ xs: 'stretch', sm: 'center' }}>
         <TextField
           placeholder={t('athletes.information.search_placeholder')}
@@ -127,6 +144,10 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
           size="small"
           sx={{ maxWidth: 360 }}
         />
+        <Box sx={{ flex: 1 }} />
+        <Button variant="contained" onClick={onCreate}>
+          {t('athletes.information.table.create')}
+        </Button>
       </Stack>
 
       <DataGrid

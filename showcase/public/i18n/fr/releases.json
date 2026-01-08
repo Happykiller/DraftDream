@@ -1,6 +1,40 @@
 {
   "releases": [
     {
+      "version": "0.11.0",
+      "title": "Suivi d'Exécution & Performance Athlète",
+      "date": "2026-01-04",
+      "global": [
+        "Nouveau module de suivi d'exécution (Records) pour les séances d'entraînement et les repas.",
+        "Gestion avancée des prospects avec édition détaillée et historique d'activité.",
+        "Améliorations majeures de l'interface (Responsive, Tooltips, Layouts fixes).",
+        "Automatisation de la maintenance infrastructure (SSL, Nginx, Docker)."
+      ],
+      "notes": "La version 0.11.0 franchit une étape cruciale en permettant le suivi en temps réel de l'exécution des programmes et de la nutrition. Les athlètes peuvent désormais loguer leurs séances (poids, répétitions, ressenti) et leurs repas, tandis que les coachs disposent d'outils plus fins pour la gestion de leurs prospects.",
+      "projects": {
+        "/api": [
+          "Nouveau système de 'Program Records' et 'Meal Records' avec gestion d'états (CREATE, DRAFT, FINISH).",
+          "Calcul automatique des slugs et retrait des paramètres redondants dans les APIs GraphQL.",
+          "Extension du modèle prospect avec de nouveaux champs de métadonnées et préférences.",
+          "Documentation technique complète des nouveaux use-cases de suivi."
+        ],
+        "/backoffice": [
+          "Nouveau module de gestion des prospects avec éditeur complet et filtres avancés.",
+          "Introduction des composants Autocomplete pour une sélection fluide des entités.",
+          "Interface d'administration des records simplifiée pour les coachs."
+        ],
+        "/frontoffice": [
+          "Expérience de suivi 'Live' pour les sessions d'entraînement (charge, répétitions, durée).",
+          "Interface de suivi nutritionnel permettant de valider les repas du plan.",
+          "Refonte responsive du header et des layouts pour une utilisation optimale sur tablette.",
+          "Intégration systématique de tooltips et d'indices visuels pour améliorer l'UX."
+        ],
+        "/showcase": [
+          "Mise à jour des notes de version 0.11.0."
+        ]
+      }
+    },
+    {
       "version": "0.10.0",
       "title": "Autonomie Utilisateur & Self-Service",
       "date": "2025-12-21",

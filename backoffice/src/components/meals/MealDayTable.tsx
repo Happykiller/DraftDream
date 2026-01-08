@@ -59,9 +59,7 @@ export function MealDayTable(props: MealDayTableProps): React.JSX.Element {
       {
         field: 'creator',
         headerName: t('common.labels.creator'),
-        valueGetter: (creator: any) => {
-          return creator?.email || t('common.messages.unknown');
-        },
+        valueGetter: (value: any) => value?.email ?? t('common.messages.unknown'),
         flex: 1,
       },
       ...(isXl

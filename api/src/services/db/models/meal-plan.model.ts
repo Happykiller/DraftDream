@@ -41,6 +41,10 @@ export interface MealPlan {
   label: string;
   description?: string;
   visibility: 'PRIVATE' | 'PUBLIC';
+  /** Optional start date of the plan (day precision). */
+  startDate?: Date;
+  /** Optional end date of the plan (day precision). */
+  endDate?: Date;
   calories: number;
   proteinGrams: number;
   carbGrams: number;

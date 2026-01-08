@@ -12,11 +12,18 @@
     "field_incorrect": "Champ incorrect",
     "unexpected_error": "Erreur inattendue, veuillez réessayer.",
     "loading": "Chargement...",
+    "play": "Démarrer",
+    "resume": "Reprendre",
+    "not_found": "Introuvable",
+    "no_content": "Aucun contenu disponible",
+    "back_to_home": "Retour à l'accueil",
     "actions": {
       "retry": "Réessayer",
       "cancel": "Annuler",
       "create": "Créer",
-      "save": "Enregistrer"
+      "save": "Enregistrer",
+      "finish": "Finir",
+      "complete": "Terminer"
     }
   },
   "languages": {
@@ -78,7 +85,7 @@
     },
     "actions": {
       "create": "Nouveau prospect",
-      "create_lead": "Créer un nouveau prospect",
+      "create_lead": "Créer un prospect",
       "refresh": "Rafraîchir",
       "back_to_list": "Retour à la liste"
     },
@@ -335,10 +342,58 @@
           "fats": "Lipides"
         }
       },
+      "sessions": {
+        "empty": "Aucun retour de séance disponible pour le moment.",
+        "comment_fallback": "Aucun commentaire transmis",
+        "fields": {
+          "program": "Programme",
+          "created_at": "Date de création",
+          "updated_at": "Dernière mise à jour",
+          "satisfaction": "Note de satisfaction",
+          "difficulty": "Difficulté",
+          "duration": "Durée",
+          "comment": "Commentaire"
+        },
+        "satisfaction_value": "{{value}} / 5",
+        "satisfaction_missing": "Non renseignée",
+        "duration_value": "{{count}} min",
+        "duration_missing": "Non renseignée",
+        "status": {
+          "finish": "Terminé",
+          "draft": "En cours",
+          "create": "Créé"
+        },
+        "difficulty": {
+          "easy": "Facile",
+          "moderate": "Modérée",
+          "hard": "Difficile",
+          "unknown": "Non renseignée"
+        }
+      },
+      "meal_records": {
+        "empty": "Aucun retour repas disponible pour le moment.",
+        "comment_fallback": "Aucun commentaire transmis",
+        "fields": {
+          "meal_plan": "Plan nutritionnel",
+          "created_at": "Date de création",
+          "updated_at": "Dernière mise à jour",
+          "satisfaction": "Note de satisfaction",
+          "comment": "Commentaire"
+        },
+        "satisfaction_value": "{{value}} / 5",
+        "satisfaction_missing": "Non renseignée",
+        "status": {
+          "finish": "Terminé",
+          "draft": "En cours",
+          "create": "Créé"
+        }
+      },
       "tabs": {
         "overview": "Vue d'ensemble",
         "programs": "Programmes",
         "nutritions": "Nutritions",
+        "sessions": "Retour sessions",
+        "meal_records": "Retour repas",
         "programs_helper": "Associez vos programmes d'entraînement à cet athlète pour suivre sa progression.",
         "nutritions_helper": "Reliez les plans nutritionnels à cet athlète pour centraliser son suivi alimentaire."
       },
@@ -507,12 +562,14 @@
         "program_name_label": "Nom du programme",
         "duration_label": "Duree (sem.)",
         "frequency_label": "Freq./sem.",
+        "start_date_label": "Date de début",
+        "end_date_label": "Date de fin",
         "description_label": "Description",
         "description_placeholder": "Objectifs et details...",
         "search_placeholder": "Rechercher une séance...",
         "filter_label": "Categorie",
         "filter_all": "Toutes categories",
-        "button_create": "Creer une séance"
+        "button_create": "Ajouter une séance vide"
       },
       "templates_title": "Bibliotheque de séances",
       "templates_subtitle": "Choisissez une séance dans la liste ou cliquez pour l'ajouter.",
@@ -553,7 +610,7 @@
         "type_public": "Public",
         "limit_hint": "Affichage des 10 exercices maximum triés par ordre alphabétique.",
         "empty_state": "Aucun exercice ne correspond à vos filtres.",
-        "button_create": "Creer un exercice",
+        "button_create": "Nouvel exercice",
         "refresh_label": "Recharger les exercices",
         "subtitle": "Ajoutez un exercice à une séance pour l'intégrer.",
         "sets_label": " séries",
@@ -751,9 +808,13 @@
         "information": {
           "duration": "Durée",
           "frequency": "Fréquence",
+          "start_date": "Date de début",
+          "end_date": "Date de fin",
           "difficulty": "Niveau",
           "athlete": "Athlète assigné",
-          "no_athlete": "Non assigné"
+          "no_athlete": "Non assigné",
+          "no_start_date": "Non définie",
+          "no_end_date": "Non définie"
         },
         "stats": {
           "sessions": "Nombre de séances",
@@ -798,9 +859,13 @@
       "information": {
         "duration": "Durée",
         "frequency": "Fréquence",
+        "start_date": "Date de début",
+        "end_date": "Date de fin",
         "difficulty": "Niveau",
         "athlete": "Athlète assigné",
-        "no_athlete": "Non assigné"
+        "no_athlete": "Non assigné",
+        "no_start_date": "Non définie",
+        "no_end_date": "Non définie"
       },
       "stats": {
         "sessions": "Nombre de séances",
@@ -830,6 +895,7 @@
         "session_label": "Séance {{index}}"
       },
       "exercises": {
+        "exercise_label": "Exercice {{index}}",
         "series": "Séries",
         "repetitions": "Répétitions",
         "rest": "Repos",
@@ -955,7 +1021,9 @@
         "plan_name_label": "Nom du plan",
         "plan_name_default": "Plan nutritionel",
         "plan_description_label": "Notes",
-        "plan_description_placeholder": "Objectifs, recommandations et notes..."
+        "plan_description_placeholder": "Objectifs, recommandations et notes...",
+        "start_date_label": "Date de début",
+        "end_date_label": "Date de fin"
       },
       "day_library": {
         "title": "Bibliothèque de journées",
@@ -1105,7 +1173,11 @@
       "collapse_details": "Réduire les détails",
       "metadata": {
         "created_on": "Créé le {{date}}",
-        "creator": "Par {{name}}"
+        "creator": "Par {{name}}",
+        "start_date": "Date de début : {{date}}",
+        "end_date": "Date de fin : {{date}}",
+        "no_start_date": "Date de début non définie",
+        "no_end_date": "Date de fin non définie"
       }
     },
     "macros": {
@@ -1195,7 +1267,16 @@
         "average_calories": {
           "label": "Calories moyennes",
           "value": "{{value}} kcal/jour"
-        }
+        },
+        "start_date": {
+          "label": "Date de début",
+          "value": "{{date}}"
+        },
+        "end_date": {
+          "label": "Date de fin",
+          "value": "{{date}}"
+        },
+        "not_set": "Non définie"
       },
       "coach_notes": {
         "empty": "Aucune note du coach pour le moment."
@@ -1312,6 +1393,44 @@
     "loading_user": "Chargement du profil…",
     "unknown_user": "Utilisateur inconnu",
     "open_profile": "Ouvrir le profil"
+  },
+  "program_record": {
+    "details": {
+      "title": "Détails de la séance"
+    },
+    "form": {
+      "comment_label": "Commentaires",
+      "comment_placeholder": "Partagez votre avis sur cette séance...",
+      "satisfaction_label": "Note de satisfaction",
+      "satisfaction_label_short": "Satisfaction",
+      "record_data_title": "Séries enregistrées",
+      "series_label": "Série {{index}}",
+      "repetitions_label": "Répétitions",
+      "charge_label": "Charge",
+      "done_label": "Fait",
+      "duration_label": "Durée (minutes)",
+      "duration_label_short": "Durée",
+      "duration_placeholder": "minutes",
+      "difficulty_label": "Niveau de difficulté",
+      "difficulty_label_short": "Difficulté",
+      "exercise_notes_label": "Notes",
+      "completed_exercises": "Exercices terminés : {{count}}",
+      "completed_exercises_label": "Exercices terminées"
+    }
+  },
+  "meal_record": {
+    "details": {
+      "title": "Détails du repas"
+    },
+    "actions": {
+      "taken": "Pris"
+    },
+    "form": {
+      "comment_label": "Ajouter une note",
+      "comment_subtitle": "Envie de partager un retour ?",
+      "comment_placeholder": "Partagez votre avis sur ce repas...",
+      "satisfaction_label": "Note de satisfaction"
+    }
   },
   "ERRORS": {
     "INVALID_CREDENTIALS": "Identifiants invalides."

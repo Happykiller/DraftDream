@@ -52,9 +52,7 @@ export function MealTable(props: MealTableProps): React.JSX.Element {
       {
         field: 'type',
         headerName: t('common.labels.type'),
-        valueGetter: (params: any) => {
-          return params.label ?? '';
-        },
+        valueGetter: (value: any) => value?.label ?? '',
         flex: 1,
       },
       ...(isXl
@@ -69,7 +67,10 @@ export function MealTable(props: MealTableProps): React.JSX.Element {
       {
         field: 'creator',
         headerName: t('common.labels.creator'),
-        valueGetter: (params: any) => params?.row?.creator?.email ?? '',
+        valueGetter: (
+          _value: any,
+          row: any
+        ) => row.creator?.email ?? '',
         flex: 1,
       },
       ...(isXl

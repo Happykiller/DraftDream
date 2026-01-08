@@ -7,8 +7,8 @@ import {
   EditOutlined,
   PhoneOutlined,
 } from '@mui/icons-material';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import {
-  Button,
   Chip,
   Divider,
   IconButton,
@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 import { usePhoneFormatter } from '@hooks/usePhoneFormatter';
 import type { Prospect } from '@app-types/prospects';
+import { ResponsiveButton } from '../common/ResponsiveButton';
 import { GlassCard } from '../common/GlassCard';
 
 interface ProspectCardSharedProps {
@@ -424,16 +425,16 @@ export const ProspectWorkflowCard = React.memo(function ProspectWorkflowCard({
 
         {onValidate ? (
           <Stack alignItems="center" direction="row" justifyContent="center" sx={{ width: '100%', pt: 1 }}>
-            <Button
+            <ResponsiveButton
               color="error"
               fullWidth
               onClick={() => onValidate(prospect)}
               size="small"
               variant="contained"
+              label={t('prospects.list.actions.validate')}
+              icon={<CheckCircleOutlineIcon fontSize="small" />}
               sx={{ fontWeight: 700, maxWidth: 220, minWidth: 160 }}
-            >
-              {t('prospects.list.actions.validate')}
-            </Button>
+            />
           </Stack>
         ) : null}
       </Stack>

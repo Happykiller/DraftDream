@@ -23,6 +23,7 @@
       "add": "Ajouter",
       "edit": "Modifier",
       "new": "Nouveau",
+      "refresh": "Rafraîchir",
       "success": "Succès",
       "error": "Erreur",
       "warning": "Avertissement",
@@ -61,6 +62,11 @@
       "address_country": "Pays",
       "user": "Utilisateur",
       "athlete": "Athlète",
+      "program": "Programme",
+      "meal_plan": "Plan alimentaire",
+      "meal_day": "Journée",
+      "meal": "Repas",
+      "session": "Séance",
       "user_optional": "Utilisateur (optionnel)",
       "athlete_optional": "Athlète (optionnel)",
       "description": "Description",
@@ -94,6 +100,8 @@
       "activity_preferences": "Préférences d'activité",
       "budget": "Budget",
       "desired_start_date": "Date de début souhaitée",
+      "start_date": "Date de début",
+      "end_date": "Date de fin",
       "medical_conditions": "Conditions médicales",
       "allergies": "Allergies",
       "notes": "Notes",
@@ -220,6 +228,7 @@
       "muscles": "Muscles",
       "tags": "Tags",
       "equipment": "Équipement",
+      "records": "Enregistrements",
       "aria_label": "Sections des programmes"
     },
     "table": {
@@ -310,6 +319,40 @@
       "confirm": {
         "delete_title": "Supprimer l'exercice"
       }
+    },
+    "records": {
+      "title": "Enregistrements",
+      "create": "Nouvel enregistrement",
+      "labels": {
+        "state": "État",
+        "comment": "Commentaire",
+        "satisfaction_rating": "Note de satisfaction"
+      },
+      "placeholders": {
+        "program": "Rechercher des programmes...",
+        "session": "Rechercher des séances...",
+        "athlete": "Rechercher des athlètes...",
+        "comment": "Ajouter un commentaire...",
+        "satisfaction_rating": "Noter la satisfaction (0-10)"
+      },
+      "filters": {
+        "user": "ID utilisateur",
+        "program": "ID programme",
+        "state": "État",
+        "state_all": "Tous les états"
+      },
+      "states": {
+        "create": "Créé",
+        "draft": "Brouillon",
+        "finish": "Terminé"
+      },
+      "dialog": {
+        "create_title": "Nouvel enregistrement",
+        "edit_title": "Modifier l'enregistrement"
+      },
+      "confirm": {
+        "delete_title": "Supprimer l'enregistrement"
+      }
     }
   },
   "meals": {
@@ -317,9 +360,43 @@
     "tabs": {
       "meals": "Repas",
       "mealPlans": "Plans nutrition",
+      "records": "Enregistrements",
       "mealDays": "Journées de repas",
       "mealTypes": "Types de repas",
       "aria_label": "Sections nutrition"
+    },
+    "records": {
+      "title": "Enregistrements",
+      "create": "Nouvel enregistrement",
+      "labels": {
+        "state": "Statut",
+        "comment": "Commentaire",
+        "satisfaction_rating": "Note de satisfaction"
+      },
+      "placeholders": {
+        "meal_plan": "Rechercher des plans nutrition...",
+        "meal_day": "Rechercher des journées...",
+        "meal": "Rechercher des repas...",
+        "athlete": "Rechercher des athlètes...",
+        "comment": "Ajouter un commentaire...",
+        "satisfaction_rating": "Noter la satisfaction (0-10)"
+      },
+      "filters": {
+        "state": "Statut",
+        "state_all": "Tous les statuts"
+      },
+      "states": {
+        "create": "Créé",
+        "draft": "Brouillon",
+        "finish": "Terminé"
+      },
+      "dialog": {
+        "create_title": "Nouvel enregistrement",
+        "edit_title": "Modifier l'enregistrement"
+      },
+      "confirm": {
+        "delete_title": "Supprimer l'enregistrement"
+      }
     },
     "mealPlans": {
       "title": "Plans nutrition",
@@ -599,9 +676,16 @@
       "title": "Informations athlètes",
       "search_placeholder": "Rechercher des athlètes...",
       "dialog": {
+        "create_title": "Créer une information athlète",
         "edit_title": "Modifier les informations de l'athlète"
       },
+      "confirm": {
+        "delete_title": "Archiver l'information athlète",
+        "delete_message": "Archiver cette information athlète ?",
+        "delete_confirm": "Archiver"
+      },
       "table": {
+        "create": "Nouvelle information athlète",
         "columns": {
           "email": "Email",
           "phone": "Téléphone",

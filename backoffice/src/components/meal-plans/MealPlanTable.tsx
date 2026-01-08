@@ -95,13 +95,13 @@ export function MealPlanTable(props: MealPlanTableProps): React.JSX.Element {
             field: 'createdAt',
             headerName: t('common.labels.created'),
             flex: 1,
-            valueFormatter: (value: any) => formatDate(value as string),
+            valueFormatter: (value: any) => formatDate(value),
           },
           {
             field: 'updatedAt',
             headerName: t('common.labels.updated'),
             flex: 1,
-            valueFormatter: (value: any) => formatDate(value as string),
+            valueFormatter: (value: any) => formatDate(value),
           },
         ]
         : []),

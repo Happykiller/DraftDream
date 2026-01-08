@@ -147,6 +147,7 @@ export function ProspectClientDialog({
 
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="prospect-client-dialog" maxWidth="md" fullWidth>
+      {/* General information */}
       <DialogTitle id="prospect-client-dialog">
         {isEdit ? t('prospects.list.dialog.edit_title') : t('prospects.list.dialog.create_title')}
       </DialogTitle>
@@ -188,7 +189,6 @@ export function ProspectClientDialog({
           </Stack>
         ) : null}
 
-        {/* General information */}
         <Box component="form" onSubmit={handleSubmit}>
           <Grid container spacing={2} sx={{ mt: 0 }}>
             <Grid size={{ xs: 12, md: 6 }}>

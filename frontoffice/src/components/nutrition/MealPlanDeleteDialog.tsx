@@ -1,9 +1,10 @@
 // src/components/nutrition/MealPlanDeleteDialog.tsx
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Stack, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import { DeleteOutline } from '@mui/icons-material';
 
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
 
 interface MealPlanDeleteDialogProps {
@@ -59,10 +60,10 @@ export function MealPlanDeleteDialog({
       description={deleteDialogDescription}
       actions={
         <>
-          <Button onClick={handleClose} disabled={loading} color="inherit">
+          <ResponsiveButton onClick={handleClose} disabled={loading} color="inherit">
             {deleteDialogCancel}
-          </Button>
-          <Button
+          </ResponsiveButton>
+          <ResponsiveButton
             onClick={() => {
               void onConfirm();
             }}
@@ -71,7 +72,7 @@ export function MealPlanDeleteDialog({
             disabled={loading}
           >
             {loading ? deleteDialogConfirming : deleteDialogConfirm}
-          </Button>
+          </ResponsiveButton>
         </>
       }
     >

@@ -30,8 +30,7 @@ export const StatCard: React.FC<StatCardProps> = ({
 }) => {
     const theme = useTheme();
 
-    // Glassmorphism and Gradient effects
-    // Glassmorphism and Gradient effects
+    // Glassmorphism and gradient effects.
 
     return (
         <GlassCard
@@ -42,6 +41,7 @@ export const StatCard: React.FC<StatCardProps> = ({
                 borderColor: color ? `${color}40` : undefined,
             }}
         >
+            {/* General information */}
             {/* Header */}
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
                 <Box>

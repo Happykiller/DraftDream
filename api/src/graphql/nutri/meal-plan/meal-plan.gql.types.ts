@@ -121,6 +121,12 @@ export class MealPlanGql {
   @Field(() => MealPlanVisibility)
   visibility!: MealPlanVisibility;
 
+  @Field(() => GraphQLISODateTime, { nullable: true })
+  startDate?: Date | null;
+
+  @Field(() => GraphQLISODateTime, { nullable: true })
+  endDate?: Date | null;
+
   @Field(() => Int)
   calories!: number;
 
@@ -244,6 +250,12 @@ export class CreateMealPlanInput {
   @Field(() => MealPlanVisibility, { nullable: true })
   visibility?: MealPlanVisibility;
 
+  @Field(() => GraphQLISODateTime, { nullable: true })
+  startDate?: Date;
+
+  @Field(() => GraphQLISODateTime, { nullable: true })
+  endDate?: Date;
+
   @Field(() => Int)
   calories!: number;
 
@@ -282,6 +294,12 @@ export class UpdateMealPlanInput {
 
   @Field(() => MealPlanVisibility, { nullable: true })
   visibility?: MealPlanVisibility;
+
+  @Field(() => GraphQLISODateTime, { nullable: true })
+  startDate?: Date | null;
+
+  @Field(() => GraphQLISODateTime, { nullable: true })
+  endDate?: Date | null;
 
   @Field(() => Int, { nullable: true })
   calories?: number;

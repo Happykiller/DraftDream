@@ -75,6 +75,8 @@ export interface Program {
   duration: number;
   frequency: number;
   description?: string | null;
+  startDate?: string | null;
+  endDate?: string | null;
   userId?: string | null;
   createdBy: string;
   createdAt: string;
@@ -108,6 +110,8 @@ const LIST_Q = `
         duration
         frequency
         description
+        startDate
+        endDate
         sessions {
           id
           templateSessionId
@@ -173,6 +177,8 @@ const CREATE_M = `
       duration
       frequency
       description
+      startDate
+      endDate
       sessions {
         id
         templateSessionId
@@ -234,6 +240,8 @@ const UPDATE_M = `
       duration
       frequency
       description
+      startDate
+      endDate
       sessions {
         id
         templateSessionId
@@ -364,6 +372,8 @@ export function usePrograms({ page, limit, q, createdBy, userId, enabled = true 
       duration: number;
       frequency: number;
       description?: string;
+      startDate?: string;
+      endDate?: string;
       sessionIds?: string[];
       sessions?: ProgramSession[];
       userId?: string | null;
@@ -443,6 +453,8 @@ export function usePrograms({ page, limit, q, createdBy, userId, enabled = true 
       duration?: number;
       frequency?: number;
       description?: string | null;
+      startDate?: string | null;
+      endDate?: string | null;
       sessionIds?: string[];
       sessions?: ProgramSession[];
       userId?: string | null;

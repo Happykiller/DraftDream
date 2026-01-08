@@ -7,6 +7,8 @@ describe('mapProgramUsecaseToGql', () => {
   it('maps nested sessions and exercises to GraphQL snapshots', () => {
     const createdAt = new Date('2023-04-01T00:00:00.000Z');
     const updatedAt = new Date('2023-04-02T00:00:00.000Z');
+    const startDate = new Date('2023-05-01T00:00:00.000Z');
+    const endDate = new Date('2023-06-26T00:00:00.000Z');
 
     const model: ProgramUsecaseModel = {
       id: 'program-1',
@@ -17,6 +19,8 @@ describe('mapProgramUsecaseToGql', () => {
       duration: 8,
       frequency: 3,
       description: 'Full body strength program',
+      startDate,
+      endDate,
       sessions: [
         {
           id: 'session-1',
@@ -63,6 +67,8 @@ describe('mapProgramUsecaseToGql', () => {
       duration: 8,
       frequency: 3,
       description: 'Full body strength program',
+      startDate,
+      endDate,
       sessions: [
         {
           id: 'session-1',

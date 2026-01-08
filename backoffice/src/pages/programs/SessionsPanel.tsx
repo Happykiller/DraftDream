@@ -1,4 +1,3 @@
-// src/pages/programs/SessionsPanel.tsx
 import * as React from 'react';
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -59,6 +58,7 @@ export function SessionsPanel(): React.JSX.Element {
 
   return (
     <Box>
+      {/* General information */}
       <SessionTables
         rows={items}
         total={total}

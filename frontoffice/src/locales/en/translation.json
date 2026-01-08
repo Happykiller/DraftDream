@@ -12,11 +12,18 @@
     "field_incorrect": "Incorrect field",
     "unexpected_error": "Unexpected error, please try again.",
     "loading": "Loading...",
+    "play": "Start",
+    "resume": "Resume",
+    "not_found": "Not found",
+    "no_content": "No content available",
+    "back_to_home": "Back to Home",
     "actions": {
       "retry": "Retry",
       "cancel": "Cancel",
       "create": "Create",
-      "save": "Save"
+      "save": "Save",
+      "finish": "Finish",
+      "complete": "Complete"
     }
   },
   "languages": {
@@ -333,10 +340,58 @@
           "fats": "Fats"
         }
       },
+      "sessions": {
+        "empty": "No session feedback available yet.",
+        "comment_fallback": "No comment provided",
+        "fields": {
+          "program": "Program",
+          "created_at": "Created on",
+          "updated_at": "Last updated",
+          "satisfaction": "Satisfaction score",
+          "difficulty": "Difficulty",
+          "duration": "Duration",
+          "comment": "Comment"
+        },
+        "satisfaction_value": "{{value}} / 5",
+        "satisfaction_missing": "Not provided",
+        "duration_value": "{{count}} min",
+        "duration_missing": "Not provided",
+        "status": {
+          "finish": "Completed",
+          "draft": "In progress",
+          "create": "Created"
+        },
+        "difficulty": {
+          "easy": "Easy",
+          "moderate": "Moderate",
+          "hard": "Hard",
+          "unknown": "Not provided"
+        }
+      },
+      "meal_records": {
+        "empty": "No meal feedback available yet.",
+        "comment_fallback": "No comment provided",
+        "fields": {
+          "meal_plan": "Meal plan",
+          "created_at": "Created on",
+          "updated_at": "Last updated",
+          "satisfaction": "Satisfaction score",
+          "comment": "Comment"
+        },
+        "satisfaction_value": "{{value}} / 5",
+        "satisfaction_missing": "Not provided",
+        "status": {
+          "finish": "Completed",
+          "draft": "In progress",
+          "create": "Created"
+        }
+      },
       "tabs": {
         "overview": "Overview",
         "programs": "Programs",
         "nutritions": "Nutritions",
+        "sessions": "Session feedback",
+        "meal_records": "Meal feedback",
         "programs_helper": "Attach training programs to this athlete to track their progress.",
         "nutritions_helper": "Link nutrition plans to centralize the athlete's dietary follow-up."
       },
@@ -505,10 +560,12 @@
         "program_name_label": "Program name",
         "duration_label": "Duration (weeks)",
         "frequency_label": "Freq./week",
+        "start_date_label": "Start date",
+        "end_date_label": "End date",
         "search_placeholder": "Search a session...",
         "filter_label": "Category",
         "filter_all": "All categories",
-        "button_create": "Create a session"
+        "button_create": "Add empty session"
       },
       "templates_title": "Session templates",
       "templates_subtitle": "Choose a template from the list or click to add it.",
@@ -747,9 +804,13 @@
         "information": {
           "duration": "Duration",
           "frequency": "Frequency",
+          "start_date": "Start date",
+          "end_date": "End date",
           "difficulty": "Level",
           "athlete": "Assigned athlete",
-          "no_athlete": "Not assigned"
+          "no_athlete": "Not assigned",
+          "no_start_date": "Not set",
+          "no_end_date": "Not set"
         },
         "stats": {
           "sessions": "Number of sessions",
@@ -794,9 +855,13 @@
       "information": {
         "duration": "Duration",
         "frequency": "Frequency",
+        "start_date": "Start date",
+        "end_date": "End date",
         "difficulty": "Level",
         "athlete": "Assigned athlete",
-        "no_athlete": "Not assigned"
+        "no_athlete": "Not assigned",
+        "no_start_date": "Not set",
+        "no_end_date": "Not set"
       },
       "stats": {
         "sessions": "Number of sessions",
@@ -826,6 +891,7 @@
         "session_label": "Session {{index}}"
       },
       "exercises": {
+        "exercise_label": "Exercise {{index}}",
         "series": "Sets",
         "repetitions": "Reps",
         "rest": "Rest",
@@ -951,7 +1017,9 @@
         "plan_name_label": "Plan name",
         "plan_name_default": "Nutrition plan",
         "plan_description_label": "Notes",
-        "plan_description_placeholder": "Objectives, guidance and notes..."
+        "plan_description_placeholder": "Objectives, guidance and notes...",
+        "start_date_label": "Start date",
+        "end_date_label": "End date"
       },
       "day_library": {
         "title": "Meal day library",
@@ -1101,7 +1169,11 @@
       "collapse_details": "Collapse details",
       "metadata": {
         "created_on": "Created on {{date}}",
-        "creator": "By {{name}}"
+        "creator": "By {{name}}",
+        "start_date": "Start date: {{date}}",
+        "end_date": "End date: {{date}}",
+        "no_start_date": "Start date not set",
+        "no_end_date": "End date not set"
       }
     },
     "macros": {
@@ -1191,7 +1263,16 @@
         "average_calories": {
           "label": "Average calories",
           "value": "{{value}} kcal/day"
-        }
+        },
+        "start_date": {
+          "label": "Start date",
+          "value": "{{date}}"
+        },
+        "end_date": {
+          "label": "End date",
+          "value": "{{date}}"
+        },
+        "not_set": "Not set"
       },
       "coach_notes": {
         "empty": "No coach notes have been added yet."
@@ -1308,6 +1389,44 @@
     "loading_user": "Loading profile…",
     "unknown_user": "Unknown user",
     "open_profile": "Open profile"
+  },
+  "program_record": {
+    "details": {
+      "title": "Session Details"
+    },
+    "form": {
+      "comment_label": "Comments",
+      "comment_placeholder": "Share your feedback about this session...",
+      "satisfaction_label": "Satisfaction rating",
+      "satisfaction_label_short": "Satisfaction",
+      "record_data_title": "Recorded sets",
+      "series_label": "Set {{index}}",
+      "repetitions_label": "Repetitions",
+      "charge_label": "Load",
+      "done_label": "Done",
+      "duration_label": "Duration (minutes)",
+      "duration_label_short": "Duration",
+      "duration_placeholder": "minutes",
+      "difficulty_label": "Difficulty rating",
+      "difficulty_label_short": "Difficulty",
+      "exercise_notes_label": "Notes",
+      "completed_exercises": "Exercises completed: {{count}}",
+      "completed_exercises_label": "Exercises completed"
+    }
+  },
+  "meal_record": {
+    "details": {
+      "title": "Meal Details"
+    },
+    "actions": {
+      "taken": "Taken"
+    },
+    "form": {
+      "comment_label": "Add a note",
+      "comment_subtitle": "Want to share feedback?",
+      "comment_placeholder": "Share your feedback about this meal...",
+      "satisfaction_label": "Satisfaction rating"
+    }
   },
   "ERRORS": {
     "INVALID_CREDENTIALS": "Invalid credentials."

@@ -4,7 +4,6 @@ import { alpha, useTheme } from '@mui/material/styles';
 import {
   Autocomplete,
   Box,
-  Button,
   Card,
   CardContent,
   Divider,
@@ -18,6 +17,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import { Add, Edit, Replay, Search } from '@mui/icons-material';
 
 import { ProgramBuilderSessionItem } from './ProgramBuilderSessionItem';
@@ -872,6 +872,28 @@ export function ProgramBuilderPanel({
                             sx={{ backgroundColor: theme.palette.background.default }}
                           />
                         </Stack>
+                        <Stack direction="row" spacing={1.5}>
+                          <TextField
+                            label={builderCopy.config.start_date_label}
+                            size="small"
+                            fullWidth
+                            type="date"
+                            value={form.startDate}
+                            onChange={handleFormChange('startDate')}
+                            InputLabelProps={{ shrink: true }}
+                            sx={{ backgroundColor: theme.palette.background.default }}
+                          />
+                          <TextField
+                            label={builderCopy.config.end_date_label}
+                            size="small"
+                            fullWidth
+                            type="date"
+                            value={form.endDate}
+                            onChange={handleFormChange('endDate')}
+                            InputLabelProps={{ shrink: true }}
+                            sx={{ backgroundColor: theme.palette.background.default }}
+                          />
+                        </Stack>
                       </CardContent>
                     </Card>
 
@@ -1147,15 +1169,14 @@ export function ProgramBuilderPanel({
 
                           <Tooltip title={builderCopy.library.tooltips.add_empty_session} arrow>
                             <span style={{ display: 'flex', width: '100%' }}>
-                              <Button
+                              <ResponsiveButton
                                 variant="contained"
                                 size="small"
-                                startIcon={<Add fontSize="small" />}
                                 fullWidth
                                 onClick={handleCreateEmptySession}
                               >
                                 {builderCopy.config.button_create}
-                              </Button>
+                              </ResponsiveButton>
                             </span>
                           </Tooltip>
                         </Stack>
@@ -1239,15 +1260,15 @@ export function ProgramBuilderPanel({
                           sx={{ backgroundColor: theme.palette.background.default }}
                         />
 
-                        <Button
+                        <ResponsiveButton
                           variant="contained"
                           size="small"
-                          startIcon={<Add fontSize="small" />}
                           fullWidth
+                          icon={<Add />}
                           onClick={handleOpenCreateExerciseDialog}
                         >
                           {builderCopy.library.button_create}
-                        </Button>
+                        </ResponsiveButton>
 
                         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
                           <TextField
@@ -1321,14 +1342,14 @@ export function ProgramBuilderPanel({
               <Stack direction="row" justifyContent="flex-end" spacing={2}>
                 <Tooltip title={builderCopy.footer.cancel} arrow>
                   <span style={{ display: 'inline-flex' }}>
-                    <Button variant="text" color="inherit" onClick={onCancel}>
+                    <ResponsiveButton variant="text" color="inherit" onClick={onCancel}>
                       {builderCopy.footer.cancel}
-                    </Button>
+                    </ResponsiveButton>
                   </span>
                 </Tooltip>
                 <Tooltip title={submitLabel} arrow>
                   <span style={{ display: 'inline-flex' }}>
-                    <Button
+                    <ResponsiveButton
                       variant="contained"
                       type="button"
                       onClick={handleSubmit}
@@ -1336,7 +1357,7 @@ export function ProgramBuilderPanel({
                       color="success"
                     >
                       {submitLabel}
-                    </Button>
+                    </ResponsiveButton>
                   </span>
                 </Tooltip>
               </Stack>

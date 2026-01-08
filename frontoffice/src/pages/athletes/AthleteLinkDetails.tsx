@@ -1,47 +1,51 @@
 // src/pages/athletes/AthleteLinkDetails.tsx
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
-  ArrowBack,
   CalendarMonth,
+  Email,
   EventBusy,
   EventNote,
   Mail,
   MonitorHeart,
   Notes,
+  Phone,
   TrackChanges,
   Visibility,
 } from '@mui/icons-material';
 import {
   Alert,
   Box,
-  Button,
   Card,
   CardContent,
   Chip,
   CircularProgress,
   Divider,
-  Grid,
   Stack,
   Tab,
   Tabs,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
+import { MealRecordPreviewGrid } from '@components/athletes/MealRecordPreviewGrid';
+import { ProgramRecordPreviewGrid } from '@components/athletes/ProgramRecordPreviewGrid';
 
 import { getAthleteDisplayName } from '@components/athletes/athleteLinkUtils';
-import { TextWithTooltip } from '@components/common/TextWithTooltip';
+
 import { MealPlanList } from '@components/nutrition/MealPlanList';
 import { ProgramList } from '@components/programs/ProgramList';
-import type { AthleteLinkDetailsLoaderResult } from '@pages/athletes/AthleteLinkDetails.loader';
 import { useAthleteInfo } from '@hooks/athletes/useAthleteInfo';
 import { useCoachAthleteLink } from '@hooks/athletes/useCoachAthleteLink';
 import { usePrograms, type Program } from '@hooks/programs/usePrograms';
 import { useMealPlans, type MealPlan } from '@hooks/nutrition/useMealPlans';
+import { useMealRecords, type MealRecord } from '@hooks/nutrition/useMealRecords';
+import { useProgramRecords, type ProgramRecord } from '@hooks/program-records/useProgramRecords';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 
-type AthleteLinkTab = 'overview' | 'programs' | 'nutritions';
+type AthleteLinkTab = 'overview' | 'programs' | 'nutritions' | 'sessions' | 'meal-records';
 
 interface TabPanelProps {
   readonly value: AthleteLinkTab;
@@ -57,8 +61,6 @@ function TabPanel({ value, currentTab, children }: TabPanelProps): React.JSX.Ele
 
   return <Box sx={{ height: '100%' }}>{children}</Box>;
 }
-
-
 
 interface ProgramTabEmptyState {
   readonly title: string;
@@ -79,30 +81,13 @@ interface MacroLabels {
   readonly fats: string;
 }
 
-
-
 /** Dedicated page showing the details of a coach-athlete link. */
 export function AthleteLinkDetails(): React.JSX.Element {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const theme = useTheme();
   const { linkId } = useParams<{ linkId: string }>();
-  const loaderData = useLoaderData() as AthleteLinkDetailsLoaderResult;
-  const loaderError = React.useMemo(() => {
-    if (loaderData.status === 'not_found') {
-      return t('athletes.details.errors.not_found');
-    }
-    if (loaderData.status === 'error') {
-      return t('athletes.details.errors.load_failed');
-    }
-    return null;
-  }, [loaderData.status, t]);
-
-  const { link, loading, error } = useCoachAthleteLink({
-    linkId,
-    initialLink: loaderData.link,
-    initialError: loaderError,
-  });
+  const { link, loading, error } = useCoachAthleteLink({ linkId });
   const formatDate = useDateFormatter({ options: { day: '2-digit', month: '2-digit', year: 'numeric' } });
 
   const displayName = React.useMemo(
@@ -199,6 +184,29 @@ export function AthleteLinkDetails(): React.JSX.Element {
     enabled: Boolean(athleteId),
   });
 
+  const { items: programsLookup } = usePrograms({
+    page: 1,
+    limit: 100,
+    q: '',
+    userId: athleteId ?? undefined,
+    enabled: Boolean(athleteId),
+  });
+
+  const programLabelById = React.useMemo(() => {
+    return programsLookup.reduce<Record<string, string>>((accumulator, program) => {
+      accumulator[program.id] = program.label;
+      return accumulator;
+    }, {});
+  }, [programsLookup]);
+
+  const { list: listProgramRecords } = useProgramRecords();
+  const [programRecords, setProgramRecords] = React.useState<ProgramRecord[]>([]);
+  const [programRecordsLoading, setProgramRecordsLoading] = React.useState(false);
+
+  const { list: listMealRecords } = useMealRecords();
+  const [mealRecords, setMealRecords] = React.useState<MealRecord[]>([]);
+  const [mealRecordsLoading, setMealRecordsLoading] = React.useState(false);
+
   const nutritionEmptyState = React.useMemo(
     () =>
       t('athletes.details.nutritions.empty_state', {
@@ -226,8 +234,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
     [mealPlans.length, mealPlansLoading, t, totalMealPlans],
   );
 
-  const finalError = error ?? loaderError;
-  const showEmptyState = !loading && !link && finalError !== null;
+  const showEmptyState = !loading && !link && error !== null;
   const [currentTab, setCurrentTab] = React.useState<AthleteLinkTab>('overview');
 
   const handleBack = React.useCallback(() => {
@@ -251,6 +258,30 @@ export function AthleteLinkDetails(): React.JSX.Element {
     setNutritionSearchQuery('');
   }, [athleteId]);
 
+  React.useEffect(() => {
+    if (!athleteId) {
+      setProgramRecords([]);
+      return;
+    }
+
+    setProgramRecordsLoading(true);
+    listProgramRecords({ userId: athleteId, limit: 12, page: 1 })
+      .then(({ items }) => setProgramRecords(items))
+      .finally(() => setProgramRecordsLoading(false));
+  }, [athleteId, listProgramRecords]);
+
+  React.useEffect(() => {
+    if (!athleteId) {
+      setMealRecords([]);
+      return;
+    }
+
+    setMealRecordsLoading(true);
+    listMealRecords({ userId: athleteId, limit: 12, page: 1 })
+      .then(({ items }) => setMealRecords(items))
+      .finally(() => setMealRecordsLoading(false));
+  }, [athleteId, listMealRecords]);
+
   const handleViewProgram = React.useCallback(
     (program: Program) => {
       navigate(`/programs-coach/view/${program.id}`);
@@ -265,17 +296,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
     [navigate],
   );
 
-  const renderClientField = React.useCallback(
-    (label: string, value: string) => (
-      <Stack spacing={0.5} alignItems="flex-start" sx={{ minWidth: 0 }}>
-        <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, letterSpacing: 0.4 }}>
-          {label}
-        </Typography>
-        <TextWithTooltip tooltipTitle={value} variant="body2" sx={{ width: '100%' }} />
-      </Stack>
-    ),
-    [],
-  );
+
 
   return (
     <Stack
@@ -391,7 +412,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
                   </Stack>
                 ) : null}
 
-                {showEmptyState ? <Alert severity="error">{finalError}</Alert> : null}
+                {showEmptyState ? <Alert severity="error">{error}</Alert> : null}
 
                 {link ? (
                   <Stack spacing={2}>
@@ -399,14 +420,20 @@ export function AthleteLinkDetails(): React.JSX.Element {
                       {t('athletes.details.client_sheet_title')}
                     </Typography>
 
-                    <Grid container spacing={1.5} rowSpacing={2}>
-                      <Grid size={{ xs: 6, sm: 6 }}>
-                        {renderClientField(t('athletes.details.fields.email'), athleteEmail)}
-                      </Grid>
-                      <Grid size={{ xs: 6, sm: 6 }}>
-                        {renderClientField(t('athletes.details.fields.phone'), athletePhone)}
-                      </Grid>
-                    </Grid>
+                    <Stack spacing={1}>
+                      <Stack direction="row" spacing={1} alignItems="center">
+                        <Tooltip title={t('athletes.details.fields.email')}>
+                          <Email color="primary" fontSize="small" />
+                        </Tooltip>
+                        <Typography variant="body2">{athleteEmail}</Typography>
+                      </Stack>
+                      <Stack direction="row" spacing={1} alignItems="center">
+                        <Tooltip title={t('athletes.details.fields.phone')}>
+                          <Phone color="primary" fontSize="small" />
+                        </Tooltip>
+                        <Typography variant="body2">{athletePhone}</Typography>
+                      </Stack>
+                    </Stack>
 
                     <Card
                       variant="outlined"
@@ -542,6 +569,8 @@ export function AthleteLinkDetails(): React.JSX.Element {
                   <Tab value="overview" label={t('athletes.details.tabs.overview')} />
                   <Tab value="programs" label={t('athletes.details.tabs.programs')} />
                   <Tab value="nutritions" label={t('athletes.details.tabs.nutritions')} />
+                  <Tab value="sessions" label={t('athletes.details.tabs.sessions')} />
+                  <Tab value="meal-records" label={t('athletes.details.tabs.meal_records')} />
                 </Tabs>
 
                 <Divider />
@@ -649,6 +678,31 @@ export function AthleteLinkDetails(): React.JSX.Element {
                       </Box>
                     ) : null}
                   </TabPanel>
+
+                  <TabPanel value="sessions" currentTab={currentTab}>
+                    {link ? (
+                      <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3 } }}>
+                        <ProgramRecordPreviewGrid
+                          records={programRecords}
+                          loading={programRecordsLoading}
+                          programLabelById={programLabelById}
+                          formatDate={formatDate}
+                        />
+                      </Box>
+                    ) : null}
+                  </TabPanel>
+
+                  <TabPanel value="meal-records" currentTab={currentTab}>
+                    {link ? (
+                      <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3 } }}>
+                        <MealRecordPreviewGrid
+                          records={mealRecords}
+                          loading={mealRecordsLoading}
+                          formatDate={formatDate}
+                        />
+                      </Box>
+                    ) : null}
+                  </TabPanel>
                 </Box>
               </Box>
             </Box>
@@ -678,15 +732,14 @@ export function AthleteLinkDetails(): React.JSX.Element {
                 <Box sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }} />
               )}
 
-              <Button
+              <ResponsiveButton
                 variant="contained"
                 color="info"
                 onClick={handleBack}
-                startIcon={<ArrowBack />}
                 sx={{ alignSelf: { xs: 'stretch', sm: 'center' } }}
               >
                 {t('athletes.details.actions.back_to_list')}
-              </Button>
+              </ResponsiveButton>
             </Stack>
           </Box>
         </Card>

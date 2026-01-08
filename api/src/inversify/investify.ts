@@ -40,6 +40,12 @@ import { ListProgramsUsecase } from '@src/usecases/sport/program/list.programs.u
 import { DeleteProgramUsecase } from '@src/usecases/sport/program/delete.program.usecase';
 import { UpdateProgramUsecase } from '@src/usecases/sport/program/update.program.usecase';
 import { CreateProgramUsecase } from '@src/usecases/sport/program/create.program.usecase';
+import { GetProgramRecordUsecase } from '@src/usecases/sport/program-record/get.program-record.usecase';
+import { ListProgramRecordsUsecase } from '@src/usecases/sport/program-record/list.program-records.usecase';
+import { UpdateProgramRecordUsecase } from '@src/usecases/sport/program-record/update.program-record.usecase';
+import { CreateProgramRecordUsecase } from '@src/usecases/sport/program-record/create.program-record.usecase';
+import { DeleteProgramRecordUsecase } from '@src/usecases/sport/program-record/delete.program-record.usecase';
+import { HardDeleteProgramRecordUsecase } from '@src/usecases/sport/program-record/hard-delete.program-record.usecase';
 import { GetEquipmentUsecase } from '@src/usecases/sport/equipment/get.equipment.usecase';
 import { ListExercisesUsecase } from '@src/usecases/sport/exercise/list.exercises.usecase';
 import { ListCategoriesUsecase } from '@src/usecases/sport/category/list.category.usecase';
@@ -110,6 +116,12 @@ import { ListMealPlansUsecase } from '@src/usecases/nutri/meal-plan/list.meal-pl
 import { CreateMealPlanUsecase } from '@src/usecases/nutri/meal-plan/create.meal-plan.usecase';
 import { UpdateMealPlanUsecase } from '@src/usecases/nutri/meal-plan/update.meal-plan.usecase';
 import { DeleteMealPlanUsecase } from '@src/usecases/nutri/meal-plan/delete.meal-plan.usecase';
+import { GetMealRecordUsecase } from '@src/usecases/nutri/meal-record/get.meal-record.usecase';
+import { ListMealRecordsUsecase } from '@src/usecases/nutri/meal-record/list.meal-records.usecase';
+import { UpdateMealRecordUsecase } from '@src/usecases/nutri/meal-record/update.meal-record.usecase';
+import { CreateMealRecordUsecase } from '@src/usecases/nutri/meal-record/create.meal-record.usecase';
+import { DeleteMealRecordUsecase } from '@src/usecases/nutri/meal-record/delete.meal-record.usecase';
+import { HardDeleteMealRecordUsecase } from '@src/usecases/nutri/meal-record/hard-delete.meal-record.usecase';
 
 
 export class Inversify {
@@ -146,14 +158,20 @@ export class Inversify {
   createMuscleUsecase: CreateMuscleUsecase;
   listSessionsUsecase: ListSessionsUsecase;
   listProgramsUsecase: ListProgramsUsecase;
+  listProgramRecordsUsecase: ListProgramRecordsUsecase;
   listEquipmentUsecase: ListEquipmentUsecase;
   listExercisesUsecase: ListExercisesUsecase;
   createSessionUsecase: CreateSessionUsecase;
   deleteSessionUsecase: DeleteSessionUsecase;
   updateSessionUsecase: UpdateSessionUsecase;
   createProgramUsecase: CreateProgramUsecase;
+  createProgramRecordUsecase: CreateProgramRecordUsecase;
   deleteProgramUsecase: DeleteProgramUsecase;
   updateProgramUsecase: UpdateProgramUsecase;
+  updateProgramRecordUsecase: UpdateProgramRecordUsecase;
+  deleteProgramRecordUsecase: DeleteProgramRecordUsecase;
+  hardDeleteProgramRecordUsecase: HardDeleteProgramRecordUsecase;
+  getProgramRecordUsecase: GetProgramRecordUsecase;
   updateCategoryUsecase: UpdateCategoryUsecase;
   createCategoryUsecase: CreateCategoryUsecase;
   listCategoriesUsecase: ListCategoriesUsecase;
@@ -221,6 +239,12 @@ export class Inversify {
   listMealPlansUsecase: ListMealPlansUsecase;
   updateMealPlanUsecase: UpdateMealPlanUsecase;
   deleteMealPlanUsecase: DeleteMealPlanUsecase;
+  getMealRecordUsecase: GetMealRecordUsecase;
+  listMealRecordsUsecase: ListMealRecordsUsecase;
+  createMealRecordUsecase: CreateMealRecordUsecase;
+  updateMealRecordUsecase: UpdateMealRecordUsecase;
+  deleteMealRecordUsecase: DeleteMealRecordUsecase;
+  hardDeleteMealRecordUsecase: HardDeleteMealRecordUsecase;
 
 
   constructor() {
@@ -293,6 +317,13 @@ export class Inversify {
     this.createProgramUsecase = new CreateProgramUsecase(this);
     this.updateProgramUsecase = new UpdateProgramUsecase(this);
     this.deleteProgramUsecase = new DeleteProgramUsecase(this);
+    // usecases program records
+    this.getProgramRecordUsecase = new GetProgramRecordUsecase(this);
+    this.listProgramRecordsUsecase = new ListProgramRecordsUsecase(this);
+    this.createProgramRecordUsecase = new CreateProgramRecordUsecase(this);
+    this.updateProgramRecordUsecase = new UpdateProgramRecordUsecase(this);
+    this.deleteProgramRecordUsecase = new DeleteProgramRecordUsecase(this);
+    this.hardDeleteProgramRecordUsecase = new HardDeleteProgramRecordUsecase(this);
     // usecases client objective
     this.getClientObjectiveUsecase = new GetProspectObjectiveUsecase(this);
     this.createClientObjectiveUsecase = new CreateProspectObjectiveUsecase(this);
@@ -361,6 +392,13 @@ export class Inversify {
     this.listMealPlansUsecase = new ListMealPlansUsecase(this);
     this.updateMealPlanUsecase = new UpdateMealPlanUsecase(this);
     this.deleteMealPlanUsecase = new DeleteMealPlanUsecase(this);
+    // usecases meal records
+    this.getMealRecordUsecase = new GetMealRecordUsecase(this);
+    this.listMealRecordsUsecase = new ListMealRecordsUsecase(this);
+    this.createMealRecordUsecase = new CreateMealRecordUsecase(this);
+    this.updateMealRecordUsecase = new UpdateMealRecordUsecase(this);
+    this.deleteMealRecordUsecase = new DeleteMealRecordUsecase(this);
+    this.hardDeleteMealRecordUsecase = new HardDeleteMealRecordUsecase(this);
   }
 }
 

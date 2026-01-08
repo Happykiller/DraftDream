@@ -13,6 +13,7 @@ export function PublicLayout(): React.JSX.Element {
       disableGutters
       sx={{ p: 0 }}
     >
+      {/* General information */}
       <Outlet />
     </Container>
   );

@@ -50,6 +50,8 @@ export interface CreateMealPlanUsecaseDto {
   label: string;
   description?: string;
   visibility?: 'PRIVATE' | 'PUBLIC';
+  startDate?: Date;
+  endDate?: Date;
   calories: number;
   proteinGrams: number;
   carbGrams: number;
@@ -88,6 +90,8 @@ export interface UpdateMealPlanUsecaseDto {
   label?: string;
   description?: string;
   visibility?: 'PRIVATE' | 'PUBLIC';
+  startDate?: Date | null;
+  endDate?: Date | null;
   calories?: number;
   proteinGrams?: number;
   carbGrams?: number;

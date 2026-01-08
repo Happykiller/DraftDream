@@ -5,7 +5,6 @@ import type { TFunction } from 'i18next';
 import {
   Alert,
   Box,
-  Button,
   Card,
   CardContent,
   CircularProgress,
@@ -18,6 +17,7 @@ import {
   Typography,
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import {
   CalendarMonth,
   EditSquare as EditSquareIcon,
@@ -26,7 +26,6 @@ import {
   RestaurantMenu,
 } from '@mui/icons-material';
 import {
-  useLoaderData,
   useLocation,
   useNavigate,
   useParams,
@@ -40,9 +39,6 @@ import type {
 import { useMealTypeIcon } from '@hooks/nutrition/useMealTypeIcon';
 import { computeDayNutritionSummary } from '@components/nutrition/mealPlanBuilderUtils';
 
-import type {
-  NutritionPlanDetailsLoaderResult,
-} from './NutritionPlanDetails.loader';
 import { TextWithTooltip } from '@src/components/common/TextWithTooltip';
 
 function formatNumber(value: number, locale: string): string {
@@ -70,7 +66,6 @@ function formatMealPlanDate(value: string, locale: string): string {
 /** Detailed view of a nutrition meal plan including day and meal breakdowns. */
 export function NutritionPlanDetails(): React.JSX.Element {
   const { t, i18n } = useTranslation();
-  const loaderData = useLoaderData() as NutritionPlanDetailsLoaderResult;
   const navigate = useNavigate();
   const location = useLocation();
   const { mealPlanId } = useParams<{ mealPlanId: string }>();
@@ -85,23 +80,8 @@ export function NutritionPlanDetails(): React.JSX.Element {
     [theme.palette.info.main],
   );
 
-  const loaderError = React.useMemo(() => {
-    if (loaderData.status === 'not_found') {
-      return t('nutrition-details.errors.not_found');
-    }
-    if (loaderData.status === 'error') {
-      return t('nutrition-details.errors.load_failed');
-    }
-    return null;
-  }, [loaderData.status, t]);
+  const { mealPlan, loading, error } = useMealPlan({ mealPlanId });
 
-  const { mealPlan, loading, error } = useMealPlan({
-    mealPlanId,
-    initialMealPlan: loaderData.mealPlan,
-    initialError: loaderError,
-  });
-
-  const finalError = error ?? loaderError;
   const isCoachView = location.pathname.includes('/nutrition-coach/');
   const backToListLabel = React.useMemo(
     () =>
@@ -188,6 +168,20 @@ export function NutritionPlanDetails(): React.JSX.Element {
       date: formatMealPlanDate(mealPlan.createdAt, i18n.language),
     });
   }, [i18n.language, mealPlan, t]);
+  const startDateLabel = React.useMemo(() => {
+    if (!mealPlan?.startDate) {
+      return null;
+    }
+
+    return formatMealPlanDate(mealPlan.startDate, i18n.language);
+  }, [i18n.language, mealPlan?.startDate]);
+  const endDateLabel = React.useMemo(() => {
+    if (!mealPlan?.endDate) {
+      return null;
+    }
+
+    return formatMealPlanDate(mealPlan.endDate, i18n.language);
+  }, [i18n.language, mealPlan?.endDate]);
 
   const handleBack = React.useCallback(() => {
     navigate(isCoachView ? '/nutrition-coach' : '/nutrition-athlete');
@@ -304,7 +298,7 @@ export function NutritionPlanDetails(): React.JSX.Element {
                   </Stack>
                 ) : (
                   <Stack spacing={3}>
-                    {finalError ? <Alert severity="error">{finalError}</Alert> : null}
+                    {error ? <Alert severity="error">{error}</Alert> : null}
 
                     {mealPlan ? (
                       <Stack spacing={3}>
@@ -444,6 +438,40 @@ export function NutritionPlanDetails(): React.JSX.Element {
                                         })}
                                       </Typography>
                                     </Stack>
+                                    <Stack
+                                      direction="row"
+                                      alignItems="center"
+                                      justifyContent="space-between"
+                                      spacing={1.5}
+                                    >
+                                      <Typography variant="body2" color="text.secondary">
+                                        {t('nutrition-details.overview.plan_stats.start_date.label')}
+                                      </Typography>
+                                      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                                        {startDateLabel
+                                          ? t('nutrition-details.overview.plan_stats.start_date.value', {
+                                            date: startDateLabel,
+                                          })
+                                          : t('nutrition-details.overview.plan_stats.not_set')}
+                                      </Typography>
+                                    </Stack>
+                                    <Stack
+                                      direction="row"
+                                      alignItems="center"
+                                      justifyContent="space-between"
+                                      spacing={1.5}
+                                    >
+                                      <Typography variant="body2" color="text.secondary">
+                                        {t('nutrition-details.overview.plan_stats.end_date.label')}
+                                      </Typography>
+                                      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                                        {endDateLabel
+                                          ? t('nutrition-details.overview.plan_stats.end_date.value', {
+                                            date: endDateLabel,
+                                          })
+                                          : t('nutrition-details.overview.plan_stats.not_set')}
+                                      </Typography>
+                                    </Stack>
                                   </Stack>
                                 </Stack>
                               </Paper>
@@ -528,14 +556,14 @@ export function NutritionPlanDetails(): React.JSX.Element {
                 <Box sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }} />
               )}
 
-              <Button
+              <ResponsiveButton
                 variant="contained"
                 color="warning"
                 onClick={handleBack}
                 sx={{ alignSelf: { xs: 'stretch', sm: 'center' } }}
               >
                 {backToListLabel}
-              </Button>
+              </ResponsiveButton>
             </Stack>
           </Box>
         </Card>
@@ -845,13 +873,13 @@ const NutritionPlanMealCard = React.memo(function NutritionPlanMealCard({
           </Typography>
         ) : null}
 
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ flexWrap: 'wrap' }}>
+        <Stack direction="row" spacing={1.5} sx={{ flexWrap: 'nowrap' }}>
           {macroItems.map((macro) => (
             <Box
               key={macro.key}
               sx={{
                 flex: 1,
-                minWidth: { xs: '100%', sm: 160 },
+                minWidth: 0,
                 borderRadius: 2,
                 bgcolor: macro.background,
                 px: { xs: 1.5, sm: 2 },

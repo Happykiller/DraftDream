@@ -65,6 +65,7 @@ export function CategoryDialog({ open, mode, initial, onClose, onSubmit }: Categ
 
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="category-dialog-title">
+      {/* General information */}
       <DialogTitle id="category-dialog-title">
         {isEdit ? t('programs.categories.dialog.edit_title') : t('programs.categories.dialog.create_title')}
       </DialogTitle>

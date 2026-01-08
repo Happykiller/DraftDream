@@ -1,6 +1,10 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Stack, Typography } from '@mui/material';
+import {
+  Stack,
+  Typography,
+} from '@mui/material';
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import { DeleteOutline } from '@mui/icons-material';
 
 import { ProgramDialogLayout } from './ProgramDialogLayout';
@@ -57,10 +61,10 @@ export function ProgramDeleteDialog({
       description={deleteDialogDescription}
       actions={
         <>
-          <Button onClick={handleClose} disabled={loading} color="inherit">
+          <ResponsiveButton onClick={handleClose} disabled={loading} color="inherit">
             {deleteDialogCancel}
-          </Button>
-          <Button
+          </ResponsiveButton>
+          <ResponsiveButton
             onClick={() => {
               void onConfirm();
             }}
@@ -69,7 +73,7 @@ export function ProgramDeleteDialog({
             disabled={loading}
           >
             {loading ? deleteDialogConfirming : deleteDialogConfirm}
-          </Button>
+          </ResponsiveButton>
         </>
       }
     >

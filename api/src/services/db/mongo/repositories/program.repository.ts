@@ -54,6 +54,8 @@ interface ProgramDoc {
   visibility: Visibility;
   duration: number;
   frequency: number;
+  startDate?: Date;
+  endDate?: Date;
   description?: string;
   sessions?: ProgramSessionDoc[];
   userId?: ObjectId;
@@ -101,6 +103,8 @@ export class BddServiceProgramMongo {
       visibility: toVisibility(dto.visibility) ?? Visibility.PRIVATE,
       duration: Math.trunc(dto.duration),
       frequency: Math.trunc(dto.frequency),
+      startDate: dto.startDate,
+      endDate: dto.endDate,
       description: dto.description,
       sessions: dto.sessions?.map(this.toSessionDoc) ?? [],
       userId: dto.userId ? this.toObjectId(dto.userId) : undefined,
@@ -200,6 +204,20 @@ export class BddServiceProgramMongo {
     if (patch.label !== undefined) $set.label = patch.label.trim();
     if (patch.duration !== undefined) $set.duration = Math.trunc(patch.duration);
     if (patch.frequency !== undefined) $set.frequency = Math.trunc(patch.frequency);
+    if (patch.startDate !== undefined) {
+      if (patch.startDate === null) {
+        $unset.startDate = '';
+      } else {
+        $set.startDate = patch.startDate;
+      }
+    }
+    if (patch.endDate !== undefined) {
+      if (patch.endDate === null) {
+        $unset.endDate = '';
+      } else {
+        $set.endDate = patch.endDate;
+      }
+    }
     if (patch.description !== undefined) $set.description = patch.description;
     if (patch.visibility !== undefined) {
       $set.visibility = toVisibility(patch.visibility) ?? Visibility.PRIVATE;
@@ -291,6 +309,8 @@ export class BddServiceProgramMongo {
       visibility: toVisibility(doc.visibility) ?? Visibility.PRIVATE,
       duration: doc.duration,
       frequency: doc.frequency,
+      startDate: doc.startDate,
+      endDate: doc.endDate,
       description: doc.description,
       sessions: (doc.sessions ?? []).map(this.toSessionModel),
       userId: doc.userId ? doc.userId.toHexString() : undefined,
@@ -347,4 +367,3 @@ export class BddServiceProgramMongo {
     return normalized.length ? normalized : undefined;
   }
 }
-

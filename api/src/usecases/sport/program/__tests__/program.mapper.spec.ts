@@ -8,6 +8,8 @@ describe('mapProgramToUsecase', () => {
   it('maps nested snapshots and unwraps the creator identifier', () => {
     const createdAt = new Date('2024-09-01T08:00:00.000Z');
     const updatedAt = new Date('2024-09-02T08:00:00.000Z');
+    const startDate = new Date('2024-09-03T00:00:00.000Z');
+    const endDate = new Date('2024-10-15T00:00:00.000Z');
 
     const program: Program = {
       id: 'program-1',
@@ -18,6 +20,8 @@ describe('mapProgramToUsecase', () => {
       duration: 6,
       frequency: 4,
       description: 'Strength cycle',
+      startDate,
+      endDate,
       sessions: [
         {
           id: 'session-1',
@@ -73,6 +77,8 @@ describe('mapProgramToUsecase', () => {
       duration: 6,
       frequency: 4,
       description: 'Strength cycle',
+      startDate,
+      endDate,
       sessions: [
         {
           id: 'session-1',

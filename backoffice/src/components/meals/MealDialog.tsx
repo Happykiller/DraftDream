@@ -158,6 +158,7 @@ export function MealDialog({
 
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="meal-dialog-title" fullWidth maxWidth="md">
+      {/* General information */}
       <DialogTitle id="meal-dialog-title">
         {isEdit ? t('meals.meals.dialog.edit_title') : t('meals.meals.dialog.create_title')}
       </DialogTitle>
@@ -198,7 +199,6 @@ export function MealDialog({
             </Stack>
           ) : null}
 
-          {/* General information */}
           <TextField
             label={t('common.labels.label')}
             name="label"

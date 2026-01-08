@@ -64,6 +64,12 @@ interface AthleteInfoListPayload {
 type AthleteInfoUpdatePayload = {
   athleteInfo_update: AthleteInfo | null;
 };
+type AthleteInfoCreatePayload = {
+  athleteInfo_create: AthleteInfo | null;
+};
+type AthleteInfoDeletePayload = {
+  athleteInfo_delete: boolean;
+};
 
 const LIST_Q = `
   query ListAthleteInfos($input: ListAthleteInfosInput) {
@@ -110,6 +116,20 @@ const UPDATE_MUTATION = `
   }
 `;
 
+const CREATE_MUTATION = `
+  mutation CreateAthleteInfo($input: CreateAthleteInfoInput!) {
+    athleteInfo_create(input: $input) {
+      id
+    }
+  }
+`;
+
+const DELETE_MUTATION = `
+  mutation DeleteAthleteInfo($id: ID!) {
+    athleteInfo_delete(id: $id)
+  }
+`;
+
 export interface UseAthleteInfosParams {
   page: number;
   limit: number;
@@ -121,6 +141,16 @@ export interface UseAthleteInfosParams {
 export interface AthleteInfoUpdateInput {
   id: string;
   userId?: string;
+  levelId?: string | null;
+  objectiveIds?: string[];
+  activityPreferenceIds?: string[];
+  medicalConditions?: string | null;
+  allergies?: string | null;
+  notes?: string | null;
+}
+
+export interface AthleteInfoCreateInput {
+  userId: string;
   levelId?: string | null;
   objectiveIds?: string[];
   activityPreferenceIds?: string[];
@@ -201,11 +231,59 @@ export function useAthleteInfos({ page, limit, q, includeArchived, userId }: Use
     [execute, flashError, flashSuccess, gql, includeArchived, limit, load, page, q, userId],
   );
 
+  const create = React.useCallback(
+    async (input: AthleteInfoCreateInput) => {
+      setLoading(true);
+      try {
+        const { errors } = await execute(() =>
+          gql.send<AthleteInfoCreatePayload>({
+            query: CREATE_MUTATION,
+            variables: { input },
+            operationName: 'CreateAthleteInfo',
+          }),
+        );
+        if (errors?.length) throw new Error(errors[0].message);
+        flashSuccess('Athlete information created');
+        await load({ page, limit, q, includeArchived, userId });
+      } catch (error: any) {
+        flashError(error?.message ?? 'Failed to create athlete information');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [execute, flashError, flashSuccess, gql, includeArchived, limit, load, page, q, userId],
+  );
+
+  const remove = React.useCallback(
+    async (id: string) => {
+      setLoading(true);
+      try {
+        const { errors } = await execute(() =>
+          gql.send<AthleteInfoDeletePayload>({
+            query: DELETE_MUTATION,
+            variables: { id },
+            operationName: 'DeleteAthleteInfo',
+          }),
+        );
+        if (errors?.length) throw new Error(errors[0].message);
+        flashSuccess('Athlete information deleted');
+        await load({ page, limit, q, includeArchived, userId });
+      } catch (error: any) {
+        flashError(error?.message ?? 'Failed to delete athlete information');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [execute, flashError, flashSuccess, gql, includeArchived, limit, load, page, q, userId],
+  );
+
   return {
     items,
     total,
     loading,
+    create,
     update,
+    remove,
     reload: () => load({ page, limit, q, includeArchived, userId }),
   };
 }

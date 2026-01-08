@@ -84,16 +84,21 @@ export class GraphqlServiceFetch {
     });
   }
 
-  async send<TData = unknown, TVars = unknown>(payload: {
-    query: string;
-    variables?: TVars;
-    operationName?: string;
-  }): Promise<GraphQLResponse<TData>> {
+  async send<TData = unknown, TVars = unknown>(
+    payload: {
+      query: string;
+      variables?: TVars;
+      operationName?: string;
+    },
+    options?: {
+      accessToken?: string;
+    },
+  ): Promise<GraphQLResponse<TData>> {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
 
-    const token = session.getState().access_token;
+    const token = options?.accessToken ?? session.getState().access_token;
     if (token) headers.Authorization = `Bearer ${token}`;
 
     let response: Response;
@@ -115,6 +120,12 @@ export class GraphqlServiceFetch {
     if (response.status === 401) {
       this.handleUnauthorized('HTTP 401');
       return { data: null as any, errors: [{ message: 'UNAUTHORIZED' }] };
+    }
+
+    // HTTP-level 403 (Forbidden) - often used for expired sessions or invalid permissions
+    if (response.status === 403) {
+      this.handleUnauthorized('HTTP 403');
+      return { data: null as any, errors: [{ message: 'FORBIDDEN' }] };
     }
 
     let json: GraphQLResponse<TData>;

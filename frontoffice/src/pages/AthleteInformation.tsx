@@ -4,7 +4,6 @@ import {
   Alert,
   Autocomplete,
   Box,
-  Button,
   Container,
   Grid,
   MenuItem,
@@ -13,6 +12,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import { useTranslation } from 'react-i18next';
 
 import { useAthleteInfo } from '@hooks/athletes/useAthleteInfo';
@@ -242,9 +242,9 @@ export function AthleteInformation(): React.JSX.Element {
               </Grid>
 
               <Stack direction="row" justifyContent="flex-end">
-                <Button type="submit" variant="contained" disabled={isSubmitting}>
+                <ResponsiveButton type="submit" variant="contained" disabled={isSubmitting}>
                   {t('athlete_information.actions.save')}
-                </Button>
+                </ResponsiveButton>
               </Stack>
             </Stack>
           </Paper>

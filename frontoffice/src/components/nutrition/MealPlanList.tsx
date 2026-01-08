@@ -180,7 +180,7 @@ export const MealPlanList = React.memo(function MealPlanList({
       ) : mealPlans.length > 0 ? (
         <Grid container spacing={3}>
           {mealPlans.map((plan) => (
-            <Grid size={{ xs: 12, sm: 6, lg: 3 }} key={plan.id}>
+            <Grid size={{ xs: 12, sm: 6, lg: 6, xl: 3 }} key={plan.id}>
               <MealPlanCard
                 mealPlan={plan}
                 dayCountFormatter={dayCountFormatter}

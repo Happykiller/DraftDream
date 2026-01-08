@@ -286,6 +286,7 @@ export function ThemeStudioContent(): React.ReactElement {
 
   return (
     <ThemeProvider theme={derivedTheme}>
+      {/* General information */}
       <GlobalStyles
         styles={{
           'html, body, #root': {

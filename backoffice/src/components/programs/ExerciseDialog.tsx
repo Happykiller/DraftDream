@@ -14,6 +14,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+
 import { useDateFormatter } from '@hooks/useDateFormatter';
 import type { Exercise, ExerciseVisibility } from '@hooks/useExercises';
 import { VISIBILITY_OPTIONS } from '@src/commons/visibility';
@@ -47,7 +48,8 @@ export interface ExerciseDialogProps {
   open: boolean;
   mode: 'create' | 'edit';
   title?: string;
-  initial?: Exercise;
+  initial?: ExerciseDialogValues;
+  details?: Exercise;
   categoryOptions: RefEntity[];
   muscleOptions: RefEntity[];
   tagOptions: RefEntity[];
@@ -78,6 +80,7 @@ export function ExerciseDialog({
   mode,
   title,
   initial,
+  details,
   categoryOptions,
   muscleOptions,
   tagOptions,
@@ -90,29 +93,15 @@ export function ExerciseDialog({
   const { t } = useTranslation();
   const formatDate = useDateFormatter();
 
-  const creatorEmail = React.useMemo(() => initial?.creator?.email || '-', [initial?.creator?.email]);
+  const creatorEmail = React.useMemo(() => details?.creator?.email || '-', [details?.creator?.email]);
   const formattedCreatedAt = React.useMemo(
-    () => (initial?.createdAt ? formatDate(initial.createdAt) : '-'),
-    [initial?.createdAt, formatDate],
+    () => (details?.createdAt ? formatDate(details.createdAt) : '-'),
+    [details?.createdAt, formatDate],
   );
   const formattedUpdatedAt = React.useMemo(
-    () => (initial?.updatedAt ? formatDate(initial.updatedAt) : '-'),
-    [initial?.updatedAt, formatDate],
+    () => (details?.updatedAt ? formatDate(details.updatedAt) : '-'),
+    [details?.updatedAt, formatDate],
   );
-
-
-  const toRefs = (
-    entities?: Array<{ id: string; slug: string; label?: string | null; locale?: string | null }> | null,
-  ): RefEntity[] => {
-    return (
-      entities?.map((item) => ({
-        id: item.id,
-        slug: item.slug,
-        label: item.label ?? item.slug,
-        locale: item.locale ?? undefined,
-      })) ?? []
-    );
-  };
 
   const filterOptionsByLocale = React.useCallback(
     (option: RefEntity) => option.locale === values.locale,
@@ -140,20 +129,12 @@ export function ExerciseDialog({
     if (initial) {
       setValues(() => ({
         ...DEFAULTS,
-        locale: initial.locale,
-        label: initial.label,
-        series: initial.series,
-        repetitions: initial.repetitions,
+        ...initial,
         description: initial.description ?? '',
         instructions: initial.instructions ?? '',
         charge: initial.charge ?? '',
         rest: initial.rest ?? null,
         videoUrl: initial.videoUrl ?? '',
-        visibility: initial.visibility,
-        categories: toRefs(initial.categories),
-        muscles: toRefs(initial.muscles),
-        equipment: toRefs(initial.equipment),
-        tags: toRefs(initial.tags),
       }));
     } else {
       setValues(() => ({ ...DEFAULTS }));
@@ -200,12 +181,13 @@ export function ExerciseDialog({
 
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="exercise-dialog-title" fullWidth maxWidth="md">
+      {/* General information */}
       <DialogTitle id="exercise-dialog-title">
         {title ?? (isEdit ? t('programs.exercises.dialog.edit_title') : t('programs.exercises.dialog.create_title'))}
       </DialogTitle>
       <DialogContent>
         <Stack component="form" onSubmit={submit} spacing={2} sx={{ mt: 1 }}>
-          {isEdit && initial ? (
+          {isEdit && details ? (
             <Stack spacing={1.5}>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 <Stack flex={1} spacing={0.25}>
@@ -213,7 +195,7 @@ export function ExerciseDialog({
                     {t('common.labels.slug')}
                   </Typography>
                   <Typography variant="body2" sx={{ wordBreak: 'break-all' }}>
-                    {initial.slug || '-'}
+                    {details.slug || '-'}
                   </Typography>
                 </Stack>
                 <Stack flex={1} spacing={0.25}>

@@ -60,7 +60,7 @@ export function TextWithTooltip({
         : {};
 
     return (
-        <Tooltip title={isOverflowed ? tooltipTitle : ''} disableHoverListener={!isOverflowed} {...tooltipProps}>
+        <Tooltip title={isOverflowed ? tooltipTitle : ''}>
             <Typography
                 ref={textRef}
                 noWrap={!maxLines}

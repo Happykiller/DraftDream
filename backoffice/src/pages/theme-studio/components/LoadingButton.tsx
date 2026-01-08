@@ -16,6 +16,7 @@ export function LoadingButton({ loading = false, children, startIcon, disabled, 
       startIcon={loading ? <CircularProgress size={16} color="inherit" /> : startIcon}
       sx={{ pointerEvents: 'none' }}
     >
+      {/* General information */}
       {children}
     </Button>
   );

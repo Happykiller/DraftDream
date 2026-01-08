@@ -2,10 +2,11 @@
 import * as React from 'react';
 import { alpha, useTheme } from '@mui/material/styles';
 import { Add, Edit } from '@mui/icons-material';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import {
   Autocomplete,
   Box,
-  Button,
   Card,
   CardContent,
   Divider,
@@ -16,6 +17,7 @@ import {
   Typography,
 } from '@mui/material';
 
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import type { ProspectMetadataOption } from '@hooks/prospects/useProspectMetadataOptions';
 
 import { DEFAULT_PROSPECT_FORM_VALUES, type ProspectFormValues } from './prospectFormValues';
@@ -426,12 +428,21 @@ export function ProspectFormPanel({
 
             <Box component="footer" sx={{ p: 2, backgroundColor: '#e0dcdce0' }}>
               <Stack direction="row" justifyContent="flex-end" spacing={2}>
-                <Button color="inherit" onClick={onCancel} disabled={submitting}>
-                  {copy.fields.cancel}
-                </Button>
-                <Button type="submit" variant="contained" color="error" disabled={submitting}>
-                  {submitting ? `${submitLabel}…` : submitLabel}
-                </Button>
+                <ResponsiveButton
+                  color="inherit"
+                  onClick={onCancel}
+                  disabled={submitting}
+                  label={copy.fields.cancel}
+                  icon={<CloseRoundedIcon fontSize="small" />}
+                />
+                <ResponsiveButton
+                  type="submit"
+                  variant="contained"
+                  color="error"
+                  disabled={submitting}
+                  label={submitting ? `${submitLabel}…` : submitLabel}
+                  icon={<SaveOutlinedIcon fontSize="small" />}
+                />
               </Stack>
             </Box>
           </CardContent>

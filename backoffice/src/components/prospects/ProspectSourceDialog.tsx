@@ -64,11 +64,11 @@ export function ProspectSourceDialog({ open, mode, initial, onClose, onSubmit }:
 
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="prospect-source-dialog">
+      {/* General information */}
       <DialogTitle id="prospect-source-dialog">
         {isEdit ? t('prospects.sources.dialog.edit_title') : t('prospects.sources.dialog.create_title')}
       </DialogTitle>
       <DialogContent>
-        {/* General information */}
         <Stack spacing={2} sx={{ mt: 1 }}>
           {isEdit && initial ? (
             <Stack spacing={1.5}>

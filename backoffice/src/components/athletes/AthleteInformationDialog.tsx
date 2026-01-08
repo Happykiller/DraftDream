@@ -22,7 +22,14 @@ import type { AthleteInfo } from '@hooks/useAthleteInfos';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 import type { ProspectMetadataOption } from '@hooks/useProspectMetadataOptions';
 
+export interface AthleteInformationUserOption {
+  id: string;
+  email: string;
+  fullName: string;
+}
+
 export interface AthleteInformationDialogValues {
+  athlete: AthleteInformationUserOption | null;
   levelId?: string | null;
   objectiveIds: string[];
   activityPreferenceIds: string[];
@@ -32,6 +39,7 @@ export interface AthleteInformationDialogValues {
 }
 
 const DEFAULT_VALUES: AthleteInformationDialogValues = {
+  athlete: null,
   levelId: null,
   objectiveIds: [],
   activityPreferenceIds: [],
@@ -40,9 +48,13 @@ const DEFAULT_VALUES: AthleteInformationDialogValues = {
   notes: '',
 };
 
+export type AthleteInformationDialogMode = 'create' | 'edit';
+
 export interface AthleteInformationDialogProps {
   open: boolean;
+  mode: AthleteInformationDialogMode;
   initial?: AthleteInfo | null;
+  athleteOptions: AthleteInformationUserOption[];
   levels: ProspectMetadataOption[];
   objectives: ProspectMetadataOption[];
   activityPreferences: ProspectMetadataOption[];
@@ -54,7 +66,9 @@ export interface AthleteInformationDialogProps {
 /** Dialog for editing athlete information fields shared with prospects. */
 export function AthleteInformationDialog({
   open,
+  mode,
   initial,
+  athleteOptions,
   levels,
   objectives,
   activityPreferences,
@@ -65,6 +79,7 @@ export function AthleteInformationDialog({
   const { t } = useTranslation();
   const fmtDate = useDateFormatter();
   const [values, setValues] = React.useState<AthleteInformationDialogValues>(DEFAULT_VALUES);
+  const isEdit = mode === 'edit';
 
   const athleteName = React.useMemo(() => {
     const first = initial?.athlete?.first_name ?? '';
@@ -81,8 +96,13 @@ export function AthleteInformationDialog({
   );
 
   React.useEffect(() => {
-    if (open && initial) {
+    if (open && isEdit && initial) {
       setValues({
+        athlete: athleteOptions.find((option) => option.id === initial.userId) ?? {
+          id: initial.userId,
+          email: initial.athlete?.email ?? '',
+          fullName: athleteName || initial.athlete?.email || '',
+        },
         levelId: initial.levelId ?? null,
         objectiveIds: initial.objectiveIds ?? [],
         activityPreferenceIds: initial.activityPreferenceIds ?? [],
@@ -90,10 +110,10 @@ export function AthleteInformationDialog({
         allergies: initial.allergies ?? '',
         notes: initial.notes ?? '',
       });
-    } else {
+    } else if (open && !isEdit) {
       setValues(DEFAULT_VALUES);
     }
-  }, [initial, open]);
+  }, [athleteName, athleteOptions, initial, isEdit, open]);
 
   const optionByIds = React.useMemo(
     () => ({
@@ -105,17 +125,19 @@ export function AthleteInformationDialog({
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!isEdit && !values.athlete) return;
     await onSubmit(values);
     onClose();
   };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth aria-labelledby="athlete-information-dialog">
+      {/* General information */}
       <DialogTitle id="athlete-information-dialog">
-        {t('athletes.information.dialog.edit_title')}
+        {isEdit ? t('athletes.information.dialog.edit_title') : t('athletes.information.dialog.create_title')}
       </DialogTitle>
       <DialogContent dividers>
-        {initial ? (
+        {isEdit && initial ? (
           <Stack spacing={1.5} sx={{ mb: 2 }}>
             <Grid container spacing={2}>
               <Grid size={{ xs: 12, md: 6 }}>
@@ -156,9 +178,27 @@ export function AthleteInformationDialog({
           </Stack>
         ) : null}
 
-        {/* General information */}
         <Box component="form" onSubmit={handleSubmit}>
           <Grid container spacing={2}>
+            {!isEdit ? (
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Autocomplete
+                  value={values.athlete}
+                  onChange={(_, value) => setValues((prev) => ({ ...prev, athlete: value }))}
+                  options={athleteOptions}
+                  getOptionLabel={(option) => option?.fullName || option?.email || ''}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label={t('common.labels.athlete')}
+                      placeholder={t('common.placeholders.select')}
+                      required
+                    />
+                  )}
+                />
+              </Grid>
+            ) : null}
             <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 select

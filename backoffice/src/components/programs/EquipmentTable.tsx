@@ -59,7 +59,7 @@ export const EquipmentTable = React.memo(function EquipmentTable({
       headerName: t('common.labels.creator'),
       flex: 1,
       minWidth: 180,
-      valueFormatter: (params: any) => params?.email,
+      valueFormatter: (value: any) => value?.email ?? '—',
     },
     ...(isXl
       ? [
@@ -104,6 +104,7 @@ export const EquipmentTable = React.memo(function EquipmentTable({
 
   return (
     <Box sx={{ width: '100%' }}>
+      {/* General information */}
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
         spacing={1}

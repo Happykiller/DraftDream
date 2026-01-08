@@ -40,6 +40,8 @@ export interface CreateMealPlanDto {
   label: string;
   description?: string;
   visibility?: 'PRIVATE' | 'PUBLIC';
+  startDate?: Date;
+  endDate?: Date;
   calories: number;
   proteinGrams: number;
   carbGrams: number;
@@ -71,6 +73,8 @@ export type UpdateMealPlanDto = Partial<{
   label: string;
   description: string;
   visibility: 'PRIVATE' | 'PUBLIC';
+  startDate: Date | null;
+  endDate: Date | null;
   calories: number;
   proteinGrams: number;
   carbGrams: number;

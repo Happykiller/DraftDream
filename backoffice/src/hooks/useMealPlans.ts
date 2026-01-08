@@ -57,6 +57,8 @@ export interface MealPlan {
   locale: string;
   label: string;
   description?: string | null;
+  startDate?: string | null;
+  endDate?: string | null;
   calories: number;
   proteinGrams: number;
   carbGrams: number;
@@ -131,6 +133,8 @@ const LIST_QUERY = `
         label
         description
         visibility
+        startDate
+        endDate
         calories
         proteinGrams
         carbGrams
@@ -187,6 +191,8 @@ const CREATE_MUTATION = `
       label
       description
       visibility
+      startDate
+      endDate
       calories
       proteinGrams
       carbGrams
@@ -239,6 +245,8 @@ const UPDATE_MUTATION = `
       label
       description
       visibility
+      startDate
+      endDate
       calories
       proteinGrams
       carbGrams
@@ -303,6 +311,8 @@ export interface UseMealPlansResult {
     locale: string;
     label: string;
     description?: string;
+    startDate?: string;
+    endDate?: string;
     calories: number;
     proteinGrams: number;
     carbGrams: number;
@@ -316,6 +326,8 @@ export interface UseMealPlansResult {
     locale?: string;
     label?: string;
     description?: string;
+    startDate?: string | null;
+    endDate?: string | null;
     calories?: number;
     proteinGrams?: number;
     carbGrams?: number;

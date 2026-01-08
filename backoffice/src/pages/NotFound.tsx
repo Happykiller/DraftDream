@@ -45,6 +45,7 @@ export function NotFound(): React.JSX.Element {
         p: { xs: 2, sm: 3 },
       }}
     >
+      {/* General information */}
       {isMobile ? (
         // MOBILE: container without Paper (lighter)
         <Container

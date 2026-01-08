@@ -1,9 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+
 import LanguageSelector from './LanguageSelector';
-
-
-// ... existing imports ...
 
 const Header = () => {
   const navigate = useNavigate();

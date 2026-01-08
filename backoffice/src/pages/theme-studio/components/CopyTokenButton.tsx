@@ -45,6 +45,7 @@ export function CopyTokenButton({ token, label = 'Copy token', size = 'small' }:
 
   return (
     <Tooltip title={tooltip} placement="top">
+      {/* General information */}
       <Button
         type="button"
         size={size}

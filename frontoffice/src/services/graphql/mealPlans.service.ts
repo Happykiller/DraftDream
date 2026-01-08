@@ -13,6 +13,8 @@ const MEAL_PLAN_GET_Q = `
       locale
       label
       description
+      startDate
+      endDate
       calories
       proteinGrams
       carbGrams

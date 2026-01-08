@@ -33,6 +33,7 @@ export function UserPasswordDialog({ open, user, onClose, onSubmit }: UserPasswo
 
     return (
         <Dialog open={open} onClose={onClose} aria-labelledby="user-password-dialog-title" fullWidth maxWidth="xs">
+          {/* General information */}
             <DialogTitle id="user-password-dialog-title">
                 {t('users.dialog.change_password')}
             </DialogTitle>

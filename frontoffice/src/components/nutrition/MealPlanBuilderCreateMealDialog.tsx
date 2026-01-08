@@ -2,9 +2,9 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Add, Edit } from '@mui/icons-material';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import {
   Box,
-  Button,
   MenuItem,
   Stack,
   TextField,
@@ -14,6 +14,7 @@ import { useMealTypes } from '@hooks/nutrition/useMealTypes';
 import type { Meal, UseMealsResult } from '@hooks/nutrition/useMeals';
 
 
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
 
 interface MealPlanBuilderCreateMealDialogProps {
@@ -163,18 +164,21 @@ export function MealPlanBuilderCreateMealDialog({
 
   const actions = (
     <>
-      <Button onClick={handleClose} disabled={submitting} color="inherit">
-        {t('common.actions.cancel')}
-      </Button>
-      <Button
+      <ResponsiveButton
+        onClick={handleClose}
+        disabled={submitting}
+        color="inherit"
+        label={t('common.actions.cancel')}
+        icon={<CloseRoundedIcon fontSize="small" />}
+      />
+      <ResponsiveButton
         color="warning"
         disabled={submitting || !form.label.trim() || !form.typeId.trim()}
-        startIcon={isEditMode ? <Edit /> : <Add />}
         type="submit"
         variant="contained"
-      >
-        {t(isEditMode ? 'common.actions.save' : 'common.actions.create')}
-      </Button>
+        label={t(isEditMode ? 'common.actions.save' : 'common.actions.create')}
+        icon={isEditMode ? <Edit fontSize="small" /> : <Add fontSize="small" />}
+      />
     </>
   );
 

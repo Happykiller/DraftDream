@@ -200,6 +200,8 @@ type ProgramGql {
   duration: Int!
   frequency: Int!
   description: String
+  startDate: DateTime
+  endDate: DateTime
   visibility: MealPlanVisibility!
   sessions: [ProgramSessionGql!]!
   userId: ID
@@ -212,6 +214,53 @@ type ProgramGql {
 
 type ProgramListGql {
   items: [ProgramGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
+type ProgramRecordGql {
+  id: ID!
+  userId: ID!
+  programId: ID!
+  sessionId: String!
+  sessionSnapshot: ProgramSessionGql
+  recordData: ProgramRecordDataGql
+  comment: String
+  satisfactionRating: Int
+  durationMinutes: Int
+  difficultyRating: Int
+  state: ProgramRecordStateEnum!
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum ProgramRecordStateEnum {
+  CREATE
+  DRAFT
+  FINISH
+}
+
+type ProgramRecordExerciseSetDataGql {
+  index: Int!
+  repetitions: String
+  charge: String
+  done: Boolean
+}
+
+type ProgramRecordExerciseRecordDataGql {
+  exerciseId: ID!
+  notes: String
+  sets: [ProgramRecordExerciseSetDataGql!]!
+}
+
+type ProgramRecordDataGql {
+  exercises: [ProgramRecordExerciseRecordDataGql!]!
+}
+
+type ProgramRecordListGql {
+  items: [ProgramRecordGql!]!
   total: Int!
   page: Int!
   limit: Int!
@@ -522,6 +571,8 @@ type MealPlanGql {
   label: String!
   description: String
   visibility: MealPlanVisibility!
+  startDate: DateTime
+  endDate: DateTime
   calories: Int!
   proteinGrams: Int!
   carbGrams: Int!
@@ -537,6 +588,35 @@ type MealPlanGql {
 
 type MealPlanListGql {
   items: [MealPlanGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
+type MealRecordGql {
+  id: ID!
+  userId: ID!
+  mealPlanId: ID!
+  mealDayId: ID!
+  mealId: ID!
+  mealSnapshot: MealPlanMealSnapshotGql
+  comment: String
+  satisfactionRating: Int
+  state: MealRecordStateEnum!
+  createdBy: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+enum MealRecordStateEnum {
+  CREATE
+  DRAFT
+  FINISH
+}
+
+type MealRecordListGql {
+  items: [MealRecordGql!]!
   total: Int!
   page: Int!
   limit: Int!
@@ -583,6 +663,8 @@ type Query {
   session_list(input: ListSessionsInput): SessionListGql!
   program_get(id: ID!): ProgramGql
   program_list(input: ListProgramsInput): ProgramListGql!
+  programRecord_get(id: ID!): ProgramRecordGql
+  programRecord_list(input: ListProgramRecordsInput): ProgramRecordListGql!
   category_get(id: ID!): CategoryGql
   category_list(input: ListCategoriesInput): CategoryListGql!
   prospectObjective_get(id: ID!): ProspectObjectiveGql
@@ -607,6 +689,8 @@ type Query {
   meal_list(input: ListMealsInput): MealListGql!
   mealPlan_get(id: ID!): MealPlanGql
   mealPlan_list(input: ListMealPlansInput): MealPlanListGql!
+  mealRecord_get(id: ID!): MealRecordGql
+  mealRecord_list(input: ListMealRecordsInput): MealRecordListGql!
   coachAthlete_get(id: ID!): CoachAthleteGql
   coachAthlete_list(input: ListCoachAthletesInput): CoachAthleteListGql!
   athleteInfo_get(id: ID!): AthleteInfoGql
@@ -659,6 +743,16 @@ input ListProgramsInput {
   createdBy: String
   visibility: MealPlanVisibility
   userId: ID
+  limit: Int
+  page: Int
+}
+
+input ListProgramRecordsInput {
+  userId: ID
+  programId: ID
+  sessionId: String
+  state: ProgramRecordStateEnum
+  includeArchived: Boolean
   limit: Int
   page: Int
 }
@@ -775,6 +869,17 @@ input ListMealPlansInput {
   page: Int
 }
 
+input ListMealRecordsInput {
+  userId: ID
+  mealPlanId: ID
+  mealDayId: ID
+  mealId: ID
+  state: MealRecordStateEnum
+  includeArchived: Boolean
+  limit: Int
+  page: Int
+}
+
 input ListCoachAthletesInput {
   coachId: ID
   athleteId: ID
@@ -816,6 +921,10 @@ type Mutation {
   program_update(input: UpdateProgramInput!): ProgramGql
   program_softDelete(id: ID!): Boolean!
   program_delete(id: ID!): Boolean!
+  programRecord_create(input: CreateProgramRecordInput!): ProgramRecordGql
+  programRecord_updateState(input: UpdateProgramRecordInput!): ProgramRecordGql
+  programRecord_delete(id: ID!): Boolean!
+  programRecord_hardDelete(id: ID!): Boolean!
   category_create(input: CreateCategoryInput!): CategoryGql
   category_update(input: UpdateCategoryInput!): CategoryGql
   category_delete(id: ID!): Boolean!
@@ -855,6 +964,10 @@ type Mutation {
   mealPlan_update(input: UpdateMealPlanInput!): MealPlanGql
   mealPlan_softDelete(id: ID!): Boolean!
   mealPlan_delete(id: ID!): Boolean!
+  mealRecord_create(input: CreateMealRecordInput!): MealRecordGql
+  mealRecord_updateState(input: UpdateMealRecordInput!): MealRecordGql
+  mealRecord_delete(id: ID!): Boolean!
+  mealRecord_hardDelete(id: ID!): Boolean!
   coachAthlete_create(input: CreateCoachAthleteInput!): CoachAthleteGql
   coachAthlete_update(input: UpdateCoachAthleteInput!): CoachAthleteGql
   coachAthlete_delete(id: ID!): Boolean!
@@ -967,6 +1080,8 @@ input CreateProgramInput {
   duration: Int!
   frequency: Int!
   description: String
+  startDate: DateTime
+  endDate: DateTime
 
   """Deprecated: use sessions instead."""
   sessionIds: [ID!]
@@ -1009,11 +1124,52 @@ input UpdateProgramInput {
   duration: Int
   frequency: Int
   description: String
+  startDate: DateTime
+  endDate: DateTime
 
   """Deprecated: use sessions instead."""
   sessionIds: [ID!]
   sessions: [ProgramSessionInput!]
   userId: ID
+}
+
+input CreateProgramRecordInput {
+  programId: ID!
+  sessionId: String!
+  userId: ID
+  state: ProgramRecordStateEnum
+  recordData: ProgramRecordDataInput
+  comment: String
+  satisfactionRating: Int
+  durationMinutes: Int
+  difficultyRating: Int
+}
+
+input ProgramRecordDataInput {
+  exercises: [ProgramRecordExerciseRecordDataInput!]!
+}
+
+input ProgramRecordExerciseRecordDataInput {
+  exerciseId: ID!
+  notes: String
+  sets: [ProgramRecordExerciseSetDataInput!]!
+}
+
+input ProgramRecordExerciseSetDataInput {
+  index: Int!
+  repetitions: String
+  charge: String
+  done: Boolean
+}
+
+input UpdateProgramRecordInput {
+  id: ID!
+  state: ProgramRecordStateEnum!
+  recordData: ProgramRecordDataInput
+  comment: String
+  satisfactionRating: Int
+  durationMinutes: Int
+  difficultyRating: Int
 }
 
 input CreateCategoryInput {
@@ -1232,6 +1388,8 @@ input CreateMealPlanInput {
   label: String!
   description: String
   visibility: MealPlanVisibility
+  startDate: DateTime
+  endDate: DateTime
   calories: Int!
   proteinGrams: Int!
   carbGrams: Int!
@@ -1278,6 +1436,8 @@ input UpdateMealPlanInput {
   label: String
   description: String
   visibility: MealPlanVisibility
+  startDate: DateTime
+  endDate: DateTime
   calories: Int
   proteinGrams: Int
   carbGrams: Int
@@ -1285,6 +1445,23 @@ input UpdateMealPlanInput {
   days: [MealPlanDayInput!]
   dayIds: [ID!]
   userId: ID
+}
+
+input CreateMealRecordInput {
+  userId: ID
+  mealPlanId: ID!
+  mealDayId: ID!
+  mealId: ID!
+  state: MealRecordStateEnum
+  comment: String
+  satisfactionRating: Int
+}
+
+input UpdateMealRecordInput {
+  id: ID!
+  state: MealRecordStateEnum!
+  comment: String
+  satisfactionRating: Int
 }
 
 input CreateCoachAthleteInput {

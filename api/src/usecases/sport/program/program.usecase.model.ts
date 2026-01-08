@@ -35,6 +35,8 @@ export interface ProgramUsecaseModel {
   visibility: 'PRIVATE' | 'PUBLIC';
   duration: number;
   frequency: number;
+  startDate?: Date;
+  endDate?: Date;
   description?: string;
   sessions: ProgramSessionUsecaseModel[];
   userId?: string;

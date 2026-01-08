@@ -14,6 +14,7 @@ export function TokenBreakpoint({ label, value, pxToRem }: TokenBreakpointProps)
   const remValue = pxToRem(value);
   return (
     <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} alignItems="center" justifyContent="space-between">
+      {/* General information */}
       <Stack spacing={0.5} sx={{ minWidth: 200 }}>
         <Typography variant="subtitle2">{label}</Typography>
         <Typography variant="body2">

@@ -1,4 +1,4 @@
-// src/usecases/client/client/update.client.usecase.ts
+// src/usecases/prospect/prospect/update.prospect.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
 import { normalizeError } from '@src/common/error.util';
 
@@ -7,9 +7,15 @@ import { Inversify } from '@src/inversify/investify';
 import { ProspectUsecaseModel } from './prospect.usecase.model';
 import { UpdateProspectUsecaseDto } from './prospect.usecase.dto';
 
+/**
+ * Updates prospect details and tracks status changes.
+ */
 export class UpdateProspectUsecase {
-  constructor(private readonly inversify: Inversify) { }
+  constructor(private readonly inversify: Inversify) {}
 
+  /**
+   * Persists editable fields and appends workflow history when status changes.
+   */
   async execute(dto: UpdateProspectUsecaseDto): Promise<ProspectUsecaseModel | null> {
     try {
       const existing = await this.inversify.bddService.prospect.get({ id: dto.id });

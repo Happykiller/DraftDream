@@ -141,7 +141,7 @@ export const ProgramCard = React.memo(function ProgramCard({
       await onDelete(program.id);
       setIsDeleteDialogOpen(false);
     } catch (_error) {
-      console.log('[ProgramCard] Failed to delete program', _error);
+      // Error handled by hook
     } finally {
       setIsDeleteSubmitting(false);
     }
@@ -296,18 +296,28 @@ export const ProgramCard = React.memo(function ProgramCard({
           <Grid container>
             {/* Program summary */}
             <Grid size={10}>
-              <TextWithTooltip
-                tooltipTitle={program.label}
-                variant="h6"
+              <Box
                 sx={{
-                  fontWeight: 700
+                  flex: 1,
+                  minWidth: 0,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  width: '85%',
                 }}
-              />
-              <TextWithTooltip
-                tooltipTitle={program.description || t('programs-coatch.list.no_description')}
-                variant="body2"
-                color="text.secondary"
-              />
+              >
+                <TextWithTooltip
+                  tooltipTitle={program.label}
+                  variant="h6"
+                  sx={{
+                    fontWeight: 700
+                  }}
+                />
+                <TextWithTooltip
+                  tooltipTitle={program.description || t('programs-coatch.list.no_description')}
+                  variant="body2"
+                  color="text.secondary"
+                />
+              </Box>
               {(difficulty || athleteLabel) && (
                 <Stack
                   spacing={0.75}
@@ -412,16 +422,26 @@ export const ProgramCard = React.memo(function ProgramCard({
               <Stack spacing={1.5}>
                 {program.sessions.map((session) => (
                   <Stack key={session.id} spacing={1}>
-                    <Stack direction="row" justifyContent="space-between" alignItems="baseline">
-                      <Typography variant="subtitle2" sx={{ fontWeight: 600 }} color="primary.main">
-                        {session.label}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary" fontWeight={500}>
-                        {t('programs-coatch.list.session_exercises', {
-                          count: session.exercises.length,
-                        })}
-                      </Typography>
-                    </Stack>
+                    <Grid container>
+                      <Grid size={10}>
+                        <TextWithTooltip
+                          tooltipTitle={session.label}
+                          variant="h6"
+                          sx={{
+                            fontWeight: 700,
+                            lineHeight: 1.2,
+                            display: 'block',
+                          }}
+                        />
+                      </Grid>
+                      <Grid size={2} sx={{ textAlign: 'right' }}>
+                        <Typography variant="caption" color="text.secondary" fontWeight={500}>
+                          {t('programs-coatch.list.session_exercises', {
+                            count: session.exercises.length,
+                          })}
+                        </Typography>
+                      </Grid>
+                    </Grid>
                     {session.exercises.length > 0 && (
                       <Stack spacing={0.5}>
                         {session.exercises.slice(0, 3).map((exercise) => (
@@ -432,7 +452,7 @@ export const ProgramCard = React.memo(function ProgramCard({
                             alignItems="baseline"
                           >
                             <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                              {exercise.label}
+                              {exercise.label}bbb
                             </Typography>
                             <Typography variant="caption" color="text.secondary">
                               {exercise.series && exercise.repetitions
@@ -487,6 +507,7 @@ export const ProgramCard = React.memo(function ProgramCard({
               </Typography>
             </Stack>
           </Stack>
+
         </Box>
 
         {isOverflowing && (

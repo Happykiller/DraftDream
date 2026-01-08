@@ -1,4 +1,3 @@
-// src/pages/programs/MusclesPanel.tsx
 import * as React from 'react';
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -25,6 +24,7 @@ export function MusclesPanel(): React.JSX.Element {
 
   return (
     <Box>
+      {/* General information */}
       <MuscleTable
         rows={items}
         total={total}

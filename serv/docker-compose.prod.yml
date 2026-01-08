@@ -85,6 +85,5 @@ services:
     image: certbot/certbot:latest
     volumes:
       - letsencrypt:/etc/letsencrypt
-      - certbot_www:/var/www/ccertbot
       - certbot_www:/var/www/certbot
     networks: [internal]

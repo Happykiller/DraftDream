@@ -2,6 +2,7 @@
 import {
   Field,
   Float,
+  GraphQLISODateTime,
   ID,
   InputType,
   Int,
@@ -68,6 +69,10 @@ export class ProgramGql {
   @Field(() => Int) duration!: number;
   @Field(() => Int) frequency!: number;
   @Field({ nullable: true }) description?: string;
+  @Field(() => GraphQLISODateTime, { nullable: true })
+  startDate?: Date;
+  @Field(() => GraphQLISODateTime, { nullable: true })
+  endDate?: Date;
   @Field(() => ProgramVisibility)
   visibility!: ProgramVisibility;
   /** Snapshot definition available directly from the program document. */
@@ -124,6 +129,10 @@ export class CreateProgramInput {
   @Field(() => Int) duration!: number;
   @Field(() => Int) frequency!: number;
   @Field({ nullable: true }) description?: string;
+  @Field(() => GraphQLISODateTime, { nullable: true })
+  startDate?: Date;
+  @Field(() => GraphQLISODateTime, { nullable: true })
+  endDate?: Date;
   @Field(() => [ID], { nullable: true, description: 'Deprecated: use sessions instead.' })
   sessionIds?: string[];
   @Field(() => [ProgramSessionInput], { nullable: true }) sessions?: ProgramSessionInput[];
@@ -142,6 +151,10 @@ export class UpdateProgramInput {
   @Field(() => Int, { nullable: true }) duration?: number;
   @Field(() => Int, { nullable: true }) frequency?: number;
   @Field({ nullable: true }) description?: string;
+  @Field(() => GraphQLISODateTime, { nullable: true })
+  startDate?: Date | null;
+  @Field(() => GraphQLISODateTime, { nullable: true })
+  endDate?: Date | null;
   /** Replace the whole ordered list */
   @Field(() => [ID], { nullable: true, description: 'Deprecated: use sessions instead.' })
   sessionIds?: string[];

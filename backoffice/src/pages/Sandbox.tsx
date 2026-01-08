@@ -29,6 +29,7 @@ export function Sandbox(): React.JSX.Element {
 
   return (
     <Grid container spacing={3} sx={{ mt: 2 }}>
+      {/* General information */}
       {/* Card 1 */}
       <Grid size={{ xs: 12, sm: 6, md: 4 }}>
         <Card variant="outlined" sx={{ height: '100%' }}>
@@ -44,7 +45,7 @@ export function Sandbox(): React.JSX.Element {
               entity={email}
               onChange={setEmail}
               require
-              virgin
+
             />
           </CardContent>
         </Card>

@@ -50,6 +50,8 @@ export function mapProgramUsecaseToGql(model: ProgramUsecaseModel): ProgramGql {
     duration: model.duration,
     frequency: model.frequency,
     description: model.description,
+    startDate: model.startDate,
+    endDate: model.endDate,
     sessions: (model.sessions ?? []).map(mapSession),
     userId: model.userId,
     createdBy: model.createdBy,

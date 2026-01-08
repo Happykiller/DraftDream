@@ -5,7 +5,6 @@ import { alpha, useTheme } from '@mui/material/styles';
 import {
   Autocomplete,
   Box,
-  Button,
   Card,
   CardContent,
   Divider,
@@ -29,6 +28,8 @@ import type { MealPlan } from '@hooks/nutrition/useMealPlans';
 import { useMealPlanBuilder } from '@hooks/nutrition/useMealPlanBuilder';
 
 import { session } from '@stores/session';
+
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 
 import type {
   MealPlanBuilderCopy,
@@ -615,6 +616,26 @@ export function MealPlanBuilderPanel({
                             />
                           )}
                         />
+                        <Stack direction="row" spacing={1.5}>
+                          <TextField
+                            label={builderCopy.config.start_date_label}
+                            size="small"
+                            fullWidth
+                            type="date"
+                            value={form.startDate}
+                            onChange={handleFormChange('startDate')}
+                            InputLabelProps={{ shrink: true }}
+                          />
+                          <TextField
+                            label={builderCopy.config.end_date_label}
+                            size="small"
+                            fullWidth
+                            type="date"
+                            value={form.endDate}
+                            onChange={handleFormChange('endDate')}
+                            InputLabelProps={{ shrink: true }}
+                          />
+                        </Stack>
                         <TextField
                           label={builderCopy.config.plan_description_label}
                           value={form.description}
@@ -828,15 +849,14 @@ export function MealPlanBuilderPanel({
                                     </Typography>
                                   </Stack>
                                 </Box>
-                                <Button
+                                <ResponsiveButton
                                   onClick={handleCreateEmptyDay}
-                                  startIcon={<Add fontSize="small" />}
                                   size="small"
                                   variant="contained"
                                   fullWidth
                                 >
                                   {builderCopy.structure.add_day_label}
-                                </Button>
+                                </ResponsiveButton>
                               </Stack>
                             ) : (
                               <Stack spacing={2} sx={{ overflow: 'auto', maxHeight: '100%' }}>
@@ -858,15 +878,14 @@ export function MealPlanBuilderPanel({
                                     onEditMeal={handleOpenDraftMealEditor}
                                   />
                                 ))}
-                                <Button
+                                <ResponsiveButton
                                   onClick={handleCreateEmptyDay}
-                                  startIcon={<Add fontSize="small" />}
                                   size="small"
                                   variant="contained"
                                   fullWidth
                                 >
                                   {builderCopy.structure.add_day_label}
-                                </Button>
+                                </ResponsiveButton>
                               </Stack>
                             )}
                           </Box>
@@ -924,15 +943,14 @@ export function MealPlanBuilderPanel({
                               ) : undefined,
                           }}
                         />
-                        <Button
+                        <ResponsiveButton
                           onClick={handleOpenMealDialog}
                           size="small"
-                          startIcon={<Add fontSize="small" />}
                           variant="contained"
                           fullWidth
                         >
                           {builderCopy.meal_library.create_label}
-                        </Button>
+                        </ResponsiveButton>
                         <Autocomplete
                           options={mealTypes}
                           loading={mealTypesLoading}
@@ -1005,21 +1023,21 @@ export function MealPlanBuilderPanel({
                 <Stack direction="row" justifyContent="flex-end" spacing={2}>
                   <Tooltip title={builderCopy.footer.cancel} arrow>
                     <span style={{ display: 'inline-flex' }}>
-                      <Button variant="text" color="inherit" onClick={onCancel}>
+                      <ResponsiveButton variant="text" color="inherit" onClick={onCancel}>
                         {builderCopy.footer.cancel}
-                      </Button>
+                      </ResponsiveButton>
                     </span>
                   </Tooltip>
                   <Tooltip title={submitLabel} arrow>
                     <span style={{ display: 'inline-flex' }}>
-                      <Button
+                      <ResponsiveButton
                         color="warning"
                         disabled={isSubmitDisabled || submitting}
                         type="submit"
                         variant="contained"
                       >
                         {submitLabel}
-                      </Button>
+                      </ResponsiveButton>
                     </span>
                   </Tooltip>
                 </Stack>

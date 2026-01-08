@@ -56,6 +56,8 @@ export function mapMealPlanUsecaseToGql(model: MealPlanUsecaseModel): MealPlanGq
     label: model.label,
     description: model.description ?? null,
     visibility: model.visibility === 'PUBLIC' ? MealPlanVisibility.PUBLIC : MealPlanVisibility.PRIVATE,
+    startDate: model.startDate ?? null,
+    endDate: model.endDate ?? null,
     calories: model.calories,
     proteinGrams: model.proteinGrams,
     carbGrams: model.carbGrams,

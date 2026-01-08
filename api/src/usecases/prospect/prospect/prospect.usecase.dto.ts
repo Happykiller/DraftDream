@@ -1,4 +1,4 @@
-// src/usecases/client/client/client.usecase.dto.ts
+// src/usecases/prospect/prospect/prospect.usecase.dto.ts
 import { ProspectStatus } from '@src/common/prospect-status.enum';
 import type { Role } from '@src/common/role.enum';
 

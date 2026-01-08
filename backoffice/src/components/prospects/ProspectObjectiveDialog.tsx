@@ -64,12 +64,11 @@ export function ProspectObjectiveDialog({ open, mode, initial, onClose, onSubmit
 
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="prospect-objective-dialog">
+      {/* General information */}
       <DialogTitle id="prospect-objective-dialog">
         {isEdit ? t('prospects.objectives.dialog.edit_title') : t('prospects.objectives.dialog.create_title')}
       </DialogTitle>
       <DialogContent>
-        {/* General information */}
-        {/* General information */}
         <Stack spacing={2} sx={{ mt: 1 }}>
           {isEdit && initial ? (
             <Stack spacing={1.5}>

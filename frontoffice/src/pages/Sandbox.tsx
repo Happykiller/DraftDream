@@ -2,7 +2,13 @@
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
 import { useNavigate } from 'react-router-dom';
-import { Typography, Card, CardContent, Button, Stack } from '@mui/material';
+import {
+  Typography,
+  Card,
+  CardContent,
+  Stack,
+} from '@mui/material';
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import { useTranslation } from 'react-i18next';
 
 import { Input } from '@src/components/Input';
@@ -61,45 +67,45 @@ export function Sandbox(): React.JSX.Element {
             </Typography>
 
             <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-              <Button
+              <ResponsiveButton
                 variant="contained"
                 color="success"
                 aria-label={t('sandbox.flash_card.aria.success')}
                 onClick={() => success(t('sandbox.flash_card.messages.success'))}
               >
                 {t('sandbox.flash_card.buttons.success')}
-              </Button>
-              <Button
+              </ResponsiveButton>
+              <ResponsiveButton
                 variant="contained"
                 color="error"
                 aria-label={t('sandbox.flash_card.aria.error')}
                 onClick={() => error(t('sandbox.flash_card.messages.error'))}
               >
                 {t('sandbox.flash_card.buttons.error')}
-              </Button>
-              <Button
+              </ResponsiveButton>
+              <ResponsiveButton
                 variant="contained"
                 color="warning"
                 aria-label={t('sandbox.flash_card.aria.warning')}
                 onClick={() => warning(t('sandbox.flash_card.messages.warning'))}
               >
                 {t('sandbox.flash_card.buttons.warning')}
-              </Button>
-              <Button
+              </ResponsiveButton>
+              <ResponsiveButton
                 variant="contained"
                 color="info"
                 aria-label={t('sandbox.flash_card.aria.info')}
                 onClick={() => info(t('sandbox.flash_card.messages.info'))}
               >
                 {t('sandbox.flash_card.buttons.info')}
-              </Button>
-              <Button
+              </ResponsiveButton>
+              <ResponsiveButton
                 variant="outlined"
                 aria-label={t('sandbox.flash_card.aria.custom')}
                 onClick={() => open(t('sandbox.flash_card.messages.custom'), 'info')}
               >
                 {t('sandbox.flash_card.buttons.custom')}
-              </Button>
+              </ResponsiveButton>
             </Stack>
           </CardContent>
         </Card>
@@ -115,9 +121,9 @@ export function Sandbox(): React.JSX.Element {
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
               {t('sandbox.loader_card.description')}
             </Typography>
-            <Button variant="contained" onClick={simulateTask}>
+            <ResponsiveButton variant="contained" onClick={simulateTask}>
               {t('sandbox.loader_card.button')}
-            </Button>
+            </ResponsiveButton>
           </CardContent>
         </Card>
       </Grid>
@@ -130,9 +136,9 @@ export function Sandbox(): React.JSX.Element {
               {t('sandbox.not_found_card.title')}
             </Typography>
 
-            <Button variant="contained" onClick={() => navigate('/non-existent-page')}>
+            <ResponsiveButton variant="contained" onClick={() => navigate('/non-existent-page')}>
               {t('sandbox.not_found_card.button')}
-            </Button>
+            </ResponsiveButton>
           </CardContent>
         </Card>
       </Grid>

@@ -60,7 +60,7 @@ export const MuscleTable = React.memo(function MuscleTable(props: MuscleTablePro
     {
       field: 'creator',
       headerName: t('common.labels.creator'),
-      valueGetter: (params: any) => params?.email,
+      valueGetter: (value: any) => value?.email ?? '—',
       flex: 1,
     },
     ...(isXl
@@ -106,6 +106,7 @@ export const MuscleTable = React.memo(function MuscleTable(props: MuscleTablePro
 
   return (
     <Box sx={{ width: '100%' }}>
+      {/* General information */}
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
         spacing={1}

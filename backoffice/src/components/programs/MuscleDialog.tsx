@@ -65,6 +65,7 @@ export function MuscleDialog({ open, mode, initial, onClose, onSubmit }: MuscleD
 
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="muscle-dialog-title">
+      {/* General information */}
       <DialogTitle id="muscle-dialog-title">
         {isEdit ? t('programs.muscles.dialog.edit_title') : t('programs.muscles.dialog.create_title')}
       </DialogTitle>

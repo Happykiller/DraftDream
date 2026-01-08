@@ -95,6 +95,32 @@ function generateUiId() {
   return `ui-${Math.random().toString(36).slice(2, 10)}-${Date.now().toString(36)}`;
 }
 
+function formatDateInput(value?: string | null): string {
+  if (!value) {
+    return '';
+  }
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return '';
+  }
+
+  return parsed.toISOString().slice(0, 10);
+}
+
+function normalizeDateInput(value?: string | null): string | undefined {
+  if (!value) {
+    return undefined;
+  }
+
+  const parsed = new Date(`${value}T00:00:00.000Z`);
+  if (Number.isNaN(parsed.getTime())) {
+    return undefined;
+  }
+
+  return parsed.toISOString();
+}
+
 type MealTypeFallback = {
   label: string;
   id?: string | null;
@@ -269,6 +295,8 @@ export function useMealPlanBuilder(
       return candidate.length > 0 ? candidate : builderCopy.config.plan_name_default;
     })(),
     description: basePlan?.description?.trim() ?? '',
+    startDate: formatDateInput(basePlan?.startDate),
+    endDate: formatDateInput(basePlan?.endDate),
   }));
 
   const [selectedAthlete, setSelectedAthlete] = React.useState<User | null>(
@@ -365,6 +393,8 @@ export function useMealPlanBuilder(
         basePlan.description && basePlan.description.length > 0
           ? basePlan.description
           : builderCopy.structure.description_placeholder,
+      startDate: formatDateInput(basePlan.startDate),
+      endDate: formatDateInput(basePlan.endDate),
     });
     setSelectedAthlete(mapMealPlanAthleteToUser(basePlan.athlete));
     setDays(basePlan.days.map(cloneDaySnapshot));
@@ -649,6 +679,8 @@ export function useMealPlanBuilder(
         locale: i18n.language,
         label: form.planName.trim(),
         description: form.description?.trim() ?? '',
+        startDate: normalizeDateInput(form.startDate),
+        endDate: normalizeDateInput(form.endDate),
         calories: nutritionSummary.calories,
         proteinGrams: nutritionSummary.proteinGrams,
         carbGrams: nutritionSummary.carbGrams,
@@ -685,6 +717,8 @@ export function useMealPlanBuilder(
       days,
       form.description,
       form.planName,
+      form.endDate,
+      form.startDate,
       i18n.language,
       isSubmitDisabled,
       mode,

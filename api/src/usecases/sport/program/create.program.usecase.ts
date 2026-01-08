@@ -1,5 +1,6 @@
 // src\\usecases\\program\\create.program.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
+import { Role } from '@src/common/role.enum';
 import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
 import { buildSlug } from '@src/common/slug.util';
@@ -13,16 +14,25 @@ export class CreateProgramUsecase {
   /** Creates a new program; returns null on duplicate slug/locale (active docs). */
   async execute(dto: CreateProgramUsecaseDto): Promise<ProgramUsecaseModel | null> {
     try {
-      const slug = buildSlug({ label: dto.label, fallback: 'program', locale: dto.locale });
-      const sessions = dto.sessions.map((session) => {
+      const { session, ...payload } = dto;
+
+      // Enforce visibility rules: only admins can create PUBLIC programs
+      let visibility = payload.visibility ?? 'PRIVATE';
+      if (visibility === 'PUBLIC' && session.role !== Role.ADMIN) {
+        visibility = 'PRIVATE'; // Force private for non-admins
+      }
+
+      const slug = buildSlug({ label: payload.label, fallback: 'program', locale: payload.locale });
+      const sessions = payload.sessions.map((sessionItem) => {
         return {
-          ...session,
-          slug: buildSlug({ label: session.label, fallback: 'session', locale: session.locale ?? dto.locale }),
+          ...sessionItem,
+          slug: buildSlug({ label: sessionItem.label, fallback: 'session', locale: sessionItem.locale ?? payload.locale }),
         };
       });
 
       const created = await this.inversify.bddService.program.create({
-        ...dto,
+        ...payload,
+        visibility,
         slug,
         sessions,
       });

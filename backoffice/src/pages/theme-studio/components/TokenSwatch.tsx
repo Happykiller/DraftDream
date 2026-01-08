@@ -17,6 +17,7 @@ export function TokenSwatch({ label, value, contrastText, inverted = false }: To
 
   return (
     <Stack spacing={1}>
+      {/* General information */}
       <Box
         role="img"
         aria-label={`${label} ${value}`}

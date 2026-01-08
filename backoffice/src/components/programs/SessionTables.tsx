@@ -80,7 +80,7 @@ export const SessionTables = React.memo(function SessionTables({
       headerName: t('common.labels.creator'),
       flex: 1,
       minWidth: 170,
-      valueFormatter: (p: any) => p?.email ?? '',
+      valueFormatter: (value: any) => value?.email ?? '',
     },
     ...(isXl
       ? [
@@ -89,14 +89,14 @@ export const SessionTables = React.memo(function SessionTables({
           headerName: t('common.labels.created'),
           flex: 1,
           minWidth: 170,
-          valueFormatter: (p: any) => fmtDate(p),
+          valueFormatter: (value: any) => fmtDate(value),
         },
         {
           field: 'updatedAt',
           headerName: t('common.labels.updated'),
           flex: 1,
           minWidth: 170,
-          valueFormatter: (p: any) => fmtDate(p),
+          valueFormatter: (value: any) => fmtDate(value),
         },
       ]
       : []),
@@ -125,6 +125,7 @@ export const SessionTables = React.memo(function SessionTables({
 
   return (
     <Box sx={{ width: '100%' }}>
+      {/* General information */}
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
         spacing={1}

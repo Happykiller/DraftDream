@@ -27,6 +27,7 @@ const LoaderOverlay = ({ forceVisible = false }: LoaderOverlayProps) => {
         alignItems: 'center',
       }}
     >
+      {/* General information */}
       <CircularProgress size={60} />
     </Box>
   );

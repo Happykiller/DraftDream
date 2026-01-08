@@ -72,6 +72,7 @@ export function ProtectedLayout(): React.JSX.Element {
 
   return (
     <Box sx={{ display: 'flex' }}>
+      {/* General information */}
       <CssBaseline />
 
       {/* AppBar width compensation is applied on main container instead of AppBar for simplicity */}

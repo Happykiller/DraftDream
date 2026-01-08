@@ -1,4 +1,3 @@
-// src/pages/programs/CategoriesPanel.tsx
 import * as React from 'react';
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -25,6 +24,7 @@ export function CategoriesPanel(): React.JSX.Element {
 
   return (
     <Box>
+      {/* General information */}
       <CategoryTable
         rows={items}
         total={total}

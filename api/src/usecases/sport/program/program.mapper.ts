@@ -42,6 +42,8 @@ export const mapProgramToUsecase = (program: Program): ProgramUsecaseModel => ({
   visibility: program.visibility,
   duration: program.duration,
   frequency: program.frequency,
+  startDate: program.startDate,
+  endDate: program.endDate,
   description: program.description,
   sessions: (program.sessions ?? []).map(mapSession),
   userId: program.userId,

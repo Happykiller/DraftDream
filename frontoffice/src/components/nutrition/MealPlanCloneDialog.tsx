@@ -1,9 +1,11 @@
 // src/components/nutrition/MealPlanCloneDialog.tsx
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import {
   Autocomplete,
-  Button,
   Stack,
   TextField,
   Typography,
@@ -15,6 +17,7 @@ import { UserType } from '@src/commons/enums';
 import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
 import type { MealPlan } from '@hooks/nutrition/useMealPlans';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
 
 interface AthleteOption {
@@ -286,13 +289,22 @@ export function MealPlanCloneDialog({
 
   const dialogActions = (
     <>
-      <Button onClick={handleDialogClose} disabled={cloneLoading} color="inherit">
-        {cloneDialogCancel}
-      </Button>
-      <Button type="submit" variant="contained" color="success" disabled={cloneLoading}>
-        {cloneLoading && activeCloneAction === 'copy' ? cloneDialogCopying : cloneDialogCopy}
-      </Button>
-      <Button
+      <ResponsiveButton
+        onClick={handleDialogClose}
+        disabled={cloneLoading}
+        color="inherit"
+        label={cloneDialogCancel}
+        icon={<CloseRoundedIcon fontSize="small" />}
+      />
+      <ResponsiveButton
+        type="submit"
+        variant="contained"
+        color="success"
+        disabled={cloneLoading}
+        label={cloneLoading && activeCloneAction === 'copy' ? cloneDialogCopying : cloneDialogCopy}
+        icon={<ContentCopyIcon fontSize="small" />}
+      />
+      <ResponsiveButton
         type="button"
         variant="contained"
         color="primary"
@@ -300,11 +312,13 @@ export function MealPlanCloneDialog({
         onClick={() => {
           void handleCloneSubmit(true);
         }}
-      >
-        {cloneLoading && activeCloneAction === 'copy_and_open'
-          ? cloneDialogCopyingAndOpen
-          : cloneDialogCopyAndOpen}
-      </Button>
+        label={
+          cloneLoading && activeCloneAction === 'copy_and_open'
+            ? cloneDialogCopyingAndOpen
+            : cloneDialogCopyAndOpen
+        }
+        icon={<OpenInNewIcon fontSize="small" />}
+      />
     </>
   );
 

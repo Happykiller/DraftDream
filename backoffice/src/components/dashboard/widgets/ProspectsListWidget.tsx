@@ -18,6 +18,7 @@ interface ProspectsListWidgetProps extends StatCardProps {
 export const ProspectsListWidget: React.FC<ProspectsListWidgetProps> = ({ prospects, children, ...statCardProps }) => {
     return (
         <StatCard {...statCardProps}>
+          {/* General information */}
             <List disablePadding>
                 {prospects.map((prospect, index) => (
                     <ListItem

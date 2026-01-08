@@ -4,6 +4,8 @@ import type { MealPlanDaySnapshot, MealPlanMealSnapshot } from '@hooks/nutrition
 export interface MealPlanBuilderForm {
   planName: string;
   description: string;
+  startDate: string;
+  endDate: string;
 }
 
 export interface MealPlanBuilderNutritionSummary {
@@ -50,6 +52,8 @@ export interface MealPlanBuilderCopy {
     plan_name_default: string;
     plan_description_label: string;
     plan_description_placeholder: string;
+    start_date_label: string;
+    end_date_label: string;
   };
   day_library: {
     title: string;

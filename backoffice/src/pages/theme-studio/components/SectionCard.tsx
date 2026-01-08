@@ -16,6 +16,7 @@ export function SectionCard({ title, subtitle, tokens, children }: SectionCardPr
   const headingId = React.useId();
   return (
     <Card component="article" variant="outlined" sx={{ borderRadius: 3, overflow: 'hidden' }} aria-labelledby={headingId}>
+      {/* General information */}
       <CardHeader
         title={
           <Typography id={headingId} variant="h6" component="h2">
