@@ -35,7 +35,6 @@ type ProspectActivityPreferenceListPayload = {
 
 type CreateProspectActivityPreferencePayload = { prospectActivityPreference_create: ProspectActivityPreference };
 type UpdateProspectActivityPreferencePayload = { prospectActivityPreference_update: ProspectActivityPreference };
-type DeleteProspectActivityPreferencePayload = { prospectActivityPreference_delete: boolean };
 
 const LIST_Q = `
   query ListProspectActivityPreferences($input: ListProspectActivityPreferencesInput) {
@@ -89,9 +88,15 @@ const UPDATE_M = `
   }
 `;
 
-const DELETE_M = `
-  mutation DeleteProspectActivityPreference($id: ID!) {
+const REMOVE_M = `
+  mutation RemoveProspectActivityPreference($id: ID!) {
     prospectActivityPreference_delete(id: $id)
+  }
+`;
+
+const HARD_DELETE_M = `
+  mutation HardDeleteProspectActivityPreference($id: ID!) {
+    prospectActivityPreference_hardDelete(id: $id)
   }
 `;
 
@@ -182,27 +187,45 @@ export function useProspectActivityPreferences({ page, limit, q }: UseProspectAc
     [execute, flashError, flashSuccess, gql, load],
   );
 
-  const remove = React.useCallback(
-    async (id: string) => {
-      try {
-        const { errors } = await execute(() =>
-          gql.send<DeleteProspectActivityPreferencePayload>({
-            query: DELETE_M,
-            variables: { id },
-            operationName: 'DeleteProspectActivityPreference',
-          }),
-        );
-        if (errors?.length) throw new Error(errors[0].message);
-        flashSuccess('Activity preference deleted');
-        await load();
-      } catch (e: any) {
-        flashError(e?.message ?? 'Delete failed');
-        throw e;
-      }
-    },
-    [execute, flashError, flashSuccess, gql, load],
-  );
+  const remove = React.useCallback(async (id: string) => {
+    setLoading(true);
+    try {
+      const { errors } = await execute(() =>
+        gql.send({
+          query: REMOVE_M,
+          variables: { id },
+          operationName: 'RemoveProspectActivityPreference',
+        }),
+      );
+      if (errors?.length) throw new Error(errors[0].message);
+      flashSuccess('Activity preference removed');
+      await load();
+    } catch (e: any) {
+      flashError(e?.message ?? 'Failed to remove activity preference');
+    } finally {
+      setLoading(false);
+    }
+  }, [execute, flashError, flashSuccess, gql, load]);
 
-  return { items, total, loading, create, update, remove, reload: load };
+  const hardRemove = React.useCallback(async (id: string) => {
+    setLoading(true);
+    try {
+      const { errors } = await execute(() =>
+        gql.send({
+          query: HARD_DELETE_M,
+          variables: { id },
+          operationName: 'HardDeleteProspectActivityPreference',
+        }),
+      );
+      if (errors?.length) throw new Error(errors[0].message);
+      flashSuccess('Activity preference permanently deleted');
+      await load();
+    } catch (e: any) {
+      flashError(e?.message ?? 'Failed to hard delete activity preference');
+    } finally {
+      setLoading(false);
+    }
+  }, [execute, flashError, flashSuccess, gql, load]);
+
+  return { items, total, loading, create, update, remove, hardRemove, reload: load };
 }
-

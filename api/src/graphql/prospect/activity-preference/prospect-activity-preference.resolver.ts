@@ -102,4 +102,15 @@ export class ProspectActivityPreferenceResolver {
   async prospectActivityPreference_delete(@Args('id', { type: () => ID }) id: string): Promise<boolean> {
     return await inversify.deleteClientActivityPreferenceUsecase.execute({ id });
   }
+  @Mutation(() => Boolean, { name: 'prospectActivityPreference_hardDelete' })
+  @Auth(Role.ADMIN)
+  async prospectActivityPreference_hardDelete(
+    @Args('id', { type: () => ID }) id: string,
+    @Context('req') req: any,
+  ): Promise<boolean> {
+    return await inversify.hardDeleteProspectActivityPreferenceUsecase.execute({
+      id,
+      session: { userId: req.user.id, role: req.user.role },
+    });
+  }
 }

@@ -72,7 +72,7 @@ export class ProgramRecordResolver {
   }
 
   @Mutation(() => Boolean, { name: 'programRecord_hardDelete' })
-  @Auth(Role.ADMIN, Role.COACH, Role.ATHLETE)
+  @Auth(Role.ADMIN)
   async programRecord_hardDelete(
     @Args('id', { type: () => ID }) id: string,
     @Context('req') req: any,

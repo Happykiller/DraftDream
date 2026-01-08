@@ -118,4 +118,15 @@ export class MealTypeResolver {
   async mealType_delete(@Args('id', { type: () => ID }) id: string): Promise<boolean> {
     return inversify.deleteMealTypeUsecase.execute({ id });
   }
+  @Mutation(() => Boolean, { name: 'mealType_hardDelete' })
+  @Auth(Role.ADMIN)
+  async mealType_hardDelete(
+    @Args('id', { type: () => ID }) id: string,
+    @Context('req') req: any,
+  ): Promise<boolean> {
+    return await inversify.hardDeleteMealTypeUsecase.execute({
+      id,
+      session: { userId: req.user.id, role: req.user.role },
+    });
+  }
 }

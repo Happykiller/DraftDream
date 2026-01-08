@@ -90,4 +90,15 @@ export class MuscleResolver {
   async muscle_delete(@Args('id', { type: () => ID }) id: string): Promise<boolean> {
     return inversify.deleteMuscleUsecase.execute({ id });
   }
+  @Mutation(() => Boolean, { name: 'muscle_hardDelete' })
+  @Auth(Role.ADMIN)
+  async muscle_hardDelete(
+    @Args('id', { type: () => ID }) id: string,
+    @Context('req') req: any,
+  ): Promise<boolean> {
+    return await inversify.hardDeleteMuscleUsecase.execute({
+      id,
+      session: { userId: req.user.id, role: req.user.role },
+    });
+  }
 }

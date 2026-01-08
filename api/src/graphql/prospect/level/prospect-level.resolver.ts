@@ -102,4 +102,17 @@ export class ProspectLevelResolver {
   async prospectLevel_delete(@Args('id', { type: () => ID }) id: string): Promise<boolean> {
     return await inversify.deleteClientLevelUsecase.execute({ id });
   }
+
+  @Mutation(() => Boolean, { name: 'prospectLevel_hardDelete' })
+  @Auth(Role.ADMIN)
+  async prospectLevel_hardDelete(
+    @Args('id', { type: () => ID }) id: string,
+    @Context('req') req: any,
+  ): Promise<boolean> {
+    return await inversify.hardDeleteProspectLevelUsecase.execute({
+      id,
+      session: { userId: req.user.id, role: req.user.role },
+    });
+  }
 }
+

@@ -264,6 +264,20 @@ export class BddServiceProgramMongo {
     }
   }
 
+  /**
+   * Hard delete: permanently removes program from database.
+   * This operation is irreversible.
+   */
+  async hardDelete(id: string): Promise<boolean> {
+    try {
+      const _id = this.toObjectId(id);
+      const res = await (this.col()).deleteOne({ _id });
+      return res.deletedCount === 1;
+    } catch (error) {
+      this.handleError('hardDelete', error);
+    }
+  }
+
   private toObjectId = (id: string): ObjectId => {
     try {
       return new ObjectId(id);

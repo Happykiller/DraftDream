@@ -102,4 +102,16 @@ export class ProspectObjectiveResolver {
   async prospectObjective_delete(@Args('id', { type: () => ID }) id: string): Promise<boolean> {
     return await inversify.deleteClientObjectiveUsecase.execute({ id });
   }
+
+  @Mutation(() => Boolean, { name: 'prospectObjective_hardDelete' })
+  @Auth(Role.ADMIN)
+  async prospectObjective_hardDelete(
+    @Args('id', { type: () => ID }) id: string,
+    @Context('req') req: any,
+  ): Promise<boolean> {
+    return await inversify.hardDeleteProspectObjectiveUsecase.execute({
+      id,
+      session: { userId: req.user.id, role: req.user.role },
+    });
+  }
 }

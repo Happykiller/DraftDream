@@ -82,7 +82,7 @@ export class MealRecordResolver {
    * Hard deletes a meal record.
    */
   @Mutation(() => Boolean, { name: 'mealRecord_hardDelete' })
-  @Auth(Role.ADMIN, Role.COACH, Role.ATHLETE)
+  @Auth(Role.ADMIN)
   async mealRecord_hardDelete(
     @Args('id', { type: () => ID }) id: string,
     @Context('req') req: any,

@@ -107,6 +107,7 @@ export class ProspectResolver {
     const session = this.extractSession(req);
     const found = await inversify.getProspectUsecase.execute({ id, session });
     return found ? mapProspectUsecaseToGql(found) : null;
+
   }
 
   @Query(() => ProspectListGql, { name: 'prospect_list' })
@@ -189,5 +190,17 @@ export class ProspectResolver {
       userId: String(user.id),
       role: user.role as UsecaseSession['role'],
     };
+  }
+
+  @Mutation(() => Boolean, { name: 'prospect_hardDelete' })
+  @Auth(Role.ADMIN)
+  async prospect_hardDelete(
+    @Args('id', { type: () => ID }) id: string,
+    @Context('req') req: any,
+  ): Promise<boolean> {
+    return await inversify.hardDeleteProspectUsecase.execute({
+      id,
+      session: { userId: req.user.id, role: req.user.role },
+    });
   }
 }

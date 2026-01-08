@@ -593,10 +593,16 @@ type MealPlanListGql {
   limit: Int!
 }
 
+type MealPlanSnapshotGql {
+  id: ID!
+  label: String!
+}
+
 type MealRecordGql {
   id: ID!
   userId: ID!
   mealPlanId: ID!
+  mealPlanSnapshot: MealPlanSnapshotGql
   mealDayId: ID!
   mealId: ID!
   mealSnapshot: MealPlanMealSnapshotGql
@@ -902,6 +908,7 @@ type Mutation {
   tag_create(input: CreateTagInput!): TagGql
   tag_update(input: UpdateTagInput!): TagGql
   tag_delete(id: ID!): Boolean!
+  tag_hardDelete(id: ID!): Boolean!
   auth(input: AuthInput!): SessionGql!
   user_create(input: CreateUserInput!): UserGql!
   user_update(input: UpdateUserInput!): UserGql!
@@ -913,14 +920,17 @@ type Mutation {
   muscle_create(input: CreateMuscleInput!): MuscleGql
   muscle_update(input: UpdateMuscleInput!): MuscleGql
   muscle_delete(id: ID!): Boolean!
+  muscle_hardDelete(id: ID!): Boolean!
   session_create(input: CreateSessionInput!): SessionSportGql
   session_update(input: UpdateSessionInput!): SessionSportGql
   session_softDelete(id: ID!): Boolean!
   session_delete(id: ID!): Boolean!
+  session_hardDelete(id: ID!): Boolean!
   program_create(input: CreateProgramInput!): ProgramGql
   program_update(input: UpdateProgramInput!): ProgramGql
   program_softDelete(id: ID!): Boolean!
   program_delete(id: ID!): Boolean!
+  program_hardDelete(id: ID!): Boolean!
   programRecord_create(input: CreateProgramRecordInput!): ProgramRecordGql
   programRecord_updateState(input: UpdateProgramRecordInput!): ProgramRecordGql
   programRecord_delete(id: ID!): Boolean!
@@ -928,42 +938,54 @@ type Mutation {
   category_create(input: CreateCategoryInput!): CategoryGql
   category_update(input: UpdateCategoryInput!): CategoryGql
   category_delete(id: ID!): Boolean!
+  category_hardDelete(id: ID!): Boolean!
   prospectObjective_create(input: CreateProspectObjectiveInput!): ProspectObjectiveGql
   prospectObjective_update(input: UpdateProspectObjectiveInput!): ProspectObjectiveGql
   prospectObjective_delete(id: ID!): Boolean!
+  prospectObjective_hardDelete(id: ID!): Boolean!
   prospectActivityPreference_create(input: CreateProspectActivityPreferenceInput!): ProspectActivityPreferenceGql
   prospectActivityPreference_update(input: UpdateProspectActivityPreferenceInput!): ProspectActivityPreferenceGql
   prospectActivityPreference_delete(id: ID!): Boolean!
+  prospectActivityPreference_hardDelete(id: ID!): Boolean!
   prospectLevel_create(input: CreateProspectLevelInput!): ProspectLevelGql
   prospectLevel_update(input: UpdateProspectLevelInput!): ProspectLevelGql
   prospectLevel_delete(id: ID!): Boolean!
+  prospectLevel_hardDelete(id: ID!): Boolean!
   prospectSource_create(input: CreateProspectSourceInput!): ProspectSourceGql
   prospectSource_update(input: UpdateProspectSourceInput!): ProspectSourceGql
   prospectSource_delete(id: ID!): Boolean!
+  prospectSource_hardDelete(id: ID!): Boolean!
   prospect_create(input: CreateProspectInput!): ProspectGql
   prospect_update(input: UpdateProspectInput!): ProspectGql
   prospect_delete(id: ID!): Boolean!
   prospect_convert(input: ConvertProspectInput!): ProspectConversionGql
+  prospect_hardDelete(id: ID!): Boolean!
   exercise_create(input: CreateExerciseInput!): ExerciseGql
   exercise_update(input: UpdateExerciseInput!): ExerciseGql
   exercise_softDelete(id: ID!): Boolean!
   exercise_delete(id: ID!): Boolean!
+  exercise_hardDelete(id: ID!): Boolean!
   equipment_create(input: CreateEquipmentInput!): EquipmentGql
   equipment_update(input: UpdateEquipmentInput!): EquipmentGql
   equipment_delete(id: ID!): Boolean!
+  equipment_hardDelete(id: ID!): Boolean!
   mealType_create(input: CreateMealTypeInput!): MealTypeGql
   mealType_update(input: UpdateMealTypeInput!): MealTypeGql
   mealType_delete(id: ID!): Boolean!
+  mealType_hardDelete(id: ID!): Boolean!
   mealDay_create(input: CreateMealDayInput!): MealDayGql
   mealDay_update(input: UpdateMealDayInput!): MealDayGql
   mealDay_delete(id: ID!): Boolean!
+  mealDay_hardDelete(id: ID!): Boolean!
   meal_create(input: CreateMealInput!): MealGql
   meal_update(input: UpdateMealInput!): MealGql
   meal_delete(id: ID!): Boolean!
+  meal_hardDelete(id: ID!): Boolean!
   mealPlan_create(input: CreateMealPlanInput!): MealPlanGql
   mealPlan_update(input: UpdateMealPlanInput!): MealPlanGql
   mealPlan_softDelete(id: ID!): Boolean!
   mealPlan_delete(id: ID!): Boolean!
+  mealPlan_hardDelete(id: ID!): Boolean!
   mealRecord_create(input: CreateMealRecordInput!): MealRecordGql
   mealRecord_updateState(input: UpdateMealRecordInput!): MealRecordGql
   mealRecord_delete(id: ID!): Boolean!
@@ -971,6 +993,7 @@ type Mutation {
   coachAthlete_create(input: CreateCoachAthleteInput!): CoachAthleteGql
   coachAthlete_update(input: UpdateCoachAthleteInput!): CoachAthleteGql
   coachAthlete_delete(id: ID!): Boolean!
+  coachAthlete_hardDelete(id: ID!): Boolean!
   athleteInfo_create(input: CreateAthleteInfoInput!): AthleteInfoGql
   athleteInfo_update(input: UpdateAthleteInfoInput!): AthleteInfoGql
   athleteInfo_delete(id: ID!): Boolean!

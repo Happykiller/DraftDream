@@ -148,12 +148,12 @@ export class BddServiceMealDayMongo {
       const extraCreators = includeCreatorIds
         .map((id) => id?.trim())
         .filter((id): id is string => Boolean(id));
-        if (extraCreators.length > 0) {
-          orConditions.push({
-            createdBy: { $in: extraCreators.map(this.toObjectId) },
-            visibility: Visibility.PUBLIC,
-          });
-        }
+      if (extraCreators.length > 0) {
+        orConditions.push({
+          createdBy: { $in: extraCreators.map(this.toObjectId) },
+          visibility: Visibility.PUBLIC,
+        });
+      }
 
       andConditions.push({ $or: orConditions });
     }
@@ -214,6 +214,20 @@ export class BddServiceMealDayMongo {
       return res.modifiedCount === 1;
     } catch (error) {
       this.handleError('delete', error);
+    }
+  }
+
+  /**
+   * Hard delete: permanently removes meal day from database.
+   * This operation is irreversible.
+   */
+  async hardDelete(id: string): Promise<boolean> {
+    try {
+      const _id = this.toObjectId(id);
+      const res = await (this.col()).deleteOne({ _id });
+      return res.deletedCount === 1;
+    } catch (error) {
+      this.handleError('hardDelete', error);
     }
   }
 

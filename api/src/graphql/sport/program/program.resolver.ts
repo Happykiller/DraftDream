@@ -297,4 +297,15 @@ export class ProgramResolver {
     }
     return visibility === ProgramVisibility.PUBLIC ? 'PUBLIC' : 'PRIVATE';
   }
+  @Mutation(() => Boolean, { name: 'program_hardDelete' })
+  @Auth(Role.ADMIN)
+  async program_hardDelete(
+    @Args('id', { type: () => ID }) id: string,
+    @Context('req') req: any,
+  ): Promise<boolean> {
+    return await inversify.hardDeleteProgramUsecase.execute({
+      id,
+      session: { userId: req.user.id, role: req.user.role },
+    });
+  }
 }

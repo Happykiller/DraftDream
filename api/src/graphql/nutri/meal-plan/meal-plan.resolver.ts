@@ -348,4 +348,15 @@ export class MealPlanResolver {
     }
     return visibility === MealTypeVisibility.PUBLIC ? 'PUBLIC' : 'PRIVATE';
   }
+  @Mutation(() => Boolean, { name: 'mealPlan_hardDelete' })
+  @Auth(Role.ADMIN)
+  async mealPlan_hardDelete(
+    @Args('id', { type: () => ID }) id: string,
+    @Context('req') req: any,
+  ): Promise<boolean> {
+    return await inversify.hardDeleteMealPlanUsecase.execute({
+      id,
+      session: { userId: req.user.id, role: req.user.role },
+    });
+  }
 }

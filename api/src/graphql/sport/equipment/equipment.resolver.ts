@@ -89,4 +89,15 @@ export class EquipmentResolver {
   async equipment_delete(@Args('id', { type: () => ID }) id: string): Promise<boolean> {
     return inversify.deleteEquipmentUsecase.execute({ id });
   }
+  @Mutation(() => Boolean, { name: 'equipment_hardDelete' })
+  @Auth(Role.ADMIN)
+  async equipment_hardDelete(
+    @Args('id', { type: () => ID }) id: string,
+    @Context('req') req: any,
+  ): Promise<boolean> {
+    return await inversify.hardDeleteEquipmentUsecase.execute({
+      id,
+      session: { userId: req.user.id, role: req.user.role },
+    });
+  }
 }

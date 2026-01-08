@@ -17,13 +17,23 @@ export function ActivityPreferencesPanel(): React.JSX.Element {
     if (debounced !== q) setQ(debounced);
   }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update, remove } = useProspectActivityPreferences({ page, limit, q });
+  const { items, total, loading, create, update, remove, hardRemove, reload } = useProspectActivityPreferences({
+    page,
+    limit,
+    q,
+  });
   const { t } = useTranslation();
 
   const [openCreate, setOpenCreate] = React.useState(false);
   const [editId, setEditId] = React.useState<string | null>(null);
   const [deleteId, setDeleteId] = React.useState<string | null>(null);
-  const editing = React.useMemo(() => items.find(item => item.id === editId), [items, editId]);
+  const [deleteType, setDeleteType] = React.useState<'soft' | 'hard' | null>(null);
+  const editing = React.useMemo(() => items.find((item) => item.id === editId), [items, editId]);
+
+  const handleDeleteCallback = (id: string, type: 'soft' | 'hard') => {
+    setDeleteId(id);
+    setDeleteType(type);
+  };
 
   return (
     <Box>
@@ -36,11 +46,13 @@ export function ActivityPreferencesPanel(): React.JSX.Element {
         q={searchInput}
         loading={loading}
         onCreate={() => setOpenCreate(true)}
-        onEdit={row => setEditId(row.id)}
-        onDelete={row => setDeleteId(row.id)}
+        onEdit={(row) => setEditId(row.id)}
+        onDelete={(row) => handleDeleteCallback(row.id, 'soft')}
+        onHardDelete={(row) => handleDeleteCallback(row.id, 'hard')}
         onQueryChange={setSearchInput}
         onPageChange={setPage}
         onLimitChange={setLimit}
+        onRefresh={reload}
       />
 
       <ProspectActivityPreferenceDialog
@@ -58,26 +70,39 @@ export function ActivityPreferencesPanel(): React.JSX.Element {
         onSubmit={values =>
           editId
             ? update({
-                id: editId,
-                label: values.label,
-                locale: values.locale,
-                visibility: values.visibility,
-              })
+              id: editId,
+              label: values.label,
+              locale: values.locale,
+              visibility: values.visibility,
+            })
             : undefined
         }
       />
 
       <ConfirmDialog
         open={!!deleteId}
-        title={t('prospects.activity_preferences.confirm.delete_title')}
-        message={t('common.messages.confirm_deletion_warning')}
-        onClose={() => setDeleteId(null)}
-        onConfirm={() => {
-          if (deleteId) {
-            remove(deleteId).finally(() => setDeleteId(null));
+        title={deleteType === 'hard' ? t('common.buttons.delete') : t('prospects.activity_preferences.confirm.delete_title')}
+        message={
+          deleteType === 'hard'
+            ? t('common.messages.confirm_deletion_warning')
+            : t('common.messages.are_you_sure')
+        }
+        onClose={() => {
+          setDeleteId(null);
+          setDeleteType(null);
+        }}
+        onConfirm={async () => {
+          if (deleteId && deleteType) {
+            if (deleteType === 'hard') {
+              await hardRemove(deleteId);
+            } else {
+              await remove(deleteId);
+            }
+            setDeleteId(null);
+            setDeleteType(null);
           }
         }}
-        confirmLabel={t('common.buttons.delete')}
+        confirmLabel={deleteType === 'hard' ? t('common.buttons.delete') : t('common.buttons.confirm')}
       />
     </Box>
   );

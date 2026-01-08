@@ -122,6 +122,23 @@ import { UpdateMealRecordUsecase } from '@src/usecases/nutri/meal-record/update.
 import { CreateMealRecordUsecase } from '@src/usecases/nutri/meal-record/create.meal-record.usecase';
 import { DeleteMealRecordUsecase } from '@src/usecases/nutri/meal-record/delete.meal-record.usecase';
 import { HardDeleteMealRecordUsecase } from '@src/usecases/nutri/meal-record/hard-delete.meal-record.usecase';
+import { HardDeleteProspectActivityPreferenceUsecase } from '@usecases/prospect/activity-preference/hard-delete.prospect-activity-preference.usecase';
+import { HardDeleteProspectLevelUsecase } from '@usecases/prospect/level/hard-delete.prospect-level.usecase';
+import { HardDeleteProspectObjectiveUsecase } from '@usecases/prospect/objective/hard-delete.prospect-objective.usecase';
+import { HardDeleteProspectSourceUsecase } from '@usecases/prospect/source/hard-delete.prospect-source.usecase';
+import { HardDeleteProspectUsecase } from '@usecases/prospect/hard-delete.prospect.usecase';
+import { HardDeleteTagUsecase } from '@usecases/tag/hard-delete.tag.usecase';
+import { HardDeleteSessionUsecase } from '@usecases/sport/session/hard-delete.session.usecase';
+import { HardDeleteProgramUsecase } from '@usecases/sport/program/hard-delete.program.usecase';
+import { HardDeleteMuscleUsecase } from '@usecases/sport/muscle/hard-delete.muscle.usecase';
+import { HardDeleteExerciseUsecase } from '@usecases/sport/exercise/hard-delete.exercise.usecase';
+import { HardDeleteEquipmentUsecase } from '@usecases/sport/equipment/hard-delete.equipment.usecase';
+import { HardDeleteCategoryUsecase } from '@usecases/sport/category/hard-delete.category.usecase';
+import { HardDeleteMealUsecase } from '@usecases/nutri/meal/hard-delete.meal.usecase';
+import { HardDeleteMealTypeUsecase } from '@usecases/nutri/meal-type/hard-delete.meal-type.usecase';
+import { HardDeleteMealPlanUsecase } from '@usecases/nutri/meal-plan/hard-delete.meal-plan.usecase';
+import { HardDeleteMealDayUsecase } from '@usecases/nutri/meal-day/hard-delete.meal-day.usecase';
+import { HardDeleteCoachAthleteLinkUsecase } from '@usecases/athlete/coach-athlete/hard-delete.coach-athlete.usecase';
 
 
 export class Inversify {
@@ -245,6 +262,25 @@ export class Inversify {
   updateMealRecordUsecase: UpdateMealRecordUsecase;
   deleteMealRecordUsecase: DeleteMealRecordUsecase;
   hardDeleteMealRecordUsecase: HardDeleteMealRecordUsecase;
+
+  // Hard Delete Use Cases
+  hardDeleteProspectActivityPreferenceUsecase: HardDeleteProspectActivityPreferenceUsecase;
+  hardDeleteProspectLevelUsecase: HardDeleteProspectLevelUsecase;
+  hardDeleteProspectObjectiveUsecase: HardDeleteProspectObjectiveUsecase;
+  hardDeleteProspectSourceUsecase: HardDeleteProspectSourceUsecase;
+  hardDeleteProspectUsecase: HardDeleteProspectUsecase;
+  hardDeleteTagUsecase: HardDeleteTagUsecase;
+  hardDeleteSessionUsecase: HardDeleteSessionUsecase;
+  hardDeleteProgramUsecase: HardDeleteProgramUsecase;
+  hardDeleteMuscleUsecase: HardDeleteMuscleUsecase;
+  hardDeleteExerciseUsecase: HardDeleteExerciseUsecase;
+  hardDeleteEquipmentUsecase: HardDeleteEquipmentUsecase;
+  hardDeleteCategoryUsecase: HardDeleteCategoryUsecase;
+  hardDeleteMealUsecase: HardDeleteMealUsecase;
+  hardDeleteMealTypeUsecase: HardDeleteMealTypeUsecase;
+  hardDeleteMealPlanUsecase: HardDeleteMealPlanUsecase;
+  hardDeleteMealDayUsecase: HardDeleteMealDayUsecase;
+  hardDeleteCoachAthleteLinkUsecase: HardDeleteCoachAthleteLinkUsecase;
 
 
   constructor() {
@@ -399,6 +435,25 @@ export class Inversify {
     this.updateMealRecordUsecase = new UpdateMealRecordUsecase(this);
     this.deleteMealRecordUsecase = new DeleteMealRecordUsecase(this);
     this.hardDeleteMealRecordUsecase = new HardDeleteMealRecordUsecase(this);
+
+    // Hard delete instantiations
+    this.hardDeleteProspectActivityPreferenceUsecase = new HardDeleteProspectActivityPreferenceUsecase(this);
+    this.hardDeleteProspectLevelUsecase = new HardDeleteProspectLevelUsecase(this);
+    this.hardDeleteProspectObjectiveUsecase = new HardDeleteProspectObjectiveUsecase(this);
+    this.hardDeleteProspectSourceUsecase = new HardDeleteProspectSourceUsecase(this);
+    this.hardDeleteProspectUsecase = new HardDeleteProspectUsecase(this);
+    this.hardDeleteTagUsecase = new HardDeleteTagUsecase(this);
+    this.hardDeleteSessionUsecase = new HardDeleteSessionUsecase(this);
+    this.hardDeleteProgramUsecase = new HardDeleteProgramUsecase(this);
+    this.hardDeleteMuscleUsecase = new HardDeleteMuscleUsecase(this);
+    this.hardDeleteExerciseUsecase = new HardDeleteExerciseUsecase(this);
+    this.hardDeleteEquipmentUsecase = new HardDeleteEquipmentUsecase(this);
+    this.hardDeleteCategoryUsecase = new HardDeleteCategoryUsecase(this);
+    this.hardDeleteMealUsecase = new HardDeleteMealUsecase(this);
+    this.hardDeleteMealTypeUsecase = new HardDeleteMealTypeUsecase(this);
+    this.hardDeleteMealPlanUsecase = new HardDeleteMealPlanUsecase(this);
+    this.hardDeleteMealDayUsecase = new HardDeleteMealDayUsecase(this);
+    this.hardDeleteCoachAthleteLinkUsecase = new HardDeleteCoachAthleteLinkUsecase(this);
   }
 }
 

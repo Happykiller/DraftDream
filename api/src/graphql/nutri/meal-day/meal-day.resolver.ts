@@ -160,5 +160,16 @@ export class MealDayResolver {
       role: user.role as UsecaseSession['role'],
     };
   }
+  @Mutation(() => Boolean, { name: 'mealDay_hardDelete' })
+  @Auth(Role.ADMIN)
+  async mealDay_hardDelete(
+    @Args('id', { type: () => ID }) id: string,
+    @Context('req') req: any,
+  ): Promise<boolean> {
+    return await inversify.hardDeleteMealDayUsecase.execute({
+      id,
+      session: { userId: req.user.id, role: req.user.role },
+    });
+  }
 }
 
