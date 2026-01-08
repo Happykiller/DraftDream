@@ -164,10 +164,8 @@ export function NutritionPlansCoach(): React.JSX.Element {
   const handlePrefetch = React.useCallback((action: 'view' | 'edit') => {
     if (action === 'edit') {
       void import('@src/pages/nutrition/NutritionPlanCoachEdit');
-      void import('@src/pages/nutrition/NutritionPlanCoachEdit.loader');
     } else if (action === 'view') {
       void import('@src/pages/nutrition/NutritionPlanDetails');
-      void import('@src/pages/nutrition/NutritionPlanDetails.loader');
     }
   }, []);
 

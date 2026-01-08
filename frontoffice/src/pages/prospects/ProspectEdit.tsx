@@ -1,7 +1,7 @@
 // src/pages/prospects/ProspectEdit.tsx
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLoaderData, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Alert,
   Stack,
@@ -11,24 +11,22 @@ import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import { ProspectFormPanel, type ProspectFormCopy } from '@components/prospects/ProspectFormPanel';
 import { useProspectFormValues, type ProspectFormValues } from '@components/prospects/prospectFormValues';
 
+import { useProspect } from '@hooks/prospects/useProspect';
 import { useProspectMetadataOptions } from '@hooks/prospects/useProspectMetadataOptions';
 import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 
 import { prospectUpdate } from '@services/graphql/prospects.service';
 
-import type { ProspectEditLoaderData } from './ProspectEdit.loader';
 import { buildProspectUpdateInput } from './prospectFormMappers';
 
 /** Editing screen for existing prospect records. */
 export function ProspectEdit(): React.JSX.Element {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const loaderData = useLoaderData() as ProspectEditLoaderData;
+  const { prospectId } = useParams<{ prospectId: string }>();
+  const { prospect, loading, error } = useProspect({ prospectId });
   const metadata = useProspectMetadataOptions();
-  const hasProspect = loaderData.status === 'success' && Boolean(loaderData.prospect);
-  const prospect = hasProspect ? loaderData.prospect : null;
-  const prospectId = prospect?.id ?? null;
   const initialValues = useProspectFormValues(prospect);
   const { execute } = useAsyncTask();
   const flashSuccess = useFlashStore((state) => state.success);
@@ -44,12 +42,12 @@ export function ProspectEdit(): React.JSX.Element {
 
   const handleSubmit = React.useCallback(
     async (values: ProspectFormValues) => {
-      if (!prospectId) {
+      if (!prospect?.id) {
         return;
       }
       setSubmitting(true);
       try {
-        await execute(() => prospectUpdate(buildProspectUpdateInput(prospectId, values)));
+        await execute(() => prospectUpdate(buildProspectUpdateInput(prospect.id, values)));
         flashSuccess(t('prospects.notifications.update_success'));
         navigate('/prospects');
       } catch (error) {
@@ -59,17 +57,21 @@ export function ProspectEdit(): React.JSX.Element {
         setSubmitting(false);
       }
     },
-    [prospectId, execute, flashError, flashSuccess, navigate, t],
+    [prospect, execute, flashError, flashSuccess, navigate, t],
   );
 
   const handleCancel = React.useCallback(() => {
     navigate('/prospects');
   }, [navigate]);
 
-  if (!hasProspect) {
+  if (loading) {
+    return <></>; // Global loader overlay will show
+  }
+
+  if (error || !prospect) {
     return (
       <Stack spacing={2} sx={{ mt: 4, alignItems: 'center' }}>
-        <Alert severity="error">{t('prospects.form.not_found')}</Alert>
+        <Alert severity="error">{error || t('prospects.form.not_found')}</Alert>
         <ResponsiveButton variant="contained" onClick={() => navigate('/prospects')}>
           {t('prospects.actions.back_to_list')}
         </ResponsiveButton>

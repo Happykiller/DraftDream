@@ -1264,6 +1264,7 @@ export function ProgramBuilderPanel({
                           variant="contained"
                           size="small"
                           fullWidth
+                          icon={<Add />}
                           onClick={handleOpenCreateExerciseDialog}
                         >
                           {builderCopy.library.button_create}

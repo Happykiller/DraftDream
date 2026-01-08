@@ -4,6 +4,7 @@ import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { BddServiceMongo } from '@services/db/mongo/db.service.mongo';
 import { BddServiceMealRecordMongo } from '@services/db/mongo/repositories/meal-record.repository';
+import { BddServiceMealPlanMongo } from '@services/db/mongo/repositories/meal-plan.repository';
 import { MealRecord } from '@services/db/models/meal-record.model';
 import { MealRecordState } from '@src/common/meal-record-state.enum';
 import { ListMealRecordsUsecase } from '@src/usecases/nutri/meal-record/list.meal-records.usecase';
@@ -19,6 +20,7 @@ describe('ListMealRecordsUsecase', () => {
   let inversifyMock: Inversify;
   let bddServiceMock: BddServiceMongo;
   let mealRecordRepositoryMock: BddServiceMealRecordMongo;
+  let mealPlanRepositoryMock: BddServiceMealPlanMongo;
   let loggerMock: LoggerMock;
   let usecase: ListMealRecordsUsecase;
 
@@ -43,8 +45,13 @@ describe('ListMealRecordsUsecase', () => {
       list: createMockFn(),
     } as unknown as BddServiceMealRecordMongo;
 
+    mealPlanRepositoryMock = {
+      get: createMockFn(),
+    } as unknown as BddServiceMealPlanMongo;
+
     bddServiceMock = {
       mealRecord: mealRecordRepositoryMock,
+      mealPlan: mealPlanRepositoryMock,
     } as unknown as BddServiceMongo;
 
     loggerMock = {
@@ -66,6 +73,12 @@ describe('ListMealRecordsUsecase', () => {
       page: 1,
       limit: 20,
     });
+    asMock(mealPlanRepositoryMock.get).mockResolvedValue({
+      id: 'plan-1',
+      label: 'Meal Plan 1',
+      userId: 'athlete-1',
+      createdBy: 'coach-1',
+    } as any);
 
     const dto: ListMealRecordsUsecaseDto = {
       session: { userId: 'admin-1', role: Role.ADMIN },
@@ -73,7 +86,10 @@ describe('ListMealRecordsUsecase', () => {
     };
     const result = await usecase.execute(dto);
 
-    expect(result.items).toEqual([expected]);
+    expect(result.items).toEqual([{
+      ...expected,
+      mealPlanSnapshot: { id: 'plan-1', label: 'Meal Plan 1' },
+    }]);
     expect(asMock(mealRecordRepositoryMock.list).mock.calls[0][0]).toEqual({
       userId: 'athlete-1',
       mealPlanId: undefined,
@@ -93,6 +109,12 @@ describe('ListMealRecordsUsecase', () => {
       page: 1,
       limit: 20,
     });
+    asMock(mealPlanRepositoryMock.get).mockResolvedValue({
+      id: 'plan-1',
+      label: 'Meal Plan 1',
+      userId: 'athlete-1',
+      createdBy: 'coach-1',
+    } as any);
 
     const dto: ListMealRecordsUsecaseDto = {
       session: { userId: 'athlete-1', role: Role.ATHLETE },
@@ -100,7 +122,10 @@ describe('ListMealRecordsUsecase', () => {
     };
     const result = await usecase.execute(dto);
 
-    expect(result.items).toEqual([expected]);
+    expect(result.items).toEqual([{
+      ...expected,
+      mealPlanSnapshot: { id: 'plan-1', label: 'Meal Plan 1' },
+    }]);
     expect(asMock(mealRecordRepositoryMock.list).mock.calls[0][0]).toEqual({
       userId: 'athlete-1',
       mealPlanId: undefined,

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Box, Card, CardContent, Divider, Stack, Typography } from '@mui/material';
+import { Box, Card, CardContent, Divider, Stack } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import { TextWithTooltip } from './TextWithTooltip';
 

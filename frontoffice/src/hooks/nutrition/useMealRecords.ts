@@ -20,6 +20,7 @@ export interface MealRecord {
     id: string;
     userId: string;
     mealPlanId: string;
+    mealPlanSnapshot?: { id: string; label: string } | null;
     mealDayId: string;
     mealId: string;
     mealSnapshot?: MealPlanMealSnapshot | null;
@@ -41,6 +42,10 @@ const LIST_QUERY = `
         id
         userId
         mealPlanId
+        mealPlanSnapshot {
+          id
+          label
+        }
         mealDayId
         mealId
         mealSnapshot {

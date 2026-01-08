@@ -26,7 +26,6 @@ import {
   RestaurantMenu,
 } from '@mui/icons-material';
 import {
-  useLoaderData,
   useLocation,
   useNavigate,
   useParams,
@@ -40,9 +39,6 @@ import type {
 import { useMealTypeIcon } from '@hooks/nutrition/useMealTypeIcon';
 import { computeDayNutritionSummary } from '@components/nutrition/mealPlanBuilderUtils';
 
-import type {
-  NutritionPlanDetailsLoaderResult,
-} from './NutritionPlanDetails.loader';
 import { TextWithTooltip } from '@src/components/common/TextWithTooltip';
 
 function formatNumber(value: number, locale: string): string {
@@ -70,7 +66,6 @@ function formatMealPlanDate(value: string, locale: string): string {
 /** Detailed view of a nutrition meal plan including day and meal breakdowns. */
 export function NutritionPlanDetails(): React.JSX.Element {
   const { t, i18n } = useTranslation();
-  const loaderData = useLoaderData() as NutritionPlanDetailsLoaderResult;
   const navigate = useNavigate();
   const location = useLocation();
   const { mealPlanId } = useParams<{ mealPlanId: string }>();
@@ -85,23 +80,8 @@ export function NutritionPlanDetails(): React.JSX.Element {
     [theme.palette.info.main],
   );
 
-  const loaderError = React.useMemo(() => {
-    if (loaderData.status === 'not_found') {
-      return t('nutrition-details.errors.not_found');
-    }
-    if (loaderData.status === 'error') {
-      return t('nutrition-details.errors.load_failed');
-    }
-    return null;
-  }, [loaderData.status, t]);
+  const { mealPlan, loading, error } = useMealPlan({ mealPlanId });
 
-  const { mealPlan, loading, error } = useMealPlan({
-    mealPlanId,
-    initialMealPlan: loaderData.mealPlan,
-    initialError: loaderError,
-  });
-
-  const finalError = error ?? loaderError;
   const isCoachView = location.pathname.includes('/nutrition-coach/');
   const backToListLabel = React.useMemo(
     () =>
@@ -318,7 +298,7 @@ export function NutritionPlanDetails(): React.JSX.Element {
                   </Stack>
                 ) : (
                   <Stack spacing={3}>
-                    {finalError ? <Alert severity="error">{finalError}</Alert> : null}
+                    {error ? <Alert severity="error">{error}</Alert> : null}
 
                     {mealPlan ? (
                       <Stack spacing={3}>

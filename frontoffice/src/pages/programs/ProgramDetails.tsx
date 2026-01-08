@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
-import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { ProgramViewContent } from '@src/components/programs/ProgramViewContent';
 import { formatProgramDate } from '@src/components/programs/programFormatting';
@@ -23,7 +23,6 @@ import { useProgram } from '@src/hooks/programs/useProgram';
 import { UserType } from '@src/commons/enums';
 import { session } from '@stores/session';
 
-import type { ProgramDetailsLoaderData } from './ProgramDetails.loader';
 import { TextWithTooltip } from '@src/components/common/TextWithTooltip';
 
 type ProgramDetailsCopy = {
@@ -37,7 +36,6 @@ export function ProgramDetails(): React.JSX.Element {
   const navigate = useNavigate();
   const theme = useTheme();
   const { programId } = useParams<{ programId: string }>();
-  const loaderData = useLoaderData() as ProgramDetailsLoaderData;
   const role = session((state) => state.role);
   const [activeTab, setActiveTab] = React.useState<ProgramViewTab>('overview');
 
@@ -55,23 +53,7 @@ export function ProgramDetails(): React.JSX.Element {
     };
   }, [role, t]);
 
-  const initialError = React.useMemo(() => {
-    if (loaderData.status === 'not_found') {
-      return t('programs-details.errors.not_found');
-    }
-
-    if (loaderData.status === 'error') {
-      return t('programs-details.errors.load_failed');
-    }
-
-    return null;
-  }, [loaderData.status, t]);
-
-  const { program, loading, error } = useProgram({
-    programId,
-    initialProgram: loaderData.program,
-    initialError,
-  });
+  const { program, loading, error } = useProgram({ programId });
 
   const programSubtitle = React.useMemo(() => {
     if (!program) {

@@ -27,6 +27,7 @@ describe('HardDeleteProgramRecordUsecase', () => {
         id: 'record-1',
         userId: 'athlete-1',
         programId: 'program-1',
+        sessionId: 'session-1',
         state: ProgramRecordState.CREATE,
         createdBy: 'athlete-1',
         createdAt: new Date(),

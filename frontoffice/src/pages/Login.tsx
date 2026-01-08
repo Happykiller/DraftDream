@@ -14,7 +14,6 @@ import {
 } from '@mui/material';
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import {
-  Done,
   Visibility,
   VisibilityOff,
   Info as InfoIcon,

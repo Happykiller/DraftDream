@@ -1,6 +1,40 @@
 {
   "releases": [
     {
+      "version": "0.11.0",
+      "title": "Execution Tracking & Athlete Performance",
+      "date": "2026-01-04",
+      "global": [
+        "New execution tracking module (Records) for training sessions and meals.",
+        "Advanced prospect management with detailed editing and activity history.",
+        "Major UI improvements (Responsiveness, Tooltips, Fixed Layouts).",
+        "Infrastructure maintenance automation (SSL, Nginx, Docker)."
+      ],
+      "notes": "Version 0.11.0 takes a major step forward by enabling real-time tracking of program execution and nutrition. Athletes can now log their sessions (weight, reps, feedback) and meals, while coaches gain more powerful tools for prospect management.",
+      "projects": {
+        "/api": [
+          "New 'Program Records' and 'Meal Records' system with state management (CREATE, DRAFT, FINISH).",
+          "Automatic slug generation and removal of redundant parameters in GraphQL APIs.",
+          "Extended prospect model with new metadata fields and preferences.",
+          "Full technical documentation for new tracking use cases."
+        ],
+        "/backoffice": [
+          "New prospect management module with full editor and advanced filters.",
+          "Introduction of Autocomplete components for smooth entity selection.",
+          "Simplified record administration interface for coaches."
+        ],
+        "/frontoffice": [
+          "Live tracking experience for training sessions (load, reps, duration).",
+          "Nutrition tracking interface allowing plan meal validation.",
+          "Responsive header and layout redesign for optimal tablet usage.",
+          "Systematic integration of tooltips and visual cues to enhance UX."
+        ],
+        "/showcase": [
+          "Version 0.11.0 release notes update."
+        ]
+      }
+    },
+    {
       "version": "0.10.0",
       "title": "User Autonomy & Self-Service",
       "date": "2025-12-21",

@@ -1,7 +1,7 @@
 // src/pages/athletes/AthleteLinkDetails.tsx
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   CalendarMonth,
   Email,
@@ -22,7 +22,6 @@ import {
   Chip,
   CircularProgress,
   Divider,
-
   Stack,
   Tab,
   Tabs,
@@ -31,19 +30,22 @@ import {
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
+import { MealRecordPreviewGrid } from '@components/athletes/MealRecordPreviewGrid';
+import { ProgramRecordPreviewGrid } from '@components/athletes/ProgramRecordPreviewGrid';
 
 import { getAthleteDisplayName } from '@components/athletes/athleteLinkUtils';
 
 import { MealPlanList } from '@components/nutrition/MealPlanList';
 import { ProgramList } from '@components/programs/ProgramList';
-import type { AthleteLinkDetailsLoaderResult } from '@pages/athletes/AthleteLinkDetails.loader';
 import { useAthleteInfo } from '@hooks/athletes/useAthleteInfo';
 import { useCoachAthleteLink } from '@hooks/athletes/useCoachAthleteLink';
 import { usePrograms, type Program } from '@hooks/programs/usePrograms';
 import { useMealPlans, type MealPlan } from '@hooks/nutrition/useMealPlans';
+import { useMealRecords, type MealRecord } from '@hooks/nutrition/useMealRecords';
+import { useProgramRecords, type ProgramRecord } from '@hooks/program-records/useProgramRecords';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 
-type AthleteLinkTab = 'overview' | 'programs' | 'nutritions';
+type AthleteLinkTab = 'overview' | 'programs' | 'nutritions' | 'sessions' | 'meal-records';
 
 interface TabPanelProps {
   readonly value: AthleteLinkTab;
@@ -85,22 +87,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
   const navigate = useNavigate();
   const theme = useTheme();
   const { linkId } = useParams<{ linkId: string }>();
-  const loaderData = useLoaderData() as AthleteLinkDetailsLoaderResult;
-  const loaderError = React.useMemo(() => {
-    if (loaderData.status === 'not_found') {
-      return t('athletes.details.errors.not_found');
-    }
-    if (loaderData.status === 'error') {
-      return t('athletes.details.errors.load_failed');
-    }
-    return null;
-  }, [loaderData.status, t]);
-
-  const { link, loading, error } = useCoachAthleteLink({
-    linkId,
-    initialLink: loaderData.link,
-    initialError: loaderError,
-  });
+  const { link, loading, error } = useCoachAthleteLink({ linkId });
   const formatDate = useDateFormatter({ options: { day: '2-digit', month: '2-digit', year: 'numeric' } });
 
   const displayName = React.useMemo(
@@ -197,6 +184,29 @@ export function AthleteLinkDetails(): React.JSX.Element {
     enabled: Boolean(athleteId),
   });
 
+  const { items: programsLookup } = usePrograms({
+    page: 1,
+    limit: 100,
+    q: '',
+    userId: athleteId ?? undefined,
+    enabled: Boolean(athleteId),
+  });
+
+  const programLabelById = React.useMemo(() => {
+    return programsLookup.reduce<Record<string, string>>((accumulator, program) => {
+      accumulator[program.id] = program.label;
+      return accumulator;
+    }, {});
+  }, [programsLookup]);
+
+  const { list: listProgramRecords } = useProgramRecords();
+  const [programRecords, setProgramRecords] = React.useState<ProgramRecord[]>([]);
+  const [programRecordsLoading, setProgramRecordsLoading] = React.useState(false);
+
+  const { list: listMealRecords } = useMealRecords();
+  const [mealRecords, setMealRecords] = React.useState<MealRecord[]>([]);
+  const [mealRecordsLoading, setMealRecordsLoading] = React.useState(false);
+
   const nutritionEmptyState = React.useMemo(
     () =>
       t('athletes.details.nutritions.empty_state', {
@@ -224,8 +234,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
     [mealPlans.length, mealPlansLoading, t, totalMealPlans],
   );
 
-  const finalError = error ?? loaderError;
-  const showEmptyState = !loading && !link && finalError !== null;
+  const showEmptyState = !loading && !link && error !== null;
   const [currentTab, setCurrentTab] = React.useState<AthleteLinkTab>('overview');
 
   const handleBack = React.useCallback(() => {
@@ -248,6 +257,30 @@ export function AthleteLinkDetails(): React.JSX.Element {
     setProgramSearchQuery('');
     setNutritionSearchQuery('');
   }, [athleteId]);
+
+  React.useEffect(() => {
+    if (!athleteId) {
+      setProgramRecords([]);
+      return;
+    }
+
+    setProgramRecordsLoading(true);
+    listProgramRecords({ userId: athleteId, limit: 12, page: 1 })
+      .then(({ items }) => setProgramRecords(items))
+      .finally(() => setProgramRecordsLoading(false));
+  }, [athleteId, listProgramRecords]);
+
+  React.useEffect(() => {
+    if (!athleteId) {
+      setMealRecords([]);
+      return;
+    }
+
+    setMealRecordsLoading(true);
+    listMealRecords({ userId: athleteId, limit: 12, page: 1 })
+      .then(({ items }) => setMealRecords(items))
+      .finally(() => setMealRecordsLoading(false));
+  }, [athleteId, listMealRecords]);
 
   const handleViewProgram = React.useCallback(
     (program: Program) => {
@@ -379,7 +412,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
                   </Stack>
                 ) : null}
 
-                {showEmptyState ? <Alert severity="error">{finalError}</Alert> : null}
+                {showEmptyState ? <Alert severity="error">{error}</Alert> : null}
 
                 {link ? (
                   <Stack spacing={2}>
@@ -536,6 +569,8 @@ export function AthleteLinkDetails(): React.JSX.Element {
                   <Tab value="overview" label={t('athletes.details.tabs.overview')} />
                   <Tab value="programs" label={t('athletes.details.tabs.programs')} />
                   <Tab value="nutritions" label={t('athletes.details.tabs.nutritions')} />
+                  <Tab value="sessions" label={t('athletes.details.tabs.sessions')} />
+                  <Tab value="meal-records" label={t('athletes.details.tabs.meal_records')} />
                 </Tabs>
 
                 <Divider />
@@ -639,6 +674,31 @@ export function AthleteLinkDetails(): React.JSX.Element {
                           searchAriaLabel={nutritionSearchAriaLabel}
                           searchQuery={nutritionSearchQuery}
                           resultCountLabel={nutritionResultCountLabel}
+                        />
+                      </Box>
+                    ) : null}
+                  </TabPanel>
+
+                  <TabPanel value="sessions" currentTab={currentTab}>
+                    {link ? (
+                      <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3 } }}>
+                        <ProgramRecordPreviewGrid
+                          records={programRecords}
+                          loading={programRecordsLoading}
+                          programLabelById={programLabelById}
+                          formatDate={formatDate}
+                        />
+                      </Box>
+                    ) : null}
+                  </TabPanel>
+
+                  <TabPanel value="meal-records" currentTab={currentTab}>
+                    {link ? (
+                      <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3 } }}>
+                        <MealRecordPreviewGrid
+                          records={mealRecords}
+                          loading={mealRecordsLoading}
+                          formatDate={formatDate}
                         />
                       </Box>
                     ) : null}

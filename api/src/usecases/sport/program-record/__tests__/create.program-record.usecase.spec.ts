@@ -40,7 +40,14 @@ describe('CreateProgramRecordUsecase', () => {
     visibility: 'PRIVATE',
     duration: 6,
     frequency: 3,
-    sessions: [],
+    sessions: [
+      {
+        id: 'session-1',
+        title: 'Session 1',
+        description: 'First session',
+        exercises: [],
+      } as any,
+    ],
     userId: 'athlete-1',
     createdBy: 'coach-1',
     createdAt: new Date('2024-01-01T00:00:00.000Z'),
@@ -98,6 +105,12 @@ describe('CreateProgramRecordUsecase', () => {
       userId: 'athlete-1',
       programId: 'program-1',
       sessionId: 'session-1',
+      sessionSnapshot: {
+        id: 'session-1',
+        title: 'Session 1',
+        description: 'First session',
+        exercises: [],
+      },
       state: ProgramRecordState.CREATE,
       createdBy: 'athlete-1',
     });

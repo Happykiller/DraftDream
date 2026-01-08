@@ -1,5 +1,5 @@
-import { JSX } from 'react';
 import { Box } from '@mui/material';
+import { JSX } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import Header from './components/Header';

@@ -1,19 +1,18 @@
-import { useState } from 'react';
 import {
   Box,
-  Button,
-  Card,
-  CardContent,
-  Container,
-  Grid,
   Stack,
-  Typography,
+  styled,
+  Card,
+  Grid,
   Chip,
   Avatar,
   Switch,
-  styled
+  Container,
+  Typography,
+  CardContent,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+
 import { useI18n } from '../i18n/I18nProvider';
 
 // Simple SVG Icons
@@ -74,7 +73,6 @@ const AntSwitch = styled(Switch)(({ theme }) => ({
 }));
 
 const LandingPage = () => {
-  const navigate = useNavigate();
   const { t } = useI18n();
   const [annual, setAnnual] = useState(false);
 

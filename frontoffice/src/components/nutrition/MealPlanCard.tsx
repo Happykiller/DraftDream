@@ -305,7 +305,7 @@ export const MealPlanCard = React.memo(function MealPlanCard({
       await onDelete(mealPlan);
       setIsDeleteDialogOpen(false);
     } catch (_error) {
-      console.log('[MealPlanCard] Failed to delete meal plan', _error);
+      // Error handled by hook
     } finally {
       setIsDeleteSubmitting(false);
     }

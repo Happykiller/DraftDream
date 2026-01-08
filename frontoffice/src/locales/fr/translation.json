@@ -85,7 +85,7 @@
     },
     "actions": {
       "create": "Nouveau prospect",
-      "create_lead": "Créer un nouveau prospect",
+      "create_lead": "Créer un prospect",
       "refresh": "Rafraîchir",
       "back_to_list": "Retour à la liste"
     },
@@ -342,10 +342,58 @@
           "fats": "Lipides"
         }
       },
+      "sessions": {
+        "empty": "Aucun retour de séance disponible pour le moment.",
+        "comment_fallback": "Aucun commentaire transmis",
+        "fields": {
+          "program": "Programme",
+          "created_at": "Date de création",
+          "updated_at": "Dernière mise à jour",
+          "satisfaction": "Note de satisfaction",
+          "difficulty": "Difficulté",
+          "duration": "Durée",
+          "comment": "Commentaire"
+        },
+        "satisfaction_value": "{{value}} / 5",
+        "satisfaction_missing": "Non renseignée",
+        "duration_value": "{{count}} min",
+        "duration_missing": "Non renseignée",
+        "status": {
+          "finish": "Terminé",
+          "draft": "En cours",
+          "create": "Créé"
+        },
+        "difficulty": {
+          "easy": "Facile",
+          "moderate": "Modérée",
+          "hard": "Difficile",
+          "unknown": "Non renseignée"
+        }
+      },
+      "meal_records": {
+        "empty": "Aucun retour repas disponible pour le moment.",
+        "comment_fallback": "Aucun commentaire transmis",
+        "fields": {
+          "meal_plan": "Plan nutritionnel",
+          "created_at": "Date de création",
+          "updated_at": "Dernière mise à jour",
+          "satisfaction": "Note de satisfaction",
+          "comment": "Commentaire"
+        },
+        "satisfaction_value": "{{value}} / 5",
+        "satisfaction_missing": "Non renseignée",
+        "status": {
+          "finish": "Terminé",
+          "draft": "En cours",
+          "create": "Créé"
+        }
+      },
       "tabs": {
         "overview": "Vue d'ensemble",
         "programs": "Programmes",
         "nutritions": "Nutritions",
+        "sessions": "Retour sessions",
+        "meal_records": "Retour repas",
         "programs_helper": "Associez vos programmes d'entraînement à cet athlète pour suivre sa progression.",
         "nutritions_helper": "Reliez les plans nutritionnels à cet athlète pour centraliser son suivi alimentaire."
       },
@@ -521,7 +569,7 @@
         "search_placeholder": "Rechercher une séance...",
         "filter_label": "Categorie",
         "filter_all": "Toutes categories",
-        "button_create": "Creer une séance"
+        "button_create": "Ajouter une séance vide"
       },
       "templates_title": "Bibliotheque de séances",
       "templates_subtitle": "Choisissez une séance dans la liste ou cliquez pour l'ajouter.",
@@ -562,7 +610,7 @@
         "type_public": "Public",
         "limit_hint": "Affichage des 10 exercices maximum triés par ordre alphabétique.",
         "empty_state": "Aucun exercice ne correspond à vos filtres.",
-        "button_create": "Creer un exercice",
+        "button_create": "Nouvel exercice",
         "refresh_label": "Recharger les exercices",
         "subtitle": "Ajoutez un exercice à une séance pour l'intégrer.",
         "sets_label": " séries",

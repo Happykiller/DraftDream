@@ -141,7 +141,7 @@ export const ProgramCard = React.memo(function ProgramCard({
       await onDelete(program.id);
       setIsDeleteDialogOpen(false);
     } catch (_error) {
-      console.log('[ProgramCard] Failed to delete program', _error);
+      // Error handled by hook
     } finally {
       setIsDeleteSubmitting(false);
     }
