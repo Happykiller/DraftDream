@@ -26,8 +26,9 @@ export class GetProgramRecordUsecase {
       }
 
       const isAdmin = session.role === Role.ADMIN;
+      const isCoach = session.role === Role.COACH;
       const isOwner = record.userId === session.userId;
-      if (!isAdmin && !isOwner) {
+      if (!isAdmin && !isCoach && !isOwner) {
         return null;
       }
 
