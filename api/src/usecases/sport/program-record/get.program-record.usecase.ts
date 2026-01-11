@@ -29,12 +29,14 @@ export class GetProgramRecordUsecase {
       const isCoach = session.role === Role.COACH;
       const isOwner = record.userId === session.userId;
       if (!isAdmin && !isCoach && !isOwner) {
-        return null;
+        throw new Error(ERRORS.FORBIDDEN);
       }
 
       return mapProgramRecordToUsecase(record);
     } catch (error: any) {
-      this.inversify.loggerService.error(`GetProgramRecordUsecase#execute => ${error?.message ?? error}`);
+      this.inversify.loggerService.error(
+        `GetProgramRecordUsecase#execute (recordId: ${dto.id}) => ${error?.message ?? error}`,
+      );
       throw normalizeError(error, ERRORS.GET_PROGRAM_RECORD_USECASE);
     }
   }
