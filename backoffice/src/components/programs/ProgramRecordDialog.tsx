@@ -406,14 +406,6 @@ export function ProgramRecordDialog({
                       {initial.durationMinutes ?? '-'}
                     </Typography>
                   </Grid>
-                  <Grid size={{ xs: 12, sm: 6 }}>
-                    <Typography variant="caption" color="text.secondary">
-                      {t('programs.records.labels.difficulty_rating')}
-                    </Typography>
-                    <Typography variant="body2">
-                      {initial.difficultyRating ?? '-'}
-                    </Typography>
-                  </Grid>
                 </Grid>
               </Stack>
               <Stack spacing={1}>
