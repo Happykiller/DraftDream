@@ -361,25 +361,31 @@ export function ProgramRecordDialog({
               />
             </>
           )}
-          <TextField
-            label={t('programs.records.labels.satisfaction_rating')}
-            name="satisfactionRating"
-            value={values.satisfactionRating}
-            onChange={handleRatingChange}
-            placeholder={t('programs.records.placeholders.satisfaction_rating')}
-            type="number"
-            inputProps={{ min: 0, max: 10, 'aria-label': 'program-record-satisfaction-rating' }}
-            fullWidth
-          />
-          {isEdit && initial ? (
-            <TextField
-              label={t('programs.records.labels.difficulty_rating')}
-              value={initial.difficultyRating ?? ''}
-              placeholder="-"
-              InputProps={{ readOnly: true }}
-              fullWidth
-            />
-          ) : null}
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField
+                label={t('programs.records.labels.satisfaction_rating')}
+                name="satisfactionRating"
+                value={values.satisfactionRating}
+                onChange={handleRatingChange}
+                placeholder={t('programs.records.placeholders.satisfaction_rating')}
+                type="number"
+                inputProps={{ min: 0, max: 10, 'aria-label': 'program-record-satisfaction-rating' }}
+                fullWidth
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              {isEdit && initial ? (
+                <TextField
+                  label={t('programs.records.labels.difficulty_rating')}
+                  value={initial.difficultyRating ?? ''}
+                  placeholder="-"
+                  InputProps={{ readOnly: true }}
+                  fullWidth
+                />
+              ) : null}
+            </Grid>
+          </Grid>
           <TextField
             label={t('programs.records.labels.comment')}
             name="comment"
