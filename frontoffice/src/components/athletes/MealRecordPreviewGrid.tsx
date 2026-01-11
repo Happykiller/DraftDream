@@ -23,6 +23,7 @@ interface MealRecordPreviewGridProps {
   readonly records: MealRecord[];
   readonly loading: boolean;
   readonly formatDate: (value: string) => string;
+  readonly onRecordClick?: (record: MealRecord) => void;
 }
 
 /** Preview grid for meal record feedback cards. */
@@ -30,6 +31,7 @@ export function MealRecordPreviewGrid({
   records,
   loading,
   formatDate,
+  onRecordClick,
 }: MealRecordPreviewGridProps): React.JSX.Element {
   const { t } = useTranslation();
 
@@ -62,7 +64,23 @@ export function MealRecordPreviewGrid({
 
           return (
             <Grid key={record.id} size={{ xs: 12, sm: 6, md: 4 }}>
-              <GlassCard sx={{ height: '100%' }}>
+              <GlassCard
+                onClick={onRecordClick ? () => onRecordClick(record) : undefined}
+                onKeyDown={onRecordClick
+                  ? (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault();
+                      onRecordClick(record);
+                    }
+                  }
+                  : undefined}
+                role={onRecordClick ? 'button' : undefined}
+                tabIndex={onRecordClick ? 0 : undefined}
+                sx={{
+                  height: '100%',
+                  cursor: onRecordClick ? 'pointer' : 'default',
+                }}
+              >
                 <Stack spacing={2}>
                   <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
                     <TextWithTooltip

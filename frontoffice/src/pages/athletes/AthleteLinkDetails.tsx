@@ -295,6 +295,12 @@ export function AthleteLinkDetails(): React.JSX.Element {
     },
     [navigate],
   );
+  const handleMealRecordClick = React.useCallback(
+    (record: MealRecord) => {
+      navigate(`/meal-record/${record.id}`);
+    },
+    [navigate],
+  );
   const handleRecordClick = React.useCallback(
     (record: ProgramRecord) => {
       navigate(`/program-record/${record.id}`);
@@ -706,6 +712,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
                           records={mealRecords}
                           loading={mealRecordsLoading}
                           formatDate={formatDate}
+                          onRecordClick={handleMealRecordClick}
                         />
                       </Box>
                     ) : null}

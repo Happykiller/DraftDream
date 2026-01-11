@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from '@jest/globals';
 
+import { ERRORS } from '@src/common/ERROR';
 import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { BddServiceMongo } from '@services/db/mongo/db.service.mongo';
@@ -71,15 +72,13 @@ describe('GetMealRecordUsecase', () => {
     expect(result).toEqual(expected);
   });
 
-  it('should return null for non owners', async () => {
+  it('should throw when the requester is not the owner', async () => {
     asMock(mealRecordRepositoryMock.get).mockResolvedValue(record);
 
     const dto: GetMealRecordUsecaseDto = {
       id: 'record-1',
       session: { userId: 'athlete-2', role: Role.ATHLETE },
     };
-    const result = await usecase.execute(dto);
-
-    expect(result).toBeNull();
+    await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.FORBIDDEN);
   });
 });

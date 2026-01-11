@@ -28,6 +28,9 @@ import {
     useMealRecords,
 } from '@hooks/nutrition/useMealRecords';
 import { FixedPageLayout } from '@src/components/common/FixedPageLayout';
+import { UserType } from '@src/commons/enums';
+import { session } from '@stores/session';
+import { MealRecordDetailsCoach } from './MealRecordDetailsCoach';
 
 function formatNumber(value: number, locale: string): string {
     try {
@@ -44,6 +47,11 @@ export function MealRecordDetails(): React.JSX.Element {
     const { t, i18n } = useTranslation();
     const navigate = useNavigate();
     const { recordId } = useParams<{ recordId: string }>();
+    const role = session((state) => state.role);
+
+    if (role && role !== UserType.Athlete) {
+        return <MealRecordDetailsCoach />;
+    }
     const theme = useTheme();
     const headerBackground = React.useMemo(
         () => alpha(theme.palette.warning.main, 0.12),
