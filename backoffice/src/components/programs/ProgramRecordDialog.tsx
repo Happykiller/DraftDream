@@ -130,11 +130,6 @@ export function ProgramRecordDialog({
     return sessionOptions.find((option) => option.id === selectedSessionId)
       ?? { id: selectedSessionId, label: selectedSessionId }; // Fallback to ID if not found (e.g. if searching not fully loaded, though sessions are inside program)
   }, [sessionOptions, selectedSessionId]);
-  const selectedSession = React.useMemo(
-    () => selectedProgram?.sessions.find((session) => session.id === selectedSessionId) ?? null,
-    [selectedProgram, selectedSessionId],
-  );
-
   const selectedAthleteOption = React.useMemo<AthleteOption | null>(() => {
     if (!selectedAthleteId) return null;
     return athleteOptions.find((option) => option.id === selectedAthleteId)
@@ -390,9 +385,7 @@ export function ProgramRecordDialog({
                 {hasRecordData ? (
                   <Stack spacing={1.5}>
                     {recordExercises.map((exercise) => {
-                      const exerciseLabel = selectedSession?.exercises.find(
-                        (candidate) => candidate.id === exercise.exerciseId,
-                      )?.label ?? exercise.exerciseId;
+                      const exerciseLabel = exercise.exerciseId;
                       return (
                         <Stack key={exercise.exerciseId} spacing={1}>
                           <Typography variant="body2" fontWeight={600}>
