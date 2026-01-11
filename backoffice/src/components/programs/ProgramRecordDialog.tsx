@@ -263,75 +263,104 @@ export function ProgramRecordDialog({
               </MenuItem>
             ))}
           </TextField>
-          <Autocomplete
-            options={programOptions}
-            value={selectedProgramOption}
-            onChange={handleProgramChange}
-            getOptionLabel={(option) => option.label}
-            isOptionEqualToValue={(option, value) => option.id === value.id}
-            disabled={isEdit}
-            renderOption={(props, option) => (
-              <li {...props} key={option.id}>
-                {option.label}
-              </li>
-            )}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label={t('common.labels.program')}
-                placeholder={t('programs.records.placeholders.program')}
-                inputProps={{ ...params.inputProps, 'aria-label': 'program-record-program' }}
-                required
-                fullWidth
+          {isEdit ? (
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Typography variant="caption" color="text.secondary">
+                  {t('common.labels.program')}
+                </Typography>
+                <Typography variant="body2">
+                  {selectedProgramOption?.label ?? initial?.programId ?? '-'}
+                </Typography>
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Typography variant="caption" color="text.secondary">
+                  {t('common.labels.session')}
+                </Typography>
+                <Typography variant="body2">
+                  {selectedSessionOption?.label ?? initial?.sessionId ?? '-'}
+                </Typography>
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Typography variant="caption" color="text.secondary">
+                  {t('common.labels.athlete')}
+                </Typography>
+                <Typography variant="body2">
+                  {selectedAthleteOption?.label ?? initial?.userId ?? '-'}
+                </Typography>
+              </Grid>
+            </Grid>
+          ) : (
+            <>
+              <Autocomplete
+                options={programOptions}
+                value={selectedProgramOption}
+                onChange={handleProgramChange}
+                getOptionLabel={(option) => option.label}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                renderOption={(props, option) => (
+                  <li {...props} key={option.id}>
+                    {option.label}
+                  </li>
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label={t('common.labels.program')}
+                    placeholder={t('programs.records.placeholders.program')}
+                    inputProps={{ ...params.inputProps, 'aria-label': 'program-record-program' }}
+                    required
+                    fullWidth
+                  />
+                )}
               />
-            )}
-          />
-          <Autocomplete
-            options={sessionOptions}
-            value={selectedSessionOption}
-            onChange={handleSessionChange}
-            getOptionLabel={(option) => option.label}
-            isOptionEqualToValue={(option, value) => option.id === value.id}
-            disabled={isEdit || !selectedProgramId}
-            renderOption={(props, option) => (
-              <li {...props} key={option.id}>
-                {option.label}
-              </li>
-            )}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label={t('common.labels.session')}
-                placeholder={t('programs.records.placeholders.session')}
-                inputProps={{ ...params.inputProps, 'aria-label': 'program-record-session' }}
-                required
-                fullWidth
+              <Autocomplete
+                options={sessionOptions}
+                value={selectedSessionOption}
+                onChange={handleSessionChange}
+                getOptionLabel={(option) => option.label}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                disabled={!selectedProgramId}
+                renderOption={(props, option) => (
+                  <li {...props} key={option.id}>
+                    {option.label}
+                  </li>
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label={t('common.labels.session')}
+                    placeholder={t('programs.records.placeholders.session')}
+                    inputProps={{ ...params.inputProps, 'aria-label': 'program-record-session' }}
+                    required
+                    fullWidth
+                  />
+                )}
               />
-            )}
-          />
-          <Autocomplete
-            options={athleteOptions}
-            value={selectedAthleteOption}
-            onChange={handleAthleteChange}
-            getOptionLabel={(option) => option.label}
-            isOptionEqualToValue={(option, value) => option.id === value.id}
-            disabled={isEdit}
-            renderOption={(props, option) => (
-              <li {...props} key={option.id}>
-                {option.label}
-              </li>
-            )}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label={t('common.labels.athlete')}
-                placeholder={t('programs.records.placeholders.athlete')}
-                inputProps={{ ...params.inputProps, 'aria-label': 'program-record-user' }}
-                required
-                fullWidth
+              <Autocomplete
+                options={athleteOptions}
+                value={selectedAthleteOption}
+                onChange={handleAthleteChange}
+                getOptionLabel={(option) => option.label}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                renderOption={(props, option) => (
+                  <li {...props} key={option.id}>
+                    {option.label}
+                  </li>
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label={t('common.labels.athlete')}
+                    placeholder={t('programs.records.placeholders.athlete')}
+                    inputProps={{ ...params.inputProps, 'aria-label': 'program-record-user' }}
+                    required
+                    fullWidth
+                  />
+                )}
               />
-            )}
-          />
+            </>
+          )}
           <TextField
             label={t('programs.records.labels.satisfaction_rating')}
             name="satisfactionRating"
