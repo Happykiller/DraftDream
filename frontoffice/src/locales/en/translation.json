@@ -17,6 +17,8 @@
     "not_found": "Not found",
     "no_content": "No content available",
     "back_to_home": "Back to Home",
+    "yes": "Yes",
+    "no": "No",
     "actions": {
       "retry": "Retry",
       "cancel": "Cancel",

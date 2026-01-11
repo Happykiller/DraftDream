@@ -17,6 +17,8 @@
     "not_found": "Introuvable",
     "no_content": "Aucun contenu disponible",
     "back_to_home": "Retour à l'accueil",
+    "yes": "Oui",
+    "no": "Non",
     "actions": {
       "retry": "Réessayer",
       "cancel": "Annuler",

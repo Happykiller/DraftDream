@@ -27,12 +27,20 @@ import {
 } from '@hooks/program-records/useProgramRecords';
 import { useProgram } from '@hooks/programs/useProgram';
 import { FixedPageLayout } from '@src/components/common/FixedPageLayout';
+import { UserType } from '@src/commons/enums';
+import { session } from '@stores/session';
 import { ProgramRecordExerciseCard } from './components/ProgramRecordExerciseCard';
+import { ProgramRecordDetailsCoach } from './ProgramRecordDetailsCoach';
 
 export function ProgramRecordDetails(): React.JSX.Element {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { recordId } = useParams<{ recordId: string }>();
+    const role = session((state) => state.role);
+
+    if (role && role !== UserType.Athlete) {
+        return <ProgramRecordDetailsCoach />;
+    }
 
     const { get: getRecord, updateState } = useProgramRecords();
     const [record, setRecord] = React.useState<ProgramRecord | null>(null);
