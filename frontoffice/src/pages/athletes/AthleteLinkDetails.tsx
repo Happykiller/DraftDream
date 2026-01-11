@@ -295,6 +295,12 @@ export function AthleteLinkDetails(): React.JSX.Element {
     },
     [navigate],
   );
+  const handleRecordClick = React.useCallback(
+    (record: ProgramRecord) => {
+      navigate(`/program-record/${record.id}`);
+    },
+    [navigate],
+  );
 
 
 
@@ -687,6 +693,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
                           loading={programRecordsLoading}
                           programLabelById={programLabelById}
                           formatDate={formatDate}
+                          onRecordClick={handleRecordClick}
                         />
                       </Box>
                     ) : null}
