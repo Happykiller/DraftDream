@@ -1408,6 +1408,7 @@
       "series_label": "Série {{index}}",
       "repetitions_label": "Répétitions",
       "charge_label": "Charge",
+      "rpe_label": "RPE",
       "done_label": "Fait",
       "duration_label": "Durée (minutes)",
       "duration_label_short": "Durée",

@@ -137,6 +137,35 @@ export function ProgramRecordDetails(): React.JSX.Element {
         });
     };
 
+    const handleSeriesRpeChange = (exerciseId: string, setIndex: number) => (
+        event: React.ChangeEvent<HTMLInputElement>,
+    ) => {
+        const rawValue = event.target.value;
+        const parsedValue = rawValue === '' ? null : Number(rawValue);
+        if (parsedValue !== null && Number.isNaN(parsedValue)) {
+            return;
+        }
+        setRecordData((previous) => {
+            if (!previous) return previous;
+            return {
+                exercises: previous.exercises.map((exercise) => {
+                    if (exercise.exerciseId !== exerciseId) {
+                        return exercise;
+                    }
+
+                    return {
+                        ...exercise,
+                        sets: exercise.sets.map((set) => (
+                            set.index === setIndex
+                                ? { ...set, rpe: parsedValue }
+                                : set
+                        )),
+                    };
+                }),
+            };
+        });
+    };
+
     const handleSeriesDoneChange = (exerciseId: string, setIndex: number) => (
         event: React.ChangeEvent<HTMLInputElement>,
     ) => {
@@ -284,6 +313,7 @@ export function ProgramRecordDetails(): React.JSX.Element {
                         index: setIndex,
                         repetitions: existingSet?.repetitions ?? exercise.repetitions ?? '',
                         charge: existingSet?.charge ?? exercise.charge ?? '',
+                        rpe: existingSet?.rpe ?? null,
                         done: existingSet?.done ?? false,
                     };
                 });
@@ -558,6 +588,7 @@ export function ProgramRecordDetails(): React.JSX.Element {
                                                     exerciseNotes={exerciseNotes}
                                                     restLabel={restLabel}
                                                     onSeriesFieldChange={handleSeriesFieldChange}
+                                                    onSeriesRpeChange={handleSeriesRpeChange}
                                                     onSeriesDoneChange={handleSeriesDoneChange}
                                                     onExerciseNotesChange={handleExerciseNotesChange}
                                                 />

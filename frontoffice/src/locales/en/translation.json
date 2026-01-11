@@ -1404,6 +1404,7 @@
       "series_label": "Set {{index}}",
       "repetitions_label": "Repetitions",
       "charge_label": "Load",
+      "rpe_label": "RPE",
       "done_label": "Done",
       "duration_label": "Duration (minutes)",
       "duration_label_short": "Duration",

@@ -27,6 +27,9 @@ interface ProgramRecordExerciseCardProps {
         setIndex: number,
         field: 'repetitions' | 'charge',
     ) => (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onSeriesRpeChange: (exerciseId: string, setIndex: number) => (
+        event: React.ChangeEvent<HTMLInputElement>,
+    ) => void;
     onSeriesDoneChange: (exerciseId: string, setIndex: number) => (
         event: React.ChangeEvent<HTMLInputElement>,
     ) => void;
@@ -42,6 +45,7 @@ export function ProgramRecordExerciseCard({
     exerciseNotes,
     restLabel,
     onSeriesFieldChange,
+    onSeriesRpeChange,
     onSeriesDoneChange,
     onExerciseNotesChange,
 }: ProgramRecordExerciseCardProps): React.JSX.Element {
@@ -135,7 +139,7 @@ export function ProgramRecordExerciseCard({
                                     {t('program_record.form.series_label', { index: set.index })}
                                 </Typography>
                                 <Grid container spacing={1.5}>
-                                    <Grid size={{ xs: 5 }}>
+                                    <Grid size={{ xs: 4 }}>
                                         <TextField
                                             label={t('program_record.form.repetitions_label')}
                                             value={set.repetitions ?? ''}
@@ -147,7 +151,7 @@ export function ProgramRecordExerciseCard({
                                             fullWidth
                                         />
                                     </Grid>
-                                    <Grid size={{ xs: 5 }}>
+                                    <Grid size={{ xs: 4 }}>
                                         <TextField
                                             label={t('program_record.form.charge_label')}
                                             value={set.charge ?? ''}
@@ -156,6 +160,19 @@ export function ProgramRecordExerciseCard({
                                                 set.index,
                                                 'charge',
                                             )}
+                                            fullWidth
+                                        />
+                                    </Grid>
+                                    <Grid size={{ xs: 2 }}>
+                                        <TextField
+                                            label={t('program_record.form.rpe_label')}
+                                            value={set.rpe ?? ''}
+                                            onChange={onSeriesRpeChange(
+                                                exercise.id,
+                                                set.index,
+                                            )}
+                                            type="number"
+                                            inputProps={{ min: 1, max: 10, step: 0.5 }}
                                             fullWidth
                                         />
                                     </Grid>
