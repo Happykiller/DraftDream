@@ -105,6 +105,8 @@
       "medical_conditions": "Conditions médicales",
       "allergies": "Allergies",
       "notes": "Notes",
+      "yes": "Oui",
+      "no": "Non",
       "deal_description": "Description du deal"
     },
     "status": {
@@ -326,7 +328,17 @@
       "labels": {
         "state": "État",
         "comment": "Commentaire",
-        "satisfaction_rating": "Note de satisfaction"
+        "satisfaction_rating": "Note de satisfaction",
+        "metrics": "Indicateurs",
+        "duration_minutes": "Durée (minutes)",
+        "difficulty_rating": "Niveau de difficulté",
+        "record_data": "Séries enregistrées",
+        "record_data_empty": "Aucune série enregistrée.",
+        "series": "Série {{index}}",
+        "repetitions": "Répétitions",
+        "charge": "Charge",
+        "rpe": "RPE",
+        "done": "Fait"
       },
       "placeholders": {
         "program": "Rechercher des programmes...",

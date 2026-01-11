@@ -7,6 +7,8 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Divider,
+  Grid,
   MenuItem,
   Stack,
   TextField,
@@ -113,24 +115,33 @@ export function ProgramRecordDialog({
     return programOptions.find((option) => option.id === selectedProgramId)
       ?? { id: selectedProgramId, label: selectedProgramId };
   }, [programOptions, selectedProgramId]);
+  const selectedProgram = React.useMemo(
+    () => programs.find((program) => program.id === selectedProgramId) ?? null,
+    [programs, selectedProgramId],
+  );
 
   const sessionOptions = React.useMemo<SessionOption[]>(() => {
     if (!selectedProgramId) return [];
-    const program = programs.find((p) => p.id === selectedProgramId);
-    return program?.sessions.map((s) => ({ id: s.id, label: s.label })) ?? [];
-  }, [programs, selectedProgramId]);
+    return selectedProgram?.sessions.map((s) => ({ id: s.id, label: s.label })) ?? [];
+  }, [selectedProgram, selectedProgramId]);
 
   const selectedSessionOption = React.useMemo<SessionOption | null>(() => {
     if (!selectedSessionId) return null;
     return sessionOptions.find((option) => option.id === selectedSessionId)
       ?? { id: selectedSessionId, label: selectedSessionId }; // Fallback to ID if not found (e.g. if searching not fully loaded, though sessions are inside program)
   }, [sessionOptions, selectedSessionId]);
+  const selectedSession = React.useMemo(
+    () => selectedProgram?.sessions.find((session) => session.id === selectedSessionId) ?? null,
+    [selectedProgram, selectedSessionId],
+  );
 
   const selectedAthleteOption = React.useMemo<AthleteOption | null>(() => {
     if (!selectedAthleteId) return null;
     return athleteOptions.find((option) => option.id === selectedAthleteId)
       ?? { id: selectedAthleteId, label: selectedAthleteId };
   }, [athleteOptions, selectedAthleteId]);
+  const recordExercises = initial?.recordData?.exercises ?? [];
+  const hasRecordData = recordExercises.length > 0;
 
   React.useEffect(() => {
     if (!open) return;
@@ -346,6 +357,101 @@ export function ProgramRecordDialog({
             minRows={3}
             fullWidth
           />
+          {isEdit && initial ? (
+            <Stack spacing={2}>
+              <Divider />
+              <Stack spacing={1}>
+                <Typography variant="subtitle2" color="text.secondary">
+                  {t('programs.records.labels.metrics')}
+                </Typography>
+                <Grid container spacing={2}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      {t('programs.records.labels.duration_minutes')}
+                    </Typography>
+                    <Typography variant="body2">
+                      {initial.durationMinutes ?? '-'}
+                    </Typography>
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      {t('programs.records.labels.difficulty_rating')}
+                    </Typography>
+                    <Typography variant="body2">
+                      {initial.difficultyRating ?? '-'}
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </Stack>
+              <Stack spacing={1}>
+                <Typography variant="subtitle2" color="text.secondary">
+                  {t('programs.records.labels.record_data')}
+                </Typography>
+                {hasRecordData ? (
+                  <Stack spacing={1.5}>
+                    {recordExercises.map((exercise) => {
+                      const exerciseLabel = selectedSession?.exercises.find(
+                        (candidate) => candidate.id === exercise.exerciseId,
+                      )?.label ?? exercise.exerciseId;
+                      return (
+                        <Stack key={exercise.exerciseId} spacing={1}>
+                          <Typography variant="body2" fontWeight={600}>
+                            {exerciseLabel}
+                          </Typography>
+                          {exercise.notes ? (
+                            <Typography variant="caption" color="text.secondary">
+                              {exercise.notes}
+                            </Typography>
+                          ) : null}
+                          <Stack spacing={1}>
+                            {exercise.sets.map((set) => (
+                              <Grid container spacing={1} key={`${exercise.exerciseId}-${set.index}`}>
+                                <Grid size={{ xs: 12, sm: 2 }}>
+                                  <Typography variant="caption" color="text.secondary">
+                                    {t('programs.records.labels.series', { index: set.index })}
+                                  </Typography>
+                                </Grid>
+                                <Grid size={{ xs: 6, sm: 2 }}>
+                                  <Typography variant="caption" color="text.secondary">
+                                    {t('programs.records.labels.repetitions')}
+                                  </Typography>
+                                  <Typography variant="body2">{set.repetitions ?? '-'}</Typography>
+                                </Grid>
+                                <Grid size={{ xs: 6, sm: 2 }}>
+                                  <Typography variant="caption" color="text.secondary">
+                                    {t('programs.records.labels.charge')}
+                                  </Typography>
+                                  <Typography variant="body2">{set.charge ?? '-'}</Typography>
+                                </Grid>
+                                <Grid size={{ xs: 6, sm: 2 }}>
+                                  <Typography variant="caption" color="text.secondary">
+                                    {t('programs.records.labels.rpe')}
+                                  </Typography>
+                                  <Typography variant="body2">{set.rpe ?? '-'}</Typography>
+                                </Grid>
+                                <Grid size={{ xs: 6, sm: 2 }}>
+                                  <Typography variant="caption" color="text.secondary">
+                                    {t('programs.records.labels.done')}
+                                  </Typography>
+                                  <Typography variant="body2">
+                                    {set.done ? t('common.labels.yes') : t('common.labels.no')}
+                                  </Typography>
+                                </Grid>
+                              </Grid>
+                            ))}
+                          </Stack>
+                        </Stack>
+                      );
+                    })}
+                  </Stack>
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    {t('programs.records.labels.record_data_empty')}
+                  </Typography>
+                )}
+              </Stack>
+            </Stack>
+          ) : null}
           <DialogActions sx={{ px: 0 }}>
             <Button onClick={onClose} color="inherit">
               {t('common.buttons.cancel')}
