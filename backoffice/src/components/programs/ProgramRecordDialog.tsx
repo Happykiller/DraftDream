@@ -342,6 +342,15 @@ export function ProgramRecordDialog({
             inputProps={{ min: 0, max: 10, 'aria-label': 'program-record-satisfaction-rating' }}
             fullWidth
           />
+          {isEdit && initial ? (
+            <TextField
+              label={t('programs.records.labels.difficulty_rating')}
+              value={initial.difficultyRating ?? ''}
+              placeholder="-"
+              InputProps={{ readOnly: true }}
+              fullWidth
+            />
+          ) : null}
           <TextField
             label={t('programs.records.labels.comment')}
             name="comment"
