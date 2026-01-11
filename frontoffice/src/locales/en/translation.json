@@ -901,6 +901,7 @@
         "muscles": "Muscles",
         "equipment": "Equipment",
         "tags": "Tags",
+        "watch_video": "Watch video",
         "rest_duration": {
           "minutes_seconds": "{{minutes}} min {{seconds}} s",
           "minutes": "{{count}} min",

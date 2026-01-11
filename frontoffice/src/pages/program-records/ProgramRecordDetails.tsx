@@ -2,16 +2,15 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-  Box,
-  Checkbox,
-  CircularProgress,
-  Grid,
-  Paper,
-  Rating,
-  Stack,
-  TextField,
-  Tooltip,
-  Typography,
+    Box,
+    CircularProgress,
+    Grid,
+    Paper,
+    Rating,
+    Stack,
+    TextField,
+    Tooltip,
+    Typography,
 } from '@mui/material';
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -28,6 +27,7 @@ import {
 } from '@hooks/program-records/useProgramRecords';
 import { useProgram } from '@hooks/programs/useProgram';
 import { FixedPageLayout } from '@src/components/common/FixedPageLayout';
+import { ProgramRecordExerciseCard } from './components/ProgramRecordExerciseCard';
 
 export function ProgramRecordDetails(): React.JSX.Element {
     const { t } = useTranslation();
@@ -517,6 +517,27 @@ export function ProgramRecordDetails(): React.JSX.Element {
                             </Grid>
                         </Grid>
                     </Paper>
+                    {sessionSnapshot?.description ? (
+                        <Paper
+                            variant="outlined"
+                            sx={(theme) => ({
+                                borderRadius: 2.5,
+                                p: { xs: 2.5, md: 3 },
+                                bgcolor: theme.palette.background.paper,
+                                borderColor: theme.palette.divider,
+                                boxShadow: '0 20px 40px rgba(15, 23, 42, 0.06)',
+                            })}
+                        >
+                            <Stack spacing={1}>
+                                <Typography variant="subtitle2" fontWeight={700} color="text.secondary" sx={{ textTransform: 'uppercase', letterSpacing: 1 }}>
+                                    {t('programs-coatch.view.session_description', 'Description')}
+                                </Typography>
+                                <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
+                                    {sessionSnapshot.description}
+                                </Typography>
+                            </Stack>
+                        </Paper>
+                    ) : null}
                     {sessionSnapshot ? (
                         <Stack spacing={2.5}>
                             {sessionSnapshot.exercises.length > 0 ? (
@@ -530,92 +551,16 @@ export function ProgramRecordDetails(): React.JSX.Element {
                                         const exerciseNotes = exerciseRecord?.notes ?? '';
                                         return (
                                             <Grid size={{ xs: 12, md: 6, xxl: 3 }} key={exercise.id}>
-                                                <Paper
-                                                    variant="outlined"
-                                                    sx={(theme) => ({
-                                                        borderRadius: 2,
-                                                        p: 2,
-                                                        height: '100%',
-                                                        borderColor: theme.palette.divider,
-                                                    })}
-                                                >
-                                                    <Stack spacing={1.5}>
-                                                        <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                                                            {exerciseIndex + 1}. {exercise.label}
-                                                        </Typography>
-                                                        {exercise.description ? (
-                                                            <Typography variant="body2" color="text.secondary">
-                                                                {exercise.description}
-                                                            </Typography>
-                                                        ) : null}
-                                                        <Stack spacing={0.75}>
-                                                            {restLabel ? (
-                                                                <Typography variant="body2">
-                                                                    {t('programs-coatch.view.exercises.rest')}: {restLabel}
-                                                                </Typography>
-                                                            ) : null}
-                                                        </Stack>
-                                                        {sets.length > 0 ? (
-                                                            <Stack spacing={1.5}>
-                                                                <Typography variant="subtitle2" fontWeight={600}>
-                                                                    {t('program_record.form.record_data_title')}
-                                                                </Typography>
-                                                                {sets.map((set) => (
-                                                                    <Stack spacing={1} key={`${exercise.id}-set-${set.index}`}>
-                                                                        <Typography variant="body2" fontWeight={600}>
-                                                                            {t('program_record.form.series_label', { index: set.index })}
-                                                                        </Typography>
-                                                                        <Grid container spacing={1.5}>
-                                                                            <Grid size={{ xs: 5 }}>
-                                                                                <TextField
-                                                                                    label={t('program_record.form.repetitions_label')}
-                                                                                    value={set.repetitions ?? ''}
-                                                                                    onChange={handleSeriesFieldChange(
-                                                                                        exercise.id,
-                                                                                        set.index,
-                                                                                        'repetitions',
-                                                                                    )}
-                                                                                    fullWidth
-                                                                                />
-                                                                            </Grid>
-                                                                            <Grid size={{ xs: 5 }}>
-                                                                                <TextField
-                                                                                    label={t('program_record.form.charge_label')}
-                                                                                    value={set.charge ?? ''}
-                                                                                    onChange={handleSeriesFieldChange(
-                                                                                        exercise.id,
-                                                                                        set.index,
-                                                                                        'charge',
-                                                                                    )}
-                                                                                    fullWidth
-                                                                                />
-                                                                            </Grid>
-                                                                            <Grid size={{ xs: 2 }} display="flex" alignItems="center">
-                                                                                <Tooltip title={t('program_record.form.done_label')}>
-                                                                                    <Checkbox
-                                                                                        checked={Boolean(set.done)}
-                                                                                        onChange={handleSeriesDoneChange(
-                                                                                            exercise.id,
-                                                                                            set.index,
-                                                                                        )}
-                                                                                    />
-                                                                                </Tooltip>
-                                                                            </Grid>
-                                                                        </Grid>
-                                                                    </Stack>
-                                                                ))}
-                                                            </Stack>
-                                                        ) : null}
-                                                        <TextField
-                                                            label={t('program_record.form.exercise_notes_label')}
-                                                            value={exerciseNotes}
-                                                            onChange={handleExerciseNotesChange(exercise.id)}
-                                                            multiline
-                                                            minRows={2}
-                                                            fullWidth
-                                                        />
-                                                    </Stack>
-                                                </Paper>
+                                                <ProgramRecordExerciseCard
+                                                    exercise={exercise}
+                                                    exerciseIndex={exerciseIndex}
+                                                    sets={sets}
+                                                    exerciseNotes={exerciseNotes}
+                                                    restLabel={restLabel}
+                                                    onSeriesFieldChange={handleSeriesFieldChange}
+                                                    onSeriesDoneChange={handleSeriesDoneChange}
+                                                    onExerciseNotesChange={handleExerciseNotesChange}
+                                                />
                                             </Grid>
                                         );
                                     })}

@@ -1,3 +1,4 @@
+import * as React from 'react';
 import type { TFunction } from 'i18next';
 
 import type {
@@ -6,6 +7,21 @@ import type {
 } from '@hooks/programs/usePrograms';
 
 export type ProgramViewTab = 'overview' | 'sessions';
+
+export interface OverviewInfoItem {
+  key: string;
+  label: string;
+  value: string | null;
+  fallback: string;
+  Icon: React.ElementType;
+  isChip: boolean;
+}
+
+export interface ProgramStatItem {
+  key: string;
+  label: string;
+  value: string;
+}
 
 /**
  * Compute the athlete display label for a program.
