@@ -392,12 +392,25 @@
       },
       "tabs": {
         "overview": "Vue d'ensemble",
+        "calendar": "Calendrier",
         "programs": "Programmes",
         "nutritions": "Nutritions",
         "sessions": "Retour sessions",
         "meal_records": "Retour repas",
         "programs_helper": "Associez vos programmes d'entraînement à cet athlète pour suivre sa progression.",
         "nutritions_helper": "Reliez les plans nutritionnels à cet athlète pour centraliser son suivi alimentaire."
+      },
+      "calendar": {
+        "controls": {
+          "previous": "Précédent",
+          "current": "Aujourd'hui",
+          "next": "Suivant"
+        },
+        "views": {
+          "month": "Mois",
+          "week": "Semaine",
+          "day": "Jour"
+        }
       },
       "fields": {
         "start_date": "Début : {{date}}",

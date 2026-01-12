@@ -30,11 +30,10 @@ import {
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
+import { AthleteCalendar } from '@components/athletes/AthleteCalendar';
 import { MealRecordPreviewGrid } from '@components/athletes/MealRecordPreviewGrid';
 import { ProgramRecordPreviewGrid } from '@components/athletes/ProgramRecordPreviewGrid';
-
 import { getAthleteDisplayName } from '@components/athletes/athleteLinkUtils';
-
 import { MealPlanList } from '@components/nutrition/MealPlanList';
 import { ProgramList } from '@components/programs/ProgramList';
 import { useAthleteInfo } from '@hooks/athletes/useAthleteInfo';
@@ -45,7 +44,7 @@ import { useMealRecords, type MealRecord } from '@hooks/nutrition/useMealRecords
 import { useProgramRecords, type ProgramRecord } from '@hooks/program-records/useProgramRecords';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 
-type AthleteLinkTab = 'overview' | 'programs' | 'nutritions' | 'sessions' | 'meal-records';
+type AthleteLinkTab = 'overview' | 'calendar' | 'programs' | 'nutritions' | 'sessions' | 'meal-records';
 
 interface TabPanelProps {
   readonly value: AthleteLinkTab;
@@ -579,6 +578,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
                   sx={{ px: { xs: 1, sm: 2, md: 3 } }}
                 >
                   <Tab value="overview" label={t('athletes.details.tabs.overview')} />
+                  <Tab value="calendar" label={t('athletes.details.tabs.calendar')} />
                   <Tab value="programs" label={t('athletes.details.tabs.programs')} />
                   <Tab value="nutritions" label={t('athletes.details.tabs.nutritions')} />
                   <Tab value="sessions" label={t('athletes.details.tabs.sessions')} />
@@ -641,6 +641,10 @@ export function AthleteLinkDetails(): React.JSX.Element {
                         </Stack>
                       </Stack>
                     ) : null}
+                  </TabPanel>
+
+                  <TabPanel value="calendar" currentTab={currentTab}>
+                    {link ? <AthleteCalendar /> : null}
                   </TabPanel>
 
                   <TabPanel value="programs" currentTab={currentTab}>

@@ -390,12 +390,25 @@
       },
       "tabs": {
         "overview": "Overview",
+        "calendar": "Calendar",
         "programs": "Programs",
         "nutritions": "Nutritions",
         "sessions": "Session feedback",
         "meal_records": "Meal feedback",
         "programs_helper": "Attach training programs to this athlete to track their progress.",
         "nutritions_helper": "Link nutrition plans to centralize the athlete's dietary follow-up."
+      },
+      "calendar": {
+        "controls": {
+          "previous": "Previous",
+          "current": "Today",
+          "next": "Next"
+        },
+        "views": {
+          "month": "Month",
+          "week": "Week",
+          "day": "Day"
+        }
       },
       "fields": {
         "start_date": "Start: {{date}}",

@@ -1,0 +1,299 @@
+import * as React from 'react';
+import { useTranslation } from 'react-i18next';
+import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+import {
+  Box,
+  Button,
+  IconButton,
+  Stack,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+} from '@mui/material';
+
+const CALENDAR_VIEWS = ['month', 'week', 'day'] as const;
+
+type CalendarView = (typeof CALENDAR_VIEWS)[number];
+
+interface CalendarDay {
+  readonly date: Date;
+  readonly isOutsideMonth: boolean;
+}
+
+const DAY_HEADERS = 7;
+const MONTH_GRID_SIZE = 42;
+
+/** Align a date to midnight for stable comparisons. */
+function normalizeDate(value: Date): Date {
+  const normalized = new Date(value);
+  normalized.setHours(0, 0, 0, 0);
+  return normalized;
+}
+
+/** Determine if two dates occur on the same calendar day. */
+function isSameDay(first: Date, second: Date): boolean {
+  return (
+    first.getFullYear() === second.getFullYear()
+    && first.getMonth() === second.getMonth()
+    && first.getDate() === second.getDate()
+  );
+}
+
+/** Build a Monday-first week starting point. */
+function getWeekStart(value: Date): Date {
+  const normalized = normalizeDate(value);
+  const day = normalized.getDay();
+  const diff = (day + 6) % 7;
+  normalized.setDate(normalized.getDate() - diff);
+  return normalized;
+}
+
+/** Generate a fixed-size month grid anchored to a target date. */
+function buildMonthDays(currentDate: Date): CalendarDay[] {
+  const firstOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+  const firstGridDay = getWeekStart(firstOfMonth);
+
+  return Array.from({ length: MONTH_GRID_SIZE }, (_, index) => {
+    const date = new Date(firstGridDay);
+    date.setDate(firstGridDay.getDate() + index);
+
+    return {
+      date,
+      isOutsideMonth: date.getMonth() !== currentDate.getMonth(),
+    };
+  });
+}
+
+/** Generate a week grid anchored to a target date. */
+function buildWeekDays(currentDate: Date): CalendarDay[] {
+  const firstGridDay = getWeekStart(currentDate);
+
+  return Array.from({ length: DAY_HEADERS }, (_, index) => {
+    const date = new Date(firstGridDay);
+    date.setDate(firstGridDay.getDate() + index);
+
+    return {
+      date,
+      isOutsideMonth: false,
+    };
+  });
+}
+
+/** Calendar layout for coach athlete tabs. */
+export function AthleteCalendar(): React.JSX.Element {
+  const { t, i18n } = useTranslation();
+  const [view, setView] = React.useState<CalendarView>('month');
+  const [currentDate, setCurrentDate] = React.useState(() => normalizeDate(new Date()));
+  const today = React.useMemo(() => normalizeDate(new Date()), []);
+
+  const weekDayFormatter = React.useMemo(
+    () => new Intl.DateTimeFormat(i18n.language, { weekday: 'short' }),
+    [i18n.language],
+  );
+
+  const monthFormatter = React.useMemo(
+    () => new Intl.DateTimeFormat(i18n.language, { month: 'long', year: 'numeric' }),
+    [i18n.language],
+  );
+
+  const dayFormatter = React.useMemo(
+    () => new Intl.DateTimeFormat(i18n.language, { day: '2-digit', month: 'short' }),
+    [i18n.language],
+  );
+
+  const fullDateFormatter = React.useMemo(
+    () => new Intl.DateTimeFormat(i18n.language, { day: '2-digit', month: 'long', year: 'numeric' }),
+    [i18n.language],
+  );
+
+  const weekDayLabels = React.useMemo(() => {
+    const start = getWeekStart(new Date());
+    return Array.from({ length: DAY_HEADERS }, (_, index) => {
+      const date = new Date(start);
+      date.setDate(start.getDate() + index);
+      return weekDayFormatter.format(date);
+    });
+  }, [weekDayFormatter]);
+
+  const days = React.useMemo(() => {
+    if (view === 'month') {
+      return buildMonthDays(currentDate);
+    }
+
+    if (view === 'week') {
+      return buildWeekDays(currentDate);
+    }
+
+    return [
+      {
+        date: currentDate,
+        isOutsideMonth: false,
+      },
+    ];
+  }, [currentDate, view]);
+
+  const currentLabel = React.useMemo(() => {
+    if (view === 'month') {
+      return monthFormatter.format(currentDate);
+    }
+
+    if (view === 'week') {
+      const weekStart = getWeekStart(currentDate);
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekStart.getDate() + 6);
+      return `${dayFormatter.format(weekStart)} - ${dayFormatter.format(weekEnd)}`;
+    }
+
+    return fullDateFormatter.format(currentDate);
+  }, [currentDate, dayFormatter, fullDateFormatter, monthFormatter, view]);
+
+  const handlePrevious = React.useCallback(() => {
+    setCurrentDate((date) => {
+      const next = new Date(date);
+      if (view === 'month') {
+        next.setMonth(next.getMonth() - 1);
+      } else if (view === 'week') {
+        next.setDate(next.getDate() - 7);
+      } else {
+        next.setDate(next.getDate() - 1);
+      }
+      return normalizeDate(next);
+    });
+  }, [view]);
+
+  const handleCurrent = React.useCallback(() => {
+    setCurrentDate(today);
+  }, [today]);
+
+  const handleNext = React.useCallback(() => {
+    setCurrentDate((date) => {
+      const next = new Date(date);
+      if (view === 'month') {
+        next.setMonth(next.getMonth() + 1);
+      } else if (view === 'week') {
+        next.setDate(next.getDate() + 7);
+      } else {
+        next.setDate(next.getDate() + 1);
+      }
+      return normalizeDate(next);
+    });
+  }, [view]);
+
+  const handleViewChange = React.useCallback(
+    (_: React.MouseEvent<HTMLElement>, nextView: CalendarView | null) => {
+      if (nextView) {
+        setView(nextView);
+      }
+    },
+    [],
+  );
+
+  const columns = view === 'day' ? 1 : DAY_HEADERS;
+
+  const headerLabels = React.useMemo(() => {
+    if (view === 'day') {
+      return [fullDateFormatter.format(currentDate)];
+    }
+
+    return weekDayLabels;
+  }, [currentDate, fullDateFormatter, view, weekDayLabels]);
+
+  return (
+    <Stack spacing={2} sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3 } }}>
+      {/* General information */}
+      <Stack
+        direction={{ xs: 'column', md: 'row' }}
+        spacing={2}
+        alignItems={{ xs: 'flex-start', md: 'center' }}
+        justifyContent={{ xs: 'flex-start', md: 'space-between' }}
+      >
+        <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
+          <IconButton aria-label={t('athletes.details.calendar.controls.previous')} onClick={handlePrevious}>
+            <ChevronLeft />
+          </IconButton>
+          <Button variant="outlined" size="small" onClick={handleCurrent}>
+            {t('athletes.details.calendar.controls.current')}
+          </Button>
+          <IconButton aria-label={t('athletes.details.calendar.controls.next')} onClick={handleNext}>
+            <ChevronRight />
+          </IconButton>
+          <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+            {currentLabel}
+          </Typography>
+        </Stack>
+
+        <ToggleButtonGroup value={view} exclusive size="small" onChange={handleViewChange}>
+          <ToggleButton value="month">{t('athletes.details.calendar.views.month')}</ToggleButton>
+          <ToggleButton value="week">{t('athletes.details.calendar.views.week')}</ToggleButton>
+          <ToggleButton value="day">{t('athletes.details.calendar.views.day')}</ToggleButton>
+        </ToggleButtonGroup>
+      </Stack>
+
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+          gap: 1,
+        }}
+      >
+        {headerLabels.map((label) => (
+          <Box
+            key={label}
+            sx={{
+              px: 1,
+              py: 0.5,
+              borderRadius: 1,
+              bgcolor: 'action.hover',
+              textAlign: 'center',
+            }}
+          >
+            <Typography variant="caption" sx={{ fontWeight: 700 }}>
+              {label}
+            </Typography>
+          </Box>
+        ))}
+      </Box>
+
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+          gap: 1,
+        }}
+      >
+        {days.map((day) => {
+          const isToday = isSameDay(day.date, today);
+          const dayLabel = view === 'day' ? fullDateFormatter.format(day.date) : day.date.getDate();
+
+          return (
+            <Box
+              key={day.date.toISOString()}
+              sx={{
+                minHeight: view === 'day' ? 220 : 96,
+                borderRadius: 2,
+                border: 1,
+                borderColor: isToday ? 'primary.main' : 'divider',
+                bgcolor: day.isOutsideMonth ? 'action.hover' : 'background.paper',
+                px: 1,
+                py: 1,
+                display: 'flex',
+                alignItems: 'flex-start',
+                justifyContent: 'flex-start',
+              }}
+            >
+              <Typography
+                variant="caption"
+                sx={{
+                  fontWeight: isToday ? 700 : 500,
+                  color: day.isOutsideMonth ? 'text.disabled' : 'text.primary',
+                }}
+              >
+                {dayLabel}
+              </Typography>
+            </Box>
+          );
+        })}
+      </Box>
+    </Stack>
+  );
+}
