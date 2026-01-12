@@ -199,7 +199,15 @@ export function AthleteCalendar(): React.JSX.Element {
   }, [currentDate, fullDateFormatter, view, weekDayLabels]);
 
   return (
-    <Stack spacing={2} sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3 } }}>
+    <Stack
+      spacing={2}
+      sx={{
+        px: { xs: 2, sm: 3, md: 4 },
+        py: { xs: 2, sm: 3 },
+        height: '100%',
+        minHeight: 0,
+      }}
+    >
       {/* General information */}
       <Stack
         direction={{ xs: 'column', md: 'row' }}
@@ -259,17 +267,21 @@ export function AthleteCalendar(): React.JSX.Element {
           display: 'grid',
           gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
           gap: 1,
+          flexGrow: 1,
+          minHeight: 0,
         }}
       >
         {days.map((day) => {
           const isToday = isSameDay(day.date, today);
           const dayLabel = view === 'day' ? fullDateFormatter.format(day.date) : day.date.getDate();
+          const isFullHeight = view === 'week';
 
           return (
             <Box
               key={day.date.toISOString()}
               sx={{
                 minHeight: view === 'day' ? 220 : 96,
+                height: isFullHeight ? '100%' : 'auto',
                 borderRadius: 2,
                 border: 1,
                 borderColor: isToday ? 'primary.main' : 'divider',
