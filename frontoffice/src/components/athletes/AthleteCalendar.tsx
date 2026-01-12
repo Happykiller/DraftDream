@@ -1,9 +1,12 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+import { ChevronLeft, ChevronRight, MoreHoriz } from '@mui/icons-material';
 import {
   Box,
   Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
   IconButton,
   Stack,
   ToggleButton,
@@ -27,6 +30,7 @@ interface CalendarDay {
 
 const DAY_HEADERS = 7;
 const MONTH_GRID_SIZE = 42;
+const MAX_VISIBLE_RECORDS = 3;
 
 /** Align a date to midnight for stable comparisons. */
 function normalizeDate(value: Date): Date {
@@ -89,6 +93,17 @@ interface AthleteCalendarProps {
   readonly mealRecords: MealRecord[];
 }
 
+interface CalendarRecordItem {
+  readonly id: string;
+  readonly label: string;
+  readonly type: 'program' | 'meal';
+}
+
+interface ExpandedDay {
+  readonly label: string;
+  readonly records: CalendarRecordItem[];
+}
+
 /** Calendar layout for coach athlete tabs. */
 export function AthleteCalendar({ programRecords, mealRecords }: AthleteCalendarProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
@@ -98,6 +113,7 @@ export function AthleteCalendar({ programRecords, mealRecords }: AthleteCalendar
   const isBelowXl = useMediaQuery(theme.breakpoints.down('xl'));
   const [view, setView] = React.useState<CalendarView>('month');
   const [currentDate, setCurrentDate] = React.useState(() => normalizeDate(new Date()));
+  const [expandedDay, setExpandedDay] = React.useState<ExpandedDay | null>(null);
   const today = React.useMemo(() => normalizeDate(new Date()), []);
 
   const recordsByDate = React.useMemo(() => {
@@ -257,6 +273,61 @@ export function AthleteCalendar({ programRecords, mealRecords }: AthleteCalendar
     return record.mealSnapshot?.label ?? record.mealPlanSnapshot?.label ?? t('athletes.details.tabs.meal_records');
   }, [t]);
 
+  const buildRecordItem = React.useCallback(
+    (record: ProgramRecord | MealRecord, type: CalendarRecordItem['type']): CalendarRecordItem => ({
+      id: record.id,
+      label: resolveRecordLabel(record),
+      type,
+    }),
+    [resolveRecordLabel],
+  );
+
+  const handleCloseExpandedDay = React.useCallback(() => {
+    setExpandedDay(null);
+  }, []);
+
+  /** Render a full-width pill that keeps the record label on a single line. */
+  const renderRecordPill = React.useCallback(
+    (record: CalendarRecordItem) => {
+      const isProgram = record.type === 'program';
+      const backgroundColor = isProgram ? theme.palette.success.main : theme.palette.warning.main;
+      const textColor = isProgram ? theme.palette.success.contrastText : theme.palette.warning.contrastText;
+
+      return (
+        <Tooltip key={record.id} title={record.label} arrow>
+          <Box sx={{ width: '100%' }}>
+            <Box
+              component="span"
+              sx={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                width: '100%',
+                px: 0.75,
+                py: 0.25,
+                borderRadius: 1,
+                bgcolor: backgroundColor,
+                color: textColor,
+              }}
+            >
+              <Typography
+                variant="caption"
+                noWrap
+                sx={{
+                  width: '100%',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {record.label}
+              </Typography>
+            </Box>
+          </Box>
+        </Tooltip>
+      );
+    },
+    [theme.palette.success.contrastText, theme.palette.success.main, theme.palette.warning.contrastText, theme.palette.warning.main],
+  );
+
   const headerLabels = React.useMemo(() => {
     if (view === 'day') {
       return [fullDateFormatter.format(currentDate)];
@@ -346,6 +417,12 @@ export function AthleteCalendar({ programRecords, mealRecords }: AthleteCalendar
           const dailyRecords = recordsByDate.get(dayKey);
           const programItems = dailyRecords?.programs ?? [];
           const mealItems = dailyRecords?.meals ?? [];
+          const recordItems = [
+            ...programItems.map((record) => buildRecordItem(record, 'program')),
+            ...mealItems.map((record) => buildRecordItem(record, 'meal')),
+          ];
+          const visibleItems = recordItems.slice(0, MAX_VISIBLE_RECORDS);
+          const hiddenCount = recordItems.length - visibleItems.length;
 
           return (
             <Box
@@ -364,6 +441,7 @@ export function AthleteCalendar({ programRecords, mealRecords }: AthleteCalendar
                 gap: 0.5,
                 alignItems: 'flex-start',
                 justifyContent: 'flex-start',
+                overflow: 'hidden',
               }}
             >
               <Typography
@@ -375,72 +453,51 @@ export function AthleteCalendar({ programRecords, mealRecords }: AthleteCalendar
               >
                 {dayLabel}
               </Typography>
-              {programItems.map((record) => (
-                <Tooltip key={record.id} title={resolveRecordLabel(record)} arrow>
-                  <Box sx={{ width: '100%' }}>
-                    <Box
-                      component="span"
-                      sx={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        width: '100%',
-                        px: 0.75,
-                        py: 0.25,
-                        borderRadius: 1,
-                        bgcolor: theme.palette.success.main,
-                        color: theme.palette.success.contrastText,
-                      }}
-                    >
-                      <Typography
-                        variant="caption"
-                        noWrap
-                        sx={{
-                          width: '100%',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                        }}
-                      >
-                        {resolveRecordLabel(record)}
-                      </Typography>
-                    </Box>
-                  </Box>
+              {visibleItems.map((record) => renderRecordPill(record))}
+              {hiddenCount > 0 ? (
+                <Tooltip title={t('athletes.details.calendar.records.view_all', { count: hiddenCount })} arrow>
+                  <IconButton
+                    size="small"
+                    onClick={() =>
+                      setExpandedDay({
+                        label: fullDateFormatter.format(day.date),
+                        records: recordItems,
+                      })
+                    }
+                    aria-label={t('athletes.details.calendar.records.view_all', { count: hiddenCount })}
+                    sx={{
+                      alignSelf: 'flex-start',
+                      width: '100%',
+                      justifyContent: 'center',
+                      borderRadius: 1,
+                      border: 1,
+                      borderColor: 'divider',
+                      bgcolor: 'action.hover',
+                    }}
+                  >
+                    <MoreHoriz fontSize="small" />
+                  </IconButton>
                 </Tooltip>
-              ))}
-              {mealItems.map((record) => (
-                <Tooltip key={record.id} title={resolveRecordLabel(record)} arrow>
-                  <Box sx={{ width: '100%' }}>
-                    <Box
-                      component="span"
-                      sx={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        width: '100%',
-                        px: 0.75,
-                        py: 0.25,
-                        borderRadius: 1,
-                        bgcolor: theme.palette.warning.main,
-                        color: theme.palette.warning.contrastText,
-                      }}
-                    >
-                      <Typography
-                        variant="caption"
-                        noWrap
-                        sx={{
-                          width: '100%',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                        }}
-                      >
-                        {resolveRecordLabel(record)}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Tooltip>
-              ))}
+              ) : null}
             </Box>
           );
         })}
       </Box>
+      <Dialog
+        open={Boolean(expandedDay)}
+        onClose={handleCloseExpandedDay}
+        fullWidth
+        maxWidth="xs"
+      >
+        <DialogTitle>
+          {expandedDay ? t('athletes.details.calendar.records.title', { date: expandedDay.label }) : null}
+        </DialogTitle>
+        <DialogContent>
+          <Stack spacing={1} sx={{ py: 1 }}>
+            {expandedDay?.records.map((record) => renderRecordPill(record)) ?? null}
+          </Stack>
+        </DialogContent>
+      </Dialog>
     </Stack>
   );
 }

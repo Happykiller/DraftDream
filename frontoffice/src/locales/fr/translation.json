@@ -410,6 +410,10 @@
           "month": "Mois",
           "week": "Semaine",
           "day": "Jour"
+        },
+        "records": {
+          "title": "Enregistrements du {{date}}",
+          "view_all": "Voir tous les enregistrements ({{count}})"
         }
       },
       "fields": {

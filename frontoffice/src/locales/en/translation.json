@@ -408,6 +408,10 @@
           "month": "Month",
           "week": "Week",
           "day": "Day"
+        },
+        "records": {
+          "title": "Records for {{date}}",
+          "view_all": "View all records ({{count}})"
         }
       },
       "fields": {
