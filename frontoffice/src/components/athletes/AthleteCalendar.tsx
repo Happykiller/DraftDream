@@ -104,6 +104,149 @@ interface ExpandedDay {
   readonly records: CalendarRecordItem[];
 }
 
+interface DayCellProps {
+  readonly day: CalendarDay;
+  readonly view: CalendarView;
+  readonly isToday: boolean;
+  readonly recordItems: CalendarRecordItem[];
+  readonly renderRecordPill: (record: CalendarRecordItem) => React.ReactNode;
+  readonly onExpand: (payload: ExpandedDay) => void;
+  readonly fullDateLabel: string;
+  readonly getHiddenLabel: (count: number) => string;
+}
+
+/** Calendar day cell with overflow-aware record rendering. */
+function DayCell({
+  day,
+  view,
+  isToday,
+  recordItems,
+  renderRecordPill,
+  onExpand,
+  fullDateLabel,
+  getHiddenLabel,
+}: DayCellProps): React.JSX.Element {
+  const theme = useTheme();
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
+  const [cellHeight, setCellHeight] = React.useState<number | null>(null);
+
+  React.useEffect(() => {
+    if (!containerRef.current || typeof ResizeObserver === 'undefined') {
+      return;
+    }
+
+    const observer = new ResizeObserver((entries) => {
+      entries.forEach((entry) => {
+        setCellHeight(entry.contentRect.height);
+      });
+    });
+
+    observer.observe(containerRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  const captionFontSize = React.useMemo(() => {
+    const size = theme.typography.caption.fontSize;
+    const numeric = typeof size === 'number' ? size : Number.parseFloat(size);
+    return Number.isNaN(numeric) ? 12 : numeric * 16;
+  }, [theme.typography.caption.fontSize]);
+
+  const captionLineHeight = React.useMemo(() => {
+    const lineHeight = theme.typography.caption.lineHeight;
+    const numeric = typeof lineHeight === 'number' ? lineHeight : Number.parseFloat(lineHeight ?? '');
+    return Number.isNaN(numeric) ? 1.5 : numeric;
+  }, [theme.typography.caption.lineHeight]);
+
+  const pillPaddingY = React.useMemo(() => Number.parseFloat(theme.spacing(0.25)), [theme]);
+  const cellPaddingY = React.useMemo(() => Number.parseFloat(theme.spacing(1)), [theme]);
+  const gapSize = React.useMemo(() => Number.parseFloat(theme.spacing(0.5)), [theme]);
+
+  const maxVisibleRecords = React.useMemo(() => {
+    if (!cellHeight) {
+      return MAX_VISIBLE_RECORDS;
+    }
+
+    const headerHeight = captionFontSize * captionLineHeight;
+    const pillHeight = captionFontSize * captionLineHeight + pillPaddingY * 2;
+    const availableHeight = Math.max(0, cellHeight - cellPaddingY * 2 - headerHeight - gapSize);
+    return Math.max(0, Math.floor((availableHeight + gapSize) / (pillHeight + gapSize)));
+  }, [captionFontSize, captionLineHeight, cellHeight, cellPaddingY, gapSize, pillPaddingY]);
+
+  const visibleCount = React.useMemo(() => {
+    if (recordItems.length <= maxVisibleRecords) {
+      return maxVisibleRecords;
+    }
+
+    return Math.max(0, maxVisibleRecords - 1);
+  }, [maxVisibleRecords, recordItems.length]);
+
+  const visibleItems = recordItems.slice(0, visibleCount);
+  const hiddenCount = recordItems.length - visibleItems.length;
+  const dayLabel = view === 'day' ? fullDateLabel : day.date.getDate();
+  const isFullHeight = view === 'week';
+
+  return (
+    <Box
+      ref={containerRef}
+      sx={{
+        minHeight: view === 'day' ? 220 : 96,
+        height: isFullHeight ? '100%' : 'auto',
+        borderRadius: 2,
+        border: 1,
+        borderColor: isToday ? 'primary.main' : 'divider',
+        bgcolor: day.isOutsideMonth ? 'action.hover' : 'background.paper',
+        px: 1,
+        py: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 0.5,
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
+        overflow: 'hidden',
+      }}
+    >
+      <Typography
+        variant="caption"
+        sx={{
+          fontWeight: isToday ? 700 : 500,
+          color: day.isOutsideMonth ? 'text.disabled' : 'text.primary',
+        }}
+      >
+        {dayLabel}
+      </Typography>
+      {visibleItems.map((record) => renderRecordPill(record))}
+      {hiddenCount > 0 ? (
+        <Tooltip title={getHiddenLabel(hiddenCount)} arrow>
+          <IconButton
+            size="small"
+            onClick={() =>
+              onExpand({
+                label: fullDateLabel,
+                records: recordItems,
+              })
+            }
+            aria-label={getHiddenLabel(hiddenCount)}
+            sx={{
+              alignSelf: 'flex-start',
+              width: '100%',
+              justifyContent: 'center',
+              borderRadius: 1,
+              border: 1,
+              borderColor: 'divider',
+              bgcolor: 'action.hover',
+            }}
+          >
+            <MoreHoriz fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      ) : null}
+    </Box>
+  );
+}
+
 /** Calendar layout for coach athlete tabs. */
 export function AthleteCalendar({ programRecords, mealRecords }: AthleteCalendarProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
@@ -411,8 +554,6 @@ export function AthleteCalendar({ programRecords, mealRecords }: AthleteCalendar
       >
         {days.map((day) => {
           const isToday = isSameDay(day.date, today);
-          const dayLabel = view === 'day' ? fullDateFormatter.format(day.date) : day.date.getDate();
-          const isFullHeight = view === 'week';
           const dayKey = normalizeDate(day.date).toISOString().slice(0, 10);
           const dailyRecords = recordsByDate.get(dayKey);
           const programItems = dailyRecords?.programs ?? [];
@@ -421,65 +562,23 @@ export function AthleteCalendar({ programRecords, mealRecords }: AthleteCalendar
             ...programItems.map((record) => buildRecordItem(record, 'program')),
             ...mealItems.map((record) => buildRecordItem(record, 'meal')),
           ];
-          const visibleItems = recordItems.slice(0, MAX_VISIBLE_RECORDS);
-          const hiddenCount = recordItems.length - visibleItems.length;
-
+          const fullDateLabel = fullDateFormatter.format(day.date);
           return (
-            <Box
+            <DayCell
               key={day.date.toISOString()}
-              sx={{
-                minHeight: view === 'day' ? 220 : 96,
-                height: isFullHeight ? '100%' : 'auto',
-                borderRadius: 2,
-                border: 1,
-                borderColor: isToday ? 'primary.main' : 'divider',
-                bgcolor: day.isOutsideMonth ? 'action.hover' : 'background.paper',
-                px: 1,
-                py: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 0.5,
-                alignItems: 'flex-start',
-                justifyContent: 'flex-start',
-                overflow: 'hidden',
-              }}
-            >
-              <Typography
-                variant="caption"
-                sx={{
-                  fontWeight: isToday ? 700 : 500,
-                  color: day.isOutsideMonth ? 'text.disabled' : 'text.primary',
-                }}
-              >
-                {dayLabel}
-              </Typography>
-              {visibleItems.map((record) => renderRecordPill(record))}
-              {hiddenCount > 0 ? (
-                <Tooltip title={t('athletes.details.calendar.records.view_all', { count: hiddenCount })} arrow>
-                  <IconButton
-                    size="small"
-                    onClick={() =>
-                      setExpandedDay({
-                        label: fullDateFormatter.format(day.date),
-                        records: recordItems,
-                      })
-                    }
-                    aria-label={t('athletes.details.calendar.records.view_all', { count: hiddenCount })}
-                    sx={{
-                      alignSelf: 'flex-start',
-                      width: '100%',
-                      justifyContent: 'center',
-                      borderRadius: 1,
-                      border: 1,
-                      borderColor: 'divider',
-                      bgcolor: 'action.hover',
-                    }}
-                  >
-                    <MoreHoriz fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              ) : null}
-            </Box>
+              day={day}
+              view={view}
+              isToday={isToday}
+              recordItems={recordItems}
+              renderRecordPill={renderRecordPill}
+              onExpand={setExpandedDay}
+              fullDateLabel={fullDateLabel}
+              getHiddenLabel={(count) =>
+                t('athletes.details.calendar.records.view_all', {
+                  count,
+                })
+              }
+            />
           );
         })}
       </Box>
