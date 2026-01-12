@@ -9,7 +9,9 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Typography,
+  useMediaQuery,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 const CALENDAR_VIEWS = ['month', 'week', 'day'] as const;
 
@@ -82,9 +84,31 @@ function buildWeekDays(currentDate: Date): CalendarDay[] {
 /** Calendar layout for coach athlete tabs. */
 export function AthleteCalendar(): React.JSX.Element {
   const { t, i18n } = useTranslation();
+  const theme = useTheme();
+  const isXs = useMediaQuery(theme.breakpoints.only('xs'));
+  const isXlUp = useMediaQuery(theme.breakpoints.up('xl'));
+  const isBelowXl = useMediaQuery(theme.breakpoints.down('xl'));
   const [view, setView] = React.useState<CalendarView>('month');
   const [currentDate, setCurrentDate] = React.useState(() => normalizeDate(new Date()));
   const today = React.useMemo(() => normalizeDate(new Date()), []);
+
+  const responsiveView = React.useMemo<CalendarView>(() => {
+    if (isXs) {
+      return 'day';
+    }
+
+    if (isXlUp) {
+      return 'month';
+    }
+
+    return 'week';
+  }, [isXs, isXlUp]);
+
+  React.useEffect(() => {
+    if (isBelowXl || isXlUp) {
+      setView(responsiveView);
+    }
+  }, [isBelowXl, isXlUp, responsiveView]);
 
   const weekDayFormatter = React.useMemo(
     () => new Intl.DateTimeFormat(i18n.language, { weekday: 'short' }),
