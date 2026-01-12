@@ -273,6 +273,18 @@ export function AthleteCalendar({ programRecords, mealRecords }: AthleteCalendar
   const [expandedDay, setExpandedDay] = React.useState<ExpandedDay | null>(null);
   const today = React.useMemo(() => normalizeDate(new Date()), []);
 
+  const captionFontSize = React.useMemo(() => {
+    const size = theme.typography.caption.fontSize;
+    const numeric = typeof size === 'number' ? size : Number.parseFloat(size);
+    return Number.isNaN(numeric) ? 12 : numeric * 16;
+  }, [theme.typography.caption.fontSize]);
+
+  const captionLineHeight = React.useMemo(() => {
+    const lineHeight = theme.typography.caption.lineHeight;
+    const numeric = typeof lineHeight === 'number' ? lineHeight : Number.parseFloat(lineHeight ?? '');
+    return Number.isNaN(numeric) ? 1.5 : numeric;
+  }, [theme.typography.caption.lineHeight]);
+
   const recordsByDate = React.useMemo(() => {
     const grouped = new Map<string, { programs: ProgramRecord[]; meals: MealRecord[] }>();
 
