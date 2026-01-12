@@ -1,6 +1,41 @@
 {
   "releases": [
     {
+      "version": "0.12.0",
+      "title": "Vue Calendrier & Analyse de l'Effort",
+      "date": "2026-01-12",
+      "global": [
+        "Introduction d’un calendrier central pour visualiser l’activité réelle (séances et repas).",
+        "Notation de l'Effort (RPE) : les athlètes peuvent noter la difficulté de leurs séances.",
+        "Accès sécurisé pour les coachs aux détails d'exécution (Program Records).",
+        "Amélioration de la fiabilité des données : suppression définitive et slugs lisibles."
+      ],
+      "notes": "La version 0.12.0 marque une montée en maturité très nette de FitDesk autour du suivi réel de l’activité des athlètes. Elle transforme la plateforme de la planification vers le suivi opérationnel et l’analyse terrain, avec un calendrier central et une analyse qualitative (RPE) de l'effort.",
+      "projects": {
+        "/api": [
+          "Clarification des règles d’accès aux enregistrements d’activité (programmes, repas, séances).",
+          "Distinction claire entre les données athlète, coach et protégées.",
+          "Introduction de la suppression définitive (hard delete) pour nettoyer les données.",
+          "Amélioration de la génération des identifiants lisibles (slugs)."
+        ],
+        "/backoffice": [
+          "Onglet Calendrier par Athlète pour l'analyse de l'assiduité.",
+          "Consultation enrichie des programmes réalisés (Program Records).",
+          "Visualisation des notes de difficulté (RPE) et commentaires.",
+          "Interfaces plus claires pour l'analyse des données remontées."
+        ],
+        "/frontoffice": [
+          "Nouveau calendrier d’activité avec vue adaptative et badges lisibles.",
+          "Notation de l'Effort (RPE) : Facile, Modéré, Extrême.",
+          "Cartes de séances cliquables avec accès aux détails d'exécution.",
+          "Navigation fluide entre jours et mois avec gestion des débordements."
+        ],
+        "/showcase": [
+          "Mise à jour des notes de version 0.12.0 avec les fonctionnalités de calendrier et RPE."
+        ]
+      }
+    },
+    {
       "version": "0.11.0",
       "title": "Suivi d'Exécution & Performance Athlète",
       "date": "2026-01-04",

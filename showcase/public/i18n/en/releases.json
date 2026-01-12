@@ -1,6 +1,41 @@
 {
   "releases": [
     {
+      "version": "0.12.0",
+      "title": "Calendar View & Effort Analysis",
+      "date": "2026-01-12",
+      "global": [
+        "Introduction of a central calendar to visualize actual activity (sessions and meals).",
+        "Rate of Perceived Exertion (RPE): athletes can rate the difficulty of their sessions.",
+        "Secure access for coaches to execution details (Program Records).",
+        "Improved data reliability: hard delete and readable slugs."
+      ],
+      "notes": "Version 0.12.0 marks a significant maturity step for FitDesk focused on real athlete activity tracking. It transforms the platform from a planning tool to an operational monitoring tool, featuring a central calendar and qualitative effort analysis (RPE).",
+      "projects": {
+        "/api": [
+          "Strengthened access rules: only the athlete and their coach can view sensitive data.",
+          "Introduction of Hard Delete to clean up obsolete data.",
+          "Improved slug generation for better consistency.",
+          "Enhanced security for activity record access."
+        ],
+        "/backoffice": [
+          "New Calendar tab per Athlete for 360° supervision.",
+          "Detailed session analysis (Program Records) with actual loads and feedback.",
+          "Visualization of difficulty ratings (RPE) and comments.",
+          "Redesigned interfaces to display Satisfaction, Difficulty, and Duration."
+        ],
+        "/frontoffice": [
+          "Personal Calendar view with visual badges for each activity.",
+          "RPE input (Easy, Moderate, Extreme) upon session validation.",
+          "Clickable session cards detailing actual execution.",
+          "Fluid navigation between days and months with overflow management."
+        ],
+        "/showcase": [
+          "Updated release notes for 0.12.0 featuring new calendar and RPE capabilities."
+        ]
+      }
+    },
+    {
       "version": "0.11.0",
       "title": "Execution Tracking & Athlete Performance",
       "date": "2026-01-04",
