@@ -8,6 +8,7 @@ import {
   Stack,
   ToggleButton,
   ToggleButtonGroup,
+  Tooltip,
   Typography,
   useMediaQuery,
 } from '@mui/material';
@@ -375,34 +376,74 @@ export function AthleteCalendar({ programRecords, mealRecords }: AthleteCalendar
                 {dayLabel}
               </Typography>
               {programItems.map((record) => (
-                <Typography
-                  key={record.id}
-                  variant="caption"
-                  noWrap
-                  sx={{
-                    width: '100%',
-                    color: theme.palette.success.main,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                >
-                  {resolveRecordLabel(record)}
-                </Typography>
+                <Tooltip key={record.id} title={resolveRecordLabel(record)} arrow>
+                  <Box
+                    sx={{
+                      maxWidth: '100%',
+                    }}
+                  >
+                    <Box
+                      component="span"
+                      sx={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        width: '100%',
+                        px: 0.75,
+                        py: 0.25,
+                        borderRadius: 999,
+                        bgcolor: theme.palette.success.main,
+                        color: theme.palette.success.contrastText,
+                      }}
+                    >
+                      <Typography
+                        variant="caption"
+                        noWrap
+                        sx={{
+                          width: '100%',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}
+                      >
+                        {resolveRecordLabel(record)}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Tooltip>
               ))}
               {mealItems.map((record) => (
-                <Typography
-                  key={record.id}
-                  variant="caption"
-                  noWrap
-                  sx={{
-                    width: '100%',
-                    color: theme.palette.warning.main,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                >
-                  {resolveRecordLabel(record)}
-                </Typography>
+                <Tooltip key={record.id} title={resolveRecordLabel(record)} arrow>
+                  <Box
+                    sx={{
+                      maxWidth: '100%',
+                    }}
+                  >
+                    <Box
+                      component="span"
+                      sx={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        width: '100%',
+                        px: 0.75,
+                        py: 0.25,
+                        borderRadius: 999,
+                        bgcolor: theme.palette.warning.main,
+                        color: theme.palette.warning.contrastText,
+                      }}
+                    >
+                      <Typography
+                        variant="caption"
+                        noWrap
+                        sx={{
+                          width: '100%',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}
+                      >
+                        {resolveRecordLabel(record)}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Tooltip>
               ))}
             </Box>
           );
