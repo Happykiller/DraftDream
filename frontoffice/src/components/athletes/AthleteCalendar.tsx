@@ -91,6 +91,8 @@ function buildWeekDays(currentDate: Date): CalendarDay[] {
 interface AthleteCalendarProps {
   readonly programRecords: ProgramRecord[];
   readonly mealRecords: MealRecord[];
+  readonly onProgramRecordClick: (recordId: string) => void;
+  readonly onMealRecordClick: (recordId: string) => void;
 }
 
 interface CalendarRecordItem {
@@ -109,8 +111,12 @@ interface DayCellProps {
   readonly view: CalendarView;
   readonly isToday: boolean;
   readonly recordItems: CalendarRecordItem[];
-  readonly renderRecordPill: (record: CalendarRecordItem) => React.ReactNode;
+  readonly renderRecordPill: (
+    record: CalendarRecordItem,
+    onRecordClick: (record: CalendarRecordItem) => void,
+  ) => React.ReactNode;
   readonly onExpand: (payload: ExpandedDay) => void;
+  readonly onRecordClick: (record: CalendarRecordItem) => void;
   readonly fullDateLabel: string;
   readonly getHiddenLabel: (count: number) => string;
   readonly pillHeight: number;
@@ -124,6 +130,7 @@ function DayCell({
   recordItems,
   renderRecordPill,
   onExpand,
+  onRecordClick,
   fullDateLabel,
   getHiddenLabel,
   pillHeight,
@@ -217,7 +224,7 @@ function DayCell({
       >
         {dayLabel}
       </Typography>
-      {visibleItems.map((record) => renderRecordPill(record))}
+      {visibleItems.map((record) => renderRecordPill(record, onRecordClick))}
       {hiddenCount > 0 ? (
         <Tooltip title={getHiddenLabel(hiddenCount)} arrow>
           <Box
@@ -262,7 +269,12 @@ function DayCell({
 }
 
 /** Calendar layout for coach athlete tabs. */
-export function AthleteCalendar({ programRecords, mealRecords }: AthleteCalendarProps): React.JSX.Element {
+export function AthleteCalendar({
+  programRecords,
+  mealRecords,
+  onProgramRecordClick,
+  onMealRecordClick,
+}: AthleteCalendarProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
   const isXs = useMediaQuery(theme.breakpoints.only('xs'));
@@ -463,14 +475,25 @@ export function AthleteCalendar({ programRecords, mealRecords }: AthleteCalendar
 
   /** Render a full-width pill that keeps the record label on a single line. */
   const renderRecordPill = React.useCallback(
-    (record: CalendarRecordItem) => {
+    (record: CalendarRecordItem, onRecordClick: (record: CalendarRecordItem) => void) => {
       const isProgram = record.type === 'program';
       const backgroundColor = isProgram ? theme.palette.success.main : theme.palette.warning.main;
       const textColor = isProgram ? theme.palette.success.contrastText : theme.palette.warning.contrastText;
 
       return (
         <Tooltip key={record.id} title={record.label} arrow>
-          <Box sx={{ width: '100%' }}>
+          <Box
+            role="button"
+            tabIndex={0}
+            onClick={() => onRecordClick(record)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                onRecordClick(record);
+              }
+            }}
+            sx={{ width: '100%', cursor: 'pointer' }}
+          >
             <Box
               component="span"
               sx={{
@@ -517,6 +540,18 @@ export function AthleteCalendar({ programRecords, mealRecords }: AthleteCalendar
 
     return weekDayLabels;
   }, [currentDate, fullDateFormatter, view, weekDayLabels]);
+
+  const handleRecordClick = React.useCallback(
+    (record: CalendarRecordItem) => {
+      if (record.type === 'program') {
+        onProgramRecordClick(record.id);
+        return;
+      }
+
+      onMealRecordClick(record.id);
+    },
+    [onMealRecordClick, onProgramRecordClick],
+  );
 
   return (
     <Stack
@@ -611,6 +646,7 @@ export function AthleteCalendar({ programRecords, mealRecords }: AthleteCalendar
               recordItems={recordItems}
               renderRecordPill={renderRecordPill}
               onExpand={setExpandedDay}
+              onRecordClick={handleRecordClick}
               fullDateLabel={fullDateLabel}
               getHiddenLabel={(count) =>
                 t('athletes.details.calendar.records.view_all', {
@@ -633,7 +669,7 @@ export function AthleteCalendar({ programRecords, mealRecords }: AthleteCalendar
         </DialogTitle>
         <DialogContent>
           <Stack spacing={1} sx={{ py: 1 }}>
-            {expandedDay?.records.map((record) => renderRecordPill(record)) ?? null}
+            {expandedDay?.records.map((record) => renderRecordPill(record, handleRecordClick)) ?? null}
           </Stack>
         </DialogContent>
       </Dialog>
