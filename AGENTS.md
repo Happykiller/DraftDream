@@ -56,7 +56,7 @@ This document captures how the `fitdesk-devops` agent should operate the DraftDr
 
 ## Data visibility and lifecycle rules
 - Visibility modes are limited to `public` and `private`; the deprecated `hybrid` mode must not be reintroduced.
-- Use cases own all authorization and confidentiality decisions; GraphQL layers only forward parameters and the user session.
+- Use cases own business authorization rules (ownership, visibility, assignments). Pure role-based access control (no additional business rules) must live in the GraphQL layer via `@Auth`, not in use cases.
 - Business rules to apply consistently across entities:
   - **Create**: allowed for all authenticated roles. Admins may choose public or private; coaches and front-office flows must persist content as private.
   - **Read / Get**: callable by all roles.
