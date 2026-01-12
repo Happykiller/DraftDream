@@ -113,6 +113,7 @@ interface DayCellProps {
   readonly onExpand: (payload: ExpandedDay) => void;
   readonly fullDateLabel: string;
   readonly getHiddenLabel: (count: number) => string;
+  readonly pillHeight: number;
 }
 
 /** Calendar day cell with overflow-aware record rendering. */
@@ -125,6 +126,7 @@ function DayCell({
   onExpand,
   fullDateLabel,
   getHiddenLabel,
+  pillHeight,
 }: DayCellProps): React.JSX.Element {
   const theme = useTheme();
   const containerRef = React.useRef<HTMLDivElement | null>(null);
@@ -160,7 +162,6 @@ function DayCell({
     return Number.isNaN(numeric) ? 1.5 : numeric;
   }, [theme.typography.caption.lineHeight]);
 
-  const pillPaddingY = React.useMemo(() => Number.parseFloat(theme.spacing(0.25)), [theme]);
   const cellPaddingY = React.useMemo(() => Number.parseFloat(theme.spacing(1)), [theme]);
   const gapSize = React.useMemo(() => Number.parseFloat(theme.spacing(0.5)), [theme]);
 
@@ -170,10 +171,9 @@ function DayCell({
     }
 
     const headerHeight = captionFontSize * captionLineHeight;
-    const pillHeight = captionFontSize * captionLineHeight + pillPaddingY * 2;
     const availableHeight = Math.max(0, cellHeight - cellPaddingY * 2 - headerHeight - gapSize);
     return Math.max(0, Math.floor((availableHeight + gapSize) / (pillHeight + gapSize)));
-  }, [captionFontSize, captionLineHeight, cellHeight, cellPaddingY, gapSize, pillPaddingY]);
+  }, [captionFontSize, captionLineHeight, cellHeight, cellPaddingY, gapSize, pillHeight]);
 
   const visibleCount = React.useMemo(() => {
     if (recordItems.length <= maxVisibleRecords) {
@@ -220,27 +220,41 @@ function DayCell({
       {visibleItems.map((record) => renderRecordPill(record))}
       {hiddenCount > 0 ? (
         <Tooltip title={getHiddenLabel(hiddenCount)} arrow>
-          <IconButton
-            size="small"
+          <Box
+            role="button"
+            tabIndex={0}
             onClick={() =>
               onExpand({
                 label: fullDateLabel,
                 records: recordItems,
               })
             }
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                onExpand({
+                  label: fullDateLabel,
+                  records: recordItems,
+                });
+              }
+            }}
             aria-label={getHiddenLabel(hiddenCount)}
             sx={{
-              alignSelf: 'flex-start',
-              width: '100%',
+              display: 'inline-flex',
+              alignItems: 'center',
               justifyContent: 'center',
+              width: '100%',
+              height: pillHeight,
+              px: 0.75,
               borderRadius: 1,
               border: 1,
               borderColor: 'divider',
               bgcolor: 'action.hover',
+              cursor: 'pointer',
             }}
           >
             <MoreHoriz fontSize="small" />
-          </IconButton>
+          </Box>
         </Tooltip>
       ) : null}
     </Box>
@@ -429,6 +443,12 @@ export function AthleteCalendar({ programRecords, mealRecords }: AthleteCalendar
     setExpandedDay(null);
   }, []);
 
+  const pillPaddingY = React.useMemo(() => Number.parseFloat(theme.spacing(0.25)), [theme]);
+  const pillHeight = React.useMemo(
+    () => captionFontSize * captionLineHeight + pillPaddingY * 2,
+    [captionFontSize, captionLineHeight, pillPaddingY],
+  );
+
   /** Render a full-width pill that keeps the record label on a single line. */
   const renderRecordPill = React.useCallback(
     (record: CalendarRecordItem) => {
@@ -445,6 +465,7 @@ export function AthleteCalendar({ programRecords, mealRecords }: AthleteCalendar
                 display: 'inline-flex',
                 alignItems: 'center',
                 width: '100%',
+                height: pillHeight,
                 px: 0.75,
                 py: 0.25,
                 borderRadius: 1,
@@ -468,7 +489,13 @@ export function AthleteCalendar({ programRecords, mealRecords }: AthleteCalendar
         </Tooltip>
       );
     },
-    [theme.palette.success.contrastText, theme.palette.success.main, theme.palette.warning.contrastText, theme.palette.warning.main],
+    [
+      pillHeight,
+      theme.palette.success.contrastText,
+      theme.palette.success.main,
+      theme.palette.warning.contrastText,
+      theme.palette.warning.main,
+    ],
   );
 
   const headerLabels = React.useMemo(() => {
@@ -578,6 +605,7 @@ export function AthleteCalendar({ programRecords, mealRecords }: AthleteCalendar
                   count,
                 })
               }
+              pillHeight={pillHeight}
             />
           );
         })}
