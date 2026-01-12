@@ -377,11 +377,7 @@ export function AthleteCalendar({ programRecords, mealRecords }: AthleteCalendar
               </Typography>
               {programItems.map((record) => (
                 <Tooltip key={record.id} title={resolveRecordLabel(record)} arrow>
-                  <Box
-                    sx={{
-                      maxWidth: '100%',
-                    }}
-                  >
+                  <Box sx={{ width: '100%' }}>
                     <Box
                       component="span"
                       sx={{
@@ -390,7 +386,7 @@ export function AthleteCalendar({ programRecords, mealRecords }: AthleteCalendar
                         width: '100%',
                         px: 0.75,
                         py: 0.25,
-                        borderRadius: 999,
+                        borderRadius: 1,
                         bgcolor: theme.palette.success.main,
                         color: theme.palette.success.contrastText,
                       }}
@@ -412,11 +408,7 @@ export function AthleteCalendar({ programRecords, mealRecords }: AthleteCalendar
               ))}
               {mealItems.map((record) => (
                 <Tooltip key={record.id} title={resolveRecordLabel(record)} arrow>
-                  <Box
-                    sx={{
-                      maxWidth: '100%',
-                    }}
-                  >
+                  <Box sx={{ width: '100%' }}>
                     <Box
                       component="span"
                       sx={{
@@ -425,7 +417,7 @@ export function AthleteCalendar({ programRecords, mealRecords }: AthleteCalendar
                         width: '100%',
                         px: 0.75,
                         py: 0.25,
-                        borderRadius: 999,
+                        borderRadius: 1,
                         bgcolor: theme.palette.warning.main,
                         color: theme.palette.warning.contrastText,
                       }}
