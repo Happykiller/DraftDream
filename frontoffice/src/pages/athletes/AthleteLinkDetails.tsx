@@ -644,7 +644,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
                   </TabPanel>
 
                   <TabPanel value="calendar" currentTab={currentTab}>
-                    {link ? <AthleteCalendar /> : null}
+                    {link ? <AthleteCalendar programRecords={programRecords} mealRecords={mealRecords} /> : null}
                   </TabPanel>
 
                   <TabPanel value="programs" currentTab={currentTab}>

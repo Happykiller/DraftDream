@@ -12,6 +12,8 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import type { MealRecord } from '@hooks/nutrition/useMealRecords';
+import type { ProgramRecord } from '@hooks/program-records/useProgramRecords';
 
 const CALENDAR_VIEWS = ['month', 'week', 'day'] as const;
 
@@ -81,8 +83,13 @@ function buildWeekDays(currentDate: Date): CalendarDay[] {
   });
 }
 
+interface AthleteCalendarProps {
+  readonly programRecords: ProgramRecord[];
+  readonly mealRecords: MealRecord[];
+}
+
 /** Calendar layout for coach athlete tabs. */
-export function AthleteCalendar(): React.JSX.Element {
+export function AthleteCalendar({ programRecords, mealRecords }: AthleteCalendarProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
   const isXs = useMediaQuery(theme.breakpoints.only('xs'));
@@ -91,6 +98,33 @@ export function AthleteCalendar(): React.JSX.Element {
   const [view, setView] = React.useState<CalendarView>('month');
   const [currentDate, setCurrentDate] = React.useState(() => normalizeDate(new Date()));
   const today = React.useMemo(() => normalizeDate(new Date()), []);
+
+  const recordsByDate = React.useMemo(() => {
+    const grouped = new Map<string, { programs: ProgramRecord[]; meals: MealRecord[] }>();
+
+    const pushRecord = <T extends ProgramRecord | MealRecord>(
+      dateLabel: string,
+      key: 'programs' | 'meals',
+      record: T,
+    ) => {
+      if (!grouped.has(dateLabel)) {
+        grouped.set(dateLabel, { programs: [], meals: [] });
+      }
+      grouped.get(dateLabel)?.[key].push(record);
+    };
+
+    programRecords.forEach((record) => {
+      const dateLabel = normalizeDate(new Date(record.createdAt)).toISOString().slice(0, 10);
+      pushRecord(dateLabel, 'programs', record);
+    });
+
+    mealRecords.forEach((record) => {
+      const dateLabel = normalizeDate(new Date(record.createdAt)).toISOString().slice(0, 10);
+      pushRecord(dateLabel, 'meals', record);
+    });
+
+    return grouped;
+  }, [mealRecords, programRecords]);
 
   const responsiveView = React.useMemo<CalendarView>(() => {
     if (isXs) {
@@ -214,6 +248,14 @@ export function AthleteCalendar(): React.JSX.Element {
 
   const columns = view === 'day' ? 1 : DAY_HEADERS;
 
+  const resolveRecordLabel = React.useCallback((record: ProgramRecord | MealRecord) => {
+    if ('sessionSnapshot' in record) {
+      return record.sessionSnapshot?.label ?? t('athletes.details.tabs.sessions');
+    }
+
+    return record.mealSnapshot?.label ?? record.mealPlanSnapshot?.label ?? t('athletes.details.tabs.meal_records');
+  }, [t]);
+
   const headerLabels = React.useMemo(() => {
     if (view === 'day') {
       return [fullDateFormatter.format(currentDate)];
@@ -299,6 +341,10 @@ export function AthleteCalendar(): React.JSX.Element {
           const isToday = isSameDay(day.date, today);
           const dayLabel = view === 'day' ? fullDateFormatter.format(day.date) : day.date.getDate();
           const isFullHeight = view === 'week';
+          const dayKey = normalizeDate(day.date).toISOString().slice(0, 10);
+          const dailyRecords = recordsByDate.get(dayKey);
+          const programItems = dailyRecords?.programs ?? [];
+          const mealItems = dailyRecords?.meals ?? [];
 
           return (
             <Box
@@ -313,6 +359,8 @@ export function AthleteCalendar(): React.JSX.Element {
                 px: 1,
                 py: 1,
                 display: 'flex',
+                flexDirection: 'column',
+                gap: 0.5,
                 alignItems: 'flex-start',
                 justifyContent: 'flex-start',
               }}
@@ -326,6 +374,36 @@ export function AthleteCalendar(): React.JSX.Element {
               >
                 {dayLabel}
               </Typography>
+              {programItems.map((record) => (
+                <Typography
+                  key={record.id}
+                  variant="caption"
+                  noWrap
+                  sx={{
+                    width: '100%',
+                    color: theme.palette.success.main,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
+                  {resolveRecordLabel(record)}
+                </Typography>
+              ))}
+              {mealItems.map((record) => (
+                <Typography
+                  key={record.id}
+                  variant="caption"
+                  noWrap
+                  sx={{
+                    width: '100%',
+                    color: theme.palette.warning.main,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
+                  {resolveRecordLabel(record)}
+                </Typography>
+              ))}
             </Box>
           );
         })}
