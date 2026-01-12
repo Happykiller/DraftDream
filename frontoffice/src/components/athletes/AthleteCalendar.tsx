@@ -19,9 +19,9 @@ import { useTheme } from '@mui/material/styles';
 import type { MealRecord } from '@hooks/nutrition/useMealRecords';
 import type { ProgramRecord } from '@hooks/program-records/useProgramRecords';
 
-const CALENDAR_VIEWS = ['month', 'week', 'day'] as const;
+const _CALENDAR_VIEWS = ['month', 'week', 'day'] as const;
 
-type CalendarView = (typeof CALENDAR_VIEWS)[number];
+type CalendarView = (typeof _CALENDAR_VIEWS)[number];
 
 interface CalendarDay {
   readonly date: Date;
@@ -159,7 +159,7 @@ function DayCell({
 
   const captionFontSize = React.useMemo(() => {
     const size = theme.typography.caption.fontSize;
-    const numeric = typeof size === 'number' ? size : Number.parseFloat(size);
+    const numeric = typeof size === 'number' ? size : Number.parseFloat(size ?? '0');
     return Number.isNaN(numeric) ? 12 : numeric * 16;
   }, [theme.typography.caption.fontSize]);
 
@@ -287,7 +287,7 @@ export function AthleteCalendar({
 
   const captionFontSize = React.useMemo(() => {
     const size = theme.typography.caption.fontSize;
-    const numeric = typeof size === 'number' ? size : Number.parseFloat(size);
+    const numeric = typeof size === 'number' ? size : Number.parseFloat(size ?? '0');
     return Number.isNaN(numeric) ? 12 : numeric * 16;
   }, [theme.typography.caption.fontSize]);
 
@@ -300,25 +300,20 @@ export function AthleteCalendar({
   const recordsByDate = React.useMemo(() => {
     const grouped = new Map<string, { programs: ProgramRecord[]; meals: MealRecord[] }>();
 
-    const pushRecord = <T extends ProgramRecord | MealRecord>(
-      dateLabel: string,
-      key: 'programs' | 'meals',
-      record: T,
-    ) => {
+    programRecords.forEach((record) => {
+      const dateLabel = normalizeDate(new Date(record.createdAt)).toISOString().slice(0, 10);
       if (!grouped.has(dateLabel)) {
         grouped.set(dateLabel, { programs: [], meals: [] });
       }
-      grouped.get(dateLabel)?.[key].push(record);
-    };
-
-    programRecords.forEach((record) => {
-      const dateLabel = normalizeDate(new Date(record.createdAt)).toISOString().slice(0, 10);
-      pushRecord(dateLabel, 'programs', record);
+      grouped.get(dateLabel)?.programs.push(record);
     });
 
     mealRecords.forEach((record) => {
       const dateLabel = normalizeDate(new Date(record.createdAt)).toISOString().slice(0, 10);
-      pushRecord(dateLabel, 'meals', record);
+      if (!grouped.has(dateLabel)) {
+        grouped.set(dateLabel, { programs: [], meals: [] });
+      }
+      grouped.get(dateLabel)?.meals.push(record);
     });
 
     return grouped;
@@ -451,7 +446,8 @@ export function AthleteCalendar({
       return record.sessionSnapshot?.label ?? t('athletes.details.tabs.sessions');
     }
 
-    return record.mealSnapshot?.label ?? record.mealPlanSnapshot?.label ?? t('athletes.details.tabs.meal_records');
+    const mealRecord = record as MealRecord;
+    return mealRecord.mealSnapshot?.label ?? mealRecord.mealPlanSnapshot?.label ?? t('athletes.details.tabs.meal_records');
   }, [t]);
 
   const buildRecordItem = React.useCallback(

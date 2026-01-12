@@ -26,7 +26,7 @@ The tag management feature provides a system for organizing content across the p
 ```
 
 **Then** the system should:
-1. Generate slug from label: `hiit`
+
 2. Create the tag in database
 3. Set creation timestamps
 4. Return the created tag
@@ -36,7 +36,7 @@ The tag management feature provides a system for organizing content across the p
 {
   "id": "<TAG_ID>",
   "label": "HIIT",
-  "slug": "hiit",
+
   "locale": "en",
   "visibility": "PUBLIC",
   "createdAt": "<TIMESTAMP>",
@@ -46,37 +46,7 @@ The tag management feature provides a system for organizing content across the p
 
 ---
 
-## Scenario: Create tag with auto-generated slug
 
-**Given** a coach creates a tag with label "Perte de Poids"
-
-**When** the system processes the creation
-
-**Then** the slug should be generated as: `perte-de-poids`
-
-**And** special characters and accents should be handled properly
-
-**And** spaces should be converted to hyphens
-
----
-
-## Scenario: Tag slug uniqueness per locale
-
-**Given** a tag exists with:
-  - Slug: `cardio`
-  - Locale: `en`
-
-**When** a user creates a tag with:
-  - Label: "Cardio" (generates slug `cardio`)
-  - Locale: `fr`
-
-**Then** the creation should succeed
-
-**And** both tags should exist (different locales)
-
-**But** if locale is also `en`, creation should fail or return null
-
----
 
 ## Scenario: Retrieve a tag by ID
 
@@ -131,7 +101,7 @@ The tag management feature provides a system for organizing content across the p
 ```
 
 **Then** the system should:
-1. Regenerate slug: `beginner-friendly`
+
 2. Update `updatedAt` timestamp
 3. Keep other fields unchanged
 4. Return updated tag
@@ -154,20 +124,16 @@ The tag management feature provides a system for organizing content across the p
 
 ### Tag Structure
 - **Label**: Display name (required)
-- **Slug**: URL-friendly identifier (auto-generated)
+
 - **Locale**: Language code (en, fr, etc.)
 - **Visibility**: Controls tag visibility (PUBLIC, PRIVATE)
 
-### Slug Generation
-- Auto-generated from label using `buildSlug()` utility
-- Handles accents, special characters, spaces
-- Fallback slug is `tag` if label is empty
-- Must be unique per locale
+
 
 ### Localization
 - Tags are locale-specific
 - Same concept can have tags in multiple languages
-- Slug uniqueness enforced per locale
+
 - Enables multilingual tagging
 
 ---
@@ -177,8 +143,7 @@ The tag management feature provides a system for organizing content across the p
 ### Create Tag
 - **Use Case**: `CreateTagUsecase`
 - **Authorization**: COACH, ADMIN
-- **Auto-generation**: Slug from label
-- **Validation**: Uniqueness per locale
+
 
 ### Get Tag
 - **Use Case**: `GetTagUsecase`
@@ -194,7 +159,7 @@ The tag management feature provides a system for organizing content across the p
 ### Update Tag
 - **Use Case**: `UpdateTagUsecase`
 - **Authorization**: Creator COACH, ADMIN
-- **Slug Update**: Re-generated if label changes
+
 - **Returns**: Updated tag
 
 ### Delete Tag
@@ -211,7 +176,7 @@ mutation TagCreate($input: CreateTagInput!) {
   tag_create(input: $input) {
     id
     label
-    slug
+
     locale
     visibility
   }
@@ -225,7 +190,7 @@ query TagList($locale: String, $visibility: Visibility) {
     items {
         id
         label
-        slug
+
         visibility
     }
   }
@@ -240,4 +205,4 @@ query TagList($locale: String, $visibility: Visibility) {
 - `UPDATE_TAG_USECASE` - Failed to update tag
 - `DELETE_TAG_USECASE` - Failed to delete tag
 - `TAG_NOT_FOUND` - Tag does not exist  
-- `DUPLICATE_TAG_SLUG` - Slug/locale combination already exists
+

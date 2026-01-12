@@ -49,7 +49,7 @@ export function AthleteProgramsWidget(): React.JSX.Element {
         };
         fetchRecords();
         return () => { mounted = false; };
-    }, [listRecords]);
+    }, [listRecords, runTask]);
 
     const handlePlayOrResume = React.useCallback(async (e: React.MouseEvent, programId: string, sessionId: string) => {
         e.stopPropagation(); // Prevent card navigation
@@ -69,7 +69,7 @@ export function AthleteProgramsWidget(): React.JSX.Element {
                 // Error handled in hook/task
             }
         }
-    }, [createRecord, navigate, activeRecords]);
+    }, [createRecord, navigate, activeRecords, runTask]);
 
     const loading = programsLoading || recordsLoading;
 

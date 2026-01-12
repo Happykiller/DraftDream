@@ -2,15 +2,15 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-  Box,
-  CircularProgress,
-  Card,
-  CardContent,
-  Rating,
-  Stack,
-  Tooltip,
-  TextField,
-  Typography,
+    Box,
+    CircularProgress,
+    Card,
+    CardContent,
+    Rating,
+    Stack,
+    Tooltip,
+    TextField,
+    Typography,
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
@@ -49,9 +49,7 @@ export function MealRecordDetails(): React.JSX.Element {
     const { recordId } = useParams<{ recordId: string }>();
     const role = session((state) => state.role);
 
-    if (role && role !== UserType.Athlete) {
-        return <MealRecordDetailsCoach />;
-    }
+
     const theme = useTheme();
     const headerBackground = React.useMemo(
         () => alpha(theme.palette.warning.main, 0.12),
@@ -199,6 +197,11 @@ export function MealRecordDetails(): React.JSX.Element {
     const handleRatingChange = (_event: React.SyntheticEvent, value: number | null) => {
         setSatisfactionRating(value);
     };
+
+    // Render coach view if needed, but only after all hooks have run
+    if (role && role !== UserType.Athlete) {
+        return <MealRecordDetailsCoach />;
+    }
 
     if (loading) {
         return (

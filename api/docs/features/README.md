@@ -49,7 +49,7 @@ Training program creation and organization
 - Multi-session programs
 - Localization support
 - Difficulty levels
-- Slug auto-generation
+- Difficulty levels
 - Program duration and structure
 
 #### [Program Record Management](./program-record-management.md)
@@ -229,12 +229,7 @@ User (ADMIN, COACH, ATHLETE)
 
 ## Common Patterns
 
-### Slug Generation
-Most entities auto-generate a URL-friendly slug:
-- From the `label` field
-- Lowercase with hyphens
-- Fallback to entity type if label is empty
-- Must be unique per locale
+
 
 ### Localization
 Content supports multiple languages:

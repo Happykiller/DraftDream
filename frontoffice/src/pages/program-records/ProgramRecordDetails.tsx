@@ -38,9 +38,7 @@ export function ProgramRecordDetails(): React.JSX.Element {
     const { recordId } = useParams<{ recordId: string }>();
     const role = session((state) => state.role);
 
-    if (role && role !== UserType.Athlete) {
-        return <ProgramRecordDetailsCoach />;
-    }
+
 
     const { get: getRecord, updateState } = useProgramRecords();
     const [record, setRecord] = React.useState<ProgramRecord | null>(null);
@@ -250,7 +248,7 @@ export function ProgramRecordDetails(): React.JSX.Element {
     );
 
     const sessionSnapshot = record?.sessionSnapshot ?? null;
-    const recordDataExercises = recordData?.exercises ?? [];
+    const recordDataExercises = React.useMemo(() => recordData?.exercises ?? [], [recordData?.exercises]);
     const { donePercentage, completedExercisesCount, totalExercisesCount } = React.useMemo(() => {
         const allSets = recordDataExercises.flatMap((exercise) => exercise.sets ?? []);
         const totalSets = allSets.length;
@@ -343,6 +341,10 @@ export function ProgramRecordDetails(): React.JSX.Element {
         }
         setRecordData(buildRecordData(sessionSnapshot, record?.recordData ?? null));
     }, [buildRecordData, record?.recordData, sessionSnapshot]);
+
+    if (role && role !== UserType.Athlete) {
+        return <ProgramRecordDetailsCoach />;
+    }
 
     if (loading) {
         return (

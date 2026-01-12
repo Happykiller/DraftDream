@@ -238,7 +238,7 @@ export function MealRecordDetailsCoach(): React.JSX.Element {
                             </Stack>
                             <Stack spacing={0.5}>
                                 <Typography variant="caption" color="text.secondary">
-                                    {t('nutrition-details.meals.meal_card.calories_label', 'Calories')}
+                                    {t('nutrition-details.meals.meal_card.calories_label')}
                                 </Typography>
                                 <Typography variant="body2">{mealCaloriesLabel}</Typography>
                             </Stack>

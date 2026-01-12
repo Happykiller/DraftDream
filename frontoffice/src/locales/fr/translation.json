@@ -1322,7 +1322,9 @@
         "fats_value": "{{value}} g"
       },
       "meal_card": {
+        "type": "Type",
         "calories": "{{value}} kcal",
+        "calories_label": "Calories",
         "macros": {
           "protein": {
             "label": "Protéines",
