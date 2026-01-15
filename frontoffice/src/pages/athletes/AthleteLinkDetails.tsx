@@ -44,7 +44,7 @@ import { useMealRecords, type MealRecord } from '@hooks/nutrition/useMealRecords
 import { useProgramRecords, type ProgramRecord } from '@hooks/program-records/useProgramRecords';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 
-type AthleteLinkTab = 'overview' | 'calendar' | 'programs' | 'nutritions' | 'sessions' | 'meal-records';
+type AthleteLinkTab = 'overview' | 'client-info' | 'calendar' | 'programs' | 'nutritions' | 'sessions' | 'meal-records';
 
 interface TabPanelProps {
   readonly value: AthleteLinkTab;
@@ -125,9 +125,9 @@ export function AthleteLinkDetails(): React.JSX.Element {
   const headerBackground = React.useMemo(
     () => ({
       backgroundColor: alpha(theme.palette.primary.main, 0.14),
-      color: theme.palette.primary.contrastText,
+      color: theme.palette.text.primary,
     }),
-    [theme.palette.primary.contrastText, theme.palette.primary.main],
+    [theme.palette.text.primary, theme.palette.primary.main],
   );
 
   const { athleteInfo, loading: athleteInfoLoading, error: athleteInfoError } = useAthleteInfo({
@@ -370,7 +370,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
               </Box>
               <Stack spacing={0.5} sx={{ minWidth: 0 }}>
                 <Typography variant="h5" component="h1" sx={{ fontWeight: 700 }} noWrap>
-                  {displayName}
+                  {displayName}aaa
                 </Typography>
                 <Typography color="text.secondary" variant="body2">
                   {t('athletes.details.helper')}
@@ -401,19 +401,10 @@ export function AthleteLinkDetails(): React.JSX.Element {
               }}
             >
               {/* Info block */}
-              <Box
-                sx={{
-                  width: { xs: '100%', md: '15%' },
-                  minWidth: { md: 180 },
-                  maxWidth: { md: 260 },
-                  borderRight: { md: 1 },
-                  borderColor: { md: 'divider' },
-                  bgcolor: alpha(theme.palette.info.main, 0.04),
-                  px: { xs: 2, sm: 3, md: 2 },
-                  py: { xs: 2, sm: 3 },
-                  overflow: 'auto',
-                }}
-              >
+
+
+              {/* Content block */}
+              <Box sx={{ flexGrow: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
                 {loading && !link ? (
                   <Stack alignItems="center" spacing={1} sx={{ py: 3 }}>
                     <CircularProgress color="info" size={32} />
@@ -423,152 +414,12 @@ export function AthleteLinkDetails(): React.JSX.Element {
                   </Stack>
                 ) : null}
 
-                {showEmptyState ? <Alert severity="error">{error}</Alert> : null}
-
-                {link ? (
-                  <Stack spacing={2}>
-                    <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-                      {t('athletes.details.client_sheet_title')}
-                    </Typography>
-
-                    <Stack spacing={1}>
-                      <Stack direction="row" spacing={1} alignItems="center">
-                        <Tooltip title={t('athletes.details.fields.email')}>
-                          <Email color="primary" fontSize="small" />
-                        </Tooltip>
-                        <Typography variant="body2">{athleteEmail}</Typography>
-                      </Stack>
-                      <Stack direction="row" spacing={1} alignItems="center">
-                        <Tooltip title={t('athletes.details.fields.phone')}>
-                          <Phone color="primary" fontSize="small" />
-                        </Tooltip>
-                        <Typography variant="body2">{athletePhone}</Typography>
-                      </Stack>
-                    </Stack>
-
-                    <Card
-                      variant="outlined"
-                      sx={{
-                        borderColor: alpha(theme.palette.info.main, 0.24),
-                        backgroundColor: alpha(theme.palette.info.main, 0.06),
-                        boxShadow: 'none',
-                      }}
-                    >
-                      <Stack spacing={1.5} sx={{ p: 1.5 }}>
-                        <Stack direction="row" spacing={1} alignItems="center">
-                          <TrackChanges color="info" fontSize="small" />
-                          <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-                            {t('athletes.details.objectives.title')}
-                          </Typography>
-                        </Stack>
-
-                        {athleteInfoLoading ? (
-                          <Stack direction="row" spacing={1} alignItems="center">
-                            <CircularProgress size={18} color="info" />
-                            <Typography variant="caption" color="text.secondary">
-                              {t('athletes.details.loading')}
-                            </Typography>
-                          </Stack>
-                        ) : null}
-
-                        {!athleteInfoLoading && athleteInfoError ? (
-                          <Alert severity="warning" sx={{ m: 0 }}>
-                            {athleteInfoError}
-                          </Alert>
-                        ) : null}
-
-                        {!athleteInfoLoading && !athleteInfoError ? (
-                          objectives.length ? (
-                            <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
-                              {objectives.map((objective) => (
-                                <Chip
-                                  key={objective.id}
-                                  label={objective.label}
-                                  color="info"
-                                  variant="outlined"
-                                  sx={{
-                                    borderColor: alpha(theme.palette.info.main, 0.3),
-                                    backgroundColor: alpha(theme.palette.info.main, 0.12),
-                                    color: theme.palette.info.main,
-                                    fontWeight: 600,
-                                  }}
-                                />
-                              ))}
-                            </Stack>
-                          ) : (
-                            <Typography variant="body2" color="text.secondary">
-                              {t('athletes.details.objectives.empty')}
-                            </Typography>
-                          )
-                        ) : null}
-                      </Stack>
-                    </Card>
-
-                    <Card
-                      variant="outlined"
-                      sx={{
-                        borderColor: alpha(theme.palette.success.main, 0.24),
-                        backgroundColor: alpha(theme.palette.success.main, 0.07),
-                        boxShadow: 'none',
-                      }}
-                    >
-                      <Stack spacing={1.5} sx={{ p: 1.5 }}>
-                        <Stack direction="row" spacing={1} alignItems="center">
-                          <MonitorHeart color="success" fontSize="small" />
-                          <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-                            {t('athletes.details.activity_preferences.title')}
-                          </Typography>
-                        </Stack>
-
-                        {athleteInfoLoading ? (
-                          <Stack direction="row" spacing={1} alignItems="center">
-                            <CircularProgress size={18} color="success" />
-                            <Typography variant="caption" color="text.secondary">
-                              {t('athletes.details.loading')}
-                            </Typography>
-                          </Stack>
-                        ) : null}
-
-                        {!athleteInfoLoading && athleteInfoError ? (
-                          <Alert severity="warning" sx={{ m: 0 }}>
-                            {athleteInfoError}
-                          </Alert>
-                        ) : null}
-
-                        {!athleteInfoLoading && !athleteInfoError ? (
-                          activityPreferences.length ? (
-                            <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
-                              {activityPreferences.map((preference) => (
-                                <Chip
-                                  key={preference.id}
-                                  label={preference.label}
-                                  color="success"
-                                  variant="outlined"
-                                  sx={{
-                                    borderColor: alpha(theme.palette.success.main, 0.3),
-                                    backgroundColor: alpha(theme.palette.success.main, 0.12),
-                                    color: theme.palette.success.main,
-                                    fontWeight: 600,
-                                  }}
-                                />
-                              ))}
-                            </Stack>
-                          ) : (
-                            <Typography variant="body2" color="text.secondary">
-                              {t('athletes.details.activity_preferences.empty')}
-                            </Typography>
-                          )
-                        ) : null}
-                      </Stack>
-                    </Card>
-                  </Stack>
+                {showEmptyState ? (
+                  <Alert severity="error" sx={{ m: 2 }}>
+                    {error}
+                  </Alert>
                 ) : null}
-              </Box>
 
-              <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', md: 'block' } }} />
-
-              {/* Content block */}
-              <Box sx={{ flexGrow: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
                 <Tabs
                   value={currentTab}
                   onChange={handleTabChange}
@@ -578,6 +429,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
                   sx={{ px: { xs: 1, sm: 2, md: 3 } }}
                 >
                   <Tab value="overview" label={t('athletes.details.tabs.overview')} />
+                  <Tab value="client-info" label={t('athletes.details.client_sheet_title')} />
                   <Tab value="calendar" label={t('athletes.details.tabs.calendar')} />
                   <Tab value="programs" label={t('athletes.details.tabs.programs')} />
                   <Tab value="nutritions" label={t('athletes.details.tabs.nutritions')} />
@@ -640,6 +492,145 @@ export function AthleteLinkDetails(): React.JSX.Element {
                           </Stack>
                         </Stack>
                       </Stack>
+                    ) : null}
+                  </TabPanel>
+
+                  <TabPanel value="client-info" currentTab={currentTab}>
+                    {link ? (
+                      <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3 } }}>
+                        <Stack spacing={2}>
+                          <Stack spacing={1}>
+                            <Stack direction="row" spacing={1} alignItems="center">
+                              <Tooltip title={t('athletes.details.fields.email')}>
+                                <Email color="primary" fontSize="small" />
+                              </Tooltip>
+                              <Typography variant="body2">{athleteEmail}</Typography>
+                            </Stack>
+                            <Stack direction="row" spacing={1} alignItems="center">
+                              <Tooltip title={t('athletes.details.fields.phone')}>
+                                <Phone color="primary" fontSize="small" />
+                              </Tooltip>
+                              <Typography variant="body2">{athletePhone}</Typography>
+                            </Stack>
+                          </Stack>
+
+                          <Card
+                            variant="outlined"
+                            sx={{
+                              borderColor: alpha(theme.palette.info.main, 0.24),
+                              backgroundColor: alpha(theme.palette.info.main, 0.06),
+                              boxShadow: 'none',
+                            }}
+                          >
+                            <Stack spacing={1.5} sx={{ p: 1.5 }}>
+                              <Stack direction="row" spacing={1} alignItems="center">
+                                <TrackChanges color="info" fontSize="small" />
+                                <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                                  {t('athletes.details.objectives.title')}
+                                </Typography>
+                              </Stack>
+
+                              {athleteInfoLoading ? (
+                                <Stack direction="row" spacing={1} alignItems="center">
+                                  <CircularProgress size={18} color="info" />
+                                  <Typography variant="caption" color="text.secondary">
+                                    {t('athletes.details.loading')}
+                                  </Typography>
+                                </Stack>
+                              ) : null}
+
+                              {!athleteInfoLoading && athleteInfoError ? (
+                                <Alert severity="warning" sx={{ m: 0 }}>
+                                  {athleteInfoError}
+                                </Alert>
+                              ) : null}
+
+                              {!athleteInfoLoading && !athleteInfoError ? (
+                                objectives.length ? (
+                                  <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                                    {objectives.map((objective) => (
+                                      <Chip
+                                        key={objective.id}
+                                        label={objective.label}
+                                        color="info"
+                                        variant="outlined"
+                                        sx={{
+                                          borderColor: alpha(theme.palette.info.main, 0.3),
+                                          backgroundColor: alpha(theme.palette.info.main, 0.12),
+                                          color: theme.palette.info.main,
+                                          fontWeight: 600,
+                                        }}
+                                      />
+                                    ))}
+                                  </Stack>
+                                ) : (
+                                  <Typography variant="body2" color="text.secondary">
+                                    {t('athletes.details.objectives.empty')}
+                                  </Typography>
+                                )
+                              ) : null}
+                            </Stack>
+                          </Card>
+
+                          <Card
+                            variant="outlined"
+                            sx={{
+                              borderColor: alpha(theme.palette.success.main, 0.24),
+                              backgroundColor: alpha(theme.palette.success.main, 0.07),
+                              boxShadow: 'none',
+                            }}
+                          >
+                            <Stack spacing={1.5} sx={{ p: 1.5 }}>
+                              <Stack direction="row" spacing={1} alignItems="center">
+                                <MonitorHeart color="success" fontSize="small" />
+                                <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                                  {t('athletes.details.activity_preferences.title')}
+                                </Typography>
+                              </Stack>
+
+                              {athleteInfoLoading ? (
+                                <Stack direction="row" spacing={1} alignItems="center">
+                                  <CircularProgress size={18} color="success" />
+                                  <Typography variant="caption" color="text.secondary">
+                                    {t('athletes.details.loading')}
+                                  </Typography>
+                                </Stack>
+                              ) : null}
+
+                              {!athleteInfoLoading && athleteInfoError ? (
+                                <Alert severity="warning" sx={{ m: 0 }}>
+                                  {athleteInfoError}
+                                </Alert>
+                              ) : null}
+
+                              {!athleteInfoLoading && !athleteInfoError ? (
+                                activityPreferences.length ? (
+                                  <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                                    {activityPreferences.map((preference) => (
+                                      <Chip
+                                        key={preference.id}
+                                        label={preference.label}
+                                        color="success"
+                                        variant="outlined"
+                                        sx={{
+                                          borderColor: alpha(theme.palette.success.main, 0.3),
+                                          backgroundColor: alpha(theme.palette.success.main, 0.12),
+                                          color: theme.palette.success.main,
+                                          fontWeight: 600,
+                                        }}
+                                      />
+                                    ))}
+                                  </Stack>
+                                ) : (
+                                  <Typography variant="body2" color="text.secondary">
+                                    {t('athletes.details.activity_preferences.empty')}
+                                  </Typography>
+                                )
+                              ) : null}
+                            </Stack>
+                          </Card>
+                        </Stack>
+                      </Box>
                     ) : null}
                   </TabPanel>
 
