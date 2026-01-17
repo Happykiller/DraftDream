@@ -527,7 +527,7 @@ export const ProspectWorkflow = React.memo(function ProspectWorkflow({
             </Typography>
           </Stack>
 
-          <Grid columnSpacing={2} columns={{ xs: 1, lg: 4, xl: 8 }} container rowSpacing={2}>
+          <Grid columnSpacing={2} columns={{ xs: 1, lg: 4, xxl: 8 }} container rowSpacing={2}>
             {stages.map((stage) => {
               const prospectsForStage = filteredColumns[stage.status] ?? [];
               const stageCount = prospectsForStage.length;

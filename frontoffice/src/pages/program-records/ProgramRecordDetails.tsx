@@ -590,7 +590,7 @@ export function ProgramRecordDetails(): React.JSX.Element {
                                         const sets = exerciseRecord?.sets ?? [];
                                         const exerciseNotes = exerciseRecord?.notes ?? '';
                                         return (
-                                            <Grid size={{ xs: 12, md: 6, xxl: 3 }} key={exercise.id}>
+                                            <Grid size={{ xs: 12, md: 6, xl: 3, xxl: 3 }} key={exercise.id}>
                                                 <ProgramRecordExerciseCard
                                                     exercise={exercise}
                                                     exerciseIndex={exerciseIndex}
