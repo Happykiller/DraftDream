@@ -131,6 +131,7 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
       durationMin: number;
       description?: string;
       exerciseIds: string[];
+      visibility?: 'PUBLIC' | 'PRIVATE';
     }) => {
       try {
         const { errors } = await execute(() =>

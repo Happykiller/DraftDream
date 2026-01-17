@@ -1081,6 +1081,7 @@ export function useProgramBuilder(
         durationMin: targetSession.duration,
         description: trimmedDescription.length > 0 ? trimmedDescription : undefined,
         exerciseIds,
+        visibility: 'PRIVATE',
       });
     },
     [createSessionTemplate, i18n.language, sessions],
