@@ -613,7 +613,8 @@
         "tags_label": "Groupes cibles",
         "drop_zone": "Ajouter la séance ici",
         "exercise_drop_zone": "Ajouter l'exercice ici",
-        "custom_session_label": "Seance personnalisee"
+        "custom_session_label": "Seance personnalisee",
+        "save_session": "Sauvegarder"
       },
       "library": {
         "title": "Bibliotheque d'exercices",

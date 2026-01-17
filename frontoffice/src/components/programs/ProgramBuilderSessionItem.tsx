@@ -8,6 +8,7 @@ import {
 import { alpha, useTheme } from '@mui/material/styles';
 import {
   Box,
+  Button,
   Chip,
   IconButton,
   InputAdornment,
@@ -114,6 +115,7 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
   const durationInputRef = React.useRef<HTMLInputElement | null>(null);
   const tooltips = builderCopy.library.tooltips;
   const descriptionPlaceholder = builderCopy.structure.description_placeholder;
+  const saveSessionLabel = builderCopy.structure.save_session;
 
   React.useEffect(() => {
     if (!isEditingLabel) {
@@ -343,6 +345,13 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
     onRemoveSession();
   };
 
+  const handleSaveSession = React.useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.stopPropagation();
+    },
+    [],
+  );
+
   const handleRemoveExercise = (exerciseId: string): void => {
     onRemoveExercise(exerciseId);
   };
@@ -400,6 +409,7 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
         },
       }}
     >
+      {/* General information */}
       {/* Session item */}
       <Stack spacing={1.5}>
         <Stack spacing={0.75}>
@@ -490,6 +500,16 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
                     {session.duration} {builderCopy.structure.duration_unit}
                   </Typography>
                 )}
+              </Tooltip>
+              <Tooltip title={saveSessionLabel} arrow>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={handleSaveSession}
+                  aria-label={saveSessionLabel}
+                >
+                  {saveSessionLabel}
+                </Button>
               </Tooltip>
               <Stack direction="row" spacing={0.5} alignItems="center">
                 <Tooltip title={tooltips.move_session_up} arrow>

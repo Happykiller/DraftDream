@@ -123,6 +123,7 @@ export type BuilderCopy = {
     tags_label: string;
     exercise_drop_zone: string;
     custom_session_label: string;
+    save_session: string;
   };
   library: {
     title: string;
