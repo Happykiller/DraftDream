@@ -155,6 +155,7 @@ type UseProgramBuilderResult = {
   handleSessionDescriptionChange: (sessionId: string, description: string) => void;
   handleSessionDurationChange: (sessionId: string, duration: number) => void;
   handleSaveSessionTemplate: (sessionId: string, label: string) => Promise<void>;
+  handleDeleteSessionTemplate: (sessionId: string) => Promise<void>;
   handleExerciseLabelChange: (
     sessionId: string,
     exerciseId: string,
@@ -276,6 +277,7 @@ export function useProgramBuilder(
     total: sessionTemplatesTotal,
     loading: sessionsLoading,
     create: createSessionTemplate,
+    remove: removeSessionTemplate,
     reload: reloadSessions,
   } = useSessions({
     page: 1,
@@ -404,6 +406,7 @@ export function useProgramBuilder(
       duration: item.durationMin,
       description: item.description ?? '',
       tags: [],
+      visibility: item.visibility,
       exercises: item.exerciseIds.map((exerciseId, index) => {
         const summary = item.exercises?.[index] ?? item.exercises?.find((exercise) => exercise.id === exerciseId);
         return {
@@ -1085,6 +1088,16 @@ export function useProgramBuilder(
       });
     },
     [createSessionTemplate, i18n.language, sessions],
+  );
+
+  /**
+   * Removes an existing session template from the library.
+   */
+  const handleDeleteSessionTemplate = React.useCallback(
+    async (sessionId: string) => {
+      await removeSessionTemplate(sessionId);
+    },
+    [removeSessionTemplate],
   );
 
   const handleExerciseLabelChange = React.useCallback(
@@ -1822,6 +1835,7 @@ export function useProgramBuilder(
     handleSessionDescriptionChange,
     handleSessionDurationChange,
     handleSaveSessionTemplate,
+    handleDeleteSessionTemplate,
     handleExerciseLabelChange,
     handleExerciseDescriptionChange,
     handleUpdateProgramExercise,

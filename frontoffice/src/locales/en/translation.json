@@ -648,7 +648,8 @@
           "delete_exercise": "Remove exercise",
           "add_empty_session": "Add a new empty session",
           "session_duration": "Edit session duration",
-          "add_session_template": "Add this session to the program"
+          "add_session_template": "Add this session to the program",
+          "delete_session_template": "Delete this session"
         },
         "create_dialog": {
           "title": "Create an exercise template",
@@ -730,6 +731,18 @@
         "errors": {
           "missing_label": "Please provide a session name.",
           "save_failed": "Unable to save this session."
+        }
+      },
+      "delete_session_dialog": {
+        "title": "Delete session",
+        "subtitle": "Are you sure you want to delete \"{{label}}\"?",
+        "actions": {
+          "cancel": "Cancel",
+          "confirm": "Delete",
+          "confirming": "Deleting..."
+        },
+        "errors": {
+          "delete_failed": "Unable to delete this session."
         }
       },
       "footer": {

@@ -651,7 +651,8 @@
           "delete_exercise": "Supprimer l'exercice",
           "add_empty_session": "Ajouter une nouvelle séance vide",
           "session_duration": "Modifier la durée de la séance",
-          "add_session_template": "Ajouter cette séance au programme"
+          "add_session_template": "Ajouter cette séance au programme",
+          "delete_session_template": "Supprimer cette séance"
         },
         "create_dialog": {
           "title": "Créer un template d'exercice",
@@ -734,6 +735,18 @@
         "errors": {
           "missing_label": "Veuillez renseigner un nom de séance.",
           "save_failed": "Impossible de sauvegarder la séance."
+        }
+      },
+      "delete_session_dialog": {
+        "title": "Supprimer la séance",
+        "subtitle": "Voulez-vous vraiment supprimer « {{label}} » ?",
+        "actions": {
+          "cancel": "Annuler",
+          "confirm": "Supprimer",
+          "confirming": "Suppression..."
+        },
+        "errors": {
+          "delete_failed": "Impossible de supprimer cette séance."
         }
       },
       "footer": {

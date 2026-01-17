@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Chip, IconButton, Paper, Stack, Tooltip, Typography } from '@mui/material';
-import { Add } from '@mui/icons-material';
+import { Add, DeleteOutline } from '@mui/icons-material';
 
 import type { BuilderCopy, SessionTemplate } from './programBuilderTypes';
 import { TextWithTooltip } from '../common/TextWithTooltip';
@@ -10,12 +10,14 @@ type ProgramBuilderSessionTemplateItemProps = {
   template: SessionTemplate;
   builderCopy: BuilderCopy;
   onAdd: () => void | Promise<void>;
+  onDelete?: () => void | Promise<void>;
 };
 
 export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuilderSessionLibraryItem({
   template,
   builderCopy,
   onAdd,
+  onDelete,
 }: ProgramBuilderSessionTemplateItemProps): React.JSX.Element {
   const theme = useTheme();
 
@@ -40,6 +42,16 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
   const handleAddClick = React.useCallback(() => {
     onAdd();
   }, [onAdd]);
+
+  const handleDeleteClick = React.useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.stopPropagation();
+      onDelete?.();
+    },
+    [onDelete],
+  );
+
+  const canDelete = template.visibility === 'PRIVATE' && Boolean(onDelete);
 
   return (
     <Paper
@@ -137,6 +149,21 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
             </Stack>
           </Stack>
         )}
+        {canDelete ? (
+          <Stack direction="row" justifyContent="flex-end">
+            <Tooltip title={builderCopy.library.tooltips.delete_session_template} arrow>
+              <span style={{ display: 'inline-flex' }}>
+                <IconButton
+                  size="small"
+                  onClick={handleDeleteClick}
+                  aria-label={builderCopy.library.tooltips.delete_session_template}
+                >
+                  <DeleteOutline fontSize="small" />
+                </IconButton>
+              </span>
+            </Tooltip>
+          </Stack>
+        ) : null}
       </Stack>
     </Paper>
   );

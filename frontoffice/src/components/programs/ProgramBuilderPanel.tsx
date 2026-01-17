@@ -24,12 +24,14 @@ import { ProgramBuilderSessionItem } from './ProgramBuilderSessionItem';
 import { ProgramBuilderSessionLibraryItem } from './ProgramBuilderSessionLibraryItem';
 import { ProgramBuilderExerciseLibraryItem } from './ProgramBuilderExerciseLibraryItem';
 import { ProgramBuilderCreateExerciseDialog } from './ProgramBuilderCreateExerciseDialog';
+import { ProgramBuilderDeleteSessionDialog } from './ProgramBuilderDeleteSessionDialog';
 import { ProgramBuilderSaveSessionDialog } from './ProgramBuilderSaveSessionDialog';
 import type {
   BuilderCopy,
   ProgramExercise,
   ProgramExercisePatch,
   ProgramSession,
+  SessionTemplate,
 } from './programBuilderTypes';
 import { parseSeriesCount } from './programBuilderUtils';
 
@@ -101,6 +103,7 @@ export function ProgramBuilderPanel({
     handleSessionDescriptionChange,
     handleSessionDurationChange,
     handleSaveSessionTemplate,
+    handleDeleteSessionTemplate,
     handleExerciseLabelChange,
     handleExerciseDescriptionChange,
     handleUpdateProgramExercise,
@@ -179,6 +182,7 @@ export function ProgramBuilderPanel({
     exerciseItem: ProgramExercise;
   } | null>(null);
   const [saveSessionTarget, setSaveSessionTarget] = React.useState<ProgramSession | null>(null);
+  const [deleteSessionTarget, setDeleteSessionTarget] = React.useState<SessionTemplate | null>(null);
 
   const addExerciseFallbackLabel = t('programs-coatch.builder.library.no_sessions_warning');
 
@@ -207,6 +211,22 @@ export function ProgramBuilderPanel({
     },
     [handleSaveSessionTemplate, saveSessionTarget],
   );
+
+  const handleOpenDeleteSessionDialog = React.useCallback((template: SessionTemplate) => {
+    setDeleteSessionTarget(template);
+  }, []);
+
+  const handleCloseDeleteSessionDialog = React.useCallback(() => {
+    setDeleteSessionTarget(null);
+  }, []);
+
+  const handleConfirmDeleteSession = React.useCallback(async () => {
+    if (!deleteSessionTarget) {
+      return;
+    }
+    await handleDeleteSessionTemplate(deleteSessionTarget.id);
+    setDeleteSessionTarget(null);
+  }, [deleteSessionTarget, handleDeleteSessionTemplate]);
 
   const sessionResultCountLabel = React.useMemo(
     () =>
@@ -1010,6 +1030,7 @@ export function ProgramBuilderPanel({
                                 template={template}
                                 builderCopy={builderCopy}
                                 onAdd={() => handleAddSessionFromTemplate(template.id)}
+                                onDelete={() => handleOpenDeleteSessionDialog(template)}
                               />
                             ))
                           )}
@@ -1441,6 +1462,12 @@ export function ProgramBuilderPanel({
         sessionLabel={saveSessionTarget?.label ?? ''}
         onClose={handleCloseSaveSessionDialog}
         onSave={handleSaveSessionDialog}
+      />
+      <ProgramBuilderDeleteSessionDialog
+        open={Boolean(deleteSessionTarget)}
+        sessionLabel={deleteSessionTarget?.label ?? ''}
+        onClose={handleCloseDeleteSessionDialog}
+        onConfirm={handleConfirmDeleteSession}
       />
     </>
   );

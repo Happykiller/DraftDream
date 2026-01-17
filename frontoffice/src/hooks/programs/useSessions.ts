@@ -18,6 +18,7 @@ export interface Session {
   createdAt: string;
   updatedAt: string;
   creator?: { id: string; email: string } | null;
+  visibility: 'PUBLIC' | 'PRIVATE';
 }
 
 type SessionListPayload = {
@@ -37,7 +38,7 @@ const LIST_Q = `
   query ListSessions($input: ListSessionsInput) {
     session_list(input: $input) {
       items {
-        id locale label durationMin description exerciseIds
+        id locale label durationMin description exerciseIds visibility
         exercises { id label }
         createdBy createdAt updatedAt
         creator { id email }
@@ -50,7 +51,7 @@ const LIST_Q = `
 const CREATE_M = `
   mutation CreateSession($input: CreateSessionInput!) {
     session_create(input: $input) {
-      id locale label durationMin description exerciseIds
+      id locale label durationMin description exerciseIds visibility
       exercises { id label }
       createdBy createdAt updatedAt
       creator { id email }
@@ -61,7 +62,7 @@ const CREATE_M = `
 const UPDATE_M = `
   mutation UpdateSession($input: UpdateSessionInput!) {
     session_update(input: $input) {
-      id locale label durationMin description exerciseIds
+      id locale label durationMin description exerciseIds visibility
       exercises { id label }
       createdBy createdAt updatedAt
       creator { id email }
