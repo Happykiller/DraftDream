@@ -156,6 +156,7 @@ type UseProgramBuilderResult = {
   handleSessionDurationChange: (sessionId: string, duration: number) => void;
   handleSaveSessionTemplate: (sessionId: string, label: string) => Promise<void>;
   handleDeleteSessionTemplate: (sessionId: string) => Promise<void>;
+  handleEditSessionTemplate: (sessionId: string, label: string) => Promise<void>;
   handleExerciseLabelChange: (
     sessionId: string,
     exerciseId: string,
@@ -277,6 +278,7 @@ export function useProgramBuilder(
     total: sessionTemplatesTotal,
     loading: sessionsLoading,
     create: createSessionTemplate,
+    update: updateSessionTemplate,
     remove: removeSessionTemplate,
     reload: reloadSessions,
   } = useSessions({
@@ -1100,6 +1102,20 @@ export function useProgramBuilder(
     [removeSessionTemplate],
   );
 
+  /**
+   * Updates the label of an existing session template.
+   */
+  const handleEditSessionTemplate = React.useCallback(
+    async (sessionId: string, label: string) => {
+      const trimmedLabel = label.trim();
+      if (!trimmedLabel) {
+        return;
+      }
+      await updateSessionTemplate({ id: sessionId, label: trimmedLabel });
+    },
+    [updateSessionTemplate],
+  );
+
   const handleExerciseLabelChange = React.useCallback(
     (sessionId: string, exerciseId: string, label: string) => {
       setSessions((prev) =>
@@ -1836,6 +1852,7 @@ export function useProgramBuilder(
     handleSessionDurationChange,
     handleSaveSessionTemplate,
     handleDeleteSessionTemplate,
+    handleEditSessionTemplate,
     handleExerciseLabelChange,
     handleExerciseDescriptionChange,
     handleUpdateProgramExercise,

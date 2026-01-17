@@ -157,6 +157,7 @@ export type BuilderCopy = {
       session_duration: string;
       add_session_template: string;
       delete_session_template: string;
+      edit_session_template: string;
     };
   };
   footer: {

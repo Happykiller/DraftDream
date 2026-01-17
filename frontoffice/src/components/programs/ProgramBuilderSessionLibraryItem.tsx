@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Chip, IconButton, Paper, Stack, Tooltip, Typography } from '@mui/material';
-import { Add, DeleteOutline } from '@mui/icons-material';
+import { Add, DeleteOutline, Edit } from '@mui/icons-material';
 
 import type { BuilderCopy, SessionTemplate } from './programBuilderTypes';
 import { TextWithTooltip } from '../common/TextWithTooltip';
@@ -10,6 +10,7 @@ type ProgramBuilderSessionTemplateItemProps = {
   template: SessionTemplate;
   builderCopy: BuilderCopy;
   onAdd: () => void | Promise<void>;
+  onEdit?: () => void | Promise<void>;
   onDelete?: () => void | Promise<void>;
 };
 
@@ -17,6 +18,7 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
   template,
   builderCopy,
   onAdd,
+  onEdit,
   onDelete,
 }: ProgramBuilderSessionTemplateItemProps): React.JSX.Element {
   const theme = useTheme();
@@ -51,7 +53,17 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
     [onDelete],
   );
 
-  const canDelete = template.visibility === 'PRIVATE' && Boolean(onDelete);
+  const handleEditClick = React.useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.stopPropagation();
+      onEdit?.();
+    },
+    [onEdit],
+  );
+
+  const isPrivateTemplate = template.visibility === 'PRIVATE';
+  const canEdit = isPrivateTemplate && Boolean(onEdit);
+  const canDelete = isPrivateTemplate && Boolean(onDelete);
 
   return (
     <Paper
@@ -79,7 +91,22 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
           rowGap={1}
         >
           <Stack spacing={0.5} flexGrow={1} minWidth={0}>
-            <TextWithTooltip tooltipTitle={template.label} variant="subtitle1" sx={{ fontWeight: 600 }} />
+            <Stack direction="row" spacing={1} alignItems="center">
+              {canEdit ? (
+                <Tooltip title={builderCopy.library.tooltips.edit_session_template} arrow>
+                  <span style={{ display: 'inline-flex' }}>
+                    <IconButton
+                      size="small"
+                      onClick={handleEditClick}
+                      aria-label={builderCopy.library.tooltips.edit_session_template}
+                    >
+                      <Edit fontSize="small" />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+              ) : null}
+              <TextWithTooltip tooltipTitle={template.label} variant="subtitle1" sx={{ fontWeight: 600 }} />
+            </Stack>
             {template.description ? (
               <TextWithTooltip
                 tooltipTitle={template.description}

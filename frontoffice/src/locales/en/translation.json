@@ -649,7 +649,8 @@
           "add_empty_session": "Add a new empty session",
           "session_duration": "Edit session duration",
           "add_session_template": "Add this session to the program",
-          "delete_session_template": "Delete this session"
+          "delete_session_template": "Delete this session",
+          "edit_session_template": "Edit this session"
         },
         "create_dialog": {
           "title": "Create an exercise template",
@@ -743,6 +744,23 @@
         },
         "errors": {
           "delete_failed": "Unable to delete this session."
+        }
+      },
+      "edit_session_dialog": {
+        "title": "Edit session",
+        "subtitle": "Update the session label for this template.",
+        "fields": {
+          "label": "Session name",
+          "placeholder": "Example: Strength day"
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "save": "Save",
+          "saving": "Saving..."
+        },
+        "errors": {
+          "missing_label": "Please provide a session name.",
+          "save_failed": "Unable to update this session."
         }
       },
       "footer": {
