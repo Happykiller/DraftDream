@@ -52,12 +52,16 @@ describe('HardDeleteAthleteInfoUsecase', () => {
         expect(result).toBe(true);
     });
 
-    it('should throw FORBIDDEN when user is not admin', async () => {
-        await expect(usecase.execute({
+    it('should not enforce role-based authorization in the use case', async () => {
+        (repositoryMock.hardDelete as any).mockResolvedValue(true);
+
+        const result = await usecase.execute({
             id: 'info-1',
             session: { userId: 'coach-1', role: Role.COACH },
-        })).rejects.toThrow(ERRORS.FORBIDDEN);
-        expect(repositoryMock.hardDelete).not.toHaveBeenCalled();
+        });
+
+        expect(repositoryMock.hardDelete).toHaveBeenCalledWith('info-1');
+        expect(result).toBe(true);
     });
 
     it('should return false when hard delete fails', async () => {

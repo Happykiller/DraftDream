@@ -1,6 +1,7 @@
 // src/graphql/sport/program-record/program-record.gql.types.ts
 import {
   Field,
+  Float,
   ID,
   InputType,
   Int,
@@ -33,6 +34,7 @@ export class ProgramRecordExerciseSetDataGql {
   @Field(() => Int) index!: number;
   @Field(() => String, { nullable: true }) repetitions?: string;
   @Field(() => String, { nullable: true }) charge?: string;
+  @Field(() => Float, { nullable: true }) rpe?: number;
   @Field(() => Boolean, { nullable: true }) done?: boolean;
 }
 
@@ -53,6 +55,7 @@ export class ProgramRecordExerciseSetDataInput {
   @Field(() => Int) index!: number;
   @Field(() => String, { nullable: true }) repetitions?: string;
   @Field(() => String, { nullable: true }) charge?: string;
+  @Field(() => Float, { nullable: true }) rpe?: number;
   @Field(() => Boolean, { nullable: true }) done?: boolean;
 }
 

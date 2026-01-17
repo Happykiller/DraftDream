@@ -8,6 +8,24 @@ import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
 export type ProgramRecordState = 'CREATE' | 'DRAFT' | 'FINISH';
 
+export interface ProgramRecordExerciseSet {
+  index: number;
+  repetitions?: string | null;
+  charge?: string | null;
+  rpe?: number | null;
+  done?: boolean | null;
+}
+
+export interface ProgramRecordExerciseRecordData {
+  exerciseId: string;
+  notes?: string | null;
+  sets: ProgramRecordExerciseSet[];
+}
+
+export interface ProgramRecordData {
+  exercises: ProgramRecordExerciseRecordData[];
+}
+
 export interface ProgramRecord {
   id: string;
   userId: string;
@@ -15,6 +33,9 @@ export interface ProgramRecord {
   sessionId: string;
   comment?: string | null;
   satisfactionRating?: number | null;
+  durationMinutes?: number | null;
+  difficultyRating?: number | null;
+  recordData?: ProgramRecordData | null;
   state: ProgramRecordState;
   createdAt: string;
   updatedAt: string;
@@ -42,6 +63,21 @@ const LIST_Q = `
         sessionId
         comment
         satisfactionRating
+        durationMinutes
+        difficultyRating
+        recordData {
+          exercises {
+            exerciseId
+            notes
+            sets {
+              index
+              repetitions
+              charge
+              rpe
+              done
+            }
+          }
+        }
         state
         createdAt
         updatedAt
@@ -62,6 +98,21 @@ const CREATE_M = `
       sessionId
       comment
       satisfactionRating
+      durationMinutes
+      difficultyRating
+      recordData {
+        exercises {
+          exerciseId
+          notes
+          sets {
+            index
+            repetitions
+            charge
+            rpe
+            done
+          }
+        }
+      }
       state
       createdAt
       updatedAt
@@ -78,6 +129,21 @@ const UPDATE_M = `
       state
       comment
       satisfactionRating
+      durationMinutes
+      difficultyRating
+      recordData {
+        exercises {
+          exerciseId
+          notes
+          sets {
+            index
+            repetitions
+            charge
+            rpe
+            done
+          }
+        }
+      }
       createdAt
       updatedAt
     }

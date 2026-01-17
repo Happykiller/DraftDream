@@ -48,7 +48,7 @@ export function AthleteNutritionWidget(): React.JSX.Element {
         };
         fetchRecords();
         return () => { mounted = false; };
-    }, [listRecords]);
+    }, [listRecords, runTask]);
 
     const handlePlayOrResume = React.useCallback(
         async (
@@ -78,7 +78,7 @@ export function AthleteNutritionWidget(): React.JSX.Element {
                 // Error handled in hook/task
             }
         },
-        [activeRecords, createRecord, navigate],
+        [activeRecords, createRecord, navigate, runTask],
     );
 
     const dayPrefix = t('nutrition-coach.builder.structure.day_prefix');

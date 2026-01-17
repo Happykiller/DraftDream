@@ -40,22 +40,13 @@ The sport program management feature allows coaches and admins to create, organi
 ```
 
 **Then** the system should:
-1. Generate a slug from the label: `full-body-transformation`
-2. Generate slugs for each session
+
 3. Create the program with all sessions
 4. Return the complete program structure
 
 ---
 
-## Scenario: Create program with auto-generated slug
 
-**Given** a coach creates a program with label "Programme de Force"
-
-**When** the system processes the creation
-
-**Then** the slug should be automatically generated as: `programme-de-force`
-
----
 
 ## Scenario: List programs with filters
 
@@ -79,12 +70,11 @@ The sport program management feature allows coaches and admins to create, organi
 ## Business Rules
 
 ### Slug Generation
-- Slug is auto-generated from label using `buildSlug()` utility.
-- Must be unique per locale.
+
 
 ### Program Structure
 - **Label**: Display name (required).
-- **Slug**: URL-friendly identifier.
+
 - **Locale**: Language (en, fr, etc.).
 - **Duration**: Duration value.
 - **Frequency**: Frequency value.
@@ -127,7 +117,7 @@ mutation ProgramCreate($input: CreateProgramInput!) {
   program_create(input: $input) {
     id
     label
-    slug
+
     locale
     description
     duration
@@ -135,7 +125,7 @@ mutation ProgramCreate($input: CreateProgramInput!) {
     sessions {
       id
       label
-      slug
+
       order
     }
     visibility
@@ -149,7 +139,7 @@ query ProgramGet($id: ID!) {
   program_get(id: $id) {
     id
     label
-    slug
+
     duration
     frequency
     visibility
@@ -164,7 +154,7 @@ query ProgramList($input: ListProgramsInput) {
     items {
       id
       label
-      slug
+
       duration
       frequency
       visibility

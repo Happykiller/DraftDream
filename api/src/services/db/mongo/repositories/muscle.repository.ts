@@ -86,7 +86,7 @@ export class BddServiceMuscleMongo {
       sort = { updatedAt: -1 },
     } = params;
 
-    const filter: any = {};
+    const filter: any = { deletedAt: { $exists: false } };
     if (q?.trim()) {
       const regex = new RegExp(q.trim(), 'i');
       filter.$or = [{ slug: { $regex: regex } }, { label: { $regex: regex } }];
@@ -151,6 +151,20 @@ export class BddServiceMuscleMongo {
       return res.modifiedCount === 1;
     } catch (error) {
       this.handleError('delete', error);
+    }
+  }
+
+  /**
+   * Hard delete: permanently removes muscle from database.
+   * This operation is irreversible.
+   */
+  async hardDelete(id: string): Promise<boolean> {
+    try {
+      const _id = this.toObjectId(id);
+      const res = await (this.col()).deleteOne({ _id });
+      return res.deletedCount === 1;
+    } catch (error) {
+      this.handleError('hardDelete', error);
     }
   }
 

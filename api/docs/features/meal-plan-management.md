@@ -50,9 +50,7 @@ The meal plan management feature allows coaches and nutritionists to create pers
 ```
 
 **Then** the system should:
-1. Generate a slug from the label: `weight-loss-plan-week-1`
-2. Generate slugs for each day
-3. Generate slugs for each meal
+
 4. Create the complete meal plan structure
 5. Set creation timestamps
 6. Return the meal plan with all nested data
@@ -146,8 +144,7 @@ The meal plan management feature allows coaches and nutritionists to create pers
 ```
 
 **Then** the system should:
-1. Regenerate slug from new label
-2. Update specified fields
+1. Update specified fields
 3. Update `updatedAt` timestamp
 4. Keep unchanged fields as-is
 5. Return updated meal plan
@@ -189,7 +186,7 @@ The meal plan management feature allows coaches and nutritionists to create pers
 
 ### Meal Plan Structure
 - **Label**: Plan name (required)
-- **Slug**: Auto-generated from label
+- **Label**: Plan name (required)
 - **Locale**: Language for meal names and descriptions
 - **User ID**: The client/athlete assigned to this plan
 - **Date Range**: Start and end dates for the plan period
@@ -210,10 +207,7 @@ The meal plan management feature allows coaches and nutritionists to create pers
 - **Instructions**: Preparation steps (optional)
 - **Order**: Display order within meal type
 
-### Slug Generation
-- Auto-generated from label for plan, days, and meals
-- Fallback slug is `meal-plan`, `day`, `meal` respectively
-- Slug + locale combination should be unique for active plans
+
 
 ### Active Status
 - `is_active`: Indicates if this is the current active plan
@@ -232,7 +226,7 @@ The meal plan management feature allows coaches and nutritionists to create pers
 ### Create Meal Plan
 - **Use Case**: `CreateMealPlanUsecase`
 - **Authorization**: COACH, ADMIN
-- **Auto-generation**: Slugs for plan, days, and meals
+
 - **Validation**: Date range, user exists, calorie consistency
 
 ### Get Meal Plan
@@ -250,7 +244,7 @@ The meal plan management feature allows coaches and nutritionists to create pers
 ### Update Meal Plan
 - **Use Case**: `UpdateMealPlanUsecase`
 - **Authorization**: Creator COACH, ADMIN
-- **Slug Update**: Re-generated if label changes
+
 - **Returns**: Updated meal plan
 
 ### Delete Meal Plan
@@ -268,7 +262,7 @@ mutation MealPlanCreate($input: CreateMealPlanInput!) {
   meal_plan_create(input: $input) {
     id
     label
-    slug
+
     userId
     startDate
     endDate

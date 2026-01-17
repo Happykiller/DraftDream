@@ -26,7 +26,7 @@
 
 ## Authorization and visibility rules
 - The only valid visibility values are `public` and `private`; do not reintroduce `hybrid`.
-- Authorization must live inside use cases; GraphQL resolvers only pass input parameters and the authenticated session.
+- Use cases own business authorization rules (ownership, visibility, assignments). Pure role-based access control (no additional business rules) must live in the GraphQL layer via `@Auth`, not in use cases.
 - Apply these business rules consistently:
   - **Create**: any authenticated role may create. Admins can choose public or private; coaches and front-office clients create private items only.
   - **Read/Get**: callable by all roles.
@@ -68,4 +68,3 @@
 - **Hard Delete (Exceptions)**: Permanently remove from database
   - Use for: Only when explicitly required for data privacy/compliance
   - Require: Admin-level authorization and explicit confirmation
-

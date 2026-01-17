@@ -172,4 +172,15 @@ export class SessionResolver {
     }
     return visibility === SessionVisibility.PUBLIC ? 'PUBLIC' : 'PRIVATE';
   }
+  @Mutation(() => Boolean, { name: 'session_hardDelete' })
+  @Auth(Role.ADMIN)
+  async session_hardDelete(
+    @Args('id', { type: () => ID }) id: string,
+    @Context('req') req: any,
+  ): Promise<boolean> {
+    return await inversify.hardDeleteSessionUsecase.execute({
+      id,
+      session: { userId: req.user.id, role: req.user.role },
+    });
+  }
 }

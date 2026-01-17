@@ -78,3 +78,4 @@ The athlete info feature stores athlete-specific intake data based on the existi
 - Exactly one athlete info record is allowed per athlete.
 - Authorization: ADMIN can manage all records; COACH and ATHLETE are limited to records they created (strict ownership).
 - Soft deletion keeps audit data (`createdBy`, `createdAt`, `updatedAt`, `deletedAt`); hard deletion is admin-only.
+- Pure role-based access control for hard delete is enforced at the GraphQL layer via `@Auth`.

@@ -108,7 +108,7 @@ mutation ConvertProspect($input: ConvertProspectInput!) {
 }
 ```
 
-**Then** the system should create the objective with a generated slug `weight-loss`.
+**Then** the system should create the objective.
 
 ---
 
@@ -128,7 +128,7 @@ mutation ConvertProspect($input: ConvertProspectInput!) {
 }
 ```
 
-**Then** the system should create the preference with slug `running`.
+**Then** the system should create the preference.
 
 ---
 
@@ -148,7 +148,7 @@ mutation ConvertProspect($input: ConvertProspectInput!) {
 }
 ```
 
-**Then** the system should create the level with slug `intermediate`.
+**Then** the system should create the level.
 
 ---
 
@@ -168,7 +168,7 @@ mutation ConvertProspect($input: ConvertProspectInput!) {
 }
 ```
 
-**Then** the system should create the source with slug `instagram`.
+**Then** the system should create the source.
 
 ---
 
@@ -181,7 +181,7 @@ mutation ConvertProspect($input: ConvertProspectInput!) {
 
 ### Sub-Domains (Objectives, Levels, Preferences, Sources)
 - **Label**: Display name.
-- **Slug**: Auto-generated.
+
 - **Locale**: Language support.
 - **Visibility**: PUBLIC or PRIVATE.
 
@@ -226,7 +226,7 @@ mutation CreateProspectObjective($input: CreateProspectObjectiveInput!) {
   prospect_objective_create(input: $input) {
     id
     label
-    slug
+
     visibility
   }
 }

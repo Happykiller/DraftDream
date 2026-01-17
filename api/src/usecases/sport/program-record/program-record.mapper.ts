@@ -18,6 +18,7 @@ export const mapProgramRecordToUsecase = (record: ProgramRecord): ProgramRecordU
           index: set.index,
           repetitions: set.repetitions,
           charge: set.charge,
+          rpe: set.rpe,
           done: set.done,
         })),
       })),

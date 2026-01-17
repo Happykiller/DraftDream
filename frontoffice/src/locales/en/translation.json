@@ -17,6 +17,8 @@
     "not_found": "Not found",
     "no_content": "No content available",
     "back_to_home": "Back to Home",
+    "yes": "Yes",
+    "no": "No",
     "actions": {
       "retry": "Retry",
       "cancel": "Cancel",
@@ -388,12 +390,29 @@
       },
       "tabs": {
         "overview": "Overview",
+        "calendar": "Calendar",
         "programs": "Programs",
         "nutritions": "Nutritions",
         "sessions": "Session feedback",
         "meal_records": "Meal feedback",
         "programs_helper": "Attach training programs to this athlete to track their progress.",
         "nutritions_helper": "Link nutrition plans to centralize the athlete's dietary follow-up."
+      },
+      "calendar": {
+        "controls": {
+          "previous": "Previous",
+          "current": "Today",
+          "next": "Next"
+        },
+        "views": {
+          "month": "Month",
+          "week": "Week",
+          "day": "Day"
+        },
+        "records": {
+          "title": "Records for {{date}}",
+          "view_all": "View all records ({{count}})"
+        }
       },
       "fields": {
         "start_date": "Start: {{date}}",
@@ -901,6 +920,7 @@
         "muscles": "Muscles",
         "equipment": "Equipment",
         "tags": "Tags",
+        "watch_video": "Watch video",
         "rest_duration": {
           "minutes_seconds": "{{minutes}} min {{seconds}} s",
           "minutes": "{{count}} min",
@@ -1298,7 +1318,9 @@
         "fats_value": "{{value}} g"
       },
       "meal_card": {
+        "type": "Type",
         "calories": "{{value}} kcal",
+        "calories_label": "Calories",
         "macros": {
           "protein": {
             "label": "Protein",
@@ -1403,6 +1425,7 @@
       "series_label": "Set {{index}}",
       "repetitions_label": "Repetitions",
       "charge_label": "Load",
+      "rpe_label": "RPE",
       "done_label": "Done",
       "duration_label": "Duration (minutes)",
       "duration_label_short": "Duration",

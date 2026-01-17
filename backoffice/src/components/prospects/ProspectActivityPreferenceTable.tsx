@@ -2,6 +2,8 @@
 import * as React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Button, IconButton, Stack, TextField, Tooltip, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -20,26 +22,17 @@ export interface ProspectActivityPreferenceTableProps {
   onCreate: () => void;
   onEdit: (row: ProspectActivityPreference) => void;
   onDelete: (row: ProspectActivityPreference) => void;
+  onHardDelete: (row: ProspectActivityPreference) => void;
   onQueryChange: (q: string) => void;
   onPageChange: (page: number) => void; // 1-based
   onLimitChange: (limit: number) => void;
+  onRefresh?: () => void;
 }
 
-export function ProspectActivityPreferenceTable(props: ProspectActivityPreferenceTableProps): React.JSX.Element {
-  const {
-    rows,
-    total,
-    page,
-    limit,
-    q,
-    loading,
-    onCreate,
-    onEdit,
-    onDelete,
-    onQueryChange,
-    onPageChange,
-    onLimitChange,
-  } = props;
+export const ProspectActivityPreferenceTable = React.memo(function ProspectActivityPreferenceTable({
+  rows, total, page, limit, q, loading,
+  onCreate, onEdit, onDelete, onHardDelete, onQueryChange, onPageChange, onLimitChange, onRefresh,
+}: ProspectActivityPreferenceTableProps): React.JSX.Element {
   const { t } = useTranslation();
   const fmtDate = useDateFormatter();
   const theme = useTheme();
@@ -78,23 +71,33 @@ export function ProspectActivityPreferenceTable(props: ProspectActivityPreferenc
         headerName: t('common.labels.actions'),
         sortable: false,
         filterable: false,
-        renderCell: params => (
-          <Stack direction="row" spacing={0.5}>
+        renderCell: (params) => (
+          <Stack direction="row" spacing={1}>
             <Tooltip title={t('common.tooltips.edit')}>
-              <IconButton size="small" aria-label={`edit-activity-${params.row.id}`} onClick={() => onEdit(params.row)}>
+              <IconButton size="small" aria-label={`edit-${params.row.id}`} onClick={() => onEdit(params.row)}>
                 <EditIcon fontSize="small" />
               </IconButton>
             </Tooltip>
             <Tooltip title={t('common.tooltips.delete')}>
-              <IconButton size="small" aria-label={`delete-activity-${params.row.id}`} onClick={() => onDelete(params.row)}>
+              <IconButton size="small" aria-label={`delete-${params.row.id}`} onClick={() => onDelete(params.row)}>
                 <DeleteIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title={t('common.buttons.delete')}>
+              <IconButton
+                size="small"
+                aria-label={`hard-delete-${params.row.id}`}
+                color="error"
+                onClick={() => onHardDelete(params.row)}
+              >
+                <DeleteForeverIcon fontSize="small" />
               </IconButton>
             </Tooltip>
           </Stack>
         ),
       },
     ],
-    [fmtDate, onDelete, onEdit, t, isXl],
+    [fmtDate, onDelete, onEdit, onHardDelete, t, isXl],
   );
 
   return (
@@ -115,6 +118,13 @@ export function ProspectActivityPreferenceTable(props: ProspectActivityPreferenc
           sx={{ maxWidth: 360 }}
         />
         <Box sx={{ flex: 1 }} />
+        {onRefresh && (
+          <Tooltip title={t('common.buttons.refresh')}>
+            <IconButton onClick={onRefresh} size="small" aria-label="refresh-activity-preferences">
+              <RefreshIcon />
+            </IconButton>
+          </Tooltip>
+        )}
         <Button variant="contained" onClick={onCreate}>
           {t('prospects.activity_preferences.create')}
         </Button>
@@ -140,4 +150,4 @@ export function ProspectActivityPreferenceTable(props: ProspectActivityPreferenc
       />
     </Box>
   );
-}
+});

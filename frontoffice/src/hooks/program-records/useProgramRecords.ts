@@ -7,72 +7,77 @@ import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 import { session } from '@stores/session';
 
 export const ProgramRecordState = {
-    CREATE: 'CREATE',
-    DRAFT: 'DRAFT',
-    FINISH: 'FINISH',
+  CREATE: 'CREATE',
+  DRAFT: 'DRAFT',
+  FINISH: 'FINISH',
 } as const;
 
 export type ProgramRecordState = typeof ProgramRecordState[keyof typeof ProgramRecordState];
 
 export interface ProgramRecord {
-    id: string;
-    userId: string;
-    programId: string;
-    sessionId: string;
-    comment?: string | null;
-    satisfactionRating?: number | null;
-    durationMinutes?: number | null;
-    difficultyRating?: number | null;
-    sessionSnapshot?: ProgramRecordSessionSnapshot | null;
-    recordData?: ProgramRecordData | null;
-    state: ProgramRecordState;
-    createdAt: string;
-    updatedAt: string;
+  id: string;
+  userId: string;
+  programId: string;
+  sessionId: string;
+  comment?: string | null;
+  satisfactionRating?: number | null;
+  durationMinutes?: number | null;
+  difficultyRating?: number | null;
+  sessionSnapshot?: ProgramRecordSessionSnapshot | null;
+  recordData?: ProgramRecordData | null;
+  state: ProgramRecordState;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ProgramRecordExerciseSet {
-    index: number;
-    repetitions?: string | null;
-    charge?: string | null;
-    done?: boolean | null;
+  index: number;
+  repetitions?: string | null;
+  charge?: string | null;
+  rpe?: number | null;
+  done?: boolean | null;
 }
 
 export interface ProgramRecordExerciseRecordData {
-    exerciseId: string;
-    notes?: string | null;
-    sets: ProgramRecordExerciseSet[];
+  exerciseId: string;
+  notes?: string | null;
+  sets: ProgramRecordExerciseSet[];
 }
 
 export interface ProgramRecordData {
-    exercises: ProgramRecordExerciseRecordData[];
+  exercises: ProgramRecordExerciseRecordData[];
 }
 
 export interface ProgramRecordExerciseSnapshot {
-    id: string;
-    templateExerciseId?: string | null;
-    label: string;
-    description?: string | null;
-    instructions?: string | null;
-    series?: string | null;
-    repetitions?: string | null;
-    charge?: string | null;
-    restSeconds?: number | null;
-    videoUrl?: string | null;
-    categoryIds?: string[] | null;
-    muscleIds?: string[] | null;
-    equipmentIds?: string[] | null;
-    tagIds?: string[] | null;
+  id: string;
+  templateExerciseId?: string | null;
+  label: string;
+  description?: string | null;
+  instructions?: string | null;
+  series?: string | null;
+  repetitions?: string | null;
+  charge?: string | null;
+  restSeconds?: number | null;
+  videoUrl?: string | null;
+  categoryIds?: string[] | null;
+  categories?: { id: string; label: string }[] | null;
+  muscleIds?: string[] | null;
+  muscles?: { id: string; label: string }[] | null;
+  equipmentIds?: string[] | null;
+  equipments?: { id: string; label: string }[] | null;
+  tagIds?: string[] | null;
+  tags?: { id: string; label: string }[] | null;
 }
 
 export interface ProgramRecordSessionSnapshot {
-    id: string;
-    templateSessionId?: string | null;
-    slug?: string | null;
-    locale?: string | null;
-    label: string;
-    durationMin: number;
-    description?: string | null;
-    exercises: ProgramRecordExerciseSnapshot[];
+  id: string;
+  templateSessionId?: string | null;
+  slug?: string | null;
+  locale?: string | null;
+  label: string;
+  durationMin: number;
+  description?: string | null;
+  exercises: ProgramRecordExerciseSnapshot[];
 }
 
 type CreateProgramRecordPayload = { programRecord_create: ProgramRecord };
@@ -106,9 +111,25 @@ const CREATE_M = `
           restSeconds
           videoUrl
           categoryIds
+          categories {
+            id
+            label
+          }
           muscleIds
+          muscles {
+            id
+            label
+          }
           equipmentIds
+          equipments {
+            id
+            label
+          }
           tagIds
+          tags {
+            id
+            label
+          }
         }
       }
       recordData {
@@ -119,6 +140,7 @@ const CREATE_M = `
             index
             repetitions
             charge
+            rpe
             done
           }
         }
@@ -159,9 +181,25 @@ const UPDATE_STATE_M = `
           restSeconds
           videoUrl
           categoryIds
+          categories {
+            id
+            label
+          }
           muscleIds
+          muscles {
+            id
+            label
+          }
           equipmentIds
+          equipments {
+            id
+            label
+          }
           tagIds
+          tags {
+            id
+            label
+          }
         }
       }
       recordData {
@@ -172,6 +210,7 @@ const UPDATE_STATE_M = `
             index
             repetitions
             charge
+            rpe
             done
           }
         }
@@ -212,9 +251,25 @@ const GET_Q = `
           restSeconds
           videoUrl
           categoryIds
+          categories {
+            id
+            label
+          }
           muscleIds
+          muscles {
+            id
+            label
+          }
           equipmentIds
+          equipments {
+            id
+            label
+          }
           tagIds
+          tags {
+            id
+            label
+          }
         }
       }
       recordData {
@@ -225,6 +280,7 @@ const GET_Q = `
             index
             repetitions
             charge
+            rpe
             done
           }
         }
@@ -241,127 +297,127 @@ const GET_Q = `
 `;
 
 export function useProgramRecords() {
-    const { execute } = useAsyncTask();
-    const flashError = useFlashStore((state) => state.error);
-    const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
-    const userId = session((state) => state.id);
+  const { execute } = useAsyncTask();
+  const flashError = useFlashStore((state) => state.error);
+  const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
+  const userId = session((state) => state.id);
 
-    const get = React.useCallback(
-        async (id: string): Promise<ProgramRecord | null> => {
-            try {
-                const { data, errors } = await execute(() =>
-                    gql.send<GetProgramRecordPayload>({
-                        query: GET_Q,
-                        operationName: 'GetProgramRecord',
-                        variables: { id },
-                    })
-                );
+  const get = React.useCallback(
+    async (id: string): Promise<ProgramRecord | null> => {
+      try {
+        const { data, errors } = await execute(() =>
+          gql.send<GetProgramRecordPayload>({
+            query: GET_Q,
+            operationName: 'GetProgramRecord',
+            variables: { id },
+          })
+        );
 
-                if (errors?.length) throw new Error(errors[0].message);
-                return data?.programRecord_get ?? null;
-            } catch (error: unknown) {
-                const message = error instanceof Error ? error.message : 'Fetch failed';
-                flashError(message);
-                return null;
-            }
-        },
-        [execute, flashError, gql]
-    );
+        if (errors?.length) throw new Error(errors[0].message);
+        return data?.programRecord_get ?? null;
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Fetch failed';
+        flashError(message);
+        return null;
+      }
+    },
+    [execute, flashError, gql]
+  );
 
-    const create = React.useCallback(
-        async (
-            programId: string,
-            sessionId: string,
-            payload?: { comment?: string; satisfactionRating?: number },
-        ): Promise<ProgramRecord> => {
-            try {
-                const { data, errors } = await execute(() =>
-                    gql.send<CreateProgramRecordPayload>({
-                        query: CREATE_M,
-                        operationName: 'CreateProgramRecord',
-                        variables: {
-                            input: {
-                                userId,
-                                programId,
-                                sessionId,
-                                comment: payload?.comment,
-                                satisfactionRating: payload?.satisfactionRating,
-                            },
-                        },
-                    })
-                );
-
-                if (errors?.length) throw new Error(errors[0].message);
-                const createdRecord = data?.programRecord_create;
-
-                if (!createdRecord) {
-                    throw new Error('Failed to create program record');
-                }
-
-                return createdRecord;
-            } catch (error: unknown) {
-                const message = error instanceof Error ? error.message : 'Create failed';
-                flashError(message);
-                throw error;
-            }
-        },
-        [execute, flashError, gql, userId]
-    );
-
-    const updateState = React.useCallback(
-        async (
-            id: string,
-            state: ProgramRecordState,
-            payload?: {
-                comment?: string;
-                satisfactionRating?: number;
-                durationMinutes?: number;
-                difficultyRating?: number;
-                recordData?: ProgramRecordData;
+  const create = React.useCallback(
+    async (
+      programId: string,
+      sessionId: string,
+      payload?: { comment?: string; satisfactionRating?: number },
+    ): Promise<ProgramRecord> => {
+      try {
+        const { data, errors } = await execute(() =>
+          gql.send<CreateProgramRecordPayload>({
+            query: CREATE_M,
+            operationName: 'CreateProgramRecord',
+            variables: {
+              input: {
+                userId,
+                programId,
+                sessionId,
+                comment: payload?.comment,
+                satisfactionRating: payload?.satisfactionRating,
+              },
             },
-        ): Promise<ProgramRecord> => {
-            try {
-                const { data, errors } = await execute(() =>
-                    gql.send<UpdateProgramRecordStatePayload>({
-                        query: UPDATE_STATE_M,
-                        operationName: 'UpdateProgramRecordState',
-                        variables: {
-                            input: {
-                                id,
-                                state,
-                                comment: payload?.comment,
-                                satisfactionRating: payload?.satisfactionRating,
-                                durationMinutes: payload?.durationMinutes,
-                                difficultyRating: payload?.difficultyRating,
-                                recordData: payload?.recordData,
-                            },
-                        },
-                    })
-                );
+          })
+        );
 
-                if (errors?.length) throw new Error(errors[0].message);
-                const updatedRecord = data?.programRecord_updateState;
+        if (errors?.length) throw new Error(errors[0].message);
+        const createdRecord = data?.programRecord_create;
 
-                if (!updatedRecord) {
-                    throw new Error('Failed to update program record state');
-                }
+        if (!createdRecord) {
+          throw new Error('Failed to create program record');
+        }
 
-                return updatedRecord;
-            } catch (error: unknown) {
-                const message = error instanceof Error ? error.message : 'Update failed';
-                flashError(message);
-                throw error;
-            }
-        },
-        [execute, flashError, gql]
-    );
+        return createdRecord;
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Create failed';
+        flashError(message);
+        throw error;
+      }
+    },
+    [execute, flashError, gql, userId]
+  );
 
-    const list = React.useCallback(
-        async (input: { userId?: string; limit?: number; page?: number; state?: ProgramRecordState } = {}): Promise<{ items: ProgramRecord[]; total: number }> => {
-            try {
-                const { data, errors } = await execute(() =>
-                    gql.send<{ programRecord_list: { items: ProgramRecord[]; total: number } }>({
-                        query: `
+  const updateState = React.useCallback(
+    async (
+      id: string,
+      state: ProgramRecordState,
+      payload?: {
+        comment?: string;
+        satisfactionRating?: number;
+        durationMinutes?: number;
+        difficultyRating?: number;
+        recordData?: ProgramRecordData;
+      },
+    ): Promise<ProgramRecord> => {
+      try {
+        const { data, errors } = await execute(() =>
+          gql.send<UpdateProgramRecordStatePayload>({
+            query: UPDATE_STATE_M,
+            operationName: 'UpdateProgramRecordState',
+            variables: {
+              input: {
+                id,
+                state,
+                comment: payload?.comment,
+                satisfactionRating: payload?.satisfactionRating,
+                durationMinutes: payload?.durationMinutes,
+                difficultyRating: payload?.difficultyRating,
+                recordData: payload?.recordData,
+              },
+            },
+          })
+        );
+
+        if (errors?.length) throw new Error(errors[0].message);
+        const updatedRecord = data?.programRecord_updateState;
+
+        if (!updatedRecord) {
+          throw new Error('Failed to update program record state');
+        }
+
+        return updatedRecord;
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Update failed';
+        flashError(message);
+        throw error;
+      }
+    },
+    [execute, flashError, gql]
+  );
+
+  const list = React.useCallback(
+    async (input: { userId?: string; limit?: number; page?: number; state?: ProgramRecordState } = {}): Promise<{ items: ProgramRecord[]; total: number }> => {
+      try {
+        const { data, errors } = await execute(() =>
+          gql.send<{ programRecord_list: { items: ProgramRecord[]; total: number } }>({
+            query: `
                           query ListProgramRecords($input: ListProgramRecordsInput) {
                             programRecord_list(input: $input) {
                               items {
@@ -389,9 +445,25 @@ export function useProgramRecords() {
                                     restSeconds
                                     videoUrl
                                     categoryIds
+                                    categories {
+                                      id
+                                      label
+                                    }
                                     muscleIds
+                                    muscles {
+                                      id
+                                      label
+                                    }
                                     equipmentIds
+                                    equipments {
+                                      id
+                                      label
+                                    }
                                     tagIds
+                                    tags {
+                                      id
+                                      label
+                                    }
                                   }
                                 }
                                 recordData {
@@ -402,6 +474,7 @@ export function useProgramRecords() {
                                       index
                                       repetitions
                                       charge
+                                      rpe
                                       done
                                     }
                                   }
@@ -418,21 +491,21 @@ export function useProgramRecords() {
                             }
                           }
                         `,
-                        operationName: 'ListProgramRecords',
-                        variables: { input },
-                    })
-                );
+            operationName: 'ListProgramRecords',
+            variables: { input },
+          })
+        );
 
-                if (errors?.length) throw new Error(errors[0].message);
-                return data?.programRecord_list ?? { items: [], total: 0 };
-            } catch (error: unknown) {
-                const message = error instanceof Error ? error.message : 'List fetch failed';
-                flashError(message);
-                return { items: [], total: 0 };
-            }
-        },
-        [execute, flashError, gql]
-    );
+        if (errors?.length) throw new Error(errors[0].message);
+        return data?.programRecord_list ?? { items: [], total: 0 };
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'List fetch failed';
+        flashError(message);
+        return { items: [], total: 0 };
+      }
+    },
+    [execute, flashError, gql]
+  );
 
-    return { create, get, updateState, list };
+  return { create, get, updateState, list };
 }

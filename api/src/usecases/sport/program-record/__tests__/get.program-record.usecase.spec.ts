@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from '@jest/globals';
 
+import { ERRORS } from '@src/common/ERROR';
 import { ProgramRecordState } from '@src/common/program-record-state.enum';
 import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
@@ -71,7 +72,7 @@ describe('GetProgramRecordUsecase', () => {
     expect(result).toEqual(expected);
   });
 
-  it('should return null when the requester is not the owner', async () => {
+  it('should throw when the requester is not the owner', async () => {
     asMock(programRecordRepositoryMock.get).mockResolvedValue(record);
 
     const dto: GetProgramRecordUsecaseDto = {
@@ -79,8 +80,6 @@ describe('GetProgramRecordUsecase', () => {
       session: { userId: 'athlete-2', role: Role.ATHLETE },
     };
 
-    const result = await usecase.execute(dto);
-
-    expect(result).toBeNull();
+    await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.FORBIDDEN);
   });
 });

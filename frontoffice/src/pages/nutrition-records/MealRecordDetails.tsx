@@ -2,15 +2,15 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-  Box,
-  CircularProgress,
-  Card,
-  CardContent,
-  Rating,
-  Stack,
-  Tooltip,
-  TextField,
-  Typography,
+    Box,
+    CircularProgress,
+    Card,
+    CardContent,
+    Rating,
+    Stack,
+    Tooltip,
+    TextField,
+    Typography,
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
@@ -28,6 +28,9 @@ import {
     useMealRecords,
 } from '@hooks/nutrition/useMealRecords';
 import { FixedPageLayout } from '@src/components/common/FixedPageLayout';
+import { UserType } from '@src/commons/enums';
+import { session } from '@stores/session';
+import { MealRecordDetailsCoach } from './MealRecordDetailsCoach';
 
 function formatNumber(value: number, locale: string): string {
     try {
@@ -44,6 +47,9 @@ export function MealRecordDetails(): React.JSX.Element {
     const { t, i18n } = useTranslation();
     const navigate = useNavigate();
     const { recordId } = useParams<{ recordId: string }>();
+    const role = session((state) => state.role);
+
+
     const theme = useTheme();
     const headerBackground = React.useMemo(
         () => alpha(theme.palette.warning.main, 0.12),
@@ -191,6 +197,11 @@ export function MealRecordDetails(): React.JSX.Element {
     const handleRatingChange = (_event: React.SyntheticEvent, value: number | null) => {
         setSatisfactionRating(value);
     };
+
+    // Render coach view if needed, but only after all hooks have run
+    if (role && role !== UserType.Athlete) {
+        return <MealRecordDetailsCoach />;
+    }
 
     if (loading) {
         return (

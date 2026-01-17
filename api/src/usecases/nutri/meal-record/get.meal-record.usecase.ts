@@ -25,15 +25,16 @@ export class GetMealRecordUsecase {
         return null;
       }
 
-      const isAdmin = session.role === Role.ADMIN;
       const isOwner = record.userId === session.userId;
-      if (!isAdmin && !isOwner) {
-        return null;
+      if (session.role === Role.ATHLETE && !isOwner) {
+        throw new Error(ERRORS.FORBIDDEN);
       }
 
       return mapMealRecordToUsecase(record);
     } catch (error: any) {
-      this.inversify.loggerService.error(`GetMealRecordUsecase#execute => ${error?.message ?? error}`);
+      this.inversify.loggerService.error(
+        `GetMealRecordUsecase#execute (recordId: ${dto.id}) => ${error?.message ?? error}`,
+      );
       throw normalizeError(error, ERRORS.GET_MEAL_RECORD_USECASE);
     }
   }

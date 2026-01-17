@@ -102,4 +102,16 @@ export class ProspectSourceResolver {
   async prospectSource_delete(@Args('id', { type: () => ID }) id: string): Promise<boolean> {
     return await inversify.deleteClientSourceUsecase.execute({ id });
   }
+
+  @Mutation(() => Boolean, { name: 'prospectSource_hardDelete' })
+  @Auth(Role.ADMIN)
+  async prospectSource_hardDelete(
+    @Args('id', { type: () => ID }) id: string,
+    @Context('req') req: any,
+  ): Promise<boolean> {
+    return await inversify.hardDeleteProspectSourceUsecase.execute({
+      id,
+      session: { userId: req.user.id, role: req.user.role },
+    });
+  }
 }

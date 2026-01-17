@@ -201,4 +201,15 @@ export class ExerciseResolver {
       role: user.role as UsecaseSession['role'],
     };
   }
+  @Mutation(() => Boolean, { name: 'exercise_hardDelete' })
+  @Auth(Role.ADMIN)
+  async exercise_hardDelete(
+    @Args('id', { type: () => ID }) id: string,
+    @Context('req') req: any,
+  ): Promise<boolean> {
+    return await inversify.hardDeleteExerciseUsecase.execute({
+      id,
+      session: { userId: req.user.id, role: req.user.role },
+    });
+  }
 }
