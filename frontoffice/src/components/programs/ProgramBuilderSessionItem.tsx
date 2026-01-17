@@ -9,7 +9,6 @@ import {
 import { alpha, useTheme } from '@mui/material/styles';
 import {
   Box,
-  Button,
   Chip,
   IconButton,
   InputAdornment,
@@ -503,15 +502,15 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
                 )}
               </Tooltip>
               <Tooltip title={saveSessionLabel} arrow>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  onClick={handleSaveSession}
-                  aria-label={saveSessionLabel}
-                  startIcon={<Save fontSize="small" />}
-                >
-                  {saveSessionLabel}
-                </Button>
+                <span style={{ display: 'inline-flex' }}>
+                  <IconButton
+                    size="small"
+                    onClick={handleSaveSession}
+                    aria-label={saveSessionLabel}
+                  >
+                    <Save fontSize="small" />
+                  </IconButton>
+                </span>
               </Tooltip>
               <Stack direction="row" spacing={0.5} alignItems="center">
                 <Tooltip title={tooltips.move_session_up} arrow>
