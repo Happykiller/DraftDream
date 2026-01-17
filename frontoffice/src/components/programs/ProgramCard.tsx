@@ -452,7 +452,7 @@ export const ProgramCard = React.memo(function ProgramCard({
                             alignItems="baseline"
                           >
                             <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                              {exercise.label}bbb
+                              {exercise.label}
                             </Typography>
                             <Typography variant="caption" color="text.secondary">
                               {exercise.series && exercise.repetitions
