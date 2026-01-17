@@ -715,6 +715,23 @@
           "submitting": "Saving..."
         }
       },
+      "save_session_dialog": {
+        "title": "Save session",
+        "subtitle": "Update the session label before saving it as a template.",
+        "fields": {
+          "label": "Session name",
+          "placeholder": "Example: Strength day"
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "save": "Save",
+          "saving": "Saving..."
+        },
+        "errors": {
+          "missing_label": "Please provide a session name.",
+          "save_failed": "Unable to save this session."
+        }
+      },
       "footer": {
         "cancel": "Cancel",
         "submit": "Create the program",

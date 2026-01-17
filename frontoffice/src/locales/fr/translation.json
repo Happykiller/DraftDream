@@ -719,6 +719,23 @@
           "submitting": "Enregistrement..."
         }
       },
+      "save_session_dialog": {
+        "title": "Sauvegarder la séance",
+        "subtitle": "Modifiez le nom de la séance avant de l'enregistrer comme template.",
+        "fields": {
+          "label": "Nom de la séance",
+          "placeholder": "Exemple : Séance force"
+        },
+        "actions": {
+          "cancel": "Annuler",
+          "save": "Sauvegarder",
+          "saving": "Sauvegarde..."
+        },
+        "errors": {
+          "missing_label": "Veuillez renseigner un nom de séance.",
+          "save_failed": "Impossible de sauvegarder la séance."
+        }
+      },
       "footer": {
         "cancel": "Annuler",
         "submit": "Creer le programme",

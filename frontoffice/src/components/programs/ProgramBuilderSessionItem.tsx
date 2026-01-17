@@ -53,6 +53,7 @@ type ProgramBuilderSessionItemProps = {
   onMoveExerciseUp: (exerciseId: string) => void;
   onMoveExerciseDown: (exerciseId: string) => void;
   onEditExercise?: (sessionId: string, exerciseItem: ProgramExercise) => void;
+  onSaveSession: (sessionId: string) => void;
 };
 
 export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessionItem({
@@ -73,6 +74,7 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
   onMoveExerciseUp,
   onMoveExerciseDown,
   onEditExercise,
+  onSaveSession,
 }: ProgramBuilderSessionItemProps): React.JSX.Element {
   const theme = useTheme();
   const primaryMain = theme.palette.primary.main;
@@ -348,8 +350,9 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
   const handleSaveSession = React.useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
       event.stopPropagation();
+      onSaveSession(session.id);
     },
-    [],
+    [onSaveSession, session.id],
   );
 
   const handleRemoveExercise = (exerciseId: string): void => {

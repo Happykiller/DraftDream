@@ -154,6 +154,7 @@ type UseProgramBuilderResult = {
   handleSessionLabelChange: (sessionId: string, label: string) => void;
   handleSessionDescriptionChange: (sessionId: string, description: string) => void;
   handleSessionDurationChange: (sessionId: string, duration: number) => void;
+  handleSaveSessionTemplate: (sessionId: string, label: string) => Promise<void>;
   handleExerciseLabelChange: (
     sessionId: string,
     exerciseId: string,
@@ -274,6 +275,7 @@ export function useProgramBuilder(
     items: sessionItems,
     total: sessionTemplatesTotal,
     loading: sessionsLoading,
+    create: createSessionTemplate,
     reload: reloadSessions,
   } = useSessions({
     page: 1,
@@ -1058,6 +1060,32 @@ export function useProgramBuilder(
     },
     []);
 
+  /**
+   * Saves the current session configuration as a reusable session template.
+   */
+  const handleSaveSessionTemplate = React.useCallback(
+    async (sessionId: string, label: string) => {
+      const targetSession = sessions.find((sessionItem) => sessionItem.id === sessionId);
+      if (!targetSession) {
+        return;
+      }
+
+      const trimmedLabel = label.trim() || targetSession.label;
+      const trimmedDescription = targetSession.description.trim();
+      const locale = i18n.language || 'fr';
+      const exerciseIds = targetSession.exercises.map((exercise) => exercise.exerciseId);
+
+      await createSessionTemplate({
+        locale,
+        label: trimmedLabel,
+        durationMin: targetSession.duration,
+        description: trimmedDescription.length > 0 ? trimmedDescription : undefined,
+        exerciseIds,
+      });
+    },
+    [createSessionTemplate, i18n.language, sessions],
+  );
+
   const handleExerciseLabelChange = React.useCallback(
     (sessionId: string, exerciseId: string, label: string) => {
       setSessions((prev) =>
@@ -1792,6 +1820,7 @@ export function useProgramBuilder(
     handleSessionLabelChange,
     handleSessionDescriptionChange,
     handleSessionDurationChange,
+    handleSaveSessionTemplate,
     handleExerciseLabelChange,
     handleExerciseDescriptionChange,
     handleUpdateProgramExercise,

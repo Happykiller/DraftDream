@@ -24,10 +24,12 @@ import { ProgramBuilderSessionItem } from './ProgramBuilderSessionItem';
 import { ProgramBuilderSessionLibraryItem } from './ProgramBuilderSessionLibraryItem';
 import { ProgramBuilderExerciseLibraryItem } from './ProgramBuilderExerciseLibraryItem';
 import { ProgramBuilderCreateExerciseDialog } from './ProgramBuilderCreateExerciseDialog';
+import { ProgramBuilderSaveSessionDialog } from './ProgramBuilderSaveSessionDialog';
 import type {
   BuilderCopy,
   ProgramExercise,
   ProgramExercisePatch,
+  ProgramSession,
 } from './programBuilderTypes';
 import { parseSeriesCount } from './programBuilderUtils';
 
@@ -98,6 +100,7 @@ export function ProgramBuilderPanel({
     handleSessionLabelChange,
     handleSessionDescriptionChange,
     handleSessionDurationChange,
+    handleSaveSessionTemplate,
     handleExerciseLabelChange,
     handleExerciseDescriptionChange,
     handleUpdateProgramExercise,
@@ -166,6 +169,32 @@ export function ProgramBuilderPanel({
 
   const addExerciseFallbackLabel = t('programs-coatch.builder.library.no_sessions_warning');
 
+  const handleOpenSaveSessionDialog = React.useCallback(
+    (sessionId: string) => {
+      const target = sessions.find((sessionItem) => sessionItem.id === sessionId);
+      if (!target) {
+        return;
+      }
+      setSaveSessionTarget(target);
+    },
+    [sessions],
+  );
+
+  const handleCloseSaveSessionDialog = React.useCallback(() => {
+    setSaveSessionTarget(null);
+  }, []);
+
+  const handleSaveSessionDialog = React.useCallback(
+    async (label: string) => {
+      if (!saveSessionTarget) {
+        return;
+      }
+      await handleSaveSessionTemplate(saveSessionTarget.id, label);
+      setSaveSessionTarget(null);
+    },
+    [handleSaveSessionTemplate, saveSessionTarget],
+  );
+
   const sessionResultCountLabel = React.useMemo(
     () =>
       sessionsLoading
@@ -199,6 +228,7 @@ export function ProgramBuilderPanel({
     sessionId: string;
     exerciseItem: ProgramExercise;
   } | null>(null);
+  const [saveSessionTarget, setSaveSessionTarget] = React.useState<ProgramSession | null>(null);
 
   const [structureTitle, setStructureTitle] = React.useState(() => {
     const candidate = program?.label?.trim();
@@ -1161,6 +1191,7 @@ export function ProgramBuilderPanel({
                                       handleMoveExerciseDown(session.id, exerciseId)
                                     }
                                     onEditExercise={handleOpenProgramExerciseDialog}
+                                    onSaveSession={handleOpenSaveSessionDialog}
                                   />
                                 ))}
                               </Stack>
@@ -1404,6 +1435,12 @@ export function ProgramBuilderPanel({
             }
             : null
         }
+      />
+      <ProgramBuilderSaveSessionDialog
+        open={Boolean(saveSessionTarget)}
+        sessionLabel={saveSessionTarget?.label ?? ''}
+        onClose={handleCloseSaveSessionDialog}
+        onSave={handleSaveSessionDialog}
       />
     </>
   );
