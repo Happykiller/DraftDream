@@ -167,6 +167,19 @@ export function ProgramBuilderPanel({
 
   void _summaryText;
 
+  const [exerciseMenuAnchor, setExerciseMenuAnchor] = React.useState<{
+    anchor: HTMLElement;
+    exerciseId: string;
+  } | null>(null);
+
+  const [isExerciseDialogOpen, setIsExerciseDialogOpen] = React.useState(false);
+  const [exerciseBeingEdited, setExerciseBeingEdited] = React.useState<Exercise | null>(null);
+  const [programExerciseContext, setProgramExerciseContext] = React.useState<{
+    sessionId: string;
+    exerciseItem: ProgramExercise;
+  } | null>(null);
+  const [saveSessionTarget, setSaveSessionTarget] = React.useState<ProgramSession | null>(null);
+
   const addExerciseFallbackLabel = t('programs-coatch.builder.library.no_sessions_warning');
 
   const handleOpenSaveSessionDialog = React.useCallback(
@@ -216,19 +229,6 @@ export function ProgramBuilderPanel({
         }),
     [exerciseLibraryTotal, exercisesLoading, filteredExercises.length, t],
   );
-
-  const [exerciseMenuAnchor, setExerciseMenuAnchor] = React.useState<{
-    anchor: HTMLElement;
-    exerciseId: string;
-  } | null>(null);
-
-  const [isExerciseDialogOpen, setIsExerciseDialogOpen] = React.useState(false);
-  const [exerciseBeingEdited, setExerciseBeingEdited] = React.useState<Exercise | null>(null);
-  const [programExerciseContext, setProgramExerciseContext] = React.useState<{
-    sessionId: string;
-    exerciseItem: ProgramExercise;
-  } | null>(null);
-  const [saveSessionTarget, setSaveSessionTarget] = React.useState<ProgramSession | null>(null);
 
   const [structureTitle, setStructureTitle] = React.useState(() => {
     const candidate = program?.label?.trim();
