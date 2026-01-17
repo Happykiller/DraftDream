@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
-import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
+import { StandardDialog } from '@components/common/StandardDialog';
 
 export interface ProgramBuilderDeleteSessionDialogProps {
   open: boolean;
@@ -68,7 +68,7 @@ export function ProgramBuilderDeleteSessionDialog({
   const confirmingLabel = t('programs-coatch.builder.delete_session_dialog.actions.confirming');
 
   return (
-    <ProgramDialogLayout
+    <StandardDialog
       open={open}
       onClose={handleDialogClose}
       title={dialogTitle}
@@ -101,6 +101,6 @@ export function ProgramBuilderDeleteSessionDialog({
           </Typography>
         ) : null}
       </Stack>
-    </ProgramDialogLayout>
+    </StandardDialog>
   );
 }

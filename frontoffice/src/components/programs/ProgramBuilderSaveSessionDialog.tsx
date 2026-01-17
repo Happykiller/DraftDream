@@ -5,8 +5,9 @@ import {
   Stack,
   TextField,
 } from '@mui/material';
+
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
-import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
+import { StandardDialog } from '@components/common/StandardDialog';
 
 export interface ProgramBuilderSaveSessionDialogProps {
   open: boolean;
@@ -82,7 +83,7 @@ export function ProgramBuilderSaveSessionDialog({
   const savingLabel = t('programs-coatch.builder.save_session_dialog.actions.saving');
 
   return (
-    <ProgramDialogLayout
+    <StandardDialog
       open={open}
       onClose={handleDialogClose}
       title={dialogTitle}
@@ -123,6 +124,6 @@ export function ProgramBuilderSaveSessionDialog({
           autoFocus
         />
       </Stack>
-    </ProgramDialogLayout>
+    </StandardDialog>
   );
 }
