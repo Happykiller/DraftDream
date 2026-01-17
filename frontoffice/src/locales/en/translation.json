@@ -609,7 +609,8 @@
         "tags_label": "Target groups",
         "drop_zone": "Add session here",
         "exercise_drop_zone": "Add exercise here",
-        "custom_session_label": "Custom session"
+        "custom_session_label": "Custom session",
+        "save_session": "Save"
       },
       "library": {
         "title": "Exercise library",
