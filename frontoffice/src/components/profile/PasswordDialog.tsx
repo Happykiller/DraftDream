@@ -1,14 +1,11 @@
 import * as React from 'react';
 import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-  Stack,
-  Alert,
+    TextField,
+    Stack,
+    Alert,
 } from '@mui/material';
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
+import { StandardDialog } from '@components/common/StandardDialog';
 import { useTranslation } from 'react-i18next';
 
 export interface PasswordDialogProps {
@@ -48,38 +45,45 @@ export function PasswordDialog({ open, loading, onClose, onSubmit }: PasswordDia
     }, [onClose]);
 
     return (
-        <Dialog open={open} onClose={loading ? undefined : handleClose} maxWidth="sm" fullWidth>
-            <DialogTitle>{t('profile.password_dialog.title')}</DialogTitle>
-            <DialogContent>
-                <Stack spacing={2} sx={{ mt: 1 }}>
-                    {error && <Alert severity="error">{error}</Alert>}
-                    <TextField
-                        autoFocus
-                        label={t('profile.password_dialog.new_password')}
-                        type="password"
-                        fullWidth
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        disabled={loading}
-                    />
-                    <TextField
-                        label={t('profile.password_dialog.confirm_password')}
-                        type="password"
-                        fullWidth
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        disabled={loading}
-                    />
-                </Stack>
-            </DialogContent>
-            <DialogActions>
-                <ResponsiveButton onClick={handleClose} disabled={loading}>
-                    {t('common.actions.cancel')}
-                </ResponsiveButton>
-                <ResponsiveButton onClick={handleSubmit} variant="contained" disabled={loading || !password}>
-                    {t('common.actions.save')}
-                </ResponsiveButton>
-            </DialogActions>
-        </Dialog>
+        <StandardDialog
+            open={open}
+            onClose={loading ? undefined : handleClose}
+            title={t('profile.password_dialog.title')}
+            dialogProps={{
+                maxWidth: 'sm',
+                fullWidth: true,
+            }}
+            actions={
+                <>
+                    <ResponsiveButton onClick={handleClose} disabled={loading}>
+                        {t('common.actions.cancel')}
+                    </ResponsiveButton>
+                    <ResponsiveButton onClick={handleSubmit} variant="contained" disabled={loading || !password}>
+                        {t('common.actions.save')}
+                    </ResponsiveButton>
+                </>
+            }
+        >
+            <Stack spacing={2} sx={{ mt: 1 }}>
+                {error && <Alert severity="error">{error}</Alert>}
+                <TextField
+                    autoFocus
+                    label={t('profile.password_dialog.new_password')}
+                    type="password"
+                    fullWidth
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    disabled={loading}
+                />
+                <TextField
+                    label={t('profile.password_dialog.confirm_password')}
+                    type="password"
+                    fullWidth
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    disabled={loading}
+                />
+            </Stack>
+        </StandardDialog>
     );
 }

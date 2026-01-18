@@ -56,6 +56,11 @@ export interface UseMealPlanBuilderResult {
   mealTypes: MealType[];
   mealTypesLoading: boolean;
   selectedMealTypeId: string | null;
+  dayVisibility: 'all' | 'PUBLIC' | 'PRIVATE';
+  setDayVisibility: React.Dispatch<React.SetStateAction<'all' | 'PUBLIC' | 'PRIVATE'>>;
+  mealVisibility: 'all' | 'PUBLIC' | 'PRIVATE';
+  setMealVisibility: React.Dispatch<React.SetStateAction<'all' | 'PUBLIC' | 'PRIVATE'>>;
+  visibilityOptions: { value: 'all' | 'PUBLIC' | 'PRIVATE'; label: string }[];
   days: MealPlanBuilderDay[];
   handleSelectAthlete: (_event: unknown, user: User | null) => void;
   handleFormChange: (
@@ -311,6 +316,8 @@ export function useMealPlanBuilder(
 
   const [daySearch, setDaySearch] = React.useState('');
   const [mealSearch, setMealSearch] = React.useState('');
+  const [dayVisibility, setDayVisibility] = React.useState<'all' | 'PUBLIC' | 'PRIVATE'>('all');
+  const [mealVisibility, setMealVisibility] = React.useState<'all' | 'PUBLIC' | 'PRIVATE'>('all');
   const [selectedMealTypeId, setSelectedMealTypeId] = React.useState<string | null>(null);
   const debouncedDaySearch = useDebouncedValue(daySearch, 300);
   const debouncedMealSearch = useDebouncedValue(mealSearch, 300);
@@ -336,6 +343,7 @@ export function useMealPlanBuilder(
     limit: 10,
     q: debouncedDaySearch,
     locale: i18n.language,
+    visibility: dayVisibility === 'all' ? undefined : dayVisibility,
   });
 
   const {
@@ -352,6 +360,7 @@ export function useMealPlanBuilder(
     q: debouncedMealSearch,
     locale: i18n.language,
     typeId: selectedMealTypeId ?? undefined,
+    visibility: mealVisibility === 'all' ? undefined : mealVisibility,
   });
 
   const {
@@ -798,6 +807,21 @@ export function useMealPlanBuilder(
     setUsersQ,
     daySearch,
     setDaySearch,
+    dayVisibility,
+    setDayVisibility,
+    mealVisibility,
+    setMealVisibility,
+    visibilityOptions: [
+      { value: 'all', label: builderCopy.day_library.secondary_filter_all ?? 'Tous types' },
+      {
+        value: 'PRIVATE',
+        label: builderCopy.day_library.type_private ?? 'Privé',
+      },
+      {
+        value: 'PUBLIC',
+        label: builderCopy.day_library.type_public ?? 'Public',
+      },
+    ],
     mealSearch,
     setMealSearch,
     dayLibrary: mealDays,

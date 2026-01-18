@@ -66,6 +66,7 @@ export function MealPlanBuilderDeleteDayDialog({
   const cancelLabel = t('nutrition-coach.builder.delete_day_dialog.actions.cancel');
   const confirmLabel = t('nutrition-coach.builder.delete_day_dialog.actions.confirm');
   const confirmingLabel = t('nutrition-coach.builder.delete_day_dialog.actions.confirming');
+  const helperText = t('nutrition-coach.builder.delete_day_dialog.helper');
 
   return (
     <StandardDialog
@@ -95,6 +96,9 @@ export function MealPlanBuilderDeleteDayDialog({
     >
       {/* General information */}
       <Stack spacing={1}>
+        <Typography variant="body2" color="text.secondary">
+          {helperText}
+        </Typography>
         {errorMessage ? (
           <Typography variant="body2" color="error">
             {errorMessage}

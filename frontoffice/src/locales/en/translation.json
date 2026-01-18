@@ -584,7 +584,9 @@
         "search_placeholder": "Search a session...",
         "filter_label": "Category",
         "filter_all": "All categories",
-        "button_create": "Add empty session"
+        "button_create": "Add empty session",
+        "page_title_create": "Create a sports program",
+        "page_title_edit": "Edit a sports program"
       },
       "templates_title": "Session templates",
       "templates_subtitle": "Choose a template from the list or click to add it.",
@@ -620,8 +622,8 @@
         "result_count_other": "{{count}}/{{total}} exercises",
         "primary_filter_label": "Category",
         "primary_filter_all": "All categories",
-        "secondary_filter_label": "Type",
-        "secondary_filter_all": "All types",
+        "secondary_filter_label": "Visibility",
+        "secondary_filter_all": "All",
         "type_private": "Private",
         "type_public": "Public",
         "limit_hint": "Showing up to 10 exercises sorted alphabetically.",
@@ -742,6 +744,7 @@
           "confirm": "Delete",
           "confirming": "Deleting..."
         },
+        "helper": "This action is irreversible and will permanently delete this template from your library.",
         "errors": {
           "delete_failed": "Unable to delete this session."
         }
@@ -1102,7 +1105,10 @@
         "delete_day_template": "Delete this meal day",
         "edit_day_template": "Edit this meal day",
         "limit_hint": "Showing up to 10 meal days sorted alphabetically.",
-        "refresh_label": "Reload meal days"
+        "refresh_label": "Reload meal days",
+        "secondary_filter_all": "All",
+        "type_private": "Private",
+        "type_public": "Public"
       },
       "meal_library": {
         "title": "Meal library",
@@ -1118,6 +1124,7 @@
         "type_filter_placeholder": "All meal types",
         "type_filter_no_results": "No meal type matches your filters.",
         "type_filter_clear_label": "Clear meal type filter",
+        "secondary_filter_all": "All",
         "limit_hint": "Showing up to 10 meals sorted alphabetically.",
         "add_tooltip": "Add this meal to a day in the plan",
         "public_tooltip": "Public meal shared with the community",
@@ -1183,6 +1190,7 @@
           "confirm": "Delete",
           "confirming": "Deleting..."
         },
+        "helper": "This action is irreversible and will permanently delete this template from your library.",
         "errors": {
           "delete_failed": "Unable to delete this meal day."
         }

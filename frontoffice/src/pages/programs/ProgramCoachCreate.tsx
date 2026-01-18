@@ -18,6 +18,10 @@ export function ProgramCoachCreate(): React.JSX.Element {
     [t],
   );
 
+  React.useEffect(() => {
+    document.title = t('programs-coatch.builder.header.page_title_create');
+  }, [t]);
+
   const handleCancel = React.useCallback(() => {
     navigate('/programs-coach');
   }, [navigate]);

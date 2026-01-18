@@ -123,6 +123,9 @@ export function ProgramBuilderPanel({
     registerExercise,
     getRawExerciseById,
     mode,
+    sessionType,
+    setSessionType,
+    sessionTypeOptions,
   } = useProgramBuilder(builderCopy, onCancel, {
     onCreated,
     onUpdated,
@@ -1036,6 +1039,22 @@ export function ProgramBuilderPanel({
                           sx={{ backgroundColor: theme.palette.background.default }}
                         />
 
+                        <TextField
+                          select
+                          fullWidth
+                          size="small"
+                          label={builderCopy.library.secondary_filter_label}
+                          value={sessionType}
+                          onChange={(event) => setSessionType(event.target.value as typeof sessionType)}
+                          sx={{ backgroundColor: theme.palette.background.default }}
+                        >
+                          {sessionTypeOptions.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+
                         <Typography variant="caption" color="text.secondary">
                           {sessionLimitHint}
                         </Typography>
@@ -1346,23 +1365,38 @@ export function ProgramBuilderPanel({
                         </ResponsiveButton>
 
                         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
-                          <TextField
-                            select
+                          <Autocomplete
                             fullWidth
                             size="small"
-                            label={builderCopy.library.primary_filter_label}
-                            value={exerciseCategory}
+                            options={exerciseCategoryOptions}
+                            value={
+                              exerciseCategory === 'all'
+                                ? null
+                                : exerciseCategoryOptions.find((cat) => cat.id === exerciseCategory) ?? null
+                            }
                             disabled={categoriesLoading && !exerciseCategoryOptions.length}
-                            onChange={(event) => setExerciseCategory(event.target.value)}
-                            sx={{ backgroundColor: theme.palette.background.default }}
-                          >
-                            <MenuItem value="all">{builderCopy.library.primary_filter_all}</MenuItem>
-                            {exerciseCategoryOptions.map((category) => (
-                              <MenuItem key={category.id} value={category.id}>
-                                {category.label}
-                              </MenuItem>
-                            ))}
-                          </TextField>
+                            onChange={(_event, newValue) => {
+                              setExerciseCategory(newValue?.id ?? 'all');
+                            }}
+                            isOptionEqualToValue={(option, value) => option.id === value.id}
+                            getOptionLabel={(option) => option.label}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label={builderCopy.library.primary_filter_label}
+                                placeholder={builderCopy.library.primary_filter_all}
+                                InputProps={{
+                                  ...params.InputProps,
+                                  startAdornment: (
+                                    <InputAdornment position="start">
+                                      <Search fontSize="small" color="disabled" />
+                                    </InputAdornment>
+                                  ),
+                                }}
+                                sx={{ backgroundColor: theme.palette.background.default }}
+                              />
+                            )}
+                          />
                           <TextField
                             select
                             fullWidth

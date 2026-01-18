@@ -116,6 +116,7 @@ type UseProgramBuilderResult = {
   selectedAthlete: User | null;
   users: User[];
   sessionSearch: string;
+  sessionType: 'all' | 'PUBLIC' | 'PRIVATE';
   exerciseSearch: string;
   exerciseCategory: string;
   exerciseType: 'all' | ExerciseVisibility;
@@ -140,6 +141,8 @@ type UseProgramBuilderResult = {
   setExerciseSearch: React.Dispatch<React.SetStateAction<string>>;
   setExerciseCategory: React.Dispatch<React.SetStateAction<string>>;
   setExerciseType: React.Dispatch<React.SetStateAction<'all' | ExerciseVisibility>>;
+  setSessionType: React.Dispatch<React.SetStateAction<'all' | 'PUBLIC' | 'PRIVATE'>>;
+  sessionTypeOptions: { value: 'all' | 'PUBLIC' | 'PRIVATE'; label: string }[];
   setUsersQ: React.Dispatch<React.SetStateAction<string>>;
   handleSelectAthlete: (_event: unknown, value: User | null) => void;
   handleFormChange: (
@@ -211,6 +214,7 @@ export function useProgramBuilder(
   const [usersQ, setUsersQ] = React.useState('');
   const [selectedAthlete, setSelectedAthlete] = React.useState<User | null>(null);
   const [sessionSearch, setSessionSearch] = React.useState('');
+  const [sessionType, setSessionType] = React.useState<'all' | 'PUBLIC' | 'PRIVATE'>('all');
   const [exerciseSearch, setExerciseSearch] = React.useState('');
   const [exerciseCategory, setExerciseCategory] = React.useState('all');
   const [exerciseType, setExerciseType] = React.useState<'all' | ExerciseVisibility>('all');
@@ -268,6 +272,11 @@ export function useProgramBuilder(
     [exerciseCategory],
   );
 
+  const sessionVisibilityFilter = React.useMemo<'PUBLIC' | 'PRIVATE' | undefined>(
+    () => (sessionType === 'all' ? undefined : sessionType),
+    [sessionType],
+  );
+
   const collator = React.useMemo(
     () => new Intl.Collator(i18n.language || undefined, { sensitivity: 'base' }),
     [i18n.language],
@@ -286,6 +295,7 @@ export function useProgramBuilder(
     limit: 10,
     q: debouncedSessionSearch,
     locale: i18n.language,
+    visibility: sessionVisibilityFilter,
   });
 
   const exerciseCategoryIdsFilter = React.useMemo<string[] | undefined>(() => {
@@ -499,6 +509,30 @@ export function useProgramBuilder(
   }, [exerciseLibrary]);
 
   const exerciseTypeOptions = React.useMemo<ExerciseTypeOption[]>(
+    () => [
+      { value: 'all', label: builderCopy.library.secondary_filter_all },
+      {
+        value: 'PRIVATE',
+        label:
+          builderCopy.library.type_private ??
+          t('programs-coatch.builder.library.type_private'),
+      },
+      {
+        value: 'PUBLIC',
+        label:
+          builderCopy.library.type_public ??
+          t('programs-coatch.builder.library.type_public'),
+      },
+    ],
+    [
+      builderCopy.library.secondary_filter_all,
+      builderCopy.library.type_private,
+      builderCopy.library.type_public,
+      t,
+    ],
+  );
+
+  const sessionTypeOptions = React.useMemo<{ value: 'all' | 'PUBLIC' | 'PRIVATE'; label: string }[]>(
     () => [
       { value: 'all', label: builderCopy.library.secondary_filter_all },
       {
@@ -1870,5 +1904,8 @@ export function useProgramBuilder(
     registerExercise,
     getRawExerciseById,
     mode,
+    sessionType,
+    setSessionType,
+    sessionTypeOptions,
   };
 }

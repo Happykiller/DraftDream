@@ -5,7 +5,7 @@ import { Stack, Typography } from '@mui/material';
 import { DeleteOutline } from '@mui/icons-material';
 
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
-import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
+import { StandardDialog } from '@components/common/StandardDialog';
 
 interface MealPlanDeleteDialogProps {
   open: boolean;
@@ -50,7 +50,7 @@ export function MealPlanDeleteDialog({
   );
 
   return (
-    <ProgramDialogLayout
+    <StandardDialog
       open={open}
       onClose={(event, reason) => {
         handleClose(event, reason);
@@ -82,6 +82,6 @@ export function MealPlanDeleteDialog({
           {t('nutrition-coach.list.delete_dialog.helper')}
         </Typography>
       </Stack>
-    </ProgramDialogLayout>
+    </StandardDialog>
   );
 }

@@ -4,9 +4,6 @@ import { ChevronLeft, ChevronRight, MoreHoriz } from '@mui/icons-material';
 import {
   Box,
   Button,
-  Dialog,
-  DialogContent,
-  DialogTitle,
   IconButton,
   Stack,
   ToggleButton,
@@ -15,6 +12,7 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
+import { StandardDialog } from '@components/common/StandardDialog';
 import { useTheme } from '@mui/material/styles';
 import type { MealRecord } from '@hooks/nutrition/useMealRecords';
 import type { ProgramRecord } from '@hooks/program-records/useProgramRecords';
@@ -654,21 +652,19 @@ export function AthleteCalendar({
           );
         })}
       </Box>
-      <Dialog
+      <StandardDialog
         open={Boolean(expandedDay)}
         onClose={handleCloseExpandedDay}
-        fullWidth
-        maxWidth="xs"
+        title={expandedDay ? t('athletes.details.calendar.records.title', { date: expandedDay.label }) : null}
+        dialogProps={{
+          fullWidth: true,
+          maxWidth: 'xs',
+        }}
       >
-        <DialogTitle>
-          {expandedDay ? t('athletes.details.calendar.records.title', { date: expandedDay.label }) : null}
-        </DialogTitle>
-        <DialogContent>
-          <Stack spacing={1} sx={{ py: 1 }}>
-            {expandedDay?.records.map((record) => renderRecordPill(record, handleRecordClick)) ?? null}
-          </Stack>
-        </DialogContent>
-      </Dialog>
+        <Stack spacing={1} sx={{ py: 1 }}>
+          {expandedDay?.records.map((record) => renderRecordPill(record, handleRecordClick)) ?? null}
+        </Stack>
+      </StandardDialog>
     </Stack>
   );
 }

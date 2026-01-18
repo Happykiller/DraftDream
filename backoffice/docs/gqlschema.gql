@@ -246,6 +246,7 @@ type ProgramRecordExerciseSetDataGql {
   index: Int!
   repetitions: String
   charge: String
+  rpe: Float
   done: Boolean
 }
 
@@ -1182,6 +1183,7 @@ input ProgramRecordExerciseSetDataInput {
   index: Int!
   repetitions: String
   charge: String
+  rpe: Float
   done: Boolean
 }
 

@@ -588,7 +588,9 @@
         "search_placeholder": "Rechercher une séance...",
         "filter_label": "Categorie",
         "filter_all": "Toutes categories",
-        "button_create": "Ajouter une séance vide"
+        "button_create": "Ajouter une séance vide",
+        "page_title_create": "Créer un programme sportif",
+        "page_title_edit": "Editer un programme sportif"
       },
       "templates_title": "Bibliotheque de séances",
       "templates_subtitle": "Choisissez une séance dans la liste ou cliquez pour l'ajouter.",
@@ -624,8 +626,8 @@
         "result_count_other": "{{count}}/{{total}} exercices",
         "primary_filter_label": "Categorie",
         "primary_filter_all": "Toutes categories",
-        "secondary_filter_label": "Type",
-        "secondary_filter_all": "Tous les types",
+        "secondary_filter_label": "Visibilité",
+        "secondary_filter_all": "Tous",
         "type_private": "Privé",
         "type_public": "Public",
         "limit_hint": "Affichage des 10 exercices maximum triés par ordre alphabétique.",
@@ -746,6 +748,7 @@
           "confirm": "Supprimer",
           "confirming": "Suppression..."
         },
+        "helper": "Cette action est irréversible et supprimera définitivement ce template de votre bibliothèque.",
         "errors": {
           "delete_failed": "Impossible de supprimer cette séance."
         }
@@ -1106,7 +1109,10 @@
         "delete_day_template": "Supprimer cette journée",
         "edit_day_template": "Modifier cette journée",
         "limit_hint": "Affichage des 10 journées maximum triées par ordre alphabétique.",
-        "refresh_label": "Recharger les journées"
+        "refresh_label": "Recharger les journées",
+        "secondary_filter_all": "Tous",
+        "type_private": "Privé",
+        "type_public": "Public"
       },
       "meal_library": {
         "title": "Bibliothèque de repas",
@@ -1118,10 +1124,12 @@
         "empty_state": "Aucun repas ne correspond à vos filtres.",
         "add_label": "Ajouter au jour",
         "create_label": "Nouveau repas",
-        "type_filter_label": "Type de repas",
+        "type_filter_label": "Type",
         "type_filter_placeholder": "Tous les types de repas",
         "type_filter_no_results": "Aucun type ne correspond à vos filtres.",
         "type_filter_clear_label": "Effacer le filtre de type",
+        "secondary_filter_label": "Visibilité",
+        "secondary_filter_all": "Tous",
         "limit_hint": "Affichage des 10 repas maximum triés par ordre alphabétique.",
         "add_tooltip": "Ajouter ce repas à une journée du plan",
         "public_tooltip": "Repas public partagé avec la communauté",
@@ -1187,6 +1195,7 @@
           "confirm": "Supprimer",
           "confirming": "Suppression..."
         },
+        "helper": "Cette action est irréversible et supprimera définitivement ce template de votre bibliothèque.",
         "errors": {
           "delete_failed": "Impossible de supprimer cette journée repas."
         }

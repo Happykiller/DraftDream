@@ -128,6 +128,11 @@ export function MealPlanBuilderPanel({
     updatePlanName,
     nutritionSummary,
     totalMeals,
+    dayVisibility,
+    setDayVisibility,
+    mealVisibility,
+    setMealVisibility,
+    visibilityOptions,
   } = useMealPlanBuilder(builderCopy, {
     onCancel,
     onCreated,
@@ -770,6 +775,23 @@ export function MealPlanBuilderPanel({
                             {builderCopy.day_library.limit_hint}
                           </Typography>
                         ) : null}
+
+                        <TextField
+                          select
+                          fullWidth
+                          size="small"
+                          label={builderCopy.day_library.secondary_filter_label}
+                          value={dayVisibility}
+                          onChange={(event) => setDayVisibility(event.target.value as typeof dayVisibility)}
+                          sx={{ backgroundColor: theme.palette.background.default }}
+                        >
+                          {visibilityOptions.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+
                         <Stack spacing={1.5} sx={{ overflow: 'auto' }}>
                           {dayLibraryLoading ? (
                             <Stack spacing={1}>
@@ -1017,6 +1039,7 @@ export function MealPlanBuilderPanel({
                               ) : undefined,
                           }}
                         />
+
                         <ResponsiveButton
                           onClick={handleOpenMealDialog}
                           size="small"
@@ -1025,26 +1048,54 @@ export function MealPlanBuilderPanel({
                         >
                           {builderCopy.meal_library.create_label}
                         </ResponsiveButton>
-                        <Autocomplete
-                          options={mealTypes}
-                          loading={mealTypesLoading}
-                          value={selectedMealType}
-                          onChange={handleMealTypeFilterChange}
-                          getOptionLabel={(option) => option.label}
-                          isOptionEqualToValue={(option, value) => option.id === value.id}
-                          size="small"
-                          fullWidth
-                          noOptionsText={builderCopy.meal_library.type_filter_no_results ?? ''}
-                          clearText={builderCopy.meal_library.type_filter_clear_label}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label={builderCopy.meal_library.type_filter_label}
-                              placeholder={builderCopy.meal_library.type_filter_placeholder}
-                              size="small"
-                            />
-                          )}
-                        />
+
+                        <Stack direction="row" spacing={2}>
+                          <Autocomplete
+                            options={mealTypes}
+                            loading={mealTypesLoading}
+                            value={selectedMealType}
+                            onChange={handleMealTypeFilterChange}
+                            getOptionLabel={(option) => option.label}
+                            isOptionEqualToValue={(option, value) => option.id === value.id}
+                            size="small"
+                            fullWidth
+                            sx={{ width: '50%' }}
+                            noOptionsText={builderCopy.meal_library.type_filter_no_results ?? ''}
+                            clearText={builderCopy.meal_library.type_filter_clear_label}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label={builderCopy.meal_library.type_filter_label}
+                                placeholder={builderCopy.meal_library.type_filter_placeholder}
+                                size="small"
+                                InputProps={{
+                                  ...params.InputProps,
+                                  startAdornment: (
+                                    <InputAdornment position="start">
+                                      <Search fontSize="small" color="disabled" />
+                                    </InputAdornment>
+                                  ),
+                                }}
+                              />
+                            )}
+                          />
+
+                          <TextField
+                            select
+                            fullWidth
+                            size="small"
+                            label={builderCopy.meal_library.secondary_filter_label}
+                            value={mealVisibility}
+                            onChange={(event) => setMealVisibility(event.target.value as typeof mealVisibility)}
+                            sx={{ backgroundColor: theme.palette.background.default, width: '50%' }}
+                          >
+                            {visibilityOptions.map((option) => (
+                              <MenuItem key={option.value} value={option.value}>
+                                {option.label}
+                              </MenuItem>
+                            ))}
+                          </TextField>
+                        </Stack>
                         {builderCopy.meal_library.limit_hint ? (
                           <Typography variant="caption" color="text.secondary">
                             {builderCopy.meal_library.limit_hint}

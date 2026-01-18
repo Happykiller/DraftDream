@@ -4,6 +4,7 @@ import {
   ArrowDownward,
   ArrowUpward,
   Delete,
+  DeleteOutline,
   Edit,
   Save,
 } from '@mui/icons-material';
@@ -440,7 +441,7 @@ export const MealPlanBuilderPanelDraftDay = React.memo(function MealPlanBuilderP
             <Tooltip title={builderCopy.structure.remove_day_label}>
               <span>
                 <IconButton onClick={() => onRemoveDay(day.uiId)} size="small">
-                  <Delete fontSize="small" />
+                  <DeleteOutline fontSize="small" />
                 </IconButton>
               </span>
             </Tooltip>

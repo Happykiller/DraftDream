@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import type { DialogProps } from '@mui/material/Dialog';
 
-import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
+import { StandardDialog } from '@components/common/StandardDialog';
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
 
 import type { Prospect } from '@app-types/prospects';
@@ -80,7 +80,7 @@ export function ProspectDeleteDialog({
   }, [loading, onConfirm]);
 
   return (
-    <ProgramDialogLayout
+    <StandardDialog
       open={open}
       onClose={(event, reason) => {
         handleDialogClose(event, reason);
@@ -115,6 +115,6 @@ export function ProspectDeleteDialog({
           {copy.helper}
         </Typography>
       </Stack>
-    </ProgramDialogLayout>
+    </StandardDialog>
   );
 }

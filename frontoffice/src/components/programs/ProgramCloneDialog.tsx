@@ -14,7 +14,7 @@ import { UserType } from '@src/commons/enums';
 import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
 import type { Program, ProgramUser } from '@hooks/programs/usePrograms';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
-import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
+import { StandardDialog } from '@components/common/StandardDialog';
 
 interface AthleteOption {
   id: string;
@@ -307,7 +307,7 @@ export function ProgramCloneDialog({
   );
 
   return (
-    <ProgramDialogLayout
+    <StandardDialog
       open={open}
       onClose={handleDialogClose}
       icon={<ContentCopy fontSize="large" />}
@@ -369,6 +369,6 @@ export function ProgramCloneDialog({
           </Typography>
         )}
       </Stack>
-    </ProgramDialogLayout>
+    </StandardDialog>
   );
 }

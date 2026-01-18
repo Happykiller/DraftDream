@@ -1,20 +1,27 @@
 import * as React from 'react';
-import type {
-  BoxProps,
-  DialogActionsProps,
-  DialogContentProps,
-  DialogProps,
+import { alpha, useTheme } from '@mui/material/styles';
+import type { PaletteColor } from '@mui/material/styles';
+import {
+  Box,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Stack,
+  Typography,
 } from '@mui/material';
-
-import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
+import type { BoxProps } from '@mui/material/Box';
+import type { DialogContentProps } from '@mui/material/DialogContent';
+import type { DialogProps } from '@mui/material/Dialog';
+import type { DialogActionsProps } from '@mui/material/DialogActions';
 
 export interface StandardDialogProps {
   open: boolean;
   title: React.ReactNode;
   description?: React.ReactNode;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   tone?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info';
-  actions: React.ReactNode;
+  actions?: React.ReactNode;
   children: React.ReactNode;
   onClose?: DialogProps['onClose'];
   dialogProps?: Omit<DialogProps, 'open' | 'onClose' | 'children'>;
@@ -39,26 +46,89 @@ export function StandardDialog({
   dialogProps,
   contentProps,
   actionsProps,
-  formComponent,
+  formComponent = 'div',
   formProps,
 }: StandardDialogProps): React.JSX.Element {
+  const theme = useTheme();
+  const { fullWidth = true, ...restDialogProps } = dialogProps ?? {};
+  const { dividers = true, ...restContentProps } = contentProps ?? {};
+  const { sx: actionsSx, ...restActionsProps } = actionsProps ?? {};
+
+  const paletteColor: PaletteColor = React.useMemo(() => {
+    switch (tone) {
+      case 'primary':
+        return theme.palette.primary;
+      case 'secondary':
+        return theme.palette.secondary;
+      case 'warning':
+        return theme.palette.warning;
+      case 'error':
+        return theme.palette.error;
+      case 'info':
+        return theme.palette.info;
+      case 'success':
+      default:
+        return theme.palette.success;
+    }
+  }, [theme, tone]);
+
+  const headerBackground = alpha(paletteColor.main, 0.2);
+  const iconContrastColor = paletteColor.contrastText ?? theme.palette.getContrastText(paletteColor.main);
+
+  const mergedActionsSx = !actionsSx
+    ? { backgroundColor: '#e0dcdce0' }
+    : Array.isArray(actionsSx)
+      ? [{ backgroundColor: '#e0dcdce0' }, ...actionsSx]
+      : [{ backgroundColor: '#e0dcdce0' }, actionsSx];
+
   return (
-    <ProgramDialogLayout
-      open={open}
-      title={title}
-      description={description}
-      icon={icon}
-      tone={tone}
-      actions={actions}
-      onClose={onClose}
-      dialogProps={dialogProps}
-      contentProps={contentProps}
-      actionsProps={actionsProps}
-      formComponent={formComponent}
-      formProps={formProps}
-    >
-      {/* General information */}
-      {children}
-    </ProgramDialogLayout>
+    <Dialog open={open} onClose={onClose} fullWidth={fullWidth} {...restDialogProps}>
+      <Box component={formComponent} {...formProps}>
+        <DialogTitle
+          sx={{
+            backgroundColor: headerBackground,
+          }}
+        >
+          <Stack direction="row" spacing={2} alignItems="center">
+            {icon ? (
+              <Box
+                aria-hidden
+                sx={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 2,
+                  bgcolor: paletteColor.main,
+                  color: iconContrastColor,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                }}
+              >
+                {icon}
+              </Box>
+            ) : null}
+            <Stack spacing={0.5}>
+              <Typography variant="h6" component="span" sx={{ fontWeight: 700 }}>
+                {title}
+              </Typography>
+              {description ? (
+                <Typography variant="body2" color="text.secondary">
+                  {description}
+                </Typography>
+              ) : null}
+            </Stack>
+          </Stack>
+        </DialogTitle>
+        <DialogContent dividers={dividers} {...restContentProps}>
+          {children}
+        </DialogContent>
+        {actions ? (
+          <DialogActions sx={mergedActionsSx} {...restActionsProps}>
+            {actions}
+          </DialogActions>
+        ) : null}
+      </Box>
+    </Dialog>
   );
 }
