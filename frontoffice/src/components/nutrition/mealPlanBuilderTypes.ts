@@ -61,6 +61,8 @@ export interface MealPlanBuilderCopy {
     search_placeholder: string;
     empty_state: string;
     add_label: string;
+    delete_day_template: string;
+    edit_day_template: string;
     limit_hint?: string;
     refresh_label?: string;
   };
@@ -102,6 +104,7 @@ export interface MealPlanBuilderCopy {
     edit_meal_description?: string;
     add_meal_placeholder: string;
     add_day_label: string;
+    save_day: string;
     move_day_up_label: string;
     move_day_down_label: string;
     move_meal_up_label: string;

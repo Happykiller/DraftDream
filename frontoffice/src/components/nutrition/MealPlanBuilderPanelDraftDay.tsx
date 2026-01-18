@@ -1,6 +1,12 @@
 // src/components/nutrition/MealPlanBuilderPanelDraftDay.tsx
 import * as React from 'react';
-import { ArrowDownward, ArrowUpward, Delete, Edit } from '@mui/icons-material';
+import {
+  ArrowDownward,
+  ArrowUpward,
+  Delete,
+  Edit,
+  Save,
+} from '@mui/icons-material';
 import { alpha, useTheme } from '@mui/material/styles';
 import {
   Box,
@@ -33,6 +39,7 @@ type MealPlanBuilderPanelDraftDayProps = {
   onRemoveDay: (dayId: string) => void;
   onMoveDayUp: (dayId: string) => void;
   onMoveDayDown: (dayId: string) => void;
+  onSaveDay: (dayId: string) => void;
   onRemoveMeal: (dayId: string, mealId: string) => void;
   onMoveMealUp: (dayId: string, mealId: string) => void;
   onMoveMealDown: (dayId: string, mealId: string) => void;
@@ -53,6 +60,7 @@ export const MealPlanBuilderPanelDraftDay = React.memo(function MealPlanBuilderP
   onRemoveDay,
   onMoveDayUp,
   onMoveDayDown,
+  onSaveDay,
   onRemoveMeal,
   onMoveMealUp,
   onMoveMealDown,
@@ -320,6 +328,15 @@ export const MealPlanBuilderPanelDraftDay = React.memo(function MealPlanBuilderP
     () => builderCopy.summary?.day_title ?? builderCopy.summary?.nutrition_title,
     [builderCopy.summary?.day_title, builderCopy.summary?.nutrition_title],
   );
+  const saveDayLabel = builderCopy.structure.save_day;
+
+  const handleSaveDay = React.useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.stopPropagation();
+      onSaveDay(day.uiId);
+    },
+    [day.uiId, onSaveDay],
+  );
 
   return (
     <Card
@@ -335,6 +352,7 @@ export const MealPlanBuilderPanelDraftDay = React.memo(function MealPlanBuilderP
         },
       }}
     >
+      {/* General information */}
       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
         <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
           <Box
@@ -398,6 +416,13 @@ export const MealPlanBuilderPanelDraftDay = React.memo(function MealPlanBuilderP
             )}
           </Box>
           <Stack direction="row" spacing={0.5}>
+            <Tooltip title={saveDayLabel}>
+              <span>
+                <IconButton onClick={handleSaveDay} size="small">
+                  <Save fontSize="small" />
+                </IconButton>
+              </span>
+            </Tooltip>
             <Tooltip title={builderCopy.structure.move_day_up_label}>
               <span>
                 <IconButton onClick={() => onMoveDayUp(day.uiId)} size="small" disabled={index === 0}>

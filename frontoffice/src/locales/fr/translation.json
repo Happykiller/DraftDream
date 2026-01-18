@@ -1103,6 +1103,8 @@
         "result_count_other": "{{count}}/{{total}} journées",
         "empty_state": "Aucune journée ne correspond à vos filtres.",
         "add_label": "Ajouter au plan",
+        "delete_day_template": "Supprimer cette journée",
+        "edit_day_template": "Modifier cette journée",
         "limit_hint": "Affichage des 10 journées maximum triées par ordre alphabétique.",
         "refresh_label": "Recharger les journées"
       },
@@ -1154,10 +1156,57 @@
         "edit_meal_description": "Ajustez ce repas sans modifier le modèle d'origine.",
         "add_meal_placeholder": "Utilisez la bibliothèque de repas pour compléter cette journée.",
         "add_day_label": "Ajouter une journée vide",
+        "save_day": "Sauvegarder la journée",
         "move_day_up_label": "Monter la journée",
         "move_day_down_label": "Descendre la journée",
         "move_meal_up_label": "Monter le repas",
         "move_meal_down_label": "Descendre le repas"
+      },
+      "save_day_dialog": {
+        "title": "Sauvegarder la journée repas",
+        "subtitle": "Modifiez le nom de la journée avant de l'enregistrer comme template.",
+        "fields": {
+          "label": "Nom de la journée",
+          "placeholder": "Exemple : Jour entraînement"
+        },
+        "actions": {
+          "cancel": "Annuler",
+          "save": "Sauvegarder",
+          "saving": "Sauvegarde..."
+        },
+        "errors": {
+          "missing_label": "Veuillez renseigner un nom de journée.",
+          "save_failed": "Impossible de sauvegarder cette journée repas."
+        }
+      },
+      "delete_day_dialog": {
+        "title": "Supprimer la journée repas",
+        "subtitle": "Voulez-vous vraiment supprimer « {{label}} » ?",
+        "actions": {
+          "cancel": "Annuler",
+          "confirm": "Supprimer",
+          "confirming": "Suppression..."
+        },
+        "errors": {
+          "delete_failed": "Impossible de supprimer cette journée repas."
+        }
+      },
+      "edit_day_dialog": {
+        "title": "Modifier la journée repas",
+        "subtitle": "Mettez à jour le nom de la journée.",
+        "fields": {
+          "label": "Nom de la journée",
+          "placeholder": "Exemple : Jour entraînement"
+        },
+        "actions": {
+          "cancel": "Annuler",
+          "save": "Enregistrer",
+          "saving": "Enregistrement..."
+        },
+        "errors": {
+          "missing_label": "Veuillez renseigner un nom de journée.",
+          "save_failed": "Impossible de modifier cette journée repas."
+        }
       },
       "footer": {
         "cancel": "Annuler",

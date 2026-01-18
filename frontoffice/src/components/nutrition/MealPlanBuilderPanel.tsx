@@ -21,6 +21,7 @@ import {
 } from '@mui/material';
 import { Add, Edit, Replay, Search } from '@mui/icons-material';
 
+import type { MealDay } from '@hooks/nutrition/useMealDays';
 import type { Meal } from '@hooks/nutrition/useMeals';
 import type { MealType } from '@hooks/nutrition/useMealTypes';
 import type { MealPlan } from '@hooks/nutrition/useMealPlans';
@@ -37,10 +38,13 @@ import type {
   MealPlanBuilderMeal,
 } from './mealPlanBuilderTypes';
 import { MealPlanBuilderCreateMealDialog } from './MealPlanBuilderCreateMealDialog';
+import { MealPlanBuilderDeleteDayDialog } from './MealPlanBuilderDeleteDayDialog';
 import { MealPlanBuilderEditDraftMealDialog } from './MealPlanBuilderEditDraftMealDialog';
+import { MealPlanBuilderEditDayDialog } from './MealPlanBuilderEditDayDialog';
 import { MealPlanBuilderPanelDraftDay } from './MealPlanBuilderPanelDraftDay';
 import { MealPlanBuilderPanelLibraryDay } from './MealPlanBuilderPanelLibraryDay';
 import { MealPlanBuilderPanelLibraryMeal } from './MealPlanBuilderPanelLibraryMeal';
+import { MealPlanBuilderSaveDayDialog } from './MealPlanBuilderSaveDayDialog';
 
 import type { User } from '@src/hooks/useUsers';
 
@@ -103,6 +107,9 @@ export function MealPlanBuilderPanel({
     handleMoveDayUp,
     handleMoveDayDown,
     handleUpdateDay,
+    handleSaveDayTemplate,
+    handleDeleteDayTemplate,
+    handleEditDayTemplate,
     handleAddMealToDay,
     handleRemoveMeal,
     handleMoveMealUp,
@@ -137,6 +144,9 @@ export function MealPlanBuilderPanel({
     meal: MealPlanBuilderMeal;
     contextLabel: string;
   } | null>(null);
+  const [saveDayTarget, setSaveDayTarget] = React.useState<MealPlanBuilderDay | null>(null);
+  const [deleteDayTarget, setDeleteDayTarget] = React.useState<MealDay | null>(null);
+  const [editDayTarget, setEditDayTarget] = React.useState<MealDay | null>(null);
 
   const selectedMealType = React.useMemo<MealType | null>(
     () => mealTypes.find((type) => type.id === selectedMealTypeId) ?? null,
@@ -477,6 +487,67 @@ export function MealPlanBuilderPanel({
     [draftMealEditor, handleUpdateMeal],
   );
 
+  const handleOpenSaveDayDialog = React.useCallback(
+    (dayId: string) => {
+      const target = days.find((dayItem) => dayItem.uiId === dayId);
+      if (!target) {
+        return;
+      }
+      setSaveDayTarget(target);
+    },
+    [days],
+  );
+
+  const handleCloseSaveDayDialog = React.useCallback(() => {
+    setSaveDayTarget(null);
+  }, []);
+
+  const handleSaveDayDialog = React.useCallback(
+    async (label: string) => {
+      if (!saveDayTarget) {
+        return;
+      }
+      await handleSaveDayTemplate(saveDayTarget.uiId, label);
+      setSaveDayTarget(null);
+    },
+    [handleSaveDayTemplate, saveDayTarget],
+  );
+
+  const handleOpenDeleteDayDialog = React.useCallback((template: MealDay) => {
+    setDeleteDayTarget(template);
+  }, []);
+
+  const handleCloseDeleteDayDialog = React.useCallback(() => {
+    setDeleteDayTarget(null);
+  }, []);
+
+  const handleConfirmDeleteDay = React.useCallback(async () => {
+    if (!deleteDayTarget) {
+      return;
+    }
+    await handleDeleteDayTemplate(deleteDayTarget.id);
+    setDeleteDayTarget(null);
+  }, [deleteDayTarget, handleDeleteDayTemplate]);
+
+  const handleOpenEditDayDialog = React.useCallback((template: MealDay) => {
+    setEditDayTarget(template);
+  }, []);
+
+  const handleCloseEditDayDialog = React.useCallback(() => {
+    setEditDayTarget(null);
+  }, []);
+
+  const handleSaveEditDayDialog = React.useCallback(
+    async (label: string) => {
+      if (!editDayTarget) {
+        return;
+      }
+      await handleEditDayTemplate(editDayTarget.id, label);
+      setEditDayTarget(null);
+    },
+    [editDayTarget, handleEditDayTemplate],
+  );
+
   const mealDialog = (
     <MealPlanBuilderCreateMealDialog
       open={isMealDialogOpen}
@@ -717,6 +788,8 @@ export function MealPlanBuilderPanel({
                                 day={day}
                                 builderCopy={builderCopy}
                                 onAdd={handleAddDayFromTemplate}
+                                onEdit={() => handleOpenEditDayDialog(day)}
+                                onDelete={() => handleOpenDeleteDayDialog(day)}
                               />
                             ))
                           )}
@@ -876,6 +949,7 @@ export function MealPlanBuilderPanel({
                                     onMoveMealDown={handleMoveMealDown}
                                     onUpdateMeal={handleUpdateMeal}
                                     onEditMeal={handleOpenDraftMealEditor}
+                                    onSaveDay={handleOpenSaveDayDialog}
                                   />
                                 ))}
                                 <ResponsiveButton
@@ -1067,6 +1141,24 @@ export function MealPlanBuilderPanel({
 
       {mealDialog}
       {draftMealDialog}
+      <MealPlanBuilderSaveDayDialog
+        open={Boolean(saveDayTarget)}
+        dayLabel={saveDayTarget?.label ?? ''}
+        onClose={handleCloseSaveDayDialog}
+        onSave={handleSaveDayDialog}
+      />
+      <MealPlanBuilderDeleteDayDialog
+        open={Boolean(deleteDayTarget)}
+        dayLabel={deleteDayTarget?.label ?? ''}
+        onClose={handleCloseDeleteDayDialog}
+        onConfirm={handleConfirmDeleteDay}
+      />
+      <MealPlanBuilderEditDayDialog
+        open={Boolean(editDayTarget)}
+        dayLabel={editDayTarget?.label ?? ''}
+        onClose={handleCloseEditDayDialog}
+        onSave={handleSaveEditDayDialog}
+      />
     </>
   );
 }

@@ -1,6 +1,10 @@
 // src/components/nutrition/MealPlanBuilderPanelLibraryDay.tsx
 import * as React from 'react';
-import { Add } from '@mui/icons-material';
+import {
+  Add,
+  DeleteOutline,
+  Edit,
+} from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import { Chip, IconButton, Paper, Stack, Tooltip, Typography } from '@mui/material';
 
@@ -14,16 +18,18 @@ type MealPlanBuilderPanelLibraryDayProps = {
   day: MealDay;
   builderCopy: MealPlanBuilderCopy;
   onAdd: (day: MealDay) => void;
+  onEdit?: () => void | Promise<void>;
+  onDelete?: () => void | Promise<void>;
 };
 
 export const MealPlanBuilderPanelLibraryDay = React.memo(function MealPlanBuilderPanelLibraryDay({
   day,
   builderCopy,
   onAdd,
+  onEdit,
+  onDelete,
 }: MealPlanBuilderPanelLibraryDayProps): React.JSX.Element {
   const theme = useTheme();
-
-
 
   const visibleMeals = React.useMemo(
     () => (day.meals ?? []).slice(0, 3),
@@ -33,6 +39,26 @@ export const MealPlanBuilderPanelLibraryDay = React.memo(function MealPlanBuilde
   const handleAddClick = React.useCallback(() => {
     onAdd(day);
   }, [day, onAdd]);
+
+  const handleEditClick = React.useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.stopPropagation();
+      onEdit?.();
+    },
+    [onEdit],
+  );
+
+  const handleDeleteClick = React.useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.stopPropagation();
+      onDelete?.();
+    },
+    [onDelete],
+  );
+
+  const isPrivateTemplate = day.visibility === 'PRIVATE';
+  const canEdit = isPrivateTemplate && Boolean(onEdit);
+  const canDelete = isPrivateTemplate && Boolean(onDelete);
 
   return (
     <Paper
@@ -50,6 +76,7 @@ export const MealPlanBuilderPanelLibraryDay = React.memo(function MealPlanBuilde
         },
       }}
     >
+      {/* General information */}
       {/* Day template */}
       <Stack spacing={1.25}>
         <Stack
@@ -60,7 +87,18 @@ export const MealPlanBuilderPanelLibraryDay = React.memo(function MealPlanBuilde
           rowGap={1}
         >
           <Stack spacing={0.5} flexGrow={1} minWidth={0}>
-            <TextWithTooltip tooltipTitle={day.label} variant="subtitle1" sx={{ fontWeight: 600 }} />
+            <Stack direction="row" spacing={1} alignItems="center">
+              {canEdit ? (
+                <Tooltip title={builderCopy.day_library.edit_day_template} arrow>
+                  <span style={{ display: 'inline-flex' }}>
+                    <IconButton size="small" onClick={handleEditClick}>
+                      <Edit fontSize="small" />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+              ) : null}
+              <TextWithTooltip tooltipTitle={day.label} variant="subtitle1" sx={{ fontWeight: 600 }} />
+            </Stack>
             {day.description ? (
               <TextWithTooltip
                 tooltipTitle={day.description}
@@ -121,6 +159,17 @@ export const MealPlanBuilderPanelLibraryDay = React.memo(function MealPlanBuilde
             </Stack>
           </Stack>
         )}
+        {canDelete ? (
+          <Stack direction="row" justifyContent="flex-end">
+            <Tooltip title={builderCopy.day_library.delete_day_template} arrow>
+              <span style={{ display: 'inline-flex' }}>
+                <IconButton size="small" onClick={handleDeleteClick}>
+                  <DeleteOutline fontSize="small" />
+                </IconButton>
+              </span>
+            </Tooltip>
+          </Stack>
+        ) : null}
       </Stack>
     </Paper>
   );

@@ -67,6 +67,9 @@ export interface UseMealPlanBuilderResult {
   handleMoveDayUp: (dayId: string) => void;
   handleMoveDayDown: (dayId: string) => void;
   handleUpdateDay: (dayId: string, patch: Partial<MealPlanBuilderDay>) => void;
+  handleSaveDayTemplate: (dayId: string, label: string) => Promise<void>;
+  handleDeleteDayTemplate: (dayId: string) => Promise<void>;
+  handleEditDayTemplate: (dayId: string, label: string) => Promise<void>;
   handleAddMealToDay: (dayId: string, meal: Meal) => void;
   handleRemoveMeal: (dayId: string, mealUiId: string) => void;
   handleMoveMealUp: (dayId: string, mealUiId: string) => void;
@@ -324,6 +327,9 @@ export function useMealPlanBuilder(
     items: mealDays,
     total: dayLibraryTotal,
     loading: dayLibraryLoading,
+    create: createMealDay,
+    update: updateMealDay,
+    remove: removeMealDay,
     reload: reloadMealDays,
   } = useMealDays({
     page: 1,
@@ -538,6 +544,57 @@ export function useMealPlanBuilder(
       ),
     );
   }, []);
+
+  /**
+   * Saves the current day configuration as a reusable meal day template.
+   */
+  const handleSaveDayTemplate = React.useCallback(
+    async (dayId: string, label: string) => {
+      const targetDay = days.find((dayItem) => dayItem.uiId === dayId);
+      if (!targetDay) {
+        return;
+      }
+
+      const trimmedLabel = label.trim() || targetDay.label;
+      const trimmedDescription = targetDay.description?.trim() ?? '';
+      const mealIds = targetDay.meals
+        .map((meal) => meal.templateMealId ?? meal.id)
+        .filter((mealId): mealId is string => Boolean(mealId));
+
+      await createMealDay({
+        locale: i18n.language,
+        label: trimmedLabel,
+        description: trimmedDescription.length > 0 ? trimmedDescription : undefined,
+        mealIds,
+        visibility: 'PRIVATE',
+      });
+    },
+    [createMealDay, days, i18n.language],
+  );
+
+  /**
+   * Removes an existing meal day template from the library.
+   */
+  const handleDeleteDayTemplate = React.useCallback(
+    async (dayId: string) => {
+      await removeMealDay(dayId);
+    },
+    [removeMealDay],
+  );
+
+  /**
+   * Updates the label of an existing meal day template.
+   */
+  const handleEditDayTemplate = React.useCallback(
+    async (dayId: string, label: string) => {
+      const trimmedLabel = label.trim();
+      if (!trimmedLabel) {
+        return;
+      }
+      await updateMealDay({ id: dayId, label: trimmedLabel });
+    },
+    [updateMealDay],
+  );
 
   const handleAddMealToDay = React.useCallback((dayId: string, meal: Meal) => {
     setDays((prev) => {
@@ -761,6 +818,9 @@ export function useMealPlanBuilder(
     handleMoveDayUp,
     handleMoveDayDown,
     handleUpdateDay,
+    handleSaveDayTemplate,
+    handleDeleteDayTemplate,
+    handleEditDayTemplate,
     handleAddMealToDay,
     handleRemoveMeal,
     handleMoveMealUp,

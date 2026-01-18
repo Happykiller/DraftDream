@@ -1099,6 +1099,8 @@
         "result_count_other": "{{count}}/{{total}} days",
         "empty_state": "No meal day matches your filters.",
         "add_label": "Add day to plan",
+        "delete_day_template": "Delete this meal day",
+        "edit_day_template": "Edit this meal day",
         "limit_hint": "Showing up to 10 meal days sorted alphabetically.",
         "refresh_label": "Reload meal days"
       },
@@ -1150,10 +1152,57 @@
         "edit_meal_description": "Adjust this meal without changing the original template.",
         "add_meal_placeholder": "Use the meal library to populate this day.",
         "add_day_label": "Add empty day",
+        "save_day": "Save day",
         "move_day_up_label": "Move day up",
         "move_day_down_label": "Move day down",
         "move_meal_up_label": "Move meal up",
         "move_meal_down_label": "Move meal down"
+      },
+      "save_day_dialog": {
+        "title": "Save meal day",
+        "subtitle": "Update the day label before saving it as a template.",
+        "fields": {
+          "label": "Day name",
+          "placeholder": "Example: Training day"
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "save": "Save",
+          "saving": "Saving..."
+        },
+        "errors": {
+          "missing_label": "Please provide a day name.",
+          "save_failed": "Unable to save this meal day."
+        }
+      },
+      "delete_day_dialog": {
+        "title": "Delete meal day",
+        "subtitle": "Are you sure you want to delete \"{{label}}\"?",
+        "actions": {
+          "cancel": "Cancel",
+          "confirm": "Delete",
+          "confirming": "Deleting..."
+        },
+        "errors": {
+          "delete_failed": "Unable to delete this meal day."
+        }
+      },
+      "edit_day_dialog": {
+        "title": "Edit meal day",
+        "subtitle": "Update the day label for this template.",
+        "fields": {
+          "label": "Day name",
+          "placeholder": "Example: Training day"
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "save": "Save",
+          "saving": "Saving..."
+        },
+        "errors": {
+          "missing_label": "Please provide a day name.",
+          "save_failed": "Unable to update this meal day."
+        }
       },
       "footer": {
         "cancel": "Cancel",
