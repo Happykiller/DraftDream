@@ -37,6 +37,7 @@ export function ProgramRecordExerciseCardReadOnly({
                 borderColor: theme.palette.divider,
             })}
         >
+            {/* General information */}
             <Stack spacing={1.5}>
                 <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
                     {exerciseIndex + 1}. {exerciseLabel}
@@ -81,7 +82,7 @@ export function ProgramRecordExerciseCardReadOnly({
                     </Stack>
                 ) : null}
                 <Stack spacing={0.5}>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography variant="body2" fontWeight={600}>
                         {t('program_record.form.exercise_notes_label')}
                     </Typography>
                     <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
