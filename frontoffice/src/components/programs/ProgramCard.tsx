@@ -10,7 +10,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { alpha } from '@mui/material/styles';
+import { alpha, useTheme } from '@mui/material/styles';
 import {
   CalendarMonthOutlined,
   CenterFocusStrongOutlined,
@@ -78,6 +78,7 @@ export const ProgramCard = React.memo(function ProgramCard({
   onPrefetch,
 }: ProgramCardProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
+  const theme = useTheme();
   const role = session((state) => state.role);
   const sessionsCount = program.sessions.length;
   const exercisesCount = program.sessions.reduce(
@@ -176,6 +177,14 @@ export const ProgramCard = React.memo(function ProgramCard({
   const availableActions = React.useMemo(
     () => PROGRAM_ACTIONS.filter((action) => allowedActions.includes(action.key)),
     [allowedActions],
+  );
+  const summaryBackground = React.useMemo(
+    () => alpha(theme.palette.primary.main, 0.08),
+    [theme.palette.primary.main],
+  );
+  const summaryBorder = React.useMemo(
+    () => alpha(theme.palette.primary.main, 0.16),
+    [theme.palette.primary.main],
   );
 
   const handleActionClick = React.useCallback(
@@ -292,6 +301,7 @@ export const ProgramCard = React.memo(function ProgramCard({
               : {}),
           })}
         >
+          {/* General information */}
           {/* Header */}
           <Grid container>
             {/* Program summary */}
@@ -387,29 +397,62 @@ export const ProgramCard = React.memo(function ProgramCard({
           </Grid>
 
           {/* Metrics */}
-          <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
-            <Stack direction="row" spacing={0.75} alignItems="center">
-              <CalendarMonthOutlined fontSize="small" sx={{ opacity: 0.7 }} />
-              <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
-                {t('programs-coatch.list.duration_weeks', { count: program.duration })}
-              </Typography>
+          <Box
+            sx={{
+              borderRadius: 2,
+              backgroundColor: summaryBackground,
+              border: `1px solid ${summaryBorder}`,
+              px: { xs: 1.5, sm: 2 },
+              py: { xs: 1.5, sm: 2 },
+            }}
+          >
+            <Stack spacing={1.5}>
+              <Stack direction="row" alignItems="center" spacing={1}>
+                <ScheduleOutlined fontSize="small" color="primary" />
+                <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>
+                  {t('programs-coatch.view.sections.overview')}
+                </Typography>
+              </Stack>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 1, sm: 3 }} useFlexGap flexWrap="wrap">
+                <Stack spacing={0.25}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 700, color: theme.palette.primary.main }}>
+                    {t('programs-coatch.list.duration_weeks', { count: program.duration })}
+                  </Typography>
+                  <Stack direction="row" spacing={0.75} alignItems="center">
+                    <CalendarMonthOutlined fontSize="small" sx={{ opacity: 0.7 }} />
+                    <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                      {t('programs-coatch.view.information.duration')}
+                    </Typography>
+                  </Stack>
+                </Stack>
+                <Stack spacing={0.25}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 700, color: theme.palette.success.main }}>
+                    {t('programs-coatch.list.frequency_week', { count: program.frequency })}
+                  </Typography>
+                  <Stack direction="row" spacing={0.75} alignItems="center">
+                    <ScheduleOutlined fontSize="small" sx={{ opacity: 0.7 }} />
+                    <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                      {t('programs-coatch.view.information.frequency')}
+                    </Typography>
+                  </Stack>
+                </Stack>
+                <Stack spacing={0.25}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 700, color: theme.palette.info.main }}>
+                    {t('programs-coatch.list.sessions_summary', {
+                      sessions: sessionsCount,
+                      exercises: exercisesCount,
+                    })}
+                  </Typography>
+                  <Stack direction="row" spacing={0.75} alignItems="center">
+                    <CenterFocusStrongOutlined fontSize="small" sx={{ opacity: 0.7 }} />
+                    <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                      {t('programs-coatch.list.program_sessions_title')}
+                    </Typography>
+                  </Stack>
+                </Stack>
+              </Stack>
             </Stack>
-            <Stack direction="row" spacing={0.75} alignItems="center">
-              <ScheduleOutlined fontSize="small" sx={{ opacity: 0.7 }} />
-              <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
-                {t('programs-coatch.list.frequency_week', { count: program.frequency })}
-              </Typography>
-            </Stack>
-            <Stack direction="row" spacing={0.75} alignItems="center">
-              <CenterFocusStrongOutlined fontSize="small" sx={{ opacity: 0.7 }} />
-              <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
-                {t('programs-coatch.list.sessions_summary', {
-                  sessions: sessionsCount,
-                  exercises: exercisesCount,
-                })}
-              </Typography>
-            </Stack>
-          </Stack>
+          </Box>
 
           <Divider sx={{ opacity: 0.6 }} />
 
@@ -421,56 +464,66 @@ export const ProgramCard = React.memo(function ProgramCard({
             {program.sessions.length > 0 ? (
               <Stack spacing={1.5}>
                 {program.sessions.map((session) => (
-                  <Stack key={session.id} spacing={1}>
-                    <Grid container>
-                      <Grid size={10}>
-                        <TextWithTooltip
-                          tooltipTitle={session.label}
-                          variant="h6"
-                          sx={{
-                            fontWeight: 700,
-                            lineHeight: 1.2,
-                            display: 'block',
-                          }}
-                        />
-                      </Grid>
-                      <Grid size={2} sx={{ textAlign: 'right' }}>
-                        <Typography variant="caption" color="text.secondary" fontWeight={500}>
-                          {t('programs-coatch.list.session_exercises', {
-                            count: session.exercises.length,
-                          })}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                    {session.exercises.length > 0 && (
-                      <Stack spacing={0.5}>
-                        {session.exercises.slice(0, 3).map((exercise) => (
-                          <Stack
-                            key={exercise.id}
-                            direction="row"
-                            justifyContent="space-between"
-                            alignItems="baseline"
-                          >
-                            <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                              {exercise.label}
-                            </Typography>
-                            <Typography variant="caption" color="text.secondary">
-                              {exercise.series && exercise.repetitions
-                                ? `${exercise.series} × ${exercise.repetitions}`
-                                : exercise.series || exercise.repetitions || ''}
-                            </Typography>
-                          </Stack>
-                        ))}
-                        {session.exercises.length > 3 && (
-                          <Typography variant="caption" color="text.secondary" sx={{ fontStyle: 'italic', mt: 0.5 }}>
-                            {t('programs-coatch.list.more_exercises', {
-                              count: session.exercises.length - 3,
+                  <Box
+                    key={session.id}
+                    sx={{
+                      borderRadius: 2,
+                      border: `1px solid ${alpha(theme.palette.text.primary, 0.08)}`,
+                      px: { xs: 1.5, sm: 2 },
+                      py: { xs: 1.5, sm: 2 },
+                    }}
+                  >
+                    <Stack spacing={1}>
+                      <Grid container>
+                        <Grid size={10}>
+                          <TextWithTooltip
+                            tooltipTitle={session.label}
+                            variant="h6"
+                            sx={{
+                              fontWeight: 700,
+                              lineHeight: 1.2,
+                              display: 'block',
+                            }}
+                          />
+                        </Grid>
+                        <Grid size={2} sx={{ textAlign: 'right' }}>
+                          <Typography variant="caption" color="text.secondary" fontWeight={600}>
+                            {t('programs-coatch.list.session_exercises', {
+                              count: session.exercises.length,
                             })}
                           </Typography>
-                        )}
-                      </Stack>
-                    )}
-                  </Stack>
+                        </Grid>
+                      </Grid>
+                      {session.exercises.length > 0 && (
+                        <Stack spacing={0.5}>
+                          {session.exercises.slice(0, 3).map((exercise) => (
+                            <Stack
+                              key={exercise.id}
+                              direction="row"
+                              justifyContent="space-between"
+                              alignItems="baseline"
+                            >
+                              <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                                {exercise.label}
+                              </Typography>
+                              <Typography variant="caption" color="text.secondary">
+                                {exercise.series && exercise.repetitions
+                                  ? `${exercise.series} × ${exercise.repetitions}`
+                                  : exercise.series || exercise.repetitions || ''}
+                              </Typography>
+                            </Stack>
+                          ))}
+                          {session.exercises.length > 3 && (
+                            <Typography variant="caption" color="text.secondary" sx={{ fontStyle: 'italic', mt: 0.5 }}>
+                              {t('programs-coatch.list.more_exercises', {
+                                count: session.exercises.length - 3,
+                              })}
+                            </Typography>
+                          )}
+                        </Stack>
+                      )}
+                    </Stack>
+                  </Box>
                 ))}
               </Stack>
             ) : (
