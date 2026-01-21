@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { People } from '@mui/icons-material';
 import { useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import {
@@ -77,16 +78,20 @@ export const ProspectsWidget: React.FC<ProspectsWidgetProps> = ({
                 title={t('home.widgets.total_prospects')}
                 tooltip={t('home.widgets.total_prospects_tooltip')}
                 value={totalProspects}
+                titleIcon={People}
                 colSpan={1}
             >
                 <div style={{ width: '100%', height: 140 }}>
                     <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={statusData} margin={{ top: 8, right: 12, left: 0, bottom: 16 }}>
+                        <BarChart data={statusData} margin={{ top: 8, right: 12, left: 0, bottom: 28 }}>
                             <XAxis
                                 dataKey="name"
                                 interval={0}
+                                angle={-45}
+                                textAnchor="end"
                                 tick={{ fontSize: 10 }}
-                                height={40}
+                                height={60}
+                                tickMargin={8}
                                 tickLine={false}
                                 axisLine={false}
                             />
