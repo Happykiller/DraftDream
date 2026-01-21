@@ -1,17 +1,6 @@
 import React, { useMemo } from 'react';
-import { Box, Button, Chip, Typography, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import {
-  People,
-  SportsGymnastics,
-  FitnessCenter,
-  Restaurant,
-  EventNote,
-  Timer,
-  RestaurantMenu,
-  TrendingUp
-} from '@mui/icons-material';
 
 import { ProspectStatus } from '@commons/prospects/status';
 
@@ -23,11 +12,16 @@ import { useProspects } from '@hooks/useProspects';
 import { useExercises } from '@hooks/useExercises';
 import { useMealPlans } from '@hooks/useMealPlans';
 
-import { StatCard } from '@components/dashboard/widgets/StatCard';
 import { DashboardLayout } from '@components/dashboard/DashboardLayout';
-import { GrowthChartWidget } from '@components/dashboard/widgets/GrowthChartWidget';
-import { ProspectsListWidget } from '@components/dashboard/widgets/ProspectsListWidget';
-import { DistributionChartWidget } from '@components/dashboard/widgets/DistributionChartWidget';
+import { CompletionWidget } from '@components/dashboard/widgets/home/CompletionWidget';
+import { TotalUsersWidget } from '@components/dashboard/widgets/home/TotalUsersWidget';
+import { ProgramsWidget } from '@components/dashboard/widgets/home/ProgramsWidget';
+import { TotalProspectsWidget } from '@components/dashboard/widgets/home/TotalProspectsWidget';
+import { ProspectsTodoWidget } from '@components/dashboard/widgets/home/ProspectsTodoWidget';
+import { SessionsPrivateWidget } from '@components/dashboard/widgets/home/SessionsPrivateWidget';
+import { DayMealsPrivateWidget } from '@components/dashboard/widgets/home/DayMealsPrivateWidget';
+import { NutritionPlansWidget } from '@components/dashboard/widgets/home/NutritionPlansWidget';
+import { ExercisesLibraryWidget } from '@components/dashboard/widgets/home/ExercisesLibraryWidget';
 
 import {
   getGrowthData,
@@ -37,7 +31,6 @@ import {
 
 export function Home(): React.JSX.Element {
   const { t } = useTranslation();
-  const theme = useTheme();
   const navigate = useNavigate();
 
   const { items: prospects, total: totalProspects } = useProspects({ page: 1, limit: PAGE_SIZE, q: '' });
@@ -77,11 +70,6 @@ export function Home(): React.JSX.Element {
     };
   }, [programDistribution, t]);
 
-  const userDistribution = [
-    { name: t('users.types.coach'), value: totalCoaches, color: theme.palette.secondary.main },
-    { name: t('users.types.athlete'), value: totalAthletes, color: theme.palette.primary.main },
-  ];
-
   return (
     <React.Fragment>
       {/* General information */}
@@ -90,126 +78,47 @@ export function Home(): React.JSX.Element {
         {/* --- Row 1: High Level Stats --- */}
 
         {/* Total Users & Split */}
-        <DistributionChartWidget
-          title={t('home.widgets.total_users')}
-          tooltip={t('home.widgets.total_users_tooltip')}
-          value={totalCoaches + totalAthletes}
-          icon={People}
-          colSpan={1}
-          color={theme.palette.info.main}
-          data={userDistribution}
-          height={150}
-        />
+        <TotalUsersWidget totalCoaches={totalCoaches} totalAthletes={totalAthletes} />
 
         {/* Prospects A Faire */}
-        <ProspectsListWidget
-          title={t('home.widgets.prospects_todo')}
-          tooltip={t('home.widgets.prospects_todo_tooltip')}
-          value={myProspects.length}
-          icon={TrendingUp}
-          colSpan={1}
-          color={theme.palette.warning.main}
+        <ProspectsTodoWidget
           prospects={myProspects}
-        >
-          <Button size="small" fullWidth onClick={() => navigate('/prospects')} sx={{ mt: 1 }}>
-            {t('home.widgets.view_prospects')}
-          </Button>
-        </ProspectsListWidget>
+          onViewProspects={() => navigate('/prospects')}
+        />
 
         {/* Total Prospects Trend */}
-        <GrowthChartWidget
-          title={t('home.widgets.total_prospects')}
-          tooltip={t('home.widgets.total_prospects_tooltip')}
-          value={totalProspects}
-          icon={People}
-          colSpan={1}
-          data={prospectsGrowth}
-          height={80}
-          color={theme.palette.success.main}
-        />
+        <TotalProspectsWidget totalProspects={totalProspects} growthData={prospectsGrowth} />
 
 
         {/* --- Row 2: Content Stats --- */}
 
         {/* Programs */}
-        <GrowthChartWidget
-          title={t('home.widgets.programs')}
-          tooltip={t('home.widgets.programs_tooltip')}
-          value={totalPrograms}
-          icon={FitnessCenter}
-          colSpan={1}
-          color={theme.palette.primary.main}
-          data={programsGrowth}
-          height={60}
-        >
-          <Box sx={{ display: 'flex', gap: 1, mt: 1, mb: 1 }}>
-            <Chip
-              label={`${programVisibility.publicCount} ${programVisibility.publicLabel}`}
-              size="small"
-              variant="outlined"
-            />
-            <Chip
-              label={`${programVisibility.privateCount} ${programVisibility.privateLabel}`}
-              size="small"
-              variant="outlined"
-            />
-          </Box>
-        </GrowthChartWidget>
+        <ProgramsWidget
+          totalPrograms={totalPrograms}
+          growthData={programsGrowth}
+          publicCount={programVisibility.publicCount}
+          privateCount={programVisibility.privateCount}
+          publicLabel={programVisibility.publicLabel}
+          privateLabel={programVisibility.privateLabel}
+        />
 
         {/* Nutrition Plans */}
-        <GrowthChartWidget
-          title={t('home.widgets.nutrition_plans')}
-          tooltip={t('home.widgets.nutrition_plans_tooltip')}
-          value={totalMealPlans}
-          icon={Restaurant}
-          colSpan={1}
-          color={theme.palette.secondary.main}
-          data={nutritionGrowth}
-          height={80}
-        />
+        <NutritionPlansWidget totalMealPlans={totalMealPlans} growthData={nutritionGrowth} />
 
 
         {/* --- Row 3: Detail / Volume --- */}
 
         {/* Sessions */}
-        <StatCard
-          title={t('home.widgets.sessions_private')}
-          tooltip={t('home.widgets.sessions_private_tooltip')}
-          value={totalSessions}
-          icon={Timer}
-          colSpan={1}
-          color={theme.palette.error.main}
-        />
+        <SessionsPrivateWidget totalSessions={totalSessions} />
 
         {/* Exercises */}
-        <StatCard
-          title={t('home.widgets.exercises_library')}
-          tooltip={t('home.widgets.exercises_library_tooltip')}
-          value={totalExercises}
-          icon={SportsGymnastics}
-          colSpan={1}
-        />
+        <ExercisesLibraryWidget totalExercises={totalExercises} />
 
         {/* Meal Days */}
-        <StatCard
-          title={t('home.widgets.day_meals_private')}
-          tooltip={t('home.widgets.day_meals_private_tooltip')}
-          value={totalMealDays}
-          icon={RestaurantMenu}
-          colSpan={1}
-        />
+        <DayMealsPrivateWidget totalMealDays={totalMealDays} />
 
         {/* Empty / Placeholder for Layout Balance or Future Widget */}
-        <StatCard
-          title={t('home.widgets.completion')}
-          tooltip={t('home.widgets.completion_tooltip')}
-          value="98%"
-          icon={EventNote}
-          colSpan={1}
-          color={theme.palette.success.light}
-        >
-          <Typography variant="caption" color="text.secondary">{t('home.widgets.system_health')}</Typography>
-        </StatCard>
+        <CompletionWidget />
 
       </DashboardLayout>
     </React.Fragment>
