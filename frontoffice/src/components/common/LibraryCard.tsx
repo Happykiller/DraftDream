@@ -6,7 +6,7 @@ import { Box, IconButton, Paper, Stack, Tooltip } from '@mui/material';
 
 export type LibraryCardProps = {
     // Actions
-    onAdd: (event?: React.MouseEvent<HTMLButtonElement>) => void;
+    onAdd: (...args: any[]) => void;
     addTooltip: string;
     addDisabled?: boolean;
     addAriaLabel: string;
@@ -15,7 +15,7 @@ export type LibraryCardProps = {
     isPublic: boolean;
     publicTooltip?: string;
     deleteTooltip?: string;
-    onDelete?: () => void;
+    onDelete?: (...args: any[]) => void;
     deleteDisabled?: boolean;
 
     // Styling

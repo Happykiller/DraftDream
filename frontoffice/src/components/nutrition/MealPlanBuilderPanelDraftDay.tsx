@@ -3,7 +3,6 @@ import * as React from 'react';
 import {
   ArrowDownward,
   ArrowUpward,
-  Delete,
   DeleteOutline,
   Edit,
   Save,

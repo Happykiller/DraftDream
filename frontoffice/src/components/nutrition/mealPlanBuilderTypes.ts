@@ -65,6 +65,7 @@ export interface MealPlanBuilderCopy {
     edit_day_template: string;
     limit_hint?: string;
     refresh_label?: string;
+    public_tooltip?: string;
     secondary_filter_label?: string;
     secondary_filter_all?: string;
     type_private?: string;

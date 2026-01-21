@@ -107,7 +107,7 @@ export function useSessions(props: UseSessionsParams) {
               limit,
               q: q || undefined,
               locale: locale || undefined,
-              visibility: props.visibility,
+              visibility,
             },
           },
         }),
