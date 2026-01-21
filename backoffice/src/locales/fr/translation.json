@@ -216,8 +216,8 @@
       "sessions_tooltip": "Séances d'entraînement créées par les coachs.",
       "exercises": "Exercices",
       "exercises_tooltip": "Exercices d'entraînement créés par les coachs.",
-      "day_meals_private": "Journées repas (Privé)",
-      "day_meals_private_tooltip": "Journées repas privées générées pour les plans nutrition."
+      "day_meals": "Journées repas",
+      "day_meals_tooltip": "Journées repas générées pour les plans nutrition."
     },
     "chart": {
       "vs_last_month": "vs mois dernier"

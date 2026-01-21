@@ -216,8 +216,8 @@
       "sessions_tooltip": "Training sessions created by coaches.",
       "exercises": "Exercises",
       "exercises_tooltip": "Training exercises created by coaches.",
-      "day_meals_private": "Day Meals (Private)",
-      "day_meals_private_tooltip": "Private meal days generated for nutrition plans."
+      "day_meals": "Day Meals",
+      "day_meals_tooltip": "Meal days generated for nutrition plans."
     },
     "chart": {
       "vs_last_month": "vs last month"
