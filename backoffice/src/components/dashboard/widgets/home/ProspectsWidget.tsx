@@ -80,6 +80,7 @@ export const ProspectsWidget: React.FC<ProspectsWidgetProps> = ({
                 value={totalProspects}
                 icon={PersonSearch}
                 colSpan={1}
+                color={theme.palette.error.main}
             >
                 <div style={{ width: '100%', height: 140 }}>
                     <ResponsiveContainer width="100%" height="100%">
@@ -108,7 +109,7 @@ export const ProspectsWidget: React.FC<ProspectsWidgetProps> = ({
                                 }}
                                 cursor={{ fill: theme.palette.action.hover }}
                             />
-                            <Bar dataKey="value" fill={theme.palette.primary.main} radius={[6, 6, 0, 0]} />
+                            <Bar dataKey="value" fill={theme.palette.error.main} radius={[6, 6, 0, 0]} />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>

@@ -29,7 +29,7 @@ export const ProspectsTodoWidget: React.FC<ProspectsTodoWidgetProps> = ({
                 value={prospects.length}
                 icon={PersonSearch}
                 colSpan={1}
-                color={theme.palette.warning.main}
+                color={theme.palette.error.main}
                 prospects={prospects}
             >
                 <Button size="small" fullWidth onClick={onViewProspects} sx={{ mt: 1 }}>
