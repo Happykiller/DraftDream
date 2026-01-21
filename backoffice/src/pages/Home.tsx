@@ -92,6 +92,7 @@ export function Home(): React.JSX.Element {
         {/* Total Users & Split */}
         <DistributionChartWidget
           title={t('home.widgets.total_users')}
+          tooltip={t('home.widgets.total_users_tooltip')}
           value={totalCoaches + totalAthletes}
           icon={People}
           colSpan={1}
@@ -103,6 +104,7 @@ export function Home(): React.JSX.Element {
         {/* Prospects A Faire */}
         <ProspectsListWidget
           title={t('home.widgets.prospects_todo')}
+          tooltip={t('home.widgets.prospects_todo_tooltip')}
           value={myProspects.length}
           icon={TrendingUp}
           colSpan={1}
@@ -117,6 +119,7 @@ export function Home(): React.JSX.Element {
         {/* Total Prospects Trend */}
         <GrowthChartWidget
           title={t('home.widgets.total_prospects')}
+          tooltip={t('home.widgets.total_prospects_tooltip')}
           value={totalProspects}
           icon={People}
           colSpan={1}
@@ -131,6 +134,7 @@ export function Home(): React.JSX.Element {
         {/* Programs */}
         <GrowthChartWidget
           title={t('home.widgets.programs')}
+          tooltip={t('home.widgets.programs_tooltip')}
           value={totalPrograms}
           icon={FitnessCenter}
           colSpan={1}
@@ -155,6 +159,7 @@ export function Home(): React.JSX.Element {
         {/* Nutrition Plans */}
         <GrowthChartWidget
           title={t('home.widgets.nutrition_plans')}
+          tooltip={t('home.widgets.nutrition_plans_tooltip')}
           value={totalMealPlans}
           icon={Restaurant}
           colSpan={1}
@@ -169,6 +174,7 @@ export function Home(): React.JSX.Element {
         {/* Sessions */}
         <StatCard
           title={t('home.widgets.sessions_private')}
+          tooltip={t('home.widgets.sessions_private_tooltip')}
           value={totalSessions}
           icon={Timer}
           colSpan={1}
@@ -178,6 +184,7 @@ export function Home(): React.JSX.Element {
         {/* Exercises */}
         <StatCard
           title={t('home.widgets.exercises_library')}
+          tooltip={t('home.widgets.exercises_library_tooltip')}
           value={totalExercises}
           icon={SportsGymnastics}
           colSpan={1}
@@ -186,6 +193,7 @@ export function Home(): React.JSX.Element {
         {/* Meal Days */}
         <StatCard
           title={t('home.widgets.day_meals_private')}
+          tooltip={t('home.widgets.day_meals_private_tooltip')}
           value={totalMealDays}
           icon={RestaurantMenu}
           colSpan={1}
@@ -194,6 +202,7 @@ export function Home(): React.JSX.Element {
         {/* Empty / Placeholder for Layout Balance or Future Widget */}
         <StatCard
           title={t('home.widgets.completion')}
+          tooltip={t('home.widgets.completion_tooltip')}
           value="98%"
           icon={EventNote}
           colSpan={1}

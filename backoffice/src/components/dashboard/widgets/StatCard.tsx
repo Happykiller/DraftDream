@@ -1,5 +1,13 @@
 import React from 'react';
-import { Typography, Box, useTheme } from '@mui/material';
+import {
+    Box,
+    IconButton,
+    Tooltip,
+    Typography,
+    useTheme,
+} from '@mui/material';
+import { InfoOutlined } from '@mui/icons-material';
+
 import { GlassCard } from '@components/common/GlassCard';
 
 export interface StatCardProps {
@@ -9,6 +17,7 @@ export interface StatCardProps {
     colSpan?: 1 | 2 | 3 | 4;
     rowSpan?: 1 | 2 | 3 | 4;
     color?: string; // Optional custom gradient start color
+    tooltip?: string;
     trend?: {
         value: number; // e.g., +12%
         label: string; // "vs last month"
@@ -24,6 +33,7 @@ export const StatCard: React.FC<StatCardProps> = ({
     colSpan = 1,
     rowSpan = 1,
     color,
+    tooltip,
     trend,
     actionIcon,
     children,
@@ -45,9 +55,22 @@ export const StatCard: React.FC<StatCardProps> = ({
             {/* Header */}
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
                 <Box>
-                    <Typography variant="subtitle2" color="text.secondary" sx={{ textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600 }}>
-                        {title}
-                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                        <Typography variant="subtitle2" color="text.secondary" sx={{ textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600 }}>
+                            {title}
+                        </Typography>
+                        {tooltip && (
+                            <Tooltip title={tooltip} arrow placement="top">
+                                <IconButton
+                                    aria-label={`${title} info`}
+                                    size="small"
+                                    sx={{ color: 'text.secondary' }}
+                                >
+                                    <InfoOutlined fontSize="inherit" />
+                                </IconButton>
+                            </Tooltip>
+                        )}
+                    </Box>
                     <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1.5, mt: 1 }}>
                         <Typography variant="h3" sx={{ fontWeight: 700, background: color ? `linear-gradient(45deg, ${theme.palette.text.primary}, ${color})` : 'inherit', WebkitBackgroundClip: color ? 'text' : 'none', WebkitTextFillColor: color ? 'transparent' : 'inherit' }}>
                             {value}
