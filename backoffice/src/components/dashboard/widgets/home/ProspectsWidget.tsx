@@ -21,11 +21,6 @@ interface ProspectsWidgetProps {
     totalProspects: number;
 }
 
-interface StatusDataPoint {
-    name: string;
-    value: number;
-}
-
 const STATUS_ORDER = [
     ProspectStatus.LEAD,
     ProspectStatus.CONTACTED,

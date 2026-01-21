@@ -1,6 +1,44 @@
 {
   "releases": [
     {
+      "version": "0.13.0",
+      "title": "Plateforme FitDesk — Tableau de Bord & Visualisation",
+      "date": "2026-01-21",
+      "global": [
+        "Tableau de bord repensé et orienté décision avec widgets réorganisés et indicateurs essentiels.",
+        "Visualisation avancée des données avec graphiques circulaires et diagrammes de répartition.",
+        "Suivi enrichi des séances et programmes avec notes, ressentis et évaluations.",
+        "Nutrition plus visible et mieux intégrée dans l'écosystème.",
+        "Navigation et expérience multilingue renforcées."
+      ],
+      "notes": "La version 0.13.0 marque un tournant visuel et fonctionnel important pour FitDesk. Après avoir renforcé le suivi réel de l'activité en 0.12.0, cette version se concentre sur la lisibilité, la compréhension rapide et la valorisation des données clés. FitDesk évolue vers un véritable tableau de bord de pilotage pour coachs et équipes. Les informations ne sont plus seulement accessibles : elles sont mises en scène, hiérarchisées et immédiatement compréhensibles.",
+      "projects": {
+        "/api": [
+          "Support des nouveaux indicateurs et états de visibilité.",
+          "Alignement avec les nouveaux écrans et graphiques.",
+          "Stabilisation des échanges pour les builders programmes et nutrition.",
+          "API au service de la lecture et de la compréhension, pas seulement de la donnée brute."
+        ],
+        "/backoffice": [
+          "Alignement visuel et fonctionnel avec le frontoffice.",
+          "Composants partagés pour une meilleure cohérence.",
+          "Préparation à des usages avancés d'analyse et de supervision.",
+          "Backoffice plus lisible et plus fiable pour l'administration."
+        ],
+        "/frontoffice": [
+          "Refonte majeure du dashboard coach avec nouveaux widgets visuels et interactifs.",
+          "Amélioration des écrans de suivi des programmes et séances.",
+          "Intégration fluide de la nutrition dans les vues principales.",
+          "Frontoffice devient un outil de pilotage quotidien, pas seulement d'exécution."
+        ],
+        "/showcase": [
+          "Initialisation complète du projet showcase.",
+          "Bases solides pour une vitrine moderne, multilingue et cohérente.",
+          "Préparation à une communication plus orientée valeur et résultats."
+        ]
+      }
+    },
+    {
       "version": "0.12.0",
       "title": "Vue Calendrier & Analyse de l'Effort",
       "date": "2026-01-12",
