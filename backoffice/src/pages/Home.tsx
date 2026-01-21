@@ -17,7 +17,7 @@ import { TotalUsersWidget } from '@components/dashboard/widgets/home/TotalUsersW
 import { ProgramsWidget } from '@components/dashboard/widgets/home/ProgramsWidget';
 import { ProspectsWidget } from '@components/dashboard/widgets/home/ProspectsWidget';
 import { ProspectsTodoWidget } from '@components/dashboard/widgets/home/ProspectsTodoWidget';
-import { SessionsPrivateWidget } from '@components/dashboard/widgets/home/SessionsPrivateWidget';
+import { SessionsWidget } from '@components/dashboard/widgets/home/SessionsWidget';
 import { DayMealsPrivateWidget } from '@components/dashboard/widgets/home/DayMealsPrivateWidget';
 import { NutritionPlansWidget } from '@components/dashboard/widgets/home/NutritionPlansWidget';
 import { ExercisesLibraryWidget } from '@components/dashboard/widgets/home/ExercisesLibraryWidget';
@@ -35,7 +35,7 @@ export function Home(): React.JSX.Element {
   const { total: totalCoaches } = useUsers({ page: 1, limit: PAGE_SIZE, q: '', type: 'coach' });
   const { total: totalAthletes } = useUsers({ page: 1, limit: PAGE_SIZE, q: '', type: 'athlete' });
   const { items: programs, total: totalPrograms } = usePrograms({ page: 1, limit: PAGE_SIZE, q: '' });
-  const { total: totalSessions } = useSessions({ page: 1, limit: PAGE_SIZE, q: '' });
+  const { items: sessions, total: totalSessions } = useSessions({ page: 1, limit: PAGE_SIZE, q: '' });
   const { total: totalExercises } = useExercises({ page: 1, limit: PAGE_SIZE, q: '' });
   const { items: mealPlans, total: totalMealPlans } = useMealPlans({ page: 1, limit: PAGE_SIZE, q: '' });
   const { total: totalMealDays } = useMealDays({ page: 1, limit: PAGE_SIZE, q: '' });
@@ -83,6 +83,25 @@ export function Home(): React.JSX.Element {
     };
   }, [mealPlanDistribution, t]);
 
+  const sessionDistribution = useMemo(() => {
+    return getDistributionData(sessions, 'visibility', {
+      PUBLIC: t('common.visibility.public'),
+      PRIVATE: t('common.visibility.private'),
+    });
+  }, [sessions, t]);
+
+  const sessionVisibility = useMemo(() => {
+    const publicLabel = t('common.visibility.public');
+    const privateLabel = t('common.visibility.private');
+
+    return {
+      publicLabel,
+      privateLabel,
+      publicCount: sessionDistribution.find((item) => item.name === publicLabel)?.value ?? 0,
+      privateCount: sessionDistribution.find((item) => item.name === privateLabel)?.value ?? 0,
+    };
+  }, [sessionDistribution, t]);
+
   return (
     <React.Fragment>
       {/* General information */}
@@ -127,7 +146,13 @@ export function Home(): React.JSX.Element {
         {/* --- Row 3: Detail / Volume --- */}
 
         {/* Sessions */}
-        <SessionsPrivateWidget totalSessions={totalSessions} />
+        <SessionsWidget
+          totalSessions={totalSessions}
+          publicCount={sessionVisibility.publicCount}
+          privateCount={sessionVisibility.privateCount}
+          publicLabel={sessionVisibility.publicLabel}
+          privateLabel={sessionVisibility.privateLabel}
+        />
 
         {/* Exercises */}
         <ExercisesLibraryWidget totalExercises={totalExercises} />
