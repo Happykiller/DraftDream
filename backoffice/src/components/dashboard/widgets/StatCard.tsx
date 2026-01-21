@@ -14,7 +14,6 @@ export interface StatCardProps {
     title: string;
     value: string | number;
     icon?: React.ElementType;
-    titleIcon?: React.ElementType;
     colSpan?: 1 | 2 | 3 | 4;
     rowSpan?: 1 | 2 | 3 | 4;
     color?: string; // Optional custom gradient start color
@@ -31,7 +30,6 @@ export const StatCard: React.FC<StatCardProps> = ({
     title,
     value,
     icon: Icon,
-    titleIcon: TitleIcon,
     colSpan = 1,
     rowSpan = 1,
     color,
@@ -58,22 +56,6 @@ export const StatCard: React.FC<StatCardProps> = ({
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
                 <Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                        {TitleIcon && (
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    width: 28,
-                                    height: 28,
-                                    borderRadius: '50%',
-                                    backgroundColor: theme.palette.action.hover,
-                                    color: theme.palette.text.secondary,
-                                }}
-                            >
-                                <TitleIcon fontSize="small" />
-                            </Box>
-                        )}
                         <Typography variant="subtitle2" color="text.secondary" sx={{ textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600 }}>
                             {title}
                         </Typography>

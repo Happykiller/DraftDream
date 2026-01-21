@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { People } from '@mui/icons-material';
+import { PersonSearch } from '@mui/icons-material';
 import { useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import {
@@ -78,7 +78,7 @@ export const ProspectsWidget: React.FC<ProspectsWidgetProps> = ({
                 title={t('home.widgets.total_prospects')}
                 tooltip={t('home.widgets.total_prospects_tooltip')}
                 value={totalProspects}
-                titleIcon={People}
+                icon={PersonSearch}
                 colSpan={1}
             >
                 <div style={{ width: '100%', height: 140 }}>
