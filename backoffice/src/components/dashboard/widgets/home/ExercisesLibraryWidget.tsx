@@ -1,29 +1,51 @@
 import React from 'react';
 import { useTheme } from '@mui/material';
-import { SportsGymnastics } from '@mui/icons-material';
+import { MonitorHeart } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
-import { StatCard } from '@components/dashboard/widgets/StatCard';
+import { DistributionChartWidget } from '@components/dashboard/widgets/DistributionChartWidget';
 
 interface ExercisesLibraryWidgetProps {
     totalExercises: number;
+    publicCount: number;
+    privateCount: number;
+    publicLabel: string;
+    privateLabel: string;
 }
 
-// Dashboard widget for exercise library size.
-export const ExercisesLibraryWidget: React.FC<ExercisesLibraryWidgetProps> = ({ totalExercises }) => {
+interface DistributionDataPoint {
+    name: string;
+    value: number;
+    color: string;
+}
+
+// Dashboard widget for exercise metrics and visibility split.
+export const ExercisesLibraryWidget: React.FC<ExercisesLibraryWidgetProps> = ({
+    totalExercises,
+    publicCount,
+    privateCount,
+    publicLabel,
+    privateLabel,
+}) => {
     const { t } = useTranslation();
     const theme = useTheme();
+    const distributionData: DistributionDataPoint[] = [
+        { name: publicLabel, value: publicCount, color: theme.palette.success.main },
+        { name: privateLabel, value: privateCount, color: theme.palette.warning.main },
+    ];
 
     return (
         <React.Fragment>
             {/* General information */}
-            <StatCard
-                title={t('home.widgets.exercises_library')}
-                tooltip={t('home.widgets.exercises_library_tooltip')}
+            <DistributionChartWidget
+                title={t('home.widgets.exercises')}
+                tooltip={t('home.widgets.exercises_tooltip')}
                 value={totalExercises}
-                icon={SportsGymnastics}
+                icon={MonitorHeart}
                 colSpan={1}
                 color={theme.palette.success.main}
+                data={distributionData}
+                height={150}
             />
         </React.Fragment>
     );

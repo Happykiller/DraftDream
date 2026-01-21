@@ -214,8 +214,8 @@
       "nutrition_plans_tooltip": "Nombre total de plans nutrition créés dans le back-office.",
       "sessions": "Séances",
       "sessions_tooltip": "Séances d'entraînement créées par les coachs.",
-      "exercises_library": "Bibliothèque d'exercices",
-      "exercises_library_tooltip": "Nombre total d'exercices disponibles dans la bibliothèque.",
+      "exercises": "Exercices",
+      "exercises_tooltip": "Exercices d'entraînement créés par les coachs.",
       "day_meals_private": "Journées repas (Privé)",
       "day_meals_private_tooltip": "Journées repas privées générées pour les plans nutrition."
     },
