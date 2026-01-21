@@ -2,13 +2,13 @@
 import * as React from 'react';
 import {
   Home,
+  Group,
   Palette,
   Settings,
   PersonSearch,
   InfoOutlined,
   LinkOutlined,
   FitnessCenter,
-  ManageAccounts,
   RestaurantMenu,
   SportsGymnastics,
 } from '@mui/icons-material';
@@ -59,7 +59,7 @@ export function useNavItems(role?: string): NavItem[] {
         },
         {
           label: t('users.title'),
-          icon: <ManageAccounts />,
+          icon: <Group />,
           path: '/users',
         },
       );
