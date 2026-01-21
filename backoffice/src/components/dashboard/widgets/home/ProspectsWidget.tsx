@@ -74,8 +74,8 @@ export const ProspectsWidget: React.FC<ProspectsWidgetProps> = ({
         <React.Fragment>
             {/* General information */}
             <StatCard
-                title={t('home.widgets.prospects')}
-                tooltip={t('home.widgets.prospects_tooltip')}
+                title={t('home.widgets.total_prospects')}
+                tooltip={t('home.widgets.total_prospects_tooltip')}
                 value={totalProspects}
                 colSpan={1}
             >
