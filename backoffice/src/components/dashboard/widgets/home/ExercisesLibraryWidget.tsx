@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTheme } from '@mui/material';
 import { SportsGymnastics } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
@@ -11,6 +12,7 @@ interface ExercisesLibraryWidgetProps {
 // Dashboard widget for exercise library size.
 export const ExercisesLibraryWidget: React.FC<ExercisesLibraryWidgetProps> = ({ totalExercises }) => {
     const { t } = useTranslation();
+    const theme = useTheme();
 
     return (
         <React.Fragment>
@@ -21,6 +23,7 @@ export const ExercisesLibraryWidget: React.FC<ExercisesLibraryWidgetProps> = ({ 
                 value={totalExercises}
                 icon={SportsGymnastics}
                 colSpan={1}
+                color={theme.palette.success.main}
             />
         </React.Fragment>
     );

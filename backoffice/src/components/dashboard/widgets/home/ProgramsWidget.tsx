@@ -43,7 +43,7 @@ export const ProgramsWidget: React.FC<ProgramsWidgetProps> = ({
                 value={totalPrograms}
                 icon={FitnessCenter}
                 colSpan={1}
-                color={theme.palette.primary.main}
+                color={theme.palette.success.main}
                 data={distributionData}
                 height={150}
             />

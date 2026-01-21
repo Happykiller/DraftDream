@@ -43,7 +43,7 @@ export const SessionsWidget: React.FC<SessionsWidgetProps> = ({
                 value={totalSessions}
                 icon={Timer}
                 colSpan={1}
-                color={theme.palette.error.main}
+                color={theme.palette.success.main}
                 data={distributionData}
                 height={150}
             />
