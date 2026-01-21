@@ -171,18 +171,6 @@ export function Home(): React.JSX.Element {
           privateLabel={programVisibility.privateLabel}
         />
 
-        {/* Nutrition Plans */}
-        <NutritionPlansWidget
-          totalMealPlans={totalMealPlans}
-          publicCount={mealPlanVisibility.publicCount}
-          privateCount={mealPlanVisibility.privateCount}
-          publicLabel={mealPlanVisibility.publicLabel}
-          privateLabel={mealPlanVisibility.privateLabel}
-        />
-
-
-        {/* --- Row 3: Detail / Volume --- */}
-
         {/* Sessions */}
         <SessionsWidget
           totalSessions={totalSessions}
@@ -199,6 +187,15 @@ export function Home(): React.JSX.Element {
           privateCount={exerciseVisibility.privateCount}
           publicLabel={exerciseVisibility.publicLabel}
           privateLabel={exerciseVisibility.privateLabel}
+        />
+
+        {/* Nutrition Plans */}
+        <NutritionPlansWidget
+          totalMealPlans={totalMealPlans}
+          publicCount={mealPlanVisibility.publicCount}
+          privateCount={mealPlanVisibility.privateCount}
+          publicLabel={mealPlanVisibility.publicLabel}
+          privateLabel={mealPlanVisibility.privateLabel}
         />
 
         {/* Meal Days */}
