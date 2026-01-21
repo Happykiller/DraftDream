@@ -46,7 +46,6 @@ export function Home(): React.JSX.Element {
     return prospects.filter((prospect) => prospect.status === ProspectStatus.TODO).slice(0, 5);
   }, [prospects]);
 
-  const programsGrowth = useMemo(() => getGrowthData(programs), [programs]);
   const nutritionGrowth = useMemo(() => getGrowthData(mealPlans), [mealPlans]);
 
   const programDistribution = useMemo(() => {
@@ -93,7 +92,6 @@ export function Home(): React.JSX.Element {
         {/* Programs */}
         <ProgramsWidget
           totalPrograms={totalPrograms}
-          growthData={programsGrowth}
           publicCount={programVisibility.publicCount}
           privateCount={programVisibility.privateCount}
           publicLabel={programVisibility.publicLabel}
