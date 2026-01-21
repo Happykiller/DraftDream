@@ -1,8 +1,5 @@
 import React, { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-
-import { ProspectStatus } from '@commons/prospects/status';
 
 import { useUsers } from '@hooks/useUsers';
 import { usePrograms } from '@hooks/usePrograms';
@@ -16,7 +13,7 @@ import { DashboardLayout } from '@components/dashboard/DashboardLayout';
 import { TotalUsersWidget } from '@components/dashboard/widgets/home/TotalUsersWidget';
 import { ProgramsWidget } from '@components/dashboard/widgets/home/ProgramsWidget';
 import { TotalProspectsWidget } from '@components/dashboard/widgets/home/TotalProspectsWidget';
-import { ProspectsTodoWidget } from '@components/dashboard/widgets/home/ProspectsTodoWidget';
+import { ProspectsWidget } from '@components/dashboard/widgets/home/ProspectsWidget';
 import { SessionsPrivateWidget } from '@components/dashboard/widgets/home/SessionsPrivateWidget';
 import { DayMealsPrivateWidget } from '@components/dashboard/widgets/home/DayMealsPrivateWidget';
 import { NutritionPlansWidget } from '@components/dashboard/widgets/home/NutritionPlansWidget';
@@ -30,7 +27,6 @@ import {
 
 export function Home(): React.JSX.Element {
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
   const { items: prospects, total: totalProspects } = useProspects({ page: 1, limit: PAGE_SIZE, q: '' });
   const { total: totalCoaches } = useUsers({ page: 1, limit: PAGE_SIZE, q: '', type: 'coach' });
@@ -40,11 +36,6 @@ export function Home(): React.JSX.Element {
   const { total: totalExercises } = useExercises({ page: 1, limit: PAGE_SIZE, q: '' });
   const { items: mealPlans, total: totalMealPlans } = useMealPlans({ page: 1, limit: PAGE_SIZE, q: '' });
   const { total: totalMealDays } = useMealDays({ page: 1, limit: PAGE_SIZE, q: '' });
-
-  // Keep the list limited to actionable prospects.
-  const myProspects = useMemo(() => {
-    return prospects.filter((prospect) => prospect.status === ProspectStatus.TODO).slice(0, 5);
-  }, [prospects]);
 
   const prospectsGrowth = useMemo(() => getGrowthData(prospects), [prospects]);
   const programsGrowth = useMemo(() => getGrowthData(programs), [programs]);
@@ -80,10 +71,7 @@ export function Home(): React.JSX.Element {
         <TotalUsersWidget totalCoaches={totalCoaches} totalAthletes={totalAthletes} />
 
         {/* Prospects A Faire */}
-        <ProspectsTodoWidget
-          prospects={myProspects}
-          onViewProspects={() => navigate('/prospects')}
-        />
+        <ProspectsWidget prospects={prospects} totalProspects={totalProspects} />
 
         {/* Total Prospects Trend */}
         <TotalProspectsWidget totalProspects={totalProspects} growthData={prospectsGrowth} />
