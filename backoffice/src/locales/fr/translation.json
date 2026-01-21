@@ -217,10 +217,7 @@
       "exercises_library": "Bibliothèque d'exercices",
       "exercises_library_tooltip": "Nombre total d'exercices disponibles dans la bibliothèque.",
       "day_meals_private": "Journées repas (Privé)",
-      "day_meals_private_tooltip": "Journées repas privées générées pour les plans nutrition.",
-      "completion": "Complétion",
-      "completion_tooltip": "Indicateur global de complétion des vérifications clés de la plateforme.",
-      "system_health": "Santé du système"
+      "day_meals_private_tooltip": "Journées repas privées générées pour les plans nutrition."
     },
     "chart": {
       "vs_last_month": "vs mois dernier"

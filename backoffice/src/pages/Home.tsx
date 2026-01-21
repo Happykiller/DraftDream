@@ -13,7 +13,6 @@ import { useExercises } from '@hooks/useExercises';
 import { useMealPlans } from '@hooks/useMealPlans';
 
 import { DashboardLayout } from '@components/dashboard/DashboardLayout';
-import { CompletionWidget } from '@components/dashboard/widgets/home/CompletionWidget';
 import { TotalUsersWidget } from '@components/dashboard/widgets/home/TotalUsersWidget';
 import { ProgramsWidget } from '@components/dashboard/widgets/home/ProgramsWidget';
 import { TotalProspectsWidget } from '@components/dashboard/widgets/home/TotalProspectsWidget';
@@ -116,9 +115,6 @@ export function Home(): React.JSX.Element {
 
         {/* Meal Days */}
         <DayMealsPrivateWidget totalMealDays={totalMealDays} />
-
-        {/* Empty / Placeholder for Layout Balance or Future Widget */}
-        <CompletionWidget />
 
       </DashboardLayout>
     </React.Fragment>

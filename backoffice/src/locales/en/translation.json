@@ -217,10 +217,7 @@
       "exercises_library": "Exercises Library",
       "exercises_library_tooltip": "Total number of exercises available in the library.",
       "day_meals_private": "Day Meals (Private)",
-      "day_meals_private_tooltip": "Private meal days generated for nutrition plans.",
-      "completion": "Completion",
-      "completion_tooltip": "Global completion indicator for key platform checks.",
-      "system_health": "System Health"
+      "day_meals_private_tooltip": "Private meal days generated for nutrition plans."
     },
     "chart": {
       "vs_last_month": "vs last month"
