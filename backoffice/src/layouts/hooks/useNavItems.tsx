@@ -1,16 +1,16 @@
 // src/layouts/hooks/useNavItems.tsx
 import * as React from 'react';
 import {
-  FitnessCenter,
-  FlagCircle,
-  Groups,
   Home,
+  Palette,
+  Settings,
+  PersonSearch,
   InfoOutlined,
   LinkOutlined,
+  FitnessCenter,
   ManageAccounts,
-  Palette,
   RestaurantMenu,
-  Settings,
+  SportsGymnastics,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
@@ -45,12 +45,12 @@ export function useNavItems(role?: string): NavItem[] {
         },
         {
           label: t('prospects.title'),
-          icon: <FlagCircle />,
+          icon: <PersonSearch />,
           path: '/prospects',
         },
         {
           label: t('athletes.title'),
-          icon: <Groups />,
+          icon: <SportsGymnastics />,
           path: '/athletes/liaison',
           children: [
             { label: t('athletes.nav.liaison'), icon: <LinkOutlined />, path: '/athletes/liaison' },

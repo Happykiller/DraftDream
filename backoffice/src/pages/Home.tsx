@@ -15,19 +15,19 @@ import {
 
 import { ProspectStatus } from '@commons/prospects/status';
 
-import { useProspects } from '@hooks/useProspects';
 import { useUsers } from '@hooks/useUsers';
 import { usePrograms } from '@hooks/usePrograms';
 import { useSessions } from '@hooks/useSessions';
+import { useMealDays } from '@hooks/useMealDays';
+import { useProspects } from '@hooks/useProspects';
 import { useExercises } from '@hooks/useExercises';
 import { useMealPlans } from '@hooks/useMealPlans';
-import { useMealDays } from '@hooks/useMealDays';
 
-import { DashboardLayout } from '@components/dashboard/DashboardLayout';
 import { StatCard } from '@components/dashboard/widgets/StatCard';
+import { DashboardLayout } from '@components/dashboard/DashboardLayout';
 import { GrowthChartWidget } from '@components/dashboard/widgets/GrowthChartWidget';
-import { DistributionChartWidget } from '@components/dashboard/widgets/DistributionChartWidget';
 import { ProspectsListWidget } from '@components/dashboard/widgets/ProspectsListWidget';
+import { DistributionChartWidget } from '@components/dashboard/widgets/DistributionChartWidget';
 
 import {
   getGrowthData,

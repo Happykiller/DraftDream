@@ -3,17 +3,16 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
-  DirectionsRun,
-  EmojiEvents,
-  FitnessCenter,
-  Group,
   Home,
   Info,
-  RestaurantMenu,
   Settings,
+  PersonSearch,
+  FitnessCenter,
+  RestaurantMenu,
+  SportsGymnastics,
 } from '@mui/icons-material';
 
-import { UserType } from '../../commons/enums.js';
+import { UserType } from '@src/commons/enums.js';
 
 export type NavItem = {
   label: string;
@@ -27,11 +26,11 @@ function createHomeItem(t: (key: string) => string): NavItem {
 }
 
 function createProspectsItem(t: (key: string) => string): NavItem {
-  return { label: t('prospects.title'), icon: <Group />, path: '/prospects' };
+  return { label: t('prospects.title'), icon: <PersonSearch />, path: '/prospects' };
 }
 
 function createAthletesItem(t: (key: string) => string): NavItem {
-  return { label: t('athletes.title'), icon: <EmojiEvents />, path: '/athletes' };
+  return { label: t('athletes.title'), icon: <SportsGymnastics />, path: '/athletes' };
 }
 
 function createProgramsCoachItem(t: (key: string) => string): NavItem {
@@ -45,7 +44,7 @@ function createProgramsCoachItem(t: (key: string) => string): NavItem {
 function createProgramsAthleteItem(t: (key: string) => string): NavItem {
   return {
     label: t('programs-athlete.title'),
-    icon: <DirectionsRun />,
+    icon: <FitnessCenter />,
     path: '/programs-athlete',
   };
 }
