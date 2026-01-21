@@ -219,7 +219,12 @@
       "day_meals": "Journées repas",
       "day_meals_tooltip": "Journées repas générées pour les plans nutrition.",
       "meals": "Repas",
-      "meals_tooltip": "Repas créés par les coachs."
+      "meals_tooltip": "Repas créés par les coachs.",
+      "program_records": "Records programmes",
+      "program_records_tooltip": "Notes de satisfaction des records de programmes.",
+      "meal_records": "Records plans nutrition",
+      "meal_records_tooltip": "Notes de satisfaction des records de plans nutrition.",
+      "rating_unknown": "Non noté"
     },
     "chart": {
       "vs_last_month": "vs mois dernier"

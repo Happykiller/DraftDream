@@ -10,10 +10,17 @@ export type DistributionItem = {
   visibility?: string | null;
 };
 
+export type RatingItem = {
+  satisfactionRating?: number | null;
+};
+
 export type ChartPoint = {
   name: string;
   value: number;
 };
+
+const MIN_RATING = 0;
+const MAX_RATING = 10;
 
 /**
  * Build a cumulative trend dataset for the growth widgets.
@@ -71,4 +78,50 @@ export const getDistributionData = <T extends DistributionItem>(
     name: labelMap?.[label] ?? label,
     value: counts[label],
   }));
+};
+
+/**
+ * Build a distribution of satisfaction ratings for record widgets.
+ *
+ * @param items List of items containing satisfaction ratings.
+ * @param unknownLabel Label for missing or invalid ratings.
+ * @returns Array of ChartPoint for ratings 0-10 plus unknown bucket.
+ */
+export const getRatingDistribution = <T extends RatingItem>(
+  items: T[],
+  unknownLabel: string,
+): ChartPoint[] => {
+  const ratingCounts = new Map<number, number>();
+  for (let rating = MIN_RATING; rating <= MAX_RATING; rating += 1) {
+    ratingCounts.set(rating, 0);
+  }
+
+  let unknownCount = 0;
+
+  items.forEach((item) => {
+    const rating = item.satisfactionRating;
+    if (typeof rating !== 'number' || Number.isNaN(rating)) {
+      unknownCount += 1;
+      return;
+    }
+
+    const rounded = Math.round(rating);
+    if (rounded < MIN_RATING || rounded > MAX_RATING) {
+      unknownCount += 1;
+      return;
+    }
+
+    ratingCounts.set(rounded, (ratingCounts.get(rounded) ?? 0) + 1);
+  });
+
+  const distribution = Array.from(ratingCounts.entries()).map(([rating, value]) => ({
+    name: String(rating),
+    value,
+  }));
+
+  if (unknownCount > 0) {
+    distribution.push({ name: unknownLabel, value: unknownCount });
+  }
+
+  return distribution;
 };

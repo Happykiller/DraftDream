@@ -12,6 +12,8 @@ import { useProspects } from '@hooks/useProspects';
 import { useExercises } from '@hooks/useExercises';
 import { useMealPlans } from '@hooks/useMealPlans';
 import { useMeals } from '@hooks/useMeals';
+import { useProgramRecords } from '@hooks/useProgramRecords';
+import { useMealRecords } from '@hooks/useMealRecords';
 
 import { DashboardLayout } from '@components/dashboard/DashboardLayout';
 import { TotalUsersWidget } from '@components/dashboard/widgets/home/TotalUsersWidget';
@@ -23,9 +25,12 @@ import { DayMealsWidget } from '@components/dashboard/widgets/home/DayMealsWidge
 import { NutritionPlansWidget } from '@components/dashboard/widgets/home/NutritionPlansWidget';
 import { ExercisesLibraryWidget } from '@components/dashboard/widgets/home/ExercisesLibraryWidget';
 import { MealsWidget } from '@components/dashboard/widgets/home/MealsWidget';
+import { ProgramRecordsWidget } from '@components/dashboard/widgets/home/ProgramRecordsWidget';
+import { MealRecordsWidget } from '@components/dashboard/widgets/home/MealRecordsWidget';
 
 import {
   getDistributionData,
+  getRatingDistribution,
   PAGE_SIZE
 } from './Home.utils';
 
@@ -42,6 +47,8 @@ export function Home(): React.JSX.Element {
   const { items: meals, total: totalMeals } = useMeals({ page: 1, limit: PAGE_SIZE, q: '' });
   const { items: mealPlans, total: totalMealPlans } = useMealPlans({ page: 1, limit: PAGE_SIZE, q: '' });
   const { items: mealDays, total: totalMealDays } = useMealDays({ page: 1, limit: PAGE_SIZE, q: '' });
+  const { items: programRecords, total: totalProgramRecords } = useProgramRecords({ page: 1, limit: PAGE_SIZE });
+  const { items: mealRecords, total: totalMealRecords } = useMealRecords({ page: 1, limit: PAGE_SIZE });
 
   // Keep the list limited to actionable prospects.
   const myProspects = useMemo(() => {
@@ -162,6 +169,14 @@ export function Home(): React.JSX.Element {
     };
   }, [mealDayDistribution, t]);
 
+  const programRecordRatings = useMemo(() => {
+    return getRatingDistribution(programRecords, t('home.widgets.rating_unknown'));
+  }, [programRecords, t]);
+
+  const mealRecordRatings = useMemo(() => {
+    return getRatingDistribution(mealRecords, t('home.widgets.rating_unknown'));
+  }, [mealRecords, t]);
+
   return (
     <React.Fragment>
       {/* General information */}
@@ -236,6 +251,18 @@ export function Home(): React.JSX.Element {
           privateCount={mealVisibility.privateCount}
           publicLabel={mealVisibility.publicLabel}
           privateLabel={mealVisibility.privateLabel}
+        />
+
+        {/* Program Records */}
+        <ProgramRecordsWidget
+          totalRecords={totalProgramRecords}
+          ratingData={programRecordRatings}
+        />
+
+        {/* Nutrition Plan Records */}
+        <MealRecordsWidget
+          totalRecords={totalMealRecords}
+          ratingData={mealRecordRatings}
         />
 
       </DashboardLayout>
