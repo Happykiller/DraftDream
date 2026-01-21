@@ -217,7 +217,9 @@
       "exercises": "Exercises",
       "exercises_tooltip": "Training exercises created by coaches.",
       "day_meals": "Day Meals",
-      "day_meals_tooltip": "Meal days generated for nutrition plans."
+      "day_meals_tooltip": "Meal days generated for nutrition plans.",
+      "meals": "Meals",
+      "meals_tooltip": "Meals created by coaches."
     },
     "chart": {
       "vs_last_month": "vs last month"

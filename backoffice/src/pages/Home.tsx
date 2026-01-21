@@ -11,6 +11,7 @@ import { useMealDays } from '@hooks/useMealDays';
 import { useProspects } from '@hooks/useProspects';
 import { useExercises } from '@hooks/useExercises';
 import { useMealPlans } from '@hooks/useMealPlans';
+import { useMeals } from '@hooks/useMeals';
 
 import { DashboardLayout } from '@components/dashboard/DashboardLayout';
 import { TotalUsersWidget } from '@components/dashboard/widgets/home/TotalUsersWidget';
@@ -21,6 +22,7 @@ import { SessionsWidget } from '@components/dashboard/widgets/home/SessionsWidge
 import { DayMealsWidget } from '@components/dashboard/widgets/home/DayMealsWidget';
 import { NutritionPlansWidget } from '@components/dashboard/widgets/home/NutritionPlansWidget';
 import { ExercisesLibraryWidget } from '@components/dashboard/widgets/home/ExercisesLibraryWidget';
+import { MealsWidget } from '@components/dashboard/widgets/home/MealsWidget';
 
 import {
   getDistributionData,
@@ -37,6 +39,7 @@ export function Home(): React.JSX.Element {
   const { items: programs, total: totalPrograms } = usePrograms({ page: 1, limit: PAGE_SIZE, q: '' });
   const { items: sessions, total: totalSessions } = useSessions({ page: 1, limit: PAGE_SIZE, q: '' });
   const { items: exercises, total: totalExercises } = useExercises({ page: 1, limit: PAGE_SIZE, q: '' });
+  const { items: meals, total: totalMeals } = useMeals({ page: 1, limit: PAGE_SIZE, q: '' });
   const { items: mealPlans, total: totalMealPlans } = useMealPlans({ page: 1, limit: PAGE_SIZE, q: '' });
   const { items: mealDays, total: totalMealDays } = useMealDays({ page: 1, limit: PAGE_SIZE, q: '' });
 
@@ -120,6 +123,25 @@ export function Home(): React.JSX.Element {
       privateCount: exerciseDistribution.find((item) => item.name === privateLabel)?.value ?? 0,
     };
   }, [exerciseDistribution, t]);
+
+  const mealDistribution = useMemo(() => {
+    return getDistributionData(meals, 'visibility', {
+      PUBLIC: t('common.visibility.public'),
+      PRIVATE: t('common.visibility.private'),
+    });
+  }, [meals, t]);
+
+  const mealVisibility = useMemo(() => {
+    const publicLabel = t('common.visibility.public');
+    const privateLabel = t('common.visibility.private');
+
+    return {
+      publicLabel,
+      privateLabel,
+      publicCount: mealDistribution.find((item) => item.name === publicLabel)?.value ?? 0,
+      privateCount: mealDistribution.find((item) => item.name === privateLabel)?.value ?? 0,
+    };
+  }, [mealDistribution, t]);
 
   const mealDayDistribution = useMemo(() => {
     return getDistributionData(mealDays, 'visibility', {
@@ -205,6 +227,15 @@ export function Home(): React.JSX.Element {
           privateCount={mealDayVisibility.privateCount}
           publicLabel={mealDayVisibility.publicLabel}
           privateLabel={mealDayVisibility.privateLabel}
+        />
+
+        {/* Meals */}
+        <MealsWidget
+          totalMeals={totalMeals}
+          publicCount={mealVisibility.publicCount}
+          privateCount={mealVisibility.privateCount}
+          publicLabel={mealVisibility.publicLabel}
+          privateLabel={mealVisibility.privateLabel}
         />
 
       </DashboardLayout>
