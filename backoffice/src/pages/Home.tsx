@@ -23,7 +23,6 @@ import { NutritionPlansWidget } from '@components/dashboard/widgets/home/Nutriti
 import { ExercisesLibraryWidget } from '@components/dashboard/widgets/home/ExercisesLibraryWidget';
 
 import {
-  getGrowthData,
   getDistributionData,
   PAGE_SIZE
 } from './Home.utils';
@@ -46,8 +45,6 @@ export function Home(): React.JSX.Element {
     return prospects.filter((prospect) => prospect.status === ProspectStatus.TODO).slice(0, 5);
   }, [prospects]);
 
-  const nutritionGrowth = useMemo(() => getGrowthData(mealPlans), [mealPlans]);
-
   const programDistribution = useMemo(() => {
     return getDistributionData(programs, 'visibility', {
       PUBLIC: t('common.visibility.public'),
@@ -66,6 +63,25 @@ export function Home(): React.JSX.Element {
       privateCount: programDistribution.find((item) => item.name === privateLabel)?.value ?? 0,
     };
   }, [programDistribution, t]);
+
+  const mealPlanDistribution = useMemo(() => {
+    return getDistributionData(mealPlans, 'visibility', {
+      PUBLIC: t('common.visibility.public'),
+      PRIVATE: t('common.visibility.private'),
+    });
+  }, [mealPlans, t]);
+
+  const mealPlanVisibility = useMemo(() => {
+    const publicLabel = t('common.visibility.public');
+    const privateLabel = t('common.visibility.private');
+
+    return {
+      publicLabel,
+      privateLabel,
+      publicCount: mealPlanDistribution.find((item) => item.name === publicLabel)?.value ?? 0,
+      privateCount: mealPlanDistribution.find((item) => item.name === privateLabel)?.value ?? 0,
+    };
+  }, [mealPlanDistribution, t]);
 
   return (
     <React.Fragment>
@@ -99,7 +115,13 @@ export function Home(): React.JSX.Element {
         />
 
         {/* Nutrition Plans */}
-        <NutritionPlansWidget totalMealPlans={totalMealPlans} growthData={nutritionGrowth} />
+        <NutritionPlansWidget
+          totalMealPlans={totalMealPlans}
+          publicCount={mealPlanVisibility.publicCount}
+          privateCount={mealPlanVisibility.privateCount}
+          publicLabel={mealPlanVisibility.publicLabel}
+          privateLabel={mealPlanVisibility.privateLabel}
+        />
 
 
         {/* --- Row 3: Detail / Volume --- */}

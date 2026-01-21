@@ -3,38 +3,49 @@ import { useTheme } from '@mui/material';
 import { Restaurant } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
-import { GrowthChartWidget } from '@components/dashboard/widgets/GrowthChartWidget';
-
-interface GrowthDataPoint {
-    name: string;
-    value: number;
-}
+import { DistributionChartWidget } from '@components/dashboard/widgets/DistributionChartWidget';
 
 interface NutritionPlansWidgetProps {
     totalMealPlans: number;
-    growthData: GrowthDataPoint[];
+    publicCount: number;
+    privateCount: number;
+    publicLabel: string;
+    privateLabel: string;
 }
 
-// Dashboard widget for nutrition plan growth.
+interface DistributionDataPoint {
+    name: string;
+    value: number;
+    color: string;
+}
+
+// Dashboard widget for nutrition plan metrics and visibility split.
 export const NutritionPlansWidget: React.FC<NutritionPlansWidgetProps> = ({
     totalMealPlans,
-    growthData,
+    publicCount,
+    privateCount,
+    publicLabel,
+    privateLabel,
 }) => {
     const { t } = useTranslation();
     const theme = useTheme();
+    const distributionData: DistributionDataPoint[] = [
+        { name: publicLabel, value: publicCount, color: theme.palette.success.main },
+        { name: privateLabel, value: privateCount, color: theme.palette.warning.main },
+    ];
 
     return (
         <React.Fragment>
             {/* General information */}
-            <GrowthChartWidget
+            <DistributionChartWidget
                 title={t('home.widgets.nutrition_plans')}
                 tooltip={t('home.widgets.nutrition_plans_tooltip')}
                 value={totalMealPlans}
                 icon={Restaurant}
                 colSpan={1}
                 color={theme.palette.secondary.main}
-                data={growthData}
-                height={80}
+                data={distributionData}
+                height={150}
             />
         </React.Fragment>
     );
