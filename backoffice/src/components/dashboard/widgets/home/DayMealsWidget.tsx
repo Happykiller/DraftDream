@@ -43,7 +43,7 @@ export const DayMealsWidget: React.FC<DayMealsWidgetProps> = ({
                 value={totalMealDays}
                 icon={Restaurant}
                 colSpan={1}
-                color={theme.palette.secondary.main}
+                color={theme.palette.warning.main}
                 data={distributionData}
                 height={150}
             />

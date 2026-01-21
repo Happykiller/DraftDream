@@ -43,7 +43,7 @@ export const NutritionPlansWidget: React.FC<NutritionPlansWidgetProps> = ({
                 value={totalMealPlans}
                 icon={RestaurantMenu}
                 colSpan={1}
-                color={theme.palette.secondary.main}
+                color={theme.palette.warning.main}
                 data={distributionData}
                 height={150}
             />
