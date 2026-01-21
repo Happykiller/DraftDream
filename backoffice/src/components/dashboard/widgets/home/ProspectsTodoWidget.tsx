@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, useTheme } from '@mui/material';
-import { TrendingUp } from '@mui/icons-material';
+import { PersonSearch } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
 import type { Prospect } from '@hooks/useProspects';
@@ -27,7 +27,7 @@ export const ProspectsTodoWidget: React.FC<ProspectsTodoWidgetProps> = ({
                 title={t('home.widgets.prospects_todo')}
                 tooltip={t('home.widgets.prospects_todo_tooltip')}
                 value={prospects.length}
-                icon={TrendingUp}
+                icon={PersonSearch}
                 colSpan={1}
                 color={theme.palette.warning.main}
                 prospects={prospects}
