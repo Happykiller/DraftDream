@@ -226,6 +226,12 @@ export function Home(): React.JSX.Element {
           privateLabel={exerciseVisibility.privateLabel}
         />
 
+        {/* Program Records */}
+        <ProgramRecordsWidget
+          totalRecords={totalProgramRecords}
+          ratingData={programRecordRatings}
+        />
+
         {/* Nutrition Plans */}
         <NutritionPlansWidget
           totalMealPlans={totalMealPlans}
@@ -251,12 +257,6 @@ export function Home(): React.JSX.Element {
           privateCount={mealVisibility.privateCount}
           publicLabel={mealVisibility.publicLabel}
           privateLabel={mealVisibility.privateLabel}
-        />
-
-        {/* Program Records */}
-        <ProgramRecordsWidget
-          totalRecords={totalProgramRecords}
-          ratingData={programRecordRatings}
         />
 
         {/* Nutrition Plan Records */}

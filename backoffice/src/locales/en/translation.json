@@ -220,9 +220,9 @@
       "day_meals_tooltip": "Meal days generated for nutrition plans.",
       "meals": "Meals",
       "meals_tooltip": "Meals created by coaches.",
-      "program_records": "Program Records",
+      "program_records": "Retour sessions",
       "program_records_tooltip": "Satisfaction ratings for program records.",
-      "meal_records": "Nutrition Plan Records",
+      "meal_records": "Retour repas",
       "meal_records_tooltip": "Satisfaction ratings for nutrition plan records.",
       "rating_unknown": "Not rated"
     },
