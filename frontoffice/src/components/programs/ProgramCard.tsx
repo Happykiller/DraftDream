@@ -417,12 +417,12 @@ export const ProgramCard = React.memo(function ProgramCard({
                 <Grid size={{ xs: 12, md: 6 }}>
                   <Stack spacing={0.25}>
                     <Typography variant="subtitle1" sx={{ fontWeight: 700, color: theme.palette.primary.main }}>
-                      {t('programs-coatch.list.duration_weeks', { count: program.duration })}
+                      {t('programs-coatch.view.information.duration')}
                     </Typography>
                     <Stack direction="row" spacing={0.75} alignItems="center">
                       <CalendarMonthOutlined fontSize="small" sx={{ opacity: 0.7 }} />
                       <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
-                        {t('programs-coatch.view.information.duration')}
+                        {t('programs-coatch.list.duration_weeks', { count: program.duration })}
                       </Typography>
                     </Stack>
                   </Stack>
@@ -430,12 +430,12 @@ export const ProgramCard = React.memo(function ProgramCard({
                 <Grid size={{ xs: 12, md: 6 }}>
                   <Stack spacing={0.25}>
                     <Typography variant="subtitle1" sx={{ fontWeight: 700, color: theme.palette.success.main }}>
-                      {t('programs-coatch.list.frequency_week', { count: program.frequency })}
+                      {t('programs-coatch.view.information.frequency')}
                     </Typography>
                     <Stack direction="row" spacing={0.75} alignItems="center">
                       <ScheduleOutlined fontSize="small" sx={{ opacity: 0.7 }} />
                       <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
-                        {t('programs-coatch.view.information.frequency')}
+                        {t('programs-coatch.list.frequency_week', { count: program.frequency })}
                       </Typography>
                     </Stack>
                   </Stack>
@@ -443,15 +443,15 @@ export const ProgramCard = React.memo(function ProgramCard({
                 <Grid size={{ xs: 12, md: 12 }}>
                   <Stack spacing={0.25}>
                     <Typography variant="subtitle1" sx={{ fontWeight: 700, color: theme.palette.info.main }}>
-                      {t('programs-coatch.list.sessions_summary', {
-                        sessions: sessionsCount,
-                        exercises: exercisesCount,
-                      })}
+                      {t('programs-coatch.list.program_sessions_title')}
                     </Typography>
                     <Stack direction="row" spacing={0.75} alignItems="center">
                       <CenterFocusStrongOutlined fontSize="small" sx={{ opacity: 0.7 }} />
                       <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
-                        {t('programs-coatch.list.program_sessions_title')}
+                        {t('programs-coatch.list.sessions_summary', {
+                          sessions: sessionsCount,
+                          exercises: exercisesCount,
+                        })}
                       </Typography>
                     </Stack>
                   </Stack>
