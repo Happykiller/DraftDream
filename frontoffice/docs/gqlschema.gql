@@ -740,6 +740,7 @@ input ListSessionsInput {
   q: String
   locale: String
   createdBy: String
+  visibility: MealPlanVisibility
   limit: Int
   page: Int
 }
