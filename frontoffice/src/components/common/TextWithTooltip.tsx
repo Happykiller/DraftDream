@@ -49,24 +49,12 @@ export function TextWithTooltip({
         };
     }, [children, tooltipTitle, maxLines, typographyProps.style, typographyProps.sx]);
 
-    const lineClampSx = maxLines
-        ? {
-            display: '-webkit-box',
-            WebkitLineClamp: maxLines,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-            whiteSpace: 'pre-wrap',
-        }
-        : {};
-
     return (
         <Tooltip title={isOverflowed ? tooltipTitle : ''}>
             <Typography
                 ref={textRef}
-                noWrap={!maxLines}
-                {...typographyProps}
+                noWrap
                 sx={{
-                    ...(lineClampSx as any),
                     ...typographyProps.sx,
                 }}
             >
