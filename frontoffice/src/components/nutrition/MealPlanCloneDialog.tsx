@@ -13,7 +13,6 @@ import {
 import ContentCopy from '@mui/icons-material/ContentCopy';
 
 import inversify from '@src/commons/inversify';
-import { UserType } from '@src/commons/enums';
 import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
 import type { MealPlan } from '@hooks/nutrition/useMealPlans';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
@@ -28,8 +27,8 @@ interface AthleteOption {
 }
 
 interface AthleteListPayload {
-  user_list: {
-    items: AthleteOption[];
+  coachAthlete_list: {
+    items: Array<{ athlete: AthleteOption }>;
   };
 }
 
@@ -48,14 +47,16 @@ export interface MealPlanCloneDialogProps {
 
 const ATHLETE_CACHE = new Map<string, AthleteOption[]>();
 
-const LIST_USERS_QUERY = `
-  query ListUsers($input: ListUsersInput) {
-    user_list(input: $input) {
+const LIST_COACH_ATHLETES_QUERY = `
+  query ListCoachAthletes($input: ListCoachAthletesInput) {
+    coachAthlete_list(input: $input) {
       items {
-        id
-        email
-        first_name
-        last_name
+        athlete {
+          id
+          email
+          first_name
+          last_name
+        }
       }
     }
   }
@@ -136,14 +137,13 @@ export function MealPlanCloneDialog({
       setAthletesLoading(true);
       try {
         const { data, errors } = await gql.send<AthleteListPayload>({
-          query: LIST_USERS_QUERY,
-          operationName: 'ListUsers',
+          query: LIST_COACH_ATHLETES_QUERY,
+          operationName: 'ListCoachAthletes',
           variables: {
             input: {
               page: 1,
               limit: 25,
               q: search.trim() || undefined,
-              type: UserType.Athlete,
             },
           },
         });
@@ -152,7 +152,7 @@ export function MealPlanCloneDialog({
           throw new Error(errors[0].message);
         }
 
-        const items = data?.user_list.items ?? [];
+        const items = data?.coachAthlete_list.items.map(item => item.athlete) ?? [];
         ATHLETE_CACHE.set(key, items);
         setRawAthleteOptions(items);
       } catch (_error) {
