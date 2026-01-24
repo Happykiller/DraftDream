@@ -370,7 +370,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
               </Box>
               <Stack spacing={0.5} sx={{ minWidth: 0 }}>
                 <Typography variant="h5" component="h1" sx={{ fontWeight: 700 }} noWrap>
-                  {displayName}aaa
+                  {displayName}
                 </Typography>
                 <Typography color="text.secondary" variant="body2">
                   {t('athletes.details.helper')}
@@ -428,11 +428,11 @@ export function AthleteLinkDetails(): React.JSX.Element {
                   allowScrollButtonsMobile
                   sx={{ px: { xs: 1, sm: 2, md: 3 } }}
                 >
-                  <Tab value="overview" label={t('athletes.details.tabs.overview')} />
                   <Tab value="client-info" label={t('athletes.details.client_sheet_title')} />
-                  <Tab value="calendar" label={t('athletes.details.tabs.calendar')} />
+                  <Tab value="overview" label={t('athletes.details.tabs.overview')} />
                   <Tab value="programs" label={t('athletes.details.tabs.programs')} />
                   <Tab value="nutritions" label={t('athletes.details.tabs.nutritions')} />
+                  <Tab value="calendar" label={t('athletes.details.tabs.calendar')} />
                   <Tab value="sessions" label={t('athletes.details.tabs.sessions')} />
                   <Tab value="meal-records" label={t('athletes.details.tabs.meal_records')} />
                 </Tabs>

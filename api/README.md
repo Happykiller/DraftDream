@@ -175,7 +175,7 @@ npm run test:coverage
 ```
 
 ### Test Statistics
-- **115 test suites** with **456 passing tests**
+- **133 test suites** with **544 passing tests**
 - Test files located in `**/__tests__/**/*.spec.ts`
 - Coverage includes:
   - **Use cases**: auth, athlete, client, nutri, sport modules

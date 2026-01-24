@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
-import { Chip, IconButton, Paper, Stack, Tooltip, Typography } from '@mui/material';
-import { Add } from '@mui/icons-material';
+import { Chip, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import { Edit } from '@mui/icons-material';
 
+import { LibraryCard } from '../common/LibraryCard';
 import type { BuilderCopy, SessionTemplate } from './programBuilderTypes';
 import { TextWithTooltip } from '../common/TextWithTooltip';
 
@@ -10,12 +11,16 @@ type ProgramBuilderSessionTemplateItemProps = {
   template: SessionTemplate;
   builderCopy: BuilderCopy;
   onAdd: () => void | Promise<void>;
+  onEdit?: () => void | Promise<void>;
+  onDelete?: () => void | Promise<void>;
 };
 
 export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuilderSessionLibraryItem({
   template,
   builderCopy,
   onAdd,
+  onEdit,
+  onDelete,
 }: ProgramBuilderSessionTemplateItemProps): React.JSX.Element {
   const theme = useTheme();
 
@@ -41,103 +46,105 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
     onAdd();
   }, [onAdd]);
 
-  return (
-    <Paper
-      variant="outlined"
-      sx={{
-        p: 1.5,
-        borderRadius: 2,
-        cursor: 'default',
-        transition: 'border-color 150ms ease, background-color 150ms ease',
-        width: '100%',
-        maxWidth: '100%',
-        '&:hover': {
-          borderColor: theme.palette.success.main,
-          boxShadow: theme.shadows[2],
-        },
-      }}
-    >
-      {/* Session template */}
-      <Stack spacing={1.25}>
-        <Stack
-          direction={{ xs: 'column', sm: 'row' }}
-          justifyContent="space-between"
-          alignItems="flex-start"
-          columnGap={1}
-          rowGap={1}
-        >
-          <Stack spacing={0.5} flexGrow={1} minWidth={0}>
-            <TextWithTooltip tooltipTitle={template.label} variant="subtitle1" sx={{ fontWeight: 600 }} />
-            {template.description ? (
-              <TextWithTooltip
-                tooltipTitle={template.description}
-                variant="body2"
-                color="text.secondary"
-                maxLines={2}
-              />
-            ) : null}
-          </Stack>
-          <Stack
-            direction="row"
-            spacing={1}
-            alignItems="center"
-          >
-            <Chip
-              label={`${template.duration} ${builderCopy.structure.duration_unit}`}
-              size="small"
-              color="success"
-              variant="outlined"
-            />
-            {/* Add template */}
-            <Tooltip title={builderCopy.library.tooltips.add_session_template} arrow>
-              <span style={{ display: 'inline-flex' }}>
-                <IconButton
-                  size="small"
-                  onClick={handleAddClick}
-                  aria-label="add-session-template"
-                >
-                  <Add fontSize="small" />
-                </IconButton>
-              </span>
-            </Tooltip>
-          </Stack>
-        </Stack>
+  const handleDeleteClick = React.useCallback(() => {
+    onDelete?.();
+  }, [onDelete]);
 
-        {/* Session tags */}
-        <Stack direction="row" spacing={0.5} flexWrap="wrap" sx={{ width: '100%' }}>
+  const handleEditClick = React.useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.stopPropagation();
+      onEdit?.();
+    },
+    [onEdit],
+  );
+
+  const isPrivateTemplate = template.visibility === 'PRIVATE';
+  const canEdit = isPrivateTemplate && Boolean(onEdit);
+  const canDelete = isPrivateTemplate && Boolean(onDelete);
+
+  return (
+    <LibraryCard
+      hoverColor="success"
+      onAdd={handleAddClick}
+      addTooltip={builderCopy.library.tooltips.add_session_template}
+      addAriaLabel="add-session-template"
+      isPublic={!isPrivateTemplate}
+      deleteTooltip={builderCopy.library.tooltips.delete_session_template}
+      onDelete={canDelete ? handleDeleteClick : undefined}
+    >
+      {/* Title with edit icon */}
+      <Stack direction="row" spacing={0.5} alignItems="center">
+        {canEdit ? (
+          <Tooltip title={builderCopy.library.tooltips.edit_session_template} arrow>
+            <span style={{ display: 'inline-flex' }}>
+              <IconButton
+                size="small"
+                onClick={handleEditClick}
+                aria-label={builderCopy.library.tooltips.edit_session_template}
+                sx={{ p: 0.25 }}
+              >
+                <Edit fontSize="small" />
+              </IconButton>
+            </span>
+          </Tooltip>
+        ) : null}
+        <TextWithTooltip tooltipTitle={template.label} variant="subtitle2" sx={{ fontWeight: 600 }} />
+      </Stack>
+
+      {/* Description */}
+      {template.description ? (
+        <TextWithTooltip
+          tooltipTitle={template.description}
+          variant="caption"
+          color="text.secondary"
+          maxLines={2}
+        />
+      ) : null}
+
+      {/* Duration chip */}
+      <Stack direction="row" spacing={0.5} flexWrap="wrap">
+        <Chip
+          label={`${template.duration} ${builderCopy.structure.duration_unit}`}
+          size="small"
+          color="success"
+          variant="outlined"
+        />
+      </Stack>
+
+      {/* Session tags */}
+      {template.tags.length > 0 ? (
+        <Stack direction="row" spacing={0.5} flexWrap="wrap" sx={{ rowGap: 0.5 }}>
           {template.tags.map((tag) => (
             <Chip key={tag} label={tag} size="small" variant="outlined" />
           ))}
         </Stack>
+      ) : null}
 
-        {template.exercises.length === 0 ? (
-          <Typography variant="caption" color="text.secondary">
-            {exercisesLabel}
-          </Typography>
-        ) : (
-          /* Exercise chips */
-          <Stack spacing={0.5} sx={{ width: '100%' }}>
-            <Stack direction="row" spacing={0.5} flexWrap="wrap">
-              {visibleExercises.map((exercise) => (
-                <Chip
-                  key={`${template.id}-${exercise.exerciseId}`}
-                  label={exercise.label}
-                  size="small"
-                  variant="outlined"
-                />
-              ))}
-              {template.exercises.length > 3 ? (
-                <Chip
-                  label={`+${template.exercises.length - 3}`}
-                  size="small"
-                  variant="outlined"
-                  sx={{ borderColor: theme.palette.divider }}
-                />
-              ) : null}
-            </Stack>
-          </Stack>
-        )}
-      </Stack>
-    </Paper>
+      {/* Exercise chips */}
+      {template.exercises.length > 0 ? (
+        <Stack direction="row" spacing={0.5} flexWrap="wrap" sx={{ rowGap: 0.5 }}>
+          {visibleExercises.map((exercise) => (
+            <Chip
+              key={`${template.id}-${exercise.exerciseId}`}
+              label={exercise.label}
+              size="small"
+              variant="outlined"
+            />
+          ))}
+          {template.exercises.length > 3 ? (
+            <Chip
+              label={`+${template.exercises.length - 3}`}
+              size="small"
+              variant="outlined"
+              sx={{ borderColor: theme.palette.divider }}
+            />
+          ) : null}
+        </Stack>
+      ) : (
+        <Typography variant="caption" color="text.secondary">
+          {exercisesLabel}
+        </Typography>
+      )}
+    </LibraryCard>
   );
 });

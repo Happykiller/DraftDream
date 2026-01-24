@@ -1,62 +1,59 @@
 import React, { useMemo } from 'react';
-import { Box, Button, Chip, Typography, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import {
-  People,
-  SportsGymnastics,
-  FitnessCenter,
-  Restaurant,
-  EventNote,
-  Timer,
-  RestaurantMenu,
-  TrendingUp
-} from '@mui/icons-material';
 
 import { ProspectStatus } from '@commons/prospects/status';
 
-import { useProspects } from '@hooks/useProspects';
 import { useUsers } from '@hooks/useUsers';
 import { usePrograms } from '@hooks/usePrograms';
 import { useSessions } from '@hooks/useSessions';
+import { useMealDays } from '@hooks/useMealDays';
+import { useProspects } from '@hooks/useProspects';
 import { useExercises } from '@hooks/useExercises';
 import { useMealPlans } from '@hooks/useMealPlans';
-import { useMealDays } from '@hooks/useMealDays';
+import { useMeals } from '@hooks/useMeals';
+import { useProgramRecords } from '@hooks/useProgramRecords';
+import { useMealRecords } from '@hooks/useMealRecords';
 
 import { DashboardLayout } from '@components/dashboard/DashboardLayout';
-import { StatCard } from '@components/dashboard/widgets/StatCard';
-import { GrowthChartWidget } from '@components/dashboard/widgets/GrowthChartWidget';
-import { DistributionChartWidget } from '@components/dashboard/widgets/DistributionChartWidget';
-import { ProspectsListWidget } from '@components/dashboard/widgets/ProspectsListWidget';
+import { TotalUsersWidget } from '@components/dashboard/widgets/home/TotalUsersWidget';
+import { ProgramsWidget } from '@components/dashboard/widgets/home/ProgramsWidget';
+import { ProspectsWidget } from '@components/dashboard/widgets/home/ProspectsWidget';
+import { ProspectsTodoWidget } from '@components/dashboard/widgets/home/ProspectsTodoWidget';
+import { SessionsWidget } from '@components/dashboard/widgets/home/SessionsWidget';
+import { DayMealsWidget } from '@components/dashboard/widgets/home/DayMealsWidget';
+import { NutritionPlansWidget } from '@components/dashboard/widgets/home/NutritionPlansWidget';
+import { ExercisesLibraryWidget } from '@components/dashboard/widgets/home/ExercisesLibraryWidget';
+import { MealsWidget } from '@components/dashboard/widgets/home/MealsWidget';
+import { ProgramRecordsWidget } from '@components/dashboard/widgets/home/ProgramRecordsWidget';
+import { MealRecordsWidget } from '@components/dashboard/widgets/home/MealRecordsWidget';
 
 import {
-  getGrowthData,
   getDistributionData,
+  getRatingDistribution,
   PAGE_SIZE
 } from './Home.utils';
 
 export function Home(): React.JSX.Element {
   const { t } = useTranslation();
-  const theme = useTheme();
   const navigate = useNavigate();
 
   const { items: prospects, total: totalProspects } = useProspects({ page: 1, limit: PAGE_SIZE, q: '' });
   const { total: totalCoaches } = useUsers({ page: 1, limit: PAGE_SIZE, q: '', type: 'coach' });
   const { total: totalAthletes } = useUsers({ page: 1, limit: PAGE_SIZE, q: '', type: 'athlete' });
   const { items: programs, total: totalPrograms } = usePrograms({ page: 1, limit: PAGE_SIZE, q: '' });
-  const { total: totalSessions } = useSessions({ page: 1, limit: PAGE_SIZE, q: '' });
-  const { total: totalExercises } = useExercises({ page: 1, limit: PAGE_SIZE, q: '' });
+  const { items: sessions, total: totalSessions } = useSessions({ page: 1, limit: PAGE_SIZE, q: '' });
+  const { items: exercises, total: totalExercises } = useExercises({ page: 1, limit: PAGE_SIZE, q: '' });
+  const { items: meals, total: totalMeals } = useMeals({ page: 1, limit: PAGE_SIZE, q: '' });
   const { items: mealPlans, total: totalMealPlans } = useMealPlans({ page: 1, limit: PAGE_SIZE, q: '' });
-  const { total: totalMealDays } = useMealDays({ page: 1, limit: PAGE_SIZE, q: '' });
+  const { items: mealDays, total: totalMealDays } = useMealDays({ page: 1, limit: PAGE_SIZE, q: '' });
+  const { items: programRecords, total: totalProgramRecords } = useProgramRecords({ page: 1, limit: PAGE_SIZE });
+  const { items: mealRecords, total: totalMealRecords } = useMealRecords({ page: 1, limit: PAGE_SIZE });
 
   // Keep the list limited to actionable prospects.
   const myProspects = useMemo(() => {
     return prospects.filter((prospect) => prospect.status === ProspectStatus.TODO).slice(0, 5);
   }, [prospects]);
-
-  const prospectsGrowth = useMemo(() => getGrowthData(prospects), [prospects]);
-  const programsGrowth = useMemo(() => getGrowthData(programs), [programs]);
-  const nutritionGrowth = useMemo(() => getGrowthData(mealPlans), [mealPlans]);
 
   const programDistribution = useMemo(() => {
     return getDistributionData(programs, 'visibility', {
@@ -77,10 +74,108 @@ export function Home(): React.JSX.Element {
     };
   }, [programDistribution, t]);
 
-  const userDistribution = [
-    { name: t('users.types.coach'), value: totalCoaches, color: theme.palette.secondary.main },
-    { name: t('users.types.athlete'), value: totalAthletes, color: theme.palette.primary.main },
-  ];
+  const mealPlanDistribution = useMemo(() => {
+    return getDistributionData(mealPlans, 'visibility', {
+      PUBLIC: t('common.visibility.public'),
+      PRIVATE: t('common.visibility.private'),
+    });
+  }, [mealPlans, t]);
+
+  const mealPlanVisibility = useMemo(() => {
+    const publicLabel = t('common.visibility.public');
+    const privateLabel = t('common.visibility.private');
+
+    return {
+      publicLabel,
+      privateLabel,
+      publicCount: mealPlanDistribution.find((item) => item.name === publicLabel)?.value ?? 0,
+      privateCount: mealPlanDistribution.find((item) => item.name === privateLabel)?.value ?? 0,
+    };
+  }, [mealPlanDistribution, t]);
+
+  const sessionDistribution = useMemo(() => {
+    return getDistributionData(sessions, 'visibility', {
+      PUBLIC: t('common.visibility.public'),
+      PRIVATE: t('common.visibility.private'),
+    });
+  }, [sessions, t]);
+
+  const sessionVisibility = useMemo(() => {
+    const publicLabel = t('common.visibility.public');
+    const privateLabel = t('common.visibility.private');
+
+    return {
+      publicLabel,
+      privateLabel,
+      publicCount: sessionDistribution.find((item) => item.name === publicLabel)?.value ?? 0,
+      privateCount: sessionDistribution.find((item) => item.name === privateLabel)?.value ?? 0,
+    };
+  }, [sessionDistribution, t]);
+
+  const exerciseDistribution = useMemo(() => {
+    return getDistributionData(exercises, 'visibility', {
+      PUBLIC: t('common.visibility.public'),
+      PRIVATE: t('common.visibility.private'),
+    });
+  }, [exercises, t]);
+
+  const exerciseVisibility = useMemo(() => {
+    const publicLabel = t('common.visibility.public');
+    const privateLabel = t('common.visibility.private');
+
+    return {
+      publicLabel,
+      privateLabel,
+      publicCount: exerciseDistribution.find((item) => item.name === publicLabel)?.value ?? 0,
+      privateCount: exerciseDistribution.find((item) => item.name === privateLabel)?.value ?? 0,
+    };
+  }, [exerciseDistribution, t]);
+
+  const mealDistribution = useMemo(() => {
+    return getDistributionData(meals, 'visibility', {
+      PUBLIC: t('common.visibility.public'),
+      PRIVATE: t('common.visibility.private'),
+    });
+  }, [meals, t]);
+
+  const mealVisibility = useMemo(() => {
+    const publicLabel = t('common.visibility.public');
+    const privateLabel = t('common.visibility.private');
+
+    return {
+      publicLabel,
+      privateLabel,
+      publicCount: mealDistribution.find((item) => item.name === publicLabel)?.value ?? 0,
+      privateCount: mealDistribution.find((item) => item.name === privateLabel)?.value ?? 0,
+    };
+  }, [mealDistribution, t]);
+
+  const mealDayDistribution = useMemo(() => {
+    return getDistributionData(mealDays, 'visibility', {
+      PUBLIC: t('common.visibility.public'),
+      PRIVATE: t('common.visibility.private'),
+    });
+  }, [mealDays, t]);
+
+  const mealDayVisibility = useMemo(() => {
+    const publicLabel = t('common.visibility.public');
+    const privateLabel = t('common.visibility.private');
+
+    return {
+      publicLabel,
+      privateLabel,
+      publicCount: mealDayDistribution.find((item) => item.name === publicLabel)?.value ?? 0,
+      privateCount: mealDayDistribution.find((item) => item.name === privateLabel)?.value ?? 0,
+    };
+  }, [mealDayDistribution, t]);
+
+  const programRecordRatings = useMemo(() => {
+    return getRatingDistribution(programRecords, t('home.widgets.rating_unknown'));
+  }, [programRecords, t]);
+
+  const mealRecordRatings = useMemo(() => {
+    return getRatingDistribution(mealRecords, t('home.widgets.rating_unknown'));
+  }, [mealRecords, t]);
 
   return (
     <React.Fragment>
@@ -90,117 +185,85 @@ export function Home(): React.JSX.Element {
         {/* --- Row 1: High Level Stats --- */}
 
         {/* Total Users & Split */}
-        <DistributionChartWidget
-          title={t('home.widgets.total_users')}
-          value={totalCoaches + totalAthletes}
-          icon={People}
-          colSpan={1}
-          color={theme.palette.info.main}
-          data={userDistribution}
-          height={150}
-        />
+        <TotalUsersWidget totalCoaches={totalCoaches} totalAthletes={totalAthletes} />
 
         {/* Prospects A Faire */}
-        <ProspectsListWidget
-          title={t('home.widgets.prospects_todo')}
-          value={myProspects.length}
-          icon={TrendingUp}
-          colSpan={1}
-          color={theme.palette.warning.main}
+        <ProspectsTodoWidget
           prospects={myProspects}
-        >
-          <Button size="small" fullWidth onClick={() => navigate('/prospects')} sx={{ mt: 1 }}>
-            {t('home.widgets.view_prospects')}
-          </Button>
-        </ProspectsListWidget>
+          onViewProspects={() => navigate('/prospects')}
+        />
 
         {/* Total Prospects Trend */}
-        <GrowthChartWidget
-          title={t('home.widgets.total_prospects')}
-          value={totalProspects}
-          icon={People}
-          colSpan={1}
-          data={prospectsGrowth}
-          height={80}
-          color={theme.palette.success.main}
-        />
+        <ProspectsWidget prospects={prospects} totalProspects={totalProspects} />
 
 
         {/* --- Row 2: Content Stats --- */}
 
         {/* Programs */}
-        <GrowthChartWidget
-          title={t('home.widgets.programs')}
-          value={totalPrograms}
-          icon={FitnessCenter}
-          colSpan={1}
-          color={theme.palette.primary.main}
-          data={programsGrowth}
-          height={60}
-        >
-          <Box sx={{ display: 'flex', gap: 1, mt: 1, mb: 1 }}>
-            <Chip
-              label={`${programVisibility.publicCount} ${programVisibility.publicLabel}`}
-              size="small"
-              variant="outlined"
-            />
-            <Chip
-              label={`${programVisibility.privateCount} ${programVisibility.privateLabel}`}
-              size="small"
-              variant="outlined"
-            />
-          </Box>
-        </GrowthChartWidget>
-
-        {/* Nutrition Plans */}
-        <GrowthChartWidget
-          title={t('home.widgets.nutrition_plans')}
-          value={totalMealPlans}
-          icon={Restaurant}
-          colSpan={1}
-          color={theme.palette.secondary.main}
-          data={nutritionGrowth}
-          height={80}
+        <ProgramsWidget
+          totalPrograms={totalPrograms}
+          publicCount={programVisibility.publicCount}
+          privateCount={programVisibility.privateCount}
+          publicLabel={programVisibility.publicLabel}
+          privateLabel={programVisibility.privateLabel}
         />
 
-
-        {/* --- Row 3: Detail / Volume --- */}
-
         {/* Sessions */}
-        <StatCard
-          title={t('home.widgets.sessions_private')}
-          value={totalSessions}
-          icon={Timer}
-          colSpan={1}
-          color={theme.palette.error.main}
+        <SessionsWidget
+          totalSessions={totalSessions}
+          publicCount={sessionVisibility.publicCount}
+          privateCount={sessionVisibility.privateCount}
+          publicLabel={sessionVisibility.publicLabel}
+          privateLabel={sessionVisibility.privateLabel}
         />
 
         {/* Exercises */}
-        <StatCard
-          title={t('home.widgets.exercises_library')}
-          value={totalExercises}
-          icon={SportsGymnastics}
-          colSpan={1}
+        <ExercisesLibraryWidget
+          totalExercises={totalExercises}
+          publicCount={exerciseVisibility.publicCount}
+          privateCount={exerciseVisibility.privateCount}
+          publicLabel={exerciseVisibility.publicLabel}
+          privateLabel={exerciseVisibility.privateLabel}
+        />
+
+        {/* Program Records */}
+        <ProgramRecordsWidget
+          totalRecords={totalProgramRecords}
+          ratingData={programRecordRatings}
+        />
+
+        {/* Nutrition Plans */}
+        <NutritionPlansWidget
+          totalMealPlans={totalMealPlans}
+          publicCount={mealPlanVisibility.publicCount}
+          privateCount={mealPlanVisibility.privateCount}
+          publicLabel={mealPlanVisibility.publicLabel}
+          privateLabel={mealPlanVisibility.privateLabel}
         />
 
         {/* Meal Days */}
-        <StatCard
-          title={t('home.widgets.day_meals_private')}
-          value={totalMealDays}
-          icon={RestaurantMenu}
-          colSpan={1}
+        <DayMealsWidget
+          totalMealDays={totalMealDays}
+          publicCount={mealDayVisibility.publicCount}
+          privateCount={mealDayVisibility.privateCount}
+          publicLabel={mealDayVisibility.publicLabel}
+          privateLabel={mealDayVisibility.privateLabel}
         />
 
-        {/* Empty / Placeholder for Layout Balance or Future Widget */}
-        <StatCard
-          title={t('home.widgets.completion')}
-          value="98%"
-          icon={EventNote}
-          colSpan={1}
-          color={theme.palette.success.light}
-        >
-          <Typography variant="caption" color="text.secondary">{t('home.widgets.system_health')}</Typography>
-        </StatCard>
+        {/* Meals */}
+        <MealsWidget
+          totalMeals={totalMeals}
+          publicCount={mealVisibility.publicCount}
+          privateCount={mealVisibility.privateCount}
+          publicLabel={mealVisibility.publicLabel}
+          privateLabel={mealVisibility.privateLabel}
+        />
+
+        {/* Nutrition Plan Records */}
+        <MealRecordsWidget
+          totalRecords={totalMealRecords}
+          ratingData={mealRecordRatings}
+        />
 
       </DashboardLayout>
     </React.Fragment>

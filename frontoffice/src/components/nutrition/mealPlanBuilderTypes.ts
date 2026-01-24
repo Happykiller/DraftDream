@@ -61,8 +61,15 @@ export interface MealPlanBuilderCopy {
     search_placeholder: string;
     empty_state: string;
     add_label: string;
+    delete_day_template: string;
+    edit_day_template: string;
     limit_hint?: string;
     refresh_label?: string;
+    public_tooltip?: string;
+    secondary_filter_label?: string;
+    secondary_filter_all?: string;
+    type_private?: string;
+    type_public?: string;
   };
   meal_library: {
     title: string;
@@ -83,6 +90,10 @@ export interface MealPlanBuilderCopy {
     delete_tooltip?: string;
     edit_tooltip?: string;
     edit_title?: string;
+    secondary_filter_label?: string;
+    secondary_filter_all?: string;
+    type_private?: string;
+    type_public?: string;
   };
   structure: {
     title: string;
@@ -102,6 +113,7 @@ export interface MealPlanBuilderCopy {
     edit_meal_description?: string;
     add_meal_placeholder: string;
     add_day_label: string;
+    save_day: string;
     move_day_up_label: string;
     move_day_down_label: string;
     move_meal_up_label: string;

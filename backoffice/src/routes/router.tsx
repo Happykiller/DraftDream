@@ -4,8 +4,8 @@ import { createBrowserRouter, redirect } from 'react-router-dom';
 import { session } from '@stores/session';
 import { withTitle } from '@src/routes/withTitle';
 import { PublicLayout } from '@layouts/PublicLayout';
+import { AppFallback } from '@src/routes/AppFallback';
 import { ProtectedLayout } from '@layouts/ProtectedLayout';
-import { AppFallback } from './AppFallback';
 
 // Guard loader for protected branches
 export async function requireAuthLoader() {

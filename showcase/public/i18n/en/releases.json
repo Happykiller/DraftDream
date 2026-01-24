@@ -1,6 +1,44 @@
 {
   "releases": [
     {
+      "version": "0.13.0",
+      "title": "FitDesk Platform — Dashboard & Visualization",
+      "date": "2026-01-21",
+      "global": [
+        "Redesigned decision-oriented dashboard with reorganized widgets and essential indicators.",
+        "Advanced data visualization with pie charts and distribution diagrams.",
+        "Enhanced session and program tracking with notes, feedback, and evaluations.",
+        "More visible and better integrated nutrition in the ecosystem.",
+        "Strengthened navigation and multilingual experience."
+      ],
+      "notes": "Version 0.13.0 marks a significant visual and functional turning point for FitDesk. After strengthening real activity tracking in 0.12.0, this version focuses on readability, quick comprehension, and highlighting key data. FitDesk evolves into a true management dashboard for coaches and teams. Information is no longer just accessible: it is staged, prioritized, and immediately understandable.",
+      "projects": {
+        "/api": [
+          "Support for new indicators and visibility states.",
+          "Alignment with new screens and graphics.",
+          "Stabilization of exchanges for program and nutrition builders.",
+          "API serving reading and understanding, not just raw data."
+        ],
+        "/backoffice": [
+          "Visual and functional alignment with frontoffice.",
+          "Shared components for better consistency.",
+          "Preparation for advanced analysis and supervision use cases.",
+          "More readable and reliable backoffice for administration."
+        ],
+        "/frontoffice": [
+          "Major redesign of coach dashboard with new visual and interactive widgets.",
+          "Improved program and session tracking screens.",
+          "Seamless nutrition integration in main views.",
+          "Frontoffice becomes a daily management tool, not just execution."
+        ],
+        "/showcase": [
+          "Complete showcase project initialization.",
+          "Solid foundation for a modern, multilingual, and consistent showcase.",
+          "Preparation for more value and results-oriented communication."
+        ]
+      }
+    },
+    {
       "version": "0.12.0",
       "title": "Calendar View & Effort Analysis",
       "date": "2026-01-12",

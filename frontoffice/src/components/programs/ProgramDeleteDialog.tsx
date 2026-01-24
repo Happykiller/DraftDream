@@ -7,7 +7,7 @@ import {
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import { DeleteOutline } from '@mui/icons-material';
 
-import { ProgramDialogLayout } from './ProgramDialogLayout';
+import { StandardDialog } from '@components/common/StandardDialog';
 
 interface ProgramDeleteDialogProps {
   open: boolean;
@@ -51,7 +51,7 @@ export function ProgramDeleteDialog({
   );
 
   return (
-    <ProgramDialogLayout
+    <StandardDialog
       open={open}
       onClose={(event, reason) => {
         handleClose(event, reason);
@@ -83,6 +83,6 @@ export function ProgramDeleteDialog({
           {t('programs-coatch.list.delete_dialog.helper')}
         </Typography>
       </Stack>
-    </ProgramDialogLayout>
+    </StandardDialog>
   );
 }

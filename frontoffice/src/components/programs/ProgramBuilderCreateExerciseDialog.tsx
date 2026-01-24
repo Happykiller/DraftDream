@@ -9,7 +9,7 @@ import {
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import { Add, Edit } from '@mui/icons-material';
 
-import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
+import { StandardDialog } from '@components/common/StandardDialog';
 import type {
   CreateExerciseInput,
   Exercise,
@@ -697,7 +697,7 @@ export function ProgramBuilderCreateExerciseDialog({
   );
 
   return (
-    <ProgramDialogLayout
+    <StandardDialog
       open={open}
       onClose={submitting ? undefined : onClose}
       icon={isEditMode ? <Edit fontSize="large" /> : <Add fontSize="large" />}
@@ -929,6 +929,6 @@ export function ProgramBuilderCreateExerciseDialog({
         </Stack>
 
       </Stack>
-    </ProgramDialogLayout>
+    </StandardDialog>
   );
 }

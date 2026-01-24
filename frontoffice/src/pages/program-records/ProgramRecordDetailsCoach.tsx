@@ -170,7 +170,7 @@ export function ProgramRecordDetailsCoach(): React.JSX.Element {
                                     (candidate) => candidate.id === exercise.exerciseId,
                                 )?.label ?? exercise.exerciseId;
                                 return (
-                                    <Grid size={{ xs: 12, md: 6, xxl: 3 }} key={exercise.exerciseId}>
+                                    <Grid size={{ xs: 12, md: 6, xl: 3, xxl: 3 }} key={exercise.exerciseId}>
                                         <ProgramRecordExerciseCardReadOnly
                                             exerciseIndex={exerciseIndex}
                                             exerciseLabel={exerciseLabel}

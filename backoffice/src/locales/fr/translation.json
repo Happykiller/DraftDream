@@ -201,17 +201,30 @@
   "home": {
     "title": "Tableau de bord",
     "widgets": {
-      "total_users": "Utilisateurs totaux",
-      "total_prospects": "Prospects totaux",
+      "total_users": "Utilisateurs",
+      "total_users_tooltip": "Nombre total d'utilisateurs, en combinant les coachs et les athlètes.",
+      "total_prospects": "Prospects",
+      "total_prospects_tooltip": "Ensemble des prospects enregistrés dans le pipeline, tous statuts confondus.",
       "prospects_todo": "A faire",
+      "prospects_todo_tooltip": "Prospects qui nécessitent encore une action de suivi.",
       "view_prospects": "Voir prospects",
       "programs": "Programmes",
+      "programs_tooltip": "Nombre total de programmes créés dans le back-office.",
       "nutrition_plans": "Plans nutrition",
-      "sessions_private": "Séances (Privé)",
-      "exercises_library": "Bibliothèque d'exercices",
-      "day_meals_private": "Journées repas (Privé)",
-      "completion": "Complétion",
-      "system_health": "Santé du système"
+      "nutrition_plans_tooltip": "Nombre total de plans nutrition créés dans le back-office.",
+      "sessions": "Séances",
+      "sessions_tooltip": "Séances d'entraînement créées par les coachs.",
+      "exercises": "Exercices",
+      "exercises_tooltip": "Exercices d'entraînement créés par les coachs.",
+      "day_meals": "Journées repas",
+      "day_meals_tooltip": "Journées repas générées pour les plans nutrition.",
+      "meals": "Repas",
+      "meals_tooltip": "Repas créés par les coachs.",
+      "program_records": "Retour sessions",
+      "program_records_tooltip": "Notes de satisfaction des records de programmes.",
+      "meal_records": "Retour repas",
+      "meal_records_tooltip": "Notes de satisfaction des records de plans nutrition.",
+      "rating_unknown": "Non noté"
     },
     "chart": {
       "vs_last_month": "vs mois dernier"

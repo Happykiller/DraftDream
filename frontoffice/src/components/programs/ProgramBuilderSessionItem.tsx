@@ -4,6 +4,7 @@ import {
   ArrowUpward,
   DeleteOutline,
   Edit,
+  Save,
 } from '@mui/icons-material';
 import { alpha, useTheme } from '@mui/material/styles';
 import {
@@ -52,6 +53,7 @@ type ProgramBuilderSessionItemProps = {
   onMoveExerciseUp: (exerciseId: string) => void;
   onMoveExerciseDown: (exerciseId: string) => void;
   onEditExercise?: (sessionId: string, exerciseItem: ProgramExercise) => void;
+  onSaveSession: (sessionId: string) => void;
 };
 
 export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessionItem({
@@ -72,6 +74,7 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
   onMoveExerciseUp,
   onMoveExerciseDown,
   onEditExercise,
+  onSaveSession,
 }: ProgramBuilderSessionItemProps): React.JSX.Element {
   const theme = useTheme();
   const primaryMain = theme.palette.primary.main;
@@ -114,6 +117,7 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
   const durationInputRef = React.useRef<HTMLInputElement | null>(null);
   const tooltips = builderCopy.library.tooltips;
   const descriptionPlaceholder = builderCopy.structure.description_placeholder;
+  const saveSessionLabel = builderCopy.structure.save_session;
 
   React.useEffect(() => {
     if (!isEditingLabel) {
@@ -343,6 +347,14 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
     onRemoveSession();
   };
 
+  const handleSaveSession = React.useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.stopPropagation();
+      onSaveSession(session.id);
+    },
+    [onSaveSession, session.id],
+  );
+
   const handleRemoveExercise = (exerciseId: string): void => {
     onRemoveExercise(exerciseId);
   };
@@ -400,6 +412,7 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
         },
       }}
     >
+      {/* General information */}
       {/* Session item */}
       <Stack spacing={1.5}>
         <Stack spacing={0.75}>
@@ -490,6 +503,17 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
                     {session.duration} {builderCopy.structure.duration_unit}
                   </Typography>
                 )}
+              </Tooltip>
+              <Tooltip title={saveSessionLabel} arrow>
+                <span style={{ display: 'inline-flex' }}>
+                  <IconButton
+                    size="small"
+                    onClick={handleSaveSession}
+                    aria-label={saveSessionLabel}
+                  >
+                    <Save fontSize="small" />
+                  </IconButton>
+                </span>
               </Tooltip>
               <Stack direction="row" spacing={0.5} alignItems="center">
                 <Tooltip title={tooltips.move_session_up} arrow>

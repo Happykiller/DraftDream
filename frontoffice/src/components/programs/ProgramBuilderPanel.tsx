@@ -24,10 +24,15 @@ import { ProgramBuilderSessionItem } from './ProgramBuilderSessionItem';
 import { ProgramBuilderSessionLibraryItem } from './ProgramBuilderSessionLibraryItem';
 import { ProgramBuilderExerciseLibraryItem } from './ProgramBuilderExerciseLibraryItem';
 import { ProgramBuilderCreateExerciseDialog } from './ProgramBuilderCreateExerciseDialog';
+import { ProgramBuilderDeleteSessionDialog } from './ProgramBuilderDeleteSessionDialog';
+import { ProgramBuilderEditSessionDialog } from './ProgramBuilderEditSessionDialog';
+import { ProgramBuilderSaveSessionDialog } from './ProgramBuilderSaveSessionDialog';
 import type {
   BuilderCopy,
   ProgramExercise,
   ProgramExercisePatch,
+  ProgramSession,
+  SessionTemplate,
 } from './programBuilderTypes';
 import { parseSeriesCount } from './programBuilderUtils';
 
@@ -98,6 +103,9 @@ export function ProgramBuilderPanel({
     handleSessionLabelChange,
     handleSessionDescriptionChange,
     handleSessionDurationChange,
+    handleSaveSessionTemplate,
+    handleDeleteSessionTemplate,
+    handleEditSessionTemplate,
     handleExerciseLabelChange,
     handleExerciseDescriptionChange,
     handleUpdateProgramExercise,
@@ -115,6 +123,9 @@ export function ProgramBuilderPanel({
     registerExercise,
     getRawExerciseById,
     mode,
+    sessionType,
+    setSessionType,
+    sessionTypeOptions,
   } = useProgramBuilder(builderCopy, onCancel, {
     onCreated,
     onUpdated,
@@ -164,7 +175,83 @@ export function ProgramBuilderPanel({
 
   void _summaryText;
 
+  const [exerciseMenuAnchor, setExerciseMenuAnchor] = React.useState<{
+    anchor: HTMLElement;
+    exerciseId: string;
+  } | null>(null);
+
+  const [isExerciseDialogOpen, setIsExerciseDialogOpen] = React.useState(false);
+  const [exerciseBeingEdited, setExerciseBeingEdited] = React.useState<Exercise | null>(null);
+  const [programExerciseContext, setProgramExerciseContext] = React.useState<{
+    sessionId: string;
+    exerciseItem: ProgramExercise;
+  } | null>(null);
+  const [saveSessionTarget, setSaveSessionTarget] = React.useState<ProgramSession | null>(null);
+  const [deleteSessionTarget, setDeleteSessionTarget] = React.useState<SessionTemplate | null>(null);
+  const [editSessionTarget, setEditSessionTarget] = React.useState<SessionTemplate | null>(null);
+
   const addExerciseFallbackLabel = t('programs-coatch.builder.library.no_sessions_warning');
+
+  const handleOpenSaveSessionDialog = React.useCallback(
+    (sessionId: string) => {
+      const target = sessions.find((sessionItem) => sessionItem.id === sessionId);
+      if (!target) {
+        return;
+      }
+      setSaveSessionTarget(target);
+    },
+    [sessions],
+  );
+
+  const handleCloseSaveSessionDialog = React.useCallback(() => {
+    setSaveSessionTarget(null);
+  }, []);
+
+  const handleSaveSessionDialog = React.useCallback(
+    async (label: string) => {
+      if (!saveSessionTarget) {
+        return;
+      }
+      await handleSaveSessionTemplate(saveSessionTarget.id, label);
+      setSaveSessionTarget(null);
+    },
+    [handleSaveSessionTemplate, saveSessionTarget],
+  );
+
+  const handleOpenDeleteSessionDialog = React.useCallback((template: SessionTemplate) => {
+    setDeleteSessionTarget(template);
+  }, []);
+
+  const handleCloseDeleteSessionDialog = React.useCallback(() => {
+    setDeleteSessionTarget(null);
+  }, []);
+
+  const handleConfirmDeleteSession = React.useCallback(async () => {
+    if (!deleteSessionTarget) {
+      return;
+    }
+    await handleDeleteSessionTemplate(deleteSessionTarget.id);
+    setDeleteSessionTarget(null);
+  }, [deleteSessionTarget, handleDeleteSessionTemplate]);
+
+  const handleOpenEditSessionDialog = React.useCallback((template: SessionTemplate) => {
+    setEditSessionTarget(template);
+  }, []);
+
+  const handleCloseEditSessionDialog = React.useCallback(() => {
+    setEditSessionTarget(null);
+  }, []);
+
+  const handleSaveEditSessionDialog = React.useCallback(
+    async (label: string) => {
+      if (!editSessionTarget) {
+        return;
+      }
+      await handleEditSessionTemplate(editSessionTarget.id, label);
+      setEditSessionTarget(null);
+    },
+    [editSessionTarget, handleEditSessionTemplate],
+  );
 
   const sessionResultCountLabel = React.useMemo(
     () =>
@@ -187,18 +274,6 @@ export function ProgramBuilderPanel({
         }),
     [exerciseLibraryTotal, exercisesLoading, filteredExercises.length, t],
   );
-
-  const [exerciseMenuAnchor, setExerciseMenuAnchor] = React.useState<{
-    anchor: HTMLElement;
-    exerciseId: string;
-  } | null>(null);
-
-  const [isExerciseDialogOpen, setIsExerciseDialogOpen] = React.useState(false);
-  const [exerciseBeingEdited, setExerciseBeingEdited] = React.useState<Exercise | null>(null);
-  const [programExerciseContext, setProgramExerciseContext] = React.useState<{
-    sessionId: string;
-    exerciseItem: ProgramExercise;
-  } | null>(null);
 
   const [structureTitle, setStructureTitle] = React.useState(() => {
     const candidate = program?.label?.trim();
@@ -964,6 +1039,22 @@ export function ProgramBuilderPanel({
                           sx={{ backgroundColor: theme.palette.background.default }}
                         />
 
+                        <TextField
+                          select
+                          fullWidth
+                          size="small"
+                          label={builderCopy.library.secondary_filter_label}
+                          value={sessionType}
+                          onChange={(event) => setSessionType(event.target.value as typeof sessionType)}
+                          sx={{ backgroundColor: theme.palette.background.default }}
+                        >
+                          {sessionTypeOptions.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+
                         <Typography variant="caption" color="text.secondary">
                           {sessionLimitHint}
                         </Typography>
@@ -980,6 +1071,8 @@ export function ProgramBuilderPanel({
                                 template={template}
                                 builderCopy={builderCopy}
                                 onAdd={() => handleAddSessionFromTemplate(template.id)}
+                                onEdit={() => handleOpenEditSessionDialog(template)}
+                                onDelete={() => handleOpenDeleteSessionDialog(template)}
                               />
                             ))
                           )}
@@ -1161,6 +1254,7 @@ export function ProgramBuilderPanel({
                                       handleMoveExerciseDown(session.id, exerciseId)
                                     }
                                     onEditExercise={handleOpenProgramExerciseDialog}
+                                    onSaveSession={handleOpenSaveSessionDialog}
                                   />
                                 ))}
                               </Stack>
@@ -1271,23 +1365,38 @@ export function ProgramBuilderPanel({
                         </ResponsiveButton>
 
                         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
-                          <TextField
-                            select
+                          <Autocomplete
                             fullWidth
                             size="small"
-                            label={builderCopy.library.primary_filter_label}
-                            value={exerciseCategory}
+                            options={exerciseCategoryOptions}
+                            value={
+                              exerciseCategory === 'all'
+                                ? null
+                                : exerciseCategoryOptions.find((cat) => cat.id === exerciseCategory) ?? null
+                            }
                             disabled={categoriesLoading && !exerciseCategoryOptions.length}
-                            onChange={(event) => setExerciseCategory(event.target.value)}
-                            sx={{ backgroundColor: theme.palette.background.default }}
-                          >
-                            <MenuItem value="all">{builderCopy.library.primary_filter_all}</MenuItem>
-                            {exerciseCategoryOptions.map((category) => (
-                              <MenuItem key={category.id} value={category.id}>
-                                {category.label}
-                              </MenuItem>
-                            ))}
-                          </TextField>
+                            onChange={(_event, newValue) => {
+                              setExerciseCategory(newValue?.id ?? 'all');
+                            }}
+                            isOptionEqualToValue={(option, value) => option.id === value.id}
+                            getOptionLabel={(option) => option.label}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label={builderCopy.library.primary_filter_label}
+                                placeholder={builderCopy.library.primary_filter_all}
+                                InputProps={{
+                                  ...params.InputProps,
+                                  startAdornment: (
+                                    <InputAdornment position="start">
+                                      <Search fontSize="small" color="disabled" />
+                                    </InputAdornment>
+                                  ),
+                                }}
+                                sx={{ backgroundColor: theme.palette.background.default }}
+                              />
+                            )}
+                          />
                           <TextField
                             select
                             fullWidth
@@ -1404,6 +1513,24 @@ export function ProgramBuilderPanel({
             }
             : null
         }
+      />
+      <ProgramBuilderSaveSessionDialog
+        open={Boolean(saveSessionTarget)}
+        sessionLabel={saveSessionTarget?.label ?? ''}
+        onClose={handleCloseSaveSessionDialog}
+        onSave={handleSaveSessionDialog}
+      />
+      <ProgramBuilderDeleteSessionDialog
+        open={Boolean(deleteSessionTarget)}
+        sessionLabel={deleteSessionTarget?.label ?? ''}
+        onClose={handleCloseDeleteSessionDialog}
+        onConfirm={handleConfirmDeleteSession}
+      />
+      <ProgramBuilderEditSessionDialog
+        open={Boolean(editSessionTarget)}
+        sessionLabel={editSessionTarget?.label ?? ''}
+        onClose={handleCloseEditSessionDialog}
+        onSave={handleSaveEditSessionDialog}
       />
     </>
   );

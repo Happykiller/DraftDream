@@ -1,6 +1,6 @@
 // src/components/nutrition/MealPlanBuilderPanelDraftMeal.tsx
 import * as React from 'react';
-import { ArrowDownward, ArrowUpward, Delete, Edit } from '@mui/icons-material';
+import { ArrowDownward, ArrowUpward, DeleteOutline, Edit } from '@mui/icons-material';
 import { alpha, useTheme } from '@mui/material/styles';
 import {
   Box,
@@ -258,7 +258,7 @@ export const MealPlanBuilderPanelDraftMeal = React.memo(function MealPlanBuilder
             <Tooltip title={builderCopy.structure.remove_meal_label}>
               <span>
                 <IconButton onClick={onRemove} size="small">
-                  <Delete fontSize="small" />
+                  <DeleteOutline fontSize="small" />
                 </IconButton>
               </span>
             </Tooltip>

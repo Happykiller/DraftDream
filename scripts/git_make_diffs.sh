@@ -2,7 +2,7 @@
 set -euo pipefail
 
 BASE_BRANCH="${1:-master}"
-TARGET_BRANCH="${2:-$(git rev-parse --abbrev-ref HEAD)}"
+TARGET_BRANCH="${2:-HEAD}"
 OUT_DIR="${3:-./git_diffs}"
 
 mkdir -p "$OUT_DIR"
@@ -27,8 +27,19 @@ git log "${BASE_BRANCH}..${TARGET_BRANCH}" \
   --decorate \
   > "$COMMITS_FILE"
 
-# 2) Diff du code complet
-git diff "${BASE_BRANCH}...${TARGET_BRANCH}" > "$DIFF_FILE"
+# 2) Diff du code complet (en excluant les fichiers non-fonctionnels)
+git diff "origin/${BASE_BRANCH}...${TARGET_BRANCH}" \
+  -- . \
+  ':(exclude)**/package.json' \
+  ':(exclude)**/package-lock.json' \
+  ':(exclude)**/yarn.lock' \
+  ':(exclude)**/pnpm-lock.yaml' \
+  ':(exclude)**/.env' \
+  ':(exclude)**/.env.*' \
+  ':(exclude)**/node_modules/*' \
+  ':(exclude)**/dist/*' \
+  ':(exclude)**/build/*' \
+  > "$DIFF_FILE"
 
 echo "Fichier commits : $COMMITS_FILE"
 echo "Fichier diff    : $DIFF_FILE"

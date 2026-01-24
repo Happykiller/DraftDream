@@ -18,6 +18,7 @@ export interface Session {
   createdAt: string;
   updatedAt: string;
   creator?: { id: string; email: string } | null;
+  visibility: 'PUBLIC' | 'PRIVATE';
 }
 
 type SessionListPayload = {
@@ -37,7 +38,7 @@ const LIST_Q = `
   query ListSessions($input: ListSessionsInput) {
     session_list(input: $input) {
       items {
-        id locale label durationMin description exerciseIds
+        id locale label durationMin description exerciseIds visibility
         exercises { id label }
         createdBy createdAt updatedAt
         creator { id email }
@@ -50,7 +51,7 @@ const LIST_Q = `
 const CREATE_M = `
   mutation CreateSession($input: CreateSessionInput!) {
     session_create(input: $input) {
-      id locale label durationMin description exerciseIds
+      id locale label durationMin description exerciseIds visibility
       exercises { id label }
       createdBy createdAt updatedAt
       creator { id email }
@@ -61,7 +62,7 @@ const CREATE_M = `
 const UPDATE_M = `
   mutation UpdateSession($input: UpdateSessionInput!) {
     session_update(input: $input) {
-      id locale label durationMin description exerciseIds
+      id locale label durationMin description exerciseIds visibility
       exercises { id label }
       createdBy createdAt updatedAt
       creator { id email }
@@ -80,9 +81,11 @@ export interface UseSessionsParams {
   limit: number;
   q: string;
   locale?: string;
+  visibility?: 'PUBLIC' | 'PRIVATE';
 }
 
-export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
+export function useSessions(props: UseSessionsParams) {
+  const { page, limit, q, locale, visibility } = props;
   const [items, setItems] = React.useState<Session[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
@@ -104,6 +107,7 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
               limit,
               q: q || undefined,
               locale: locale || undefined,
+              visibility,
             },
           },
         }),
@@ -117,7 +121,7 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
     } finally {
       setLoading(false);
     }
-  }, [execute, flashError, gql, limit, locale, page, q]);
+  }, [execute, flashError, gql, limit, locale, page, q, visibility]);
 
   React.useEffect(() => {
     void load();
@@ -131,6 +135,7 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
       durationMin: number;
       description?: string;
       exerciseIds: string[];
+      visibility?: 'PUBLIC' | 'PRIVATE';
     }) => {
       try {
         const { errors } = await execute(() =>

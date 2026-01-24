@@ -15,7 +15,7 @@ import type { Meal, UseMealsResult } from '@hooks/nutrition/useMeals';
 
 
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
-import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
+import { StandardDialog } from '@components/common/StandardDialog';
 
 interface MealPlanBuilderCreateMealDialogProps {
   open: boolean;
@@ -183,7 +183,7 @@ export function MealPlanBuilderCreateMealDialog({
   );
 
   return (
-    <ProgramDialogLayout
+    <StandardDialog
       open={open}
       onClose={submitting ? undefined : handleClose}
       icon={isEditMode ? <Edit fontSize="large" /> : <Add fontSize="large" />}
@@ -263,6 +263,6 @@ export function MealPlanBuilderCreateMealDialog({
           />
         </Box>
       </Stack>
-    </ProgramDialogLayout>
+    </StandardDialog>
   );
 }

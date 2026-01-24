@@ -584,7 +584,9 @@
         "search_placeholder": "Search a session...",
         "filter_label": "Category",
         "filter_all": "All categories",
-        "button_create": "Add empty session"
+        "button_create": "Add empty session",
+        "page_title_create": "Create a sports program",
+        "page_title_edit": "Edit a sports program"
       },
       "templates_title": "Session templates",
       "templates_subtitle": "Choose a template from the list or click to add it.",
@@ -609,7 +611,8 @@
         "tags_label": "Target groups",
         "drop_zone": "Add session here",
         "exercise_drop_zone": "Add exercise here",
-        "custom_session_label": "Custom session"
+        "custom_session_label": "Custom session",
+        "save_session": "Save"
       },
       "library": {
         "title": "Exercise library",
@@ -619,8 +622,8 @@
         "result_count_other": "{{count}}/{{total}} exercises",
         "primary_filter_label": "Category",
         "primary_filter_all": "All categories",
-        "secondary_filter_label": "Type",
-        "secondary_filter_all": "All types",
+        "secondary_filter_label": "Visibility",
+        "secondary_filter_all": "All",
         "type_private": "Private",
         "type_public": "Public",
         "limit_hint": "Showing up to 10 exercises sorted alphabetically.",
@@ -647,7 +650,9 @@
           "delete_exercise": "Remove exercise",
           "add_empty_session": "Add a new empty session",
           "session_duration": "Edit session duration",
-          "add_session_template": "Add this session to the program"
+          "add_session_template": "Add this session to the program",
+          "delete_session_template": "Delete this session",
+          "edit_session_template": "Edit this session"
         },
         "create_dialog": {
           "title": "Create an exercise template",
@@ -712,6 +717,53 @@
           "cancel": "Cancel",
           "submit": "Save",
           "submitting": "Saving..."
+        }
+      },
+      "save_session_dialog": {
+        "title": "Save session",
+        "subtitle": "Update the session label before saving it as a template.",
+        "fields": {
+          "label": "Session name",
+          "placeholder": "Example: Strength day"
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "save": "Save",
+          "saving": "Saving..."
+        },
+        "errors": {
+          "missing_label": "Please provide a session name.",
+          "save_failed": "Unable to save this session."
+        }
+      },
+      "delete_session_dialog": {
+        "title": "Delete session",
+        "subtitle": "Are you sure you want to delete \"{{label}}\"?",
+        "actions": {
+          "cancel": "Cancel",
+          "confirm": "Delete",
+          "confirming": "Deleting..."
+        },
+        "helper": "This action is irreversible and will permanently delete this template from your library.",
+        "errors": {
+          "delete_failed": "Unable to delete this session."
+        }
+      },
+      "edit_session_dialog": {
+        "title": "Edit session",
+        "subtitle": "Update the session label for this template.",
+        "fields": {
+          "label": "Session name",
+          "placeholder": "Example: Strength day"
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "save": "Save",
+          "saving": "Saving..."
+        },
+        "errors": {
+          "missing_label": "Please provide a session name.",
+          "save_failed": "Unable to update this session."
         }
       },
       "footer": {
@@ -1050,8 +1102,13 @@
         "result_count_other": "{{count}}/{{total}} days",
         "empty_state": "No meal day matches your filters.",
         "add_label": "Add day to plan",
+        "delete_day_template": "Delete this meal day",
+        "edit_day_template": "Edit this meal day",
         "limit_hint": "Showing up to 10 meal days sorted alphabetically.",
-        "refresh_label": "Reload meal days"
+        "refresh_label": "Reload meal days",
+        "secondary_filter_all": "All",
+        "type_private": "Private",
+        "type_public": "Public"
       },
       "meal_library": {
         "title": "Meal library",
@@ -1067,6 +1124,7 @@
         "type_filter_placeholder": "All meal types",
         "type_filter_no_results": "No meal type matches your filters.",
         "type_filter_clear_label": "Clear meal type filter",
+        "secondary_filter_all": "All",
         "limit_hint": "Showing up to 10 meals sorted alphabetically.",
         "add_tooltip": "Add this meal to a day in the plan",
         "public_tooltip": "Public meal shared with the community",
@@ -1101,10 +1159,58 @@
         "edit_meal_description": "Adjust this meal without changing the original template.",
         "add_meal_placeholder": "Use the meal library to populate this day.",
         "add_day_label": "Add empty day",
+        "save_day": "Save day",
         "move_day_up_label": "Move day up",
         "move_day_down_label": "Move day down",
         "move_meal_up_label": "Move meal up",
         "move_meal_down_label": "Move meal down"
+      },
+      "save_day_dialog": {
+        "title": "Save meal day",
+        "subtitle": "Update the day label before saving it as a template.",
+        "fields": {
+          "label": "Day name",
+          "placeholder": "Example: Training day"
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "save": "Save",
+          "saving": "Saving..."
+        },
+        "errors": {
+          "missing_label": "Please provide a day name.",
+          "save_failed": "Unable to save this meal day."
+        }
+      },
+      "delete_day_dialog": {
+        "title": "Delete meal day",
+        "subtitle": "Are you sure you want to delete \"{{label}}\"?",
+        "actions": {
+          "cancel": "Cancel",
+          "confirm": "Delete",
+          "confirming": "Deleting..."
+        },
+        "helper": "This action is irreversible and will permanently delete this template from your library.",
+        "errors": {
+          "delete_failed": "Unable to delete this meal day."
+        }
+      },
+      "edit_day_dialog": {
+        "title": "Edit meal day",
+        "subtitle": "Update the day label for this template.",
+        "fields": {
+          "label": "Day name",
+          "placeholder": "Example: Training day"
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "save": "Save",
+          "saving": "Saving..."
+        },
+        "errors": {
+          "missing_label": "Please provide a day name.",
+          "save_failed": "Unable to update this meal day."
+        }
       },
       "footer": {
         "cancel": "Cancel",

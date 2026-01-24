@@ -21,6 +21,7 @@ import {
 } from '@mui/material';
 import { Add, Edit, Replay, Search } from '@mui/icons-material';
 
+import type { MealDay } from '@hooks/nutrition/useMealDays';
 import type { Meal } from '@hooks/nutrition/useMeals';
 import type { MealType } from '@hooks/nutrition/useMealTypes';
 import type { MealPlan } from '@hooks/nutrition/useMealPlans';
@@ -37,10 +38,13 @@ import type {
   MealPlanBuilderMeal,
 } from './mealPlanBuilderTypes';
 import { MealPlanBuilderCreateMealDialog } from './MealPlanBuilderCreateMealDialog';
+import { MealPlanBuilderDeleteDayDialog } from './MealPlanBuilderDeleteDayDialog';
 import { MealPlanBuilderEditDraftMealDialog } from './MealPlanBuilderEditDraftMealDialog';
+import { MealPlanBuilderEditDayDialog } from './MealPlanBuilderEditDayDialog';
 import { MealPlanBuilderPanelDraftDay } from './MealPlanBuilderPanelDraftDay';
 import { MealPlanBuilderPanelLibraryDay } from './MealPlanBuilderPanelLibraryDay';
 import { MealPlanBuilderPanelLibraryMeal } from './MealPlanBuilderPanelLibraryMeal';
+import { MealPlanBuilderSaveDayDialog } from './MealPlanBuilderSaveDayDialog';
 
 import type { User } from '@src/hooks/useUsers';
 
@@ -103,6 +107,9 @@ export function MealPlanBuilderPanel({
     handleMoveDayUp,
     handleMoveDayDown,
     handleUpdateDay,
+    handleSaveDayTemplate,
+    handleDeleteDayTemplate,
+    handleEditDayTemplate,
     handleAddMealToDay,
     handleRemoveMeal,
     handleMoveMealUp,
@@ -121,6 +128,11 @@ export function MealPlanBuilderPanel({
     updatePlanName,
     nutritionSummary,
     totalMeals,
+    dayVisibility,
+    setDayVisibility,
+    mealVisibility,
+    setMealVisibility,
+    visibilityOptions,
   } = useMealPlanBuilder(builderCopy, {
     onCancel,
     onCreated,
@@ -137,6 +149,9 @@ export function MealPlanBuilderPanel({
     meal: MealPlanBuilderMeal;
     contextLabel: string;
   } | null>(null);
+  const [saveDayTarget, setSaveDayTarget] = React.useState<MealPlanBuilderDay | null>(null);
+  const [deleteDayTarget, setDeleteDayTarget] = React.useState<MealDay | null>(null);
+  const [editDayTarget, setEditDayTarget] = React.useState<MealDay | null>(null);
 
   const selectedMealType = React.useMemo<MealType | null>(
     () => mealTypes.find((type) => type.id === selectedMealTypeId) ?? null,
@@ -477,6 +492,67 @@ export function MealPlanBuilderPanel({
     [draftMealEditor, handleUpdateMeal],
   );
 
+  const handleOpenSaveDayDialog = React.useCallback(
+    (dayId: string) => {
+      const target = days.find((dayItem) => dayItem.uiId === dayId);
+      if (!target) {
+        return;
+      }
+      setSaveDayTarget(target);
+    },
+    [days],
+  );
+
+  const handleCloseSaveDayDialog = React.useCallback(() => {
+    setSaveDayTarget(null);
+  }, []);
+
+  const handleSaveDayDialog = React.useCallback(
+    async (label: string) => {
+      if (!saveDayTarget) {
+        return;
+      }
+      await handleSaveDayTemplate(saveDayTarget.uiId, label);
+      setSaveDayTarget(null);
+    },
+    [handleSaveDayTemplate, saveDayTarget],
+  );
+
+  const handleOpenDeleteDayDialog = React.useCallback((template: MealDay) => {
+    setDeleteDayTarget(template);
+  }, []);
+
+  const handleCloseDeleteDayDialog = React.useCallback(() => {
+    setDeleteDayTarget(null);
+  }, []);
+
+  const handleConfirmDeleteDay = React.useCallback(async () => {
+    if (!deleteDayTarget) {
+      return;
+    }
+    await handleDeleteDayTemplate(deleteDayTarget.id);
+    setDeleteDayTarget(null);
+  }, [deleteDayTarget, handleDeleteDayTemplate]);
+
+  const handleOpenEditDayDialog = React.useCallback((template: MealDay) => {
+    setEditDayTarget(template);
+  }, []);
+
+  const handleCloseEditDayDialog = React.useCallback(() => {
+    setEditDayTarget(null);
+  }, []);
+
+  const handleSaveEditDayDialog = React.useCallback(
+    async (label: string) => {
+      if (!editDayTarget) {
+        return;
+      }
+      await handleEditDayTemplate(editDayTarget.id, label);
+      setEditDayTarget(null);
+    },
+    [editDayTarget, handleEditDayTemplate],
+  );
+
   const mealDialog = (
     <MealPlanBuilderCreateMealDialog
       open={isMealDialogOpen}
@@ -699,6 +775,23 @@ export function MealPlanBuilderPanel({
                             {builderCopy.day_library.limit_hint}
                           </Typography>
                         ) : null}
+
+                        <TextField
+                          select
+                          fullWidth
+                          size="small"
+                          label={builderCopy.day_library.secondary_filter_label}
+                          value={dayVisibility}
+                          onChange={(event) => setDayVisibility(event.target.value as typeof dayVisibility)}
+                          sx={{ backgroundColor: theme.palette.background.default }}
+                        >
+                          {visibilityOptions.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+
                         <Stack spacing={1.5} sx={{ overflow: 'auto' }}>
                           {dayLibraryLoading ? (
                             <Stack spacing={1}>
@@ -717,6 +810,8 @@ export function MealPlanBuilderPanel({
                                 day={day}
                                 builderCopy={builderCopy}
                                 onAdd={handleAddDayFromTemplate}
+                                onEdit={() => handleOpenEditDayDialog(day)}
+                                onDelete={() => handleOpenDeleteDayDialog(day)}
                               />
                             ))
                           )}
@@ -876,6 +971,7 @@ export function MealPlanBuilderPanel({
                                     onMoveMealDown={handleMoveMealDown}
                                     onUpdateMeal={handleUpdateMeal}
                                     onEditMeal={handleOpenDraftMealEditor}
+                                    onSaveDay={handleOpenSaveDayDialog}
                                   />
                                 ))}
                                 <ResponsiveButton
@@ -943,6 +1039,7 @@ export function MealPlanBuilderPanel({
                               ) : undefined,
                           }}
                         />
+
                         <ResponsiveButton
                           onClick={handleOpenMealDialog}
                           size="small"
@@ -951,26 +1048,54 @@ export function MealPlanBuilderPanel({
                         >
                           {builderCopy.meal_library.create_label}
                         </ResponsiveButton>
-                        <Autocomplete
-                          options={mealTypes}
-                          loading={mealTypesLoading}
-                          value={selectedMealType}
-                          onChange={handleMealTypeFilterChange}
-                          getOptionLabel={(option) => option.label}
-                          isOptionEqualToValue={(option, value) => option.id === value.id}
-                          size="small"
-                          fullWidth
-                          noOptionsText={builderCopy.meal_library.type_filter_no_results ?? ''}
-                          clearText={builderCopy.meal_library.type_filter_clear_label}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label={builderCopy.meal_library.type_filter_label}
-                              placeholder={builderCopy.meal_library.type_filter_placeholder}
-                              size="small"
-                            />
-                          )}
-                        />
+
+                        <Stack direction="row" spacing={2}>
+                          <Autocomplete
+                            options={mealTypes}
+                            loading={mealTypesLoading}
+                            value={selectedMealType}
+                            onChange={handleMealTypeFilterChange}
+                            getOptionLabel={(option) => option.label}
+                            isOptionEqualToValue={(option, value) => option.id === value.id}
+                            size="small"
+                            fullWidth
+                            sx={{ width: '50%' }}
+                            noOptionsText={builderCopy.meal_library.type_filter_no_results ?? ''}
+                            clearText={builderCopy.meal_library.type_filter_clear_label}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label={builderCopy.meal_library.type_filter_label}
+                                placeholder={builderCopy.meal_library.type_filter_placeholder}
+                                size="small"
+                                InputProps={{
+                                  ...params.InputProps,
+                                  startAdornment: (
+                                    <InputAdornment position="start">
+                                      <Search fontSize="small" color="disabled" />
+                                    </InputAdornment>
+                                  ),
+                                }}
+                              />
+                            )}
+                          />
+
+                          <TextField
+                            select
+                            fullWidth
+                            size="small"
+                            label={builderCopy.meal_library.secondary_filter_label}
+                            value={mealVisibility}
+                            onChange={(event) => setMealVisibility(event.target.value as typeof mealVisibility)}
+                            sx={{ backgroundColor: theme.palette.background.default, width: '50%' }}
+                          >
+                            {visibilityOptions.map((option) => (
+                              <MenuItem key={option.value} value={option.value}>
+                                {option.label}
+                              </MenuItem>
+                            ))}
+                          </TextField>
+                        </Stack>
                         {builderCopy.meal_library.limit_hint ? (
                           <Typography variant="caption" color="text.secondary">
                             {builderCopy.meal_library.limit_hint}
@@ -1067,6 +1192,24 @@ export function MealPlanBuilderPanel({
 
       {mealDialog}
       {draftMealDialog}
+      <MealPlanBuilderSaveDayDialog
+        open={Boolean(saveDayTarget)}
+        dayLabel={saveDayTarget?.label ?? ''}
+        onClose={handleCloseSaveDayDialog}
+        onSave={handleSaveDayDialog}
+      />
+      <MealPlanBuilderDeleteDayDialog
+        open={Boolean(deleteDayTarget)}
+        dayLabel={deleteDayTarget?.label ?? ''}
+        onClose={handleCloseDeleteDayDialog}
+        onConfirm={handleConfirmDeleteDay}
+      />
+      <MealPlanBuilderEditDayDialog
+        open={Boolean(editDayTarget)}
+        dayLabel={editDayTarget?.label ?? ''}
+        onClose={handleCloseEditDayDialog}
+        onSave={handleSaveEditDayDialog}
+      />
     </>
   );
 }

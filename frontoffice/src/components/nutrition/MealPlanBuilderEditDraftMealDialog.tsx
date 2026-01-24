@@ -7,7 +7,7 @@ import { Box, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import { useMealTypes } from '@hooks/nutrition/useMealTypes';
 
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
-import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
+import { StandardDialog } from '@components/common/StandardDialog';
 
 import type { MealPlanMealTypeSnapshot } from '@hooks/nutrition/useMealPlans';
 
@@ -181,7 +181,7 @@ export function MealPlanBuilderEditDraftMealDialog({
   const isSubmitDisabled = !form.label.trim() || !form.typeId.trim();
 
   return (
-    <ProgramDialogLayout
+    <StandardDialog
       open={open}
       onClose={handleClose}
       icon={<Edit fontSize="large" />}
@@ -274,6 +274,6 @@ export function MealPlanBuilderEditDraftMealDialog({
           />
         </Box>
       </Stack>
-    </ProgramDialogLayout>
+    </StandardDialog>
   );
 }

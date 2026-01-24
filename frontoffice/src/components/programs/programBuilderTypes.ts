@@ -35,6 +35,7 @@ export type SessionTemplate = {
   description: string;
   tags: string[];
   exercises: TemplateExerciseRef[];
+  visibility?: 'PUBLIC' | 'PRIVATE';
 };
 
 export type ProgramExercise = {
@@ -123,6 +124,7 @@ export type BuilderCopy = {
     tags_label: string;
     exercise_drop_zone: string;
     custom_session_label: string;
+    save_session: string;
   };
   library: {
     title: string;
@@ -154,6 +156,8 @@ export type BuilderCopy = {
       add_empty_session: string;
       session_duration: string;
       add_session_template: string;
+      delete_session_template: string;
+      edit_session_template: string;
     };
   };
   footer: {

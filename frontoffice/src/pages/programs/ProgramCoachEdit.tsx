@@ -26,6 +26,10 @@ export function ProgramCoachEdit(): React.JSX.Element {
     [t],
   );
 
+  React.useEffect(() => {
+    document.title = t('programs-coatch.builder.header.page_title_edit');
+  }, [t]);
+
   const { program, loading, error, reload } = useProgram({ programId });
 
   const handleCancel = React.useCallback(() => {

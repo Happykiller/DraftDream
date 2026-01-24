@@ -5,7 +5,7 @@ import { VisibilityOutlined } from '@mui/icons-material';
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import type { Program } from '@hooks/programs/usePrograms';
 
-import { ProgramDialogLayout } from './ProgramDialogLayout';
+import { StandardDialog } from '@components/common/StandardDialog';
 import { formatProgramDate } from './programFormatting';
 import { ProgramViewContent } from './ProgramViewContent';
 import { getProgramAthleteLabel, type ProgramViewTab } from './programViewUtils';
@@ -44,7 +44,7 @@ export function ProgramViewDialog({ open, program, onClose }: ProgramViewDialogP
   }, []);
 
   return (
-    <ProgramDialogLayout
+    <StandardDialog
       open={open}
       onClose={onClose}
       title={athleteLabel ? `${program.label} - ${athleteLabel}` : program.label}
@@ -63,6 +63,6 @@ export function ProgramViewDialog({ open, program, onClose }: ProgramViewDialogP
     >
       {/* General information */}
       <ProgramViewContent program={program} activeTab={activeTab} onTabChange={handleTabChange} />
-    </ProgramDialogLayout>
+    </StandardDialog>
   );
 }

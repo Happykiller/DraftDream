@@ -116,6 +116,7 @@ type UseProgramBuilderResult = {
   selectedAthlete: User | null;
   users: User[];
   sessionSearch: string;
+  sessionType: 'all' | 'PUBLIC' | 'PRIVATE';
   exerciseSearch: string;
   exerciseCategory: string;
   exerciseType: 'all' | ExerciseVisibility;
@@ -140,6 +141,8 @@ type UseProgramBuilderResult = {
   setExerciseSearch: React.Dispatch<React.SetStateAction<string>>;
   setExerciseCategory: React.Dispatch<React.SetStateAction<string>>;
   setExerciseType: React.Dispatch<React.SetStateAction<'all' | ExerciseVisibility>>;
+  setSessionType: React.Dispatch<React.SetStateAction<'all' | 'PUBLIC' | 'PRIVATE'>>;
+  sessionTypeOptions: { value: 'all' | 'PUBLIC' | 'PRIVATE'; label: string }[];
   setUsersQ: React.Dispatch<React.SetStateAction<string>>;
   handleSelectAthlete: (_event: unknown, value: User | null) => void;
   handleFormChange: (
@@ -154,6 +157,9 @@ type UseProgramBuilderResult = {
   handleSessionLabelChange: (sessionId: string, label: string) => void;
   handleSessionDescriptionChange: (sessionId: string, description: string) => void;
   handleSessionDurationChange: (sessionId: string, duration: number) => void;
+  handleSaveSessionTemplate: (sessionId: string, label: string) => Promise<void>;
+  handleDeleteSessionTemplate: (sessionId: string) => Promise<void>;
+  handleEditSessionTemplate: (sessionId: string, label: string) => Promise<void>;
   handleExerciseLabelChange: (
     sessionId: string,
     exerciseId: string,
@@ -208,6 +214,7 @@ export function useProgramBuilder(
   const [usersQ, setUsersQ] = React.useState('');
   const [selectedAthlete, setSelectedAthlete] = React.useState<User | null>(null);
   const [sessionSearch, setSessionSearch] = React.useState('');
+  const [sessionType, setSessionType] = React.useState<'all' | 'PUBLIC' | 'PRIVATE'>('all');
   const [exerciseSearch, setExerciseSearch] = React.useState('');
   const [exerciseCategory, setExerciseCategory] = React.useState('all');
   const [exerciseType, setExerciseType] = React.useState<'all' | ExerciseVisibility>('all');
@@ -265,6 +272,11 @@ export function useProgramBuilder(
     [exerciseCategory],
   );
 
+  const sessionVisibilityFilter = React.useMemo<'PUBLIC' | 'PRIVATE' | undefined>(
+    () => (sessionType === 'all' ? undefined : sessionType),
+    [sessionType],
+  );
+
   const collator = React.useMemo(
     () => new Intl.Collator(i18n.language || undefined, { sensitivity: 'base' }),
     [i18n.language],
@@ -274,12 +286,16 @@ export function useProgramBuilder(
     items: sessionItems,
     total: sessionTemplatesTotal,
     loading: sessionsLoading,
+    create: createSessionTemplate,
+    update: updateSessionTemplate,
+    remove: removeSessionTemplate,
     reload: reloadSessions,
   } = useSessions({
     page: 1,
     limit: 10,
     q: debouncedSessionSearch,
     locale: i18n.language,
+    visibility: sessionVisibilityFilter,
   });
 
   const exerciseCategoryIdsFilter = React.useMemo<string[] | undefined>(() => {
@@ -402,6 +418,7 @@ export function useProgramBuilder(
       duration: item.durationMin,
       description: item.description ?? '',
       tags: [],
+      visibility: item.visibility,
       exercises: item.exerciseIds.map((exerciseId, index) => {
         const summary = item.exercises?.[index] ?? item.exercises?.find((exercise) => exercise.id === exerciseId);
         return {
@@ -492,6 +509,30 @@ export function useProgramBuilder(
   }, [exerciseLibrary]);
 
   const exerciseTypeOptions = React.useMemo<ExerciseTypeOption[]>(
+    () => [
+      { value: 'all', label: builderCopy.library.secondary_filter_all },
+      {
+        value: 'PRIVATE',
+        label:
+          builderCopy.library.type_private ??
+          t('programs-coatch.builder.library.type_private'),
+      },
+      {
+        value: 'PUBLIC',
+        label:
+          builderCopy.library.type_public ??
+          t('programs-coatch.builder.library.type_public'),
+      },
+    ],
+    [
+      builderCopy.library.secondary_filter_all,
+      builderCopy.library.type_private,
+      builderCopy.library.type_public,
+      t,
+    ],
+  );
+
+  const sessionTypeOptions = React.useMemo<{ value: 'all' | 'PUBLIC' | 'PRIVATE'; label: string }[]>(
     () => [
       { value: 'all', label: builderCopy.library.secondary_filter_all },
       {
@@ -1057,6 +1098,57 @@ export function useProgramBuilder(
       );
     },
     []);
+
+  /**
+   * Saves the current session configuration as a reusable session template.
+   */
+  const handleSaveSessionTemplate = React.useCallback(
+    async (sessionId: string, label: string) => {
+      const targetSession = sessions.find((sessionItem) => sessionItem.id === sessionId);
+      if (!targetSession) {
+        return;
+      }
+
+      const trimmedLabel = label.trim() || targetSession.label;
+      const trimmedDescription = targetSession.description.trim();
+      const locale = i18n.language || 'fr';
+      const exerciseIds = targetSession.exercises.map((exercise) => exercise.exerciseId);
+
+      await createSessionTemplate({
+        locale,
+        label: trimmedLabel,
+        durationMin: targetSession.duration,
+        description: trimmedDescription.length > 0 ? trimmedDescription : undefined,
+        exerciseIds,
+        visibility: 'PRIVATE',
+      });
+    },
+    [createSessionTemplate, i18n.language, sessions],
+  );
+
+  /**
+   * Removes an existing session template from the library.
+   */
+  const handleDeleteSessionTemplate = React.useCallback(
+    async (sessionId: string) => {
+      await removeSessionTemplate(sessionId);
+    },
+    [removeSessionTemplate],
+  );
+
+  /**
+   * Updates the label of an existing session template.
+   */
+  const handleEditSessionTemplate = React.useCallback(
+    async (sessionId: string, label: string) => {
+      const trimmedLabel = label.trim();
+      if (!trimmedLabel) {
+        return;
+      }
+      await updateSessionTemplate({ id: sessionId, label: trimmedLabel });
+    },
+    [updateSessionTemplate],
+  );
 
   const handleExerciseLabelChange = React.useCallback(
     (sessionId: string, exerciseId: string, label: string) => {
@@ -1792,6 +1884,9 @@ export function useProgramBuilder(
     handleSessionLabelChange,
     handleSessionDescriptionChange,
     handleSessionDurationChange,
+    handleSaveSessionTemplate,
+    handleDeleteSessionTemplate,
+    handleEditSessionTemplate,
     handleExerciseLabelChange,
     handleExerciseDescriptionChange,
     handleUpdateProgramExercise,
@@ -1809,5 +1904,8 @@ export function useProgramBuilder(
     registerExercise,
     getRawExerciseById,
     mode,
+    sessionType,
+    setSessionType,
+    sessionTypeOptions,
   };
 }

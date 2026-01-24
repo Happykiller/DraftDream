@@ -18,7 +18,7 @@ import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
 import type { MealPlan } from '@hooks/nutrition/useMealPlans';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
-import { ProgramDialogLayout } from '@components/programs/ProgramDialogLayout';
+import { StandardDialog } from '@components/common/StandardDialog';
 
 interface AthleteOption {
   id: string;
@@ -323,7 +323,7 @@ export function MealPlanCloneDialog({
   );
 
   return (
-    <ProgramDialogLayout
+    <StandardDialog
       open={open}
       onClose={handleDialogClose}
       icon={<ContentCopy fontSize="large" />}
@@ -380,6 +380,6 @@ export function MealPlanCloneDialog({
           </Typography>
         )}
       </Stack>
-    </ProgramDialogLayout>
+    </StandardDialog>
   );
 }

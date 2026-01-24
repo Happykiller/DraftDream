@@ -56,6 +56,11 @@ export interface UseMealPlanBuilderResult {
   mealTypes: MealType[];
   mealTypesLoading: boolean;
   selectedMealTypeId: string | null;
+  dayVisibility: 'all' | 'PUBLIC' | 'PRIVATE';
+  setDayVisibility: React.Dispatch<React.SetStateAction<'all' | 'PUBLIC' | 'PRIVATE'>>;
+  mealVisibility: 'all' | 'PUBLIC' | 'PRIVATE';
+  setMealVisibility: React.Dispatch<React.SetStateAction<'all' | 'PUBLIC' | 'PRIVATE'>>;
+  visibilityOptions: { value: 'all' | 'PUBLIC' | 'PRIVATE'; label: string }[];
   days: MealPlanBuilderDay[];
   handleSelectAthlete: (_event: unknown, user: User | null) => void;
   handleFormChange: (
@@ -67,6 +72,9 @@ export interface UseMealPlanBuilderResult {
   handleMoveDayUp: (dayId: string) => void;
   handleMoveDayDown: (dayId: string) => void;
   handleUpdateDay: (dayId: string, patch: Partial<MealPlanBuilderDay>) => void;
+  handleSaveDayTemplate: (dayId: string, label: string) => Promise<void>;
+  handleDeleteDayTemplate: (dayId: string) => Promise<void>;
+  handleEditDayTemplate: (dayId: string, label: string) => Promise<void>;
   handleAddMealToDay: (dayId: string, meal: Meal) => void;
   handleRemoveMeal: (dayId: string, mealUiId: string) => void;
   handleMoveMealUp: (dayId: string, mealUiId: string) => void;
@@ -308,6 +316,8 @@ export function useMealPlanBuilder(
 
   const [daySearch, setDaySearch] = React.useState('');
   const [mealSearch, setMealSearch] = React.useState('');
+  const [dayVisibility, setDayVisibility] = React.useState<'all' | 'PUBLIC' | 'PRIVATE'>('all');
+  const [mealVisibility, setMealVisibility] = React.useState<'all' | 'PUBLIC' | 'PRIVATE'>('all');
   const [selectedMealTypeId, setSelectedMealTypeId] = React.useState<string | null>(null);
   const debouncedDaySearch = useDebouncedValue(daySearch, 300);
   const debouncedMealSearch = useDebouncedValue(mealSearch, 300);
@@ -324,12 +334,16 @@ export function useMealPlanBuilder(
     items: mealDays,
     total: dayLibraryTotal,
     loading: dayLibraryLoading,
+    create: createMealDay,
+    update: updateMealDay,
+    remove: removeMealDay,
     reload: reloadMealDays,
   } = useMealDays({
     page: 1,
     limit: 10,
     q: debouncedDaySearch,
     locale: i18n.language,
+    visibility: dayVisibility === 'all' ? undefined : dayVisibility,
   });
 
   const {
@@ -346,6 +360,7 @@ export function useMealPlanBuilder(
     q: debouncedMealSearch,
     locale: i18n.language,
     typeId: selectedMealTypeId ?? undefined,
+    visibility: mealVisibility === 'all' ? undefined : mealVisibility,
   });
 
   const {
@@ -538,6 +553,57 @@ export function useMealPlanBuilder(
       ),
     );
   }, []);
+
+  /**
+   * Saves the current day configuration as a reusable meal day template.
+   */
+  const handleSaveDayTemplate = React.useCallback(
+    async (dayId: string, label: string) => {
+      const targetDay = days.find((dayItem) => dayItem.uiId === dayId);
+      if (!targetDay) {
+        return;
+      }
+
+      const trimmedLabel = label.trim() || targetDay.label;
+      const trimmedDescription = targetDay.description?.trim() ?? '';
+      const mealIds = targetDay.meals
+        .map((meal) => meal.templateMealId ?? meal.id)
+        .filter((mealId): mealId is string => Boolean(mealId));
+
+      await createMealDay({
+        locale: i18n.language,
+        label: trimmedLabel,
+        description: trimmedDescription.length > 0 ? trimmedDescription : undefined,
+        mealIds,
+        visibility: 'PRIVATE',
+      });
+    },
+    [createMealDay, days, i18n.language],
+  );
+
+  /**
+   * Removes an existing meal day template from the library.
+   */
+  const handleDeleteDayTemplate = React.useCallback(
+    async (dayId: string) => {
+      await removeMealDay(dayId);
+    },
+    [removeMealDay],
+  );
+
+  /**
+   * Updates the label of an existing meal day template.
+   */
+  const handleEditDayTemplate = React.useCallback(
+    async (dayId: string, label: string) => {
+      const trimmedLabel = label.trim();
+      if (!trimmedLabel) {
+        return;
+      }
+      await updateMealDay({ id: dayId, label: trimmedLabel });
+    },
+    [updateMealDay],
+  );
 
   const handleAddMealToDay = React.useCallback((dayId: string, meal: Meal) => {
     setDays((prev) => {
@@ -741,6 +807,21 @@ export function useMealPlanBuilder(
     setUsersQ,
     daySearch,
     setDaySearch,
+    dayVisibility,
+    setDayVisibility,
+    mealVisibility,
+    setMealVisibility,
+    visibilityOptions: [
+      { value: 'all', label: builderCopy.day_library.secondary_filter_all ?? 'Tous types' },
+      {
+        value: 'PRIVATE',
+        label: builderCopy.day_library.type_private ?? 'Privé',
+      },
+      {
+        value: 'PUBLIC',
+        label: builderCopy.day_library.type_public ?? 'Public',
+      },
+    ],
     mealSearch,
     setMealSearch,
     dayLibrary: mealDays,
@@ -761,6 +842,9 @@ export function useMealPlanBuilder(
     handleMoveDayUp,
     handleMoveDayDown,
     handleUpdateDay,
+    handleSaveDayTemplate,
+    handleDeleteDayTemplate,
+    handleEditDayTemplate,
     handleAddMealToDay,
     handleRemoveMeal,
     handleMoveMealUp,
