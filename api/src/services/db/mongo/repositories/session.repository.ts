@@ -107,6 +107,7 @@ export class BddServiceSessionMongo {
       locale,
       createdBy,
       createdByIn,
+      visibility,
       includePublicVisibility,
       includeArchived = false,
       limit = 20,
@@ -131,6 +132,12 @@ export class BddServiceSessionMongo {
     if (locale) {
       conditions.push({ locale: locale.toLowerCase().trim() });
     }
+
+    if (visibility) {
+      const normalizedVisibility = toVisibility(visibility) ?? Visibility.PRIVATE;
+      conditions.push({ visibility: normalizedVisibility });
+    }
+
     const normalizedCreatedByIn = Array.isArray(createdByIn)
       ? createdByIn.map((id) => id?.trim()).filter((id): id is string => Boolean(id))
       : [];
@@ -144,7 +151,7 @@ export class BddServiceSessionMongo {
       ownershipConditions.push({ createdBy: { $in: normalizedCreatedByIn.map(this.toObjectId) } });
     }
 
-    if (includePublicVisibility) {
+    if (!visibility && includePublicVisibility) {
       ownershipConditions.push({ visibility: Visibility.PUBLIC });
     }
 

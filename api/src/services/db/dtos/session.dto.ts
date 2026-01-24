@@ -23,6 +23,7 @@ export interface ListSessionsDto {
   locale?: string;
   createdBy?: string;
   createdByIn?: string[];
+  visibility?: Visibility;
   includePublicVisibility?: boolean;
   includeArchived?: boolean; // default false (exclude deleted items)
   limit?: number;            // default 20

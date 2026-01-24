@@ -74,6 +74,8 @@ export class ListSessionsInput {
   @Field({ nullable: true }) q?: string;
   @Field({ nullable: true }) locale?: string;
   @Field({ nullable: true }) createdBy?: string;
+  @Field(() => SessionVisibility, { nullable: true })
+  visibility?: SessionVisibility;
   @Field(() => Int, { nullable: true }) limit?: number;
   @Field(() => Int, { nullable: true }) page?: number;
 }
