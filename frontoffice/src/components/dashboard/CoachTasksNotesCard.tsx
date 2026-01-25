@@ -11,7 +11,6 @@ import {
   Box,
   Checkbox,
   Chip,
-  Divider,
   Grid,
   IconButton,
   MenuItem,
@@ -179,60 +178,68 @@ export function CoachTasksNotesCard(): React.JSX.Element {
                     sx={{ alignSelf: 'flex-start' }}
                   />
                 ) : (
-                  <Stack spacing={2} component="form" onSubmit={handleSubmit}>
-                    <TextField
-                      required
-                      fullWidth
-                      label={t('dashboard.tasksNotes.form.label')}
-                      placeholder={t('dashboard.tasksNotes.form.placeholder')}
-                      value={label}
-                      onChange={(event) => setLabel(event.target.value)}
-                    />
-                    <Grid container spacing={2} alignItems="center">
-                      <Grid size={{ xs: 12, sm: 5, md: 4 }}>
-                        <TextField
-                          select
-                          fullWidth
-                          label={t('dashboard.tasksNotes.form.priority')}
-                          value={priority}
-                          onChange={(event) => setPriority(event.target.value as TaskPriority)}
-                        >
-                          <MenuItem value="LOW">{t('dashboard.tasksNotes.priority.low')}</MenuItem>
-                          <MenuItem value="MIDDLE">{t('dashboard.tasksNotes.priority.middle')}</MenuItem>
-                          <MenuItem value="HIGH">{t('dashboard.tasksNotes.priority.high')}</MenuItem>
-                        </TextField>
-                      </Grid>
-                      <Grid size={{ xs: 12, sm: 5, md: 4 }}>
-                        <TextField
-                          fullWidth
-                          type="date"
-                          label={t('dashboard.tasksNotes.form.day')}
-                          InputLabelProps={{ shrink: true }}
-                          value={day}
-                          onChange={(event) => setDay(event.target.value)}
-                        />
-                      </Grid>
-                      <Grid size={{ xs: 12, sm: 12, md: 4 }}>
-                        <Stack direction="row" spacing={1} justifyContent={{ xs: 'flex-start', md: 'flex-end' }}>
-                          <ResponsiveButton
-                            variant="text"
-                            color="inherit"
-                            label={t('dashboard.tasksNotes.actions.cancel')}
-                            onClick={() => setShowForm(false)}
+                  <Paper
+                    variant="outlined"
+                    sx={{
+                      backgroundColor: 'action.hover',
+                      borderRadius: 2,
+                      borderColor: 'divider',
+                      p: 2,
+                    }}
+                  >
+                    <Stack spacing={2} component="form" onSubmit={handleSubmit}>
+                      <TextField
+                        required
+                        fullWidth
+                        label={t('dashboard.tasksNotes.form.label')}
+                        placeholder={t('dashboard.tasksNotes.form.placeholder')}
+                        value={label}
+                        onChange={(event) => setLabel(event.target.value)}
+                      />
+                      <Grid container spacing={2} alignItems="center">
+                        <Grid size={{ xs: 12, sm: 5, md: 4 }}>
+                          <TextField
+                            select
+                            fullWidth
+                            label={t('dashboard.tasksNotes.form.priority')}
+                            value={priority}
+                            onChange={(event) => setPriority(event.target.value as TaskPriority)}
+                          >
+                            <MenuItem value="LOW">{t('dashboard.tasksNotes.priority.low')}</MenuItem>
+                            <MenuItem value="MIDDLE">{t('dashboard.tasksNotes.priority.middle')}</MenuItem>
+                            <MenuItem value="HIGH">{t('dashboard.tasksNotes.priority.high')}</MenuItem>
+                          </TextField>
+                        </Grid>
+                        <Grid size={{ xs: 12, sm: 5, md: 4 }}>
+                          <TextField
+                            fullWidth
+                            type="date"
+                            label={t('dashboard.tasksNotes.form.day')}
+                            InputLabelProps={{ shrink: true }}
+                            value={day}
+                            onChange={(event) => setDay(event.target.value)}
                           />
-                          <ResponsiveButton
-                            variant="contained"
-                            color="primary"
-                            label={t('dashboard.tasksNotes.actions.addTask')}
-                            type="submit"
-                          />
-                        </Stack>
+                        </Grid>
+                        <Grid size={{ xs: 12, sm: 12, md: 4 }}>
+                          <Stack direction="row" spacing={1} justifyContent={{ xs: 'flex-start', md: 'flex-end' }}>
+                            <ResponsiveButton
+                              variant="text"
+                              color="inherit"
+                              label={t('dashboard.tasksNotes.actions.cancel')}
+                              onClick={() => setShowForm(false)}
+                            />
+                            <ResponsiveButton
+                              variant="contained"
+                              color="primary"
+                              label={t('dashboard.tasksNotes.actions.addTask')}
+                              type="submit"
+                            />
+                          </Stack>
+                        </Grid>
                       </Grid>
-                    </Grid>
-                  </Stack>
+                    </Stack>
+                  </Paper>
                 )}
-
-                <Divider />
 
                 <Stack spacing={2}>
                   {items.map((task) => {
