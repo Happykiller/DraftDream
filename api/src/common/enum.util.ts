@@ -3,6 +3,8 @@
 
 import { ProspectStatus } from './prospect-status.enum';
 import { Role } from './role.enum';
+import { TaskPriority } from './task-priority.enum';
+import { TaskStatus } from './task-status.enum';
 import { Visibility } from './visibility.enum';
 
 /**
@@ -27,6 +29,22 @@ export function toRole(value?: Role | string | null): Role | undefined {
 export function toProspectStatus(value?: ProspectStatus | string | null): ProspectStatus | undefined {
   if (!value) return undefined;
   return value.toString().toUpperCase().trim() as ProspectStatus;
+}
+
+/**
+ * Converts an input value to its uppercase task priority representation.
+ */
+export function toTaskPriority(value?: TaskPriority | string | null): TaskPriority | undefined {
+  if (!value) return undefined;
+  return value.toString().toUpperCase().trim() as TaskPriority;
+}
+
+/**
+ * Converts an input value to its uppercase task status representation.
+ */
+export function toTaskStatus(value?: TaskStatus | string | null): TaskStatus | undefined {
+  if (!value) return undefined;
+  return value.toString().toUpperCase().trim() as TaskStatus;
 }
 
 /**

@@ -22,6 +22,12 @@ Create, read, update, and delete user accounts
 - Self-update profile and password
 - CRUD operations
 
+#### [Task Management](./task-management.md)
+Create and manage daily tasks
+- Priority and status tracking
+- Ownership-based access control
+- Soft and hard deletion
+
 ---
 
 ### 👥 Relationship Management

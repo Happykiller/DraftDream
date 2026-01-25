@@ -6,13 +6,18 @@ import { JwtService } from '@services/jwt/jwt.service';
 import { AuthUsecase } from '@usecases/auth/auth.usecase';
 import { CryptService } from '@services/crypt/crypt.service';
 import { GetTagUsecase } from '@usecases/tag/get.tag.usecase';
+import { GetTaskUsecase } from '@usecases/task/get.task.usecase';
 import { JwtServiceReal } from '@services/jwt/jwt.service.real';
 import { GetUserUsecase } from '@usecases/user/get.user.usecase';
 import { DbTestUsecase } from '@usecases/default/db.test.usecase';
 import { ListTagsUsecase } from '@usecases/tag/list.tags.usecase';
+import { ListTasksUsecase } from '@usecases/task/list.tasks.usecase';
 import { CreateTagUsecase } from '@usecases/tag/create.tag.usecase';
+import { CreateTaskUsecase } from '@usecases/task/create.task.usecase';
 import { UpdateTagUsecase } from '@usecases/tag/update.tag.usecase';
+import { UpdateTaskUsecase } from '@usecases/task/update.task.usecase';
 import { DeleteTagUsecase } from '@usecases/tag/delete.tag.usecase';
+import { DeleteTaskUsecase } from '@usecases/task/delete.task.usecase';
 import { ListUsersUsecase } from '@usecases/user/list.users.usecase';
 import { GetMealUsecase } from '@src/usecases/nutri/meal/get.meal.usecase';
 import { BddServiceMongo } from '@services/db/mongo/db.service.mongo';
@@ -25,6 +30,7 @@ import { CreateMealUsecase } from '@src/usecases/nutri/meal/create.meal.usecase'
 import { UpdateMealUsecase } from '@src/usecases/nutri/meal/update.meal.usecase';
 import { DeleteMealUsecase } from '@src/usecases/nutri/meal/delete.meal.usecase';
 import { HardDeleteTagUsecase } from '@usecases/tag/hard-delete.tag.usecase';
+import { HardDeleteTaskUsecase } from '@usecases/task/hard-delete.task.usecase';
 import { UpdateMeUsecase } from '@usecases/user/update-me.user.usecase';
 import { HardDeleteUserUsecase } from '@usecases/user/hard-delete.user.usecase';
 import { GetProgramUsecase } from '@src/usecases/sport/program/get.program.usecase';
@@ -150,12 +156,17 @@ export class Inversify {
   bddService: BddServiceMongo;
   dbTestUsecase: DbTestUsecase;
   getTagUsecase: GetTagUsecase;
+  getTaskUsecase: GetTaskUsecase;
   getUserUsecase: GetUserUsecase;
   listTagsUsecase: ListTagsUsecase;
+  listTasksUsecase: ListTasksUsecase;
   listUsersUsecase: ListUsersUsecase;
   updateTagUsecase: UpdateTagUsecase;
+  updateTaskUsecase: UpdateTaskUsecase;
   deleteTagUsecase: DeleteTagUsecase;
+  deleteTaskUsecase: DeleteTaskUsecase;
   createTagUsecase: CreateTagUsecase;
+  createTaskUsecase: CreateTaskUsecase;
   getMuscleUsecase: GetMuscleUsecase;
   updateUserUsecase: UpdateUserUsecase;
   createUserUsecase: CreateUserUsecase;
@@ -270,6 +281,7 @@ export class Inversify {
   hardDeleteProspectSourceUsecase: HardDeleteProspectSourceUsecase;
   hardDeleteProspectUsecase: HardDeleteProspectUsecase;
   hardDeleteTagUsecase: HardDeleteTagUsecase;
+  hardDeleteTaskUsecase: HardDeleteTaskUsecase;
   hardDeleteSessionUsecase: HardDeleteSessionUsecase;
   hardDeleteProgramUsecase: HardDeleteProgramUsecase;
   hardDeleteMuscleUsecase: HardDeleteMuscleUsecase;
@@ -307,6 +319,12 @@ export class Inversify {
     this.createTagUsecase = new CreateTagUsecase(this);
     this.updateTagUsecase = new UpdateTagUsecase(this);
     this.deleteTagUsecase = new DeleteTagUsecase(this);
+    // usecases task
+    this.getTaskUsecase = new GetTaskUsecase(this);
+    this.listTasksUsecase = new ListTasksUsecase(this);
+    this.createTaskUsecase = new CreateTaskUsecase(this);
+    this.updateTaskUsecase = new UpdateTaskUsecase(this);
+    this.deleteTaskUsecase = new DeleteTaskUsecase(this);
     // usecases user
     this.getUserUsecase = new GetUserUsecase(this);
     this.createUserUsecase = new CreateUserUsecase(this);
@@ -443,6 +461,7 @@ export class Inversify {
     this.hardDeleteProspectSourceUsecase = new HardDeleteProspectSourceUsecase(this);
     this.hardDeleteProspectUsecase = new HardDeleteProspectUsecase(this);
     this.hardDeleteTagUsecase = new HardDeleteTagUsecase(this);
+    this.hardDeleteTaskUsecase = new HardDeleteTaskUsecase(this);
     this.hardDeleteSessionUsecase = new HardDeleteSessionUsecase(this);
     this.hardDeleteProgramUsecase = new HardDeleteProgramUsecase(this);
     this.hardDeleteMuscleUsecase = new HardDeleteMuscleUsecase(this);

@@ -5,6 +5,7 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 
 import { TagModule } from '@graphql/tag/tag.module';
+import { TaskModule } from '@graphql/task/task.module';
 import { UserModule } from '@graphql/user/user.module';
 import { AuthModule } from '@graphql/auth/auth.module';
 import { SystemModule } from '@graphql/system/system.module';
@@ -32,6 +33,7 @@ import { AthleteInfoModule } from '@graphql/athlete/athlete-info/athlete-info.mo
   imports: [
     AppModule,
     TagModule,
+    TaskModule,
     AuthModule,
     UserModule,
     SystemModule,
