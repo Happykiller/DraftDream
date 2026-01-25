@@ -75,6 +75,42 @@
       "prospects": "Prospects",
       "programs": "Programmes",
       "nutrition": "Plans Nutrition"
+    },
+    "tasksNotes": {
+      "title": "Tâches et Notes",
+      "tasks": {
+        "title": "Tâches"
+      },
+      "notes": {
+        "title": "Notes",
+        "placeholder": "Module de notes à venir."
+      },
+      "filters": {
+        "all": "Toutes",
+        "open": "Ouvertes",
+        "done": "Terminées"
+      },
+      "form": {
+        "label": "Intitulé",
+        "placeholder": "Ex: Relancer Pierre pour le bilan de samedi",
+        "priority": "Priorité",
+        "day": "Jour"
+      },
+      "priority": {
+        "low": "Basse",
+        "middle": "Moyenne",
+        "high": "Haute"
+      },
+      "labels": {
+        "overdue": "en retard",
+        "created": "Créée : {{date}}"
+      },
+      "actions": {
+        "newTask": "+ Nouvelle tâche",
+        "cancel": "Annuler",
+        "addTask": "Ajouter la tâche",
+        "delete": "Supprimer"
+      }
     }
   },
   "prospects": {

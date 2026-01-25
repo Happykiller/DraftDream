@@ -5,6 +5,7 @@ import { Stack, Typography } from '@mui/material';
 
 import { AthleteDashboardSummaryCards } from '@components/dashboard/AthleteDashboardSummaryCards';
 import { CoachDashboardSummaryCards } from '@components/dashboard/CoachDashboardSummaryCards';
+import { CoachTasksNotesCard } from '@components/dashboard/CoachTasksNotesCard';
 import { UserType } from '@src/commons/enums';
 import { session } from '@stores/session';
 
@@ -16,8 +17,8 @@ export function Home(): React.JSX.Element {
   const isCoachView = role === UserType.Admin || role === UserType.Coach;
 
   const subtitle = isCoachView
-    ? t('dashboard.coach.subtitle', "Gérez vos clients et programmes d'entraînement")
-    : t('dashboard.athlete.subtitle', 'Consultez vos programmes et vos plans nutritionnels.');
+    ? t('dashboard.coach.subtitle')
+    : t('dashboard.athlete.subtitle');
 
   return (
     <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
@@ -28,7 +29,15 @@ export function Home(): React.JSX.Element {
         </Typography>
       </Stack>
 
-      {isCoachView ? <CoachDashboardSummaryCards /> : <AthleteDashboardSummaryCards />}
+      {isCoachView ? (
+        <Stack spacing={3}>
+          {/* General information */}
+          <CoachTasksNotesCard />
+          <CoachDashboardSummaryCards />
+        </Stack>
+      ) : (
+        <AthleteDashboardSummaryCards />
+      )}
     </Stack>
   );
 }

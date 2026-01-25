@@ -73,6 +73,42 @@
       "prospects": "Prospects",
       "programs": "Programs",
       "nutrition": "Nutrition plans"
+    },
+    "tasksNotes": {
+      "title": "Tasks & Notes",
+      "tasks": {
+        "title": "Tasks"
+      },
+      "notes": {
+        "title": "Notes",
+        "placeholder": "Notes module coming soon."
+      },
+      "filters": {
+        "all": "All",
+        "open": "Open",
+        "done": "Done"
+      },
+      "form": {
+        "label": "Title",
+        "placeholder": "Ex: Follow up with Pierre about Saturday review",
+        "priority": "Priority",
+        "day": "Day"
+      },
+      "priority": {
+        "low": "Low",
+        "middle": "Medium",
+        "high": "High"
+      },
+      "labels": {
+        "overdue": "overdue",
+        "created": "Created: {{date}}"
+      },
+      "actions": {
+        "newTask": "+ New task",
+        "cancel": "Cancel",
+        "addTask": "Add task",
+        "delete": "Delete"
+      }
     }
   },
   "prospects": {
