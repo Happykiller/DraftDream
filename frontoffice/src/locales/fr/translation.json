@@ -115,7 +115,7 @@
         "delete_failure": "Impossible de supprimer la tâche."
       },
       "actions": {
-        "newTask": "+ Nouvelle tâche",
+        "newTask": "Nouvelle tâche",
         "cancel": "Annuler",
         "addTask": "Ajouter la tâche",
         "delete": "Supprimer"

@@ -38,10 +38,12 @@ export const GlassCard: React.FC<GlassCardProps> = ({
                 flexDirection: 'column',
                 transition: 'transform 0.2s, box-shadow 0.2s',
                 cursor: onClick ? 'pointer' : 'default',
-                '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: theme.shadows[8],
-                },
+                ...(onClick && {
+                    '&:hover': {
+                        transform: 'translateY(-4px)',
+                        boxShadow: theme.shadows[8],
+                    },
+                }),
                 background: theme.palette.mode === 'dark'
                     ? `linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%)`
                     : theme.palette.background.paper,
