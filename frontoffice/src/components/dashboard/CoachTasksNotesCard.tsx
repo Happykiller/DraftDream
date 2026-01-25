@@ -12,6 +12,7 @@ import {
   Checkbox,
   Chip,
   Divider,
+  Grid,
   IconButton,
   MenuItem,
   Paper,
@@ -22,7 +23,6 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import Grid from '@mui/material/Grid2';
 
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import { GlassCard } from '@components/common/GlassCard';
