@@ -2,11 +2,16 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { coachAthleteGet } from '@services/graphql/coachAthletes.service';
+import {
+  coachAthleteGet,
+  coachAthleteUpdate,
+  type CoachAthleteUpdateInput,
+} from '@services/graphql/coachAthletes.service';
 
 import type { CoachAthleteLink } from '@app-types/coachAthletes';
 
 import { useAsyncTask } from '@hooks/useAsyncTask';
+import { useFlashStore } from '@hooks/useFlashStore';
 
 export interface UseCoachAthleteLinkOptions {
   linkId?: string | null;
@@ -19,6 +24,7 @@ export interface UseCoachAthleteLinkResult {
   loading: boolean;
   error: string | null;
   reload: () => Promise<CoachAthleteLink | null>;
+  update: (input: CoachAthleteUpdateInput) => Promise<CoachAthleteLink | null>;
 }
 
 /**
@@ -31,6 +37,8 @@ export function useCoachAthleteLink({
 }: UseCoachAthleteLinkOptions = {}): UseCoachAthleteLinkResult {
   const { t } = useTranslation();
   const { execute } = useAsyncTask();
+  const flashSuccess = useFlashStore((state) => state.success);
+  const flashError = useFlashStore((state) => state.error);
   const [link, setLink] = React.useState<CoachAthleteLink | null>(initialLink);
   const [error, setError] = React.useState<string | null>(initialError);
   const [loading, setLoading] = React.useState(false);
@@ -104,5 +112,37 @@ export function useCoachAthleteLink({
     return load(linkId);
   }, [linkId, load]);
 
-  return { link, loading, error, reload };
+  /** Updates the coach-athlete link details (commercial notes). */
+  const update = React.useCallback(
+    async (input: CoachAthleteUpdateInput): Promise<CoachAthleteLink | null> => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const result = await execute(() => coachAthleteUpdate(input));
+
+        if (!result) {
+          const message = t('athletes.details.notes_update_failed');
+          setError(message);
+          flashError(message);
+          throw new Error(message);
+        }
+
+        setLink(result);
+        flashSuccess(t('athletes.details.notes_update_success'));
+        return result;
+      } catch (caught: unknown) {
+        console.error('[useCoachAthleteLink] Failed to update coach-athlete link', caught);
+        const message = t('athletes.details.notes_update_failed');
+        setError(message);
+        flashError(message);
+        throw new Error(message);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [execute, flashError, flashSuccess, t],
+  );
+
+  return { link, loading, error, reload, update };
 }

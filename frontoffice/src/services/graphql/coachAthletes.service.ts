@@ -42,6 +42,14 @@ const GET_QUERY = `
   }
 `;
 
+const UPDATE_MUTATION = `
+  mutation CoachAthleteUpdate($input: UpdateCoachAthleteInput!) {
+    coachAthlete_update(input: $input) {
+      ${COACH_ATHLETE_FIELDS}
+    }
+  }
+`;
+
 type CoachAthleteListPayload = { coachAthlete_list: CoachAthleteListResult };
 
 interface CoachAthleteGetOptions {
@@ -49,6 +57,7 @@ interface CoachAthleteGetOptions {
 }
 
 type CoachAthleteGetPayload = { coachAthlete_get: CoachAthleteLink | null };
+type CoachAthleteUpdatePayload = { coachAthlete_update: CoachAthleteLink | null };
 
 export interface CoachAthleteListInput {
   page?: number;
@@ -57,6 +66,14 @@ export interface CoachAthleteListInput {
   athleteId?: string | null;
   is_active?: boolean | null;
   includeArchived?: boolean;
+}
+
+export interface CoachAthleteUpdateInput {
+  id: string;
+  startDate?: string | null;
+  endDate?: string | null;
+  is_active?: boolean;
+  note?: string | null;
 }
 
 function sanitizeListInput(input: CoachAthleteListInput): Record<string, unknown> {
@@ -103,4 +120,19 @@ export async function coachAthleteGet({ linkId }: CoachAthleteGetOptions): Promi
   }
 
   return data?.coachAthlete_get ?? null;
+}
+
+export async function coachAthleteUpdate(input: CoachAthleteUpdateInput): Promise<CoachAthleteLink | null> {
+  const graphql = new GraphqlServiceFetch(inversify);
+  const { data, errors } = await graphql.send<CoachAthleteUpdatePayload>({
+    query: UPDATE_MUTATION,
+    operationName: 'CoachAthleteUpdate',
+    variables: { input },
+  });
+
+  if (errors?.length) {
+    throw new Error(errors[0].message);
+  }
+
+  return data?.coachAthlete_update ?? null;
 }

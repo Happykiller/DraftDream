@@ -301,6 +301,13 @@
       "summary_title": "Résumé du lien",
       "client_sheet_title": "Fiche client",
       "notes_title": "Notes commerciales",
+      "notes_placeholder": "Ajoutez vos notes commerciales...",
+      "notes_actions": {
+        "save": "Enregistrer",
+        "cancel": "Annuler"
+      },
+      "notes_update_success": "Notes commerciales mises à jour.",
+      "notes_update_failed": "Impossible de mettre à jour les notes commerciales.",
       "loading": "Chargement du lien athlète...",
       "athlete_info": {
         "load_failed": "Impossible de charger les informations de l'athlète"

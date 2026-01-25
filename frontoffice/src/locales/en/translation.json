@@ -299,6 +299,13 @@
       "summary_title": "Link summary",
       "client_sheet_title": "Client sheet",
       "notes_title": "Notes",
+      "notes_placeholder": "Add your commercial notes...",
+      "notes_actions": {
+        "save": "Save",
+        "cancel": "Cancel"
+      },
+      "notes_update_success": "Commercial notes updated.",
+      "notes_update_failed": "Unable to update commercial notes.",
       "loading": "Loading athlete link...",
       "athlete_info": {
         "load_failed": "Unable to load the athlete's information"
