@@ -27,46 +27,18 @@ import {
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import { GlassCard } from '@components/common/GlassCard';
 import { useDateFormatter } from '@hooks/useDateFormatter';
+import { useTasks, type Task, type TaskPriority, type TaskStatus } from '@hooks/useTasks';
 
-type TaskPriority = 'low' | 'middle' | 'high';
 type TaskStatusFilter = 'all' | 'open' | 'done';
 
-interface TaskItem {
-  id: string;
-  label: string;
-  priority: TaskPriority;
-  dueDate: Date;
-  createdAt: Date;
-  completed: boolean;
-}
-
-const TODAY = new Date();
-const TWO_DAYS_AGO = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
-const NEXT_WEEK = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-
-const TASKS: TaskItem[] = [
-  {
-    id: 'task-1',
-    label: 'Relancer Pierre',
-    priority: 'middle',
-    dueDate: TWO_DAYS_AGO,
-    createdAt: TODAY,
-    completed: false,
-  },
-  {
-    id: 'task-2',
-    label: 'Préparer le bilan',
-    priority: 'high',
-    dueDate: NEXT_WEEK,
-    createdAt: TODAY,
-    completed: false,
-  },
-];
-
-function isOverdue(task: TaskItem): boolean {
+function isOverdue(task: Task, isCompleted: boolean): boolean {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  return !task.completed && task.dueDate.getTime() < today.getTime();
+  const dueDate = new Date(task.day);
+  if (Number.isNaN(dueDate.getTime())) {
+    return false;
+  }
+  return !isCompleted && dueDate.getTime() < today.getTime();
 }
 
 export function CoachTasksNotesCard(): React.JSX.Element {
@@ -74,16 +46,27 @@ export function CoachTasksNotesCard(): React.JSX.Element {
   const formatDate = useDateFormatter({ options: { day: '2-digit', month: '2-digit', year: 'numeric' } });
   const [filter, setFilter] = React.useState<TaskStatusFilter>('all');
   const [showForm, setShowForm] = React.useState(false);
+  const [label, setLabel] = React.useState('');
+  const [priority, setPriority] = React.useState<TaskPriority>('MIDDLE');
+  const [day, setDay] = React.useState('');
+  const [pendingTaskId, setPendingTaskId] = React.useState<string | null>(null);
 
-  const filteredTasks = React.useMemo(() => {
-    if (filter === 'done') {
-      return TASKS.filter((task) => task.completed);
-    }
-    if (filter === 'open') {
-      return TASKS.filter((task) => !task.completed);
-    }
-    return TASKS;
+  const statusFilter: TaskStatus | undefined = React.useMemo(() => {
+    if (filter === 'open') return 'TODO';
+    if (filter === 'done') return 'DONE';
+    return undefined;
   }, [filter]);
+
+  const taskQuery = React.useMemo(
+    () => ({
+      page: 1,
+      limit: 10,
+      status: statusFilter,
+    }),
+    [statusFilter],
+  );
+
+  const { items, loading, create, update, remove } = useTasks(taskQuery);
 
   const handleFilterChange = (_event: React.MouseEvent<HTMLElement>, value: TaskStatusFilter | null) => {
     if (value) {
@@ -92,15 +75,50 @@ export function CoachTasksNotesCard(): React.JSX.Element {
   };
 
   const priorityLabel = (priority: TaskPriority) => {
-    if (priority === 'high') return t('dashboard.tasksNotes.priority.high');
-    if (priority === 'middle') return t('dashboard.tasksNotes.priority.middle');
+    if (priority === 'HIGH') return t('dashboard.tasksNotes.priority.high');
+    if (priority === 'MIDDLE') return t('dashboard.tasksNotes.priority.middle');
     return t('dashboard.tasksNotes.priority.low');
   };
 
   const priorityColor = (priority: TaskPriority) => {
-    if (priority === 'high') return 'error';
-    if (priority === 'middle') return 'warning';
+    if (priority === 'HIGH') return 'error';
+    if (priority === 'MIDDLE') return 'warning';
     return 'success';
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!label.trim() || !day) {
+      return;
+    }
+    await create({
+      label: label.trim(),
+      priority,
+      status: 'TODO',
+      day,
+    });
+    setLabel('');
+    setPriority('MIDDLE');
+    setDay('');
+    setShowForm(false);
+  };
+
+  const handleStatusToggle = async (task: Task, checked: boolean) => {
+    setPendingTaskId(task.id);
+    try {
+      await update({ id: task.id, status: checked ? 'DONE' : 'TODO' });
+    } finally {
+      setPendingTaskId(null);
+    }
+  };
+
+  const handleDelete = async (task: Task) => {
+    setPendingTaskId(task.id);
+    try {
+      await remove(task.id);
+    } finally {
+      setPendingTaskId(null);
+    }
   };
 
   return (
@@ -161,19 +179,27 @@ export function CoachTasksNotesCard(): React.JSX.Element {
                     sx={{ alignSelf: 'flex-start' }}
                   />
                 ) : (
-                  <Stack spacing={2} component="form">
+                  <Stack spacing={2} component="form" onSubmit={handleSubmit}>
                     <TextField
                       required
                       fullWidth
                       label={t('dashboard.tasksNotes.form.label')}
                       placeholder={t('dashboard.tasksNotes.form.placeholder')}
+                      value={label}
+                      onChange={(event) => setLabel(event.target.value)}
                     />
                     <Grid container spacing={2} alignItems="center">
                       <Grid size={{ xs: 12, sm: 5, md: 4 }}>
-                        <TextField select fullWidth label={t('dashboard.tasksNotes.form.priority')}>
-                          <MenuItem value="low">{t('dashboard.tasksNotes.priority.low')}</MenuItem>
-                          <MenuItem value="middle">{t('dashboard.tasksNotes.priority.middle')}</MenuItem>
-                          <MenuItem value="high">{t('dashboard.tasksNotes.priority.high')}</MenuItem>
+                        <TextField
+                          select
+                          fullWidth
+                          label={t('dashboard.tasksNotes.form.priority')}
+                          value={priority}
+                          onChange={(event) => setPriority(event.target.value as TaskPriority)}
+                        >
+                          <MenuItem value="LOW">{t('dashboard.tasksNotes.priority.low')}</MenuItem>
+                          <MenuItem value="MIDDLE">{t('dashboard.tasksNotes.priority.middle')}</MenuItem>
+                          <MenuItem value="HIGH">{t('dashboard.tasksNotes.priority.high')}</MenuItem>
                         </TextField>
                       </Grid>
                       <Grid size={{ xs: 12, sm: 5, md: 4 }}>
@@ -182,6 +208,8 @@ export function CoachTasksNotesCard(): React.JSX.Element {
                           type="date"
                           label={t('dashboard.tasksNotes.form.day')}
                           InputLabelProps={{ shrink: true }}
+                          value={day}
+                          onChange={(event) => setDay(event.target.value)}
                         />
                       </Grid>
                       <Grid size={{ xs: 12, sm: 12, md: 4 }}>
@@ -196,6 +224,7 @@ export function CoachTasksNotesCard(): React.JSX.Element {
                             variant="contained"
                             color="primary"
                             label={t('dashboard.tasksNotes.actions.addTask')}
+                            type="submit"
                           />
                         </Stack>
                       </Grid>
@@ -206,7 +235,11 @@ export function CoachTasksNotesCard(): React.JSX.Element {
                 <Divider />
 
                 <Stack spacing={2}>
-                  {filteredTasks.map((task) => (
+                  {items.map((task) => {
+                    const isCompleted = task.status === 'DONE';
+                    const overdue = isOverdue(task, isCompleted);
+                    const dueDate = formatDate(task.day);
+                    return (
                     <Paper
                       key={task.id}
                       variant="outlined"
@@ -215,7 +248,14 @@ export function CoachTasksNotesCard(): React.JSX.Element {
                       <Stack spacing={1.5}>
                         <Stack direction="row" alignItems="flex-start" spacing={1}>
                           <DragIndicatorIcon sx={{ color: 'text.disabled' }} fontSize="small" />
-                          <Checkbox checked={task.completed} sx={{ mt: -0.5 }} />
+                          <Checkbox
+                            checked={isCompleted}
+                            disabled={pendingTaskId === task.id}
+                            onChange={(_event, checked) => {
+                              void handleStatusToggle(task, checked);
+                            }}
+                            sx={{ mt: -0.5 }}
+                          />
                           <Typography fontWeight={600}>{task.label}</Typography>
                         </Stack>
 
@@ -228,11 +268,11 @@ export function CoachTasksNotesCard(): React.JSX.Element {
                             size="small"
                           />
                           <Stack direction="row" alignItems="center" spacing={0.5}>
-                            <EventOutlinedIcon fontSize="small" color={isOverdue(task) ? 'error' : 'action'} />
-                            <Typography variant="body2" color={isOverdue(task) ? 'error.main' : 'text.secondary'}>
-                              {formatDate(task.dueDate)}
+                            <EventOutlinedIcon fontSize="small" color={overdue ? 'error' : 'action'} />
+                            <Typography variant="body2" color={overdue ? 'error.main' : 'text.secondary'}>
+                              {dueDate}
                             </Typography>
-                            {isOverdue(task) && (
+                            {overdue && (
                               <Typography variant="body2" color="error.main">
                                 • {t('dashboard.tasksNotes.labels.overdue')}
                               </Typography>
@@ -248,14 +288,26 @@ export function CoachTasksNotesCard(): React.JSX.Element {
 
                         <Box display="flex" justifyContent="flex-end">
                           <Tooltip title={t('dashboard.tasksNotes.actions.delete')}>
-                            <IconButton size="small">
+                            <IconButton
+                              size="small"
+                              disabled={pendingTaskId === task.id}
+                              onClick={() => {
+                                void handleDelete(task);
+                              }}
+                            >
                               <DeleteOutlineIcon fontSize="small" />
                             </IconButton>
                           </Tooltip>
                         </Box>
                       </Stack>
                     </Paper>
-                  ))}
+                  );
+                  })}
+                  {!items.length && !loading && (
+                    <Typography variant="body2" color="text.secondary">
+                      {t('common.no_content')}
+                    </Typography>
+                  )}
                 </Stack>
               </Stack>
             </Paper>
