@@ -1,5 +1,6 @@
 // src/hooks/useTasks.ts
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import inversify from '@src/commons/inversify';
 import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
@@ -109,6 +110,7 @@ function buildListInput({ page, limit, status, priority }: UseTasksParams) {
 }
 
 export function useTasks(params: UseTasksParams) {
+  const { t } = useTranslation();
   const { execute } = useAsyncTask();
   const flashError = useFlashStore((state) => state.error);
   const flashSuccess = useFlashStore((state) => state.success);
@@ -131,12 +133,11 @@ export function useTasks(params: UseTasksParams) {
       setItems(data?.task_list.items ?? []);
       setTotal(data?.task_list.total ?? 0);
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Failed to load tasks';
-      flashError(message);
+      flashError(t('dashboard.tasksNotes.notifications.load_failure'));
     } finally {
       setLoading(false);
     }
-  }, [execute, flashError, gql, params]);
+  }, [execute, flashError, gql, params, t]);
 
   React.useEffect(() => {
     void load();
@@ -155,16 +156,15 @@ export function useTasks(params: UseTasksParams) {
         if (errors?.length) throw new Error(errors[0].message);
         const created = data?.task_create;
         if (!created) throw new Error('CreateTask returned no data');
-        flashSuccess('Task created');
+        flashSuccess(t('dashboard.tasksNotes.notifications.create_success'));
         await load();
         return created;
       } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Create failed';
-        flashError(message);
+        flashError(t('dashboard.tasksNotes.notifications.create_failure'));
         throw error;
       }
     },
-    [execute, flashError, flashSuccess, gql, load],
+    [execute, flashError, flashSuccess, gql, load, t],
   );
 
   const update = React.useCallback(
@@ -178,15 +178,14 @@ export function useTasks(params: UseTasksParams) {
           }),
         );
         if (errors?.length) throw new Error(errors[0].message);
-        flashSuccess('Task updated');
+        flashSuccess(t('dashboard.tasksNotes.notifications.update_success'));
         await load();
       } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Update failed';
-        flashError(message);
+        flashError(t('dashboard.tasksNotes.notifications.update_failure'));
         throw error;
       }
     },
-    [execute, flashError, flashSuccess, gql, load],
+    [execute, flashError, flashSuccess, gql, load, t],
   );
 
   const remove = React.useCallback(
@@ -200,15 +199,14 @@ export function useTasks(params: UseTasksParams) {
           }),
         );
         if (errors?.length) throw new Error(errors[0].message);
-        flashSuccess('Task deleted');
+        flashSuccess(t('dashboard.tasksNotes.notifications.delete_success'));
         await load();
       } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Delete failed';
-        flashError(message);
+        flashError(t('dashboard.tasksNotes.notifications.delete_failure'));
         throw error;
       }
     },
-    [execute, flashError, flashSuccess, gql, load],
+    [execute, flashError, flashSuccess, gql, load, t],
   );
 
   return {

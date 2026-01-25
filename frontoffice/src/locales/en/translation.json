@@ -103,6 +103,15 @@
         "overdue": "overdue",
         "created": "Created: {{date}}"
       },
+      "notifications": {
+        "load_failure": "Unable to load tasks.",
+        "create_success": "Task created.",
+        "create_failure": "Unable to create the task.",
+        "update_success": "Task updated.",
+        "update_failure": "Unable to update the task.",
+        "delete_success": "Task deleted.",
+        "delete_failure": "Unable to delete the task."
+      },
       "actions": {
         "newTask": "+ New task",
         "cancel": "Cancel",

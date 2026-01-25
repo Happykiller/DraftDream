@@ -105,6 +105,15 @@
         "overdue": "en retard",
         "created": "Créée : {{date}}"
       },
+      "notifications": {
+        "load_failure": "Impossible de charger les tâches.",
+        "create_success": "Tâche créée.",
+        "create_failure": "Impossible de créer la tâche.",
+        "update_success": "Tâche mise à jour.",
+        "update_failure": "Impossible de mettre à jour la tâche.",
+        "delete_success": "Tâche supprimée.",
+        "delete_failure": "Impossible de supprimer la tâche."
+      },
       "actions": {
         "newTask": "+ Nouvelle tâche",
         "cancel": "Annuler",
