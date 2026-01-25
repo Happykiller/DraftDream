@@ -3,8 +3,9 @@ import { ERRORS } from '@src/common/ERROR';
 import { Role } from '@src/common/role.enum';
 import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
-import { TaskUsecaseModel } from '@usecases/task/task.usecase.model';
 import { ListTasksUsecaseDto } from '@usecases/task/task.usecase.dto';
+import { TaskUsecaseModel } from '@usecases/task/task.usecase.model';
+import { mapTaskToUsecase } from '@usecases/task/task.mapper';
 
 export interface ListTasksUsecaseResult {
   items: TaskUsecaseModel[];
@@ -34,7 +35,7 @@ export class ListTasksUsecase {
       });
 
       return {
-        items: res.items.map((item) => ({ ...item })),
+        items: res.items.map(mapTaskToUsecase),
         total: res.total,
         page: res.page,
         limit: res.limit,

@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it } from '@jest/globals';
 
 import { Role } from '@src/common/role.enum';
+import { TaskPriority } from '@src/common/task-priority.enum';
+import { TaskStatus } from '@src/common/task-status.enum';
 import { Inversify } from '@src/inversify/investify';
 import { BddServiceMongo } from '@services/db/mongo/db.service.mongo';
 import { BddServiceTaskMongo } from '@services/db/mongo/repositories/task.repository';
@@ -19,8 +21,8 @@ describe('ListTasksUsecase', () => {
     {
       id: 'task-1',
       label: 'Review plan',
-      priority: 'MIDDLE',
-      status: 'TODO',
+      priority: TaskPriority.MIDDLE,
+      status: TaskStatus.TODO,
       day: now,
       createdBy: 'coach-1',
       createdAt: now,
@@ -54,13 +56,13 @@ describe('ListTasksUsecase', () => {
     });
 
     const result = await usecase.execute({
-      priority: 'MIDDLE',
+      priority: TaskPriority.MIDDLE,
       createdBy: 'someone-else',
       session: { userId: 'coach-1', role: Role.COACH },
     });
 
     expect(asMock(taskRepositoryMock.listTasks).mock.calls[0][0]).toEqual(
-      expect.objectContaining({ createdBy: 'coach-1', priority: 'MIDDLE' }),
+      expect.objectContaining({ createdBy: 'coach-1', priority: TaskPriority.MIDDLE }),
     );
     expect(result.items).toHaveLength(1);
   });

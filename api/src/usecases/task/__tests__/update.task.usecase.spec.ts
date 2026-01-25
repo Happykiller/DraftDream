@@ -2,6 +2,8 @@ import { beforeEach, describe, expect, it } from '@jest/globals';
 
 import { ERRORS } from '@src/common/ERROR';
 import { Role } from '@src/common/role.enum';
+import { TaskPriority } from '@src/common/task-priority.enum';
+import { TaskStatus } from '@src/common/task-status.enum';
 import { Inversify } from '@src/inversify/investify';
 import { BddServiceMongo } from '@services/db/mongo/db.service.mongo';
 import { BddServiceTaskMongo } from '@services/db/mongo/repositories/task.repository';
@@ -24,8 +26,8 @@ describe('UpdateTaskUsecase', () => {
   const task: TaskUsecaseModel = {
     id: 'task-1',
     label: 'Review plan',
-    priority: 'MIDDLE',
-    status: 'TODO',
+    priority: TaskPriority.MIDDLE,
+    status: TaskStatus.TODO,
     day: now,
     createdBy: 'coach-1',
     createdAt: now,
@@ -58,8 +60,8 @@ describe('UpdateTaskUsecase', () => {
     const updated: TaskUsecaseModel = {
       ...task,
       label: 'Updated',
-      priority: 'HIGH',
-      status: 'DONE',
+      priority: TaskPriority.HIGH,
+      status: TaskStatus.DONE,
     };
 
     asMock(taskRepositoryMock.get).mockResolvedValue(task);
@@ -68,8 +70,8 @@ describe('UpdateTaskUsecase', () => {
     const result = await usecase.execute({
       id: task.id,
       label: 'Updated',
-      priority: 'HIGH',
-      status: 'DONE',
+      priority: TaskPriority.HIGH,
+      status: TaskStatus.DONE,
       session: { userId: 'coach-1', role: Role.COACH },
     });
 
@@ -77,8 +79,8 @@ describe('UpdateTaskUsecase', () => {
       task.id,
       {
         label: 'Updated',
-        priority: 'HIGH',
-        status: 'DONE',
+        priority: TaskPriority.HIGH,
+        status: TaskStatus.DONE,
         day: undefined,
       },
     ]);

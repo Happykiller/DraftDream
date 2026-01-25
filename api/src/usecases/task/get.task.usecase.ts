@@ -3,8 +3,9 @@ import { ERRORS } from '@src/common/ERROR';
 import { Role } from '@src/common/role.enum';
 import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
-import { TaskUsecaseModel } from '@usecases/task/task.usecase.model';
 import { GetTaskUsecaseDto } from '@usecases/task/task.usecase.dto';
+import { TaskUsecaseModel } from '@usecases/task/task.usecase.model';
+import { mapTaskToUsecase } from '@usecases/task/task.mapper';
 
 export class GetTaskUsecase {
   constructor(private readonly inversify: Inversify) { }
@@ -22,7 +23,7 @@ export class GetTaskUsecase {
         throw new Error(ERRORS.GET_TASK_FORBIDDEN);
       }
 
-      return { ...task };
+      return mapTaskToUsecase(task);
     } catch (e: any) {
       if (e?.message === ERRORS.GET_TASK_FORBIDDEN) {
         throw e;

@@ -2,8 +2,9 @@
 import { ERRORS } from '@src/common/ERROR';
 import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
-import { TaskUsecaseModel } from '@usecases/task/task.usecase.model';
 import { CreateTaskUsecaseDto } from '@usecases/task/task.usecase.dto';
+import { TaskUsecaseModel } from '@usecases/task/task.usecase.model';
+import { mapTaskToUsecase } from '@usecases/task/task.mapper';
 
 export class CreateTaskUsecase {
   constructor(private readonly inversify: Inversify) { }
@@ -17,7 +18,7 @@ export class CreateTaskUsecase {
         day: dto.day,
         createdBy: dto.session.userId,
       });
-      return created ? { ...created } : null;
+      return created ? mapTaskToUsecase(created) : null;
     } catch (e: any) {
       this.inversify.loggerService.error(`CreateTaskUsecase#execute => ${e?.message ?? e}`);
       throw normalizeError(e, ERRORS.CREATE_TASK_USECASE);

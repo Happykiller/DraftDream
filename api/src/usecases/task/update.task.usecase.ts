@@ -3,8 +3,9 @@ import { ERRORS } from '@src/common/ERROR';
 import { Role } from '@src/common/role.enum';
 import { normalizeError } from '@src/common/error.util';
 import { Inversify } from '@src/inversify/investify';
-import { TaskUsecaseModel } from '@usecases/task/task.usecase.model';
 import { UpdateTaskUsecaseDto } from '@usecases/task/task.usecase.dto';
+import { TaskUsecaseModel } from '@usecases/task/task.usecase.model';
+import { mapTaskToUsecase } from '@usecases/task/task.mapper';
 
 export class UpdateTaskUsecase {
   constructor(private readonly inversify: Inversify) { }
@@ -29,7 +30,7 @@ export class UpdateTaskUsecase {
         status: payload.status,
         day: payload.day,
       });
-      return updated ? { ...updated } : null;
+      return updated ? mapTaskToUsecase(updated) : null;
     } catch (e: any) {
       this.inversify.loggerService.error(`UpdateTaskUsecase#execute => ${e?.message ?? e}`);
       throw normalizeError(e, ERRORS.UPDATE_TASK_USECASE);
