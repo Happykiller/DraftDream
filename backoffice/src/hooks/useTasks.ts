@@ -81,7 +81,7 @@ function buildListInput({ page, limit, status, priority, createdBy }: UseTasksPa
 }
 
 /** Load tasks for moderation views with server pagination. */
-export function useTasks(params: UseTasksParams) {
+export function useTasks({ page, limit, status, priority, createdBy }: UseTasksParams) {
   const { t } = useTranslation();
   const { execute } = useAsyncTask();
   const flashError = useFlashStore((state) => state.error);
@@ -89,15 +89,25 @@ export function useTasks(params: UseTasksParams) {
   const [items, setItems] = React.useState<Task[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
+  const isLoadingRef = React.useRef(false);
+
+  const input = React.useMemo(
+    () => buildListInput({ page, limit, status, priority, createdBy }),
+    [createdBy, limit, page, priority, status],
+  );
 
   const load = React.useCallback(async () => {
+    if (isLoadingRef.current) {
+      return;
+    }
+    isLoadingRef.current = true;
     setLoading(true);
     try {
       const { data, errors } = await execute(() =>
         gql.send<TaskListPayload>({
           query: LIST_QUERY,
           operationName: 'ListTasks',
-          variables: { input: buildListInput(params) },
+          variables: { input },
         }),
       );
       if (errors?.length) throw new Error(errors[0].message);
@@ -108,12 +118,20 @@ export function useTasks(params: UseTasksParams) {
       flashError(t('tasks.notifications.load_failure'));
     } finally {
       setLoading(false);
+      isLoadingRef.current = false;
     }
-  }, [execute, flashError, gql, params, t]);
+  }, [execute, flashError, gql, input, t]);
+
+  const lastSigRef = React.useRef<string | null>(null);
+  const sig = `${page}|${limit}|${status ?? ''}|${priority ?? ''}|${createdBy ?? ''}`;
 
   React.useEffect(() => {
+    if (lastSigRef.current === sig) {
+      return;
+    }
+    lastSigRef.current = sig;
     void load();
-  }, [load]);
+  }, [load, sig]);
 
   return {
     items,
