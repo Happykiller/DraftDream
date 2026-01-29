@@ -11,6 +11,7 @@ import {
   FitnessCenter,
   RestaurantMenu,
   SportsGymnastics,
+  TaskAlt,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
@@ -42,6 +43,11 @@ export function useNavItems(role?: string): NavItem[] {
           label: t('meals.title'),
           icon: <RestaurantMenu />,
           path: '/meals',
+        },
+        {
+          label: t('tasks.title'),
+          icon: <TaskAlt />,
+          path: '/tasks',
         },
         {
           label: t('prospects.title'),

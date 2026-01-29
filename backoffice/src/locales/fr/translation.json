@@ -593,6 +593,19 @@
       "PASSWORD": "Doit contenir au moins 6 caractères."
     }
   },
+  "tasks": {
+    "title": "Tâches",
+    "moderation": {
+      "title": "File de modération",
+      "subtitle": "Validez les tâches en attente avant leur publication.",
+      "empty": "Aucune tâche à modérer pour le moment.",
+      "status": {
+        "pending": "En attente",
+        "approved": "Approuvée",
+        "rejected": "Refusée"
+      }
+    }
+  },
   "prospects": {
     "title": "Prospects",
     "tabs": {

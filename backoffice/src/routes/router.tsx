@@ -62,6 +62,13 @@ export const router = createBrowserRouter([
         },
       },
       {
+        path: '/tasks',
+        lazy: async () => {
+          const mod = await import('@src/pages/Tasks');
+          return { Component: withTitle(mod.Tasks, 'tasks.title') };
+        },
+      },
+      {
         path: '/prospects',
         lazy: async () => {
           const mod = await import('@src/pages/Prospects');

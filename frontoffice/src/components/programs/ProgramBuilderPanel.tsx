@@ -17,8 +17,14 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import { Add, Edit, Replay, Search } from '@mui/icons-material';
+
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
+import type { AthleteSearchOption } from '@hooks/athletes/useCoachAthleteSearch';
+import type { Exercise } from '@hooks/programs/useExercises';
+import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
+import { useProgramBuilder } from '@src/hooks/programs/useProgramBuilder';
+import type { Program } from '@src/hooks/programs/usePrograms';
 
 import { ProgramBuilderSessionItem } from './ProgramBuilderSessionItem';
 import { ProgramBuilderSessionLibraryItem } from './ProgramBuilderSessionLibraryItem';
@@ -35,12 +41,6 @@ import type {
   SessionTemplate,
 } from './programBuilderTypes';
 import { parseSeriesCount } from './programBuilderUtils';
-
-import type { Exercise } from '@hooks/programs/useExercises';
-import type { User } from '@src/hooks/useUsers';
-import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
-import { useProgramBuilder } from '@src/hooks/programs/useProgramBuilder';
-import type { Program } from '@src/hooks/programs/usePrograms';
 
 interface ProgramBuilderPanelProps {
   builderCopy: BuilderCopy;
@@ -66,6 +66,7 @@ export function ProgramBuilderPanel({
     sessions,
     selectedAthlete,
     users,
+    athleteInputValue,
     sessionSearch,
     exerciseSearch,
     exerciseCategory,
@@ -91,7 +92,7 @@ export function ProgramBuilderPanel({
     setExerciseSearch,
     setExerciseCategory,
     setExerciseType,
-    setUsersQ,
+    handleAthleteInputChange,
     handleSelectAthlete,
     handleFormChange,
     updateProgramName,
@@ -893,15 +894,16 @@ export function ProgramBuilderPanel({
                           {builderCopy.config.title}
                         </Typography>
 
-                        <Autocomplete<User>
+                        <Autocomplete<AthleteSearchOption>
                           options={users}
                           value={selectedAthlete}
                           disabled={usersLoading}
                           onChange={handleSelectAthlete}
                           isOptionEqualToValue={(option, value) => option.id === value.id}
                           getOptionLabel={userLabel}
-                          noOptionsText={t('common.field_incorrect')}
-                          onInputChange={(_event, value) => setUsersQ(value)}
+                          noOptionsText={t('programs-coatch.list.clone_dialog.no_results')}
+                          inputValue={athleteInputValue}
+                          onInputChange={handleAthleteInputChange}
                           renderInput={(params) => (
                             <TextField
                               {...params}

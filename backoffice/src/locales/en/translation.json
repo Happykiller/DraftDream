@@ -592,6 +592,19 @@
       "PASSWORD": "Must contain at least 6 characters."
     }
   },
+  "tasks": {
+    "title": "Tasks",
+    "moderation": {
+      "title": "Moderation queue",
+      "subtitle": "Review tasks waiting for validation before they go live.",
+      "empty": "No tasks to moderate right now.",
+      "status": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      }
+    }
+  },
   "prospects": {
     "title": "Prospects",
     "tabs": {

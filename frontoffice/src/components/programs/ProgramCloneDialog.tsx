@@ -6,27 +6,16 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import ContentCopy from '@mui/icons-material/ContentCopy';
 
-import inversify from '@src/commons/inversify';
-import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
+import { ResponsiveButton } from '@components/common/ResponsiveButton';
+import {
+  formatAthleteLabel,
+  type AthleteSearchOption,
+  useCoachAthleteSearch,
+} from '@hooks/athletes/useCoachAthleteSearch';
 import type { Program, ProgramUser } from '@hooks/programs/usePrograms';
-import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 import { StandardDialog } from '@components/common/StandardDialog';
-
-interface AthleteOption {
-  id: string;
-  email: string;
-  first_name?: string | null;
-  last_name?: string | null;
-}
-
-interface AthleteListPayload {
-  coachAthlete_list: {
-    items: Array<{ athlete: AthleteOption }>;
-  };
-}
 
 type CloneAction = 'copy' | 'copy_and_open';
 
@@ -41,30 +30,13 @@ export interface ProgramCloneDialogProps {
   onSubmittingChange?: (submitting: boolean) => void;
 }
 
-const ATHLETE_CACHE = new Map<string, AthleteOption[]>();
-
-const LIST_COACH_ATHLETES_QUERY = `
-  query ListCoachAthletes($input: ListCoachAthletesInput) {
-    coachAthlete_list(input: $input) {
-      items {
-        athlete {
-          id
-          email
-          first_name
-          last_name
-        }
-      }
-    }
-  }
-`;
-
-function formatAthleteLabel({ first_name, last_name, email }: AthleteOption | ProgramUser): string {
-  const displayName = [first_name, last_name]
-    .filter((value): value is string => Boolean(value && value.trim()))
-    .join(' ')
-    .trim();
-
-  return displayName || email;
+function getProgramAthleteLabel(athlete: AthleteSearchOption | ProgramUser): string {
+  return formatAthleteLabel({
+    id: athlete.id,
+    email: athlete.email,
+    first_name: athlete.first_name ?? null,
+    last_name: athlete.last_name ?? null,
+  });
 }
 
 export function ProgramCloneDialog({
@@ -75,20 +47,21 @@ export function ProgramCloneDialog({
   onSubmittingChange,
 }: ProgramCloneDialogProps): React.JSX.Element {
   const { t } = useTranslation();
-  const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
   const [cloneLabel, setCloneLabel] = React.useState('');
   const [cloneError, setCloneError] = React.useState<string | null>(null);
   const [cloneLabelError, setCloneLabelError] = React.useState<string | null>(null);
   const [cloneLoading, setCloneLoading] = React.useState(false);
   const [activeCloneAction, setActiveCloneAction] = React.useState<CloneAction | null>(null);
-  const [selectedAthlete, setSelectedAthlete] = React.useState<AthleteOption | null>(null);
+  const [selectedAthlete, setSelectedAthlete] = React.useState<AthleteSearchOption | null>(null);
   const [athleteInputValue, setAthleteInputValue] = React.useState('');
-  const [rawAthleteOptions, setRawAthleteOptions] = React.useState<AthleteOption[]>([]);
-  const [athletesLoading, setAthletesLoading] = React.useState(false);
-  const [athleteQuery, setAthleteQuery] = React.useState('');
-  const debouncedAthleteQuery = useDebouncedValue(athleteQuery, 300);
+  const {
+    options: rawAthleteOptions,
+    loading: athletesLoading,
+    setQuery: setAthleteQuery,
+    reset: resetAthleteSearch,
+  } = useCoachAthleteSearch({ enabled: open });
 
-  const programAthleteOption = React.useMemo<AthleteOption | null>(() => {
+  const programAthleteOption = React.useMemo<AthleteSearchOption | null>(() => {
     if (!program.athlete) {
       return null;
     }
@@ -102,7 +75,7 @@ export function ProgramCloneDialog({
   }, [program.athlete]);
 
   const mergedAthleteOptions = React.useMemo(() => {
-    const dedup = new Map<string, AthleteOption>();
+    const dedup = new Map<string, AthleteSearchOption>();
 
     rawAthleteOptions.forEach((option) => {
       dedup.set(option.id, option);
@@ -119,46 +92,6 @@ export function ProgramCloneDialog({
     return Array.from(dedup.values());
   }, [programAthleteOption, rawAthleteOptions, selectedAthlete]);
 
-  const loadAthletes = React.useCallback(
-    async (search: string) => {
-      const key = search.trim().toLowerCase();
-
-      if (ATHLETE_CACHE.has(key)) {
-        setRawAthleteOptions(ATHLETE_CACHE.get(key) ?? []);
-        setAthletesLoading(false);
-        return;
-      }
-
-      setAthletesLoading(true);
-      try {
-        const { data, errors } = await gql.send<AthleteListPayload>({
-          query: LIST_COACH_ATHLETES_QUERY,
-          operationName: 'ListCoachAthletes',
-          variables: {
-            input: {
-              page: 1,
-              limit: 25,
-              q: search.trim() || undefined,
-            },
-          },
-        });
-
-        if (errors?.length) {
-          throw new Error(errors[0].message);
-        }
-
-        const items = data?.coachAthlete_list.items.map(item => item.athlete) ?? [];
-        ATHLETE_CACHE.set(key, items);
-        setRawAthleteOptions(items);
-      } catch (_error) {
-        setRawAthleteOptions([]);
-      } finally {
-        setAthletesLoading(false);
-      }
-    },
-    [gql],
-  );
-
   React.useEffect(() => {
     if (!open) {
       setCloneLoading(false);
@@ -168,8 +101,7 @@ export function ProgramCloneDialog({
       setSelectedAthlete(null);
       setAthleteInputValue('');
       setAthleteQuery('');
-      setRawAthleteOptions([]);
-      setAthletesLoading(false);
+      resetAthleteSearch();
       return;
     }
 
@@ -181,17 +113,9 @@ export function ProgramCloneDialog({
     setCloneError(null);
     setCloneLabelError(null);
     setSelectedAthlete(programAthleteOption);
-    setAthleteInputValue(programAthleteOption ? formatAthleteLabel(programAthleteOption) : '');
+    setAthleteInputValue(programAthleteOption ? getProgramAthleteLabel(programAthleteOption) : '');
     setAthleteQuery('');
-  }, [open, programAthleteOption, program.label, t]);
-
-  React.useEffect(() => {
-    if (!open) {
-      return;
-    }
-
-    void loadAthletes(debouncedAthleteQuery);
-  }, [debouncedAthleteQuery, loadAthletes, open]);
+  }, [open, programAthleteOption, program.label, resetAthleteSearch, setAthleteQuery, t]);
 
   React.useEffect(() => {
     onSubmittingChange?.(cloneLoading);
@@ -246,14 +170,14 @@ export function ProgramCloneDialog({
     [cloneLoading, onClone, program, selectedAthlete, cloneLabel, t, onClose],
   );
 
-  const handleAthleteSelection = React.useCallback((_: unknown, option: AthleteOption | null) => {
+  const handleAthleteSelection = React.useCallback((_: unknown, option: AthleteSearchOption | null) => {
     setSelectedAthlete(option);
   }, []);
 
   const handleAthleteInputChange = React.useCallback((_: unknown, value: string) => {
     setAthleteInputValue(value);
     setAthleteQuery(value);
-  }, []);
+  }, [setAthleteQuery]);
 
   const cloneDialogTitle = t('programs-coatch.list.clone_dialog.title');
   const cloneDialogDescription = t('programs-coatch.list.clone_dialog.description');

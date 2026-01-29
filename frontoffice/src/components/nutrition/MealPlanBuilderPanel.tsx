@@ -21,15 +21,13 @@ import {
 } from '@mui/material';
 import { Add, Edit, Replay, Search } from '@mui/icons-material';
 
+import type { AthleteSearchOption } from '@hooks/athletes/useCoachAthleteSearch';
 import type { MealDay } from '@hooks/nutrition/useMealDays';
 import type { Meal } from '@hooks/nutrition/useMeals';
 import type { MealType } from '@hooks/nutrition/useMealTypes';
 import type { MealPlan } from '@hooks/nutrition/useMealPlans';
-
 import { useMealPlanBuilder } from '@hooks/nutrition/useMealPlanBuilder';
-
 import { session } from '@stores/session';
-
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
 
 import type {
@@ -46,8 +44,6 @@ import { MealPlanBuilderPanelLibraryDay } from './MealPlanBuilderPanelLibraryDay
 import { MealPlanBuilderPanelLibraryMeal } from './MealPlanBuilderPanelLibraryMeal';
 import { MealPlanBuilderSaveDayDialog } from './MealPlanBuilderSaveDayDialog';
 
-import type { User } from '@src/hooks/useUsers';
-
 interface MealPlanBuilderPanelProps {
   builderCopy: MealPlanBuilderCopy;
   onCancel: () => void;
@@ -56,7 +52,10 @@ interface MealPlanBuilderPanelProps {
   mealPlan?: MealPlan;
 }
 
-function mergeUsers(users: User[], selected: User | null): User[] {
+function mergeUsers(
+  users: AthleteSearchOption[],
+  selected: AthleteSearchOption | null,
+): AthleteSearchOption[] {
   if (!selected) {
     return users;
   }
@@ -83,8 +82,9 @@ export function MealPlanBuilderPanel({
     form,
     selectedAthlete,
     users,
+    athleteInputValue,
     usersLoading,
-    setUsersQ,
+    handleAthleteInputChange,
     daySearch,
     setDaySearch,
     mealSearch,
@@ -426,13 +426,6 @@ export function MealPlanBuilderPanel({
     [setMealSearch],
   );
 
-  const handleUsersSearchChange = React.useCallback(
-    (_event: React.SyntheticEvent, value: string) => {
-      setUsersQ(value);
-    },
-    [setUsersQ],
-  );
-
   const [mealMenuAnchor, setMealMenuAnchor] = React.useState<{
     meal: Meal;
     anchor: HTMLElement;
@@ -667,14 +660,18 @@ export function MealPlanBuilderPanel({
                         <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                           {builderCopy.config.title}
                         </Typography>
-                        <Autocomplete<User>
+                        <Autocomplete<AthleteSearchOption>
                           options={userOptions}
                           loading={usersLoading}
                           value={selectedAthlete}
                           onChange={handleSelectAthlete}
-                          onInputChange={handleUsersSearchChange}
+                          inputValue={athleteInputValue}
+                          onInputChange={handleAthleteInputChange}
                           isOptionEqualToValue={(option, value) => option.id === value.id}
-                          getOptionLabel={(option) => `${option.first_name ?? ''} ${option.last_name ?? ''}`.trim() || option.email}
+                          getOptionLabel={(option) =>
+                            `${option.first_name ?? ''} ${option.last_name ?? ''}`.trim() || option.email
+                          }
+                          noOptionsText={t('nutrition-coach.list.clone_dialog.no_results')}
                           renderInput={(params) => (
                             <TextField
                               {...params}
