@@ -7,6 +7,7 @@ import CircleIcon from '@mui/icons-material/Circle';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import RestaurantMenuOutlinedIcon from '@mui/icons-material/RestaurantMenuOutlined';
 import { Box, CircularProgress, Divider, IconButton, Stack, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 import { GlassCard } from '@components/common/GlassCard';
 import { TextWithTooltip } from '@components/common/TextWithTooltip';
@@ -17,6 +18,7 @@ import { useAsyncTask } from '@hooks/useAsyncTask';
 export function AthleteNutritionWidget(): React.JSX.Element {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const theme = useTheme();
     const { create: createRecord, list: listRecords } = useMealRecords();
     const { execute: runTask } = useAsyncTask();
 
@@ -119,7 +121,10 @@ export function AthleteNutritionWidget(): React.JSX.Element {
     const isLoading = loading || recordsLoading;
 
     return (
-        <GlassCard onClick={() => navigate('/nutrition-athlete')}>
+        <GlassCard
+            onClick={() => navigate('/nutrition-athlete')}
+            accentColor={theme.palette.success.main}
+        >
             <Stack spacing={2}>
                 {/* General information */}
                 <Stack direction="row" alignItems="center" spacing={2}>

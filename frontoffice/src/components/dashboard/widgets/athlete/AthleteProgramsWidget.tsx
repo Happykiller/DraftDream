@@ -7,6 +7,7 @@ import CircleIcon from '@mui/icons-material/Circle';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import FitnessCenterOutlinedIcon from '@mui/icons-material/FitnessCenterOutlined';
 import { Box, CircularProgress, Divider, IconButton, Stack, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 import { GlassCard } from '@components/common/GlassCard';
 import { usePrograms } from '@hooks/programs/usePrograms';
@@ -17,6 +18,7 @@ import { useAsyncTask } from '@hooks/useAsyncTask';
 export function AthleteProgramsWidget(): React.JSX.Element {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const theme = useTheme();
     const { create: createRecord, list: listRecords } = useProgramRecords();
     const { execute: runTask } = useAsyncTask();
 
@@ -74,7 +76,10 @@ export function AthleteProgramsWidget(): React.JSX.Element {
     const loading = programsLoading || recordsLoading;
 
     return (
-        <GlassCard onClick={() => navigate('/programs-athlete')}>
+        <GlassCard
+            onClick={() => navigate('/programs-athlete')}
+            accentColor={theme.palette.warning.main}
+        >
             <Stack spacing={2}>
                 {/* Header */}
                 <Stack direction="row" alignItems="center" spacing={2}>

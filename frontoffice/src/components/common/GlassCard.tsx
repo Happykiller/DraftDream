@@ -1,12 +1,14 @@
 import React from 'react';
-import { Paper, useTheme } from '@mui/material';
+import { Paper } from '@mui/material';
 import type { SxProps, Theme, PaperProps } from '@mui/material';
+import { alpha, useTheme } from '@mui/material/styles';
 
 interface GlassCardProps extends PaperProps {
     children: React.ReactNode;
     colSpan?: 1 | 2 | 3 | 4;
     rowSpan?: 1 | 2 | 3 | 4;
     className?: string;
+    accentColor?: string;
     sx?: SxProps<Theme>;
     onClick?: React.MouseEventHandler<HTMLDivElement>;
 }
@@ -17,10 +19,12 @@ export const GlassCard: React.FC<GlassCardProps> = ({
     rowSpan = 1,
     className,
     sx,
+    accentColor,
     onClick,
     ...other
 }) => {
     const theme = useTheme();
+    const accent = accentColor ?? theme.palette.primary.main;
 
     return (
         <Paper
@@ -45,10 +49,10 @@ export const GlassCard: React.FC<GlassCardProps> = ({
                     },
                 }),
                 background: theme.palette.mode === 'dark'
-                    ? `linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%)`
-                    : theme.palette.background.paper,
+                    ? `linear-gradient(135deg, ${alpha(accent, 0.18)} 0%, ${alpha(accent, 0.04)} 100%)`
+                    : `linear-gradient(135deg, ${alpha(accent, 0.12)} 0%, ${alpha(accent, 0.02)} 100%)`,
                 backdropFilter: 'blur(20px)',
-                border: `1px solid ${theme.palette.divider}`,
+                border: `1px solid ${alpha(accent, theme.palette.mode === 'dark' ? 0.4 : 0.3)}`,
                 ...sx
             }}
             {...other}

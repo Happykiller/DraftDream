@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Stack, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import SportsGymnasticsOutlinedIcon from '@mui/icons-material/SportsGymnasticsOutlined';
 
 import { UserType } from '@src/commons/enums';
@@ -12,6 +13,7 @@ import { GlassCard } from '../../../common/GlassCard';
 export function CoachAthletesWidget(): React.JSX.Element | null {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const theme = useTheme();
     const coachId = session((state) => state.id);
     const role = session((state) => state.role);
     const canSeeLeadData = role === UserType.Admin || role === UserType.Coach;
@@ -28,7 +30,10 @@ export function CoachAthletesWidget(): React.JSX.Element | null {
     }
 
     return (
-        <GlassCard onClick={() => navigate('/athletes')}>
+        <GlassCard
+            onClick={() => navigate('/athletes')}
+            accentColor={theme.palette.primary.main}
+        >
             <Stack direction="row" alignItems="center" spacing={2}>
                 <SportsGymnasticsOutlinedIcon sx={{ color: 'primary.main', fontSize: 40 }} />
                 <Stack>
