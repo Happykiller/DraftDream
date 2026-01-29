@@ -32,8 +32,8 @@ export function Home(): React.JSX.Element {
       {isCoachView ? (
         <Stack spacing={3}>
           {/* General information */}
-          <CoachTasksNotesCard />
           <CoachDashboardSummaryCards />
+          <CoachTasksNotesCard />
         </Stack>
       ) : (
         <AthleteDashboardSummaryCards />

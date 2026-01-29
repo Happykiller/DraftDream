@@ -32,10 +32,10 @@ export function CoachClientsWidget(): React.JSX.Element | null {
     return (
         <GlassCard
             onClick={() => navigate('/prospects')}
-            accentColor={theme.palette.info.main}
+            accentColor={theme.palette.error.main}
         >
             <Stack direction="row" alignItems="center" spacing={2}>
-                <PersonOutlineOutlinedIcon sx={{ color: 'info.main', fontSize: 40 }} />
+                <PersonOutlineOutlinedIcon sx={{ color: 'error.main', fontSize: 40 }} />
                 <Stack>
                     <Typography variant="subtitle2" color="text.secondary" noWrap>
                         {t('dashboard.summary.clients')}

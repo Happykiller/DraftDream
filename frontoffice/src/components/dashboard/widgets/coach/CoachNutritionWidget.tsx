@@ -22,10 +22,10 @@ export function CoachNutritionWidget(): React.JSX.Element {
     return (
         <GlassCard
             onClick={() => navigate('/nutrition-coach')}
-            accentColor={theme.palette.success.main}
+            accentColor={theme.palette.warning.main}
         >
             <Stack direction="row" alignItems="center" spacing={2}>
-                <RestaurantMenuOutlinedIcon sx={{ color: 'success.main', fontSize: 40 }} />
+                <RestaurantMenuOutlinedIcon sx={{ color: 'warning.main', fontSize: 40 }} />
                 <Stack>
                     <Typography variant="subtitle2" color="text.secondary" noWrap>
                         {t('dashboard.summary.nutrition')}

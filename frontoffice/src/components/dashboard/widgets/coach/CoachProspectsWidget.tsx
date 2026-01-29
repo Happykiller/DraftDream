@@ -43,10 +43,10 @@ export function CoachProspectsWidget(): React.JSX.Element | null {
     return (
         <GlassCard
             onClick={() => navigate('/prospects')}
-            accentColor={theme.palette.secondary.main}
+            accentColor={theme.palette.error.main}
         >
             <Stack direction="row" alignItems="center" spacing={2}>
-                <QueryStatsOutlinedIcon sx={{ color: 'secondary.main', fontSize: 40 }} />
+                <QueryStatsOutlinedIcon sx={{ color: 'error.main', fontSize: 40 }} />
                 <Stack>
                     <Typography variant="subtitle2" color="text.secondary" noWrap>
                         {t('dashboard.summary.prospects')}

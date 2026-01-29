@@ -22,10 +22,10 @@ export function CoachProgramsWidget(): React.JSX.Element {
     return (
         <GlassCard
             onClick={() => navigate('/programs-coach')}
-            accentColor={theme.palette.warning.main}
+            accentColor={theme.palette.success.main}
         >
             <Stack direction="row" alignItems="center" spacing={2}>
-                <FitnessCenterOutlinedIcon sx={{ color: 'warning.main', fontSize: 40 }} />
+                <FitnessCenterOutlinedIcon sx={{ color: 'success.main', fontSize: 40 }} />
                 <Stack>
                     <Typography variant="subtitle2" color="text.secondary" noWrap>
                         {t('dashboard.summary.programs')}
