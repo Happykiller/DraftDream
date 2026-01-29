@@ -595,14 +595,29 @@
   "tasks": {
     "title": "Tasks",
     "moderation": {
-      "title": "Moderation queue",
-      "subtitle": "Review tasks waiting for validation before they go live.",
-      "empty": "No tasks to moderate right now.",
-      "status": {
-        "pending": "Pending",
-        "approved": "Approved",
-        "rejected": "Rejected"
+      "title": "Coach tasks",
+      "subtitle": "Review tasks created by coaches and track their completion."
+    },
+    "empty": "No tasks are available yet.",
+    "status": {
+      "todo": "To do",
+      "done": "Done"
+    },
+    "priority": {
+      "low": "Low",
+      "middle": "Medium",
+      "high": "High"
+    },
+    "table": {
+      "columns": {
+        "label": "Task",
+        "priority": "Priority",
+        "status": "Status",
+        "day": "Day"
       }
+    },
+    "notifications": {
+      "load_failure": "Unable to load tasks."
     }
   },
   "prospects": {

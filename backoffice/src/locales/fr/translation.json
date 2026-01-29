@@ -596,14 +596,29 @@
   "tasks": {
     "title": "Tâches",
     "moderation": {
-      "title": "File de modération",
-      "subtitle": "Validez les tâches en attente avant leur publication.",
-      "empty": "Aucune tâche à modérer pour le moment.",
-      "status": {
-        "pending": "En attente",
-        "approved": "Approuvée",
-        "rejected": "Refusée"
+      "title": "Tâches des coachs",
+      "subtitle": "Consultez les tâches créées par les coachs et leur avancement."
+    },
+    "empty": "Aucune tâche disponible pour le moment.",
+    "status": {
+      "todo": "À faire",
+      "done": "Terminée"
+    },
+    "priority": {
+      "low": "Faible",
+      "middle": "Moyenne",
+      "high": "Élevée"
+    },
+    "table": {
+      "columns": {
+        "label": "Tâche",
+        "priority": "Priorité",
+        "status": "Statut",
+        "day": "Jour"
       }
+    },
+    "notifications": {
+      "load_failure": "Impossible de charger les tâches."
     }
   },
   "prospects": {

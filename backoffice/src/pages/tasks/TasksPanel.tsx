@@ -2,13 +2,15 @@ import * as React from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import { ModerationTasksTable, type ModerationTask } from '@components/tasks/ModerationTasksTable';
-
-const EMPTY_TASKS: ModerationTask[] = [];
+import { ModerationTasksTable } from '@components/tasks/ModerationTasksTable';
+import { useTabParams } from '@hooks/useTabParams';
+import { useTasks } from '@hooks/useTasks';
 
 /** Display moderation tasks list and helper copy. */
 export function TasksPanel(): React.JSX.Element {
   const { t } = useTranslation();
+  const { page, limit, setPage, setLimit } = useTabParams('tasks', { page: 1, limit: 25 });
+  const { items, total, loading } = useTasks({ page, limit });
 
   return (
     <Box>
@@ -20,7 +22,15 @@ export function TasksPanel(): React.JSX.Element {
             {t('tasks.moderation.subtitle')}
           </Typography>
         </Stack>
-        <ModerationTasksTable rows={EMPTY_TASKS} loading={false} />
+        <ModerationTasksTable
+          rows={items}
+          total={total}
+          page={page}
+          limit={limit}
+          loading={loading}
+          onPageChange={setPage}
+          onLimitChange={setLimit}
+        />
       </Stack>
     </Box>
   );
