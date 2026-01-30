@@ -191,6 +191,7 @@ export function TaskList(): React.JSX.Element {
                     <ResponsiveButton
                         variant="outlined"
                         color="primary"
+                        size="small"
                         label={t('dashboard.tasksNotes.actions.newTask')}
                         onClick={() => setShowForm(true)}
                         sx={{ alignSelf: 'flex-start' }}

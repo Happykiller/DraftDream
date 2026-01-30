@@ -63,7 +63,7 @@ export function TaskCard({ task, isPending, onStatusToggle, onDelete }: TaskCard
             sx={{ borderRadius: 3, p: 2, borderColor: 'divider' }}
         >
             <Stack spacing={1.5}>
-                <Stack direction="row" alignItems="center" spacing={0.5}>
+                <Stack direction="row" alignItems="center" spacing={0.5} sx={{ width: '600px' }}>
                     <DragIndicatorIcon sx={{ color: 'text.disabled', mt: 0.5 }} fontSize="small" />
                     <Checkbox
                         checked={isCompleted}

@@ -24,7 +24,6 @@ export const GlassCard: React.FC<GlassCardProps> = ({
     ...other
 }) => {
     const theme = useTheme();
-    const accent = accentColor ?? theme.palette.primary.main;
 
     return (
         <Paper
@@ -48,11 +47,13 @@ export const GlassCard: React.FC<GlassCardProps> = ({
                         boxShadow: theme.shadows[8],
                     },
                 }),
-                background: theme.palette.mode === 'dark'
-                    ? `linear-gradient(135deg, ${alpha(accent, 0.18)} 0%, ${alpha(accent, 0.04)} 100%)`
-                    : `linear-gradient(135deg, ${alpha(accent, 0.12)} 0%, ${alpha(accent, 0.02)} 100%)`,
+                ...(accentColor && {
+                    background: theme.palette.mode === 'dark'
+                        ? `linear-gradient(135deg, ${alpha(accentColor, 0.18)} 0%, ${alpha(accentColor, 0.04)} 100%)`
+                        : `linear-gradient(135deg, ${alpha(accentColor, 0.12)} 0%, ${alpha(accentColor, 0.02)} 100%)`,
+                    border: `1px solid ${alpha(accentColor, theme.palette.mode === 'dark' ? 0.4 : 0.3)}`,
+                }),
                 backdropFilter: 'blur(20px)',
-                border: `1px solid ${alpha(accent, theme.palette.mode === 'dark' ? 0.4 : 0.3)}`,
                 ...sx
             }}
             {...other}

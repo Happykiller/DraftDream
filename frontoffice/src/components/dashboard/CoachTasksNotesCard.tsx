@@ -8,17 +8,15 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
 
 import { GlassCard } from '@components/common/GlassCard';
 import { TaskList } from './task/TaskList';
 
 export function CoachTasksNotesCard(): React.JSX.Element {
   const { t } = useTranslation();
-  const theme = useTheme();
 
   return (
-    <GlassCard sx={{ width: '100%' }} accentColor={theme.palette.warning.main}>
+    <GlassCard sx={{ width: '100%' }}>
       {/* General information */}
       <Stack spacing={3}>
         <Stack direction="row" alignItems="center" spacing={1.5}>
