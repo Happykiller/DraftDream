@@ -94,7 +94,8 @@ describe('UpdateTaskUsecase', () => {
       id: task.id,
       label: 'Updated',
       session: { userId: 'other-user', role: Role.COACH },
-    })).rejects.toThrow(ERRORS.UPDATE_TASK_USECASE);
+    })).rejects.toThrow(ERRORS.UPDATE_TASK_FORBIDDEN);
     expect(asMock(loggerMock.error).mock.calls[0][0]).toContain('UpdateTaskUsecase#execute');
   });
+
 });
