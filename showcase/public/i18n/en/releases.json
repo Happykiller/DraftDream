@@ -1,6 +1,37 @@
 {
   "releases": [
     {
+      "version": "0.14.0",
+      "title": "Client Relations & Productivity",
+      "date": "2026-01-31",
+      "global": [
+        "Commercial Memory: centralization of key information (Private Notes).",
+        "Task Assistant: Personal To-Do List integrated into the dashboard.",
+        "Creation Accelerator: instant cloning of Sport Programs and Meal Plans.",
+        "Athlete Experience: visual redesign of cards and optimized navigation."
+      ],
+      "notes": "Version 0.14.0 marks a key milestone in the professionalization of the tool for coaches. The major new feature is the arrival of commercial memory: you can finally centralize all key information about your athletes in one place, complemented by a personal task assistant.",
+      "projects": {
+        "/api": [
+          "'Notes & Tasks' Architecture: new entities to secure private notes and manage tasks.",
+          "Data Security: implementation of 'Soft Delete' (reversible deletion) on sessions.",
+          "Synchronization: automatic update of data schemas."
+        ],
+        "/backoffice": [
+          "Commercial Notes: 'Private Notes' space on each athlete liaison record.",
+          "Task Assistant: new 'Tasks' widget on the dashboard for quick reminders.",
+          "Creation Accelerator: complete duplication (cloning) of Programs and Meal Plans."
+        ],
+        "/frontoffice": [
+          "Visual Experience: technical integration of new program cards (ProgramCard).",
+          "Navigation: optimization of page structure for increased fluidity."
+        ],
+        "/showcase": [
+          "Release notes update with version 0.14.0."
+        ]
+      }
+    },
+    {
       "version": "0.13.0",
       "title": "FitDesk Platform — Dashboard & Visualization",
       "date": "2026-01-21",

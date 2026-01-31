@@ -78,12 +78,12 @@ export function AthleteProgramsWidget(): React.JSX.Element {
     return (
         <GlassCard
             onClick={() => navigate('/programs-athlete')}
-            accentColor={theme.palette.warning.main}
+            accentColor={theme.palette.success.main}
         >
             <Stack spacing={2}>
                 {/* Header */}
                 <Stack direction="row" alignItems="center" spacing={2}>
-                    <FitnessCenterOutlinedIcon sx={{ color: 'warning.main', fontSize: 40 }} />
+                    <FitnessCenterOutlinedIcon sx={{ color: 'success.main', fontSize: 40 }} />
                     <Typography variant="h6" fontWeight="bold" color="text.secondary">
                         {t('dashboard.summary.programs')}
                     </Typography>
@@ -91,7 +91,7 @@ export function AthleteProgramsWidget(): React.JSX.Element {
 
                 {loading ? (
                     <Box display="flex" justifyContent="center" p={2}>
-                        <CircularProgress size={24} color="warning" />
+                        <CircularProgress size={24} color="success" />
                     </Box>
                 ) : programs.length === 0 ? (
                     <Typography variant="body2" color="text.secondary" align="center">
@@ -104,7 +104,6 @@ export function AthleteProgramsWidget(): React.JSX.Element {
                                 {/* Program Label */}
                                 <TextWithTooltip
                                     tooltipTitle={program.label}
-                                    maxLines={1}
                                     variant="subtitle1"
                                     fontWeight="bold"
                                 />
@@ -140,7 +139,6 @@ export function AthleteProgramsWidget(): React.JSX.Element {
                                                     <CircleIcon sx={{ fontSize: 6, color: 'text.disabled' }} />
                                                     <TextWithTooltip
                                                         tooltipTitle={session.label}
-                                                        maxLines={1}
                                                         variant="body2"
                                                         color="text.secondary"
                                                     />

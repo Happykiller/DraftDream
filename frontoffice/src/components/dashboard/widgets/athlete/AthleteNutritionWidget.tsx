@@ -123,12 +123,12 @@ export function AthleteNutritionWidget(): React.JSX.Element {
     return (
         <GlassCard
             onClick={() => navigate('/nutrition-athlete')}
-            accentColor={theme.palette.success.main}
+            accentColor={theme.palette.warning.main}
         >
             <Stack spacing={2}>
                 {/* General information */}
                 <Stack direction="row" alignItems="center" spacing={2}>
-                    <RestaurantMenuOutlinedIcon sx={{ color: 'success.main', fontSize: 40 }} />
+                    <RestaurantMenuOutlinedIcon sx={{ color: 'warning.main', fontSize: 40 }} />
                     <Typography variant="h6" fontWeight="bold" color="text.secondary">
                         {t('dashboard.summary.nutrition')}
                     </Typography>
@@ -136,7 +136,7 @@ export function AthleteNutritionWidget(): React.JSX.Element {
 
                 {isLoading ? (
                     <Box display="flex" justifyContent="center" p={2}>
-                        <CircularProgress size={24} color="success" />
+                        <CircularProgress size={24} color="warning" />
                     </Box>
                 ) : mealPlans.length === 0 ? (
                     <Typography variant="body2" color="text.secondary" align="center">
@@ -148,7 +148,6 @@ export function AthleteNutritionWidget(): React.JSX.Element {
                             <Stack key={getPlanKey(mealPlan, planIndex)} spacing={1}>
                                 <TextWithTooltip
                                     tooltipTitle={mealPlan.label}
-                                    maxLines={1}
                                     variant="subtitle1"
                                     fontWeight="bold"
                                 />
@@ -164,7 +163,6 @@ export function AthleteNutritionWidget(): React.JSX.Element {
                                                     <CircleIcon sx={{ fontSize: 6, color: 'text.disabled' }} />
                                                     <TextWithTooltip
                                                         tooltipTitle={getDayLabel(day, dayIndex)}
-                                                        maxLines={1}
                                                         variant="body2"
                                                         fontWeight="bold"
                                                         color="text.primary"
@@ -220,7 +218,6 @@ export function AthleteNutritionWidget(): React.JSX.Element {
                                                                     <CircleIcon sx={{ fontSize: 5, color: 'text.disabled' }} />
                                                                     <TextWithTooltip
                                                                         tooltipTitle={getMealLabel(meal, mealIndex)}
-                                                                        maxLines={1}
                                                                         variant="caption"
                                                                         color="text.secondary"
                                                                     />
