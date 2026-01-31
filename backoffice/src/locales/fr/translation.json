@@ -205,6 +205,8 @@
       "total_users_tooltip": "Nombre total d'utilisateurs, en combinant les coachs et les athlètes.",
       "total_prospects": "Prospects",
       "total_prospects_tooltip": "Ensemble des prospects enregistrés dans le pipeline, tous statuts confondus.",
+      "total_tasks": "Tâches",
+      "total_tasks_tooltip": "Nombre total de tâches présentes sur la plateforme.",
       "prospects_todo": "A faire",
       "prospects_todo_tooltip": "Prospects qui nécessitent encore une action de suivi.",
       "view_prospects": "Voir prospects",
