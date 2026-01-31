@@ -77,7 +77,11 @@
     "tasksNotes": {
       "title": "Tasks & Notes",
       "tasks": {
-        "title": "Tasks"
+        "title": "Tasks",
+        "empty": {
+          "title": "No tasks for now.",
+          "subtitle": "Add your first task above."
+        }
       },
       "notes": {
         "title": "Notes",

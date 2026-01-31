@@ -214,9 +214,26 @@ export function TaskList(): React.JSX.Element {
                         />
                     ))}
                     {!items.length && !loading && (
-                        <Typography variant="body2" color="text.secondary">
-                            {t('common.no_content')}
-                        </Typography>
+                        <Paper
+                            variant="outlined"
+                            sx={{
+                                borderRadius: 3,
+                                borderColor: 'divider',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                py: 6,
+                                textAlign: 'center',
+                            }}
+                        >
+                            <Typography variant="subtitle1" fontWeight={600} gutterBottom>
+                                {t('dashboard.tasksNotes.tasks.empty.title')}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                {t('dashboard.tasksNotes.tasks.empty.subtitle')}
+                            </Typography>
+                        </Paper>
                     )}
                 </Stack>
             </Stack>
