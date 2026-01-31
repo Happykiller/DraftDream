@@ -346,7 +346,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
         id: link.id,
         note: noteDraft.trim() ? noteDraft.trim() : null,
       });
-    } catch (caught: unknown) {
+    } catch (_caught: unknown) {
       setNoteError(t('athletes.details.notes_update_failed'));
     } finally {
       setNoteSaving(false);

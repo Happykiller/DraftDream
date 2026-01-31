@@ -132,7 +132,7 @@ export function useTasks(params: UseTasksParams) {
       if (errors?.length) throw new Error(errors[0].message);
       setItems(data?.task_list.items ?? []);
       setTotal(data?.task_list.total ?? 0);
-    } catch (error: unknown) {
+    } catch (_error: unknown) {
       flashError(t('dashboard.tasksNotes.notifications.load_failure'));
     } finally {
       setLoading(false);
