@@ -61,7 +61,7 @@ export function Login(): React.JSX.Element {
   // Submit
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const result: any = await runTask(() =>
+    const result = await runTask(() =>
       auth({
         email: formEntities.email.value,
         password: formEntities.password.value,

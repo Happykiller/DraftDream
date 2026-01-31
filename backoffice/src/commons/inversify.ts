@@ -4,6 +4,7 @@ import { GraphqlServiceFetch } from "@src/services/graphql/graphql.service.fetch
 
 export class Inversify {
   graphqlService: GraphqlServiceFetch;
+  loggerService?: { error: (msg: string) => void };
 
   constructor() {
     // Usecases

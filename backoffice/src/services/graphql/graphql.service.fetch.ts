@@ -21,10 +21,14 @@ export type GraphQLResponse<TData> = {
   errors?: GraphQLErrorItem[];
 };
 
-export class GraphqlServiceFetch {
-  private inversify: { loggerService?: { error: (msg: string) => void } };
+export interface GraphqlServiceDependencies {
+  loggerService?: { error: (msg: string) => void };
+}
 
-  constructor(inversify: any) {
+export class GraphqlServiceFetch {
+  private inversify: GraphqlServiceDependencies;
+
+  constructor(inversify: GraphqlServiceDependencies) {
     this.inversify = inversify ?? {};
   }
 
@@ -113,19 +117,19 @@ export class GraphqlServiceFetch {
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : String(e);
       this.inversify?.loggerService?.error?.(`[GraphQL] Network error: ${msg}`);
-      return { data: null as any, errors: [{ message: msg }] };
+      return { data: null, errors: [{ message: msg }] };
     }
 
     // HTTP-level 401 first
     if (response.status === 401) {
       this.handleUnauthorized('HTTP 401');
-      return { data: null as any, errors: [{ message: 'UNAUTHORIZED' }] };
+      return { data: null, errors: [{ message: 'UNAUTHORIZED' }] };
     }
 
     // HTTP-level 403 (Forbidden) - often used for expired sessions or invalid permissions
     if (response.status === 403) {
       this.handleUnauthorized('HTTP 403');
-      return { data: null as any, errors: [{ message: 'FORBIDDEN' }] };
+      return { data: null, errors: [{ message: 'FORBIDDEN' }] };
     }
 
     let json: GraphQLResponse<TData>;
@@ -134,18 +138,18 @@ export class GraphqlServiceFetch {
     } catch {
       const msg = `[GraphQL] Invalid JSON (status ${response.status})`;
       this.inversify?.loggerService?.error?.(msg);
-      return { data: null as any, errors: [{ message: msg }] };
+      return { data: null, errors: [{ message: msg }] };
     }
 
     if (this.hasUnauthorizedError(json.errors)) {
       this.handleUnauthorized('GQL errors[].message/code');
-      return { data: null as any, errors: json.errors };
+      return { data: null, errors: json.errors };
     }
 
     if (!response.ok) {
       const msg = `[GraphQL] HTTP ${response.status}`;
       this.inversify?.loggerService?.error?.(msg);
-      return json ?? ({ data: null as any, errors: [{ message: msg }] } as GraphQLResponse<TData>);
+      return json ?? ({ data: null, errors: [{ message: msg }] } as GraphQLResponse<TData>);
     }
 
     return json;

@@ -111,8 +111,9 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
       if (errors?.length) throw new Error(errors[0].message);
       setItems(data?.session_list.items ?? []);
       setTotal(data?.session_list.total ?? 0);
-    } catch (e: any) {
-      flashError(e?.message ?? 'Failed to load sessions');
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'Failed to load sessions';
+      flashError(msg);
     } finally {
       setLoading(false);
     }
@@ -141,8 +142,9 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Session created');
         await load();
-      } catch (e: any) {
-        flashError(e?.message ?? 'Create failed');
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : 'Create failed';
+        flashError(msg);
         throw e;
       }
     },
@@ -169,8 +171,9 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Session updated');
         await load();
-      } catch (e: any) {
-        flashError(e?.message ?? 'Update failed');
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : 'Update failed';
+        flashError(msg);
         throw e;
       }
     },
@@ -190,8 +193,9 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Session deleted');
         await load();
-      } catch (e: any) {
-        flashError(e?.message ?? 'Delete failed');
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : 'Delete failed';
+        flashError(msg);
         throw e;
       }
     },

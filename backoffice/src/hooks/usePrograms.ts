@@ -213,8 +213,9 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
       if (errors?.length) throw new Error(errors[0].message);
       setItems(data?.program_list.items ?? []);
       setTotal(data?.program_list.total ?? 0);
-    } catch (e: any) {
-      flashError(e?.message ?? 'Failed to load programs');
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'Failed to load programs';
+      flashError(msg);
     } finally {
       setLoading(false);
     }
@@ -277,8 +278,9 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Program created');
         await load();
-      } catch (e: any) {
-        flashError(e?.message ?? 'Create failed');
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : 'Create failed';
+        flashError(msg);
         throw e;
       }
     },
@@ -340,8 +342,9 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Program updated');
         await load();
-      } catch (e: any) {
-        flashError(e?.message ?? 'Update failed');
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : 'Update failed';
+        flashError(msg);
         throw e;
       }
     },
@@ -361,8 +364,9 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
         if (errors?.length) throw new Error(errors[0].message);
         flashSuccess('Program deleted');
         await load();
-      } catch (e: any) {
-        flashError(e?.message ?? 'Delete failed');
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : 'Delete failed';
+        flashError(msg);
         throw e;
       }
     },
