@@ -97,6 +97,10 @@
         "description": "Description",
         "description_placeholder": "Ajoutez les détails de la note..."
       },
+      "filters": {
+        "label": "Filtrer les notes",
+        "placeholder": "Rechercher par titre ou description"
+      },
       "actions": {
         "newNote": "+ Nouvelle note",
         "addNote": "Ajouter une note",

@@ -95,6 +95,10 @@
         "description": "Description",
         "description_placeholder": "Add the note details..."
       },
+      "filters": {
+        "label": "Filter notes",
+        "placeholder": "Search by title or description"
+      },
       "actions": {
         "newNote": "+ New note",
         "addNote": "Add note",

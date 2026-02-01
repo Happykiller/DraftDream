@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import {
   Paper,
   Stack,
+  TextField,
   Typography,
 } from '@mui/material';
 
@@ -16,6 +17,7 @@ export function NoteList(): React.JSX.Element {
   const [showForm, setShowForm] = React.useState(false);
   const [pendingNoteId, setPendingNoteId] = React.useState<string | null>(null);
   const [editingNote, setEditingNote] = React.useState<Note | null>(null);
+  const [filterValue, setFilterValue] = React.useState('');
 
   const noteQuery = React.useMemo(
     () => ({
@@ -26,6 +28,17 @@ export function NoteList(): React.JSX.Element {
   );
 
   const { items, loading, create, update, remove } = useNotes(noteQuery);
+
+  const filteredItems = React.useMemo(() => {
+    const normalizedFilter = filterValue.trim().toLowerCase();
+    if (!normalizedFilter) return items;
+
+    return items.filter((note) => {
+      const labelMatch = note.label.toLowerCase().includes(normalizedFilter);
+      const descriptionMatch = note.description.toLowerCase().includes(normalizedFilter);
+      return labelMatch || descriptionMatch;
+    });
+  }, [filterValue, items]);
 
   const handleFormSubmit = async (data: { label: string; description: string }) => {
     if (editingNote) {
@@ -72,18 +85,28 @@ export function NoteList(): React.JSX.Element {
           <Typography variant="subtitle1" fontWeight={600}>
             {t('dashboard.tasksNotes.notes.title')}
           </Typography>
-          <ResponsiveButton
-            variant="outlined"
-            color="primary"
+          <TextField
+            fullWidth
             size="small"
-            label={t('dashboard.tasksNotes.notes.actions.newNote')}
-            onClick={() => {
-              setEditingNote(null);
-              setShowForm(true);
-            }}
-            sx={{ alignSelf: { xs: 'flex-start', sm: 'center' } }}
+            value={filterValue}
+            onChange={(event) => setFilterValue(event.target.value)}
+            label={t('dashboard.tasksNotes.notes.filters.label')}
+            placeholder={t('dashboard.tasksNotes.notes.filters.placeholder')}
+            sx={{ maxWidth: { xs: '100%', sm: 260 } }}
           />
         </Stack>
+
+        <ResponsiveButton
+          variant="outlined"
+          color="primary"
+          size="small"
+          label={t('dashboard.tasksNotes.notes.actions.newNote')}
+          onClick={() => {
+            setEditingNote(null);
+            setShowForm(true);
+          }}
+          sx={{ alignSelf: 'flex-start' }}
+        />
 
         {showForm && (
           <NoteForm
@@ -99,7 +122,7 @@ export function NoteList(): React.JSX.Element {
         )}
 
         <Stack spacing={2}>
-          {items.map((note) => (
+          {filteredItems.map((note) => (
             <NoteCard
               key={note.id}
               note={note}
@@ -108,7 +131,7 @@ export function NoteList(): React.JSX.Element {
               onDelete={handleDelete}
             />
           ))}
-          {!items.length && !loading && (
+          {!filteredItems.length && !loading && (
             <Paper
               variant="outlined"
               sx={{
