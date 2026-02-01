@@ -128,24 +128,20 @@ export function AthleteNotesTab({ athleteId }: AthleteNotesTabProps): React.JSX.
   return (
     <Stack spacing={2} sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3 } }}>
       {/* General information */}
-      <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" gap={2}>
-        <Typography variant="subtitle1" fontWeight={700}>
-          {t('athletes.details.notes_tab.title')}
-        </Typography>
+      <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems="center" gap={2}>
+        <TextField
+          fullWidth
+          size="small"
+          value={searchValue}
+          onChange={handleSearchChange}
+          label={t('athletes.details.notes_tab.search.label')}
+          placeholder={t('athletes.details.notes_tab.search.placeholder')}
+          sx={{ maxWidth: { xs: '100%', sm: 320 }, bgcolor: 'white' }}
+        />
         <Button variant="contained" onClick={() => handleOpenDialog()}>
           {t('athletes.details.notes_tab.actions.new')}
         </Button>
       </Stack>
-
-      <TextField
-        fullWidth
-        size="small"
-        value={searchValue}
-        onChange={handleSearchChange}
-        label={t('athletes.details.notes_tab.search.label')}
-        placeholder={t('athletes.details.notes_tab.search.placeholder')}
-        sx={{ maxWidth: { xs: '100%', sm: 320 } }}
-      />
 
       {filteredItems.length ? (
         <Stack spacing={2}>

@@ -487,12 +487,12 @@ export function AthleteLinkDetails(): React.JSX.Element {
                 >
                   <Tab value="client-info" label={t('athletes.details.client_sheet_title')} />
                   <Tab value="overview" label={t('athletes.details.tabs.overview')} />
+                  <Tab value="notes" label={t('athletes.details.tabs.notes')} />
                   <Tab value="programs" label={t('athletes.details.tabs.programs')} />
                   <Tab value="nutritions" label={t('athletes.details.tabs.nutritions')} />
                   <Tab value="calendar" label={t('athletes.details.tabs.calendar')} />
                   <Tab value="sessions" label={t('athletes.details.tabs.sessions')} />
                   <Tab value="meal-records" label={t('athletes.details.tabs.meal_records')} />
-                  <Tab value="notes" label={t('athletes.details.tabs.notes')} />
                 </Tabs>
 
                 <Divider />
