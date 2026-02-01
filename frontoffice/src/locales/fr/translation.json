@@ -387,6 +387,32 @@
       },
       "notes_update_success": "Notes commerciales mises à jour.",
       "notes_update_failed": "Impossible de mettre à jour les notes commerciales.",
+      "notes_tab": {
+        "title": "Notes",
+        "search": {
+          "label": "Rechercher des notes",
+          "placeholder": "Rechercher par titre ou description"
+        },
+        "empty": {
+          "title": "Aucune note pour le moment",
+          "subtitle": "Créez la première note pour cet athlète."
+        },
+        "dialog": {
+          "create_title": "Ajouter une note",
+          "edit_title": "Modifier la note"
+        },
+        "form": {
+          "label": "Titre",
+          "placeholder": "Ex : Suivi hebdo",
+          "description": "Description",
+          "description_placeholder": "Ajoutez les détails de la note..."
+        },
+        "actions": {
+          "new": "Nouvelle note",
+          "cancel": "Annuler",
+          "save": "Enregistrer"
+        }
+      },
       "loading": "Chargement du lien athlète...",
       "athlete_info": {
         "load_failed": "Impossible de charger les informations de l'athlète"
@@ -483,6 +509,7 @@
         "nutritions": "Nutritions",
         "sessions": "Retour sessions",
         "meal_records": "Retour repas",
+        "notes": "Notes",
         "programs_helper": "Associez vos programmes d'entraînement à cet athlète pour suivre sa progression.",
         "nutritions_helper": "Reliez les plans nutritionnels à cet athlète pour centraliser son suivi alimentaire."
       },

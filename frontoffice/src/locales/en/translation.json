@@ -385,6 +385,32 @@
       },
       "notes_update_success": "Commercial notes updated.",
       "notes_update_failed": "Unable to update commercial notes.",
+      "notes_tab": {
+        "title": "Notes",
+        "search": {
+          "label": "Search notes",
+          "placeholder": "Search by title or description"
+        },
+        "empty": {
+          "title": "No notes yet",
+          "subtitle": "Create the first note for this athlete."
+        },
+        "dialog": {
+          "create_title": "Add a note",
+          "edit_title": "Edit note"
+        },
+        "form": {
+          "label": "Title",
+          "placeholder": "Ex: Weekly follow-up",
+          "description": "Description",
+          "description_placeholder": "Add the note details..."
+        },
+        "actions": {
+          "new": "New note",
+          "cancel": "Cancel",
+          "save": "Save"
+        }
+      },
       "loading": "Loading athlete link...",
       "athlete_info": {
         "load_failed": "Unable to load the athlete's information"
@@ -481,6 +507,7 @@
         "nutritions": "Nutritions",
         "sessions": "Session feedback",
         "meal_records": "Meal feedback",
+        "notes": "Notes",
         "programs_helper": "Attach training programs to this athlete to track their progress.",
         "nutritions_helper": "Link nutrition plans to centralize the athlete's dietary follow-up."
       },

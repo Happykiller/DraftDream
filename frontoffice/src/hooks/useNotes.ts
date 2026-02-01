@@ -76,6 +76,8 @@ const DELETE_MUTATION = `
 export interface UseNotesParams {
   page: number;
   limit: number;
+  athleteId?: string | null;
+  enabled?: boolean;
 }
 
 export interface NoteCreateInput {
@@ -91,10 +93,11 @@ export interface NoteUpdateInput {
   athleteId?: string | null;
 }
 
-function buildListInput({ page, limit }: UseNotesParams) {
+function buildListInput({ page, limit, athleteId }: UseNotesParams) {
   return {
     page,
     limit,
+    athleteId,
   };
 }
 
@@ -107,8 +110,15 @@ export function useNotes(params: UseNotesParams) {
   const [items, setItems] = React.useState<Note[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
+  const isEnabled = params.enabled ?? true;
 
   const load = React.useCallback(async () => {
+    if (!isEnabled) {
+      setItems([]);
+      setTotal(0);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     try {
       const { data, errors } = await execute(() =>
@@ -126,7 +136,7 @@ export function useNotes(params: UseNotesParams) {
     } finally {
       setLoading(false);
     }
-  }, [execute, flashError, gql, params, t]);
+  }, [execute, flashError, gql, isEnabled, params, t]);
 
   React.useEffect(() => {
     void load();
