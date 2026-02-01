@@ -139,7 +139,7 @@ export function MealRecordPreviewGrid({
                       <Tooltip title={t('athletes.details.meal_records.fields.comment')}>
                         <RateReview color="action" fontSize="small" sx={{ mt: 0.2 }} />
                       </Tooltip>
-                      <TextWithTooltip tooltipTitle={comment} variant="body2" maxLines={2} />
+                      <TextWithTooltip tooltipTitle={comment} variant="body2" />
                     </Stack>
                   </Stack>
                 </Stack>
