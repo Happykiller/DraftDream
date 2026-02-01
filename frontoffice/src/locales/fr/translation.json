@@ -85,10 +85,36 @@
           "subtitle": "Ajoutez votre première tâche ci-dessus."
         }
       },
-      "notes": {
-        "title": "Notes",
-        "placeholder": "Module de notes à venir."
+    "notes": {
+      "title": "Notes",
+      "empty": {
+        "title": "Aucune note pour le moment.",
+        "subtitle": "Ajoutez vos rappels et suivis clés ici."
       },
+      "form": {
+        "label": "Titre",
+        "placeholder": "Ex : Suivi hebdo avec Sam",
+        "description": "Description",
+        "description_placeholder": "Ajoutez les détails de la note..."
+      },
+      "actions": {
+        "newNote": "+ Nouvelle note",
+        "addNote": "Ajouter une note",
+        "save": "Enregistrer",
+        "cancel": "Annuler",
+        "edit": "Modifier",
+        "delete": "Supprimer"
+      },
+      "notifications": {
+        "load_failure": "Impossible de charger les notes.",
+        "create_success": "Note créée.",
+        "create_failure": "Impossible de créer la note.",
+        "update_success": "Note mise à jour.",
+        "update_failure": "Impossible de mettre à jour la note.",
+        "delete_success": "Note supprimée.",
+        "delete_failure": "Impossible de supprimer la note."
+      }
+    },
       "filters": {
         "all": "Toutes",
         "open": "Ouvertes",

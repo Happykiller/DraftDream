@@ -83,10 +83,36 @@
           "subtitle": "Add your first task above."
         }
       },
-      "notes": {
-        "title": "Notes",
-        "placeholder": "Notes module coming soon."
+    "notes": {
+      "title": "Notes",
+      "empty": {
+        "title": "No notes yet.",
+        "subtitle": "Capture key follow-ups and reminders here."
       },
+      "form": {
+        "label": "Title",
+        "placeholder": "Ex: Weekly follow-up with Sam",
+        "description": "Description",
+        "description_placeholder": "Add the note details..."
+      },
+      "actions": {
+        "newNote": "+ New note",
+        "addNote": "Add note",
+        "save": "Save",
+        "cancel": "Cancel",
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "notifications": {
+        "load_failure": "Unable to load notes.",
+        "create_success": "Note created.",
+        "create_failure": "Unable to create the note.",
+        "update_success": "Note updated.",
+        "update_failure": "Unable to update the note.",
+        "delete_success": "Note deleted.",
+        "delete_failure": "Unable to delete the note."
+      }
+    },
       "filters": {
         "all": "All",
         "open": "Open",
