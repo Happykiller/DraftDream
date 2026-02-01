@@ -630,8 +630,8 @@
       "columns": {
         "label": "Titre",
         "description": "Description",
-        "athlete": "ID athlète",
-        "created_by": "Créée par",
+        "athlete": "Athlète",
+        "created_by": "Créateur",
         "created_at": "Créée le"
       }
     },

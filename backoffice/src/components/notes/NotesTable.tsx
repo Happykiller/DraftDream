@@ -3,7 +3,7 @@ import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import type { Note } from '@hooks/useNotes';
+import type { Note, NoteUser } from '@hooks/useNotes';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 
 interface NotesTableProps {
@@ -28,6 +28,12 @@ export function NotesTable({
   const { t } = useTranslation();
   const formatDate = useDateFormatter();
 
+  const formatUserLabel = React.useCallback((user?: NoteUser | null) => {
+    if (!user) return '—';
+    const name = [user.first_name, user.last_name].filter(Boolean).join(' ').trim();
+    return name || user.email || user.id;
+  }, []);
+
   const columns = React.useMemo<GridColDef<Note>[]>(
     () => [
       {
@@ -43,17 +49,18 @@ export function NotesTable({
         minWidth: 240,
       },
       {
-        field: 'athleteId',
+        field: 'athlete',
         headerName: t('notes.table.columns.athlete'),
         minWidth: 180,
         flex: 0.7,
-        valueGetter: (value) => value || '—',
+        valueGetter: (_value, row) => formatUserLabel(row.athlete),
       },
       {
-        field: 'createdBy',
+        field: 'creator',
         headerName: t('notes.table.columns.created_by'),
         minWidth: 180,
         flex: 0.7,
+        valueGetter: (_value, row) => formatUserLabel(row.creator),
       },
       {
         field: 'createdAt',
@@ -63,7 +70,7 @@ export function NotesTable({
         valueFormatter: (value) => formatDate(value),
       },
     ],
-    [formatDate, t],
+    [formatDate, formatUserLabel, t],
   );
 
   return (

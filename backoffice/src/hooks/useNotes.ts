@@ -6,6 +6,13 @@ import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 
+export interface NoteUser {
+  id: string;
+  first_name?: string | null;
+  last_name?: string | null;
+  email?: string | null;
+}
+
 export interface Note {
   id: string;
   label: string;
@@ -14,6 +21,8 @@ export interface Note {
   createdBy: string;
   createdAt: string;
   updatedAt: string;
+  creator?: NoteUser | null;
+  athlete?: NoteUser | null;
 }
 
 interface NoteListResult {
@@ -33,6 +42,8 @@ const NOTE_FIELDS = `
   createdBy
   createdAt
   updatedAt
+  creator { id first_name last_name email }
+  athlete { id first_name last_name email }
 `;
 
 const LIST_QUERY = `
