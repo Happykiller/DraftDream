@@ -623,6 +623,22 @@
       "load_failure": "Impossible de charger les tâches."
     }
   },
+  "notes": {
+    "title": "Notes",
+    "subtitle": "Consultez les notes créées par les coachs et les athlètes.",
+    "table": {
+      "columns": {
+        "label": "Titre",
+        "description": "Description",
+        "athlete": "ID athlète",
+        "created_by": "Créée par",
+        "created_at": "Créée le"
+      }
+    },
+    "notifications": {
+      "load_failure": "Impossible de charger les notes."
+    }
+  },
   "prospects": {
     "title": "Prospects",
     "tabs": {

@@ -69,6 +69,13 @@ export const router = createBrowserRouter([
         },
       },
       {
+        path: '/notes',
+        lazy: async () => {
+          const mod = await import('@src/pages/Notes');
+          return { Component: withTitle(mod.Notes, 'notes.title') };
+        },
+      },
+      {
         path: '/prospects',
         lazy: async () => {
           const mod = await import('@src/pages/Prospects');
