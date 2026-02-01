@@ -626,6 +626,9 @@
   "notes": {
     "title": "Notes",
     "subtitle": "Consultez les notes créées par les coachs et les athlètes.",
+    "actions": {
+      "reload": "Recharger les notes"
+    },
     "table": {
       "columns": {
         "label": "Titre",

@@ -625,6 +625,9 @@
   "notes": {
     "title": "Notes",
     "subtitle": "Review notes created by coaches and athletes.",
+    "actions": {
+      "reload": "Reload notes"
+    },
     "table": {
       "columns": {
         "label": "Title",
