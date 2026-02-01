@@ -34,9 +34,11 @@ export function NoteCard({ note, isPending, onEdit, onDelete }: NoteCardProps): 
       {/* General information */}
       <Stack spacing={1.5}>
         <Stack direction="row" alignItems="center" spacing={1} justifyContent="space-between">
-          <TextWithTooltip tooltipTitle={note.label} fontWeight={600}>
-            {note.label}
-          </TextWithTooltip>
+          <Stack direction="row" alignItems="center" spacing={1} sx={{ width: '600px' }}>
+            <TextWithTooltip tooltipTitle={note.label} fontWeight={600}>
+              {note.label}
+            </TextWithTooltip>
+          </Stack>
           <Stack direction="row" spacing={0.5}>
             <Tooltip title={t('dashboard.tasksNotes.notes.actions.edit')}>
               <span>

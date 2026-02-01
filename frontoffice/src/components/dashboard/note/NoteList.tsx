@@ -1,10 +1,12 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+
   Paper,
   Stack,
   TextField,
   Typography,
+  Pagination,
 } from '@mui/material';
 
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
@@ -14,6 +16,7 @@ import { NoteForm } from './NoteForm';
 
 export function NoteList(): React.JSX.Element {
   const { t } = useTranslation();
+  const [page, setPage] = React.useState(1);
   const [showForm, setShowForm] = React.useState(false);
   const [pendingNoteId, setPendingNoteId] = React.useState<string | null>(null);
   const [editingNote, setEditingNote] = React.useState<Note | null>(null);
@@ -21,14 +24,14 @@ export function NoteList(): React.JSX.Element {
 
   const noteQuery = React.useMemo(
     () => ({
-      page: 1,
-      limit: 10,
+      page,
+      limit: 5,
       athleteId: null,
     }),
-    [],
+    [page],
   );
 
-  const { items, loading, create, update, remove } = useNotes(noteQuery);
+  const { items, total, loading, create, update, remove } = useNotes(noteQuery);
 
   const filteredItems = React.useMemo(() => {
     const normalizedFilter = filterValue.trim().toLowerCase();
@@ -155,6 +158,17 @@ export function NoteList(): React.JSX.Element {
             </Paper>
           )}
         </Stack>
+        {total > 5 && (
+          <Stack alignItems="center">
+            <Pagination
+              count={Math.ceil(total / 5)}
+              page={page}
+              onChange={(_, value) => setPage(value)}
+              color="primary"
+              size="small"
+            />
+          </Stack>
+        )}
       </Stack>
     </Paper>
   );

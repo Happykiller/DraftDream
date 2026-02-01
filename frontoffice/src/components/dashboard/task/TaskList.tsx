@@ -5,6 +5,7 @@ import {
     Paper,
     Stack,
     Typography,
+    Pagination,
 } from '@mui/material';
 
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
@@ -17,6 +18,7 @@ type TaskStatusFilter = 'all' | 'open' | 'done';
 export function TaskList(): React.JSX.Element {
     const { t } = useTranslation();
     const [filter, setFilter] = React.useState<TaskStatusFilter>('open');
+    const [page, setPage] = React.useState(1);
     const [showForm, setShowForm] = React.useState(false);
     const [pendingTaskId, setPendingTaskId] = React.useState<string | null>(null);
 
@@ -28,14 +30,14 @@ export function TaskList(): React.JSX.Element {
 
     const taskQuery = React.useMemo(
         () => ({
-            page: 1,
-            limit: 10,
+            page,
+            limit: 5,
             status: statusFilter,
         }),
-        [statusFilter],
+        [statusFilter, page],
     );
 
-    const { items, loading, create, update, remove } = useTasks(taskQuery);
+    const { items, total, loading, create, update, remove } = useTasks(taskQuery);
 
     const handleFilterChange = (value: TaskStatusFilter) => {
         setFilter(value);
@@ -236,6 +238,17 @@ export function TaskList(): React.JSX.Element {
                         </Paper>
                     )}
                 </Stack>
+                {total > 5 && (
+                    <Stack alignItems="center">
+                        <Pagination
+                            count={Math.ceil(total / 5)}
+                            page={page}
+                            onChange={(_, value) => setPage(value)}
+                            color="primary"
+                            size="small"
+                        />
+                    </Stack>
+                )}
             </Stack>
         </Paper>
     );
