@@ -23,6 +23,7 @@ export function NoteList(): React.JSX.Element {
     () => ({
       page: 1,
       limit: 10,
+      athleteId: null,
     }),
     [],
   );
