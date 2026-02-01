@@ -28,6 +28,12 @@ Create and manage daily tasks
 - Ownership-based access control
 - Soft and hard deletion
 
+#### [Note Management](./note-management.md)
+Create and manage notes
+- Label and description tracking
+- Optional athlete reference
+- Ownership-based access control
+
 ---
 
 ### 👥 Relationship Management
