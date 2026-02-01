@@ -93,15 +93,7 @@ export interface NoteUpdateInput {
   athleteId?: string | null;
 }
 
-function buildListInput({ page, limit, athleteId }: UseNotesParams) {
-  return {
-    page,
-    limit,
-    athleteId,
-  };
-}
-
-export function useNotes(params: UseNotesParams) {
+export function useNotes({ page, limit, athleteId, enabled }: UseNotesParams) {
   const { t } = useTranslation();
   const { execute } = useAsyncTask();
   const flashError = useFlashStore((state) => state.error);
@@ -110,7 +102,15 @@ export function useNotes(params: UseNotesParams) {
   const [items, setItems] = React.useState<Note[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
-  const isEnabled = params.enabled ?? true;
+  const isEnabled = enabled ?? true;
+  const listInput = React.useMemo(
+    () => ({
+      page,
+      limit,
+      athleteId,
+    }),
+    [athleteId, limit, page],
+  );
 
   const load = React.useCallback(async () => {
     if (!isEnabled) {
@@ -125,7 +125,7 @@ export function useNotes(params: UseNotesParams) {
         gql.send<NoteListPayload>({
           query: LIST_QUERY,
           operationName: 'ListNotes',
-          variables: { input: buildListInput(params) },
+          variables: { input: listInput },
         }),
       );
       if (errors?.length) throw new Error(errors[0].message);
@@ -136,7 +136,7 @@ export function useNotes(params: UseNotesParams) {
     } finally {
       setLoading(false);
     }
-  }, [execute, flashError, gql, isEnabled, params, t]);
+  }, [execute, flashError, gql, isEnabled, listInput, t]);
 
   React.useEffect(() => {
     void load();
