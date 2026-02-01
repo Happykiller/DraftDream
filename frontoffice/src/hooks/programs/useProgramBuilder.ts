@@ -1,7 +1,11 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { UserType } from '@src/commons/enums';
+import {
+  formatAthleteLabel,
+  type AthleteSearchOption,
+  useCoachAthleteSearch,
+} from '@hooks/athletes/useCoachAthleteSearch';
 import { useSessions } from '@hooks/programs/useSessions';
 import {
   useExercises,
@@ -9,8 +13,6 @@ import {
   type ExerciseVisibility,
 } from '@hooks/programs/useExercises';
 import { useCategories } from '@hooks/programs/useCategories';
-import { useCoachAthleteUsers } from '@hooks/athletes/useCoachAthleteUsers';
-import type { User } from '@src/hooks/useUsers';
 import {
   usePrograms,
   type Program,
@@ -113,8 +115,9 @@ function shouldHydrateExerciseDetails(exercise: ProgramSnapshotExercise): boolea
 type UseProgramBuilderResult = {
   form: ProgramForm;
   sessions: ProgramSession[];
-  selectedAthlete: User | null;
-  users: User[];
+  selectedAthlete: AthleteSearchOption | null;
+  users: AthleteSearchOption[];
+  athleteInputValue: string;
   sessionSearch: string;
   sessionType: 'all' | 'PUBLIC' | 'PRIVATE';
   exerciseSearch: string;
@@ -143,8 +146,8 @@ type UseProgramBuilderResult = {
   setExerciseType: React.Dispatch<React.SetStateAction<'all' | ExerciseVisibility>>;
   setSessionType: React.Dispatch<React.SetStateAction<'all' | 'PUBLIC' | 'PRIVATE'>>;
   sessionTypeOptions: { value: 'all' | 'PUBLIC' | 'PRIVATE'; label: string }[];
-  setUsersQ: React.Dispatch<React.SetStateAction<string>>;
-  handleSelectAthlete: (_event: unknown, value: User | null) => void;
+  handleAthleteInputChange: (_event: unknown, value: string) => void;
+  handleSelectAthlete: (_event: unknown, value: AthleteSearchOption | null) => void;
   handleFormChange: (
     field: keyof ProgramForm,
   ) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
@@ -181,7 +184,7 @@ type UseProgramBuilderResult = {
   handleMoveExerciseUp: (sessionId: string, exerciseId: string) => void;
   handleMoveExerciseDown: (sessionId: string, exerciseId: string) => void;
   handleSubmit: (event?: React.SyntheticEvent) => Promise<void>;
-  userLabel: (user: User | null) => string;
+  userLabel: (user: AthleteSearchOption | null) => string;
   isSubmitDisabled: boolean;
   createExercise: ReturnType<typeof useExercises>['create'];
   updateExercise: ReturnType<typeof useExercises>['update'];
@@ -211,8 +214,8 @@ export function useProgramBuilder(
   const program = options?.program;
   const mode: 'create' | 'edit' = program ? 'edit' : 'create';
 
-  const [usersQ, setUsersQ] = React.useState('');
-  const [selectedAthlete, setSelectedAthlete] = React.useState<User | null>(null);
+  const [athleteInputValue, setAthleteInputValue] = React.useState('');
+  const [selectedAthlete, setSelectedAthlete] = React.useState<AthleteSearchOption | null>(null);
   const [sessionSearch, setSessionSearch] = React.useState('');
   const [sessionType, setSessionType] = React.useState<'all' | 'PUBLIC' | 'PRIVATE'>('all');
   const [exerciseSearch, setExerciseSearch] = React.useState('');
@@ -258,7 +261,6 @@ export function useProgramBuilder(
     [parsedDuration, parsedFrequency, trimmedProgramName],
   );
 
-  const debouncedQ = useDebouncedValue(usersQ, 300);
   const debouncedSessionSearch = useDebouncedValue(sessionSearch, 300);
   const debouncedExerciseSearch = useDebouncedValue(exerciseSearch, 300);
 
@@ -381,10 +383,12 @@ export function useProgramBuilder(
     q: '',
   });
 
-  const { items: users, loading: usersLoading } = useCoachAthleteUsers({
-    coachId: currentUserId,
-    search: debouncedQ,
-  });
+  const {
+    options: users,
+    loading: usersLoading,
+    setQuery: setUsersQ,
+    reset: resetAthleteSearch,
+  } = useCoachAthleteSearch({ enabled: Boolean(currentUserId) });
 
   const { create: createProgram, update: updateProgram } = usePrograms({
     page: 1,
@@ -392,15 +396,11 @@ export function useProgramBuilder(
     q: '',
   });
 
-  const userLabel = React.useCallback((user: User | null) => {
+  const userLabel = React.useCallback((user: AthleteSearchOption | null) => {
     if (!user) {
       return '';
     }
-    const email = user.email?.trim();
-    if (email) {
-      return email;
-    }
-    return `${user.first_name ?? ''} ${user.last_name ?? ''}`.trim();
+    return formatAthleteLabel(user);
   }, []);
 
   const sessionTemplates = React.useMemo<SessionTemplate[]>(() => {
@@ -603,6 +603,7 @@ export function useProgramBuilder(
       const found = users.find((user) => user.id === form.athlete);
       if (found) {
         setSelectedAthlete(found);
+        setAthleteInputValue(formatAthleteLabel(found));
       }
     }
   }, [users, selectedAthlete, form.athlete]);
@@ -623,10 +624,15 @@ export function useProgramBuilder(
     [],
   );
 
-  const handleSelectAthlete = React.useCallback((_event: unknown, value: User | null) => {
+  const handleSelectAthlete = React.useCallback((_event: unknown, value: AthleteSearchOption | null) => {
     setSelectedAthlete(value);
     setForm((prev) => ({ ...prev, athlete: value?.id ?? '' }));
   }, []);
+
+  const handleAthleteInputChange = React.useCallback((_: unknown, value: string) => {
+    setAthleteInputValue(value);
+    setUsersQ(value);
+  }, [setUsersQ]);
 
   const handleFormChange = React.useCallback(
     (field: keyof ProgramForm) =>
@@ -1390,7 +1396,10 @@ export function useProgramBuilder(
 
   const resetBuilder = React.useCallback(() => {
     setSelectedAthlete(null);
+    setAthleteInputValue('');
+    setAthleteInputValue('');
     setUsersQ('');
+    resetAthleteSearch();
     setSessionSearch('');
     setExerciseSearch('');
     setExerciseCategory('all');
@@ -1403,7 +1412,13 @@ export function useProgramBuilder(
     usedIdsRef.current.session.clear();
     usedIdsRef.current.exercise.clear();
     setExerciseSnapshots(() => new Map());
-  }, [builderCopy.structure.header_description, builderCopy.structure.title, setExerciseSnapshots]);
+  }, [
+    builderCopy.structure.header_description,
+    builderCopy.structure.title,
+    resetAthleteSearch,
+    setExerciseSnapshots,
+    setUsersQ,
+  ]);
 
   const handleSubmit = React.useCallback(
     async (event?: React.SyntheticEvent) => {
@@ -1571,20 +1586,21 @@ export function useProgramBuilder(
     if (program.athlete) {
       setSelectedAthlete({
         id: program.athlete.id,
-        type: UserType.Athlete,
         first_name: program.athlete.first_name ?? '',
         last_name: program.athlete.last_name ?? '',
         email: program.athlete.email,
-        phone: null,
-        address: null,
-        company: null,
-        createdAt: null,
-        updatedAt: null,
-        is_active: true,
-        createdBy: program.createdBy,
       });
+      setAthleteInputValue(
+        formatAthleteLabel({
+          id: program.athlete.id,
+          email: program.athlete.email,
+          first_name: program.athlete.first_name ?? null,
+          last_name: program.athlete.last_name ?? null,
+        }),
+      );
     } else {
       setSelectedAthlete(null);
+      setAthleteInputValue('');
     }
 
     usedIdsRef.current.session.clear();
@@ -1837,6 +1853,7 @@ export function useProgramBuilder(
     setExerciseType,
     setForm,
     setProgramDescription,
+    setAthleteInputValue,
     setSelectedAthlete,
     setSessionSearch,
     setUsersQ,
@@ -1847,6 +1864,7 @@ export function useProgramBuilder(
     sessions,
     selectedAthlete,
     users,
+    athleteInputValue,
     sessionSearch,
     exerciseSearch,
     exerciseCategory,
@@ -1872,7 +1890,7 @@ export function useProgramBuilder(
     setExerciseSearch,
     setExerciseCategory,
     setExerciseType,
-    setUsersQ,
+    handleAthleteInputChange,
     handleSelectAthlete,
     handleFormChange,
     updateProgramName,

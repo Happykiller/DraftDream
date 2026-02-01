@@ -97,7 +97,6 @@ export const ProgramBuilderSessionLibraryItem = React.memo(function ProgramBuild
           tooltipTitle={template.description}
           variant="caption"
           color="text.secondary"
-          maxLines={2}
         />
       ) : null}
 

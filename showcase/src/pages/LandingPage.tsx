@@ -12,6 +12,7 @@ import {
   CardContent,
 } from '@mui/material';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import { useI18n } from '../i18n/I18nProvider';
 
@@ -464,25 +465,25 @@ const LandingPage = () => {
               {
                 title: t('landing.footer.product.title'),
                 links: [
-                  t('landing.footer.product.features'),
-                  t('landing.footer.product.pricing')
+                  { label: t('landing.footer.product.features'), path: '#features' },
+                  { label: t('landing.footer.product.pricing'), path: '#pricing' }
                 ]
               },
               {
                 title: t('landing.footer.support.title'),
                 links: [
-                  t('landing.footer.support.contact'),
-                  t('landing.footer.support.helpCenter'),
-                  t('landing.footer.support.news')
+                  { label: t('landing.footer.support.contact'), path: '/contact' },
+                  { label: t('landing.footer.support.helpCenter'), path: '/help-center' },
+                  { label: t('landing.footer.support.news'), path: '/changelog' }
                 ]
               },
               {
                 title: t('landing.footer.legal.title'),
                 links: [
-                  t('landing.footer.legal.mentions'),
-                  t('landing.footer.legal.ems'),
-                  t('landing.footer.legal.sales'),
-                  t('landing.footer.legal.privacy')
+                  { label: t('landing.footer.legal.mentions'), path: '/legal/legal-notice' },
+                  { label: t('landing.footer.legal.ems'), path: '/legal/terms-of-service' },
+                  { label: t('landing.footer.legal.sales'), path: '/legal/sales-conditions' },
+                  { label: t('landing.footer.legal.privacy'), path: '/legal/privacy-policy' }
                 ]
               }
             ].map((col, index) => (
@@ -494,16 +495,23 @@ const LandingPage = () => {
                   {col.links.map((link, i) => (
                     <Typography
                       key={i}
-                      component="a"
-                      href="#"
                       variant="body2"
                       sx={{
                         color: 'grey.400',
                         textDecoration: 'none',
-                        '&:hover': { color: 'white' }
+                        '&:hover': { color: 'white' },
+                        cursor: 'pointer'
                       }}
                     >
-                      {link}
+                      {link.path.startsWith('#') ? (
+                        <a href={link.path} style={{ color: 'inherit', textDecoration: 'none' }}>
+                          {link.label}
+                        </a>
+                      ) : (
+                        <Link to={link.path} style={{ color: 'inherit', textDecoration: 'none' }}>
+                          {link.label}
+                        </Link>
+                      )}
                     </Typography>
                   ))}
                 </Stack>

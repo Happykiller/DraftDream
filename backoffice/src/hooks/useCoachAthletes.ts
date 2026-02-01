@@ -180,8 +180,9 @@ export function useCoachAthletes(params: UseCoachAthletesParams) {
         if (gqlError) throw gqlError;
         setItems(data?.coachAthlete_list.items ?? []);
         setTotal(data?.coachAthlete_list.total ?? 0);
-      } catch (error: any) {
-        flashError(error?.message ?? 'Failed to load coach-athlete relations');
+      } catch (error: unknown) {
+        const msg = error instanceof Error ? error.message : 'Failed to load coach-athlete relations';
+        flashError(msg);
       } finally {
         setLoading(false);
       }
@@ -212,8 +213,9 @@ export function useCoachAthletes(params: UseCoachAthletesParams) {
         if (gqlError) throw gqlError;
         flashSuccess('Relation created');
         await load({ page, limit, coachId, athleteId, isActive, includeArchived });
-      } catch (error: any) {
-        flashError(error?.message ?? 'Creation failed');
+      } catch (error: unknown) {
+        const msg = error instanceof Error ? error.message : 'Creation failed';
+        flashError(msg);
         throw error;
       }
     },
@@ -234,8 +236,9 @@ export function useCoachAthletes(params: UseCoachAthletesParams) {
         if (gqlError) throw gqlError;
         flashSuccess('Relation updated');
         await load({ page, limit, coachId, athleteId, isActive, includeArchived });
-      } catch (error: any) {
-        flashError(error?.message ?? 'Update failed');
+      } catch (error: unknown) {
+        const msg = error instanceof Error ? error.message : 'Update failed';
+        flashError(msg);
         throw error;
       }
     },
@@ -256,8 +259,9 @@ export function useCoachAthletes(params: UseCoachAthletesParams) {
         if (gqlError) throw gqlError;
         flashSuccess('Relation archived');
         await load({ page, limit, coachId, athleteId, isActive, includeArchived });
-      } catch (error: any) {
-        flashError(error?.message ?? 'Delete failed');
+      } catch (error: unknown) {
+        const msg = error instanceof Error ? error.message : 'Delete failed';
+        flashError(msg);
         throw error;
       }
     },

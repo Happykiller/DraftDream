@@ -2,10 +2,12 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { UserType } from '@src/commons/enums';
 import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
-import { useCoachAthleteUsers } from '@hooks/athletes/useCoachAthleteUsers';
-import type { User } from '@src/hooks/useUsers';
+import {
+  formatAthleteLabel,
+  type AthleteSearchOption,
+  useCoachAthleteSearch,
+} from '@hooks/athletes/useCoachAthleteSearch';
 import { session } from '@stores/session';
 
 import {
@@ -39,10 +41,11 @@ interface UseMealPlanBuilderOptions {
 
 export interface UseMealPlanBuilderResult {
   form: MealPlanBuilderForm;
-  selectedAthlete: User | null;
-  users: User[];
+  selectedAthlete: AthleteSearchOption | null;
+  users: AthleteSearchOption[];
+  athleteInputValue: string;
   usersLoading: boolean;
-  setUsersQ: React.Dispatch<React.SetStateAction<string>>;
+  handleAthleteInputChange: (_event: unknown, value: string) => void;
   daySearch: string;
   setDaySearch: React.Dispatch<React.SetStateAction<string>>;
   mealSearch: string;
@@ -62,7 +65,7 @@ export interface UseMealPlanBuilderResult {
   setMealVisibility: React.Dispatch<React.SetStateAction<'all' | 'PUBLIC' | 'PRIVATE'>>;
   visibilityOptions: { value: 'all' | 'PUBLIC' | 'PRIVATE'; label: string }[];
   days: MealPlanBuilderDay[];
-  handleSelectAthlete: (_event: unknown, user: User | null) => void;
+  handleSelectAthlete: (_event: unknown, user: AthleteSearchOption | null) => void;
   handleFormChange: (
     field: keyof MealPlanBuilderForm,
   ) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
@@ -158,24 +161,18 @@ function coerceMealTypeSnapshot(
   };
 }
 
-function mapMealPlanAthleteToUser(summary: MealPlanUserSummary | null | undefined): User | null {
+function mapMealPlanAthleteToUser(
+  summary: MealPlanUserSummary | null | undefined,
+): AthleteSearchOption | null {
   if (!summary) {
     return null;
   }
 
   return {
     id: summary.id,
-    type: UserType.Athlete,
     first_name: summary.first_name ?? '',
     last_name: summary.last_name ?? '',
     email: summary.email,
-    phone: null,
-    address: null,
-    company: null,
-    createdAt: null,
-    updatedAt: null,
-    is_active: true,
-    createdBy: '',
   };
 }
 
@@ -307,8 +304,11 @@ export function useMealPlanBuilder(
     endDate: formatDateInput(basePlan?.endDate),
   }));
 
-  const [selectedAthlete, setSelectedAthlete] = React.useState<User | null>(
+  const [selectedAthlete, setSelectedAthlete] = React.useState<AthleteSearchOption | null>(
     () => mapMealPlanAthleteToUser(basePlan?.athlete),
+  );
+  const [athleteInputValue, setAthleteInputValue] = React.useState(() =>
+    selectedAthlete ? formatAthleteLabel(selectedAthlete) : '',
   );
   const [days, setDays] = React.useState<MealPlanBuilderDay[]>(() =>
     basePlan?.days?.length ? basePlan.days.map(cloneDaySnapshot) : [],
@@ -322,13 +322,11 @@ export function useMealPlanBuilder(
   const debouncedDaySearch = useDebouncedValue(daySearch, 300);
   const debouncedMealSearch = useDebouncedValue(mealSearch, 300);
 
-  const [usersQ, setUsersQ] = React.useState('');
-  const debouncedUsersQ = useDebouncedValue(usersQ, 300);
-
-  const { items: users, loading: usersLoading } = useCoachAthleteUsers({
-    coachId: currentUserId,
-    search: debouncedUsersQ,
-  });
+  const {
+    options: users,
+    loading: usersLoading,
+    setQuery: setUsersQ,
+  } = useCoachAthleteSearch({ enabled: Boolean(currentUserId) });
 
   const {
     items: mealDays,
@@ -411,17 +409,25 @@ export function useMealPlanBuilder(
       startDate: formatDateInput(basePlan.startDate),
       endDate: formatDateInput(basePlan.endDate),
     });
-    setSelectedAthlete(mapMealPlanAthleteToUser(basePlan.athlete));
+    const mappedAthlete = mapMealPlanAthleteToUser(basePlan.athlete);
+    setSelectedAthlete(mappedAthlete);
+    setAthleteInputValue(mappedAthlete ? formatAthleteLabel(mappedAthlete) : '');
     setDays(basePlan.days.map(cloneDaySnapshot));
   }, [basePlan, builderCopy.structure.description_placeholder]);
 
   const handleSelectAthlete = React.useCallback(
-    (_event: unknown, user: User | null) => {
+    (_event: unknown, user: AthleteSearchOption | null) => {
       setSelectedAthlete(user);
+      setAthleteInputValue(user ? formatAthleteLabel(user) : '');
       setUsersQ('');
     },
-    [],
+    [setUsersQ],
   );
+
+  const handleAthleteInputChange = React.useCallback((_: unknown, value: string) => {
+    setAthleteInputValue(value);
+    setUsersQ(value);
+  }, [setUsersQ]);
 
   const handleFormChange = React.useCallback(
     (field: keyof MealPlanBuilderForm) =>
@@ -803,8 +809,9 @@ export function useMealPlanBuilder(
     form,
     selectedAthlete,
     users,
+    athleteInputValue,
     usersLoading,
-    setUsersQ,
+    handleAthleteInputChange,
     daySearch,
     setDaySearch,
     dayVisibility,

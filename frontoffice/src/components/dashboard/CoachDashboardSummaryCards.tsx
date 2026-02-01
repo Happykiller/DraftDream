@@ -16,7 +16,7 @@ export function CoachDashboardSummaryCards(): React.JSX.Element {
         xs: '1fr',
         sm: '1fr 1fr',
         md: 'repeat(3, 1fr)',
-        lg: 'repeat(4, 1fr)',
+        lg: 'repeat(5, 1fr)',
       }}
       gap={3}
     >

@@ -73,6 +73,55 @@
       "prospects": "Prospects",
       "programs": "Programs",
       "nutrition": "Nutrition plans"
+    },
+    "tasksNotes": {
+      "title": "Tasks & Notes",
+      "tasks": {
+        "title": "Tasks",
+        "empty": {
+          "title": "No tasks for now.",
+          "subtitle": "Add your first task above."
+        }
+      },
+      "notes": {
+        "title": "Notes",
+        "placeholder": "Notes module coming soon."
+      },
+      "filters": {
+        "all": "All",
+        "open": "Open",
+        "done": "Done"
+      },
+      "form": {
+        "label": "Title",
+        "placeholder": "Ex: Follow up with Pierre about Saturday review",
+        "priority": "Priority",
+        "day": "Day"
+      },
+      "priority": {
+        "low": "Low",
+        "middle": "Medium",
+        "high": "High"
+      },
+      "labels": {
+        "overdue": "overdue",
+        "created": "Created: {{date}}"
+      },
+      "notifications": {
+        "load_failure": "Unable to load tasks.",
+        "create_success": "Task created.",
+        "create_failure": "Unable to create the task.",
+        "update_success": "Task updated.",
+        "update_failure": "Unable to update the task.",
+        "delete_success": "Task deleted.",
+        "delete_failure": "Unable to delete the task."
+      },
+      "actions": {
+        "newTask": "+ New task",
+        "cancel": "Cancel",
+        "addTask": "Add task",
+        "delete": "Delete"
+      }
     }
   },
   "prospects": {
@@ -299,6 +348,13 @@
       "summary_title": "Link summary",
       "client_sheet_title": "Client sheet",
       "notes_title": "Notes",
+      "notes_placeholder": "Add your commercial notes...",
+      "notes_actions": {
+        "save": "Save",
+        "cancel": "Cancel"
+      },
+      "notes_update_success": "Commercial notes updated.",
+      "notes_update_failed": "Unable to update commercial notes.",
       "loading": "Loading athlete link...",
       "athlete_info": {
         "load_failed": "Unable to load the athlete's information"

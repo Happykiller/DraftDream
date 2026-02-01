@@ -115,7 +115,6 @@ export const ProgramBuilderExerciseLibraryItem = React.memo(function ProgramBuil
             tooltipTitle={exercise.description}
             variant="caption"
             color="text.secondary"
-            maxLines={2}
           />
         ) : null}
       </Stack>

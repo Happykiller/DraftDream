@@ -87,7 +87,6 @@ export const MealPlanBuilderPanelLibraryDay = React.memo(function MealPlanBuilde
           tooltipTitle={day.description}
           variant="caption"
           color="text.secondary"
-          maxLines={2}
         />
       ) : null}
 

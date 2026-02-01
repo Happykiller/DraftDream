@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Stack, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 
 import { UserType } from '@src/commons/enums';
@@ -13,6 +14,7 @@ import { GlassCard } from '../../../common/GlassCard';
 export function CoachClientsWidget(): React.JSX.Element | null {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const theme = useTheme();
     const role = session((state) => state.role);
     const canSeeLeadData = role === UserType.Admin || role === UserType.Coach;
 
@@ -28,9 +30,12 @@ export function CoachClientsWidget(): React.JSX.Element | null {
     }
 
     return (
-        <GlassCard onClick={() => navigate('/prospects')}>
+        <GlassCard
+            onClick={() => navigate('/prospects')}
+            accentColor={theme.palette.error.main}
+        >
             <Stack direction="row" alignItems="center" spacing={2}>
-                <PersonOutlineOutlinedIcon sx={{ color: 'info.main', fontSize: 40 }} />
+                <PersonOutlineOutlinedIcon sx={{ color: 'error.main', fontSize: 40 }} />
                 <Stack>
                     <Typography variant="subtitle2" color="text.secondary" noWrap>
                         {t('dashboard.summary.clients')}

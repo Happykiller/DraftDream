@@ -1,6 +1,37 @@
 {
   "releases": [
     {
+      "version": "0.14.0",
+      "title": "Relation Client & Productivité",
+      "date": "2026-01-31",
+      "global": [
+        "Mémoire commerciale : centralisation des informations clés (Notes Privées).",
+        "Assistant de Tâches : To-Do List personnelle intégrée au tableau de bord.",
+        "Accélérateur de création : clonage instantané de Programmes et Plans Alimentaires.",
+        "Expérience Athlète : refonte visuelle des cartes et navigation optimisée."
+      ],
+      "notes": "Cette version 0.14.0 marque une étape clé dans la professionnalisation de l'outil pour les coachs. La grande nouveauté, c'est l'arrivée de la mémoire commerciale : vous pouvez enfin centraliser toutes les informations clés de vos athlètes au même endroit, complété par un assistant de tâches personnel.",
+      "projects": {
+        "/api": [
+          "Architecture 'Notes & Tâches' : nouvelles entités pour sécuriser les notes privées et gérer les tâches.",
+          "Sécurisation des Données : mise en place du 'Soft Delete' (suppression réversible) sur les sessions.",
+          "Synchronisation : mise à jour automatique des schémas de données."
+        ],
+        "/backoffice": [
+          "Notes Commerciales : espace de 'Notes Privées' sur chaque fiche de liaison athlète.",
+          "Assistant de Tâches : nouveau widget 'Tâches' sur le tableau de bord pour les rappels rapides.",
+          "Accélérateur de Création : duplication (clonage) complète des Programmes et Plans Alimentaires."
+        ],
+        "/frontoffice": [
+          "Expérience visuelle : intégration technique des nouvelles cartes de programmes (ProgramCard).",
+          "Navigation : optimisation de la structure des pages pour une fluidité accrue."
+        ],
+        "/showcase": [
+          "Mise à jour des notes de version avec l'ajout de la 0.14.0."
+        ]
+      }
+    },
+    {
       "version": "0.13.0",
       "title": "Plateforme FitDesk — Tableau de Bord & Visualisation",
       "date": "2026-01-21",

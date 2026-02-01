@@ -175,7 +175,7 @@ export function ProgramRecordPreviewGrid({
                       <Tooltip title={t('athletes.details.sessions.fields.comment')}>
                         <RateReview color="action" fontSize="small" sx={{ mt: 0.2 }} />
                       </Tooltip>
-                      <TextWithTooltip tooltipTitle={comment} variant="body2" maxLines={2} />
+                      <TextWithTooltip tooltipTitle={comment} variant="body2" />
                     </Stack>
                   </Stack>
                 </Stack>

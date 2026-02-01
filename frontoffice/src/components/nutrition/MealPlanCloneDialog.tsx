@@ -1,37 +1,25 @@
 // src/components/nutrition/MealPlanCloneDialog.tsx
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import {
   Autocomplete,
   Stack,
   TextField,
   Typography,
 } from '@mui/material';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ContentCopy from '@mui/icons-material/ContentCopy';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
-import inversify from '@src/commons/inversify';
-import { UserType } from '@src/commons/enums';
-import { useDebouncedValue } from '@src/hooks/useDebouncedValue';
-import type { MealPlan } from '@hooks/nutrition/useMealPlans';
-import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import { StandardDialog } from '@components/common/StandardDialog';
-
-interface AthleteOption {
-  id: string;
-  email: string;
-  first_name?: string | null;
-  last_name?: string | null;
-}
-
-interface AthleteListPayload {
-  user_list: {
-    items: AthleteOption[];
-  };
-}
+import {
+  formatAthleteLabel,
+  type AthleteSearchOption,
+  useCoachAthleteSearch,
+} from '@hooks/athletes/useCoachAthleteSearch';
+import type { MealPlan } from '@hooks/nutrition/useMealPlans';
 
 type CloneAction = 'copy' | 'copy_and_open';
 
@@ -46,28 +34,8 @@ export interface MealPlanCloneDialogProps {
   onSubmittingChange?: (submitting: boolean) => void;
 }
 
-const ATHLETE_CACHE = new Map<string, AthleteOption[]>();
-
-const LIST_USERS_QUERY = `
-  query ListUsers($input: ListUsersInput) {
-    user_list(input: $input) {
-      items {
-        id
-        email
-        first_name
-        last_name
-      }
-    }
-  }
-`;
-
-function formatAthleteLabel({ first_name, last_name, email }: AthleteOption): string {
-  const displayName = [first_name, last_name]
-    .filter((value): value is string => Boolean(value && value.trim()))
-    .join(' ')
-    .trim();
-
-  return displayName || email;
+function getMealPlanAthleteLabel(athlete: AthleteSearchOption): string {
+  return formatAthleteLabel(athlete);
 }
 
 /** Dialog allowing coaches to duplicate a meal plan with a new label and athlete. */
@@ -79,20 +47,21 @@ export function MealPlanCloneDialog({
   onSubmittingChange,
 }: MealPlanCloneDialogProps): React.JSX.Element {
   const { t } = useTranslation();
-  const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
   const [cloneLabel, setCloneLabel] = React.useState('');
   const [cloneError, setCloneError] = React.useState<string | null>(null);
   const [cloneLabelError, setCloneLabelError] = React.useState<string | null>(null);
   const [cloneLoading, setCloneLoading] = React.useState(false);
   const [activeCloneAction, setActiveCloneAction] = React.useState<CloneAction | null>(null);
-  const [selectedAthlete, setSelectedAthlete] = React.useState<AthleteOption | null>(null);
+  const [selectedAthlete, setSelectedAthlete] = React.useState<AthleteSearchOption | null>(null);
   const [athleteInputValue, setAthleteInputValue] = React.useState('');
-  const [rawAthleteOptions, setRawAthleteOptions] = React.useState<AthleteOption[]>([]);
-  const [athletesLoading, setAthletesLoading] = React.useState(false);
-  const [athleteQuery, setAthleteQuery] = React.useState('');
-  const debouncedAthleteQuery = useDebouncedValue(athleteQuery, 300);
+  const {
+    options: rawAthleteOptions,
+    loading: athletesLoading,
+    setQuery: setAthleteQuery,
+    reset: resetAthleteSearch,
+  } = useCoachAthleteSearch({ enabled: open });
 
-  const mealPlanAthleteOption = React.useMemo<AthleteOption | null>(() => {
+  const mealPlanAthleteOption = React.useMemo<AthleteSearchOption | null>(() => {
     if (!mealPlan.athlete) {
       return null;
     }
@@ -106,7 +75,7 @@ export function MealPlanCloneDialog({
   }, [mealPlan.athlete]);
 
   const mergedAthleteOptions = React.useMemo(() => {
-    const dedup = new Map<string, AthleteOption>();
+    const dedup = new Map<string, AthleteSearchOption>();
 
     rawAthleteOptions.forEach((option) => {
       dedup.set(option.id, option);
@@ -123,47 +92,6 @@ export function MealPlanCloneDialog({
     return Array.from(dedup.values());
   }, [mealPlanAthleteOption, rawAthleteOptions, selectedAthlete]);
 
-  const loadAthletes = React.useCallback(
-    async (search: string) => {
-      const key = search.trim().toLowerCase();
-
-      if (ATHLETE_CACHE.has(key)) {
-        setRawAthleteOptions(ATHLETE_CACHE.get(key) ?? []);
-        setAthletesLoading(false);
-        return;
-      }
-
-      setAthletesLoading(true);
-      try {
-        const { data, errors } = await gql.send<AthleteListPayload>({
-          query: LIST_USERS_QUERY,
-          operationName: 'ListUsers',
-          variables: {
-            input: {
-              page: 1,
-              limit: 25,
-              q: search.trim() || undefined,
-              type: UserType.Athlete,
-            },
-          },
-        });
-
-        if (errors?.length) {
-          throw new Error(errors[0].message);
-        }
-
-        const items = data?.user_list.items ?? [];
-        ATHLETE_CACHE.set(key, items);
-        setRawAthleteOptions(items);
-      } catch (_error) {
-        setRawAthleteOptions([]);
-      } finally {
-        setAthletesLoading(false);
-      }
-    },
-    [gql],
-  );
-
   React.useEffect(() => {
     if (!open) {
       setCloneLoading(false);
@@ -173,8 +101,7 @@ export function MealPlanCloneDialog({
       setSelectedAthlete(null);
       setAthleteInputValue('');
       setAthleteQuery('');
-      setRawAthleteOptions([]);
-      setAthletesLoading(false);
+      resetAthleteSearch();
       return;
     }
 
@@ -187,18 +114,10 @@ export function MealPlanCloneDialog({
     setCloneLabelError(null);
     setSelectedAthlete(mealPlanAthleteOption);
     setAthleteInputValue(
-      mealPlanAthleteOption ? formatAthleteLabel(mealPlanAthleteOption) : '',
+      mealPlanAthleteOption ? getMealPlanAthleteLabel(mealPlanAthleteOption) : '',
     );
     setAthleteQuery('');
-  }, [mealPlan.label, mealPlanAthleteOption, open, t]);
-
-  React.useEffect(() => {
-    if (!open) {
-      return;
-    }
-
-    void loadAthletes(debouncedAthleteQuery);
-  }, [debouncedAthleteQuery, loadAthletes, open]);
+  }, [mealPlan.label, mealPlanAthleteOption, open, resetAthleteSearch, setAthleteQuery, t]);
 
   React.useEffect(() => {
     onSubmittingChange?.(cloneLoading);
@@ -251,14 +170,14 @@ export function MealPlanCloneDialog({
     [cloneLoading, onClone, mealPlan, selectedAthlete, cloneLabel, t, onClose],
   );
 
-  const handleAthleteSelection = React.useCallback((_: unknown, option: AthleteOption | null) => {
+  const handleAthleteSelection = React.useCallback((_: unknown, option: AthleteSearchOption | null) => {
     setSelectedAthlete(option);
   }, []);
 
   const handleAthleteInputChange = React.useCallback((_: unknown, value: string) => {
     setAthleteInputValue(value);
     setAthleteQuery(value);
-  }, []);
+  }, [setAthleteQuery]);
 
   const cloneDialogTitle = t('nutrition-coach.list.clone_dialog.title');
   const cloneDialogDescription = t('nutrition-coach.list.clone_dialog.description');

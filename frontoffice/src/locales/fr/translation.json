@@ -75,6 +75,55 @@
       "prospects": "Prospects",
       "programs": "Programmes",
       "nutrition": "Plans Nutrition"
+    },
+    "tasksNotes": {
+      "title": "Tâches et Notes",
+      "tasks": {
+        "title": "Tâches",
+        "empty": {
+          "title": "Aucune tâche pour le moment.",
+          "subtitle": "Ajoutez votre première tâche ci-dessus."
+        }
+      },
+      "notes": {
+        "title": "Notes",
+        "placeholder": "Module de notes à venir."
+      },
+      "filters": {
+        "all": "Toutes",
+        "open": "Ouvertes",
+        "done": "Terminées"
+      },
+      "form": {
+        "label": "Intitulé",
+        "placeholder": "Ex: Relancer Pierre pour le bilan de samedi",
+        "priority": "Priorité",
+        "day": "Jour"
+      },
+      "priority": {
+        "low": "Basse",
+        "middle": "Moyenne",
+        "high": "Haute"
+      },
+      "labels": {
+        "overdue": "en retard",
+        "created": "Créée : {{date}}"
+      },
+      "notifications": {
+        "load_failure": "Impossible de charger les tâches.",
+        "create_success": "Tâche créée.",
+        "create_failure": "Impossible de créer la tâche.",
+        "update_success": "Tâche mise à jour.",
+        "update_failure": "Impossible de mettre à jour la tâche.",
+        "delete_success": "Tâche supprimée.",
+        "delete_failure": "Impossible de supprimer la tâche."
+      },
+      "actions": {
+        "newTask": "Nouvelle tâche",
+        "cancel": "Annuler",
+        "addTask": "Ajouter la tâche",
+        "delete": "Supprimer"
+      }
     }
   },
   "prospects": {
@@ -301,6 +350,13 @@
       "summary_title": "Résumé du lien",
       "client_sheet_title": "Fiche client",
       "notes_title": "Notes commerciales",
+      "notes_placeholder": "Ajoutez vos notes commerciales...",
+      "notes_actions": {
+        "save": "Enregistrer",
+        "cancel": "Annuler"
+      },
+      "notes_update_success": "Notes commerciales mises à jour.",
+      "notes_update_failed": "Impossible de mettre à jour les notes commerciales.",
       "loading": "Chargement du lien athlète...",
       "athlete_info": {
         "load_failed": "Impossible de charger les informations de l'athlète"

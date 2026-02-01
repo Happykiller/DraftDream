@@ -17,6 +17,7 @@ import {
 import {
   Alert,
   Box,
+  Button,
   Card,
   CardContent,
   Chip,
@@ -25,6 +26,7 @@ import {
   Stack,
   Tab,
   Tabs,
+  TextField,
   Tooltip,
   Typography,
 } from '@mui/material';
@@ -86,7 +88,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
   const navigate = useNavigate();
   const theme = useTheme();
   const { linkId } = useParams<{ linkId: string }>();
-  const { link, loading, error } = useCoachAthleteLink({ linkId });
+  const { link, loading, error, update } = useCoachAthleteLink({ linkId });
   const formatDate = useDateFormatter({ options: { day: '2-digit', month: '2-digit', year: 'numeric' } });
 
   const displayName = React.useMemo(
@@ -235,6 +237,18 @@ export function AthleteLinkDetails(): React.JSX.Element {
 
   const showEmptyState = !loading && !link && error !== null;
   const [currentTab, setCurrentTab] = React.useState<AthleteLinkTab>('overview');
+  const [noteDraft, setNoteDraft] = React.useState('');
+  const [noteSaving, setNoteSaving] = React.useState(false);
+  const [noteError, setNoteError] = React.useState<string | null>(null);
+
+  const notePlaceholder = t('athletes.details.notes_placeholder');
+  const noteSaveLabel = t('athletes.details.notes_actions.save');
+  const noteCancelLabel = t('athletes.details.notes_actions.cancel');
+
+  React.useEffect(() => {
+    setNoteDraft(link?.note ?? '');
+    setNoteError(null);
+  }, [link?.note, link?.id]);
 
   const handleBack = React.useCallback(() => {
     navigate('/athletes');
@@ -307,7 +321,40 @@ export function AthleteLinkDetails(): React.JSX.Element {
     [navigate],
   );
 
+  // Keep the draft note state in sync with the text field.
+  const handleNoteChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setNoteDraft(event.target.value);
+  }, []);
 
+  // Restore the draft to the last saved note.
+  const handleNoteCancel = React.useCallback(() => {
+    setNoteDraft(link?.note ?? '');
+    setNoteError(null);
+  }, [link?.note]);
+
+  // Persist commercial notes updates for the coach-athlete link.
+  const handleNoteSave = React.useCallback(async () => {
+    if (!link) {
+      return;
+    }
+
+    setNoteSaving(true);
+    setNoteError(null);
+
+    try {
+      await update({
+        id: link.id,
+        note: noteDraft.trim() ? noteDraft.trim() : null,
+      });
+    } catch (_caught: unknown) {
+      setNoteError(t('athletes.details.notes_update_failed'));
+    } finally {
+      setNoteSaving(false);
+    }
+  }, [link, noteDraft, t, update]);
+
+  const noteIsDirty = noteDraft !== (link?.note ?? '');
+  const noteIsDisabled = noteSaving || !noteIsDirty;
 
   return (
     <Stack
@@ -484,11 +531,34 @@ export function AthleteLinkDetails(): React.JSX.Element {
                             {t('athletes.details.notes_title')}
                           </Typography>
 
-                          <Stack direction="row" spacing={1} alignItems="flex-start">
-                            <Notes color="action" fontSize="small" sx={{ mt: 0.25 }} />
-                            <Typography variant="body2">
-                              {link.note?.trim() || t('athletes.details.fields.no_note')}
-                            </Typography>
+                          <Stack spacing={1.5}>
+                            <Stack direction="row" spacing={1} alignItems="flex-start">
+                              <Notes color="action" fontSize="small" sx={{ mt: 0.6 }} />
+                              <TextField
+                                fullWidth
+                                multiline
+                                minRows={3}
+                                value={noteDraft}
+                                onChange={handleNoteChange}
+                                placeholder={notePlaceholder}
+                                disabled={noteSaving}
+                              />
+                            </Stack>
+
+                            {noteError ? (
+                              <Alert severity="error" sx={{ m: 0 }}>
+                                {noteError}
+                              </Alert>
+                            ) : null}
+
+                            <Stack direction="row" spacing={1} justifyContent="flex-end">
+                              <Button variant="text" onClick={handleNoteCancel} disabled={!noteIsDirty || noteSaving}>
+                                {noteCancelLabel}
+                              </Button>
+                              <Button variant="contained" onClick={handleNoteSave} disabled={noteIsDisabled}>
+                                {noteSaveLabel}
+                              </Button>
+                            </Stack>
                           </Stack>
                         </Stack>
                       </Stack>

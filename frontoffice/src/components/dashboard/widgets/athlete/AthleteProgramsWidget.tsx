@@ -7,6 +7,7 @@ import CircleIcon from '@mui/icons-material/Circle';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import FitnessCenterOutlinedIcon from '@mui/icons-material/FitnessCenterOutlined';
 import { Box, CircularProgress, Divider, IconButton, Stack, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 import { GlassCard } from '@components/common/GlassCard';
 import { usePrograms } from '@hooks/programs/usePrograms';
@@ -17,6 +18,7 @@ import { useAsyncTask } from '@hooks/useAsyncTask';
 export function AthleteProgramsWidget(): React.JSX.Element {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const theme = useTheme();
     const { create: createRecord, list: listRecords } = useProgramRecords();
     const { execute: runTask } = useAsyncTask();
 
@@ -74,11 +76,14 @@ export function AthleteProgramsWidget(): React.JSX.Element {
     const loading = programsLoading || recordsLoading;
 
     return (
-        <GlassCard onClick={() => navigate('/programs-athlete')}>
+        <GlassCard
+            onClick={() => navigate('/programs-athlete')}
+            accentColor={theme.palette.success.main}
+        >
             <Stack spacing={2}>
                 {/* Header */}
                 <Stack direction="row" alignItems="center" spacing={2}>
-                    <FitnessCenterOutlinedIcon sx={{ color: 'warning.main', fontSize: 40 }} />
+                    <FitnessCenterOutlinedIcon sx={{ color: 'success.main', fontSize: 40 }} />
                     <Typography variant="h6" fontWeight="bold" color="text.secondary">
                         {t('dashboard.summary.programs')}
                     </Typography>
@@ -86,7 +91,7 @@ export function AthleteProgramsWidget(): React.JSX.Element {
 
                 {loading ? (
                     <Box display="flex" justifyContent="center" p={2}>
-                        <CircularProgress size={24} color="warning" />
+                        <CircularProgress size={24} color="success" />
                     </Box>
                 ) : programs.length === 0 ? (
                     <Typography variant="body2" color="text.secondary" align="center">
@@ -99,7 +104,6 @@ export function AthleteProgramsWidget(): React.JSX.Element {
                                 {/* Program Label */}
                                 <TextWithTooltip
                                     tooltipTitle={program.label}
-                                    maxLines={1}
                                     variant="subtitle1"
                                     fontWeight="bold"
                                 />
@@ -135,7 +139,6 @@ export function AthleteProgramsWidget(): React.JSX.Element {
                                                     <CircleIcon sx={{ fontSize: 6, color: 'text.disabled' }} />
                                                     <TextWithTooltip
                                                         tooltipTitle={session.label}
-                                                        maxLines={1}
                                                         variant="body2"
                                                         color="text.secondary"
                                                     />
