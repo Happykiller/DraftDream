@@ -108,7 +108,6 @@ export const MealPlanBuilderPanelLibraryMeal = React.memo(function MealPlanBuild
         tooltipTitle={formatMealSummary(meal)}
         variant="caption"
         color="text.secondary"
-        maxLines={2}
       />
     </LibraryCard>
   );
