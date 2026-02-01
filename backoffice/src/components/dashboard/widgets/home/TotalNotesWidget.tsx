@@ -25,7 +25,7 @@ export const TotalNotesWidget: React.FC<TotalNotesWidgetProps> = ({
                 value={totalNotes}
                 icon={StickyNote2}
                 colSpan={1}
-                color={theme.palette.warning.main}
+                color={theme.palette.info.main}
             />
         </React.Fragment>
     );
