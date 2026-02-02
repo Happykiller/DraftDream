@@ -521,26 +521,6 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
                   </Typography>
                 )}
               </Tooltip>
-              <Tooltip
-                title={isExercisesCollapsed ? expandExercisesLabel : collapseExercisesLabel}
-                arrow
-              >
-                <span style={{ display: 'inline-flex' }}>
-                  <IconButton
-                    size="small"
-                    onClick={handleToggleExercises}
-                    aria-label={
-                      isExercisesCollapsed ? expandExercisesLabel : collapseExercisesLabel
-                    }
-                  >
-                    {isExercisesCollapsed ? (
-                      <ExpandMore fontSize="small" />
-                    ) : (
-                      <ExpandLess fontSize="small" />
-                    )}
-                  </IconButton>
-                </span>
-              </Tooltip>
               <Tooltip title={saveSessionLabel} arrow>
                 <span style={{ display: 'inline-flex' }}>
                   <IconButton
@@ -692,6 +672,28 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
             )}
           </Stack>
         </Collapse>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Tooltip
+            title={isExercisesCollapsed ? expandExercisesLabel : collapseExercisesLabel}
+            arrow
+          >
+            <span style={{ display: 'inline-flex' }}>
+              <IconButton
+                size="small"
+                onClick={handleToggleExercises}
+                aria-label={
+                  isExercisesCollapsed ? expandExercisesLabel : collapseExercisesLabel
+                }
+              >
+                {isExercisesCollapsed ? (
+                  <ExpandMore fontSize="small" />
+                ) : (
+                  <ExpandLess fontSize="small" />
+                )}
+              </IconButton>
+            </span>
+          </Tooltip>
+        </Box>
       </Stack>
     </Paper >
   );
