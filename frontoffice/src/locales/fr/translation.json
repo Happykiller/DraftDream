@@ -1283,7 +1283,9 @@
         "move_day_up_label": "Monter la journée",
         "move_day_down_label": "Descendre la journée",
         "move_meal_up_label": "Monter le repas",
-        "move_meal_down_label": "Descendre le repas"
+        "move_meal_down_label": "Descendre le repas",
+        "collapse_meals": "Réduire les repas",
+        "expand_meals": "Déplier les repas"
       },
       "save_day_dialog": {
         "title": "Sauvegarder la journée repas",

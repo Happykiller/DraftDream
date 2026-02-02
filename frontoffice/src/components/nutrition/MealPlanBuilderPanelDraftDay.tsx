@@ -5,6 +5,8 @@ import {
   ArrowUpward,
   DeleteOutline,
   Edit,
+  ExpandLess,
+  ExpandMore,
   Save,
 } from '@mui/icons-material';
 import { alpha, useTheme } from '@mui/material/styles';
@@ -12,6 +14,7 @@ import {
   Box,
   Card,
   CardContent,
+  Collapse,
   Divider,
   IconButton,
   Stack,
@@ -35,6 +38,8 @@ type MealPlanBuilderPanelDraftDayProps = {
   index: number;
   totalDays: number;
   builderCopy: MealPlanBuilderCopy;
+  isMealsCollapsed: boolean;
+  onToggleMealsCollapse: (dayId: string) => void;
   onUpdateDay: (dayId: string, patch: DayPatch) => void;
   onRemoveDay: (dayId: string) => void;
   onMoveDayUp: (dayId: string) => void;
@@ -56,6 +61,8 @@ export const MealPlanBuilderPanelDraftDay = React.memo(function MealPlanBuilderP
   index,
   totalDays,
   builderCopy,
+  isMealsCollapsed,
+  onToggleMealsCollapse,
   onUpdateDay,
   onRemoveDay,
   onMoveDayUp,
@@ -329,6 +336,8 @@ export const MealPlanBuilderPanelDraftDay = React.memo(function MealPlanBuilderP
     [builderCopy.summary?.day_title, builderCopy.summary?.nutrition_title],
   );
   const saveDayLabel = builderCopy.structure.save_day;
+  const collapseMealsLabel = builderCopy.structure.collapse_meals;
+  const expandMealsLabel = builderCopy.structure.expand_meals;
 
   const handleSaveDay = React.useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -336,6 +345,14 @@ export const MealPlanBuilderPanelDraftDay = React.memo(function MealPlanBuilderP
       onSaveDay(day.uiId);
     },
     [day.uiId, onSaveDay],
+  );
+
+  const handleToggleMeals = React.useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.stopPropagation();
+      onToggleMealsCollapse(day.uiId);
+    },
+    [day.uiId, onToggleMealsCollapse],
   );
 
   return (
@@ -524,29 +541,48 @@ export const MealPlanBuilderPanelDraftDay = React.memo(function MealPlanBuilderP
           </Stack>
         </Box>
         <Divider flexItem sx={{ my: 1 }} />
-        <Stack spacing={1.5}>
-          {day.meals.length === 0 ? (
-            <Typography color="text.secondary" variant="body2">
-              {builderCopy.structure.add_meal_placeholder}
-            </Typography>
-          ) : (
-            day.meals.map((meal, mealIndex) => (
-              <MealPlanBuilderPanelDraftMeal
-                key={meal.uiId}
-                meal={meal}
-                index={mealIndex}
-                builderCopy={builderCopy}
-                disableMoveUp={mealIndex === 0}
-                disableMoveDown={mealIndex === day.meals.length - 1}
-                onMoveUp={() => onMoveMealUp(day.uiId, meal.uiId)}
-                onMoveDown={() => onMoveMealDown(day.uiId, meal.uiId)}
-                onEdit={() => onEditMeal(day, meal, mealIndex + 1)}
-                onRemove={() => onRemoveMeal(day.uiId, meal.uiId)}
-                onUpdate={(patch) => onUpdateMeal(day.uiId, meal.uiId, patch)}
-              />
-            ))
-          )}
-        </Stack>
+        <Collapse in={!isMealsCollapsed} timeout="auto" unmountOnExit>
+          <Stack spacing={1.5}>
+            {day.meals.length === 0 ? (
+              <Typography color="text.secondary" variant="body2">
+                {builderCopy.structure.add_meal_placeholder}
+              </Typography>
+            ) : (
+              day.meals.map((meal, mealIndex) => (
+                <MealPlanBuilderPanelDraftMeal
+                  key={meal.uiId}
+                  meal={meal}
+                  index={mealIndex}
+                  builderCopy={builderCopy}
+                  disableMoveUp={mealIndex === 0}
+                  disableMoveDown={mealIndex === day.meals.length - 1}
+                  onMoveUp={() => onMoveMealUp(day.uiId, meal.uiId)}
+                  onMoveDown={() => onMoveMealDown(day.uiId, meal.uiId)}
+                  onEdit={() => onEditMeal(day, meal, mealIndex + 1)}
+                  onRemove={() => onRemoveMeal(day.uiId, meal.uiId)}
+                  onUpdate={(patch) => onUpdateMeal(day.uiId, meal.uiId, patch)}
+                />
+              ))
+            )}
+          </Stack>
+        </Collapse>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Tooltip title={isMealsCollapsed ? expandMealsLabel : collapseMealsLabel} arrow>
+            <span style={{ display: 'inline-flex' }}>
+              <IconButton
+                size="small"
+                onClick={handleToggleMeals}
+                aria-label={isMealsCollapsed ? expandMealsLabel : collapseMealsLabel}
+              >
+                {isMealsCollapsed ? (
+                  <ExpandMore fontSize="small" />
+                ) : (
+                  <ExpandLess fontSize="small" />
+                )}
+              </IconButton>
+            </span>
+          </Tooltip>
+        </Box>
       </CardContent>
     </Card>
   );

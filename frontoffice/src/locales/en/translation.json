@@ -1278,7 +1278,9 @@
         "move_day_up_label": "Move day up",
         "move_day_down_label": "Move day down",
         "move_meal_up_label": "Move meal up",
-        "move_meal_down_label": "Move meal down"
+        "move_meal_down_label": "Move meal down",
+        "collapse_meals": "Collapse meals",
+        "expand_meals": "Expand meals"
       },
       "save_day_dialog": {
         "title": "Save meal day",
