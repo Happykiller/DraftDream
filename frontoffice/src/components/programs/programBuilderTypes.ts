@@ -155,6 +155,8 @@ export type BuilderCopy = {
       delete_exercise: string;
       add_empty_session: string;
       session_duration: string;
+      collapse_session_exercises: string;
+      expand_session_exercises: string;
       add_session_template: string;
       delete_session_template: string;
       edit_session_template: string;

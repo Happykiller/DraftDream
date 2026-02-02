@@ -766,6 +766,8 @@
           "delete_exercise": "Supprimer l'exercice",
           "add_empty_session": "Ajouter une nouvelle séance vide",
           "session_duration": "Modifier la durée de la séance",
+          "collapse_session_exercises": "Réduire les exercices",
+          "expand_session_exercises": "Déplier les exercices",
           "add_session_template": "Ajouter cette séance au programme",
           "delete_session_template": "Supprimer cette séance",
           "edit_session_template": "Modifier cette séance"

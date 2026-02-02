@@ -190,6 +190,9 @@ export function ProgramBuilderPanel({
   const [saveSessionTarget, setSaveSessionTarget] = React.useState<ProgramSession | null>(null);
   const [deleteSessionTarget, setDeleteSessionTarget] = React.useState<SessionTemplate | null>(null);
   const [editSessionTarget, setEditSessionTarget] = React.useState<SessionTemplate | null>(null);
+  const [collapsedSessions, setCollapsedSessions] = React.useState<Record<string, boolean>>({});
+  const collapseNextTemplateSessionRef = React.useRef(false);
+  const previousSessionIdsRef = React.useRef<Set<string>>(new Set());
 
   const addExerciseFallbackLabel = t('programs-coatch.builder.library.no_sessions_warning');
 
@@ -546,6 +549,66 @@ export function ProgramBuilderPanel({
     },
     [exerciseMenuAnchor, handleAddExerciseToSession, handleCloseExerciseMenu],
   );
+
+  const handleAddSessionFromTemplateClick = React.useCallback(
+    async (templateId: string) => {
+      collapseNextTemplateSessionRef.current = true;
+      await handleAddSessionFromTemplate(templateId);
+    },
+    [handleAddSessionFromTemplate],
+  );
+
+  const handleToggleSessionExercises = React.useCallback((sessionId: string) => {
+    setCollapsedSessions((prev) => ({
+      ...prev,
+      [sessionId]: !(prev[sessionId] ?? false),
+    }));
+  }, []);
+
+  React.useEffect(() => {
+    setCollapsedSessions((prev) => {
+      const sessionIds = new Set(sessions.map((session) => session.id));
+      const next: Record<string, boolean> = {};
+      let mutated = false;
+
+      Object.entries(prev).forEach(([sessionId, isCollapsed]) => {
+        if (sessionIds.has(sessionId)) {
+          next[sessionId] = isCollapsed;
+          return;
+        }
+        mutated = true;
+      });
+
+      if (!mutated && Object.keys(next).length === Object.keys(prev).length) {
+        return prev;
+      }
+
+      return next;
+    });
+  }, [sessions]);
+
+  React.useEffect(() => {
+    const previousSessionIds = previousSessionIdsRef.current;
+    const currentSessionIds = new Set(sessions.map((session) => session.id));
+
+    if (collapseNextTemplateSessionRef.current) {
+      const addedSessions = sessions.filter((session) => !previousSessionIds.has(session.id));
+
+      if (addedSessions.length > 0) {
+        setCollapsedSessions((prev) => {
+          const next = { ...prev };
+          addedSessions.forEach((session) => {
+            next[session.id] = true;
+          });
+          return next;
+        });
+      }
+
+      collapseNextTemplateSessionRef.current = false;
+    }
+
+    previousSessionIdsRef.current = currentSessionIds;
+  }, [sessions]);
 
   const handleOpenCreateExerciseDialog = React.useCallback(() => {
     setExerciseBeingEdited(null);
@@ -1072,7 +1135,7 @@ export function ProgramBuilderPanel({
                                 key={template.id}
                                 template={template}
                                 builderCopy={builderCopy}
-                                onAdd={() => handleAddSessionFromTemplate(template.id)}
+                                onAdd={() => handleAddSessionFromTemplateClick(template.id)}
                                 onEdit={() => handleOpenEditSessionDialog(template)}
                                 onDelete={() => handleOpenDeleteSessionDialog(template)}
                               />
@@ -1237,6 +1300,8 @@ export function ProgramBuilderPanel({
                                     index={index}
                                     totalSessions={sessions.length}
                                     builderCopy={builderCopy}
+                                    isExercisesCollapsed={collapsedSessions[session.id] ?? false}
+                                    onToggleExercisesCollapse={handleToggleSessionExercises}
                                     onLabelChange={handleSessionLabelChange}
                                     onDescriptionChange={handleSessionDescriptionChange}
                                     onDurationChange={handleSessionDurationChange}
