@@ -540,7 +540,6 @@ export const MealPlanBuilderPanelDraftDay = React.memo(function MealPlanBuilderP
             </Stack>
           </Stack>
         </Box>
-        <Divider flexItem sx={{ my: 1 }} />
         <Collapse in={!isMealsCollapsed} timeout="auto" unmountOnExit>
           <Stack spacing={1.5}>
             {day.meals.length === 0 ? (
