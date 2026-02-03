@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import inversify from '@src/commons/inversify';
-import { useAsyncTask } from '@hooks/useAsyncTask';
+// import { useAsyncTask } from '@hooks/useAsyncTask';
 import { useDebouncedValue } from '@hooks/useDebouncedValue';
 import { useFlashStore } from '@hooks/useFlashStore';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
@@ -67,7 +67,7 @@ export function useCoachAthleteSearch(
   reset: () => void;
 } {
   const { enabled = true, limit = 25 } = options;
-  const { execute } = useAsyncTask();
+  // const { execute } = useAsyncTask();
   const flashError = useFlashStore((state) => state.error);
   const { t } = useTranslation();
   const gql = React.useMemo(() => new GraphqlServiceFetch(inversify), []);
@@ -89,19 +89,17 @@ export function useCoachAthleteSearch(
 
       setLoading(true);
       try {
-        const { data, errors } = await execute(() =>
-          gql.send<AthleteListPayload>({
-            query: LIST_COACH_ATHLETES_QUERY,
-            operationName: 'ListCoachAthletes',
-            variables: {
-              input: {
-                page: 1,
-                limit,
-                q: search.trim() || undefined,
-              },
+        const { data, errors } = await gql.send<AthleteListPayload>({
+          query: LIST_COACH_ATHLETES_QUERY,
+          operationName: 'ListCoachAthletes',
+          variables: {
+            input: {
+              page: 1,
+              limit,
+              q: search.trim() || undefined,
             },
-          }),
-        );
+          },
+        });
 
         if (errors?.length) {
           throw new Error(errors[0].message);
@@ -118,7 +116,7 @@ export function useCoachAthleteSearch(
         setLoading(false);
       }
     },
-    [execute, flashError, gql, limit, t],
+    [flashError, gql, limit, t],
   );
 
   React.useEffect(() => {

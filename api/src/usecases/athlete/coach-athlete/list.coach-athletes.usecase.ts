@@ -3,7 +3,7 @@ import { ERRORS } from '@src/common/ERROR';
 import { normalizeError } from '@src/common/error.util';
 import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
-import { UserType } from '@services/db/dtos/user.dto';
+
 
 import { CoachAthleteUsecaseModel } from './coach-athlete.usecase.model';
 import { ListCoachAthletesUsecaseDto } from './coach-athlete.usecase.dto';
@@ -32,16 +32,8 @@ export class ListCoachAthletesUsecase {
       const includeArchived = isAdmin ? filters.includeArchived : false;
       const activeAt = isCoach ? new Date() : undefined;
       const athleteIds = await this.resolveAthleteIds(filters.q);
-      if (filters.q?.trim() && athleteIds.length === 0) {
-        return {
-          items: [],
-          total: 0,
-          page: filters.page ?? 1,
-          limit: filters.limit ?? 20,
-        };
-      }
-
       const result = await this.inversify.bddService.coachAthlete.list({
+        q: filters.q,
         coachId: isCoach ? session.userId : filters.coachId,
         athleteId: filters.athleteId,
         athleteIds,
@@ -77,7 +69,7 @@ export class ListCoachAthletesUsecase {
     while (true) {
       const res = await this.inversify.bddService.user.listUsers({
         q,
-        type: UserType.ATHLETE,
+        type: 'athlete',
         limit: pageSize,
         page,
       });

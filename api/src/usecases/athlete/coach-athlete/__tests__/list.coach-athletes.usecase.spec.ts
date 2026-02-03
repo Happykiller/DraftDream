@@ -121,14 +121,24 @@ describe('ListCoachAthletesUsecase', () => {
             limit: 50,
         });
 
+        (coachAthleteRepositoryMock.list as any).mockResolvedValue({
+            items: [],
+            total: 0,
+            page: 1,
+            limit: 10,
+        });
+
         const result = await usecase.execute(searchDto);
 
+        expect(coachAthleteRepositoryMock.list).toHaveBeenCalledWith(expect.objectContaining({
+            q: 'missing',
+            athleteIds: [],
+        }));
         expect(result).toEqual({
             items: [],
             total: 0,
             page: searchDto.page,
             limit: searchDto.limit,
         });
-        expect(coachAthleteRepositoryMock.list).not.toHaveBeenCalled();
     });
 });
