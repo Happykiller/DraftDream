@@ -6,6 +6,7 @@ import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { BddServiceMongo } from '@services/db/mongo/db.service.mongo';
 import { BddServiceCoachAthleteMongo } from '@services/db/mongo/repositories/coach-athlete.repository';
+import { BddServiceUserMongo } from '@services/db/mongo/repositories/user.repository';
 import { ListCoachAthletesUsecase } from '@src/usecases/athlete/coach-athlete/list.coach-athletes.usecase';
 import { ListCoachAthletesUsecaseDto } from '@src/usecases/athlete/coach-athlete/coach-athlete.usecase.dto';
 import { CoachAthleteUsecaseModel } from '@src/usecases/athlete/coach-athlete/coach-athlete.usecase.model';
@@ -18,6 +19,7 @@ describe('ListCoachAthletesUsecase', () => {
     let inversifyMock: MockProxy<Inversify>;
     let bddServiceMock: MockProxy<BddServiceMongo>;
     let coachAthleteRepositoryMock: MockProxy<BddServiceCoachAthleteMongo>;
+    let userRepositoryMock: MockProxy<BddServiceUserMongo>;
     let loggerMock: MockProxy<LoggerMock>;
     let usecase: ListCoachAthletesUsecase;
 
@@ -50,9 +52,11 @@ describe('ListCoachAthletesUsecase', () => {
         inversifyMock = mock<Inversify>();
         bddServiceMock = mock<BddServiceMongo>();
         coachAthleteRepositoryMock = mock<BddServiceCoachAthleteMongo>();
+        userRepositoryMock = mock<BddServiceUserMongo>();
         loggerMock = mock<LoggerMock>();
 
         (bddServiceMock as unknown as { coachAthlete: BddServiceCoachAthleteMongo }).coachAthlete = coachAthleteRepositoryMock;
+        (bddServiceMock as unknown as { user: BddServiceUserMongo }).user = userRepositoryMock;
         inversifyMock.bddService = bddServiceMock as unknown as BddServiceMongo;
         inversifyMock.loggerService = loggerMock;
 
@@ -100,5 +104,31 @@ describe('ListCoachAthletesUsecase', () => {
 
         await expect(usecase.execute(dto)).rejects.toThrow(ERRORS.LIST_COACH_ATHLETES_USECASE);
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining(error.message));
+    });
+
+    it('should return empty when no athlete matches the search query', async () => {
+        const searchDto: ListCoachAthletesUsecaseDto = {
+            page: 1,
+            limit: 10,
+            q: 'missing',
+            session: { userId: 'coach-1', role: Role.COACH },
+        };
+
+        (userRepositoryMock.listUsers as any).mockResolvedValue({
+            items: [],
+            total: 0,
+            page: 1,
+            limit: 50,
+        });
+
+        const result = await usecase.execute(searchDto);
+
+        expect(result).toEqual({
+            items: [],
+            total: 0,
+            page: searchDto.page,
+            limit: searchDto.limit,
+        });
+        expect(coachAthleteRepositoryMock.list).not.toHaveBeenCalled();
     });
 });

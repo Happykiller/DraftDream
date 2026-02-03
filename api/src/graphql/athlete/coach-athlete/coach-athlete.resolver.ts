@@ -84,6 +84,7 @@ export class CoachAthleteResolver {
       athleteId: input?.athleteId,
       is_active: input?.is_active,
       createdBy: input?.createdBy,
+      q: input?.q,
       limit: input?.limit,
       page: input?.page,
       includeArchived: input?.includeArchived,

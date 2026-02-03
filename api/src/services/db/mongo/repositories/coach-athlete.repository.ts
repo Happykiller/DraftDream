@@ -116,6 +116,7 @@ export class BddServiceCoachAthleteMongo {
     const {
       coachId,
       athleteId,
+      athleteIds,
       is_active,
       createdBy,
       activeAt,
@@ -128,6 +129,9 @@ export class BddServiceCoachAthleteMongo {
     const filter: Filter<CoachAthleteDoc> = {};
     if (coachId?.trim()) filter.coachId = coachId.trim();
     if (athleteId?.trim()) filter.athleteId = athleteId.trim();
+    if (athleteIds?.length) {
+      filter.athleteId = { $in: athleteIds } as Filter<CoachAthleteDoc>['athleteId'];
+    }
     if (createdBy?.trim()) filter.createdBy = createdBy.trim();
     if (typeof is_active === 'boolean') filter.is_active = is_active;
     if (activeAt) {

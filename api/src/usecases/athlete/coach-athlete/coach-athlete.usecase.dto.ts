@@ -23,6 +23,7 @@ export interface ListCoachAthletesUsecaseDto {
   athleteId?: string;
   is_active?: boolean;
   createdBy?: string;
+  q?: string;
   includeArchived?: boolean;
   limit?: number;
   page?: number;

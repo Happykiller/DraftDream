@@ -26,6 +26,7 @@ export interface GetCoachAthleteLinkDto {
 export interface ListCoachAthleteLinksDto {
   coachId?: string;
   athleteId?: string;
+  athleteIds?: string[];
   is_active?: boolean;
   createdBy?: string;
   activeAt?: Date;
