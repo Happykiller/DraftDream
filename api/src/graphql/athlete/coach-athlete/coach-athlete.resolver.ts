@@ -77,6 +77,7 @@ export class CoachAthleteResolver {
   @Auth(Role.ADMIN, Role.COACH)
   async coachAthlete_list(
     @Args('input', { nullable: true }) input?: ListCoachAthletesInput,
+    @Context('req') req?: any,
   ): Promise<CoachAthleteListGql> {
     const result = await inversify.listCoachAthletesUsecase.execute({
       coachId: input?.coachId,
@@ -86,6 +87,7 @@ export class CoachAthleteResolver {
       limit: input?.limit,
       page: input?.page,
       includeArchived: input?.includeArchived,
+      session: { userId: req?.user?.id, role: req?.user?.role },
     });
     return {
       items: result.items.map(mapCoachAthleteUsecaseToGql),

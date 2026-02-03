@@ -28,6 +28,7 @@ export interface ListCoachAthleteLinksDto {
   athleteId?: string;
   is_active?: boolean;
   createdBy?: string;
+  activeAt?: Date;
   includeArchived?: boolean;
   limit?: number;
   page?: number;

@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from '@jest/globals';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { ERRORS } from '@src/common/ERROR';
+import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
 import { BddServiceMongo } from '@services/db/mongo/db.service.mongo';
 import { BddServiceCoachAthleteMongo } from '@services/db/mongo/repositories/coach-athlete.repository';
@@ -24,6 +25,7 @@ describe('ListCoachAthletesUsecase', () => {
         coachId: 'coach-1',
         page: 1,
         limit: 10,
+        session: { userId: 'admin-1', role: Role.ADMIN },
     };
 
     const item: CoachAthleteUsecaseModel = {
@@ -72,6 +74,24 @@ describe('ListCoachAthletesUsecase', () => {
             page: dto.page,
         }));
         expect(result).toEqual(listResult);
+    });
+
+    it('should scope coach requests to the current coach and active dates', async () => {
+        const coachDto: ListCoachAthletesUsecaseDto = {
+            coachId: 'other-coach',
+            page: 1,
+            limit: 10,
+            session: { userId: 'coach-1', role: Role.COACH },
+        };
+
+        (coachAthleteRepositoryMock.list as any).mockResolvedValue(listResult);
+
+        await usecase.execute(coachDto);
+
+        expect(coachAthleteRepositoryMock.list).toHaveBeenCalledWith(expect.objectContaining({
+            coachId: 'coach-1',
+            activeAt: expect.any(Date),
+        }));
     });
 
     it('should log and throw error when repository throws', async () => {
