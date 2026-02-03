@@ -135,7 +135,10 @@ export function useCoachAthleteSearch(
     setQuery('');
     setResults([]);
     setLoading(false);
-  }, []);
+    if (enabled) {
+      void loadAthletes('');
+    }
+  }, [enabled, loadAthletes]);
 
   return {
     options: results,
