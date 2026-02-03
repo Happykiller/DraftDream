@@ -131,11 +131,20 @@ export class BddServiceCoachAthleteMongo {
     if (createdBy?.trim()) filter.createdBy = createdBy.trim();
     if (typeof is_active === 'boolean') filter.is_active = is_active;
     if (activeAt) {
-      filter.startDate = { $lte: activeAt } as Filter<CoachAthleteDoc>['startDate'];
-      filter.$or = [
-        { endDate: { $exists: false } },
-        { endDate: { $gte: activeAt } },
-      ] as Filter<CoachAthleteDoc>['$or'];
+      filter.$and = [
+        {
+          $or: [
+            { startDate: { $exists: false } },
+            { startDate: { $lte: activeAt } },
+          ],
+        },
+        {
+          $or: [
+            { endDate: { $exists: false } },
+            { endDate: { $gte: activeAt } },
+          ],
+        },
+      ];
     }
     if (!includeArchived) {
       filter.deletedAt = { $exists: false } as Filter<CoachAthleteDoc>['deletedAt'];
