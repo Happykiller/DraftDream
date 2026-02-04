@@ -97,7 +97,7 @@ export const router = createBrowserRouter([
         path: '/athletes/information',
         lazy: async () => {
           const mod = await import('@src/pages/AthleteInformation');
-          return { Component: withTitle(mod.AthleteInformation, 'athlete_information.title') };
+          return { Component: withTitle(mod.AthleteInformation, 'athletes.information.title') };
         },
       },
       {

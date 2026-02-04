@@ -747,6 +747,9 @@
       "liaison": "Liaison",
       "information": "Information"
     },
+    "liaison": {
+      "title": "Athlete Liaison"
+    },
     "information": {
       "title": "Athlete information",
       "search_placeholder": "Search athletes...",

@@ -139,7 +139,7 @@ export function ProgramRecordExerciseCard({
                                     {t('program_record.form.series_label', { index: set.index })}
                                 </Typography>
                                 <Grid container spacing={1.5}>
-                                    <Grid size={{ xs: 4 }}>
+                                    <Grid size={{ xs: 3 }}>
                                         <TextField
                                             label={t('program_record.form.repetitions_label')}
                                             value={set.repetitions ?? ''}
@@ -151,7 +151,7 @@ export function ProgramRecordExerciseCard({
                                             fullWidth
                                         />
                                     </Grid>
-                                    <Grid size={{ xs: 4 }}>
+                                    <Grid size={{ xs: 3 }}>
                                         <TextField
                                             label={t('program_record.form.charge_label')}
                                             value={set.charge ?? ''}
@@ -163,7 +163,7 @@ export function ProgramRecordExerciseCard({
                                             fullWidth
                                         />
                                     </Grid>
-                                    <Grid size={{ xs: 2 }}>
+                                    <Grid size={{ xs: 3 }}>
                                         <TextField
                                             label={t('program_record.form.rpe_label')}
                                             value={set.rpe ?? ''}
@@ -176,7 +176,7 @@ export function ProgramRecordExerciseCard({
                                             fullWidth
                                         />
                                     </Grid>
-                                    <Grid size={{ xs: 2 }} display="flex" alignItems="center">
+                                    <Grid size={{ xs: 3 }} display="flex" alignItems="center">
                                         <Tooltip title={t('program_record.form.done_label')}>
                                             <Checkbox
                                                 checked={Boolean(set.done)}
