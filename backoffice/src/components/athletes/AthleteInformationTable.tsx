@@ -5,6 +5,7 @@ import { Box, Button, IconButton, Stack, TextField, Tooltip, useMediaQuery } fro
 import { useTheme } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import { useTranslation } from 'react-i18next';
 
 import type { AthleteInfo } from '@hooks/useAthleteInfos';
@@ -23,6 +24,7 @@ export interface AthleteInformationTableProps {
   onCreate: () => void;
   onEdit: (row: AthleteInfo) => void;
   onDelete: (row: AthleteInfo) => void;
+  onRefresh: () => void;
 }
 
 /** Presentational table to inspect athlete profiles. */
@@ -39,6 +41,7 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
   onCreate,
   onEdit,
   onDelete,
+  onRefresh,
 }: AthleteInformationTableProps): React.JSX.Element {
   const { t } = useTranslation();
   const fmtDate = useDateFormatter();
@@ -165,6 +168,11 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
           sx={{ maxWidth: 360 }}
         />
         <Box sx={{ flex: 1 }} />
+        <Tooltip title={t('common.buttons.refresh')}>
+          <IconButton aria-label={t('common.buttons.refresh')} onClick={onRefresh}>
+            <RefreshIcon />
+          </IconButton>
+        </Tooltip>
         <Button variant="contained" onClick={onCreate}>
           {t('athletes.information.table.create')}
         </Button>

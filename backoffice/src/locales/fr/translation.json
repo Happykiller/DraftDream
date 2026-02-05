@@ -764,7 +764,7 @@
         "delete_confirm": "Archiver"
       },
       "table": {
-        "create": "Nouvelle information athlète",
+        "create": "Nouveau",
         "columns": {
           "athlete": "Athlète",
           "email": "Email",

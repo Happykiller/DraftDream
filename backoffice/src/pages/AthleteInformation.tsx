@@ -25,7 +25,7 @@ export function AthleteInformation(): React.JSX.Element {
     if (debounced !== q) setQ(debounced);
   }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update, remove } = useAthleteInfos({
+  const { items, total, loading, create, update, remove, reload } = useAthleteInfos({
     page,
     limit,
     q: debounced,
@@ -85,6 +85,7 @@ export function AthleteInformation(): React.JSX.Element {
         onCreate={handleCreate}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        onRefresh={reload}
       />
       <AthleteInformationDialog
         open={isDialogOpen}
