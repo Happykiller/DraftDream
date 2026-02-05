@@ -44,6 +44,7 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
   const fmtDate = useDateFormatter();
   const theme = useTheme();
   const isXl = useMediaQuery(theme.breakpoints.up('xl'));
+  const isXxl = useMediaQuery(theme.breakpoints.up(1920));
 
   React.useEffect(() => {
     if (query && page !== 1) onPageChange(1);
@@ -52,10 +53,17 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
   const columns = React.useMemo<GridColDef<AthleteInfo>[]>(
     () => [
       {
-        field: 'email',
-        headerName: t('athletes.information.table.columns.email'),
-        flex: 1,
-        valueGetter: (_value: unknown, row: AthleteInfo) => row.athlete?.email ?? '—',
+        field: 'athlete',
+        headerName: t('athletes.information.table.columns.athlete'),
+        flex: 1.2,
+        valueGetter: (_value: unknown, row: AthleteInfo) => {
+          const firstName = row.athlete?.first_name ?? '';
+          const lastName = row.athlete?.last_name ?? '';
+          const name = `${lastName} ${firstName}`.trim();
+          const email = row.athlete?.email ?? '';
+          if (name && email) return `${name} — ${email}`;
+          return name || email || '—';
+        },
       },
       {
         field: 'phone',
@@ -63,15 +71,15 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
         flex: 0.8,
         valueGetter: (_value: unknown, row: AthleteInfo) => row.athlete?.phone ?? '—',
       },
-      {
-        field: 'level',
-        headerName: t('athletes.information.table.columns.level'),
-        flex: 0.8,
-        valueGetter: (_value: unknown, row: AthleteInfo) => row.level?.label ?? '—',
-        sortComparator: (a, b) => String(a).localeCompare(String(b)),
-      },
       ...(isXl
         ? [
+          {
+            field: 'level',
+            headerName: t('athletes.information.table.columns.level'),
+            flex: 0.8,
+            valueGetter: (_value: unknown, row: AthleteInfo) => row.level?.label ?? '—',
+            sortComparator: (a, b) => String(a).localeCompare(String(b)),
+          },
           {
             field: 'company',
             headerName: t('athletes.information.table.columns.company'),
@@ -88,6 +96,18 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
               const label = `${city}${city && country ? ', ' : ''}${country}`;
               return label || '—';
             },
+          },
+        ]
+        : []),
+      ...(isXxl
+        ? [
+          {
+            field: 'createdAt',
+            headerName: t('athletes.information.table.columns.created_at'),
+            flex: 1,
+            minWidth: 180,
+            valueGetter: (_value: unknown, row: AthleteInfo) => row.createdAt ?? null,
+            valueFormatter: (value: any) => fmtDate(value),
           },
           {
             field: 'updatedAt',
@@ -129,7 +149,7 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
         minWidth: 120,
       },
     ],
-    [fmtDate, isXl, onDelete, onEdit, t],
+    [fmtDate, isXl, isXxl, onDelete, onEdit, t],
   );
 
   return (

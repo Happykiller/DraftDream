@@ -766,11 +766,13 @@
       "table": {
         "create": "Nouvelle information athlète",
         "columns": {
+          "athlete": "Athlète",
           "email": "Email",
           "phone": "Téléphone",
           "level": "Niveau",
           "company": "Entreprise",
           "address": "Localisation",
+          "created_at": "Créé le",
           "updated_at": "Mis à jour le"
         }
       }

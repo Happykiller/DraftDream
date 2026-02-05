@@ -765,11 +765,13 @@
       "table": {
         "create": "New athlete information",
         "columns": {
+          "athlete": "Athlete",
           "email": "Email",
           "phone": "Phone",
           "level": "Level",
           "company": "Company",
           "address": "Location",
+          "created_at": "Created on",
           "updated_at": "Updated on"
         }
       }
