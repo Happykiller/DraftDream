@@ -56,17 +56,21 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
   const columns = React.useMemo<GridColDef<AthleteInfo>[]>(
     () => [
       {
-        field: 'athlete',
-        headerName: t('athletes.information.table.columns.athlete'),
+        field: 'fullName',
+        headerName: t('common.labels.name'),
         flex: 1.2,
         valueGetter: (_value: unknown, row: AthleteInfo) => {
           const firstName = row.athlete?.first_name ?? '';
           const lastName = row.athlete?.last_name ?? '';
           const name = `${lastName} ${firstName}`.trim();
-          const email = row.athlete?.email ?? '';
-          if (name && email) return `${name} — ${email}`;
-          return name || email || '—';
+          return name || '—';
         },
+      },
+      {
+        field: 'email',
+        headerName: t('common.labels.email'),
+        flex: 1,
+        valueGetter: (_value: unknown, row: AthleteInfo) => row.athlete?.email ?? '—',
       },
       {
         field: 'phone',
