@@ -1,4 +1,5 @@
 import * as React from 'react';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Tooltip from '@mui/material/Tooltip';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -6,7 +7,17 @@ import ReplayIcon from '@mui/icons-material/Replay';
 import CircleIcon from '@mui/icons-material/Circle';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import FitnessCenterOutlinedIcon from '@mui/icons-material/FitnessCenterOutlined';
-import { Box, CircularProgress, Divider, IconButton, Stack, Typography } from '@mui/material';
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    Box,
+    CircularProgress,
+    Divider,
+    IconButton,
+    Stack,
+    Typography,
+} from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 import { GlassCard } from '@components/common/GlassCard';
@@ -74,6 +85,63 @@ export function AthleteProgramsWidget(): React.JSX.Element {
     }, [createRecord, navigate, activeRecords, runTask]);
 
     const loading = programsLoading || recordsLoading;
+    const primaryPrograms = programs.slice(0, 2);
+    const extraPrograms = programs.slice(2);
+    const [expanded, setExpanded] = React.useState(false);
+
+    // Render a program card with its sessions.
+    const renderProgram = React.useCallback((program: typeof programs[number]) => (
+        <Stack key={program.id} spacing={1}>
+            <TextWithTooltip
+                tooltipTitle={program.label}
+                variant="subtitle1"
+                fontWeight="bold"
+            />
+
+            {program.sessions && program.sessions.length > 0 ? (
+                <Stack spacing={0.5} pl={2}>
+                    {program.sessions.map((session) => {
+                        const isActive = activeRecords.has(`${program.id}_${session.id}`);
+                        const tooltipText = isActive ? t('common.resume', 'Resume') : t('common.play', 'Start');
+
+                        return (
+                            <Stack
+                                key={session.id}
+                                direction="row"
+                                alignItems="center"
+                                spacing={1}
+                            >
+                                <Tooltip title={tooltipText}>
+                                    <IconButton
+                                        size="small"
+                                        color="primary"
+                                        onClick={(e) => handlePlayOrResume(e, program.id, session.id)}
+                                        sx={{ p: 0.5 }}
+                                    >
+                                        {isActive ? (
+                                            <ReplayIcon fontSize="small" />
+                                        ) : (
+                                            <PlayArrowIcon fontSize="small" />
+                                        )}
+                                    </IconButton>
+                                </Tooltip>
+                                <CircleIcon sx={{ fontSize: 6, color: 'text.disabled' }} />
+                                <TextWithTooltip
+                                    tooltipTitle={session.label}
+                                    variant="body2"
+                                    color="text.secondary"
+                                />
+                            </Stack>
+                        );
+                    })}
+                </Stack>
+            ) : (
+                <Typography variant="caption" color="text.disabled" pl={2}>
+                    {t('common.no_sessions', 'No sessions')}
+                </Typography>
+            )}
+        </Stack>
+    ), [activeRecords, handlePlayOrResume, t]);
 
     return (
         <GlassCard
@@ -99,60 +167,32 @@ export function AthleteProgramsWidget(): React.JSX.Element {
                     </Typography>
                 ) : (
                     <Stack spacing={2} divider={<Divider flexItem sx={{ opacity: 0.5 }} />}>
-                        {programs.map((program) => (
-                            <Stack key={program.id} spacing={1}>
-                                {/* Program Label */}
-                                <TextWithTooltip
-                                    tooltipTitle={program.label}
-                                    variant="subtitle1"
-                                    fontWeight="bold"
-                                />
-
-                                {/* Sessions List */}
-                                {program.sessions && program.sessions.length > 0 ? (
-                                    <Stack spacing={0.5} pl={2}>
-                                        {program.sessions.map((session) => {
-                                            const isActive = activeRecords.has(`${program.id}_${session.id}`);
-                                            const tooltipText = isActive ? t('common.resume', 'Resume') : t('common.play', 'Start');
-
-                                            return (
-                                                <Stack
-                                                    key={session.id}
-                                                    direction="row"
-                                                    alignItems="center"
-                                                    spacing={1}
-                                                >
-                                                    <Tooltip title={tooltipText}>
-                                                        <IconButton
-                                                            size="small"
-                                                            color="primary"
-                                                            onClick={(e) => handlePlayOrResume(e, program.id, session.id)}
-                                                            sx={{ p: 0.5 }}
-                                                        >
-                                                            {isActive ? (
-                                                                <ReplayIcon fontSize="small" />
-                                                            ) : (
-                                                                <PlayArrowIcon fontSize="small" />
-                                                            )}
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                    <CircleIcon sx={{ fontSize: 6, color: 'text.disabled' }} />
-                                                    <TextWithTooltip
-                                                        tooltipTitle={session.label}
-                                                        variant="body2"
-                                                        color="text.secondary"
-                                                    />
-                                                </Stack>
-                                            );
-                                        })}
-                                    </Stack>
-                                ) : (
-                                    <Typography variant="caption" color="text.disabled" pl={2}>
-                                        {t('common.no_sessions', 'No sessions')}
+                        {primaryPrograms.map(renderProgram)}
+                        {extraPrograms.length > 0 && (
+                            <Accordion
+                                elevation={0}
+                                disableGutters
+                                expanded={expanded}
+                                onChange={(event, nextExpanded) => {
+                                    event.stopPropagation();
+                                    setExpanded(nextExpanded);
+                                }}
+                                sx={{ bgcolor: 'transparent' }}
+                            >
+                                <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ px: 0 }}>
+                                    <Typography variant="body2" color="text.secondary">
+                                        {expanded
+                                            ? t('dashboard.summary.show_less')
+                                            : t('dashboard.summary.show_more', { count: extraPrograms.length })}
                                     </Typography>
-                                )}
-                            </Stack>
-                        ))}
+                                </AccordionSummary>
+                                <AccordionDetails sx={{ px: 0, pt: 0 }}>
+                                    <Stack spacing={2} divider={<Divider flexItem sx={{ opacity: 0.5 }} />}>
+                                        {extraPrograms.map(renderProgram)}
+                                    </Stack>
+                                </AccordionDetails>
+                            </Accordion>
+                        )}
                     </Stack>
                 )}
             </Stack>

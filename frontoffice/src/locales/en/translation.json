@@ -72,7 +72,9 @@
       "clients": "Clients",
       "prospects": "Prospects",
       "programs": "Programs",
-      "nutrition": "Nutrition plans"
+      "nutrition": "Nutrition plans",
+      "show_more": "Show more ({{count}})",
+      "show_less": "Show less"
     },
     "tasksNotes": {
       "title": "Tasks & Notes",
