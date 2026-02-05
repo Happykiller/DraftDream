@@ -18,6 +18,9 @@ export class CreateUserUsecase {
       const hashed = await this.inversify.cryptService.hash({ message: dto.password });
       const toCreate = { ...dto, password: hashed };
       const user: User = await this.inversify.bddService.user.createUser(toCreate);
+      if (user.type === 'athlete') {
+        await this.ensureAthleteInfoEntry(user.id, dto.createdBy);
+      }
 
       return {
         id: user.id,
@@ -37,5 +40,20 @@ export class CreateUserUsecase {
       this.inversify.loggerService.error(`CreateUserUsecase#execute=>${e?.message ?? e}`);
       throw normalizeError(e, ERRORS.CREATE_USER_USECASE);
     }
+  }
+
+  /**
+   * Ensures an athlete info entry exists for a newly created athlete.
+   */
+  private async ensureAthleteInfoEntry(userId: string, createdBy: string): Promise<void> {
+    const existing = await this.inversify.bddService.athleteInfo.getByUserId(userId);
+    if (existing) {
+      return;
+    }
+
+    await this.inversify.bddService.athleteInfo.create({
+      userId,
+      createdBy,
+    });
   }
 }
