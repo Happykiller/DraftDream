@@ -85,7 +85,7 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
             headerName: t('athletes.information.table.columns.level'),
             flex: 0.8,
             valueGetter: (_value: unknown, row: AthleteInfo) => row.level?.label ?? '—',
-            sortComparator: (a, b) => String(a).localeCompare(String(b)),
+            sortComparator: (a: unknown, b: unknown) => String(a).localeCompare(String(b)),
           },
           {
             field: 'company',
