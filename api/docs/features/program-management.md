@@ -1,113 +1,30 @@
 # Feature: Sport Program Management
 
 ## Description
-The sport program management feature allows coaches and admins to create, organize, and manage training programs. Programs consist of multiple sessions containing exercises, with support for localization, categorization, and detailed program metadata.
+Manage training programs composed of session snapshots. This feature exposes create/read/list/update and delete operations with ownership and role-based controls.
 
 ## Roles
-- **ADMIN**: Full access to all programs
-- **COACH**: Can create and manage own programs
-- **ATHLETE**: Can view assigned programs
-
----
-
-## Scenario: Create a new training program
-
-**Given** a coach is authenticated with ID `coach-1`
-
-**When** the coach creates a new program:
-```json
-{
-  "label": "Full Body Transformation",
-  "locale": "fr",
-  "description": "Complete 12-week transformation program",
-  "visibility": "PUBLIC",
-  "duration": 12,
-  "frequency": 3,
-  "sessions": [
-    {
-      "label": "Upper Body Strength",
-      "description": "Focus on chest, back, shoulders",
-      "order": 1
-    },
-    {
-      "label": "Lower Body Power",
-      "description": "Legs and glutes development",
-      "order": 2
-    }
-  ],
-  "createdBy": "coach-1"
-}
-```
-
-**Then** the system should:
-
-3. Create the program with all sessions
-4. Return the complete program structure
-
----
-
-
-
-## Scenario: List programs with filters
-
-**Given** multiple programs exist:
-  - Program A: locale=`fr`, visibility=`PUBLIC`
-  - Program B: locale=`en`, visibility=`PUBLIC`
-  - Program C: locale=`fr`, visibility=`PRIVATE`
-
-**When** a user requests programs with filters:
-```json
-{
-  "locale": "fr",
-  "visibility": "PUBLIC"
-}
-```
-
-**Then** the system should return only Program A.
-
----
+- **ADMIN**: Full access across all programs.
+- **COACH**: Create programs and manage owned programs.
+- **ATHLETE**: Read/list only when allowed by assignment and visibility rules.
 
 ## Business Rules
-
-### Slug Generation
-
-
-### Program Structure
-- **Label**: Display name (required).
-
-- **Locale**: Language (en, fr, etc.).
-- **Duration**: Duration value.
-- **Frequency**: Frequency value.
-- **Visibility**: PUBLIC or PRIVATE.
-
-### Localization
-- Programs are locale-specific.
-
----
+- Visibility values are limited to `PUBLIC` and `PRIVATE`.
+- Create: `ADMIN` and `COACH`.
+- Read/Get and List: `ADMIN`, `COACH`, `ATHLETE`.
+- Update: owner or admin.
+- Soft delete: owner or admin.
+- Hard delete (`program_delete`): admin only (GraphQL guard).
 
 ## CRUD Operations
-
-### Create Program
-- **Use Case**: `CreateProgramUsecase`
-- **Authorization**: COACH (own), ADMIN
-
-### Get Program  
-- **Use Case**: `GetProgramUsecase`
-- **Authorization**: ALL roles
-
-### List Programs
-- **Use Case**: `ListProgramsUsecase`
-- **Authorization**: ALL roles
-
-### Update Program
-- **Use Case**: `UpdateProgramUsecase`
-- **Authorization**: Owner COACH, ADMIN
-
-### Delete Program
-- **Use Case**: `DeleteProgramUsecase`
-- **Authorization**: Owner COACH, ADMIN
-
----
+| Operation | GraphQL operation | Use case | Roles |
+| --- | --- | --- | --- |
+| Create | `program_create` | `CreateProgramUsecase` | ADMIN, COACH |
+| Get | `program_get` | `GetProgramUsecase` | ADMIN, COACH, ATHLETE |
+| List | `program_list` | `ListProgramsUsecase` | ADMIN, COACH, ATHLETE |
+| Update | `program_update` | `UpdateProgramUsecase` | ADMIN, COACH |
+| Soft delete | `program_softDelete` | `DeleteProgramUsecase` | ADMIN, COACH |
+| Hard delete | `program_delete` | `HardDeleteProgramUsecase` | ADMIN |
 
 ## GraphQL Operations
 
@@ -117,58 +34,42 @@ mutation ProgramCreate($input: CreateProgramInput!) {
   program_create(input: $input) {
     id
     label
-
     locale
     description
     duration
     frequency
+    visibility
     sessions {
       id
       label
-
       order
     }
-    visibility
   }
 }
 ```
 
-### Get Program
+### Update Program
 ```graphql
-query ProgramGet($id: ID!) {
-  program_get(id: $id) {
+mutation ProgramUpdate($input: UpdateProgramInput!) {
+  program_update(input: $input) {
     id
     label
-
-    duration
-    frequency
-    visibility
+    description
+    updatedAt
   }
 }
 ```
 
-### List Programs
+### Soft Delete Program
 ```graphql
-query ProgramList($input: ListProgramsInput) {
-  program_list(input: $input) {
-    items {
-      id
-      label
-
-      duration
-      frequency
-      visibility
-    }
-  }
+mutation ProgramSoftDelete($id: ID!) {
+  program_softDelete(id: $id)
 }
 ```
 
----
-
-## Related Features
-
-### Sessions
-- Programs contain multiple sessions.
-
-### Exercises
-- Sessions contain exercises.
+### Hard Delete Program
+```graphql
+mutation ProgramHardDelete($id: ID!) {
+  program_delete(id: $id)
+}
+```
