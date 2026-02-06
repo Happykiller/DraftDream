@@ -1,38 +1,41 @@
 import { UnauthorizedException } from '@nestjs/common';
-import { Inversify } from '@src/inversify/investify';
+
+import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Role } from '@src/common/role.enum';
+import { Inversify } from '@src/inversify/investify';
+
 import { DeleteProgramRecordUsecaseDto } from './program-record.usecase.dto';
 
 /**
  * Hard deletes a program record.
- * Typically reserved for admins or specific cleanup scenarios.
+ * Allowed for ADMIN or the record owner.
  */
 export class HardDeleteProgramRecordUsecase {
-    constructor(private inversify: Inversify) { }
+  constructor(private readonly inversify: Inversify) { }
 
-    async execute(dto: DeleteProgramRecordUsecaseDto): Promise<boolean> {
-        const { id, session } = dto;
+  async execute(dto: DeleteProgramRecordUsecaseDto): Promise<boolean> {
+    try {
+      const { id, session } = dto;
+      const record = await this.inversify.bddService.programRecord.get({ id });
 
-        const record = await this.inversify.bddService.programRecord.get({ id });
+      if (!record) {
+        if (session.role === Role.ADMIN) return false;
+        throw new Error('PROGRAM_RECORD_NOT_FOUND');
+      }
 
-        // If not found, only Admin might care or we just return false
-        if (!record) {
-            if (session.role === Role.ADMIN) return false;
-            throw new Error('PROGRAM_RECORD_NOT_FOUND');
-        }
+      if (session.role !== Role.ADMIN && record.userId !== session.userId && record.createdBy !== session.userId) {
+        throw new UnauthorizedException('NOT_AUTHORIZED_TO_HARD_DELETE_PROGRAM_RECORD');
+      }
 
-        // Permission check
-        // Allowing ADMIN, and potentially OWNERs if the product requirement allows users to permanently delete their data.
-        // Given the task description asked for "apis pour delete... et une autre en hard delete" without restricting roles strictly in the prompt,
-        // I will mirror the soft delete permissions but maybe safeguard it more? 
-        // Usually Hard Delete is Admin only, but if data privacy is concerned, user might hard delete.
-        // I'll stick to: Admin can always delete. Users can delete their own.
-        if (session.role !== Role.ADMIN) {
-            if (record.userId !== session.userId && record.createdBy !== session.userId) {
-                throw new UnauthorizedException('NOT_AUTHORIZED_TO_HARD_DELETE_PROGRAM_RECORD');
-            }
-        }
+      return await this.inversify.bddService.programRecord.hardDelete(id);
+    } catch (error: any) {
+      if (error instanceof UnauthorizedException || error?.message === 'PROGRAM_RECORD_NOT_FOUND') {
+        throw error;
+      }
 
-        return this.inversify.bddService.programRecord.hardDelete(id);
+      this.inversify.loggerService.error(`HardDeleteProgramRecordUsecase#execute => ${error?.message ?? error}`);
+      throw normalizeError(error, ERRORS.HARD_DELETE_PROGRAM_RECORD_USECASE);
     }
+  }
 }

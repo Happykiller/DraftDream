@@ -1,12 +1,16 @@
 import { UnauthorizedException } from '@nestjs/common';
-import { Inversify } from '@src/inversify/investify';
+
+import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Role } from '@src/common/role.enum';
+import { Inversify } from '@src/inversify/investify';
+
 interface DeleteExerciseUsecaseDto {
-    id: string;
-    session: {
-        userId: string;
-        role: Role;
-    };
+  id: string;
+  session: {
+    userId: string;
+    role: Role;
+  };
 }
 
 /**
@@ -14,24 +18,30 @@ interface DeleteExerciseUsecaseDto {
  * Allowed for ADMIN or the entity owner (createdBy).
  */
 export class HardDeleteExerciseUsecase {
-    constructor(private inversify: Inversify) { }
+  constructor(private readonly inversify: Inversify) { }
 
-    async execute(dto: DeleteExerciseUsecaseDto): Promise<boolean> {
-        const { id, session } = dto;
+  async execute(dto: DeleteExerciseUsecaseDto): Promise<boolean> {
+    try {
+      const { id, session } = dto;
+      const entity = await this.inversify.bddService.exercise.get({ id });
 
-        const entity = await this.inversify.bddService.exercise.get({ id });
+      if (!entity) {
+        if (session.role === Role.ADMIN) return false;
+        throw new Error('EXERCISE_NOT_FOUND');
+      }
 
-        if (!entity) {
-            if (session.role === Role.ADMIN) return false;
-            throw new Error('EXERCISE_NOT_FOUND');
-        }
+      if (session.role !== Role.ADMIN && entity.createdBy !== session.userId) {
+        throw new UnauthorizedException('NOT_AUTHORIZED_TO_HARD_DELETE_EXERCISE');
+      }
 
-        if (session.role !== Role.ADMIN) {
-            if (entity.createdBy !== session.userId) {
-                throw new UnauthorizedException('NOT_AUTHORIZED_TO_HARD_DELETE_EXERCISE');
-            }
-        }
+      return await this.inversify.bddService.exercise.hardDelete(id);
+    } catch (error: any) {
+      if (error instanceof UnauthorizedException || error?.message === 'EXERCISE_NOT_FOUND') {
+        throw error;
+      }
 
-        return this.inversify.bddService.exercise.hardDelete(id);
+      this.inversify.loggerService.error(`HardDeleteExerciseUsecase#execute => ${error?.message ?? error}`);
+      throw normalizeError(error, ERRORS.HARD_DELETE_EXERCISE_USECASE);
     }
+  }
 }
