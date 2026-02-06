@@ -1,6 +1,42 @@
 {
   "releases": [
     {
+      "version": "0.15.0",
+      "title": "Notes, Search & Structured Tracking",
+      "date": "2026-02-06",
+      "global": [
+        "Frontoffice: new Notes & Tasks (CRUD), athlete search, collapsible builder sections, and more detailed execution input.",
+        "Backoffice: coach-athlete follow-up periods, split Name/Email columns, admin notes widget, and aligned prospect filters.",
+        "API: new capabilities for Note, CoachAthlete (startDate/endDate), text search, and richer ProgramRecord payloads."
+      ],
+      "notes": "Version 0.15.0 improves day-to-day productivity for coaches and admins while strengthening athlete tracking precision. It introduces complete notes management, smoother editing with collapsible views, and an upgraded API foundation for finer-grained execution data.",
+      "projects": {
+        "/frontoffice": [
+          "Coach — Notes & Tasks (CRUD): create, edit, delete, and filter personal or athlete-linked notes (Dashboard widget and Athlete profile Notes tab).",
+          "Coach — Athlete Search: added text search in the Athletes section for fast list filtering.",
+          "Coach — Collapsible Mode: expand/collapse Session and Meal Day blocks in Programs and Nutrition builder edit pages.",
+          "Athlete — Detailed Input (Sets & RPE): per-set completion checkbox and RPE score input per exercise in the Player view.",
+          "Athlete — Mobile Accordion Menu: secondary dashboard widgets grouped into expandable panels on mobile."
+        ],
+        "/backoffice": [
+          "Athlete Management — Follow-up Periods: added Start Date and End Date fields in the coach assignment dialog.",
+          "Athlete Management — Name/Email Split: combined column split into Full Name and Email in list tables.",
+          "Administration — Notes Widget: added admin notes management block with dynamic refresh on the dashboard.",
+          "Administration — Prospect Filter Alignment: reorganized filter fields onto a single row.",
+          "Administration — Data Initialization: automatic creation of the Athlete Info profile when a new user signs up."
+        ],
+        "/api": [
+          "Note entity: new endpoints for notes CRUD.",
+          "CoachAthlete entity: schema updated with startDate and endDate.",
+          "Repository: support for text search.",
+          "ProgramRecord entity: DTO updates to support detailed set structure (boolean completion and RPE value)."
+        ],
+        "/showcase": [
+          "Added release note 0.15.0 in French and English."
+        ]
+      }
+    },
+    {
       "version": "0.14.0",
       "title": "Client Relations & Productivity",
       "date": "2026-01-31",
