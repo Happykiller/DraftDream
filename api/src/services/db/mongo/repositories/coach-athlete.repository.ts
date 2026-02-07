@@ -152,12 +152,14 @@ export class BddServiceCoachAthleteMongo {
         {
           $or: [
             { startDate: { $exists: false } },
+            { startDate: { $eq: null as any } },
             { startDate: { $lte: activeAt } },
           ],
         },
         {
           $or: [
             { endDate: { $exists: false } },
+            { endDate: { $eq: null as any } },
             { endDate: { $gte: activeAt } },
           ],
         },
