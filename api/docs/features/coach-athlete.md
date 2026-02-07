@@ -71,6 +71,21 @@ The coach-athlete management feature allows coaches to establish and manage rela
 - `updatedAt`: Last modification timestamp
 - `deletedAt`: Timestamp of deletion (soft delete)
 
+### Active Link Filtering (for Coaches)
+When a **COACH** queries their athlete links, the system automatically filters to show only "active" relationships based on the current date (`activeAt`). A link is considered active if:
+
+**Start Date Rules:**
+- `startDate` is missing/undefined, OR
+- `startDate` is explicitly `null`, OR
+- `startDate` is less than or equal to the current date
+
+**End Date Rules:**
+- `endDate` is missing/undefined, OR
+- `endDate` is explicitly `null` (no end date = ongoing relationship), OR
+- `endDate` is greater than or equal to the current date
+
+**Note**: Admins bypass this filter and can see all links regardless of dates when using the `includeArchived` parameter.
+
 ---
 
 ## CRUD Operations
@@ -86,6 +101,10 @@ The coach-athlete management feature allows coaches to establish and manage rela
 ### List Links
 - **Use Case**: `ListCoachAthletesUsecase`
 - **Authorization**: COACH (own links), ADMIN (all)
+- **Filtering**:
+  - **COACH**: Automatically filtered by `activeAt` (current date) to show only active relationships
+  - **ADMIN**: Can use `includeArchived` parameter to control filtering
+- **Search**: Supports searching by athlete name/email (via `q` parameter) and filtering by `is_active` status
 
 ### Update Link
 - **Use Case**: `UpdateCoachAthleteUsecase`

@@ -115,7 +115,7 @@ export class ProgramResolver {
     @Context('req') req: any,
   ): Promise<boolean> {
     const session = this.extractSession(req);
-    return inversify.deleteProgramUsecase.execute({ id, session });
+    return inversify.hardDeleteProgramUsecase.execute({ id, session });
   }
 
   @Query(() => ProgramGql, { name: 'program_get', nullable: true })

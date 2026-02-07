@@ -74,7 +74,9 @@
       "clients": "Clients",
       "prospects": "Prospects",
       "programs": "Programmes",
-      "nutrition": "Plans Nutrition"
+      "nutrition": "Plans Nutrition",
+      "show_more": "Afficher plus ({{count}})",
+      "show_less": "Afficher moins"
     },
     "tasksNotes": {
       "title": "Tâches et Notes",
@@ -87,7 +89,37 @@
       },
       "notes": {
         "title": "Notes",
-        "placeholder": "Module de notes à venir."
+        "empty": {
+          "title": "Aucune note pour le moment.",
+          "subtitle": "Ajoutez vos rappels et suivis clés ici."
+        },
+        "form": {
+          "label": "Titre",
+          "placeholder": "Ex : Suivi hebdo avec Sam",
+          "description": "Description",
+          "description_placeholder": "Ajoutez les détails de la note..."
+        },
+        "filters": {
+          "label": "Filtrer les notes",
+          "placeholder": "Rechercher par titre ou description"
+        },
+        "actions": {
+          "newNote": "Nouvelle note",
+          "addNote": "Ajouter une note",
+          "save": "Enregistrer",
+          "cancel": "Annuler",
+          "edit": "Modifier",
+          "delete": "Supprimer"
+        },
+        "notifications": {
+          "load_failure": "Impossible de charger les notes.",
+          "create_success": "Note créée.",
+          "create_failure": "Impossible de créer la note.",
+          "update_success": "Note mise à jour.",
+          "update_failure": "Impossible de mettre à jour la note.",
+          "delete_success": "Note supprimée.",
+          "delete_failure": "Impossible de supprimer la note."
+        }
       },
       "filters": {
         "all": "Toutes",
@@ -357,6 +389,32 @@
       },
       "notes_update_success": "Notes commerciales mises à jour.",
       "notes_update_failed": "Impossible de mettre à jour les notes commerciales.",
+      "notes_tab": {
+        "title": "Notes",
+        "search": {
+          "label": "Rechercher des notes",
+          "placeholder": "Rechercher par titre ou description"
+        },
+        "empty": {
+          "title": "Aucune note pour le moment",
+          "subtitle": "Créez la première note pour cet athlète."
+        },
+        "dialog": {
+          "create_title": "Ajouter une note",
+          "edit_title": "Modifier la note"
+        },
+        "form": {
+          "label": "Titre",
+          "placeholder": "Ex : Suivi hebdo",
+          "description": "Description",
+          "description_placeholder": "Ajoutez les détails de la note..."
+        },
+        "actions": {
+          "new": "Nouvelle note",
+          "cancel": "Annuler",
+          "save": "Enregistrer"
+        }
+      },
       "loading": "Chargement du lien athlète...",
       "athlete_info": {
         "load_failed": "Impossible de charger les informations de l'athlète"
@@ -453,6 +511,7 @@
         "nutritions": "Nutritions",
         "sessions": "Retour sessions",
         "meal_records": "Retour repas",
+        "notes": "Notes",
         "programs_helper": "Associez vos programmes d'entraînement à cet athlète pour suivre sa progression.",
         "nutritions_helper": "Reliez les plans nutritionnels à cet athlète pour centraliser son suivi alimentaire."
       },
@@ -709,6 +768,8 @@
           "delete_exercise": "Supprimer l'exercice",
           "add_empty_session": "Ajouter une nouvelle séance vide",
           "session_duration": "Modifier la durée de la séance",
+          "collapse_session_exercises": "Réduire les exercices",
+          "expand_session_exercises": "Déplier les exercices",
           "add_session_template": "Ajouter cette séance au programme",
           "delete_session_template": "Supprimer cette séance",
           "edit_session_template": "Modifier cette séance"
@@ -1224,7 +1285,9 @@
         "move_day_up_label": "Monter la journée",
         "move_day_down_label": "Descendre la journée",
         "move_meal_up_label": "Monter le repas",
-        "move_meal_down_label": "Descendre le repas"
+        "move_meal_down_label": "Descendre le repas",
+        "collapse_meals": "Réduire les repas",
+        "expand_meals": "Déplier les repas"
       },
       "save_day_dialog": {
         "title": "Sauvegarder la journée repas",

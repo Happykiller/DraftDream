@@ -1,6 +1,42 @@
 {
   "releases": [
     {
+      "version": "0.15.0",
+      "title": "Notes, Recherche & Suivi Structuré",
+      "date": "2026-02-06",
+      "global": [
+        "Frontoffice : nouvelles Notes & Tâches (CRUD), recherche d'athlètes, mode accordéon dans les builders et saisie d'exécution plus détaillée.",
+        "Backoffice : gestion des périodes de suivi coach-athlète, séparation Nom/Email, widget Notes admin et filtres prospects réorganisés.",
+        "API : nouvelles capacités sur Note, CoachAthlete (startDate/endDate), recherche textuelle et enrichissement de ProgramRecord."
+      ],
+      "notes": "La version 0.15.0 améliore la productivité quotidienne des coachs et admins, tout en renforçant la précision du suivi athlète. Elle introduit une gestion complète des notes, une navigation plus fluide grâce aux vues accordéon, et une base API enrichie pour supporter des données d'exécution plus fines.",
+      "projects": {
+        "/frontoffice": [
+          "Coach — Notes & Tâches (CRUD) : création, édition, suppression et filtrage des notes personnelles ou liées à un dossier athlète (Dashboard widget et onglet Notes de la fiche Athlète).",
+          "Coach — Recherche d'Athlètes : ajout de la recherche textuelle dans la section Athlètes pour filtrer rapidement la liste.",
+          "Coach — Mode Accordéon (Collapsible) : replier/déplier les blocs Séance et Journée de repas dans les pages d'édition Programmes et Nutrition.",
+          "Athlète — Saisie détaillée (Séries & RPE) : validation par série individuelle et saisie du score RPE par exercice dans la vue Player.",
+          "Athlète — Menu Accordéon Mobile : regroupement des widgets secondaires du dashboard mobile dans des panneaux dépliables."
+        ],
+        "/backoffice": [
+          "Gestion des Athlètes — Périodes de Suivi : ajout des champs Date de début et Date de fin dans le dialogue d'assignation coach.",
+          "Gestion des Athlètes — Séparation Nom/Email : scission de la colonne combinée en Nom complet et Email dans les tableaux de listes.",
+          "Administration — Widget Notes : ajout du bloc de gestion des notes administrateur avec rechargement dynamique sur le dashboard.",
+          "Administration — Alignement Filtres Prospects : réorganisation des champs de filtre sur une seule ligne.",
+          "Administration — Initialisation Données : création automatique de la fiche Info Athlète lors de l'inscription d'un nouvel utilisateur."
+        ],
+        "/api": [
+          "Entité Note : nouveaux endpoints pour le CRUD des notes.",
+          "Entité CoachAthlete : mise à jour du schéma avec startDate et endDate.",
+          "Repository : support de la recherche textuelle (search).",
+          "Entité ProgramRecord : mise à jour des DTOs pour supporter la structure détaillée des séries (validation booléenne et valeur RPE)."
+        ],
+        "/showcase": [
+          "Ajout de la release note 0.15.0 en français et en anglais."
+        ]
+      }
+    },
+    {
       "version": "0.14.0",
       "title": "Relation Client & Productivité",
       "date": "2026-01-31",

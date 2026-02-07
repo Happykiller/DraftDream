@@ -15,6 +15,7 @@ import { useMeals } from '@hooks/useMeals';
 import { useProgramRecords } from '@hooks/useProgramRecords';
 import { useMealRecords } from '@hooks/useMealRecords';
 import { useTasks } from '@hooks/useTasks';
+import { useNotes } from '@hooks/useNotes';
 
 import { DashboardLayout } from '@components/dashboard/DashboardLayout';
 import { TotalUsersWidget } from '@components/dashboard/widgets/home/TotalUsersWidget';
@@ -29,6 +30,7 @@ import { MealsWidget } from '@components/dashboard/widgets/home/MealsWidget';
 import { ProgramRecordsWidget } from '@components/dashboard/widgets/home/ProgramRecordsWidget';
 import { MealRecordsWidget } from '@components/dashboard/widgets/home/MealRecordsWidget';
 import { TotalTasksWidget } from '@components/dashboard/widgets/home/TotalTasksWidget';
+import { TotalNotesWidget } from '@components/dashboard/widgets/home/TotalNotesWidget';
 
 import {
   getDistributionData,
@@ -52,6 +54,7 @@ export function Home(): React.JSX.Element {
   const { items: programRecords, total: totalProgramRecords } = useProgramRecords({ page: 1, limit: PAGE_SIZE });
   const { items: mealRecords, total: totalMealRecords } = useMealRecords({ page: 1, limit: PAGE_SIZE });
   const { total: totalTasks } = useTasks({ page: 1, limit: PAGE_SIZE });
+  const { total: totalNotes } = useNotes({ page: 1, limit: 1 });
 
   // Keep the list limited to actionable prospects.
   const myProspects = useMemo(() => {
@@ -201,6 +204,9 @@ export function Home(): React.JSX.Element {
 
         {/* Total Tasks */}
         <TotalTasksWidget totalTasks={totalTasks} />
+
+        {/* Total Notes */}
+        <TotalNotesWidget totalNotes={totalNotes} />
 
 
         {/* --- Row 2: Content Stats --- */}

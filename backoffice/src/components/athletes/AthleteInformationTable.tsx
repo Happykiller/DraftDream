@@ -5,6 +5,7 @@ import { Box, Button, IconButton, Stack, TextField, Tooltip, useMediaQuery } fro
 import { useTheme } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import { useTranslation } from 'react-i18next';
 
 import type { AthleteInfo } from '@hooks/useAthleteInfos';
@@ -23,6 +24,7 @@ export interface AthleteInformationTableProps {
   onCreate: () => void;
   onEdit: (row: AthleteInfo) => void;
   onDelete: (row: AthleteInfo) => void;
+  onRefresh: () => void;
 }
 
 /** Presentational table to inspect athlete profiles. */
@@ -39,11 +41,13 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
   onCreate,
   onEdit,
   onDelete,
+  onRefresh,
 }: AthleteInformationTableProps): React.JSX.Element {
   const { t } = useTranslation();
   const fmtDate = useDateFormatter();
   const theme = useTheme();
   const isXl = useMediaQuery(theme.breakpoints.up('xl'));
+  const isXxl = useMediaQuery(theme.breakpoints.up(1920));
 
   React.useEffect(() => {
     if (query && page !== 1) onPageChange(1);
@@ -52,8 +56,19 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
   const columns = React.useMemo<GridColDef<AthleteInfo>[]>(
     () => [
       {
+        field: 'fullName',
+        headerName: t('common.labels.name'),
+        flex: 1.2,
+        valueGetter: (_value: unknown, row: AthleteInfo) => {
+          const firstName = row.athlete?.first_name ?? '';
+          const lastName = row.athlete?.last_name ?? '';
+          const name = `${lastName} ${firstName}`.trim();
+          return name || '—';
+        },
+      },
+      {
         field: 'email',
-        headerName: t('athletes.information.table.columns.email'),
+        headerName: t('common.labels.email'),
         flex: 1,
         valueGetter: (_value: unknown, row: AthleteInfo) => row.athlete?.email ?? '—',
       },
@@ -63,15 +78,15 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
         flex: 0.8,
         valueGetter: (_value: unknown, row: AthleteInfo) => row.athlete?.phone ?? '—',
       },
-      {
-        field: 'level',
-        headerName: t('athletes.information.table.columns.level'),
-        flex: 0.8,
-        valueGetter: (_value: unknown, row: AthleteInfo) => row.level?.label ?? '—',
-        sortComparator: (a, b) => String(a).localeCompare(String(b)),
-      },
       ...(isXl
         ? [
+          {
+            field: 'level',
+            headerName: t('athletes.information.table.columns.level'),
+            flex: 0.8,
+            valueGetter: (_value: unknown, row: AthleteInfo) => row.level?.label ?? '—',
+            sortComparator: (a: unknown, b: unknown) => String(a).localeCompare(String(b)),
+          },
           {
             field: 'company',
             headerName: t('athletes.information.table.columns.company'),
@@ -88,6 +103,18 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
               const label = `${city}${city && country ? ', ' : ''}${country}`;
               return label || '—';
             },
+          },
+        ]
+        : []),
+      ...(isXxl
+        ? [
+          {
+            field: 'createdAt',
+            headerName: t('athletes.information.table.columns.created_at'),
+            flex: 1,
+            minWidth: 180,
+            valueGetter: (_value: unknown, row: AthleteInfo) => row.createdAt ?? null,
+            valueFormatter: (value: any) => fmtDate(value),
           },
           {
             field: 'updatedAt',
@@ -129,7 +156,7 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
         minWidth: 120,
       },
     ],
-    [fmtDate, isXl, onDelete, onEdit, t],
+    [fmtDate, isXl, isXxl, onDelete, onEdit, t],
   );
 
   return (
@@ -145,6 +172,11 @@ export const AthleteInformationTable = React.memo(function AthleteInformationTab
           sx={{ maxWidth: 360 }}
         />
         <Box sx={{ flex: 1 }} />
+        <Tooltip title={t('common.buttons.refresh')}>
+          <IconButton aria-label={t('common.buttons.refresh')} onClick={onRefresh}>
+            <RefreshIcon />
+          </IconButton>
+        </Tooltip>
         <Button variant="contained" onClick={onCreate}>
           {t('athletes.information.table.create')}
         </Button>

@@ -4,12 +4,15 @@ import {
   ArrowUpward,
   DeleteOutline,
   Edit,
+  ExpandLess,
+  ExpandMore,
   Save,
 } from '@mui/icons-material';
 import { alpha, useTheme } from '@mui/material/styles';
 import {
   Box,
   Chip,
+  Collapse,
   IconButton,
   InputAdornment,
   Paper,
@@ -32,6 +35,8 @@ type ProgramBuilderSessionItemProps = {
   index: number;
   totalSessions: number;
   builderCopy: BuilderCopy;
+  isExercisesCollapsed: boolean;
+  onToggleExercisesCollapse: (sessionId: string) => void;
   onLabelChange: (sessionId: string, label: string) => void;
   onDescriptionChange: (sessionId: string, description: string) => void;
   onDurationChange: (sessionId: string, duration: number) => void;
@@ -61,6 +66,8 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
   index,
   totalSessions,
   builderCopy,
+  isExercisesCollapsed,
+  onToggleExercisesCollapse,
   onLabelChange,
   onDescriptionChange,
   onDurationChange,
@@ -118,6 +125,8 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
   const tooltips = builderCopy.library.tooltips;
   const descriptionPlaceholder = builderCopy.structure.description_placeholder;
   const saveSessionLabel = builderCopy.structure.save_session;
+  const collapseExercisesLabel = builderCopy.library.tooltips.collapse_session_exercises;
+  const expandExercisesLabel = builderCopy.library.tooltips.expand_session_exercises;
 
   React.useEffect(() => {
     if (!isEditingLabel) {
@@ -353,6 +362,14 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
       onSaveSession(session.id);
     },
     [onSaveSession, session.id],
+  );
+
+  const handleToggleExercises = React.useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.stopPropagation();
+      onToggleExercisesCollapse(session.id);
+    },
+    [onToggleExercisesCollapse, session.id],
   );
 
   const handleRemoveExercise = (exerciseId: string): void => {
@@ -612,47 +629,71 @@ export const ProgramBuilderSessionItem = React.memo(function ProgramBuilderSessi
         </Stack>
 
         {/* Exercises list */}
-        <Stack spacing={1}>
-          {session.exercises.length === 0 ? (
-            <Typography variant="body2" color="text.secondary">
-              {builderCopy.library.subtitle}
-            </Typography>
-          ) : (
-            session.exercises.map((exerciseItem, exerciseIndex) => {
-              const exercise = getExerciseById(exerciseItem.exerciseId) ?? null;
+        <Collapse in={!isExercisesCollapsed} timeout="auto" unmountOnExit>
+          <Stack spacing={1}>
+            {session.exercises.length === 0 ? (
+              <Typography variant="body2" color="text.secondary">
+                {builderCopy.library.subtitle}
+              </Typography>
+            ) : (
+              session.exercises.map((exerciseItem, exerciseIndex) => {
+                const exercise = getExerciseById(exerciseItem.exerciseId) ?? null;
 
-              return (
-                <ProgramBuilderExerciseItem
-                  key={exerciseItem.id}
-                  exerciseItem={exerciseItem}
-                  exercise={exercise}
-                  index={exerciseIndex}
-                  totalExercises={session.exercises.length}
-                  onRemove={handleRemoveExercise}
-                  onLabelChange={(nextLabel) =>
-                    onExerciseLabelChange(session.id, exerciseItem.id, nextLabel)
-                  }
-                  onDescriptionChange={(nextDescription) =>
-                    onExerciseDescriptionChange(session.id, exerciseItem.id, nextDescription)
-                  }
-                  onMoveUp={() => handleMoveExerciseUp(exerciseItem.id, exerciseIndex)}
-                  onMoveDown={() =>
-                    handleMoveExerciseDown(
-                      exerciseItem.id,
-                      exerciseIndex,
-                      session.exercises.length - 1,
-                    )
-                  }
-                  onEdit={
-                    onEditExercise
-                      ? () => onEditExercise(session.id, exerciseItem)
-                      : undefined
-                  }
-                />
-              );
-            })
-          )}
-        </Stack>
+                return (
+                  <ProgramBuilderExerciseItem
+                    key={exerciseItem.id}
+                    exerciseItem={exerciseItem}
+                    exercise={exercise}
+                    index={exerciseIndex}
+                    totalExercises={session.exercises.length}
+                    onRemove={handleRemoveExercise}
+                    onLabelChange={(nextLabel) =>
+                      onExerciseLabelChange(session.id, exerciseItem.id, nextLabel)
+                    }
+                    onDescriptionChange={(nextDescription) =>
+                      onExerciseDescriptionChange(session.id, exerciseItem.id, nextDescription)
+                    }
+                    onMoveUp={() => handleMoveExerciseUp(exerciseItem.id, exerciseIndex)}
+                    onMoveDown={() =>
+                      handleMoveExerciseDown(
+                        exerciseItem.id,
+                        exerciseIndex,
+                        session.exercises.length - 1,
+                      )
+                    }
+                    onEdit={
+                      onEditExercise
+                        ? () => onEditExercise(session.id, exerciseItem)
+                        : undefined
+                    }
+                  />
+                );
+              })
+            )}
+          </Stack>
+        </Collapse>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Tooltip
+            title={isExercisesCollapsed ? expandExercisesLabel : collapseExercisesLabel}
+            arrow
+          >
+            <span style={{ display: 'inline-flex' }}>
+              <IconButton
+                size="small"
+                onClick={handleToggleExercises}
+                aria-label={
+                  isExercisesCollapsed ? expandExercisesLabel : collapseExercisesLabel
+                }
+              >
+                {isExercisesCollapsed ? (
+                  <ExpandMore fontSize="small" />
+                ) : (
+                  <ExpandLess fontSize="small" />
+                )}
+              </IconButton>
+            </span>
+          </Tooltip>
+        </Box>
       </Stack>
     </Paper >
   );

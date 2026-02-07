@@ -194,23 +194,21 @@ export function useExercises({
     setLoading(true);
     try {
       const trimmedQuery = q.trim();
-      const { data, errors } = await execute(() =>
-        gql.send<ExerciseListPayload>({
-          query: LIST_Q,
-          variables: {
-            input: {
-              page,
-              limit,
-              ...(trimmedQuery ? { q: trimmedQuery } : {}),
-              ...(visibility ? { visibility } : {}),
-              ...(categoryIds && categoryIds.length ? { categoryIds } : {}),
-              ...(locale ? { locale } : {}),
-              ...(createdBy ? { createdBy } : {}),
-            },
+      const { data, errors } = await gql.send<ExerciseListPayload>({
+        query: LIST_Q,
+        variables: {
+          input: {
+            page,
+            limit,
+            ...(trimmedQuery ? { q: trimmedQuery } : {}),
+            ...(visibility ? { visibility } : {}),
+            ...(categoryIds && categoryIds.length ? { categoryIds } : {}),
+            ...(locale ? { locale } : {}),
+            ...(createdBy ? { createdBy } : {}),
           },
-          operationName: 'ListExercises',
-        }),
-      );
+        },
+        operationName: 'ListExercises',
+      });
       if (errors?.length) throw new Error(errors[0].message);
       setItems(data?.exercise_list.items ?? []);
       setTotal(data?.exercise_list.total ?? 0);
@@ -221,7 +219,7 @@ export function useExercises({
     } finally {
       setLoading(false);
     }
-  }, [categoryIds, createdBy, execute, flashError, gql, limit, locale, page, q, visibility]);
+  }, [categoryIds, createdBy, flashError, gql, limit, locale, page, q, visibility]);
 
   React.useEffect(() => { void load(); }, [load]);
 

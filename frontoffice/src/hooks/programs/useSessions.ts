@@ -97,21 +97,19 @@ export function useSessions(props: UseSessionsParams) {
   const load = React.useCallback(async () => {
     setLoading(true);
     try {
-      const { data, errors } = await execute(() =>
-        gql.send<SessionListPayload>({
-          query: LIST_Q,
-          operationName: 'ListSessions',
-          variables: {
-            input: {
-              page,
-              limit,
-              q: q || undefined,
-              locale: locale || undefined,
-              visibility,
-            },
+      const { data, errors } = await gql.send<SessionListPayload>({
+        query: LIST_Q,
+        operationName: 'ListSessions',
+        variables: {
+          input: {
+            page,
+            limit,
+            q: q || undefined,
+            locale: locale || undefined,
+            visibility,
           },
-        }),
-      );
+        },
+      });
       if (errors?.length) throw new Error(errors[0].message);
       setItems(data?.session_list.items ?? []);
       setTotal(data?.session_list.total ?? 0);
@@ -121,7 +119,7 @@ export function useSessions(props: UseSessionsParams) {
     } finally {
       setLoading(false);
     }
-  }, [execute, flashError, gql, limit, locale, page, q, visibility]);
+  }, [flashError, gql, limit, locale, page, q, visibility]);
 
   React.useEffect(() => {
     void load();

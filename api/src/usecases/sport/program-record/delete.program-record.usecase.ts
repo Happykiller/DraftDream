@@ -1,27 +1,37 @@
 import { UnauthorizedException } from '@nestjs/common';
-import { Inversify } from '@src/inversify/investify';
+
+import { ERRORS } from '@src/common/ERROR';
+import { normalizeError } from '@src/common/error.util';
 import { Role } from '@src/common/role.enum';
+import { Inversify } from '@src/inversify/investify';
+
 import { DeleteProgramRecordUsecaseDto } from './program-record.usecase.dto';
 
 export class DeleteProgramRecordUsecase {
-    constructor(private inversify: Inversify) { }
+  constructor(private readonly inversify: Inversify) { }
 
-    async execute(dto: DeleteProgramRecordUsecaseDto): Promise<boolean> {
-        const { id, session } = dto;
+  async execute(dto: DeleteProgramRecordUsecaseDto): Promise<boolean> {
+    try {
+      const { id, session } = dto;
+      const record = await this.inversify.bddService.programRecord.get({ id });
 
-        const record = await this.inversify.bddService.programRecord.get({ id });
-        if (!record) {
-            if (session.role === Role.ADMIN) return false;
-            throw new Error('PROGRAM_RECORD_NOT_FOUND');
-        }
+      if (!record) {
+        if (session.role === Role.ADMIN) return false;
+        throw new Error('PROGRAM_RECORD_NOT_FOUND');
+      }
 
-        if (session.role !== Role.ADMIN) {
-            // Owner check
-            if (record.userId !== session.userId && record.createdBy !== session.userId) {
-                throw new UnauthorizedException('NOT_AUTHORIZED_TO_DELETE_PROGRAM_RECORD');
-            }
-        }
+      if (session.role !== Role.ADMIN && record.userId !== session.userId && record.createdBy !== session.userId) {
+        throw new UnauthorizedException('NOT_AUTHORIZED_TO_DELETE_PROGRAM_RECORD');
+      }
 
-        return this.inversify.bddService.programRecord.softDelete(id);
+      return await this.inversify.bddService.programRecord.softDelete(id);
+    } catch (error: any) {
+      if (error instanceof UnauthorizedException || error?.message === 'PROGRAM_RECORD_NOT_FOUND') {
+        throw error;
+      }
+
+      this.inversify.loggerService.error(`DeleteProgramRecordUsecase#execute => ${error?.message ?? error}`);
+      throw normalizeError(error, ERRORS.DELETE_PROGRAM_RECORD_USECASE);
     }
+  }
 }

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Tooltip from '@mui/material/Tooltip';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -6,7 +7,17 @@ import ReplayIcon from '@mui/icons-material/Replay';
 import CircleIcon from '@mui/icons-material/Circle';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import RestaurantMenuOutlinedIcon from '@mui/icons-material/RestaurantMenuOutlined';
-import { Box, CircularProgress, Divider, IconButton, Stack, Typography } from '@mui/material';
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    Box,
+    CircularProgress,
+    Divider,
+    IconButton,
+    Stack,
+    Typography,
+} from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 import { GlassCard } from '@components/common/GlassCard';
@@ -24,7 +35,7 @@ export function AthleteNutritionWidget(): React.JSX.Element {
 
     const { items: mealPlans, loading } = useMealPlans({
         page: 1,
-        limit: 3,
+        limit: 5,
         q: '',
     });
 
@@ -119,6 +130,99 @@ export function AthleteNutritionWidget(): React.JSX.Element {
     }, []);
 
     const isLoading = loading || recordsLoading;
+    const primaryMealPlans = mealPlans.slice(0, 2);
+    const extraMealPlans = mealPlans.slice(2);
+    const [expanded, setExpanded] = React.useState(false);
+
+    // Render a meal plan card with its days and meals.
+    const renderMealPlan = React.useCallback((mealPlan: MealPlan, planIndex: number) => (
+        <Stack key={getPlanKey(mealPlan, planIndex)} spacing={1}>
+            <TextWithTooltip
+                tooltipTitle={mealPlan.label}
+                variant="subtitle1"
+                fontWeight="bold"
+            />
+            {mealPlan.days.length === 0 ? (
+                <Typography variant="caption" color="text.disabled" pl={2}>
+                    {t('nutrition-coach.list.no_days')}
+                </Typography>
+            ) : (
+                <Stack spacing={1} pl={2}>
+                    {mealPlan.days.map((day, dayIndex) => (
+                        <Stack key={getDayKey(day, dayIndex)} spacing={0.5}>
+                            <Stack direction="row" alignItems="center" spacing={1}>
+                                <CircleIcon sx={{ fontSize: 6, color: 'text.disabled' }} />
+                                <TextWithTooltip
+                                    tooltipTitle={getDayLabel(day, dayIndex)}
+                                    variant="body2"
+                                    fontWeight="bold"
+                                    color="text.primary"
+                                />
+                            </Stack>
+
+                            {day.meals.length === 0 ? (
+                                <Typography variant="caption" color="text.disabled" pl={3}>
+                                    {t('nutrition-coach.list.no_meals')}
+                                </Typography>
+                            ) : (
+                                <Stack spacing={0.5} pl={3}>
+                                    {day.meals.map((meal, mealIndex) => {
+                                        const mealDayId = day.id ?? day.templateMealDayId ?? null;
+                                        const mealId = meal.id ?? meal.templateMealId ?? null;
+                                        const recordKey = mealDayId && mealId
+                                            ? `${mealPlan.id}_${mealDayId}_${mealId}`
+                                            : null;
+                                        const isActive = recordKey ? activeRecords.has(recordKey) : false;
+                                        const tooltipText = isActive
+                                            ? t('common.resume', 'Resume')
+                                            : t('common.play', 'Start');
+
+                                        return (
+                                            <Stack
+                                                key={getMealKey(meal, mealIndex)}
+                                                direction="row"
+                                                alignItems="center"
+                                                spacing={1}
+                                            >
+                                                <Tooltip title={tooltipText}>
+                                                    <span>
+                                                        <IconButton
+                                                            size="small"
+                                                            color="primary"
+                                                            onClick={(event) => handlePlayOrResume(
+                                                                event,
+                                                                mealPlan.id,
+                                                                mealDayId,
+                                                                mealId,
+                                                            )}
+                                                            sx={{ p: 0.5 }}
+                                                            disabled={!mealDayId || !mealId}
+                                                        >
+                                                            {isActive ? (
+                                                                <ReplayIcon fontSize="small" />
+                                                            ) : (
+                                                                <PlayArrowIcon fontSize="small" />
+                                                            )}
+                                                        </IconButton>
+                                                    </span>
+                                                </Tooltip>
+                                                <CircleIcon sx={{ fontSize: 5, color: 'text.disabled' }} />
+                                                <TextWithTooltip
+                                                    tooltipTitle={getMealLabel(meal, mealIndex)}
+                                                    variant="caption"
+                                                    color="text.secondary"
+                                                />
+                                            </Stack>
+                                        );
+                                    })}
+                                </Stack>
+                            )}
+                        </Stack>
+                    ))}
+                </Stack>
+            )}
+        </Stack>
+    ), [activeRecords, getDayKey, getDayLabel, getMealKey, getMealLabel, getPlanKey, handlePlayOrResume, t]);
 
     return (
         <GlassCard
@@ -144,94 +248,34 @@ export function AthleteNutritionWidget(): React.JSX.Element {
                     </Typography>
                 ) : (
                     <Stack spacing={2} divider={<Divider flexItem sx={{ opacity: 0.5 }} />}>
-                        {mealPlans.map((mealPlan, planIndex) => (
-                            <Stack key={getPlanKey(mealPlan, planIndex)} spacing={1}>
-                                <TextWithTooltip
-                                    tooltipTitle={mealPlan.label}
-                                    variant="subtitle1"
-                                    fontWeight="bold"
-                                />
-                                {mealPlan.days.length === 0 ? (
-                                    <Typography variant="caption" color="text.disabled" pl={2}>
-                                        {t('nutrition-coach.list.no_days')}
+                        {primaryMealPlans.map((mealPlan, planIndex) => renderMealPlan(mealPlan, planIndex))}
+                        {extraMealPlans.length > 0 && (
+                            <Accordion
+                                elevation={0}
+                                disableGutters
+                                expanded={expanded}
+                                onChange={(event, nextExpanded) => {
+                                    event.stopPropagation();
+                                    setExpanded(nextExpanded);
+                                }}
+                                sx={{ bgcolor: 'transparent' }}
+                            >
+                                <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ px: 0 }}>
+                                    <Typography variant="body2" color="text.secondary">
+                                        {expanded
+                                            ? t('dashboard.summary.show_less')
+                                            : t('dashboard.summary.show_more', { count: extraMealPlans.length })}
                                     </Typography>
-                                ) : (
-                                    <Stack spacing={1} pl={2}>
-                                        {mealPlan.days.map((day, dayIndex) => (
-                                            <Stack key={getDayKey(day, dayIndex)} spacing={0.5}>
-                                                <Stack direction="row" alignItems="center" spacing={1}>
-                                                    <CircleIcon sx={{ fontSize: 6, color: 'text.disabled' }} />
-                                                    <TextWithTooltip
-                                                        tooltipTitle={getDayLabel(day, dayIndex)}
-                                                        variant="body2"
-                                                        fontWeight="bold"
-                                                        color="text.primary"
-                                                    />
-                                                </Stack>
-
-                                                {day.meals.length === 0 ? (
-                                                    <Typography variant="caption" color="text.disabled" pl={3}>
-                                                        {t('nutrition-coach.list.no_meals')}
-                                                    </Typography>
-                                                ) : (
-                                                    <Stack spacing={0.5} pl={3}>
-                                                        {day.meals.map((meal, mealIndex) => {
-                                                            const mealDayId = day.id ?? day.templateMealDayId ?? null;
-                                                            const mealId = meal.id ?? meal.templateMealId ?? null;
-                                                            const recordKey = mealDayId && mealId
-                                                                ? `${mealPlan.id}_${mealDayId}_${mealId}`
-                                                                : null;
-                                                            const isActive = recordKey ? activeRecords.has(recordKey) : false;
-                                                            const tooltipText = isActive
-                                                                ? t('common.resume', 'Resume')
-                                                                : t('common.play', 'Start');
-
-                                                            return (
-                                                                <Stack
-                                                                    key={getMealKey(meal, mealIndex)}
-                                                                    direction="row"
-                                                                    alignItems="center"
-                                                                    spacing={1}
-                                                                >
-                                                                    <Tooltip title={tooltipText}>
-                                                                        <span>
-                                                                            <IconButton
-                                                                                size="small"
-                                                                                color="primary"
-                                                                                onClick={(event) => handlePlayOrResume(
-                                                                                    event,
-                                                                                    mealPlan.id,
-                                                                                    mealDayId,
-                                                                                    mealId,
-                                                                                )}
-                                                                                sx={{ p: 0.5 }}
-                                                                                disabled={!mealDayId || !mealId}
-                                                                            >
-                                                                                {isActive ? (
-                                                                                    <ReplayIcon fontSize="small" />
-                                                                                ) : (
-                                                                                    <PlayArrowIcon fontSize="small" />
-                                                                                )}
-                                                                            </IconButton>
-                                                                        </span>
-                                                                    </Tooltip>
-                                                                    <CircleIcon sx={{ fontSize: 5, color: 'text.disabled' }} />
-                                                                    <TextWithTooltip
-                                                                        tooltipTitle={getMealLabel(meal, mealIndex)}
-                                                                        variant="caption"
-                                                                        color="text.secondary"
-                                                                    />
-                                                                </Stack>
-                                                            );
-                                                        })}
-                                                    </Stack>
-                                                )}
-                                            </Stack>
+                                </AccordionSummary>
+                                <AccordionDetails sx={{ px: 0, pt: 0 }}>
+                                    <Stack spacing={2} divider={<Divider flexItem sx={{ opacity: 0.5 }} />}>
+                                        {extraMealPlans.map((mealPlan, planIndex) => (
+                                            renderMealPlan(mealPlan, planIndex + primaryMealPlans.length)
                                         ))}
                                     </Stack>
-                                )}
-                            </Stack>
-                        ))}
+                                </AccordionDetails>
+                            </Accordion>
+                        )}
                     </Stack>
                 )}
             </Stack>

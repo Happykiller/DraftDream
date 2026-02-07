@@ -118,6 +118,8 @@ export interface MealPlanBuilderCopy {
     move_day_down_label: string;
     move_meal_up_label: string;
     move_meal_down_label: string;
+    collapse_meals: string;
+    expand_meals: string;
   };
   footer: {
     cancel: string;

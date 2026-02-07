@@ -207,6 +207,8 @@
       "total_prospects_tooltip": "Ensemble des prospects enregistrés dans le pipeline, tous statuts confondus.",
       "total_tasks": "Tâches",
       "total_tasks_tooltip": "Nombre total de tâches présentes sur la plateforme.",
+      "total_notes": "Notes",
+      "total_notes_tooltip": "Nombre total de notes présentes sur la plateforme.",
       "prospects_todo": "A faire",
       "prospects_todo_tooltip": "Prospects qui nécessitent encore une action de suivi.",
       "view_prospects": "Voir prospects",
@@ -623,6 +625,25 @@
       "load_failure": "Impossible de charger les tâches."
     }
   },
+  "notes": {
+    "title": "Notes",
+    "subtitle": "Consultez les notes créées par les coachs et les athlètes.",
+    "actions": {
+      "reload": "Recharger les notes"
+    },
+    "table": {
+      "columns": {
+        "label": "Titre",
+        "description": "Description",
+        "athlete": "Athlète",
+        "created_by": "Créateur",
+        "created_at": "Créée le"
+      }
+    },
+    "notifications": {
+      "load_failure": "Impossible de charger les notes."
+    }
+  },
   "prospects": {
     "title": "Prospects",
     "tabs": {
@@ -727,6 +748,9 @@
       "liaison": "Liaison",
       "information": "Information"
     },
+    "liaison": {
+      "title": "Liaison athlètes"
+    },
     "information": {
       "title": "Informations athlètes",
       "search_placeholder": "Rechercher des athlètes...",
@@ -740,13 +764,15 @@
         "delete_confirm": "Archiver"
       },
       "table": {
-        "create": "Nouvelle information athlète",
+        "create": "Nouveau",
         "columns": {
+          "athlete": "Athlète",
           "email": "Email",
           "phone": "Téléphone",
           "level": "Niveau",
           "company": "Entreprise",
           "address": "Localisation",
+          "created_at": "Créé le",
           "updated_at": "Mis à jour le"
         }
       }

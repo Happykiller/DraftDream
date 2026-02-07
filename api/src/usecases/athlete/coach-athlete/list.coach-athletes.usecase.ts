@@ -1,7 +1,9 @@
 // src/usecases/athlete/coach-athlete/list.coach-athletes.usecase.ts
 import { ERRORS } from '@src/common/ERROR';
 import { normalizeError } from '@src/common/error.util';
+import { Role } from '@src/common/role.enum';
 import { Inversify } from '@src/inversify/investify';
+
 
 import { CoachAthleteUsecaseModel } from './coach-athlete.usecase.model';
 import { ListCoachAthletesUsecaseDto } from './coach-athlete.usecase.dto';
@@ -22,16 +24,25 @@ export class ListCoachAthletesUsecase {
   /**
    * Returns paginated links matching the provided filters.
    */
-  async execute(dto: ListCoachAthletesUsecaseDto = {}): Promise<ListCoachAthletesResult> {
+  async execute(dto: ListCoachAthletesUsecaseDto): Promise<ListCoachAthletesResult> {
     try {
+      const { session, ...filters } = dto;
+      const isAdmin = session.role === Role.ADMIN;
+      const isCoach = session.role === Role.COACH;
+      const includeArchived = isAdmin ? filters.includeArchived : false;
+      const activeAt = isCoach ? new Date() : undefined;
+      const athleteIds = await this.resolveAthleteIds(filters.q);
       const result = await this.inversify.bddService.coachAthlete.list({
-        coachId: dto.coachId,
-        athleteId: dto.athleteId,
-        is_active: dto.is_active,
-        createdBy: dto.createdBy,
-        limit: dto.limit,
-        page: dto.page,
-        includeArchived: dto.includeArchived,
+        q: filters.q,
+        coachId: isCoach ? session.userId : filters.coachId,
+        athleteId: filters.athleteId,
+        athleteIds,
+        is_active: filters.is_active,
+        createdBy: isAdmin ? filters.createdBy : undefined,
+        limit: filters.limit,
+        page: filters.page,
+        includeArchived,
+        activeAt,
       });
       return {
         items: result.items.map((item) => ({ ...item })),
@@ -43,5 +54,39 @@ export class ListCoachAthletesUsecase {
       this.inversify.loggerService.error(`ListCoachAthletesUsecase#execute => ${error?.message ?? error}`);
       throw normalizeError(error, ERRORS.LIST_COACH_ATHLETES_USECASE);
     }
+  }
+
+  private async resolveAthleteIds(search?: string): Promise<string[]> {
+    const q = search?.trim();
+    if (!q) {
+      return [];
+    }
+
+    const ids = new Set<string>();
+    const pageSize = 50;
+    let page = 1;
+
+    while (true) {
+      const res = await this.inversify.bddService.user.listUsers({
+        q,
+        type: 'athlete',
+        limit: pageSize,
+        page,
+      });
+
+      (res.items ?? []).forEach((user) => {
+        if (user?.id) {
+          ids.add(String(user.id));
+        }
+      });
+
+      if ((res.items?.length ?? 0) < pageSize || ids.size >= (res.total ?? ids.size)) {
+        break;
+      }
+
+      page += 1;
+    }
+
+    return Array.from(ids);
   }
 }

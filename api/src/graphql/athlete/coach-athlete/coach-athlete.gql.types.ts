@@ -63,6 +63,7 @@ export class ListCoachAthletesInput {
   @Field(() => ID, { nullable: true }) athleteId?: string;
   @Field({ nullable: true }) is_active?: boolean;
   @Field(() => ID, { nullable: true }) createdBy?: string;
+  @Field({ nullable: true }) q?: string;
   @Field(() => Int, { nullable: true }) limit?: number;
   @Field(() => Int, { nullable: true }) page?: number;
   @Field({ nullable: true }) includeArchived?: boolean;

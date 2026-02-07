@@ -207,6 +207,8 @@
       "total_prospects_tooltip": "All prospects registered in the pipeline, regardless of status.",
       "total_tasks": "Tasks",
       "total_tasks_tooltip": "Total number of tasks present on the platform.",
+      "total_notes": "Notes",
+      "total_notes_tooltip": "Total number of notes present on the platform.",
       "prospects_todo": "To do",
       "prospects_todo_tooltip": "Prospects that still require follow-up actions.",
       "view_prospects": "View prospects",
@@ -622,6 +624,25 @@
       "load_failure": "Unable to load tasks."
     }
   },
+  "notes": {
+    "title": "Notes",
+    "subtitle": "Review notes created by coaches and athletes.",
+    "actions": {
+      "reload": "Reload notes"
+    },
+    "table": {
+      "columns": {
+        "label": "Title",
+        "description": "Description",
+        "athlete": "Athlete",
+        "created_by": "Creator",
+        "created_at": "Created at"
+      }
+    },
+    "notifications": {
+      "load_failure": "Unable to load notes."
+    }
+  },
   "prospects": {
     "title": "Prospects",
     "tabs": {
@@ -726,6 +747,9 @@
       "liaison": "Liaison",
       "information": "Information"
     },
+    "liaison": {
+      "title": "Athlete Liaison"
+    },
     "information": {
       "title": "Athlete information",
       "search_placeholder": "Search athletes...",
@@ -739,13 +763,15 @@
         "delete_confirm": "Archive"
       },
       "table": {
-        "create": "New athlete information",
+        "create": "New",
         "columns": {
+          "athlete": "Athlete",
           "email": "Email",
           "phone": "Phone",
           "level": "Level",
           "company": "Company",
           "address": "Location",
+          "created_at": "Created on",
           "updated_at": "Updated on"
         }
       }

@@ -3,6 +3,7 @@ import { BddServiceInitMongo } from '@services/db/mongo/db.service.init.mongo';
 import { BddServiceTestMongo } from '@services/db/mongo/db.service.test.mongo';
 import { BddServiceTagMongo } from '@services/db/mongo/repositories/tag.repository';
 import { BddServiceTaskMongo } from '@services/db/mongo/repositories/task.repository';
+import { BddServiceNoteMongo } from '@services/db/mongo/repositories/note.repository';
 import { BddServiceUserMongo } from '@services/db/mongo/repositories/user.repository';
 import { BddServiceMuscleMongo } from '@services/db/mongo/repositories/muscle.repository';
 import { BddServiceSessionMongo } from '@services/db/mongo/repositories/session.repository';
@@ -30,6 +31,7 @@ interface InfraDeps { inversify: any; config: any }
 export class BddServiceMongo {
   readonly tag: BddServiceTagMongo;
   readonly task: BddServiceTaskMongo;
+  readonly note: BddServiceNoteMongo;
   readonly init: BddServiceInitMongo;
   readonly test: BddServiceTestMongo;
   readonly user: BddServiceUserMongo;
@@ -57,6 +59,7 @@ export class BddServiceMongo {
   constructor({ inversify, config }: InfraDeps) {
     this.tag = new BddServiceTagMongo();
     this.task = new BddServiceTaskMongo();
+    this.note = new BddServiceNoteMongo();
     this.user = new BddServiceUserMongo();
     this.muscle = new BddServiceMuscleMongo();
     this.session = new BddServiceSessionMongo();

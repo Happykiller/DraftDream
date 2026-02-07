@@ -116,19 +116,55 @@ export class BddServiceCoachAthleteMongo {
     const {
       coachId,
       athleteId,
+      athleteIds,
       is_active,
       createdBy,
+      activeAt,
       includeArchived = false,
       limit = 20,
       page = 1,
       sort = { updatedAt: -1 } as Record<string, 1 | -1>,
+      q,
     } = params;
 
     const filter: Filter<CoachAthleteDoc> = {};
     if (coachId?.trim()) filter.coachId = coachId.trim();
     if (athleteId?.trim()) filter.athleteId = athleteId.trim();
+
+    const searchQ = q?.trim();
+    if (searchQ) {
+      const regex = new RegExp(searchQ, 'i');
+      if (athleteIds && athleteIds.length > 0) {
+        filter.$or = [
+          { athleteId: { $in: athleteIds } },
+          { note: regex },
+        ];
+      } else {
+        filter.note = regex;
+      }
+    } else if (athleteIds?.length) {
+      filter.athleteId = { $in: athleteIds } as Filter<CoachAthleteDoc>['athleteId'];
+    }
     if (createdBy?.trim()) filter.createdBy = createdBy.trim();
     if (typeof is_active === 'boolean') filter.is_active = is_active;
+    if (activeAt) {
+      filter.$and = [
+        {
+          $or: [
+            { startDate: { $exists: false } },
+            { startDate: { $eq: null as any } },
+            { startDate: { $lte: activeAt } },
+          ],
+        },
+        {
+          $or: [
+            { endDate: { $exists: false } },
+            { endDate: { $eq: null as any } },
+            { endDate: { $gte: activeAt } },
+          ],
+        },
+      ];
+    }
     if (!includeArchived) {
       filter.deletedAt = { $exists: false } as Filter<CoachAthleteDoc>['deletedAt'];
     }

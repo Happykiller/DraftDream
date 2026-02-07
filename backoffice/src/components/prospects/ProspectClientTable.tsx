@@ -240,66 +240,70 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
       {/* General information */}
       <Stack spacing={1} sx={{ mb: 2 }}>
         <Stack direction={{ xs: 'column', md: 'row' }} spacing={1} alignItems={{ xs: 'stretch', md: 'center' }}>
-          <TextField
-            placeholder={t('prospects.list.search_placeholder')}
-            value={q}
-            onChange={(event) => onQueryChange(event.target.value)}
-            inputProps={{ 'aria-label': 'search-prospects' }}
-            size="small"
-            sx={{ maxWidth: 360 }}
-          />
+          <Stack
+            direction={{ xs: 'column', md: 'row' }}
+            spacing={1}
+            alignItems={{ xs: 'stretch', md: 'center' }}
+            sx={{ flexWrap: { md: 'wrap' } }}
+          >
+            <TextField
+              placeholder={t('prospects.list.search_placeholder')}
+              value={q}
+              onChange={(event) => onQueryChange(event.target.value)}
+              inputProps={{ 'aria-label': 'search-prospects' }}
+              size="small"
+              sx={{ maxWidth: 360 }}
+            />
+            <TextField
+              select
+              size="small"
+              label={t('common.labels.status')}
+              value={statusFilter || ''}
+              onChange={(event) => onStatusFilterChange((event.target.value as ProspectStatus) || null)}
+              sx={{ minWidth: 180 }}
+            >
+              <MenuItem value="">{t('common.placeholders.select')}</MenuItem>
+              {statuses.map((status) => (
+                <MenuItem key={status.value} value={status.value}>
+                  {status.label}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              select
+              size="small"
+              label={t('common.labels.level')}
+              value={levelFilter || ''}
+              onChange={(event) => onLevelFilterChange(event.target.value || null)}
+              sx={{ minWidth: 180 }}
+            >
+              <MenuItem value="">{t('common.placeholders.select')}</MenuItem>
+              {levels.map((level) => (
+                <MenuItem key={level.id} value={level.id}>
+                  {level.label}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              select
+              size="small"
+              label={t('common.labels.source')}
+              value={sourceFilter || ''}
+              onChange={(event) => onSourceFilterChange(event.target.value || null)}
+              sx={{ minWidth: 180 }}
+            >
+              <MenuItem value="">{t('common.placeholders.select')}</MenuItem>
+              {sources.map((source) => (
+                <MenuItem key={source.id} value={source.id}>
+                  {source.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Stack>
           <Box sx={{ flex: 1 }} />
           <Button variant="contained" onClick={onCreate} sx={{ alignSelf: { xs: 'stretch', md: 'flex-start' } }}>
             {t('prospects.list.create')}
           </Button>
-        </Stack>
-
-        <Stack direction={{ xs: 'column', md: 'row' }} spacing={1}>
-          <TextField
-            select
-            size="small"
-            label={t('common.labels.status')}
-            value={statusFilter || ''}
-            onChange={(event) => onStatusFilterChange((event.target.value as ProspectStatus) || null)}
-            sx={{ minWidth: 180 }}
-          >
-            <MenuItem value="">{t('common.placeholders.select')}</MenuItem>
-            {statuses.map((status) => (
-              <MenuItem key={status.value} value={status.value}>
-                {status.label}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            select
-            size="small"
-            label={t('common.labels.level')}
-            value={levelFilter || ''}
-            onChange={(event) => onLevelFilterChange(event.target.value || null)}
-            sx={{ minWidth: 180 }}
-          >
-            <MenuItem value="">{t('common.placeholders.select')}</MenuItem>
-            {levels.map((level) => (
-              <MenuItem key={level.id} value={level.id}>
-                {level.label}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            select
-            size="small"
-            label={t('common.labels.source')}
-            value={sourceFilter || ''}
-            onChange={(event) => onSourceFilterChange(event.target.value || null)}
-            sx={{ minWidth: 180 }}
-          >
-            <MenuItem value="">{t('common.placeholders.select')}</MenuItem>
-            {sources.map((source) => (
-              <MenuItem key={source.id} value={source.id}>
-                {source.label}
-              </MenuItem>
-            ))}
-          </TextField>
         </Stack>
       </Stack>
 

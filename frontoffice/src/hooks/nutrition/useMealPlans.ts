@@ -357,29 +357,27 @@ export function useMealPlans({
 
     setLoading(true);
     try {
-      await execute(async () => {
-        const trimmedQuery = q.trim();
-        const { data, errors } = await gql.send<MealPlanListPayload>({
-          query: LIST_QUERY,
-          operationName: 'ListMealPlans',
-          variables: {
-            input: {
-              page,
-              limit,
-              ...(trimmedQuery ? { q: trimmedQuery } : {}),
-              ...(createdBy ? { createdBy } : {}),
-              ...(userId ? { userId } : {}),
-            },
+      const trimmedQuery = q.trim();
+      const { data, errors } = await gql.send<MealPlanListPayload>({
+        query: LIST_QUERY,
+        operationName: 'ListMealPlans',
+        variables: {
+          input: {
+            page,
+            limit,
+            ...(trimmedQuery ? { q: trimmedQuery } : {}),
+            ...(createdBy ? { createdBy } : {}),
+            ...(userId ? { userId } : {}),
           },
-        });
-
-        if (errors?.length) {
-          throw new Error(errors[0].message);
-        }
-
-        setItems(data?.mealPlan_list.items ?? []);
-        setTotal(data?.mealPlan_list.total ?? 0);
+        },
       });
+
+      if (errors?.length) {
+        throw new Error(errors[0].message);
+      }
+
+      setItems(data?.mealPlan_list.items ?? []);
+      setTotal(data?.mealPlan_list.total ?? 0);
     } catch (caught: unknown) {
       const message =
         caught instanceof Error
@@ -389,7 +387,7 @@ export function useMealPlans({
     } finally {
       setLoading(false);
     }
-  }, [createdBy, enabled, execute, flashError, gql, limit, page, q, t, userId]);
+  }, [createdBy, enabled, flashError, gql, limit, page, q, t, userId]);
 
   React.useEffect(() => {
     if (!enabled) {

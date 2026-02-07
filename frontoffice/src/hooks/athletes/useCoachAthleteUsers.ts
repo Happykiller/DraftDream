@@ -53,9 +53,11 @@ function isRelationEligible(link: CoachAthleteLink, now: number): boolean {
     return false;
   }
 
-  const start = Date.parse(link.startDate);
-  if (Number.isNaN(start) || start > now) {
-    return false;
+  if (link.startDate) {
+    const start = Date.parse(link.startDate);
+    if (Number.isNaN(start) || start > now) {
+      return false;
+    }
   }
 
   if (link.endDate) {
@@ -154,4 +156,3 @@ export function useCoachAthleteUsers({
     reload: load,
   };
 }
-

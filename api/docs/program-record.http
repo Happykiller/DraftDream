@@ -1,0 +1,90 @@
+# docs/program-record.http
+@page = 1
+@limit = 10
+@userId = athlete-user-id
+@programId = program-id
+
+###
+# Program record: create
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "mutation($input: CreateProgramRecordInput!){ programRecord_create(input:$input){ id userId programId state durationMinutes difficultyRating createdAt updatedAt } }",
+  "variables": {
+    "input": {
+      "userId": "{{userId}}",
+      "programId": "{{programId}}",
+      "state": "CREATE"
+    }
+  }
+}
+
+###
+# Program record: update state/data
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "mutation($input: UpdateProgramRecordInput!){ programRecord_updateState(input:$input){ id state durationMinutes difficultyRating updatedAt } }",
+  "variables": {
+    "input": {
+      "id": "REPLACE_PROGRAM_RECORD_ID",
+      "state": "DRAFT",
+      "durationMinutes": 45,
+      "difficultyRating": 3
+    }
+  }
+}
+
+###
+# Program record: get by id
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "query($id: ID!){ programRecord_get(id:$id){ id userId programId state durationMinutes difficultyRating createdAt updatedAt } }",
+  "variables": { "id": "REPLACE_PROGRAM_RECORD_ID" }
+}
+
+###
+# Program record: list
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "query($input: ListProgramRecordsInput){ programRecord_list(input:$input){ items{ id userId programId state } total page limit } }",
+  "variables": {
+    "input": {
+      "page": {{page}},
+      "limit": {{limit}},
+      "userId": "{{userId}}"
+    }
+  }
+}
+
+###
+# Program record: soft delete
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "mutation($id: ID!){ programRecord_delete(id:$id) }",
+  "variables": { "id": "REPLACE_PROGRAM_RECORD_ID" }
+}
+
+###
+# Program record: hard delete (admin only)
+POST {{host}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "mutation($id: ID!){ programRecord_hardDelete(id:$id) }",
+  "variables": { "id": "REPLACE_PROGRAM_RECORD_ID" }
+}

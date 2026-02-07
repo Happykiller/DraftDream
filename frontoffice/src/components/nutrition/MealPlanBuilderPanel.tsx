@@ -152,6 +152,9 @@ export function MealPlanBuilderPanel({
   const [saveDayTarget, setSaveDayTarget] = React.useState<MealPlanBuilderDay | null>(null);
   const [deleteDayTarget, setDeleteDayTarget] = React.useState<MealDay | null>(null);
   const [editDayTarget, setEditDayTarget] = React.useState<MealDay | null>(null);
+  const [collapsedDays, setCollapsedDays] = React.useState<Record<string, boolean>>({});
+  const collapseNextTemplateDayRef = React.useRef(false);
+  const previousDayIdsRef = React.useRef<Set<string>>(new Set());
 
   const selectedMealType = React.useMemo<MealType | null>(
     () => mealTypes.find((type) => type.id === selectedMealTypeId) ?? null,
@@ -453,6 +456,66 @@ export function MealPlanBuilderPanel({
     },
     [handleAddMealToDay, handleCloseMealMenu, mealMenuAnchor],
   );
+
+  const handleAddDayFromTemplateClick = React.useCallback(
+    (template: MealDay) => {
+      collapseNextTemplateDayRef.current = true;
+      handleAddDayFromTemplate(template);
+    },
+    [handleAddDayFromTemplate],
+  );
+
+  const handleToggleDayMeals = React.useCallback((dayId: string) => {
+    setCollapsedDays((prev) => ({
+      ...prev,
+      [dayId]: !(prev[dayId] ?? false),
+    }));
+  }, []);
+
+  React.useEffect(() => {
+    setCollapsedDays((prev) => {
+      const dayIds = new Set(days.map((day) => day.uiId));
+      const next: Record<string, boolean> = {};
+      let mutated = false;
+
+      Object.entries(prev).forEach(([dayId, isCollapsed]) => {
+        if (dayIds.has(dayId)) {
+          next[dayId] = isCollapsed;
+          return;
+        }
+        mutated = true;
+      });
+
+      if (!mutated && Object.keys(next).length === Object.keys(prev).length) {
+        return prev;
+      }
+
+      return next;
+    });
+  }, [days]);
+
+  React.useEffect(() => {
+    const previousDayIds = previousDayIdsRef.current;
+    const currentDayIds = new Set(days.map((day) => day.uiId));
+
+    if (collapseNextTemplateDayRef.current) {
+      const addedDays = days.filter((day) => !previousDayIds.has(day.uiId));
+
+      if (addedDays.length > 0) {
+        setCollapsedDays((prev) => {
+          const next = { ...prev };
+          addedDays.forEach((day) => {
+            next[day.uiId] = true;
+          });
+          return next;
+        });
+      }
+
+      collapseNextTemplateDayRef.current = false;
+    }
+
+    previousDayIdsRef.current = currentDayIds;
+  }, [days]);
 
   const handleOpenDraftMealEditor = React.useCallback(
     (day: MealPlanBuilderDay, meal: MealPlanBuilderMeal, position: number) => {
@@ -806,7 +869,7 @@ export function MealPlanBuilderPanel({
                                 key={day.id}
                                 day={day}
                                 builderCopy={builderCopy}
-                                onAdd={handleAddDayFromTemplate}
+                                onAdd={handleAddDayFromTemplateClick}
                                 onEdit={() => handleOpenEditDayDialog(day)}
                                 onDelete={() => handleOpenDeleteDayDialog(day)}
                               />
@@ -959,6 +1022,8 @@ export function MealPlanBuilderPanel({
                                     index={index}
                                     totalDays={days.length}
                                     builderCopy={builderCopy}
+                                    isMealsCollapsed={collapsedDays[day.uiId] ?? false}
+                                    onToggleMealsCollapse={handleToggleDayMeals}
                                     onUpdateDay={handleUpdateDay}
                                     onRemoveDay={handleRemoveDay}
                                     onMoveDayUp={handleMoveDayUp}

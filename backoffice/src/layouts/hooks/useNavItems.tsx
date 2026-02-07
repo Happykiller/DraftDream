@@ -9,6 +9,7 @@ import {
   InfoOutlined,
   LinkOutlined,
   FitnessCenter,
+  StickyNote2,
   RestaurantMenu,
   SportsGymnastics,
   TaskAlt,
@@ -48,6 +49,11 @@ export function useNavItems(role?: string): NavItem[] {
           label: t('tasks.title'),
           icon: <TaskAlt />,
           path: '/tasks',
+        },
+        {
+          label: t('notes.title'),
+          icon: <StickyNote2 />,
+          path: '/notes',
         },
         {
           label: t('prospects.title'),

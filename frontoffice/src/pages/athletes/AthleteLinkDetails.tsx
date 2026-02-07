@@ -31,8 +31,10 @@ import {
   Typography,
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
+
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import { AthleteCalendar } from '@components/athletes/AthleteCalendar';
+import { AthleteNotesTab } from '@components/athletes/AthleteNotesTab';
 import { MealRecordPreviewGrid } from '@components/athletes/MealRecordPreviewGrid';
 import { ProgramRecordPreviewGrid } from '@components/athletes/ProgramRecordPreviewGrid';
 import { getAthleteDisplayName } from '@components/athletes/athleteLinkUtils';
@@ -46,7 +48,15 @@ import { useMealRecords, type MealRecord } from '@hooks/nutrition/useMealRecords
 import { useProgramRecords, type ProgramRecord } from '@hooks/program-records/useProgramRecords';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 
-type AthleteLinkTab = 'overview' | 'client-info' | 'calendar' | 'programs' | 'nutritions' | 'sessions' | 'meal-records';
+type AthleteLinkTab =
+  | 'overview'
+  | 'client-info'
+  | 'calendar'
+  | 'programs'
+  | 'nutritions'
+  | 'sessions'
+  | 'meal-records'
+  | 'notes';
 
 interface TabPanelProps {
   readonly value: AthleteLinkTab;
@@ -477,6 +487,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
                 >
                   <Tab value="client-info" label={t('athletes.details.client_sheet_title')} />
                   <Tab value="overview" label={t('athletes.details.tabs.overview')} />
+                  <Tab value="notes" label={t('athletes.details.tabs.notes')} />
                   <Tab value="programs" label={t('athletes.details.tabs.programs')} />
                   <Tab value="nutritions" label={t('athletes.details.tabs.nutritions')} />
                   <Tab value="calendar" label={t('athletes.details.tabs.calendar')} />
@@ -702,6 +713,10 @@ export function AthleteLinkDetails(): React.JSX.Element {
                         </Stack>
                       </Box>
                     ) : null}
+                  </TabPanel>
+
+                  <TabPanel value="notes" currentTab={currentTab}>
+                    <AthleteNotesTab athleteId={athleteId} />
                   </TabPanel>
 
                   <TabPanel value="calendar" currentTab={currentTab}>
