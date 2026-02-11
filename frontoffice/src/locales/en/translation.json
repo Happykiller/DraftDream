@@ -85,40 +85,40 @@
           "subtitle": "Add your first task above."
         }
       },
-    "notes": {
-      "title": "Notes",
-      "empty": {
-        "title": "No notes yet.",
-        "subtitle": "Capture key follow-ups and reminders here."
+      "notes": {
+        "title": "Notes",
+        "empty": {
+          "title": "No notes yet.",
+          "subtitle": "Capture key follow-ups and reminders here."
+        },
+        "form": {
+          "label": "Title",
+          "placeholder": "Ex: Weekly follow-up with Sam",
+          "description": "Description",
+          "description_placeholder": "Add the note details..."
+        },
+        "filters": {
+          "label": "Filter notes",
+          "placeholder": "Search by title or description"
+        },
+        "actions": {
+          "newNote": "+ New note",
+          "addNote": "Add note",
+          "save": "Save",
+          "cancel": "Cancel",
+          "edit": "Edit",
+          "delete": "Delete"
+        },
+        "notifications": {
+          "load_failure": "Unable to load notes.",
+          "create_success": "Note created.",
+          "create_failure": "Unable to create the note.",
+          "update_success": "Note updated.",
+          "update_failure": "Unable to update the note.",
+          "delete_success": "Note deleted.",
+          "delete_failure": "Unable to delete the note."
+        }
       },
-      "form": {
-        "label": "Title",
-        "placeholder": "Ex: Weekly follow-up with Sam",
-        "description": "Description",
-        "description_placeholder": "Add the note details..."
-      },
-      "filters": {
-        "label": "Filter notes",
-        "placeholder": "Search by title or description"
-      },
-      "actions": {
-        "newNote": "+ New note",
-        "addNote": "Add note",
-        "save": "Save",
-        "cancel": "Cancel",
-        "edit": "Edit",
-        "delete": "Delete"
-      },
-      "notifications": {
-        "load_failure": "Unable to load notes.",
-        "create_success": "Note created.",
-        "create_failure": "Unable to create the note.",
-        "update_success": "Note updated.",
-        "update_failure": "Unable to update the note.",
-        "delete_success": "Note deleted.",
-        "delete_failure": "Unable to delete the note."
-      }
-    },
       "filters": {
         "all": "All",
         "open": "Open",
@@ -1683,6 +1683,65 @@
     "LOGIN": {
       "EMAIL": "Email format: username@domain.ext",
       "PASSWORD": "Must contain at least 6 characters."
+    }
+  },
+  "help_center": {
+    "nav_title": "Help center",
+    "labels": {
+      "coach_section": "Coach guide",
+      "athlete_section": "Athlete guide"
+    },
+    "coach": {
+      "title": "Help center (Coach)",
+      "subtitle": "Get quick guidance for daily coaching operations and follow-up workflows.",
+      "sections": [
+        {
+          "key": "client_management",
+          "title": "Client management",
+          "description": "Learn how to onboard, organize and monitor athletes from prospect to active follow-up."
+        },
+        {
+          "key": "program_delivery",
+          "title": "Programs and nutrition delivery",
+          "description": "Find best practices to assign, update and track training and meal plans efficiently."
+        },
+        {
+          "key": "records_feedback",
+          "title": "Records and feedback analysis",
+          "description": "Understand how to review meal/program records and convert athlete feedback into action."
+        },
+        {
+          "key": "operations_troubleshooting",
+          "title": "Operational troubleshooting",
+          "description": "Follow guided checks for common issues, blocked workflows and communication escalations."
+        }
+      ]
+    },
+    "athlete": {
+      "title": "Help center (Athlete)",
+      "subtitle": "Access practical self-service guidance to follow your coaching plan with confidence.",
+      "sections": [
+        {
+          "key": "plan_navigation",
+          "title": "Plan navigation",
+          "description": "Understand where to find your assigned programs and nutrition plans in a few steps."
+        },
+        {
+          "key": "daily_tracking",
+          "title": "Daily tracking",
+          "description": "Learn how to log workouts, meals and progress indicators to keep your coach informed."
+        },
+        {
+          "key": "profile_health",
+          "title": "Profile and health information",
+          "description": "Keep your profile data, medical context and activity preferences up to date."
+        },
+        {
+          "key": "support_contact",
+          "title": "Support and contact",
+          "description": "Identify when and how to contact your coach or support team for rapid assistance."
+        }
+      ]
     }
   }
 }

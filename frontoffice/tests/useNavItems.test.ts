@@ -21,6 +21,7 @@ describe('buildNavItems role permutations', () => {
       '/programs-athlete',
       '/nutrition-coach',
       '/nutrition-athlete',
+      '/help-center/coach',
       '/sandbox',
     ]);
   });
@@ -32,6 +33,7 @@ describe('buildNavItems role permutations', () => {
       '/athletes',
       '/programs-coach',
       '/nutrition-coach',
+      '/help-center/coach',
     ]);
   });
 
@@ -41,6 +43,7 @@ describe('buildNavItems role permutations', () => {
       '/programs-athlete',
       '/nutrition-athlete',
       '/athlete-information',
+      '/help-center/athlete',
     ]);
   });
 });

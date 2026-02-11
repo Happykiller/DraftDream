@@ -10,6 +10,7 @@ import {
   FitnessCenter,
   RestaurantMenu,
   SportsGymnastics,
+  HelpCenter,
 } from '@mui/icons-material';
 
 import { UserType } from '@src/commons/enums.js';
@@ -77,6 +78,22 @@ function createSandboxItem(t: (key: string) => string): NavItem {
   return { label: t('sandbox.title'), icon: <Settings />, path: '/sandbox' };
 }
 
+function createHelpCenterCoachItem(t: (key: string) => string): NavItem {
+  return {
+    label: t('help_center.nav_title'),
+    icon: <HelpCenter />,
+    path: '/help-center/coach',
+  };
+}
+
+function createHelpCenterAthleteItem(t: (key: string) => string): NavItem {
+  return {
+    label: t('help_center.nav_title'),
+    icon: <HelpCenter />,
+    path: '/help-center/athlete',
+  };
+}
+
 export type Role = UserType | 'guest' | undefined;
 
 /** Build the navigation menu for the provided role while preserving ordering. */
@@ -92,6 +109,7 @@ export function buildNavItems(role: Role, t: (key: string) => string): NavItem[]
         createProgramsAthleteItem(t),
         createNutritionCoachItem(t),
         createNutritionAthleteItem(t),
+        createHelpCenterCoachItem(t),
         createSandboxItem(t),
       );
       break;
@@ -102,6 +120,7 @@ export function buildNavItems(role: Role, t: (key: string) => string): NavItem[]
         createAthletesItem(t),
         createProgramsCoachItem(t),
         createNutritionCoachItem(t),
+        createHelpCenterCoachItem(t),
       );
       break;
     }
@@ -110,6 +129,7 @@ export function buildNavItems(role: Role, t: (key: string) => string): NavItem[]
         createProgramsAthleteItem(t),
         createNutritionAthleteItem(t),
         createAthleteInformationItem(t),
+        createHelpCenterAthleteItem(t),
       );
       break;
     }

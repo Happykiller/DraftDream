@@ -276,6 +276,39 @@ export const router = createBrowserRouter([
       },
     ],
   },
+
+  {
+    path: '/help-center/coach',
+    element: <ProtectedLayout />,
+    loader: requireRoleLoader([UserType.Admin, UserType.Coach]),
+    children: [
+      {
+        index: true,
+        lazy: async () => {
+          const mod = await import('@src/pages/help/HelpCenterCoach');
+          return {
+            Component: withTitle(mod.HelpCenterCoach, 'help_center.coach.title'),
+          };
+        },
+      },
+    ],
+  },
+  {
+    path: '/help-center/athlete',
+    element: <ProtectedLayout />,
+    loader: requireRoleLoader([UserType.Athlete]),
+    children: [
+      {
+        index: true,
+        lazy: async () => {
+          const mod = await import('@src/pages/help/HelpCenterAthlete');
+          return {
+            Component: withTitle(mod.HelpCenterAthlete, 'help_center.athlete.title'),
+          };
+        },
+      },
+    ],
+  },
   {
     path: '/prospects',
     element: <ProtectedLayout />,
