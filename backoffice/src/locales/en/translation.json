@@ -585,6 +585,15 @@
       "admin": "Admin"
     }
   },
+  "coach": {
+    "title": "Coach",
+    "table": {
+      "search_placeholder": "Search coaches...",
+      "columns": {
+        "active_athlete_links": "Active athlete links"
+      }
+    }
+  },
   "ERRORS": {
     "INVALID_CREDENTIALS": "Invalid credentials.",
     "AUTH_FAIL_WRONG_ROLE": "Authentication failed: wrong role.",

@@ -586,6 +586,15 @@
       "admin": "Admin"
     }
   },
+  "coach": {
+    "title": "Coach",
+    "table": {
+      "search_placeholder": "Rechercher des coachs...",
+      "columns": {
+        "active_athlete_links": "Liens actifs avec des athlètes"
+      }
+    }
+  },
   "ERRORS": {
     "INVALID_CREDENTIALS": "Identifiants invalides.",
     "AUTH_FAIL_WRONG_ROLE": "Échec de l'authentification : rôle incorrect.",

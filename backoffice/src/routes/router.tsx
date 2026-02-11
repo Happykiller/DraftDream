@@ -121,6 +121,13 @@ export const router = createBrowserRouter([
         },
       },
       {
+        path: '/coach',
+        lazy: async () => {
+          const mod = await import('@src/pages/Coach');
+          return { Component: withTitle(mod.Coach, 'coach.title') };
+        },
+      },
+      {
         path: '/users',
         lazy: async () => {
           const mod = await import('@src/pages/Users');

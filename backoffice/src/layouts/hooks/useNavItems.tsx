@@ -3,6 +3,7 @@ import * as React from 'react';
 import {
   Home,
   Group,
+  ManageAccounts,
   Palette,
   Settings,
   PersonSearch,
@@ -68,6 +69,11 @@ export function useNavItems(role?: string): NavItem[] {
             { label: t('athletes.nav.liaison'), icon: <LinkOutlined />, path: '/athletes/liaison' },
             { label: t('athletes.nav.information'), icon: <InfoOutlined />, path: '/athletes/information' },
           ],
+        },
+        {
+          label: t('coach.title'),
+          icon: <ManageAccounts />,
+          path: '/coach',
         },
         {
           label: t('users.title'),
