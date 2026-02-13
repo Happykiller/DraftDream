@@ -1,14 +1,14 @@
 import * as React from 'react';
 import {
   Box,
-  Card,
-  CardContent,
   Chip,
   Grid,
   Stack,
   Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+
+import { GlassCard } from '@components/common/GlassCard';
 
 interface HelpCenterSection {
   key: string;
@@ -19,7 +19,7 @@ interface HelpCenterSection {
   note?: string;
 }
 
-/** Coach-oriented help center bootstrap page with initial domain sections. */
+/** Coach-oriented help center view rendered as numbered help cards. */
 export function HelpCenterCoach(): React.JSX.Element {
   const { t } = useTranslation();
   const sections = t('help_center.coach.cards', { returnObjects: true }) as HelpCenterSection[];
@@ -35,19 +35,32 @@ export function HelpCenterCoach(): React.JSX.Element {
       </Stack>
 
       <Grid container spacing={2}>
-        {sections.map((section) => (
-          <Grid key={section.key} size={{ xs: 12, md: 6 }}>
-            <Card variant="outlined" sx={{ height: '100%' }}>
-              <CardContent>
+        {sections.map((section, index) => {
+          const cardNumber = index + 1;
+
+          return (
+            <Grid key={section.key} size={{ xs: 12, md: 6 }}>
+              <GlassCard accentColor="#3f51b5" sx={{ height: '100%' }}>
                 <Stack spacing={1.5}>
-                  <Chip
-                    size="small"
-                    color="primary"
-                    variant="outlined"
-                    label={section.badge || t('help_center.labels.coach_section')}
-                    sx={{ alignSelf: 'flex-start' }}
-                  />
+                  <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                    <Chip
+                      size="small"
+                      color="primary"
+                      variant="outlined"
+                      label={section.badge || t('help_center.labels.coach_section')}
+                    />
+                    <Chip
+                      size="small"
+                      color="secondary"
+                      variant="outlined"
+                      label={t('help_center.labels.sheet_number', {
+                        number: String(cardNumber).padStart(2, '0'),
+                      })}
+                    />
+                  </Stack>
+
                   <Typography variant="h6">{section.title}</Typography>
+
                   {section.description ? (
                     <Typography color="text.secondary" variant="body2">
                       {section.description}
@@ -70,10 +83,10 @@ export function HelpCenterCoach(): React.JSX.Element {
                     </Typography>
                   ) : null}
                 </Stack>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
+              </GlassCard>
+            </Grid>
+          );
+        })}
       </Grid>
     </Stack>
   );

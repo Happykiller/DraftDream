@@ -1694,7 +1694,8 @@
     "nav_title": "Centre d'aide",
     "labels": {
       "coach_section": "Guide coach",
-      "athlete_section": "Guide athlète"
+      "athlete_section": "Guide athlète",
+      "sheet_number": "Fiche n°{{number}}"
     },
     "coach": {
       "title": "Centre d'aide (Coach)",

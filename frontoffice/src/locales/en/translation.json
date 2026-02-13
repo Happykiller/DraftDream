@@ -1689,7 +1689,8 @@
     "nav_title": "Help center",
     "labels": {
       "coach_section": "Coach guide",
-      "athlete_section": "Athlete guide"
+      "athlete_section": "Athlete guide",
+      "sheet_number": "Card #{{number}}"
     },
     "coach": {
       "title": "Help center (Coach)",
