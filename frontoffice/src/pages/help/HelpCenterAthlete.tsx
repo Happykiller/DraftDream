@@ -53,7 +53,6 @@ export function HelpCenterAthlete(): React.JSX.Element {
     <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
       {/* General information */}
       <Stack spacing={0.5}>
-        <Typography variant="h5">{t('help_center.athlete.title')}</Typography>
         <Typography color="text.secondary" variant="body2">
           {t('help_center.athlete.subtitle')}
         </Typography>
