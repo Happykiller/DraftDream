@@ -1702,6 +1702,13 @@
       "subtitle": "Consultez les fiches d'aide coach pour démarrer rapidement et gérer votre activité au quotidien.",
       "cards": [
         {
+          "key": "contact_email",
+          "badge": "Support",
+          "title": "Contact prioritaire",
+          "description": "Pour toute demande, contactez-nous à help@fitdesk.com.",
+          "note": "Merci de préciser votre besoin pour accélérer le traitement."
+        },
+        {
           "key": "target_audience",
           "badge": "Démarrage",
           "title": "À qui s'adresse FitDesk ?",
@@ -1860,6 +1867,11 @@
       "title": "Centre d'aide (Athlète)",
       "subtitle": "Accédez à un guidage pratique en autonomie pour suivre votre accompagnement.",
       "sections": [
+        {
+          "key": "contact_email",
+          "title": "Contact support",
+          "description": "Pour toute demande, vous pouvez écrire à help@fitdesk.com."
+        },
         {
           "key": "plan_navigation",
           "title": "Navigation des plans",

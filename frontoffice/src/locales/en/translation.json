@@ -1697,6 +1697,13 @@
       "subtitle": "Browse coach help cards to onboard quickly and run your day-to-day activity efficiently.",
       "cards": [
         {
+          "key": "contact_email",
+          "badge": "Support",
+          "title": "Priority contact",
+          "description": "For any request, contact us at help@fitdesk.com.",
+          "note": "Please include your context so we can process your request faster."
+        },
+        {
           "key": "target_audience",
           "badge": "Getting started",
           "title": "Who is FitDesk for?",
@@ -1855,6 +1862,11 @@
       "title": "Help center (Athlete)",
       "subtitle": "Access practical self-service guidance to follow your coaching plan with confidence.",
       "sections": [
+        {
+          "key": "contact_email",
+          "title": "Support contact",
+          "description": "For any request, you can email help@fitdesk.com."
+        },
         {
           "key": "plan_navigation",
           "title": "Plan navigation",
