@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {
+  Box,
   Card,
   CardContent,
   Chip,
@@ -12,13 +13,16 @@ import { useTranslation } from 'react-i18next';
 interface HelpCenterSection {
   key: string;
   title: string;
-  description: string;
+  badge: string;
+  description?: string;
+  steps?: string[];
+  note?: string;
 }
 
 /** Coach-oriented help center bootstrap page with initial domain sections. */
 export function HelpCenterCoach(): React.JSX.Element {
   const { t } = useTranslation();
-  const sections = t('help_center.coach.sections', { returnObjects: true }) as HelpCenterSection[];
+  const sections = t('help_center.coach.cards', { returnObjects: true }) as HelpCenterSection[];
 
   return (
     <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
@@ -40,13 +44,31 @@ export function HelpCenterCoach(): React.JSX.Element {
                     size="small"
                     color="primary"
                     variant="outlined"
-                    label={t('help_center.labels.coach_section')}
+                    label={section.badge || t('help_center.labels.coach_section')}
                     sx={{ alignSelf: 'flex-start' }}
                   />
                   <Typography variant="h6">{section.title}</Typography>
-                  <Typography color="text.secondary" variant="body2">
-                    {section.description}
-                  </Typography>
+                  {section.description ? (
+                    <Typography color="text.secondary" variant="body2">
+                      {section.description}
+                    </Typography>
+                  ) : null}
+
+                  {section.steps?.length ? (
+                    <Box component="ul" sx={{ m: 0, pl: 2.5 }}>
+                      {section.steps.map((step) => (
+                        <Typography key={step} component="li" variant="body2" sx={{ mb: 0.5 }}>
+                          {step}
+                        </Typography>
+                      ))}
+                    </Box>
+                  ) : null}
+
+                  {section.note ? (
+                    <Typography color="text.secondary" variant="caption">
+                      {section.note}
+                    </Typography>
+                  ) : null}
                 </Stack>
               </CardContent>
             </Card>

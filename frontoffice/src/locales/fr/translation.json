@@ -1698,27 +1698,160 @@
     },
     "coach": {
       "title": "Centre d'aide (Coach)",
-      "subtitle": "Retrouvez un guidage rapide pour les opérations quotidiennes de coaching et le suivi.",
-      "sections": [
+      "subtitle": "Consultez les fiches d'aide coach pour démarrer rapidement et gérer votre activité au quotidien.",
+      "cards": [
         {
-          "key": "client_management",
-          "title": "Gestion des clients",
-          "description": "Apprenez à intégrer, organiser et suivre les athlètes du prospect au suivi actif."
+          "key": "target_audience",
+          "badge": "Démarrage",
+          "title": "À qui s'adresse FitDesk ?",
+          "description": "FitDesk est conçu pour deux catégories de professionnels.",
+          "steps": [
+            "Professionnels de l'encadrement sportif : coachs sportifs, entraîneurs personnels, préparateurs physiques, kinésithérapeutes du sport, clubs professionnels.",
+            "Professionnels de la nutrition : nutritionnistes, diététiciens, conseillers en nutrition sportive."
+          ]
         },
         {
-          "key": "program_delivery",
-          "title": "Diffusion des programmes et de la nutrition",
-          "description": "Retrouvez les bonnes pratiques pour attribuer, mettre à jour et suivre les plans."
+          "key": "mobile_app",
+          "badge": "Application mobile",
+          "title": "L'application mobile FitDesk",
+          "description": "L'application est disponible sur l'App Store (iOS) et Google Play Store (Android).",
+          "steps": [
+            "Les coachs et les athlètes ont accès à l'application mobile.",
+            "La création de programmes et de plans nutritionnels reste recommandée sur la version web ordinateur."
+          ]
         },
         {
-          "key": "records_feedback",
-          "title": "Analyse des suivis et retours",
-          "description": "Comprenez comment analyser les comptes rendus repas/séances et agir sur les retours."
+          "key": "first_client",
+          "badge": "Prospects",
+          "title": "Créer votre premier client / athlète",
+          "steps": [
+            "Accédez à l'onglet Prospects puis cliquez sur « Créer un prospect ».",
+            "Renseignez les informations requises (prénom, nom, email, etc.) puis enregistrez.",
+            "Rendez-vous dans la Pipeline et faites glisser le prospect vers « Gagné » puis « Création athlète »."
+          ]
         },
         {
-          "key": "operations_troubleshooting",
-          "title": "Résolution opérationnelle",
-          "description": "Suivez des vérifications guidées pour les blocages courants et les escalades."
+          "key": "switch_coach",
+          "badge": "Transfert",
+          "title": "Un client veut changer de coach / diététicien",
+          "description": "Prenez contact avec l'équipe FitDesk pour effectuer le changement.",
+          "steps": [
+            "Via la page Contact.",
+            "Via Messages > Support (si activé)."
+          ],
+          "note": "Délai de réponse moyen : 1 à 2 jours ouvrés."
+        },
+        {
+          "key": "first_program",
+          "badge": "Programmes",
+          "title": "Créer votre premier programme d'entraînement",
+          "steps": [
+            "Accédez à Programmes puis cliquez sur « Créer un programme ».",
+            "Renseignez les informations (athlète, durée, fréquence, nom du programme, etc.).",
+            "Ajoutez des séances puis des exercices (modifiables ensuite).",
+            "Cliquez sur « Créer le programme » en bas de page pour l'envoyer à l'athlète."
+          ]
+        },
+        {
+          "key": "duplicate_program",
+          "badge": "Programmes",
+          "title": "Dupliquer un programme d'entraînement",
+          "steps": [
+            "Rendez-vous dans Programmes.",
+            "Cliquez sur l'icône « Copier » du programme souhaité.",
+            "Assignez le programme à un nouvel athlète puis personnalisez-le."
+          ]
+        },
+        {
+          "key": "session_template",
+          "badge": "Templates",
+          "title": "Créer et sauvegarder une séance en template",
+          "steps": [
+            "Ouvrez Programmes > « Créer un programme ».",
+            "Ajoutez une séance et configurez ses exercices.",
+            "Cliquez sur « Sauvegarder » pour l'ajouter à la bibliothèque de templates."
+          ]
+        },
+        {
+          "key": "first_nutrition",
+          "badge": "Nutrition",
+          "title": "Créer votre premier plan de nutrition",
+          "steps": [
+            "Accédez à Nutrition puis cliquez sur « Créer un plan ».",
+            "Renseignez les informations (athlète concerné, nom du plan, etc.).",
+            "Ajoutez des journées et des repas (modifiables ensuite).",
+            "Cliquez sur « Créer le plan » en bas de page pour l'envoyer à l'athlète."
+          ]
+        },
+        {
+          "key": "duplicate_nutrition",
+          "badge": "Nutrition",
+          "title": "Dupliquer un plan de nutrition",
+          "steps": [
+            "Rendez-vous dans Nutrition.",
+            "Cliquez sur l'icône « Copier » du plan souhaité.",
+            "Assignez le plan à un nouvel athlète puis personnalisez-le."
+          ]
+        },
+        {
+          "key": "day_template",
+          "badge": "Templates",
+          "title": "Créer et sauvegarder une journée en template",
+          "steps": [
+            "Accédez à Nutrition > « Créer un plan ».",
+            "Ajoutez une journée et configurez ses repas.",
+            "Cliquez sur « Sauvegarder la journée » pour l'ajouter à la bibliothèque de templates."
+          ]
+        },
+        {
+          "key": "billing",
+          "badge": "Facturation",
+          "title": "Facturer vos clients",
+          "description": "Rendez-vous dans l'onglet Facturation.",
+          "note": "FitDesk est intégré avec Stripe pour la facturation et le suivi comptable."
+        },
+        {
+          "key": "athlete_profile",
+          "badge": "Athlètes",
+          "title": "Consulter les informations d'un client / athlète",
+          "steps": [
+            "Ouvrez l'onglet Athlètes puis cliquez sur « Voir athlète ».",
+            "Consultez les coordonnées, détails du contrat, plans assignés et historiques dans le calendrier."
+          ]
+        },
+        {
+          "key": "mobile_web",
+          "badge": "Accès",
+          "title": "FitDesk fonctionne-t-il sur mobile ?",
+          "description": "Oui. L'interface web est responsive et optimisée pour smartphones et tablettes."
+        },
+        {
+          "key": "subscription",
+          "badge": "Abonnement",
+          "title": "Changer de plan d'abonnement",
+          "steps": [
+            "Accédez à Mon plan dans les paramètres.",
+            "Sélectionnez la formule adaptée à vos besoins puis validez."
+          ]
+        },
+        {
+          "key": "language",
+          "badge": "Paramètres",
+          "title": "Comment changer de langue ?",
+          "steps": [
+            "Cliquez sur votre nom en haut à droite.",
+            "Accédez aux Paramètres et sélectionnez la langue souhaitée."
+          ]
+        },
+        {
+          "key": "support",
+          "badge": "Support",
+          "title": "Contacter le support",
+          "steps": [
+            "Via la page Contact.",
+            "Via Messages > Support (si activé)."
+          ],
+          "note": "Délai de réponse moyen : 1 à 2 jours ouvrés."
         }
       ]
     },

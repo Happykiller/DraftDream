@@ -1693,27 +1693,160 @@
     },
     "coach": {
       "title": "Help center (Coach)",
-      "subtitle": "Get quick guidance for daily coaching operations and follow-up workflows.",
-      "sections": [
+      "subtitle": "Browse coach help cards to onboard quickly and run your day-to-day activity efficiently.",
+      "cards": [
         {
-          "key": "client_management",
-          "title": "Client management",
-          "description": "Learn how to onboard, organize and monitor athletes from prospect to active follow-up."
+          "key": "target_audience",
+          "badge": "Getting started",
+          "title": "Who is FitDesk for?",
+          "description": "FitDesk is designed for two categories of professionals.",
+          "steps": [
+            "Sports coaching professionals: sports coaches, personal trainers, strength and conditioning coaches, sports physiotherapists, professional clubs.",
+            "Nutrition professionals: nutritionists, dietitians, sports nutrition advisors."
+          ]
         },
         {
-          "key": "program_delivery",
-          "title": "Programs and nutrition delivery",
-          "description": "Find best practices to assign, update and track training and meal plans efficiently."
+          "key": "mobile_app",
+          "badge": "Mobile app",
+          "title": "FitDesk mobile app",
+          "description": "The app is available on the App Store (iOS) and Google Play Store (Android).",
+          "steps": [
+            "Both coaches and athletes can access the mobile app.",
+            "For creating programs and nutrition plans, we strongly recommend the web version on desktop."
+          ]
         },
         {
-          "key": "records_feedback",
-          "title": "Records and feedback analysis",
-          "description": "Understand how to review meal/program records and convert athlete feedback into action."
+          "key": "first_client",
+          "badge": "Prospects",
+          "title": "Create your first client / athlete",
+          "steps": [
+            "Go to Prospects and click \"Create a new prospect\".",
+            "Fill in required information (first name, last name, email, etc.) and save.",
+            "Open the Pipeline and drag the prospect to \"Won\" then \"Create athlete\"."
+          ]
         },
         {
-          "key": "operations_troubleshooting",
-          "title": "Operational troubleshooting",
-          "description": "Follow guided checks for common issues, blocked workflows and communication escalations."
+          "key": "switch_coach",
+          "badge": "Transfer",
+          "title": "A client wants to switch to you as new coach / dietitian",
+          "description": "Please contact FitDesk directly to process the change.",
+          "steps": [
+            "Via the Contact page.",
+            "Via Messages > Support (if enabled)."
+          ],
+          "note": "Average response time: 1 to 2 business days."
+        },
+        {
+          "key": "first_program",
+          "badge": "Programs",
+          "title": "Create your first training program",
+          "steps": [
+            "Go to Programs and click \"Create program\".",
+            "Fill in information (athlete, duration, frequency, program name, etc.).",
+            "Add sessions and exercises (editable later).",
+            "Click \"Create the program\" at the bottom to send it to the athlete."
+          ]
+        },
+        {
+          "key": "duplicate_program",
+          "badge": "Programs",
+          "title": "Can I duplicate a training program?",
+          "steps": [
+            "Go to Programs.",
+            "Click the \"Copy\" icon on the target program.",
+            "Assign it to a new athlete and personalize it."
+          ]
+        },
+        {
+          "key": "session_template",
+          "badge": "Templates",
+          "title": "Create and save a session as template",
+          "steps": [
+            "Open Programs > \"Create program\".",
+            "Add a new session and configure its exercises.",
+            "Click \"Save\" to add this session to your template library."
+          ]
+        },
+        {
+          "key": "first_nutrition",
+          "badge": "Nutrition",
+          "title": "Create your first nutrition plan",
+          "steps": [
+            "Go to Nutrition and click \"Create plan\".",
+            "Fill in information (athlete, plan name, etc.).",
+            "Add days and meals (editable later).",
+            "Click \"Create plan\" at the bottom to send it to the athlete."
+          ]
+        },
+        {
+          "key": "duplicate_nutrition",
+          "badge": "Nutrition",
+          "title": "Can I duplicate a nutrition plan?",
+          "steps": [
+            "Go to Nutrition.",
+            "Click the \"Copy\" icon on the target plan.",
+            "Assign it to a new athlete and personalize it."
+          ]
+        },
+        {
+          "key": "day_template",
+          "badge": "Templates",
+          "title": "Create and save a day as template",
+          "steps": [
+            "Go to Nutrition > \"Create plan\".",
+            "Add a new day and configure its meals.",
+            "Click \"Save day\" to add it to your template library."
+          ]
+        },
+        {
+          "key": "billing",
+          "badge": "Billing",
+          "title": "Bill your clients",
+          "description": "Go to the Billing tab.",
+          "note": "FitDesk is integrated with Stripe for professional billing and accounting follow-up."
+        },
+        {
+          "key": "athlete_profile",
+          "badge": "Athletes",
+          "title": "View client / athlete information",
+          "steps": [
+            "Open Athletes and click \"View athlete\".",
+            "Review contact details, contract details, assigned plans and calendar history."
+          ]
+        },
+        {
+          "key": "mobile_web",
+          "badge": "Access",
+          "title": "Does FitDesk work on mobile?",
+          "description": "Yes. The web interface is fully responsive and optimized for phones and tablets."
+        },
+        {
+          "key": "subscription",
+          "badge": "Subscription",
+          "title": "Change subscription plan",
+          "steps": [
+            "Go to My Plan in settings.",
+            "Select the plan that fits your needs and confirm."
+          ]
+        },
+        {
+          "key": "language",
+          "badge": "Settings",
+          "title": "How to change language?",
+          "steps": [
+            "Click your name in the top-right corner.",
+            "Open Settings and select your preferred language."
+          ]
+        },
+        {
+          "key": "support",
+          "badge": "Support",
+          "title": "Contact support",
+          "steps": [
+            "Via the Contact page.",
+            "Via Messages > Support (if enabled)."
+          ],
+          "note": "Average response time: 1 to 2 business days."
         }
       ]
     },
