@@ -3,6 +3,7 @@ import {
   Box,
   Chip,
   Grid,
+  Link,
   Stack,
   Typography,
 } from '@mui/material';
@@ -17,6 +18,30 @@ interface HelpCenterSection {
   description?: string;
   steps?: string[];
   note?: string;
+}
+
+const EMAIL_PATTERN = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
+
+/** Convert plain text containing one support email into a clickable mailto link. */
+function renderTextWithEmail(value: string): React.ReactNode {
+  const match = value.match(EMAIL_PATTERN);
+  if (!match || match.index === undefined) {
+    return value;
+  }
+
+  const email = match[0];
+  const start = match.index;
+  const end = start + email.length;
+
+  return (
+    <>
+      {value.slice(0, start)}
+      <Link href={`mailto:${email}`} underline="hover">
+        {email}
+      </Link>
+      {value.slice(end)}
+    </>
+  );
 }
 
 /** Coach-oriented help center view rendered as numbered help cards. */
@@ -63,7 +88,7 @@ export function HelpCenterCoach(): React.JSX.Element {
 
                   {section.description ? (
                     <Typography color="text.secondary" variant="body2">
-                      {section.description}
+                      {renderTextWithEmail(section.description)}
                     </Typography>
                   ) : null}
 
@@ -71,7 +96,7 @@ export function HelpCenterCoach(): React.JSX.Element {
                     <Box component="ul" sx={{ m: 0, pl: 2.5 }}>
                       {section.steps.map((step) => (
                         <Typography key={step} component="li" variant="body2" sx={{ mb: 0.5 }}>
-                          {step}
+                          {renderTextWithEmail(step)}
                         </Typography>
                       ))}
                     </Box>
@@ -79,7 +104,7 @@ export function HelpCenterCoach(): React.JSX.Element {
 
                   {section.note ? (
                     <Typography color="text.secondary" variant="caption">
-                      {section.note}
+                      {renderTextWithEmail(section.note)}
                     </Typography>
                   ) : null}
                 </Stack>

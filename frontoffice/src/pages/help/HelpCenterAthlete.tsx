@@ -4,6 +4,7 @@ import {
   CardContent,
   Chip,
   Grid,
+  Link,
   Stack,
   Typography,
 } from '@mui/material';
@@ -13,6 +14,30 @@ interface HelpCenterSection {
   key: string;
   title: string;
   description: string;
+}
+
+const EMAIL_PATTERN = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
+
+/** Convert plain text containing one support email into a clickable mailto link. */
+function renderTextWithEmail(value: string): React.ReactNode {
+  const match = value.match(EMAIL_PATTERN);
+  if (!match || match.index === undefined) {
+    return value;
+  }
+
+  const email = match[0];
+  const start = match.index;
+  const end = start + email.length;
+
+  return (
+    <>
+      {value.slice(0, start)}
+      <Link href={`mailto:${email}`} underline="hover">
+        {email}
+      </Link>
+      {value.slice(end)}
+    </>
+  );
 }
 
 /** Athlete-oriented help center bootstrap page with initial self-service sections. */
@@ -45,7 +70,7 @@ export function HelpCenterAthlete(): React.JSX.Element {
                   />
                   <Typography variant="h6">{section.title}</Typography>
                   <Typography color="text.secondary" variant="body2">
-                    {section.description}
+                    {renderTextWithEmail(section.description)}
                   </Typography>
                 </Stack>
               </CardContent>
