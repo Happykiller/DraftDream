@@ -1866,31 +1866,86 @@
     "athlete": {
       "title": "Centre d'aide (Athlète)",
       "subtitle": "Accédez à un guidage pratique en autonomie pour suivre votre accompagnement.",
-      "sections": [
+      "cards": [
         {
           "key": "contact_email",
-          "title": "Contact support",
-          "description": "Pour toute demande, vous pouvez écrire à help@fitdesk.com."
+          "badge": "Support",
+          "title": "Contact prioritaire",
+          "description": "Pour toute demande, contactez-nous à help@fitdesk.com.",
+          "note": "Merci de préciser votre besoin pour accélérer le traitement."
         },
         {
-          "key": "plan_navigation",
-          "title": "Navigation des plans",
-          "description": "Comprenez où retrouver vos programmes et plans nutritionnels assignés rapidement."
+          "key": "mobile_app",
+          "badge": "Application mobile",
+          "title": "L'application mobile FitDesk",
+          "description": "Disponibilité : l'application est disponible sur l'App Store (iOS) et le Google Play Store (Android).",
+          "steps": [
+            "Utilisateurs : les coachs et les athlètes ont tous accès à l'application mobile.",
+            "Important : l'application mobile n'est pas optimisée pour la création de programmes et de plans nutritionnels. Pour ces fonctionnalités, nous recommandons vivement d'utiliser la version web sur ordinateur."
+          ]
         },
         {
-          "key": "daily_tracking",
-          "title": "Suivi quotidien",
-          "description": "Apprenez à enregistrer vos séances, repas et indicateurs de progression."
+          "key": "mobile_web",
+          "badge": "Accès",
+          "title": "FitDesk fonctionne-t-il sur mobile ?",
+          "description": "Oui, FitDesk est accessible sur mobile !",
+          "steps": [
+            "Vous pouvez utiliser l'application via votre navigateur web.",
+            "L'interface est entièrement responsive et optimisée pour les smartphones et tablettes."
+          ]
         },
         {
-          "key": "profile_health",
-          "title": "Profil et informations santé",
-          "description": "Maintenez vos informations de profil, votre contexte santé et vos préférences à jour."
+          "key": "start_session",
+          "badge": "Tableau de bord",
+          "title": "Comment lancer une séance ?",
+          "steps": [
+            "Rendez-vous dans « Tableau de bord ».",
+            "Cliquez sur la séance que vous souhaitez lancer.",
+            "Vous avez la possibilité d'enregistrer vos informations et revenir dessus par la suite avant de valider la séance.",
+            "Validez la séance pour l'envoyer à votre coach."
+          ]
         },
         {
-          "key": "support_contact",
-          "title": "Support et contact",
-          "description": "Identifiez quand et comment contacter votre coach ou l'équipe support."
+          "key": "start_meal",
+          "badge": "Tableau de bord",
+          "title": "Comment lancer un repas ?",
+          "steps": [
+            "Rendez-vous dans « Tableau de bord ».",
+            "Cliquez sur le repas que vous souhaitez.",
+            "Ajoutez des notes.",
+            "Validez le repas pour l'envoyer à votre coach."
+          ]
+        },
+        {
+          "key": "switch_coach",
+          "badge": "Transfert",
+          "title": "Je souhaite changer de coach / diététicien qui utilise FitDesk, comment faire ?",
+          "description": "Prenez contact avec nous en direct pour faire le changement.",
+          "steps": [
+            "Via la page Contact.",
+            "Via Messages > Support (si cette fonctionnalité est activée)."
+          ],
+          "note": "Délai de réponse : 1 à 2 jours ouvrés."
+        },
+        {
+          "key": "language",
+          "badge": "Paramètres",
+          "title": "Comment changer de langue ?",
+          "steps": [
+            "Cliquez sur votre nom en haut à droite.",
+            "Accédez aux Paramètres.",
+            "Sélectionnez la langue de votre choix."
+          ]
+        },
+        {
+          "key": "support",
+          "badge": "Support",
+          "title": "Contacter le support",
+          "steps": [
+            "Via la page Contact.",
+            "Via Messages > Support (si cette fonctionnalité est activée)."
+          ],
+          "note": "Délai de réponse : 1 à 2 jours ouvrés."
         }
       ]
     }

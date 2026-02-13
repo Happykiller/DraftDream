@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {
-  Card,
-  CardContent,
+  Box,
   Chip,
   Grid,
   Link,
@@ -10,10 +9,15 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
+import { GlassCard } from '@components/common/GlassCard';
+
 interface HelpCenterSection {
   key: string;
   title: string;
-  description: string;
+  badge?: string;
+  description?: string;
+  steps?: string[];
+  note?: string;
 }
 
 const EMAIL_PATTERN = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
@@ -40,10 +44,10 @@ function renderTextWithEmail(value: string): React.ReactNode {
   );
 }
 
-/** Athlete-oriented help center bootstrap page with initial self-service sections. */
+/** Athlete-oriented help center view rendered as numbered help cards. */
 export function HelpCenterAthlete(): React.JSX.Element {
   const { t } = useTranslation();
-  const sections = t('help_center.athlete.sections', { returnObjects: true }) as HelpCenterSection[];
+  const sections = t('help_center.athlete.cards', { returnObjects: true }) as HelpCenterSection[];
 
   return (
     <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
@@ -56,27 +60,58 @@ export function HelpCenterAthlete(): React.JSX.Element {
       </Stack>
 
       <Grid container spacing={2}>
-        {sections.map((section) => (
-          <Grid key={section.key} size={{ xs: 12, md: 6 }}>
-            <Card variant="outlined" sx={{ height: '100%' }}>
-              <CardContent>
+        {sections.map((section, index) => {
+          const cardNumber = index + 1;
+
+          return (
+            <Grid key={section.key} size={{ xs: 12, md: 6 }}>
+              <GlassCard accentColor="#7b1fa2" sx={{ height: '100%' }}>
                 <Stack spacing={1.5}>
-                  <Chip
-                    size="small"
-                    color="secondary"
-                    variant="outlined"
-                    label={t('help_center.labels.athlete_section')}
-                    sx={{ alignSelf: 'flex-start' }}
-                  />
+                  <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                    <Chip
+                      size="small"
+                      color="secondary"
+                      variant="outlined"
+                      label={section.badge || t('help_center.labels.athlete_section')}
+                    />
+                    <Chip
+                      size="small"
+                      color="primary"
+                      variant="outlined"
+                      label={t('help_center.labels.sheet_number', {
+                        number: String(cardNumber).padStart(2, '0'),
+                      })}
+                    />
+                  </Stack>
+
                   <Typography variant="h6">{section.title}</Typography>
-                  <Typography color="text.secondary" variant="body2">
-                    {renderTextWithEmail(section.description)}
-                  </Typography>
+
+                  {section.description ? (
+                    <Typography color="text.secondary" variant="body2">
+                      {renderTextWithEmail(section.description)}
+                    </Typography>
+                  ) : null}
+
+                  {section.steps?.length ? (
+                    <Box component="ul" sx={{ m: 0, pl: 2.5 }}>
+                      {section.steps.map((step) => (
+                        <Typography key={step} component="li" variant="body2" sx={{ mb: 0.5 }}>
+                          {renderTextWithEmail(step)}
+                        </Typography>
+                      ))}
+                    </Box>
+                  ) : null}
+
+                  {section.note ? (
+                    <Typography color="text.secondary" variant="caption">
+                      {renderTextWithEmail(section.note)}
+                    </Typography>
+                  ) : null}
                 </Stack>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
+              </GlassCard>
+            </Grid>
+          );
+        })}
       </Grid>
     </Stack>
   );

@@ -1861,31 +1861,86 @@
     "athlete": {
       "title": "Help center (Athlete)",
       "subtitle": "Access practical self-service guidance to follow your coaching plan with confidence.",
-      "sections": [
+      "cards": [
         {
           "key": "contact_email",
-          "title": "Support contact",
-          "description": "For any request, you can email help@fitdesk.com."
+          "badge": "Support",
+          "title": "Priority contact",
+          "description": "For any request, contact us at help@fitdesk.com.",
+          "note": "Please include your context so we can process your request faster."
         },
         {
-          "key": "plan_navigation",
-          "title": "Plan navigation",
-          "description": "Understand where to find your assigned programs and nutrition plans in a few steps."
+          "key": "mobile_app",
+          "badge": "Mobile app",
+          "title": "FitDesk mobile app",
+          "description": "Availability: the app is available on the App Store (iOS) and Google Play Store (Android).",
+          "steps": [
+            "Users: both coaches and athletes have access to the mobile app.",
+            "Important: the mobile app is not optimized for creating training programs and nutrition plans. For these features, we strongly recommend using the web version on a computer."
+          ]
         },
         {
-          "key": "daily_tracking",
-          "title": "Daily tracking",
-          "description": "Learn how to log workouts, meals and progress indicators to keep your coach informed."
+          "key": "mobile_web",
+          "badge": "Access",
+          "title": "Does FitDesk work on mobile?",
+          "description": "Yes, FitDesk is accessible on mobile!",
+          "steps": [
+            "You can use the app through your web browser.",
+            "The interface is fully responsive and optimized for smartphones and tablets."
+          ]
         },
         {
-          "key": "profile_health",
-          "title": "Profile and health information",
-          "description": "Keep your profile data, medical context and activity preferences up to date."
+          "key": "start_session",
+          "badge": "Dashboard",
+          "title": "How to start a session?",
+          "steps": [
+            "Go to \"Dashboard\".",
+            "Click on the session you want to start.",
+            "You can save your information and come back later before validating the session.",
+            "Validate the session to send it to your coach."
+          ]
         },
         {
-          "key": "support_contact",
-          "title": "Support and contact",
-          "description": "Identify when and how to contact your coach or support team for rapid assistance."
+          "key": "start_meal",
+          "badge": "Dashboard",
+          "title": "How to log a meal?",
+          "steps": [
+            "Go to \"Dashboard\".",
+            "Click on the meal you want.",
+            "Add notes.",
+            "Validate the meal to send it to your coach."
+          ]
+        },
+        {
+          "key": "switch_coach",
+          "badge": "Transfer",
+          "title": "I would like to change my coach / dietitian who uses FitDesk, how do I proceed?",
+          "description": "Please contact us directly to make the change.",
+          "steps": [
+            "Via the Contact page.",
+            "Via Messages > Support (if this feature is enabled)."
+          ],
+          "note": "Response time: 1 to 2 business days."
+        },
+        {
+          "key": "language",
+          "badge": "Settings",
+          "title": "How to change the language?",
+          "steps": [
+            "Click on your name in the top right corner.",
+            "Go to Settings.",
+            "Select your preferred language."
+          ]
+        },
+        {
+          "key": "support",
+          "badge": "Support",
+          "title": "Contact support",
+          "steps": [
+            "Via the Contact page.",
+            "Via Messages > Support (if this feature is enabled)."
+          ],
+          "note": "Response time: 1 to 2 business days."
         }
       ]
     }
