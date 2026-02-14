@@ -306,7 +306,7 @@ const GET_QUERY = `
         meals {
           id templateMealId slug locale label description foods
           calories proteinGrams carbGrams fatGrams
-          type { id templateMealTypeId slug locale label visibility icon }
+          type { id templateMealTypeId slug locale label visibility }
         }
       }
       userId athlete { id email }
