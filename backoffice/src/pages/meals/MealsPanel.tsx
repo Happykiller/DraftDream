@@ -16,7 +16,7 @@ export function MealsPanel(): React.JSX.Element {
   const debounced = useDebouncedValue(searchInput, 300);
   React.useEffect(() => { if (debounced !== q) setQ(debounced); }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update, remove } = useMeals({ page, limit, q });
+  const { items, total, loading, create, update, remove, getMeal } = useMeals({ page, limit, q });
   const {
     items: mealTypes,
     loading: mealTypesLoading,
@@ -26,7 +26,15 @@ export function MealsPanel(): React.JSX.Element {
   const [openCreate, setOpenCreate] = React.useState(false);
   const [editId, setEditId] = React.useState<string | null>(null);
   const [deleteId, setDeleteId] = React.useState<string | null>(null);
-  const editing = React.useMemo(() => items.find((item) => item.id === editId), [items, editId]);
+  const [fullMeal, setFullMeal] = React.useState<Awaited<ReturnType<typeof getMeal>> | null>(null);
+
+  React.useEffect(() => {
+    if (editId) {
+      void getMeal(editId).then(setFullMeal);
+      return;
+    }
+    setFullMeal(null);
+  }, [editId, getMeal]);
 
   return (
     <Box>
@@ -70,7 +78,7 @@ export function MealsPanel(): React.JSX.Element {
       <MealDialog
         open={Boolean(editId)}
         mode="edit"
-        initial={editing ?? undefined}
+        initial={fullMeal ?? undefined}
         mealTypes={mealTypes}
         mealTypesLoading={mealTypesLoading}
         onClose={() => setEditId(null)}

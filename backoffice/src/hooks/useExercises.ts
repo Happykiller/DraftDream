@@ -55,6 +55,8 @@ type ExerciseListPayload = {
   };
 };
 
+type GetPayload = { exercise_get: Exercise | null };
+
 type CreatePayload = { exercise_create: Exercise };
 type UpdatePayload = { exercise_update: Exercise };
 type DeletePayload = { exercise_delete: boolean };
@@ -80,6 +82,21 @@ const LIST_Q = `
 const CREATE_M = `
   mutation CreateExercise($input: CreateExerciseInput!) {
     exercise_create(input: $input) {
+      id slug locale label description instructions series repetitions
+      charge rest videoUrl visibility createdBy createdAt updatedAt
+      categoryIds muscleIds equipmentIds tagIds
+      categories { id slug label locale }
+      muscles { id slug label locale }
+      equipment { id slug label locale }
+      tags { id slug label locale }
+      creator { id email }
+    }
+  }
+`;
+
+const GET_Q = `
+  query GetExercise($id: ID!) {
+    exercise_get(id: $id) {
       id slug locale label description instructions series repetitions
       charge rest videoUrl visibility createdBy createdAt updatedAt
       categoryIds muscleIds equipmentIds tagIds
@@ -227,5 +244,25 @@ export function useExercises({ page, limit, q }: UseExercisesParams) {
     [execute, gql, flashError, flashSuccess, load]
   );
 
-  return { items, total, loading, create, update, remove, reload: load };
+  const getExercise = React.useCallback(
+    async (id: string): Promise<Exercise | null> => {
+      try {
+        const { data, errors } = await execute(() =>
+          gql.send<GetPayload>({
+            query: GET_Q,
+            variables: { id },
+            operationName: 'GetExercise',
+          }),
+        );
+        if (errors?.length) throw new Error(errors[0].message);
+        return data?.exercise_get ?? null;
+      } catch (e: any) {
+        flashError(e?.message ?? 'Failed to load exercise');
+        return null;
+      }
+    },
+    [execute, gql, flashError],
+  );
+
+  return { items, total, loading, create, update, remove, reload: load, getExercise };
 }

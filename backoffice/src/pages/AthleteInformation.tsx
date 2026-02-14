@@ -17,6 +17,7 @@ export function AthleteInformation(): React.JSX.Element {
   const { page, limit, q, setPage, setLimit, setQ } = useTabParams('athinfo');
   const [searchInput, setSearchInput] = React.useState(q);
   const [editing, setEditing] = React.useState<AthleteInfo | null>(null);
+  const [fullEditing, setFullEditing] = React.useState<AthleteInfo | null>(null);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [dialogMode, setDialogMode] = React.useState<'create' | 'edit'>('edit');
   const [deleteId, setDeleteId] = React.useState<string | null>(null);
@@ -25,7 +26,7 @@ export function AthleteInformation(): React.JSX.Element {
     if (debounced !== q) setQ(debounced);
   }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update, remove, reload } = useAthleteInfos({
+  const { items, total, loading, create, update, remove, reload, getAthleteInfo } = useAthleteInfos({
     page,
     limit,
     q: debounced,
@@ -47,6 +48,14 @@ export function AthleteInformation(): React.JSX.Element {
     setDialogMode('edit');
     setIsDialogOpen(true);
   };
+
+  React.useEffect(() => {
+    if (dialogMode !== "edit" || !editing) {
+      setFullEditing(null);
+      return;
+    }
+    void getAthleteInfo(editing.id).then(setFullEditing);
+  }, [dialogMode, editing, getAthleteInfo]);
 
   const handleCreate = () => {
     setEditing(null);
@@ -90,7 +99,7 @@ export function AthleteInformation(): React.JSX.Element {
       <AthleteInformationDialog
         open={isDialogOpen}
         mode={dialogMode}
-        initial={editing}
+        initial={fullEditing ?? editing}
         athleteOptions={athleteOptions}
         levels={metadata.levels}
         objectives={metadata.objectives}

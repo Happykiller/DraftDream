@@ -56,6 +56,7 @@ type MealListPayload = {
 type CreateMealPayload = { meal_create: Meal };
 type UpdateMealPayload = { meal_update: Meal };
 type DeleteMealPayload = { meal_delete: boolean };
+type GetMealPayload = { meal_get: Meal | null };
 
 const LIST_QUERY = `
   query ListMeals($input: ListMealsInput) {
@@ -137,6 +138,29 @@ const DELETE_MUTATION = `
   }
 `;
 
+const GET_QUERY = `
+  query GetMeal($id: ID!) {
+    meal_get(id: $id) {
+      id
+      slug
+      locale
+      label
+      typeId
+      type { id slug label locale visibility }
+      foods
+      calories
+      proteinGrams
+      carbGrams
+      fatGrams
+      visibility
+      createdBy
+      createdAt
+      updatedAt
+      creator { id email }
+    }
+  }
+`;
+
 export interface UseMealsParams {
   page: number; // 1-based
   limit: number;
@@ -175,6 +199,7 @@ export interface UseMealsResult {
   }) => Promise<void>;
   remove: (id: string) => Promise<void>;
   reload: () => Promise<void>;
+  getMeal: (id: string) => Promise<Meal | null>;
 }
 
 export function useMeals({ page, limit, q, locale, typeId, visibility }: UseMealsParams): UseMealsResult {
@@ -282,5 +307,28 @@ export function useMeals({ page, limit, q, locale, typeId, visibility }: UseMeal
     [execute, flashError, flashSuccess, gql, load],
   );
 
-  return { items, total, loading, create, update, remove, reload: load };
+
+
+  const getMeal = React.useCallback<UseMealsResult['getMeal']>(
+    async (id) => {
+      try {
+        const { data, errors } = await execute(() =>
+          gql.send<GetMealPayload>({
+            query: GET_QUERY,
+            variables: { id },
+            operationName: 'GetMeal',
+          }),
+        );
+        if (errors?.length) throw new Error(errors[0].message);
+        return data?.meal_get ?? null;
+      } catch (error: any) {
+        flashError(error?.message ?? 'Failed to load meal');
+        return null;
+      }
+    },
+    [execute, flashError, gql],
+  );
+
+  return { items, total, loading, create, update, remove, reload: load, getMeal };
 }
+

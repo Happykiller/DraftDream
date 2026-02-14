@@ -19,7 +19,7 @@ export function MealDaysPanel(): React.JSX.Element {
     if (debounced !== q) setQ(debounced);
   }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update, remove } = useMealDays({ page, limit, q });
+  const { items, total, loading, create, update, remove, getMealDay } = useMealDays({ page, limit, q });
   const {
     items: mealOptions,
     loading: mealOptionsLoading,
@@ -42,7 +42,15 @@ export function MealDaysPanel(): React.JSX.Element {
   const [openCreate, setOpenCreate] = React.useState(false);
   const [editId, setEditId] = React.useState<string | null>(null);
   const [deleteId, setDeleteId] = React.useState<string | null>(null);
-  const editing = React.useMemo(() => items.find((item) => item.id === editId) ?? null, [items, editId]);
+  const [fullMealDay, setFullMealDay] = React.useState<Awaited<ReturnType<typeof getMealDay>> | null>(null);
+
+  React.useEffect(() => {
+    if (editId) {
+      void getMealDay(editId).then(setFullMealDay);
+      return;
+    }
+    setFullMealDay(null);
+  }, [editId, getMealDay]);
 
   const mapDialogValuesToInput = React.useCallback(
     (values: MealDayDialogValues) => ({
@@ -90,7 +98,7 @@ export function MealDaysPanel(): React.JSX.Element {
       <MealDayDialog
         open={Boolean(editId)}
         mode="edit"
-        initial={editing ?? undefined}
+        initial={fullMealDay ?? undefined}
         mealOptions={mealDialogOptions}
         mealOptionsLoading={mealOptionsLoading}
         onClose={() => setEditId(null)}

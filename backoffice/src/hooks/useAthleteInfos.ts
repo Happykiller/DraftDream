@@ -35,6 +35,11 @@ export interface AthleteInfoLevel {
   label?: string | null;
 }
 
+export interface AthleteInfoMetadataItem {
+  id: string;
+  label?: string | null;
+}
+
 export interface AthleteInfo {
   id: string;
   userId: string;
@@ -50,6 +55,8 @@ export interface AthleteInfo {
   deletedAt?: string | null;
   athlete?: AthleteInfoAthlete | null;
   level?: AthleteInfoLevel | null;
+  objectives?: AthleteInfoMetadataItem[];
+  activityPreferences?: AthleteInfoMetadataItem[];
 }
 
 interface AthleteInfoListPayload {
@@ -69,6 +76,9 @@ type AthleteInfoCreatePayload = {
 };
 type AthleteInfoDeletePayload = {
   athleteInfo_delete: boolean;
+};
+type AthleteInfoGetPayload = {
+  athleteInfo_get: AthleteInfo | null;
 };
 
 const LIST_Q = `
@@ -100,10 +110,47 @@ const LIST_Q = `
           updatedAt
         }
         level { id label }
+        objectives { id label }
+        activityPreferences { id label }
       }
       total
       page
       limit
+    }
+  }
+`;
+
+
+const GET_Q = `
+  query GetAthleteInfo($id: ID!) {
+    athleteInfo_get(id: $id) {
+      id
+      userId
+      levelId
+      objectiveIds
+      activityPreferenceIds
+      medicalConditions
+      allergies
+      notes
+      createdBy
+      createdAt
+      updatedAt
+      deletedAt
+      athlete {
+        id
+        type
+        first_name
+        last_name
+        email
+        phone
+        is_active
+        company { name }
+        address { city country }
+        updatedAt
+      }
+      level { id label }
+      objectives { id label }
+      activityPreferences { id label }
     }
   }
 `;
@@ -277,6 +324,28 @@ export function useAthleteInfos({ page, limit, q, includeArchived, userId }: Use
     [execute, flashError, flashSuccess, gql, includeArchived, limit, load, page, q, userId],
   );
 
+
+
+  const getAthleteInfo = React.useCallback(
+    async (id: string): Promise<AthleteInfo | null> => {
+      try {
+        const { data, errors } = await execute(() =>
+          gql.send<AthleteInfoGetPayload>({
+            query: GET_Q,
+            variables: { id },
+            operationName: 'GetAthleteInfo',
+          }),
+        );
+        if (errors?.length) throw new Error(errors[0].message);
+        return data?.athleteInfo_get ?? null;
+      } catch (error: any) {
+        flashError(error?.message ?? 'Failed to load athlete information details');
+        return null;
+      }
+    },
+    [execute, flashError, gql],
+  );
+
   return {
     items,
     total,
@@ -285,5 +354,6 @@ export function useAthleteInfos({ page, limit, q, includeArchived, userId }: Use
     update,
     remove,
     reload: () => load({ page, limit, q, includeArchived, userId }),
+    getAthleteInfo,
   };
 }

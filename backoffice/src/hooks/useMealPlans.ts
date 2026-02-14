@@ -296,6 +296,26 @@ const DELETE_MUTATION = `
   }
 `;
 
+const GET_QUERY = `
+  query GetMealPlan($id: ID!) {
+    mealPlan_get(id: $id) {
+      id slug locale label description startDate endDate
+      calories proteinGrams carbGrams fatGrams
+      days {
+        id templateMealDayId slug locale label description
+        meals {
+          id templateMealId slug locale label description foods
+          calories proteinGrams carbGrams fatGrams
+          type { id templateMealTypeId slug locale label visibility icon }
+        }
+      }
+      userId athlete { id email }
+      visibility createdBy createdAt updatedAt
+      creator { id email }
+    }
+  }
+`;
+
 export interface UseMealPlansParams {
   page: number;
   limit: number;
@@ -338,6 +358,7 @@ export interface UseMealPlansResult {
   }) => Promise<void>;
   remove: (id: string) => Promise<void>;
   reload: () => Promise<void>;
+  getMealPlan: (id: string) => Promise<MealPlan | null>;
 }
 
 export function useMealPlans({ page, limit, q, userId }: UseMealPlansParams): UseMealPlansResult {
@@ -458,5 +479,27 @@ export function useMealPlans({ page, limit, q, userId }: UseMealPlansParams): Us
     [execute, flashError, flashSuccess, gql, load],
   );
 
-  return { items, total, loading, create, update, remove, reload: load };
+
+
+  const getMealPlan = React.useCallback<UseMealPlansResult['getMealPlan']>(
+    async (id) => {
+      try {
+        const { data, errors } = await execute(() =>
+          gql.send<GetMealPlanPayload>({
+            query: GET_QUERY,
+            variables: { id },
+            operationName: 'GetMealPlan',
+          }),
+        );
+        if (errors?.length) throw new Error(errors[0].message);
+        return data?.mealPlan_get ?? null;
+      } catch (error: any) {
+        flashError(error?.message ?? 'Failed to load meal plan');
+        return null;
+      }
+    },
+    [execute, flashError, gql],
+  );
+
+  return { items, total, loading, create, update, remove, reload: load, getMealPlan };
 }

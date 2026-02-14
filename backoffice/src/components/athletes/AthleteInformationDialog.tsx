@@ -115,13 +115,32 @@ export function AthleteInformationDialog({
     }
   }, [athleteName, athleteOptions, initial, isEdit, open]);
 
-  const optionByIds = React.useMemo(
-    () => ({
-      objectives: objectives.filter((item) => values.objectiveIds.includes(item.id)),
-      activityPreferences: activityPreferences.filter((item) => values.activityPreferenceIds.includes(item.id)),
-    }),
-    [activityPreferences, objectives, values.activityPreferenceIds, values.objectiveIds],
-  );
+  const optionByIds = React.useMemo(() => {
+    const toOptions = (
+      ids: string[],
+      available: ProspectMetadataOption[],
+      resolverItems: Array<{ id: string; label?: string | null }> | undefined,
+    ): ProspectMetadataOption[] => {
+      const resolverMap = new Map(
+        (resolverItems ?? []).map((item) => [item.id, { id: item.id, label: item.label ?? item.id }]),
+      );
+
+      return ids
+        .map((id) => {
+          const fromList = available.find((item) => item.id === id);
+          if (fromList) {
+            return fromList;
+          }
+          return resolverMap.get(id) ?? null;
+        })
+        .filter((item): item is ProspectMetadataOption => Boolean(item));
+    };
+
+    return {
+      objectives: toOptions(values.objectiveIds, objectives, initial?.objectives),
+      activityPreferences: toOptions(values.activityPreferenceIds, activityPreferences, initial?.activityPreferences),
+    };
+  }, [activityPreferences, initial?.activityPreferences, initial?.objectives, objectives, values.activityPreferenceIds, values.objectiveIds]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

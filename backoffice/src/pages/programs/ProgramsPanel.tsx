@@ -35,7 +35,7 @@ export function ProgramsPanel(): React.JSX.Element {
     if (debounced !== q) setQ(debounced);
   }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update, remove } = usePrograms({ page, limit, q, userId: userFilter?.id });
+  const { items, total, loading, create, update, remove, getProgram } = usePrograms({ page, limit, q, userId: userFilter?.id });
   const { items: sessionItems } = useSessions({ page: 1, limit: 200, q: '' });
   const { items: userItems } = useUsers({ page: 1, limit: 200, q: '' });
 
@@ -60,7 +60,15 @@ export function ProgramsPanel(): React.JSX.Element {
   const [editId, setEditId] = React.useState<string | null>(null);
   const [deleteId, setDeleteId] = React.useState<string | null>(null);
 
-  const editing = React.useMemo(() => items.find((program) => program.id === editId) ?? null, [items, editId]);
+  const [fullProgram, setFullProgram] = React.useState<Awaited<ReturnType<typeof getProgram>> | null>(null);
+
+  React.useEffect(() => {
+    if (editId) {
+      void getProgram(editId).then(setFullProgram);
+      return;
+    }
+    setFullProgram(null);
+  }, [editId, getProgram]);
 
   const toCreateInput = (values: ProgramDialogValues) => ({
     locale: values.locale,
@@ -122,7 +130,7 @@ export function ProgramsPanel(): React.JSX.Element {
       <ProgramDialog
         open={!!editId}
         mode="edit"
-        initial={editing}
+        initial={fullProgram}
         sessionOptions={sessionOptions}
         userOptions={userOptions}
         onClose={() => setEditId(null)}

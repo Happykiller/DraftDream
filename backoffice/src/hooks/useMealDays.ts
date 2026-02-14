@@ -70,6 +70,10 @@ interface DeleteMealDayPayload {
   mealDay_delete: boolean;
 }
 
+interface GetMealDayPayload {
+  mealDay_get: MealDay | null;
+}
+
 const LIST_QUERY = `
   query ListMealDays($input: ListMealDaysInput) {
     mealDay_list(input: $input) {
@@ -174,6 +178,37 @@ const DELETE_MUTATION = `
   }
 `;
 
+const GET_QUERY = `
+  query GetMealDay($id: ID!) {
+    mealDay_get(id: $id) {
+      id
+      slug
+      locale
+      label
+      description
+      mealIds
+      meals {
+        id
+        slug
+        label
+        locale
+        visibility
+        foods
+        calories
+        proteinGrams
+        carbGrams
+        fatGrams
+        type { id slug label locale visibility icon }
+      }
+      visibility
+      createdBy
+      createdAt
+      updatedAt
+      creator { id email }
+    }
+  }
+`;
+
 export interface UseMealDaysParams {
   page: number; // 1-based
   limit: number;
@@ -203,6 +238,7 @@ export interface UseMealDaysResult {
   }) => Promise<void>;
   remove: (id: string) => Promise<void>;
   reload: () => Promise<void>;
+  getMealDay: (id: string) => Promise<MealDay | null>;
 }
 
 export function useMealDays({ page, limit, q, locale, visibility }: UseMealDaysParams): UseMealDaysResult {
@@ -313,5 +349,27 @@ export function useMealDays({ page, limit, q, locale, visibility }: UseMealDaysP
     [execute, flashError, flashSuccess, gql, load],
   );
 
-  return { items, total, loading, create, update, remove, reload: load };
+
+
+  const getMealDay = React.useCallback<UseMealDaysResult['getMealDay']>(
+    async (id) => {
+      try {
+        const { data, errors } = await execute(() =>
+          gql.send<GetMealDayPayload>({
+            query: GET_QUERY,
+            variables: { id },
+            operationName: 'GetMealDay',
+          }),
+        );
+        if (errors?.length) throw new Error(errors[0].message);
+        return data?.mealDay_get ?? null;
+      } catch (error: any) {
+        flashError(error?.message ?? 'Failed to load meal day');
+        return null;
+      }
+    },
+    [execute, flashError, gql],
+  );
+
+  return { items, total, loading, create, update, remove, reload: load, getMealDay };
 }

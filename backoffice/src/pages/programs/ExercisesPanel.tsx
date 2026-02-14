@@ -23,7 +23,7 @@ export function ExercisesPanel(): React.JSX.Element {
     }
   }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update, remove } = useExercises({ page, limit, q });
+  const { items, total, loading, create, update, remove, getExercise } = useExercises({ page, limit, q });
   const { t } = useTranslation();
 
   // Small datasets for select options; move to async search if volume grows.
@@ -57,14 +57,23 @@ export function ExercisesPanel(): React.JSX.Element {
   const toDialogValues = (exercise?: Exercise): ExerciseDialogValues | undefined => {
     if (!exercise) return undefined;
     const toRefs = (
-      entities?: Array<{ id: string; slug: string; label?: string | null; locale?: string | null }> | null,
-    ): RefEntity[] =>
-      entities?.map((item) => ({
-        id: item.id,
-        slug: item.slug,
-        label: item.label ?? item.slug,
-        locale: item.locale ?? undefined,
-      })) ?? [];
+      entities: Array<{ id: string; slug: string; label?: string | null; locale?: string | null }> | undefined | null,
+      ids: string[] | undefined | null,
+      options: RefEntity[],
+    ): RefEntity[] => {
+      if (entities?.length) {
+        return entities.map((item) => ({
+          id: item.id,
+          slug: item.slug,
+          label: item.label ?? item.slug,
+          locale: item.locale ?? undefined,
+        }));
+      }
+
+      return (ids ?? [])
+        .map((id) => options.find((option) => option.id === id) ?? null)
+        .filter((option): option is RefEntity => Boolean(option));
+    };
 
     return {
       locale: exercise.locale,
@@ -77,14 +86,22 @@ export function ExercisesPanel(): React.JSX.Element {
       rest: exercise.rest ?? null,
       videoUrl: exercise.videoUrl ?? '',
       visibility: exercise.visibility,
-      categories: toRefs(exercise.categories),
-      muscles: toRefs(exercise.muscles),
-      equipment: toRefs(exercise.equipment),
-      tags: toRefs(exercise.tags),
+      categories: toRefs(exercise.categories, exercise.categoryIds, categoryOptions),
+      muscles: toRefs(exercise.muscles, exercise.muscleIds, muscleOptions),
+      equipment: toRefs(exercise.equipment, exercise.equipmentIds, equipmentOptions),
+      tags: toRefs(exercise.tags, exercise.tagIds, tagOptions),
     };
   };
 
-  const editing = React.useMemo(() => items.find(i => i.id === editId), [items, editId]);
+  const [fullExercise, setFullExercise] = React.useState<Awaited<ReturnType<typeof getExercise>> | null>(null);
+
+  React.useEffect(() => {
+    if (editId) {
+      void getExercise(editId).then(setFullExercise);
+      return;
+    }
+    setFullExercise(null);
+  }, [editId, getExercise]);
   const duplicating = React.useMemo(() => {
     if (!duplicateId) return undefined;
     const original = items.find(i => i.id === duplicateId);
@@ -167,8 +184,8 @@ export function ExercisesPanel(): React.JSX.Element {
       <ExerciseDialog
         open={!!editId}
         mode="edit"
-        initial={toDialogValues(editing)}
-        details={editing}
+        initial={toDialogValues(fullExercise ?? undefined)}
+        details={fullExercise ?? undefined}
         categoryOptions={categoryOptions}
         muscleOptions={muscleOptions}
         tagOptions={tagOptions}

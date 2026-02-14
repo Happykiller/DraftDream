@@ -70,6 +70,8 @@ type ProgramListPayload = {
   };
 };
 
+type GetProgramPayload = { program_get: Program | null };
+
 type CreateProgramPayload = { program_create: Program };
 type UpdateProgramPayload = { program_update: Program };
 type DeleteProgramPayload = { program_delete: boolean };
@@ -112,6 +114,36 @@ const LIST_Q = `
 const CREATE_M = `
   mutation CreateProgram($input: CreateProgramInput!) {
     program_create(input: $input) {
+      id
+      slug
+      locale
+      label
+      duration
+      frequency
+      description
+      startDate
+      endDate
+      visibility
+      sessions {
+        id templateSessionId slug locale label durationMin description
+        exercises {
+          id templateExerciseId label description instructions series repetitions charge restSeconds videoUrl
+          categoryIds muscleIds equipmentIds tagIds
+        }
+      }
+      userId
+      athlete { id email }
+      createdBy
+      createdAt
+      updatedAt
+      creator { id email }
+    }
+  }
+`;
+
+const GET_Q = `
+  query GetProgram($id: ID!) {
+    program_get(id: $id) {
       id
       slug
       locale
@@ -373,5 +405,26 @@ export function usePrograms({ page, limit, q, createdBy, userId }: UseProgramsPa
     [execute, gql, flashError, flashSuccess, load]
   );
 
-  return { items, total, loading, create, update, remove, reload: load };
+  const getProgram = React.useCallback(
+    async (id: string): Promise<Program | null> => {
+      try {
+        const { data, errors } = await execute(() =>
+          gql.send<GetProgramPayload>({
+            query: GET_Q,
+            operationName: 'GetProgram',
+            variables: { id },
+          }),
+        );
+        if (errors?.length) throw new Error(errors[0].message);
+        return data?.program_get ?? null;
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : 'Failed to load program';
+        flashError(msg);
+        return null;
+      }
+    },
+    [execute, flashError, gql],
+  );
+
+  return { items, total, loading, create, update, remove, reload: load, getProgram };
 }
