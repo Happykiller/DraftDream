@@ -1,6 +1,7 @@
 import * as React from 'react';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
-import { Box, Chip } from '@mui/material';
+import { Box, Chip, IconButton, Stack, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { useDateFormatter } from '@hooks/useDateFormatter';
@@ -12,6 +13,7 @@ export interface ModerationTasksTableProps {
   page: number;
   limit: number;
   loading: boolean;
+  onRefresh: () => void;
   onPageChange: (page: number) => void;
   onLimitChange: (limit: number) => void;
 }
@@ -23,6 +25,7 @@ export const ModerationTasksTable = React.memo(function ModerationTasksTable({
   page,
   limit,
   loading,
+  onRefresh,
   onPageChange,
   onLimitChange,
 }: ModerationTasksTableProps): React.JSX.Element {
@@ -112,6 +115,15 @@ export const ModerationTasksTable = React.memo(function ModerationTasksTable({
   return (
     <Box sx={{ width: '100%' }}>
       {/* General information */}
+      <Stack direction="row" justifyContent="flex-end" sx={{ mb: 1 }}>
+        <Tooltip title={t('common.buttons.refresh')}>
+          <span>
+            <IconButton aria-label={t('common.buttons.refresh')} onClick={onRefresh} disabled={loading}>
+              <RefreshIcon fontSize="small" />
+            </IconButton>
+          </span>
+        </Tooltip>
+      </Stack>
       <DataGrid
         rows={rows}
         columns={columns}

@@ -10,7 +10,7 @@ import { useTasks } from '@hooks/useTasks';
 export function TasksPanel(): React.JSX.Element {
   const { t } = useTranslation();
   const { page, limit, setPage, setLimit } = useTabParams('tasks', { page: 1, limit: 25 });
-  const { items, total, loading } = useTasks({ page, limit });
+  const { items, total, loading, reload } = useTasks({ page, limit });
 
   return (
     <Box>
@@ -28,6 +28,9 @@ export function TasksPanel(): React.JSX.Element {
           page={page}
           limit={limit}
           loading={loading}
+          onRefresh={() => {
+            void reload();
+          }}
           onPageChange={setPage}
           onLimitChange={setLimit}
         />
