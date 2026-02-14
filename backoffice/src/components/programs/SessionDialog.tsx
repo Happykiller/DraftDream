@@ -24,7 +24,7 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { useDateFormatter } from '@hooks/useDateFormatter';
-import type { Session } from '@hooks/useSessions';
+import type { SessionWithExercises } from '@hooks/useSessions';
 import { VISIBILITY_OPTIONS, type Visibility } from '@src/commons/visibility';
 
 export interface ExerciseOption {
@@ -46,7 +46,7 @@ export interface SessionDialogValues {
 export interface SessionDialogProps {
   open: boolean;
   mode: 'create' | 'edit';
-  initial?: Session;
+  initial?: SessionWithExercises;
   exerciseOptions: ExerciseOption[];
   onClose: () => void;
   onSubmit: (values: SessionDialogValues) => Promise<void> | void;
@@ -62,17 +62,45 @@ const DEFAULTS: SessionDialogValues = {
 };
 
 // Preserve existing exercise ordering when hydrating edit forms.
+// Prioritize exercise data from session.exercises (resolver field) over exerciseOptions (paginated cache)
 function mergeExercises(
-  exerciseIds: string[] | undefined,
+  session: SessionWithExercises | undefined,
   options: ExerciseOption[],
-  locale: string,
 ): ExerciseOption[] {
-  if (!exerciseIds?.length) return [];
+  if (!session?.exerciseIds?.length) return [];
 
-  const byId = new Map(options.map((option) => [option.id, option]));
+  // Build lookup maps
+  const optionsById = new Map(options.map((option) => [option.id, option]));
+  const sessionExercisesById = new Map(
+    session.exercises?.map((ex) => [ex.id, ex]) ?? []
+  );
 
-  return exerciseIds
-    .map((id) => byId.get(id) ?? { id, slug: id, label: id, locale })
+  // Map exerciseIds to ExerciseOption, prioritizing session.exercises data
+  return session.exerciseIds
+    .map((id) => {
+      // First try to get from session.exercises (has complete data)
+      const sessionExercise = sessionExercisesById.get(id);
+      if (sessionExercise) {
+        return {
+          id: sessionExercise.id,
+          slug: id, // Use ID as slug fallback
+          label: sessionExercise.label,
+          locale: session.locale,
+        };
+      }
+      // Fallback to exerciseOptions (paginated cache)
+      const option = optionsById.get(id);
+      if (option) {
+        return option;
+      }
+      // Last resort: create placeholder (shouldn't happen with new approach)
+      return {
+        id,
+        slug: id,
+        label: id,
+        locale: session.locale,
+      };
+    })
     .filter((option): option is ExerciseOption => Boolean(option));
 }
 
@@ -107,7 +135,7 @@ export function SessionDialog({
         label: initial.label,
         durationMin: initial.durationMin,
         description: initial.description ?? '',
-        exercises: mergeExercises(initial.exerciseIds, exerciseOptions, initial.locale),
+        exercises: mergeExercises(initial, exerciseOptions),
         visibility: initial.visibility,
       });
     } else {

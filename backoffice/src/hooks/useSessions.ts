@@ -23,6 +23,15 @@ export interface Session {
   creator?: { id: string; email: string } | null;
 }
 
+export interface SessionExercise {
+  id: string;
+  label: string;
+}
+
+export interface SessionWithExercises extends Session {
+  exercises: SessionExercise[];
+}
+
 type SessionListPayload = {
   session_list: {
     items: Session[];
@@ -32,6 +41,7 @@ type SessionListPayload = {
   };
 };
 
+type GetSessionPayload = { session_get: SessionWithExercises };
 type CreateSessionPayload = { session_create: Session };
 type UpdateSessionPayload = { session_update: Session };
 type DeleteSessionPayload = { session_delete: boolean };
@@ -45,6 +55,17 @@ const LIST_Q = `
         creator { id email }
       }
       total page limit
+    }
+  }
+`;
+
+const GET_Q = `
+  query GetSession($id: ID!) {
+    session_get(id: $id) {
+      id slug locale label durationMin description exerciseIds
+      createdBy createdAt updatedAt visibility
+      creator { id email }
+      exercises { id label }
     }
   }
 `;
@@ -202,5 +223,26 @@ export function useSessions({ page, limit, q, locale }: UseSessionsParams) {
     [execute, gql, flashError, flashSuccess, load]
   );
 
-  return { items, total, loading, create, update, remove, reload: load };
+  const getSession = React.useCallback(
+    async (id: string): Promise<SessionWithExercises | null> => {
+      try {
+        const { data, errors } = await execute(() =>
+          gql.send<GetSessionPayload>({
+            query: GET_Q,
+            operationName: 'GetSession',
+            variables: { id },
+          }),
+        );
+        if (errors?.length) throw new Error(errors[0].message);
+        return data?.session_get ?? null;
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : 'Failed to load session';
+        flashError(msg);
+        return null;
+      }
+    },
+    [execute, gql, flashError]
+  );
+
+  return { items, total, loading, create, update, remove, reload: load, getSession };
 }

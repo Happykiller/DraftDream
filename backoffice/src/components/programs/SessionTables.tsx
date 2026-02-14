@@ -2,6 +2,7 @@
 import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 
 import { Box, Button, Chip, IconButton, Stack, TextField, Tooltip, useMediaQuery } from '@mui/material';
@@ -24,6 +25,7 @@ export interface SessionTablesProps {
   onQueryChange: (q: string) => void;
   onPageChange: (page: number) => void;
   onLimitChange: (limit: number) => void;
+  onRefresh: () => void;
 }
 
 export const SessionTables = React.memo(function SessionTables({
@@ -39,6 +41,7 @@ export const SessionTables = React.memo(function SessionTables({
   onQueryChange,
   onPageChange,
   onLimitChange,
+  onRefresh,
 }: SessionTablesProps): React.JSX.Element {
   const fmtDate = useDateFormatter();
   const { t } = useTranslation();
@@ -142,6 +145,11 @@ export const SessionTables = React.memo(function SessionTables({
           sx={{ maxWidth: 360 }}
         />
         <Box sx={{ flex: 1 }} />
+        <Tooltip title={t('common.buttons.refresh')}>
+          <IconButton onClick={onRefresh} aria-label="refresh-sessions">
+            <RefreshIcon />
+          </IconButton>
+        </Tooltip>
         <Button variant="contained" onClick={onCreate}>
           {t('programs.sessions.create')}
         </Button>

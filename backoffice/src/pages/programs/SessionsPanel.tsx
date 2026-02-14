@@ -17,7 +17,7 @@ export function SessionsPanel(): React.JSX.Element {
     if (debounced !== q) setQ(debounced);
   }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update, remove } = useSessions({ page, limit, q });
+  const { items, total, loading, create, update, remove, getSession, reload } = useSessions({ page, limit, q });
   const { items: exerciseItems } = useExercises({ page: 1, limit: 200, q: '' });
   const { t } = useTranslation();
 
@@ -34,8 +34,16 @@ export function SessionsPanel(): React.JSX.Element {
   const [openCreate, setOpenCreate] = React.useState(false);
   const [editId, setEditId] = React.useState<string | null>(null);
   const [deleteId, setDeleteId] = React.useState<string | null>(null);
+  const [fullSession, setFullSession] = React.useState<Awaited<ReturnType<typeof getSession>> | null>(null);
 
-  const editing = React.useMemo(() => items.find(s => s.id === editId) ?? null, [items, editId]);
+  // Fetch full session details when editId changes
+  React.useEffect(() => {
+    if (editId) {
+      void getSession(editId).then(setFullSession);
+    } else {
+      setFullSession(null);
+    }
+  }, [editId, getSession]);
 
   const toCreateInput = (values: SessionDialogValues) => ({
     locale: values.locale,
@@ -72,6 +80,7 @@ export function SessionsPanel(): React.JSX.Element {
         onQueryChange={setSearchInput}
         onPageChange={setPage}
         onLimitChange={setLimit}
+        onRefresh={() => void reload()}
       />
 
       <SessionDialog
@@ -85,7 +94,7 @@ export function SessionsPanel(): React.JSX.Element {
       <SessionDialog
         open={!!editId}
         mode="edit"
-        initial={editing ?? undefined}
+        initial={fullSession ?? undefined}
         exerciseOptions={exerciseOptions}
         onClose={() => setEditId(null)}
         onSubmit={(values) => {
