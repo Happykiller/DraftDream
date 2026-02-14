@@ -1690,7 +1690,9 @@
     "labels": {
       "coach_section": "Coach guide",
       "athlete_section": "Athlete guide",
-      "sheet_number": "Card #{{number}}"
+      "sheet_number": "Card #{{number}}",
+      "search_placeholder": "Search help cards",
+      "empty_results": "No help card matches your search."
     },
     "coach": {
       "title": "Help center (Coach)",

@@ -1695,7 +1695,9 @@
     "labels": {
       "coach_section": "Guide coach",
       "athlete_section": "Guide athlète",
-      "sheet_number": "Fiche n°{{number}}"
+      "sheet_number": "Fiche n°{{number}}",
+      "search_placeholder": "Rechercher une fiche d'aide",
+      "empty_results": "Aucune fiche d'aide ne correspond à votre recherche."
     },
     "coach": {
       "title": "Centre d'aide (Coach)",

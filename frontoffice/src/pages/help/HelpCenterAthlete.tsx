@@ -3,10 +3,13 @@ import {
   Box,
   Chip,
   Grid,
+  InputAdornment,
   Link,
   Stack,
+  TextField,
   Typography,
 } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 import { useTranslation } from 'react-i18next';
 
 import { GlassCard } from '@components/common/GlassCard';
@@ -47,7 +50,31 @@ function renderTextWithEmail(value: string): React.ReactNode {
 /** Athlete-oriented help center view rendered as numbered help cards. */
 export function HelpCenterAthlete(): React.JSX.Element {
   const { t } = useTranslation();
+  const [searchQuery, setSearchQuery] = React.useState('');
   const sections = t('help_center.athlete.cards', { returnObjects: true }) as HelpCenterSection[];
+  const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
+  const filteredSections = React.useMemo(
+    () =>
+      sections.filter((section) => {
+        if (!normalizedQuery) {
+          return true;
+        }
+
+        const searchableContent = [
+          section.title,
+          section.badge,
+          section.description,
+          ...(section.steps ?? []),
+          section.note,
+        ]
+          .filter(Boolean)
+          .join(' ')
+          .toLocaleLowerCase();
+
+        return searchableContent.includes(normalizedQuery);
+      }),
+    [normalizedQuery, sections],
+  );
 
   return (
     <Stack spacing={3} sx={{ width: '100%', mt: 2, px: { xs: 1, sm: 2 } }}>
@@ -58,8 +85,28 @@ export function HelpCenterAthlete(): React.JSX.Element {
         </Typography>
       </Stack>
 
+      <TextField
+        value={searchQuery}
+        onChange={(event) => setSearchQuery(event.target.value)}
+        placeholder={t('help_center.labels.search_placeholder')}
+        fullWidth
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon fontSize="small" />
+            </InputAdornment>
+          ),
+        }}
+      />
+
+      {!filteredSections.length ? (
+        <Typography color="text.secondary" variant="body2">
+          {t('help_center.labels.empty_results')}
+        </Typography>
+      ) : null}
+
       <Grid container spacing={2}>
-        {sections.map((section, index) => {
+        {filteredSections.map((section, index) => {
           const cardNumber = index + 1;
 
           return (
