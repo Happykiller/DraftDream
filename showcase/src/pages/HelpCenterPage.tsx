@@ -1,4 +1,3 @@
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   Accordion,
   AccordionDetails,
@@ -82,7 +81,13 @@ const HelpCenterPage = (): JSX.Element => {
                         }
                       }}
                     >
-                      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                      <AccordionSummary
+                        expandIcon={(
+                          <Typography aria-hidden component="span" sx={{ fontSize: '1.2rem', lineHeight: 1 }}>
+                            ⌄
+                          </Typography>
+                        )}
+                      >
                         <Typography sx={{ fontSize: { xs: '1.05rem', md: '1.25rem' }, fontWeight: 500 }}>
                           {item.question}
                         </Typography>
