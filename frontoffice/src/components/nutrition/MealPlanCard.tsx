@@ -31,6 +31,7 @@ import { useMealTypeIcon } from '@hooks/nutrition/useMealTypeIcon';
 import { GlassCard } from '../common/GlassCard';
 import { MealPlanDeleteDialog } from './MealPlanDeleteDialog';
 import { MealPlanCloneDialog } from './MealPlanCloneDialog';
+import { TextWithTooltip } from '../common/TextWithTooltip';
 
 interface MealPlanCardProps {
   mealPlan: MealPlan;
@@ -569,9 +570,11 @@ export const MealPlanCard = React.memo(function MealPlanCard({
                       <Stack spacing={1.5}>
                         <Stack spacing={0.5}>
                           <Stack direction="row" alignItems="baseline" justifyContent="space-between" spacing={1}>
-                            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                              {dayLabel}
-                            </Typography>
+                            <TextWithTooltip
+                              tooltipTitle={dayLabel}
+                              variant="subtitle2"
+                              sx={{ fontWeight: 600 }}
+                            />
                             <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>
                               {dayCalorieLabel}
                             </Typography>

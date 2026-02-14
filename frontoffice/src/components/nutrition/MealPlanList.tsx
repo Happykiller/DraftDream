@@ -178,9 +178,9 @@ export const MealPlanList = React.memo(function MealPlanList({
           <CircularProgress size={32} />
         </Stack>
       ) : mealPlans.length > 0 ? (
-        <Grid container spacing={3}>
+        <Grid container rowSpacing={3} columnSpacing={{ xs: 0, sm: 3 }} sx={{ width: '100%', m: 0 }}>
           {mealPlans.map((plan) => (
-            <Grid size={{ xs: 12, sm: 6, lg: 6, xl: 3 }} key={plan.id}>
+            <Grid size={{ xs: 12, sm: 6, lg: 6, xl: 3 }} key={plan.id} sx={{ maxWidth: '400px' }} >
               <MealPlanCard
                 mealPlan={plan}
                 dayCountFormatter={dayCountFormatter}

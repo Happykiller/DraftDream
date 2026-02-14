@@ -23,6 +23,8 @@ import {
   Chip,
   CircularProgress,
   Divider,
+  MenuItem,
+  Select,
   Stack,
   Tab,
   Tabs,
@@ -477,13 +479,36 @@ export function AthleteLinkDetails(): React.JSX.Element {
                   </Alert>
                 ) : null}
 
+                {/* Mobile: Select dropdown */}
+                <Box sx={{ display: { xs: 'block', sm: 'none' }, px: 2, py: 1.5 }}>
+                  <Select
+                    value={currentTab}
+                    onChange={(e) => setCurrentTab(e.target.value as AthleteLinkTab)}
+                    fullWidth
+                    size="small"
+                  >
+                    <MenuItem value="client-info">{t('athletes.details.client_sheet_title')}</MenuItem>
+                    <MenuItem value="overview">{t('athletes.details.tabs.overview')}</MenuItem>
+                    <MenuItem value="notes">{t('athletes.details.tabs.notes')}</MenuItem>
+                    <MenuItem value="programs">{t('athletes.details.tabs.programs')}</MenuItem>
+                    <MenuItem value="nutritions">{t('athletes.details.tabs.nutritions')}</MenuItem>
+                    <MenuItem value="calendar">{t('athletes.details.tabs.calendar')}</MenuItem>
+                    <MenuItem value="sessions">{t('athletes.details.tabs.sessions')}</MenuItem>
+                    <MenuItem value="meal-records">{t('athletes.details.tabs.meal_records')}</MenuItem>
+                  </Select>
+                </Box>
+
+                {/* Desktop: Tabs */}
                 <Tabs
                   value={currentTab}
                   onChange={handleTabChange}
                   variant="scrollable"
                   scrollButtons="auto"
                   allowScrollButtonsMobile
-                  sx={{ px: { xs: 1, sm: 2, md: 3 } }}
+                  sx={{
+                    display: { xs: 'none', sm: 'flex' },
+                    px: { sm: 2, md: 3 },
+                  }}
                 >
                   <Tab value="client-info" label={t('athletes.details.client_sheet_title')} />
                   <Tab value="overview" label={t('athletes.details.tabs.overview')} />

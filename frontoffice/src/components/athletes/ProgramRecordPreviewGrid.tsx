@@ -80,7 +80,7 @@ export function ProgramRecordPreviewGrid({
           const comment = record.comment?.trim() || t('athletes.details.sessions.comment_fallback');
 
           return (
-            <Grid key={record.id} size={{ xs: 12, sm: 6, md: 4 }}>
+            <Grid key={record.id} size={{ xs: 12, sm: 6, md: 4 }} sx={{ maxWidth: '500px' }}>
               <GlassCard
                 onClick={onRecordClick ? () => onRecordClick(record) : undefined}
                 onKeyDown={onRecordClick
