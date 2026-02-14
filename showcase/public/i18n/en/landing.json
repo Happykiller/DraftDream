@@ -145,6 +145,114 @@
         "privacy": "Privacy Policy"
       },
       "rights": "© 2025 FitDesk CRM. All rights reserved"
+    },
+    "helpCenter": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Find answers about FitDesk, its features, and available assistance.",
+      "sections": [
+        {
+          "title": "🏋️ About FitDesk",
+          "items": [
+            {
+              "question": "What is FitDesk?",
+              "answer": "FitDesk is an all-in-one application designed for sports and nutrition professionals. It centralizes client and prospect management, training program creation, nutrition plans, client feedback, document sharing, and billing via Stripe."
+            },
+            {
+              "question": "Who is FitDesk for?",
+              "answer": "FitDesk is designed for all sports coaching and nutrition professionals: sports coaches, personal trainers, strength and conditioning coaches, sports physiotherapists, nutritionists, dietitians, professional clubs, and more."
+            },
+            {
+              "question": "Is FitDesk suitable for freelancers or also for larger organizations?",
+              "answer": "FitDesk adapts to both independent professionals just starting out and larger organizations managing multiple coaches and a high volume of clients."
+            }
+          ]
+        },
+        {
+          "title": "📱 App & Accessibility",
+          "items": [
+            {
+              "question": "Is FitDesk available on mobile?",
+              "answer": "Yes. FitDesk is accessible on smartphones and tablets via your web browser. A mobile app is also available on the App Store (iOS) and Google Play Store (Android), for both you and your clients."
+            },
+            {
+              "question": "Do my clients have access to an app?",
+              "answer": "Yes, your clients have their own access to the mobile app to view their programs, track their sessions and meals, and communicate with you directly."
+            },
+            {
+              "question": "Are some features only available on the desktop web version?",
+              "answer": "Yes, creating training programs and nutrition plans is optimized for the desktop web version. For these tasks, we strongly recommend using FitDesk from a browser on your computer."
+            }
+          ]
+        },
+        {
+          "title": "💪 Features",
+          "items": [
+            {
+              "question": "What features are available to manage my clients?",
+              "answer": "FitDesk allows you to create and manage your clients, track their progress, assign training programs and nutrition plans, view their session and meal history, and communicate with them directly from the app."
+            },
+            {
+              "question": "Can I create personalized training programs?",
+              "answer": "Yes, you can create tailored programs by defining the duration, frequency, sessions, and exercises. Once the program is created, it is sent directly to your client."
+            },
+            {
+              "question": "Can I create nutrition plans?",
+              "answer": "Yes, FitDesk allows you to create comprehensive nutrition plans with fully customizable days and meals, then send them to your clients in one click."
+            },
+            {
+              "question": "Can I reuse my programs and plans from one client to another?",
+              "answer": "Yes, you can duplicate your training programs and nutrition plans and adapt them to each client. You can also save sessions and day templates to reuse them whenever you need."
+            },
+            {
+              "question": "How do my clients track their sessions and meals?",
+              "answer": "From their mobile app, your clients can view their daily programs and plans, log their training sessions and meals, and submit them directly to you so you can track their progress in real time."
+            },
+            {
+              "question": "Is there a prospect management tool?",
+              "answer": "Yes, FitDesk includes a sales pipeline to manage your prospects, from first contact all the way to conversion into a paying client."
+            }
+          ]
+        },
+        {
+          "title": "💳 Billing & Subscription",
+          "items": [
+            {
+              "question": "Can I invoice my clients from FitDesk?",
+              "answer": "Yes, FitDesk integrates Stripe, a professional payment solution, allowing you to bill your clients (one-time payments and subscriptions) and easily manage your accounting directly from the platform."
+            },
+            {
+              "question": "Can I change my subscription plan at any time?",
+              "answer": "Yes, you can switch plans at any time from your account settings, under the \"My Plan\" section."
+            }
+          ]
+        },
+        {
+          "title": "🌍 Language & Settings",
+          "items": [
+            {
+              "question": "Is FitDesk available in multiple languages?",
+              "answer": "Yes, FitDesk is available in several languages. You can change the language from your account settings by clicking on your name in the top right corner."
+            }
+          ]
+        },
+        {
+          "title": "🤝 Support & Assistance",
+          "items": [
+            {
+              "question": "How do I contact support?",
+              "answer": "Two options are available: via the Contact page or via Messages > Support from the app. Response time is 1 to 2 business days."
+            },
+            {
+              "question": "I am already a FitDesk client through another coach — can I switch coaches?",
+              "answer": "Yes, that's possible. Contact us directly via the Contact page or via Messages > Support. The change will be made within 1 to 2 business days."
+            },
+            {
+              "question": "I am a coach and my client already uses FitDesk through another professional — can I take them on?",
+              "answer": "Yes, contact us directly via the Contact page or via Messages > Support and we will process the transfer within 1 to 2 business days."
+            }
+          ]
+        }
+      ]
     }
   }
 }

@@ -145,6 +145,114 @@
         "privacy": "Politique de protection des données personnelles"
       },
       "rights": "© 2025 FitDesk CRM. Tous droits réservés"
+    },
+    "helpCenter": {
+      "title": "Questions fréquentes",
+      "subtitle": "Retrouvez toutes les réponses sur FitDesk, ses fonctionnalités et son accompagnement.",
+      "sections": [
+        {
+          "title": "🏋️ À propos de FitDesk",
+          "items": [
+            {
+              "question": "FitDesk, c’est quoi ?",
+              "answer": "FitDesk est une application tout-en-un destinée aux professionnels du sport et de la nutrition. Elle centralise la gestion de vos clients et prospects, la création de programmes d'entraînement, les plans nutritionnels, les retours des clients, le partage de document et la facturation via Stripe."
+            },
+            {
+              "question": "À qui s'adresse FitDesk ?",
+              "answer": "FitDesk est conçu pour tous les professionnels de l'encadrement sportif et de la nutrition : coachs sportifs, entraîneurs personnels, préparateurs physiques, kinésithérapeutes du sport, nutritionnistes, diététiciens, clubs professionnels, etc."
+            },
+            {
+              "question": "FitDesk est-il fait pour les indépendants ou aussi pour les structures plus importantes ?",
+              "answer": "FitDesk s'adapte aussi bien aux indépendants qui débutent qu'aux structures avec plusieurs coachs et un grand nombre de clients."
+            }
+          ]
+        },
+        {
+          "title": "📱 Application & Accessibilité",
+          "items": [
+            {
+              "question": "FitDesk est-il disponible sur mobile ?",
+              "answer": "Oui. FitDesk est accessible sur smartphone et tablette via votre navigateur web. Une application mobile est également disponible sur l'App Store (iOS) et le Google Play Store (Android), pour vous et vos clients."
+            },
+            {
+              "question": "Mes clients ont-ils accès à une application ?",
+              "answer": "Oui, vos clients disposent de leur propre accès à l'application mobile pour consulter leurs programmes, suivre leurs séances et leurs repas, et communiquer avec vous directement."
+            },
+            {
+              "question": "Y a-t-il des fonctionnalités réservées à la version web sur ordinateur ?",
+              "answer": "Oui, la création de programmes d'entraînement et de plans nutritionnels est optimisée pour la version web sur ordinateur. Pour ces tâches, nous recommandons vivement d'utiliser FitDesk depuis un navigateur."
+            }
+          ]
+        },
+        {
+          "title": "💪 Fonctionnalités",
+          "items": [
+            {
+              "question": "Quelles fonctionnalités sont disponibles pour gérer mes clients ?",
+              "answer": "FitDesk vous permet de créer et gérer vos clients, suivre leur progression, leur assigner des programmes d'entraînement et des plans nutritionnels, consulter leur historique de séances et de repas, et communiquer avec eux directement depuis l'application."
+            },
+            {
+              "question": "Puis-je créer des programmes d'entraînement personnalisés ?",
+              "answer": "Oui, vous pouvez créer des programmes sur mesure en définissant la durée, la fréquence, les séances et les exercices. Une fois le programme créé, il est envoyé directement à votre client."
+            },
+            {
+              "question": "Puis-je créer des plans nutritionnels ?",
+              "answer": "Oui, FitDesk vous permet de créer des plans nutritionnels complets avec des journées et des repas entièrement personnalisables, puis de les envoyer à vos clients en un clic."
+            },
+            {
+              "question": "Puis-je réutiliser mes programmes et plans d'un client à l'autre ?",
+              "answer": "Oui, vous pouvez dupliquer vos programmes et plans nutritionnels et les adapter à chaque client. Vous pouvez également sauvegarder des séances et des journées type en tant que templates pour les réutiliser à volonté."
+            },
+            {
+              "question": "Comment mes clients suivent-ils leurs séances et leurs repas ?",
+              "answer": "Depuis leur application mobile, vos clients peuvent consulter leurs programmes et plans du jour, enregistrer leurs séances d'entraînement et leurs repas, puis vous les soumettre directement pour que vous puissiez suivre leur progression en temps réel."
+            },
+            {
+              "question": "Y a-t-il un outil de gestion des prospects ?",
+              "answer": "Oui, FitDesk intègre une pipeline commerciale pour gérer vos prospects, de la prise de contact jusqu'à la conversion en client."
+            }
+          ]
+        },
+        {
+          "title": "💳 Facturation & Abonnement",
+          "items": [
+            {
+              "question": "Puis-je facturer mes clients depuis FitDesk ?",
+              "answer": "Oui, FitDesk intègre Stripe, une solution professionnelle de paiement, pour vous permettre de facturer vos clients (one shot et abonnement) et de suivre votre comptabilité facilement depuis la plateforme."
+            },
+            {
+              "question": "Puis-je changer de plan d'abonnement à tout moment ?",
+              "answer": "Oui, vous pouvez changer de formule à tout moment depuis les paramètres de votre compte, dans la section « Mon plan »."
+            }
+          ]
+        },
+        {
+          "title": "🌍 Langue & Paramètres",
+          "items": [
+            {
+              "question": "FitDesk est-il disponible en plusieurs langues ?",
+              "answer": "Oui, FitDesk est disponible en plusieurs langues. Vous pouvez changer la langue depuis les paramètres de votre compte en cliquant sur votre nom en haut à droite."
+            }
+          ]
+        },
+        {
+          "title": "🤝 Support & Accompagnement",
+          "items": [
+            {
+              "question": "Comment contacter le support ?",
+              "answer": "Deux options s'offrent à vous : via la page Contact ou via Messages > Support depuis l'application. Le délai de réponse est de 1 à 2 jours ouvrés."
+            },
+            {
+              "question": "Je suis déjà client FitDesk via un autre coach, puis-je changer de coach ?",
+              "answer": "Oui, c'est possible. Contactez-nous directement via la page Contact ou via Messages > Support. Le changement sera effectué dans un délai de 1 à 2 jours ouvrés."
+            },
+            {
+              "question": "Je suis coach et mon client utilise déjà FitDesk via un autre professionnel, puis-je le récupérer ?",
+              "answer": "Oui, contactez-nous directement via la page Contact ou via Messages > Support et nous effectuerons le transfert dans un délai de 1 à 2 jours ouvrés."
+            }
+          ]
+        }
+      ]
     }
   }
 }
