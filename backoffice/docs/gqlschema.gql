@@ -67,6 +67,55 @@ type TagListGql {
   limit: Int!
 }
 
+type TaskGql {
+  id: ID!
+  label: String!
+  priority: TaskPriorityEnum!
+  status: TaskStatusEnum!
+  day: DateTime!
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creator: UserGql
+}
+
+enum TaskPriorityEnum {
+  LOW
+  MIDDLE
+  HIGH
+}
+
+enum TaskStatusEnum {
+  TODO
+  DONE
+}
+
+type TaskListGql {
+  items: [TaskGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
+type NoteGql {
+  id: ID!
+  label: String!
+  description: String!
+  athleteId: ID
+  createdBy: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creator: UserGql
+  athlete: UserGql
+}
+
+type NoteListGql {
+  items: [NoteGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
 type SessionGql {
   access_token: String!
 }
@@ -660,6 +709,10 @@ type AthleteInfoListGql {
 type Query {
   tag_get(id: ID!): TagGql
   tag_list(input: ListTagsInput): TagListGql!
+  task_get(id: ID!): TaskGql
+  task_list(input: ListTasksInput): TaskListGql!
+  note_get(id: ID!): NoteGql
+  note_list(input: ListNotesInput): NoteListGql!
   me: UserGql!
   user_list(input: ListUsersInput): UserPageGql!
   version: System!
@@ -709,6 +762,24 @@ input ListTagsInput {
   locale: String
   createdBy: String
   visibility: MealPlanVisibility
+  limit: Int
+  page: Int
+}
+
+input ListTasksInput {
+  priority: TaskPriorityEnum
+  status: TaskStatusEnum
+  day: DateTime
+  dayFrom: DateTime
+  dayTo: DateTime
+  createdBy: String
+  limit: Int
+  page: Int
+}
+
+input ListNotesInput {
+  athleteId: ID
+  createdBy: String
   limit: Int
   page: Int
 }
@@ -893,6 +964,7 @@ input ListCoachAthletesInput {
   athleteId: ID
   is_active: Boolean
   createdBy: ID
+  q: String
   limit: Int
   page: Int
   includeArchived: Boolean
@@ -911,6 +983,14 @@ type Mutation {
   tag_update(input: UpdateTagInput!): TagGql
   tag_delete(id: ID!): Boolean!
   tag_hardDelete(id: ID!): Boolean!
+  task_create(input: CreateTaskInput!): TaskGql
+  task_update(input: UpdateTaskInput!): TaskGql
+  task_delete(id: ID!): Boolean!
+  task_hardDelete(id: ID!): Boolean!
+  note_create(input: CreateNoteInput!): NoteGql
+  note_update(input: UpdateNoteInput!): NoteGql
+  note_delete(id: ID!): Boolean!
+  note_hardDelete(id: ID!): Boolean!
   auth(input: AuthInput!): SessionGql!
   user_create(input: CreateUserInput!): UserGql!
   user_update(input: UpdateUserInput!): UserGql!
@@ -1013,6 +1093,34 @@ input UpdateTagInput {
   locale: String
   label: String
   visibility: MealPlanVisibility
+}
+
+input CreateTaskInput {
+  label: String!
+  priority: TaskPriorityEnum!
+  status: TaskStatusEnum!
+  day: DateTime!
+}
+
+input UpdateTaskInput {
+  id: ID!
+  label: String
+  priority: TaskPriorityEnum
+  status: TaskStatusEnum
+  day: DateTime
+}
+
+input CreateNoteInput {
+  label: String!
+  description: String!
+  athleteId: ID
+}
+
+input UpdateNoteInput {
+  id: ID!
+  label: String
+  description: String
+  athleteId: ID
 }
 
 input AuthInput {
