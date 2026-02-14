@@ -28,7 +28,7 @@ export function AthletesPanel(): React.JSX.Element {
     return null;
   }, [statusFilter]);
 
-  const { items, total, loading, create, update, remove } = useCoachAthletes({
+  const { items, total, loading, create, update, remove, reload } = useCoachAthletes({
     page,
     limit,
     coachId: coachFilter?.id,
@@ -131,6 +131,9 @@ export function AthletesPanel(): React.JSX.Element {
         onDelete={(row) => setDeleteId(row.id)}
         onPageChange={setPage}
         onLimitChange={setLimit}
+        onRefresh={() => {
+          void reload();
+        }}
       />
 
       <CoachAthleteDialog

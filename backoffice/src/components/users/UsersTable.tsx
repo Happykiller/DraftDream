@@ -2,6 +2,7 @@
 import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Button, Stack, TextField, IconButton, Tooltip, Chip, Select, MenuItem, FormControl, InputLabel, useMediaQuery } from '@mui/material';
@@ -20,6 +21,7 @@ export interface UsersTableProps {
   type?: string;
   loading: boolean;
   onCreate: () => void;
+  onRefresh: () => void;
   onEdit: (row: User) => void;
   onDelete: (row: User) => void;
   onPasswordUpdate: (row: User) => void;
@@ -31,7 +33,8 @@ export interface UsersTableProps {
 
 export const UsersTable = React.memo(function UsersTable({
   rows, total, page, limit, q, type, loading,
-  onCreate, onEdit, onDelete, onPasswordUpdate, onQueryChange, onTypeChange, onPageChange, onLimitChange,
+  onCreate,
+  onRefresh, onEdit, onDelete, onPasswordUpdate, onQueryChange, onTypeChange, onPageChange, onLimitChange,
 }: UsersTableProps): React.JSX.Element {
   const { t } = useTranslation();
   const fmtDate = useDateFormatter();
@@ -143,6 +146,11 @@ export const UsersTable = React.memo(function UsersTable({
           </Select>
         </FormControl>
         <Box sx={{ flex: 1 }} />
+        <Tooltip title={t('common.buttons.refresh')}>
+          <IconButton onClick={onRefresh} aria-label={t('common.buttons.refresh')} sx={{ mr: 1 }}>
+            <RefreshIcon />
+          </IconButton>
+        </Tooltip>
         <Button variant="contained" onClick={onCreate}>{t('users.table.new_button')}</Button>
       </Stack>
 

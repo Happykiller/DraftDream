@@ -2,6 +2,7 @@
 import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 
 import { Box, Button, Stack, TextField, IconButton, Tooltip, useMediaQuery } from '@mui/material';
@@ -20,6 +21,7 @@ export interface MuscleTableProps {
   q: string;
   loading: boolean;
   onCreate: () => void;
+  onRefresh: () => void;
   onEdit: (row: Muscle) => void;
   onDelete: (row: Muscle) => void;
   onQueryChange: (q: string) => void;
@@ -36,6 +38,7 @@ export const MuscleTable = React.memo(function MuscleTable(props: MuscleTablePro
     q,
     loading,
     onCreate,
+  onRefresh,
     onEdit,
     onDelete,
     onQueryChange,
@@ -123,6 +126,11 @@ export const MuscleTable = React.memo(function MuscleTable(props: MuscleTablePro
           sx={{ maxWidth: 360 }}
         />
         <Box sx={{ flex: 1 }} />
+        <Tooltip title={t('common.buttons.refresh')}>
+          <IconButton onClick={onRefresh} aria-label={t('common.buttons.refresh')} sx={{ mr: 1 }}>
+            <RefreshIcon />
+          </IconButton>
+        </Tooltip>
         <Button variant="contained" onClick={onCreate}>
           {t('programs.muscles.create')}
         </Button>

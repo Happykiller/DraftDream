@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Button, IconButton, Stack, TextField, Tooltip, Typography, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -18,6 +19,7 @@ export interface MealDayTableProps {
   q: string;
   loading: boolean;
   onCreate: () => void;
+  onRefresh: () => void;
   onEdit: (row: MealDay) => void;
   onDelete: (row: MealDay) => void;
   onQueryChange: (query: string) => void;
@@ -26,7 +28,8 @@ export interface MealDayTableProps {
 }
 
 export function MealDayTable(props: MealDayTableProps): React.JSX.Element {
-  const { rows, total, page, limit, q, loading, onCreate, onEdit, onDelete, onQueryChange, onPageChange, onLimitChange } = props;
+  const { rows, total, page, limit, q, loading, onCreate,
+  onRefresh, onEdit, onDelete, onQueryChange, onPageChange, onLimitChange } = props;
   const { t } = useTranslation();
   const formatDate = useDateFormatter();
   const theme = useTheme();
@@ -121,6 +124,11 @@ export function MealDayTable(props: MealDayTableProps): React.JSX.Element {
           sx={{ maxWidth: 360 }}
         />
         <Box sx={{ flex: 1 }} />
+        <Tooltip title={t('common.buttons.refresh')}>
+          <IconButton onClick={onRefresh} aria-label={t('common.buttons.refresh')} sx={{ mr: 1 }}>
+            <RefreshIcon />
+          </IconButton>
+        </Tooltip>
         <Button variant="contained" onClick={onCreate}>
           {t('meals.mealDays.create')}
         </Button>

@@ -130,7 +130,7 @@ export function MealPlansPanel(): React.JSX.Element {
     if (debounced !== q) setQ(debounced);
   }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update, remove, getMealPlan } = useMealPlans({ page, limit, q });
+  const { items, total, loading, create, update, remove, getMealPlan, reload } = useMealPlans({ page, limit, q });
   const {
     items: mealDayItems,
     loading: mealDayLoading,
@@ -217,6 +217,9 @@ export function MealPlansPanel(): React.JSX.Element {
         onQueryChange={setSearchInput}
         onPageChange={setPage}
         onLimitChange={setLimit}
+        onRefresh={() => {
+          void reload();
+        }}
       />
 
       <MealPlanDialog

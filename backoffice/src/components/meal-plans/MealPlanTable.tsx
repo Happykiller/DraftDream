@@ -1,6 +1,7 @@
 // src/components/meal-plans/MealPlanTable.tsx
 import * as React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import EditIcon from '@mui/icons-material/Edit';
 import { Box, Button, IconButton, Stack, TextField, Tooltip, Typography, useMediaQuery } from '@mui/material';
 import type { Theme } from '@mui/material';
@@ -19,6 +20,7 @@ export interface MealPlanTableProps {
   q: string;
   loading: boolean;
   onCreate: () => void;
+  onRefresh: () => void;
   onEdit: (row: MealPlan) => void;
   onDelete: (row: MealPlan) => void;
   onQueryChange: (query: string) => void;
@@ -27,7 +29,8 @@ export interface MealPlanTableProps {
 }
 
 export function MealPlanTable(props: MealPlanTableProps): React.JSX.Element {
-  const { rows, total, page, limit, q, loading, onCreate, onEdit, onDelete, onQueryChange, onPageChange, onLimitChange } = props;
+  const { rows, total, page, limit, q, loading, onCreate,
+  onRefresh, onEdit, onDelete, onQueryChange, onPageChange, onLimitChange } = props;
   const { t } = useTranslation();
   const formatDate = useDateFormatter();
   // Responsive: Hide columns on smaller screens
@@ -146,6 +149,11 @@ export function MealPlanTable(props: MealPlanTableProps): React.JSX.Element {
           sx={{ maxWidth: 360 }}
         />
         <Box sx={{ flex: 1 }} />
+        <Tooltip title={t('common.buttons.refresh')}>
+          <IconButton onClick={onRefresh} aria-label={t('common.buttons.refresh')} sx={{ mr: 1 }}>
+            <RefreshIcon />
+          </IconButton>
+        </Tooltip>
         <Button variant="contained" onClick={onCreate}>
           {t('meals.mealPlans.create')}
         </Button>

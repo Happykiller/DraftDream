@@ -23,7 +23,7 @@ export function ExercisesPanel(): React.JSX.Element {
     }
   }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update, remove, getExercise } = useExercises({ page, limit, q });
+  const { items, total, loading, create, update, remove, getExercise, reload } = useExercises({ page, limit, q });
   const { t } = useTranslation();
 
   // Small datasets for select options; move to async search if volume grows.
@@ -168,6 +168,9 @@ export function ExercisesPanel(): React.JSX.Element {
         onQueryChange={setSearchInput}
         onPageChange={setPage}
         onLimitChange={setLimit}
+        onRefresh={() => {
+          void reload();
+        }}
       />
 
       <ExerciseDialog

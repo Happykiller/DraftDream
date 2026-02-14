@@ -19,7 +19,7 @@ export function MealDaysPanel(): React.JSX.Element {
     if (debounced !== q) setQ(debounced);
   }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update, remove, getMealDay } = useMealDays({ page, limit, q });
+  const { items, total, loading, create, update, remove, getMealDay, reload } = useMealDays({ page, limit, q });
   const {
     items: mealOptions,
     loading: mealOptionsLoading,
@@ -79,6 +79,9 @@ export function MealDaysPanel(): React.JSX.Element {
         onQueryChange={setSearchInput}
         onPageChange={setPage}
         onLimitChange={setLimit}
+        onRefresh={() => {
+          void reload();
+        }}
       />
 
       <MealDayDialog

@@ -1,6 +1,7 @@
 // src/components/athletes/CoachAthleteTable.tsx
 import * as React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, type GridColDef, type GridRenderCellParams } from '@mui/x-data-grid';
 import {
@@ -41,6 +42,7 @@ export interface CoachAthleteTableProps {
   onStatusFilterChange: (status: 'all' | 'active' | 'inactive') => void;
   onIncludeArchivedChange: (value: boolean) => void;
   onCreate: () => void;
+  onRefresh: () => void;
   onEdit: (row: CoachAthlete) => void;
   onDelete: (row: CoachAthlete) => void;
   onPageChange: (page: number) => void;
@@ -76,6 +78,7 @@ export function CoachAthleteTable(props: CoachAthleteTableProps): React.JSX.Elem
     onStatusFilterChange,
     onIncludeArchivedChange,
     onCreate,
+  onRefresh,
     onEdit,
     onDelete,
     onPageChange,
@@ -237,6 +240,11 @@ export function CoachAthleteTable(props: CoachAthleteTableProps): React.JSX.Elem
           />
 
           <Box sx={{ flex: 1 }} />
+          <Tooltip title={t('common.buttons.refresh')}>
+            <IconButton onClick={onRefresh} aria-label={t('common.buttons.refresh')} sx={{ mr: 1 }}>
+              <RefreshIcon />
+            </IconButton>
+          </Tooltip>
           <Button variant="contained" onClick={onCreate} sx={{ alignSelf: { xs: 'stretch', md: 'flex-start' } }}>
             {t('athletes.table.create')}
           </Button>

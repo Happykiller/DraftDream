@@ -15,7 +15,7 @@ export function MealTypesPanel(): React.JSX.Element {
   const debounced = useDebouncedValue(searchInput, 300);
   React.useEffect(() => { if (debounced !== q) setQ(debounced); }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update, remove } = useMealTypes({ page, limit, q });
+  const { items, total, loading, create, update, remove, reload } = useMealTypes({ page, limit, q });
   const { t } = useTranslation();
 
   const [openCreate, setOpenCreate] = React.useState(false);
@@ -39,6 +39,9 @@ export function MealTypesPanel(): React.JSX.Element {
         onQueryChange={setSearchInput}
         onPageChange={setPage}
         onLimitChange={setLimit}
+        onRefresh={() => {
+          void reload();
+        }}
       />
 
       <MealTypeDialog

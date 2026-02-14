@@ -1,6 +1,7 @@
 // src/components/meals/MealTypeTable.tsx
 import * as React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import EditIcon from '@mui/icons-material/Edit';
 import { Box, Button, IconButton, Stack, TextField, Tooltip, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -18,6 +19,7 @@ export interface MealTypeTableProps {
   q: string;
   loading: boolean;
   onCreate: () => void;
+  onRefresh: () => void;
   onEdit: (row: MealType) => void;
   onDelete: (row: MealType) => void;
   onQueryChange: (query: string) => void;
@@ -34,6 +36,7 @@ export function MealTypeTable(props: MealTypeTableProps): React.JSX.Element {
     q,
     loading,
     onCreate,
+  onRefresh,
     onEdit,
     onDelete,
     onQueryChange,
@@ -121,6 +124,11 @@ export function MealTypeTable(props: MealTypeTableProps): React.JSX.Element {
           sx={{ maxWidth: 360 }}
         />
         <Box sx={{ flex: 1 }} />
+        <Tooltip title={t('common.buttons.refresh')}>
+          <IconButton onClick={onRefresh} aria-label={t('common.buttons.refresh')} sx={{ mr: 1 }}>
+            <RefreshIcon />
+          </IconButton>
+        </Tooltip>
         <Button variant="contained" onClick={onCreate}>
           {t('meals.mealTypes.create')}
         </Button>

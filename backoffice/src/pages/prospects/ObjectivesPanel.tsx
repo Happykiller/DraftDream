@@ -17,7 +17,7 @@ export function ObjectivesPanel(): React.JSX.Element {
     if (debounced !== q) setQ(debounced);
   }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update, remove } = useProspectObjectives({ page, limit, q });
+  const { items, total, loading, create, update, remove, reload } = useProspectObjectives({ page, limit, q });
   const { t } = useTranslation();
 
   const [openCreate, setOpenCreate] = React.useState(false);
@@ -41,6 +41,9 @@ export function ObjectivesPanel(): React.JSX.Element {
         onQueryChange={setSearchInput}
         onPageChange={setPage}
         onLimitChange={setLimit}
+        onRefresh={() => {
+          void reload();
+        }}
       />
 
       <ProspectObjectiveDialog

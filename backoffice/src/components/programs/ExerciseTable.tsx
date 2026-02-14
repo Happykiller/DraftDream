@@ -2,6 +2,7 @@
 import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Button, Stack, TextField, IconButton, Tooltip, Chip, useMediaQuery } from '@mui/material';
@@ -19,6 +20,7 @@ export interface ExerciseTableProps {
   q: string;
   loading: boolean;
   onCreate: () => void;
+  onRefresh: () => void;
   onEdit: (row: Exercise) => void;
   onDuplicate: (row: Exercise) => void;
   onDelete: (row: Exercise) => void;
@@ -35,6 +37,7 @@ export const ExerciseTable = React.memo(function ExerciseTable({
   q,
   loading,
   onCreate,
+  onRefresh,
   onEdit,
   onDuplicate,
   onDelete,
@@ -152,6 +155,11 @@ export const ExerciseTable = React.memo(function ExerciseTable({
           sx={{ maxWidth: 360 }}
         />
         <Box sx={{ flex: 1 }} />
+        <Tooltip title={t('common.buttons.refresh')}>
+          <IconButton onClick={onRefresh} aria-label={t('common.buttons.refresh')} sx={{ mr: 1 }}>
+            <RefreshIcon />
+          </IconButton>
+        </Tooltip>
         <Button variant="contained" onClick={onCreate}>
           {t('programs.exercises.create')}
         </Button>

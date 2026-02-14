@@ -3,6 +3,7 @@ import * as React from 'react';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import { Box, Button, Stack, TextField, IconButton, Tooltip, useMediaQuery } from '@mui/material';
 
 import { useTranslation } from 'react-i18next';
@@ -18,6 +19,7 @@ export interface TagTableProps {
   q: string;
   loading: boolean;
   onCreate: () => void;
+  onRefresh: () => void;
   onEdit: (row: Tag) => void;
   onDelete: (row: Tag) => void;
   onQueryChange: (q: string) => void;
@@ -33,6 +35,7 @@ export const TagTable = React.memo(function TagTable({
   q,
   loading,
   onCreate,
+  onRefresh,
   onEdit,
   onDelete,
   onQueryChange,
@@ -120,6 +123,11 @@ export const TagTable = React.memo(function TagTable({
           sx={{ maxWidth: 360 }}
         />
         <Box sx={{ flex: 1 }} />
+        <Tooltip title={t('common.buttons.refresh')}>
+          <IconButton onClick={onRefresh} aria-label={t('common.buttons.refresh')} sx={{ mr: 1 }}>
+            <RefreshIcon />
+          </IconButton>
+        </Tooltip>
         <Button variant="contained" onClick={onCreate}>
           {t('programs.tags.create')}
         </Button>

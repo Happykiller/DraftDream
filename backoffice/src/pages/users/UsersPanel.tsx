@@ -17,7 +17,7 @@ export function UsersPanel(): React.JSX.Element {
   const debounced = useDebouncedValue(searchInput, 300);
   React.useEffect(() => { if (debounced !== q) setQ(debounced); }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update, updatePassword, remove } = useUsers({
+  const { items, total, loading, create, update, updatePassword, remove, reload } = useUsers({
     page,
     limit,
     q,
@@ -133,6 +133,9 @@ export function UsersPanel(): React.JSX.Element {
         onTypeChange={setType}
         onPageChange={setPage}
         onLimitChange={setLimit}
+        onRefresh={() => {
+          void reload();
+        }}
       />
 
       <UserDialog

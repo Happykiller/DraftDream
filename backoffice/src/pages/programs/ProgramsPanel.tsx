@@ -35,7 +35,7 @@ export function ProgramsPanel(): React.JSX.Element {
     if (debounced !== q) setQ(debounced);
   }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update, remove, getProgram } = usePrograms({ page, limit, q, userId: userFilter?.id });
+  const { items, total, loading, create, update, remove, getProgram, reload } = usePrograms({ page, limit, q, userId: userFilter?.id });
   const { items: sessionItems } = useSessions({ page: 1, limit: 200, q: '' });
   const { items: userItems } = useUsers({ page: 1, limit: 200, q: '' });
 
@@ -113,6 +113,9 @@ export function ProgramsPanel(): React.JSX.Element {
         onQueryChange={setSearchInput}
         onPageChange={setPage}
         onLimitChange={setLimit}
+        onRefresh={() => {
+          void reload();
+        }}
         userOptions={userOptions}
         userFilter={userFilter}
         onUserFilterChange={setUserFilter}

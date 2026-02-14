@@ -17,7 +17,7 @@ export function LevelsPanel(): React.JSX.Element {
     if (debounced !== q) setQ(debounced);
   }, [debounced, q, setQ]);
 
-  const { items, total, loading, create, update, remove } = useProspectLevels({ page, limit, q });
+  const { items, total, loading, create, update, remove, reload } = useProspectLevels({ page, limit, q });
   const { t } = useTranslation();
 
   const [openCreate, setOpenCreate] = React.useState(false);
@@ -41,6 +41,9 @@ export function LevelsPanel(): React.JSX.Element {
         onQueryChange={setSearchInput}
         onPageChange={setPage}
         onLimitChange={setLimit}
+        onRefresh={() => {
+          void reload();
+        }}
       />
 
       <ProspectLevelDialog

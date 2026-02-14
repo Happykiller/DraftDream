@@ -1,6 +1,7 @@
 // src/components/prospects/ProspectClientTable.tsx
 import * as React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import EditIcon from '@mui/icons-material/Edit';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
@@ -35,6 +36,7 @@ export interface ProspectClientTableProps {
   sources: ProspectMetadataOption[];
   loading: boolean;
   onCreate: () => void;
+  onRefresh: () => void;
   onEdit: (row: Prospect) => void;
   onDelete: (row: Prospect) => void;
   onConvert: (row: Prospect) => void;
@@ -61,6 +63,7 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
     sources,
     loading,
     onCreate,
+  onRefresh,
     onEdit,
     onDelete,
     onConvert,
@@ -301,6 +304,11 @@ export function ProspectClientTable(props: ProspectClientTableProps): React.JSX.
             </TextField>
           </Stack>
           <Box sx={{ flex: 1 }} />
+          <Tooltip title={t('common.buttons.refresh')}>
+            <IconButton onClick={onRefresh} aria-label={t('common.buttons.refresh')} sx={{ mr: 1 }}>
+              <RefreshIcon />
+            </IconButton>
+          </Tooltip>
           <Button variant="contained" onClick={onCreate} sx={{ alignSelf: { xs: 'stretch', md: 'flex-start' } }}>
             {t('prospects.list.create')}
           </Button>

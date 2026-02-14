@@ -1,6 +1,7 @@
 // src/components/prospects/ProspectLevelTable.tsx
 import * as React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Button, IconButton, Stack, TextField, Tooltip, useMediaQuery } from '@mui/material';
@@ -18,6 +19,7 @@ export interface ProspectLevelTableProps {
   q: string;
   loading: boolean;
   onCreate: () => void;
+  onRefresh: () => void;
   onEdit: (row: ProspectLevel) => void;
   onDelete: (row: ProspectLevel) => void;
   onQueryChange: (q: string) => void;
@@ -34,6 +36,7 @@ export function ProspectLevelTable(props: ProspectLevelTableProps): React.JSX.El
     q,
     loading,
     onCreate,
+  onRefresh,
     onEdit,
     onDelete,
     onQueryChange,
@@ -108,6 +111,11 @@ export function ProspectLevelTable(props: ProspectLevelTableProps): React.JSX.El
           sx={{ maxWidth: 360 }}
         />
         <Box sx={{ flex: 1 }} />
+        <Tooltip title={t('common.buttons.refresh')}>
+          <IconButton onClick={onRefresh} aria-label={t('common.buttons.refresh')} sx={{ mr: 1 }}>
+            <RefreshIcon />
+          </IconButton>
+        </Tooltip>
         <Button variant="contained" onClick={onCreate}>
           {t('prospects.levels.create')}
         </Button>

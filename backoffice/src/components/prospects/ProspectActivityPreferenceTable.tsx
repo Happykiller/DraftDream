@@ -20,6 +20,7 @@ export interface ProspectActivityPreferenceTableProps {
   q: string;
   loading: boolean;
   onCreate: () => void;
+  onRefresh: () => void;
   onEdit: (row: ProspectActivityPreference) => void;
   onDelete: (row: ProspectActivityPreference) => void;
   onHardDelete: (row: ProspectActivityPreference) => void;

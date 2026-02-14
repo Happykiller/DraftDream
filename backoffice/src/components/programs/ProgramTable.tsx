@@ -2,6 +2,7 @@
 import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import {
   Autocomplete,
@@ -30,6 +31,7 @@ export interface ProgramTableProps {
   q: string;
   loading: boolean;
   onCreate: () => void;
+  onRefresh: () => void;
   onEdit: (row: Program) => void;
   onDelete: (row: Program) => void;
   onQueryChange: (query: string) => void;
@@ -48,6 +50,7 @@ export const ProgramTable = React.memo(function ProgramTable({
   q,
   loading,
   onCreate,
+  onRefresh,
   onEdit,
   onDelete,
   onQueryChange,
@@ -189,6 +192,11 @@ export const ProgramTable = React.memo(function ProgramTable({
           />
         )}
         <Box sx={{ flex: 1 }} />
+        <Tooltip title={t('common.buttons.refresh')}>
+          <IconButton onClick={onRefresh} aria-label={t('common.buttons.refresh')} sx={{ mr: 1 }}>
+            <RefreshIcon />
+          </IconButton>
+        </Tooltip>
         <Button variant="contained" onClick={onCreate}>
           {t('programs.dialog.create_title')}
         </Button>

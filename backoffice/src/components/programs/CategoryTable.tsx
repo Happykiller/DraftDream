@@ -2,6 +2,7 @@
 import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 
 import { Box, Button, Stack, TextField, IconButton, Tooltip, useMediaQuery } from '@mui/material';
@@ -20,6 +21,7 @@ export interface CategoryTableProps {
   q: string;
   loading: boolean;
   onCreate: () => void;
+  onRefresh: () => void;
   onEdit: (row: Category) => void;
   onDelete: (row: Category) => void;
   onQueryChange: (q: string) => void;
@@ -36,6 +38,7 @@ export function CategoryTable(props: CategoryTableProps): React.JSX.Element {
     q,
     loading,
     onCreate,
+  onRefresh,
     onEdit,
     onDelete,
     onQueryChange,
@@ -125,6 +128,11 @@ export function CategoryTable(props: CategoryTableProps): React.JSX.Element {
           sx={{ maxWidth: 360 }}
         />
         <Box sx={{ flex: 1 }} />
+        <Tooltip title={t('common.buttons.refresh')}>
+          <IconButton onClick={onRefresh} aria-label={t('common.buttons.refresh')} sx={{ mr: 1 }}>
+            <RefreshIcon />
+          </IconButton>
+        </Tooltip>
         <Button variant="contained" onClick={onCreate}>
           {t('programs.categories.create')}
         </Button>
