@@ -26,7 +26,7 @@ export interface CreateDailyReportUsecaseDto {
   stressLevel: number;
   moodLevel: number;
   disruptiveFactor: boolean;
-  painZoneTagIds: string[];
+  painZones: string[];
   notes?: string;
   athleteId?: string;
   session: UsecaseSession;
@@ -68,7 +68,7 @@ export interface UpdateDailyReportUsecaseDto {
   stressLevel?: number;
   moodLevel?: number;
   disruptiveFactor?: boolean;
-  painZoneTagIds?: string[];
+  painZones?: string[];
   notes?: string;
   session: UsecaseSession;
 }

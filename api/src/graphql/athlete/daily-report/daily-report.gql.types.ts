@@ -26,7 +26,7 @@ export class DailyReportGql {
   @Field(() => Int) stressLevel!: number;
   @Field(() => Int) moodLevel!: number;
   @Field() disruptiveFactor!: boolean;
-  @Field(() => [ID]) painZoneTagIds!: string[];
+  @Field(() => [String]) painZones!: string[];
   @Field({ nullable: true }) notes?: string;
   @Field(() => ID) athleteId!: string;
   @Field(() => ID) createdBy!: string;
@@ -36,7 +36,6 @@ export class DailyReportGql {
 
   @Field(() => UserGql, { nullable: true }) athlete?: UserGql | null;
   @Field(() => UserGql, { nullable: true }) creator?: UserGql | null;
-  @Field(() => [TagGql]) painZones!: TagGql[];
 }
 
 @InputType()
@@ -61,7 +60,7 @@ export class CreateDailyReportInput {
   @Field(() => Int) stressLevel!: number;
   @Field(() => Int) moodLevel!: number;
   @Field() disruptiveFactor!: boolean;
-  @Field(() => [ID]) painZoneTagIds!: string[];
+  @Field(() => [String]) painZones!: string[];
   @Field({ nullable: true }) notes?: string;
   @Field(() => ID, { nullable: true }) athleteId?: string;
 }
@@ -89,7 +88,7 @@ export class UpdateDailyReportInput {
   @Field(() => Int, { nullable: true }) stressLevel?: number;
   @Field(() => Int, { nullable: true }) moodLevel?: number;
   @Field({ nullable: true }) disruptiveFactor?: boolean;
-  @Field(() => [ID], { nullable: true }) painZoneTagIds?: string[];
+  @Field(() => [String], { nullable: true }) painZones?: string[];
   @Field({ nullable: true }) notes?: string;
 }
 

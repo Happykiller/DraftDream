@@ -1,5 +1,6 @@
 // src/pages/Calendar.tsx
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
     Stack,
     Box,
@@ -11,104 +12,57 @@ import { CalendarGrid } from '@components/calendar/CalendarGrid';
 import { DayDetailsPanel } from '@components/calendar/DayDetailsPanel';
 import { AgendaSection } from '@components/agenda/AgendaSection';
 import { useCalendar, getEventsForDay } from '@hooks/useCalendar';
+import { useDailyReports } from '@hooks/useDailyReports';
+import type { DailyReport } from '@app-types/dailyReport';
 import type { AgendaEvent } from '@app-types/agenda';
+import { session } from '@stores/session';
 
 /** Generate mock events across multiple days */
 function generateMockEvents(): AgendaEvent[] {
-    const now = Date.now();
-    const oneHour = 3600000;
-    const oneDay = 86400000;
-
-    return [
-        // Today
-        {
-            id: '1',
-            type: 'workout',
-            title: 'Entraînement matinal',
-            startAt: new Date(now + oneHour).toISOString(),
-        },
-        {
-            id: '2',
-            type: 'meal',
-            title: 'Déjeuner équilibré',
-            startAt: new Date(now + 5 * oneHour).toISOString(),
-        },
-        {
-            id: '3',
-            type: 'health',
-            title: 'Consultation nutritionniste',
-            startAt: new Date(now + 8 * oneHour).toISOString(),
-        },
-        // Tomorrow
-        {
-            id: '4',
-            type: 'workout',
-            title: 'Séance cardio',
-            startAt: new Date(now + oneDay + 2 * oneHour).toISOString(),
-        },
-        {
-            id: '5',
-            type: 'meal',
-            title: 'Dîner protéiné',
-            startAt: new Date(now + oneDay + 7 * oneHour).toISOString(),
-        },
-        // Day 3
-        {
-            id: '6',
-            type: 'workout',
-            title: 'Renforcement musculaire',
-            startAt: new Date(now + 2 * oneDay + 3 * oneHour).toISOString(),
-        },
-        {
-            id: '7',
-            type: 'health',
-            title: 'Bilan de santé',
-            startAt: new Date(now + 2 * oneDay + 6 * oneHour).toISOString(),
-        },
-        // Day 4
-        {
-            id: '8',
-            type: 'meal',
-            title: 'Préparation repas semaine',
-            startAt: new Date(now + 3 * oneDay + 4 * oneHour).toISOString(),
-        },
-        {
-            id: '9',
-            type: 'workout',
-            title: 'Yoga et stretching',
-            startAt: new Date(now + 3 * oneDay + 9 * oneHour).toISOString(),
-        },
-        // Day 5
-        {
-            id: '10',
-            type: 'health',
-            title: 'Suivi médical',
-            startAt: new Date(now + 4 * oneDay + 3 * oneHour).toISOString(),
-        },
-        {
-            id: '11',
-            type: 'workout',
-            title: 'Natation',
-            startAt: new Date(now + 5 * oneDay + 2 * oneHour).toISOString(),
-        },
-        {
-            id: '12',
-            type: 'meal',
-            title: 'Brunch santé',
-            startAt: new Date(now + 6 * oneDay + 4 * oneHour).toISOString(),
-        },
-    ];
+    return [];
 }
 
 /** Calendar page with grid, filters, day details, and agenda */
 export function Calendar(): React.JSX.Element {
     const theme = useTheme();
+    const navigate = useNavigate();
+    const { list } = useDailyReports();
+    const { id: athleteId } = session();
+
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
     const isDesktop = useMediaQuery(theme.breakpoints.up('lg'));
     const isXL = useMediaQuery(theme.breakpoints.up('xl'));
 
+    const [reports, setReports] = React.useState<DailyReport[]>([]);
+
+    const fetchReports = React.useCallback(async () => {
+        try {
+            const result = await list({ limit: 100, athleteId: athleteId ?? undefined });
+            if (result?.items) {
+                setReports(result.items);
+            }
+        } catch (error) {
+            console.error('Failed to fetch daily reports', error);
+        }
+    }, [list, athleteId]);
+
+    React.useEffect(() => {
+        fetchReports();
+    }, [fetchReports]);
+
     const mockEvents = React.useMemo(() => generateMockEvents(), []);
+
+    const healthEvents = React.useMemo<AgendaEvent[]>(() => {
+        return reports.map((report) => ({
+            id: report.id,
+            type: 'health',
+            title: 'Rapport Journalier',
+            startAt: `${report.reportDate}T12:00:00`, // Use noon local time to avoid date shift in most timezones
+        }));
+    }, [reports]);
+
+    const allEvents = React.useMemo(() => [...mockEvents, ...healthEvents], [mockEvents, healthEvents]);
 
     const {
         cursorMonth,
@@ -119,7 +73,7 @@ export function Calendar(): React.JSX.Element {
         goToToday,
         goToPrevMonth,
         goToNextMonth,
-    } = useCalendar({ events: mockEvents });
+    } = useCalendar({ events: allEvents });
 
     // Mobile drawer state
     const [drawerContent, setDrawerContent] = React.useState<'details' | 'agenda' | null>(null);
@@ -143,20 +97,28 @@ export function Calendar(): React.JSX.Element {
 
     const handleAgendaEventClick = React.useCallback(
         (id: string) => {
-            const event = mockEvents.find((e) => e.id === id);
+            const event = allEvents.find((e) => e.id === id);
             if (event) {
-                setSelectedDate(new Date(event.startAt));
-                if (isMobile) {
-                    setDrawerContent('details');
+                if (event.type === 'health') {
+                    navigate(`/agenda/daily-report/view/${event.id}`);
+                } else {
+                    setSelectedDate(new Date(event.startAt));
+                    if (isMobile) {
+                        setDrawerContent('details');
+                    }
                 }
             }
         },
-        [mockEvents, setSelectedDate, isMobile]
+        [allEvents, setSelectedDate, isMobile, navigate]
     );
 
     const handleCreate = React.useCallback(() => {
-        console.log('Create event for date:', selectedDate);
-    }, [selectedDate]);
+        const year = selectedDate.getFullYear();
+        const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+        const day = String(selectedDate.getDate()).padStart(2, '0');
+        const dateStr = `${year}-${month}-${day}`;
+        navigate(`/agenda/daily-report?date=${dateStr}`);
+    }, [navigate, selectedDate]);
 
     const handleCloseDrawer = React.useCallback(() => {
         setDrawerContent(null);
@@ -236,7 +198,7 @@ export function Calendar(): React.JSX.Element {
                 {isXL && (
                     <Box sx={{ width: 360 }}>
                         <AgendaSection
-                            events={mockEvents}
+                            events={allEvents}
                             onEventClick={handleAgendaEventClick}
                             maxItems={10}
                         />

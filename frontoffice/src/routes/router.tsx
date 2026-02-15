@@ -96,6 +96,25 @@ export const router = createBrowserRouter([
           return { Component: withTitle(mod.Agenda, 'agenda.title') };
         },
       },
+      {
+        path: 'daily-report',
+        children: [
+          {
+            index: true,
+            lazy: async () => {
+              const mod = await import('@src/pages/DailyReport');
+              return { Component: withTitle(mod.DailyReport, 'daily_report.title') };
+            },
+          },
+          {
+            path: 'view/:reportId',
+            lazy: async () => {
+              const mod = await import('@src/pages/DailyReportDetail');
+              return { Component: withTitle(mod.DailyReportDetail, 'daily_report.title_view') };
+            },
+          },
+        ],
+      },
     ],
   },
   {

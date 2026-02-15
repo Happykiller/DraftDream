@@ -682,6 +682,100 @@
       "health": "Santé"
     }
   },
+  "daily_report": {
+    "title": "Rapport quotidien",
+    "header": {
+      "title": "Rapport quotidien",
+      "subtitle": "Partagez votre journée avec votre coach",
+      "title_view": "Détails du rapport",
+      "subtitle_view": "Consultation du suivi journalier"
+    },
+    "buttons": {
+      "cancel": "Annuler",
+      "send": "Envoyer",
+      "back": "Retour"
+    },
+    "info": {
+      "title": "Information importante",
+      "message": "Ce rapport quotidien aide votre coach à mieux comprendre votre progression et à adapter votre programme. Plus vous êtes précis et régulier, plus votre suivi sera efficace !"
+    },
+    "sections": {
+      "training": {
+        "title": "1. ENTRAÎNEMENT",
+        "training_done": "Séance faite aujourd'hui ?"
+      },
+      "nutrition": {
+        "title": "2. ALIMENTATION",
+        "plan_compliance": "Plan respecté ?",
+        "deviations": "Écarts / Cheat ?",
+        "meal_count": "Nombre de repas / collations",
+        "hydration": "Hydratation (litres)",
+        "cravings": "Fringales / grignotage ?",
+        "transit": "Transit OK aujourd'hui ?",
+        "discomfort": "Ballonnements ou inconfort digestif ?",
+        "options": {
+          "compliance": {
+            "0": "Non",
+            "1": "Globalement",
+            "2": "Oui"
+          }
+        }
+      },
+      "sleep": {
+        "title": "3. SOMMEIL & RÉCUPÉRATION",
+        "hours": "Heures de sommeil",
+        "quality": "Qualité du sommeil :",
+        "rested": "Réveil reposé ?",
+        "soreness": "Douleurs musculaires ?",
+        "retention": "Rétention d'eau / gonflements ?",
+        "options": {
+          "quality": {
+            "0": "Mauvais",
+            "1": "Moyen",
+            "2": "Bon",
+            "3": "Excellent"
+          }
+        }
+      },
+      "mental": {
+        "title": "4. ÉTAT MENTAL & ÉNERGIE",
+        "energy": "Énergie du jour",
+        "motivation": "Motivation",
+        "stress": "Stress",
+        "mood": "Humeur générale :",
+        "disruptive": "Facteur perturbateur aujourd'hui ?",
+        "labels": {
+          "low": "Très faible",
+          "high": "Très élevé"
+        },
+        "options": {
+          "mood": {
+            "0": "Négatif",
+            "1": "Neutre",
+            "2": "Positif"
+          }
+        }
+      },
+      "notes": {
+        "title": "5. NOTES LIBRES",
+        "label": "Commentaires / Questions pour votre coach :",
+        "placeholder": "Partagez vos ressentis, questions, préoccupations ou tout ce que vous souhaitez communiquer à votre coach..."
+      }
+    },
+    "options": {
+      "yes": "Oui",
+      "no": "Non"
+    },
+    "notifications": {
+      "create_success": "Votre rapport quotidien a été envoyé avec succès !",
+      "create_failure": "Une erreur est survenue lors de l'envoi du rapport. Veuillez réessayer."
+    },
+    "errors": {
+      "not_found": "Rapport quotidien introuvable.",
+      "fetch_failed": "Impossible de charger le rapport.",
+      "generic": "Une erreur est survenue."
+    }
+  },
   "programs-coatch": {
     "title": "Programmes",
     "subtitle": "Concevez des programmes adaptés à chaque athlète.",

@@ -30,16 +30,6 @@ export class DailyReportResolver {
     return user ? mapUserUsecaseToGql(user) : null;
   }
 
-  @ResolveField(() => [TagGql])
-  async painZones(@Parent() report: DailyReportGql): Promise<TagGql[]> {
-    if (!report.painZoneTagIds?.length) {
-      return [];
-    }
-
-    const tags = await Promise.all(report.painZoneTagIds.map((id) => inversify.getTagUsecase.execute({ id })));
-    return tags.filter((tag) => tag !== null).map((tag) => mapTagUsecaseToGql(tag));
-  }
-
   @Mutation(() => DailyReportGql, { name: 'dailyReport_create', nullable: true })
   @Auth(Role.ADMIN, Role.ATHLETE)
   async dailyReport_create(

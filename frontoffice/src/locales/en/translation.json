@@ -680,6 +680,100 @@
       "health": "Health"
     }
   },
+  "daily_report": {
+    "title": "Daily Report",
+    "header": {
+      "title": "Daily Report",
+      "subtitle": "Share your day with your coach",
+      "title_view": "Report Details",
+      "subtitle_view": "Consult your daily follow-up"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "send": "Send",
+      "back": "Back"
+    },
+    "info": {
+      "title": "Important Information",
+      "message": "This daily report helps your coach better understand your progress and adapt your program. The more precise and consistent you are, the more effective your follow-up will be!"
+    },
+    "sections": {
+      "training": {
+        "title": "1. TRAINING",
+        "training_done": "Session done today?"
+      },
+      "nutrition": {
+        "title": "2. NUTRITION",
+        "plan_compliance": "Plan respected?",
+        "deviations": "Deviations / Cheat?",
+        "meal_count": "Number of meals / snacks",
+        "hydration": "Hydration (liters)",
+        "cravings": "Cravings / snacking?",
+        "transit": "Transit OK today?",
+        "discomfort": "Bloating or digestive discomfort?",
+        "options": {
+          "compliance": {
+            "0": "No",
+            "1": "Globally",
+            "2": "Yes"
+          }
+        }
+      },
+      "sleep": {
+        "title": "3. SLEEP & RECOVERY",
+        "hours": "Hours of sleep",
+        "quality": "Sleep quality:",
+        "rested": "Woke up rested?",
+        "soreness": "Muscle soreness?",
+        "retention": "Water retention / swelling?",
+        "options": {
+          "quality": {
+            "0": "Bad",
+            "1": "Medium",
+            "2": "Good",
+            "3": "Excellent"
+          }
+        }
+      },
+      "mental": {
+        "title": "4. MENTAL STATE & ENERGY",
+        "energy": "Day's energy",
+        "motivation": "Motivation",
+        "stress": "Stress",
+        "mood": "General mood:",
+        "disruptive": "Disruptive factor today?",
+        "labels": {
+          "low": "Very low",
+          "high": "Very high"
+        },
+        "options": {
+          "mood": {
+            "0": "Negative",
+            "1": "Neutral",
+            "2": "Positive"
+          }
+        }
+      },
+      "notes": {
+        "title": "5. FREE NOTES",
+        "label": "Comments / Questions for your coach:",
+        "placeholder": "Share your feelings, questions, concerns or anything you want to communicate to your coach..."
+      }
+    },
+    "options": {
+      "yes": "Yes",
+      "no": "No"
+    },
+    "notifications": {
+      "create_success": "Your daily report has been sent successfully!",
+      "create_failure": "An error occurred while sending the report. Please try again."
+    },
+    "errors": {
+      "not_found": "Daily report not found.",
+      "fetch_failed": "Unable to load the report.",
+      "generic": "An error occurred."
+    }
+  },
   "programs-coatch": {
     "title": "Programs",
     "subtitle": "Build training programs tailored to each athlete.",

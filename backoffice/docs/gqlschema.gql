@@ -706,6 +706,46 @@ type AthleteInfoListGql {
   limit: Int!
 }
 
+type DailyReportGql {
+  id: ID!
+  reportDate: String!
+  trainingDone: Boolean!
+  nutritionPlanCompliance: Int!
+  nutritionDeviations: Boolean!
+  mealCount: Int!
+  hydrationLiters: Int!
+  cravingsSnacking: Boolean!
+  digestiveDiscomfort: Boolean!
+  transitOk: Boolean!
+  menstruation: Boolean!
+  sleepHours: Int!
+  sleepQuality: Int!
+  wakeRested: Boolean!
+  muscleSoreness: Boolean!
+  waterRetention: Boolean!
+  energyLevel: Int!
+  motivationLevel: Int!
+  stressLevel: Int!
+  moodLevel: Int!
+  disruptiveFactor: Boolean!
+  painZones: [String!]!
+  notes: String
+  athleteId: ID!
+  createdBy: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  athlete: UserGql
+  creator: UserGql
+}
+
+type DailyReportListGql {
+  items: [DailyReportGql!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
 type Query {
   tag_get(id: ID!): TagGql
   tag_list(input: ListTagsInput): TagListGql!
@@ -755,6 +795,8 @@ type Query {
   coachAthlete_list(input: ListCoachAthletesInput): CoachAthleteListGql!
   athleteInfo_get(id: ID!): AthleteInfoGql
   athleteInfo_list(input: ListAthleteInfosInput): AthleteInfoListGql!
+  dailyReport_get(id: ID!): DailyReportGql
+  dailyReport_list(input: ListDailyReportsInput): DailyReportListGql!
 }
 
 input ListTagsInput {
@@ -978,6 +1020,14 @@ input ListAthleteInfosInput {
   page: Int
 }
 
+input ListDailyReportsInput {
+  athleteId: ID
+  createdBy: ID
+  reportDate: String
+  limit: Int
+  page: Int
+}
+
 type Mutation {
   tag_create(input: CreateTagInput!): TagGql
   tag_update(input: UpdateTagInput!): TagGql
@@ -1080,6 +1130,10 @@ type Mutation {
   athleteInfo_update(input: UpdateAthleteInfoInput!): AthleteInfoGql
   athleteInfo_delete(id: ID!): Boolean!
   athleteInfo_hardDelete(id: ID!): Boolean!
+  dailyReport_create(input: CreateDailyReportInput!): DailyReportGql
+  dailyReport_update(input: UpdateDailyReportInput!): DailyReportGql
+  dailyReport_delete(id: ID!): Boolean!
+  dailyReport_hardDelete(id: ID!): Boolean!
 }
 
 input CreateTagInput {
@@ -1635,5 +1689,57 @@ input UpdateAthleteInfoInput {
   activityPreferenceIds: [ID!]
   medicalConditions: String
   allergies: String
+  notes: String
+}
+
+input CreateDailyReportInput {
+  reportDate: String
+  trainingDone: Boolean!
+  nutritionPlanCompliance: Int!
+  nutritionDeviations: Boolean!
+  mealCount: Int!
+  hydrationLiters: Int!
+  cravingsSnacking: Boolean!
+  digestiveDiscomfort: Boolean!
+  transitOk: Boolean!
+  menstruation: Boolean!
+  sleepHours: Int!
+  sleepQuality: Int!
+  wakeRested: Boolean!
+  muscleSoreness: Boolean!
+  waterRetention: Boolean!
+  energyLevel: Int!
+  motivationLevel: Int!
+  stressLevel: Int!
+  moodLevel: Int!
+  disruptiveFactor: Boolean!
+  painZones: [String!]!
+  notes: String
+  athleteId: ID
+}
+
+input UpdateDailyReportInput {
+  id: ID!
+  reportDate: String
+  trainingDone: Boolean
+  nutritionPlanCompliance: Int
+  nutritionDeviations: Boolean
+  mealCount: Int
+  hydrationLiters: Int
+  cravingsSnacking: Boolean
+  digestiveDiscomfort: Boolean
+  transitOk: Boolean
+  menstruation: Boolean
+  sleepHours: Int
+  sleepQuality: Int
+  wakeRested: Boolean
+  muscleSoreness: Boolean
+  waterRetention: Boolean
+  energyLevel: Int
+  motivationLevel: Int
+  stressLevel: Int
+  moodLevel: Int
+  disruptiveFactor: Boolean
+  painZones: [String!]
   notes: String
 }

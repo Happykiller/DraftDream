@@ -31,7 +31,7 @@ interface DailyReportDoc {
   stressLevel: number;
   moodLevel: number;
   disruptiveFactor: boolean;
-  painZoneTagIds: string[];
+  painZones: string[];
   notes?: string;
   athleteId: string;
   createdBy: string;
@@ -80,7 +80,7 @@ export class BddServiceDailyReportMongo {
       stressLevel: dto.stressLevel,
       moodLevel: dto.moodLevel,
       disruptiveFactor: dto.disruptiveFactor,
-      painZoneTagIds: dto.painZoneTagIds,
+      painZones: dto.painZones,
       notes: dto.notes?.trim() || undefined,
       athleteId: dto.athleteId,
       createdBy: dto.createdBy,
@@ -163,7 +163,7 @@ export class BddServiceDailyReportMongo {
     if (patch.stressLevel !== undefined) $set.stressLevel = patch.stressLevel;
     if (patch.moodLevel !== undefined) $set.moodLevel = patch.moodLevel;
     if (patch.disruptiveFactor !== undefined) $set.disruptiveFactor = patch.disruptiveFactor;
-    if (patch.painZoneTagIds !== undefined) $set.painZoneTagIds = patch.painZoneTagIds;
+    if (patch.painZones !== undefined) $set.painZones = patch.painZones;
     if (patch.notes !== undefined) $set.notes = patch.notes?.trim() || undefined;
     if (patch.athleteId !== undefined) $set.athleteId = patch.athleteId;
 
@@ -229,7 +229,7 @@ export class BddServiceDailyReportMongo {
       stressLevel: doc.stressLevel,
       moodLevel: doc.moodLevel,
       disruptiveFactor: doc.disruptiveFactor,
-      painZoneTagIds: doc.painZoneTagIds,
+      painZones: doc.painZones ?? [],
       notes: doc.notes,
       athleteId: doc.athleteId,
       createdBy: doc.createdBy,

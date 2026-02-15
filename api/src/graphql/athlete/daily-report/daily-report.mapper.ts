@@ -4,6 +4,6 @@ import { DailyReportGql } from './daily-report.gql.types';
 export function mapDailyReportUsecaseToGql(model: DailyReportUsecaseModel): DailyReportGql {
   return {
     ...model,
-    painZones: [],
+    painZones: model.painZones ?? [],
   };
 }

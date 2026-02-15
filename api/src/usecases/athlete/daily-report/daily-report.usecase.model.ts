@@ -20,7 +20,7 @@ export interface DailyReportUsecaseModel {
   stressLevel: number;
   moodLevel: number;
   disruptiveFactor: boolean;
-  painZoneTagIds: string[];
+  painZones: string[];
   notes?: string;
   athleteId: string;
   createdBy: string;

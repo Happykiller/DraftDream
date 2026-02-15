@@ -37,7 +37,7 @@ export class CreateDailyReportUsecase {
         stressLevel: dto.stressLevel,
         moodLevel: dto.moodLevel,
         disruptiveFactor: dto.disruptiveFactor,
-        painZoneTagIds: dto.painZoneTagIds,
+        painZones: dto.painZones,
         notes: dto.notes,
         athleteId,
         createdBy: dto.session.userId,
