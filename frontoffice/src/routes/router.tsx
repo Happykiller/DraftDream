@@ -85,6 +85,34 @@ export const router = createBrowserRouter([
     ],
   },
   {
+    path: '/agenda',
+    element: <ProtectedLayout />,
+    loader: requireRoleLoader([UserType.Athlete]),
+    children: [
+      {
+        index: true,
+        lazy: async () => {
+          const mod = await import('@src/pages/Agenda');
+          return { Component: withTitle(mod.Agenda, 'agenda.title') };
+        },
+      },
+    ],
+  },
+  {
+    path: '/agenda-showcase',
+    element: <ProtectedLayout />,
+    loader: requireAuthLoader,
+    children: [
+      {
+        index: true,
+        lazy: async () => {
+          const mod = await import('@src/pages/AgendaShowcase');
+          return { Component: withTitle(mod.AgendaShowcase, 'Agenda Showcase') };
+        },
+      },
+    ],
+  },
+  {
     path: '/sandbox',
     element: <ProtectedLayout />,
     loader: requireAuthLoader,

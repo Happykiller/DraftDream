@@ -672,6 +672,14 @@
     },
     "empty": "No athlete information is available yet."
   },
+  "agenda": {
+    "title": "Agenda",
+    "eventType": {
+      "workout": "Workout",
+      "meal": "Meal",
+      "health": "Health"
+    }
+  },
   "programs-coatch": {
     "title": "Programs",
     "subtitle": "Build training programs tailored to each athlete.",
