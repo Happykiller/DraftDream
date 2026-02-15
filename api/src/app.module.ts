@@ -29,6 +29,7 @@ import { MealPlanModule } from '@src/graphql/nutri/meal-plan/meal-plan.module';
 import { MealRecordModule } from '@src/graphql/nutri/meal-record/meal-record.module';
 import { CoachAthleteModule } from '@graphql/athlete/coach-athlete/coach-athlete.module';
 import { AthleteInfoModule } from '@graphql/athlete/athlete-info/athlete-info.module';
+import { DailyReportModule } from '@graphql/athlete/daily-report/daily-report.module';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { AthleteInfoModule } from '@graphql/athlete/athlete-info/athlete-info.mo
     MealRecordModule,
     CoachAthleteModule,
     AthleteInfoModule,
+    DailyReportModule,
     GraphQLModule.forRoot<MercuriusDriverConfig>({
       driver: MercuriusDriver,
       autoSchemaFile: 'gqlschema.gql',

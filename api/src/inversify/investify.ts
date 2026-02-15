@@ -23,6 +23,11 @@ import { UpdateNoteUsecase } from '@usecases/note/update.note.usecase';
 import { DeleteTagUsecase } from '@usecases/tag/delete.tag.usecase';
 import { DeleteTaskUsecase } from '@usecases/task/delete.task.usecase';
 import { DeleteNoteUsecase } from '@usecases/note/delete.note.usecase';
+import { GetDailyReportUsecase } from '@usecases/athlete/daily-report/get.daily-report.usecase';
+import { ListDailyReportsUsecase } from '@usecases/athlete/daily-report/list.daily-reports.usecase';
+import { CreateDailyReportUsecase } from '@usecases/athlete/daily-report/create.daily-report.usecase';
+import { UpdateDailyReportUsecase } from '@usecases/athlete/daily-report/update.daily-report.usecase';
+import { DeleteDailyReportUsecase } from '@usecases/athlete/daily-report/delete.daily-report.usecase';
 import { ListUsersUsecase } from '@usecases/user/list.users.usecase';
 import { GetMealUsecase } from '@src/usecases/nutri/meal/get.meal.usecase';
 import { BddServiceMongo } from '@services/db/mongo/db.service.mongo';
@@ -37,6 +42,7 @@ import { DeleteMealUsecase } from '@src/usecases/nutri/meal/delete.meal.usecase'
 import { HardDeleteTagUsecase } from '@usecases/tag/hard-delete.tag.usecase';
 import { HardDeleteTaskUsecase } from '@usecases/task/hard-delete.task.usecase';
 import { HardDeleteNoteUsecase } from '@usecases/note/hard-delete.note.usecase';
+import { HardDeleteDailyReportUsecase } from '@usecases/athlete/daily-report/hard-delete.daily-report.usecase';
 import { UpdateMeUsecase } from '@usecases/user/update-me.user.usecase';
 import { HardDeleteUserUsecase } from '@usecases/user/hard-delete.user.usecase';
 import { GetProgramUsecase } from '@src/usecases/sport/program/get.program.usecase';
@@ -175,6 +181,11 @@ export class Inversify {
   deleteTagUsecase: DeleteTagUsecase;
   deleteTaskUsecase: DeleteTaskUsecase;
   deleteNoteUsecase: DeleteNoteUsecase;
+  getDailyReportUsecase: GetDailyReportUsecase;
+  listDailyReportsUsecase: ListDailyReportsUsecase;
+  createDailyReportUsecase: CreateDailyReportUsecase;
+  updateDailyReportUsecase: UpdateDailyReportUsecase;
+  deleteDailyReportUsecase: DeleteDailyReportUsecase;
   createTagUsecase: CreateTagUsecase;
   createTaskUsecase: CreateTaskUsecase;
   createNoteUsecase: CreateNoteUsecase;
@@ -294,6 +305,7 @@ export class Inversify {
   hardDeleteTagUsecase: HardDeleteTagUsecase;
   hardDeleteTaskUsecase: HardDeleteTaskUsecase;
   hardDeleteNoteUsecase: HardDeleteNoteUsecase;
+  hardDeleteDailyReportUsecase: HardDeleteDailyReportUsecase;
   hardDeleteSessionUsecase: HardDeleteSessionUsecase;
   hardDeleteProgramUsecase: HardDeleteProgramUsecase;
   hardDeleteMuscleUsecase: HardDeleteMuscleUsecase;
@@ -343,6 +355,11 @@ export class Inversify {
     this.createNoteUsecase = new CreateNoteUsecase(this);
     this.updateNoteUsecase = new UpdateNoteUsecase(this);
     this.deleteNoteUsecase = new DeleteNoteUsecase(this);
+    this.getDailyReportUsecase = new GetDailyReportUsecase(this);
+    this.listDailyReportsUsecase = new ListDailyReportsUsecase(this);
+    this.createDailyReportUsecase = new CreateDailyReportUsecase(this);
+    this.updateDailyReportUsecase = new UpdateDailyReportUsecase(this);
+    this.deleteDailyReportUsecase = new DeleteDailyReportUsecase(this);
     // usecases user
     this.getUserUsecase = new GetUserUsecase(this);
     this.createUserUsecase = new CreateUserUsecase(this);
@@ -481,6 +498,7 @@ export class Inversify {
     this.hardDeleteTagUsecase = new HardDeleteTagUsecase(this);
     this.hardDeleteTaskUsecase = new HardDeleteTaskUsecase(this);
     this.hardDeleteNoteUsecase = new HardDeleteNoteUsecase(this);
+    this.hardDeleteDailyReportUsecase = new HardDeleteDailyReportUsecase(this);
     this.hardDeleteSessionUsecase = new HardDeleteSessionUsecase(this);
     this.hardDeleteProgramUsecase = new HardDeleteProgramUsecase(this);
     this.hardDeleteMuscleUsecase = new HardDeleteMuscleUsecase(this);
