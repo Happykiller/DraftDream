@@ -674,6 +674,14 @@
     },
     "empty": "Aucune information d'athlète n'est disponible."
   },
+  "agenda": {
+    "title": "Agenda",
+    "eventType": {
+      "workout": "Séance",
+      "meal": "Repas",
+      "health": "Santé"
+    }
+  },
   "programs-coatch": {
     "title": "Programmes",
     "subtitle": "Concevez des programmes adaptés à chaque athlète.",

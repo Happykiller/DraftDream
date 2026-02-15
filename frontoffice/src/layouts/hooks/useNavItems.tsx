@@ -11,6 +11,7 @@ import {
   RestaurantMenu,
   SportsGymnastics,
   HelpCenter,
+  CalendarMonth,
 } from '@mui/icons-material';
 
 import { UserType } from '@src/commons/enums.js';
@@ -74,6 +75,14 @@ function createAthleteInformationItem(t: (key: string) => string): NavItem {
   };
 }
 
+function createAgendaItem(t: (key: string) => string): NavItem {
+  return {
+    label: t('agenda.title'),
+    icon: <CalendarMonth />,
+    path: '/agenda',
+  };
+}
+
 function createSandboxItem(t: (key: string) => string): NavItem {
   return { label: t('sandbox.title'), icon: <Settings />, path: '/sandbox' };
 }
@@ -128,6 +137,7 @@ export function buildNavItems(role: Role, t: (key: string) => string): NavItem[]
       items.push(
         createProgramsAthleteItem(t),
         createNutritionAthleteItem(t),
+        createAgendaItem(t),
         createAthleteInformationItem(t),
         createHelpCenterAthleteItem(t),
       );
