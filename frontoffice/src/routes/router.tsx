@@ -110,7 +110,7 @@ export const router = createBrowserRouter([
             path: 'view/:reportId',
             lazy: async () => {
               const mod = await import('@src/pages/DailyReportDetail');
-              return { Component: withTitle(mod.DailyReportDetail, 'daily_report.title_view') };
+              return { Component: withTitle(mod.DailyReportDetail, 'daily_report.header.title_view') };
             },
           },
         ],
