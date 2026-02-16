@@ -20,7 +20,8 @@ type AnatomyView = 'front' | 'back';
 
 type PainZonesSelectorProps = {
     value: string[];
-    onChange: (zones: string[]) => void;
+    onChange?: (zones: string[]) => void;
+    readOnly?: boolean;
 };
 
 const ANATOMY_FILES: Record<AnatomyView, string> = {
@@ -40,7 +41,7 @@ const normalizeSvgMarkup = (markup: string): string => (
 /**
  * Interactive body map for selecting pain areas on front and back anatomy diagrams.
  */
-export function PainZonesSelector({ value, onChange }: PainZonesSelectorProps): React.JSX.Element {
+export function PainZonesSelector({ value, onChange, readOnly = false }: PainZonesSelectorProps): React.JSX.Element {
     const { t } = useTranslation();
     const { execute } = useAsyncTask();
 
@@ -100,13 +101,17 @@ export function PainZonesSelector({ value, onChange }: PainZonesSelectorProps): 
             path.setAttribute('data-zone-id', zoneId ?? '');
             path.setAttribute('data-selected', isSelected ? 'true' : 'false');
             path.setAttribute('fill', isSelected ? '#ef5350' : 'transparent');
-            path.setAttribute('cursor', 'pointer');
+            path.setAttribute('cursor', readOnly ? 'default' : 'pointer');
         });
 
         return svgNode.outerHTML;
-    }, [activeView, anatomySvgMap, value]);
+    }, [activeView, anatomySvgMap, readOnly, value]);
 
     const toggleZone = React.useCallback((zoneId: string) => {
+        if (readOnly || !onChange) {
+            return;
+        }
+
         const hasZone = value.includes(zoneId);
 
         if (hasZone) {
@@ -115,9 +120,13 @@ export function PainZonesSelector({ value, onChange }: PainZonesSelectorProps): 
         }
 
         onChange([...value, zoneId]);
-    }, [onChange, value]);
+    }, [onChange, readOnly, value]);
 
     const handleMapClick = React.useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+        if (readOnly) {
+            return;
+        }
+
         const target = event.target as Element;
         const path = target.closest('path[data-zone-id]');
         const zoneId = path?.getAttribute('data-zone-id');
@@ -127,7 +136,7 @@ export function PainZonesSelector({ value, onChange }: PainZonesSelectorProps): 
         }
 
         toggleZone(zoneId);
-    }, [toggleZone]);
+    }, [readOnly, toggleZone]);
 
     if (loadError) {
         return <Alert severity="error">{t('daily_report.sections.pain.load_error')}</Alert>;
@@ -170,7 +179,7 @@ export function PainZonesSelector({ value, onChange }: PainZonesSelectorProps): 
             </Stack>
 
             <Box
-                onClick={handleMapClick}
+                onClick={readOnly ? undefined : handleMapClick}
                 sx={{
                     border: '1px solid',
                     borderColor: 'divider',
@@ -187,9 +196,11 @@ export function PainZonesSelector({ value, onChange }: PainZonesSelectorProps): 
                     '& .anatomy-svg path[id]': {
                         transition: 'fill 0.2s ease, opacity 0.2s ease',
                     },
-                    '& .anatomy-svg path[id]:hover': {
-                        fill: 'rgba(239, 83, 80, 0.3)',
-                    },
+                    ...(readOnly ? {} : {
+                        '& .anatomy-svg path[id]:hover': {
+                            fill: 'rgba(239, 83, 80, 0.3)',
+                        },
+                    }),
                     '& .anatomy-svg path[data-selected="true"]': {
                         fill: '#ef5350',
                     },
@@ -209,7 +220,7 @@ export function PainZonesSelector({ value, onChange }: PainZonesSelectorProps): 
                             label={zoneId}
                             color="error"
                             variant="outlined"
-                            onDelete={() => toggleZone(zoneId)}
+                            onDelete={readOnly ? undefined : () => toggleZone(zoneId)}
                         />
                     ))
                 )}
