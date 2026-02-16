@@ -20,6 +20,7 @@ import {
     InputAdornment,
     alpha,
     CircularProgress,
+    Chip,
 } from '@mui/material';
 import {
     Assignment as AssignmentIcon,
@@ -29,6 +30,7 @@ import {
     Bedtime as SleepIcon,
     Psychology as MentalIcon,
     Description as NotesIcon,
+    AccessibilityNew as PainIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { FixedPageLayout } from '@components/common/FixedPageLayout';
@@ -392,7 +394,39 @@ export function DailyReportDetail(): React.JSX.Element {
                     </Stack>
                 </Card>
 
-                {/* 5. NOTES */}
+                {/* 5. PAIN */}
+                <Card variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
+                    <SectionHeader
+                        icon={<PainIcon />}
+                        title={t('daily_report.sections.pain.title')}
+                        color="error"
+                    />
+
+                    {/* General information */}
+                    <Stack spacing={1.5}>
+                        <Typography variant="body2" color="text.secondary">
+                            {t('daily_report.sections.pain.helper')}
+                        </Typography>
+                        <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                            {report.painZones.length === 0 ? (
+                                <Typography variant="caption" color="text.secondary">
+                                    {t('daily_report.sections.pain.empty')}
+                                </Typography>
+                            ) : (
+                                report.painZones.map((zoneId) => (
+                                    <Chip
+                                        key={zoneId}
+                                        label={zoneId}
+                                        color="error"
+                                        variant="outlined"
+                                    />
+                                ))
+                            )}
+                        </Stack>
+                    </Stack>
+                </Card>
+
+                {/* 6. NOTES */}
                 <Card variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
                     <SectionHeader
                         icon={<NotesIcon />}
