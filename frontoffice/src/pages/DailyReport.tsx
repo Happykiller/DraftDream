@@ -29,9 +29,11 @@ import {
     Bedtime as SleepIcon,
     Psychology as MentalIcon,
     Description as NotesIcon,
+    AccessibilityNew as PainIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { FixedPageLayout } from '@components/common/FixedPageLayout';
+import { PainZonesSelector } from '@components/daily-report/PainZonesSelector';
 import { useDailyReports } from '@hooks/useDailyReports';
 import { useDateFormatter } from '@hooks/useDateFormatter';
 
@@ -86,6 +88,9 @@ export function DailyReport(): React.JSX.Element {
     // Notes
     const [notes, setNotes] = React.useState<string>('');
 
+    // Pain zones
+    const [painZones, setPainZones] = React.useState<string[]>([]);
+
     const handleCancel = React.useCallback(() => {
         navigate('/agenda');
     }, [navigate]);
@@ -113,7 +118,7 @@ export function DailyReport(): React.JSX.Element {
                 stressLevel,
                 moodLevel,
                 disruptiveFactor,
-                painZones: [], // Pain section excluded for now
+                painZones,
                 notes,
             });
             navigate('/agenda');
@@ -435,7 +440,20 @@ export function DailyReport(): React.JSX.Element {
                     </Stack>
                 </Card>
 
-                {/* 5. NOTES */}
+                {/* 5. PAIN */}
+                <Card variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
+                    <SectionHeader
+                        icon={<PainIcon />}
+                        title={t('daily_report.sections.pain.title')}
+                        color="error"
+                    />
+                    <PainZonesSelector
+                        value={painZones}
+                        onChange={setPainZones}
+                    />
+                </Card>
+
+                {/* 6. NOTES */}
                 <Card variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
                     <SectionHeader
                         icon={<NotesIcon />}

@@ -757,9 +757,20 @@
         }
       },
       "notes": {
-        "title": "5. NOTES LIBRES",
+        "title": "6. NOTES LIBRES",
         "label": "Commentaires / Questions pour votre coach :",
         "placeholder": "Partagez vos ressentis, questions, préoccupations ou tout ce que vous souhaitez communiquer à votre coach..."
+      },
+      "pain": {
+        "title": "5. DOULEURS / ZONES SENSIBLES",
+        "helper": "Cliquez sur les zones de douleur sur le schéma corporel. Cliquez à nouveau pour retirer une zone.",
+        "views": {
+          "front": "Vue avant",
+          "back": "Vue arrière"
+        },
+        "loading": "Chargement de la carte anatomique...",
+        "load_error": "Impossible de charger les schémas anatomiques.",
+        "empty": "Aucune zone sélectionnée."
       }
     },
     "options": {

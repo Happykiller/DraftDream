@@ -755,9 +755,20 @@
         }
       },
       "notes": {
-        "title": "5. FREE NOTES",
+        "title": "6. FREE NOTES",
         "label": "Comments / Questions for your coach:",
         "placeholder": "Share your feelings, questions, concerns or anything you want to communicate to your coach..."
+      },
+      "pain": {
+        "title": "5. PAIN / SENSITIVE AREAS",
+        "helper": "Click on painful areas on the body diagram. Click again to remove an area.",
+        "views": {
+          "front": "Front view",
+          "back": "Back view"
+        },
+        "loading": "Loading anatomy map...",
+        "load_error": "Unable to load anatomy diagrams.",
+        "empty": "No area selected."
       }
     },
     "options": {
