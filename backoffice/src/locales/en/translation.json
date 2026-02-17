@@ -754,7 +754,8 @@
     "title": "Athletes",
     "nav": {
       "liaison": "Liaison",
-      "information": "Information"
+      "information": "Information",
+      "wellbeing": "Wellbeing"
     },
     "liaison": {
       "title": "Athlete Liaison"
@@ -828,6 +829,18 @@
       "delete_title": "Archive link",
       "delete_message": "Archive the link between {{coach}} and {{athlete}}?",
       "delete_confirm": "Archive"
+    },
+    "wellbeing": {
+      "title": "Athlete wellbeing",
+      "search_placeholder": "Search by athlete or email...",
+      "table": {
+        "columns": {
+          "report_date": "Report date",
+          "training_done": "Training done",
+          "plan_respected": "Plan respected",
+          "has_pain": "Pain"
+        }
+      }
     }
   }
 }

@@ -100,6 +100,14 @@ export const router = createBrowserRouter([
           return { Component: withTitle(mod.AthleteInformation, 'athletes.information.title') };
         },
       },
+
+      {
+        path: '/athletes/wellbeing',
+        lazy: async () => {
+          const mod = await import('@src/pages/AthleteWellbeing');
+          return { Component: withTitle(mod.AthleteWellbeing, 'athletes.wellbeing.title') };
+        },
+      },
       {
         path: '/sandbox',
         // IMPORTANT: keep an index child for /sandbox routing.

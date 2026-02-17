@@ -755,7 +755,8 @@
     "title": "Athlètes",
     "nav": {
       "liaison": "Liaison",
-      "information": "Information"
+      "information": "Information",
+      "wellbeing": "Bien être"
     },
     "liaison": {
       "title": "Liaison athlètes"
@@ -829,6 +830,18 @@
       "delete_title": "Archiver la liaison",
       "delete_message": "Confirmez-vous l'archivage du lien entre {{coach}} et {{athlete}} ?",
       "delete_confirm": "Archiver"
+    },
+    "wellbeing": {
+      "title": "Bien être athlètes",
+      "search_placeholder": "Rechercher un athlète ou un email...",
+      "table": {
+        "columns": {
+          "report_date": "Date du rapport",
+          "training_done": "Séance faite",
+          "plan_respected": "Plan respecté",
+          "has_pain": "Douleurs"
+        }
+      }
     }
   }
 }

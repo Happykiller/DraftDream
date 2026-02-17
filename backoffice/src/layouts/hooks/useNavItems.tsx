@@ -9,6 +9,7 @@ import {
   PersonSearch,
   InfoOutlined,
   LinkOutlined,
+  MonitorHeart,
   FitnessCenter,
   StickyNote2,
   RestaurantMenu,
@@ -68,6 +69,7 @@ export function useNavItems(role?: string): NavItem[] {
           children: [
             { label: t('athletes.nav.liaison'), icon: <LinkOutlined />, path: '/athletes/liaison' },
             { label: t('athletes.nav.information'), icon: <InfoOutlined />, path: '/athletes/information' },
+            { label: t('athletes.nav.wellbeing'), icon: <MonitorHeart />, path: '/athletes/wellbeing' },
           ],
         },
         {
