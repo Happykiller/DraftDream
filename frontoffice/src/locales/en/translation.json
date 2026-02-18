@@ -768,7 +768,9 @@
         },
         "loading": "Loading anatomy map...",
         "load_error": "Unable to load anatomy diagrams.",
-        "empty": "No area selected."
+        "empty": "No area selected.",
+        "menstrual_cycle": "Menstrual cycle?",
+        "soreness": "Muscle soreness?"
       }
     },
     "options": {

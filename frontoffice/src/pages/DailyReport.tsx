@@ -75,8 +75,11 @@ export function DailyReport(): React.JSX.Element {
     const [sleepHours, setSleepHours] = React.useState<number>(8);
     const [sleepQuality, setSleepQuality] = React.useState<number>(2); // Default to Good (2)
     const [wakeRested, setWakeRested] = React.useState<boolean>(true);
-    const [muscleSoreness, setMuscleSoreness] = React.useState<boolean>(false);
     const [waterRetention, setWaterRetention] = React.useState<boolean>(false);
+
+    // Pain
+    const [menstruation, setMenstruation] = React.useState<boolean>(false);
+    const [muscleSoreness, setMuscleSoreness] = React.useState<boolean>(false);
 
     // Mental
     const [energyLevel, setEnergyLevel] = React.useState<number>(7);
@@ -107,7 +110,7 @@ export function DailyReport(): React.JSX.Element {
                 cravingsSnacking: cravings,
                 transitOk,
                 digestiveDiscomfort,
-                menstruation: false, // Hidden for now as per iterative approach
+                menstruation,
                 sleepHours,
                 sleepQuality,
                 wakeRested,
@@ -341,10 +344,6 @@ export function DailyReport(): React.JSX.Element {
                                 label={t('daily_report.sections.sleep.rested')}
                             />
                             <FormControlLabel
-                                control={<Checkbox checked={muscleSoreness} onChange={(e) => setMuscleSoreness(e.target.checked)} color="secondary" />}
-                                label={t('daily_report.sections.sleep.soreness')}
-                            />
-                            <FormControlLabel
                                 control={<Checkbox checked={waterRetention} onChange={(e) => setWaterRetention(e.target.checked)} color="secondary" />}
                                 label={t('daily_report.sections.sleep.retention')}
                             />
@@ -447,6 +446,16 @@ export function DailyReport(): React.JSX.Element {
                         title={t('daily_report.sections.pain.title')}
                         color="error"
                     />
+                    <Stack spacing={1} sx={{ mb: 3 }}>
+                        <FormControlLabel
+                            control={<Checkbox checked={menstruation} onChange={(e) => setMenstruation(e.target.checked)} color="error" />}
+                            label={t('daily_report.sections.pain.menstrual_cycle')}
+                        />
+                        <FormControlLabel
+                            control={<Checkbox checked={muscleSoreness} onChange={(e) => setMuscleSoreness(e.target.checked)} color="error" />}
+                            label={t('daily_report.sections.pain.soreness')}
+                        />
+                    </Stack>
                     <PainZonesSelector
                         value={painZones}
                         onChange={setPainZones}

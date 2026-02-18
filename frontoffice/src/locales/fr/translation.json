@@ -770,7 +770,9 @@
         },
         "loading": "Chargement de la carte anatomique...",
         "load_error": "Impossible de charger les schémas anatomiques.",
-        "empty": "Aucune zone sélectionnée."
+        "empty": "Aucune zone sélectionnée.",
+        "menstrual_cycle": "Cycle menstruel ?",
+        "soreness": "Courbature ?"
       }
     },
     "options": {

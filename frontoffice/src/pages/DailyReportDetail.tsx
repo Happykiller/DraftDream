@@ -300,11 +300,6 @@ export function DailyReportDetail(): React.JSX.Element {
                             />
                             <FormControlLabel
                                 disabled
-                                control={<Checkbox checked={report.muscleSoreness} color="secondary" />}
-                                label={t('daily_report.sections.sleep.soreness')}
-                            />
-                            <FormControlLabel
-                                disabled
                                 control={<Checkbox checked={report.waterRetention} color="secondary" />}
                                 label={t('daily_report.sections.sleep.retention')}
                             />
@@ -401,6 +396,18 @@ export function DailyReportDetail(): React.JSX.Element {
                         title={t('daily_report.sections.pain.title')}
                         color="error"
                     />
+                    <Stack spacing={1} sx={{ mb: 3 }}>
+                        <FormControlLabel
+                            disabled
+                            control={<Checkbox checked={report.menstruation} color="error" />}
+                            label={t('daily_report.sections.pain.menstrual_cycle')}
+                        />
+                        <FormControlLabel
+                            disabled
+                            control={<Checkbox checked={report.muscleSoreness} color="error" />}
+                            label={t('daily_report.sections.pain.soreness')}
+                        />
+                    </Stack>
                     <PainZonesSelector
                         value={report.painZones}
                         readOnly
