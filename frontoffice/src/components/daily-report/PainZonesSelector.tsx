@@ -29,6 +29,16 @@ const ANATOMY_FILES: Record<AnatomyView, string> = {
     back: '/anatomy_back.svg',
 };
 
+
+/**
+ * Formats a zone identifier into a readable fallback label.
+ */
+const formatZoneIdLabel = (zoneId: string): string => (
+    zoneId
+        .replace(/[_-]+/g, ' ')
+        .replace(/\b\w/g, (char) => char.toUpperCase())
+);
+
 /**
  * Cleans SVG markup exported with namespace prefixes so it can be injected safely in JSX.
  */
@@ -42,7 +52,7 @@ const normalizeSvgMarkup = (markup: string): string => (
  * Interactive body map for selecting pain areas on front and back anatomy diagrams.
  */
 export function PainZonesSelector({ value, onChange, readOnly = false }: PainZonesSelectorProps): React.JSX.Element {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { execute } = useAsyncTask();
 
     const [activeView, setActiveView] = React.useState<AnatomyView>('front');
@@ -106,6 +116,15 @@ export function PainZonesSelector({ value, onChange, readOnly = false }: PainZon
 
         return svgNode.outerHTML;
     }, [activeView, anatomySvgMap, readOnly, value]);
+
+    const getZoneLabel = React.useCallback((zoneId: string): string => {
+        const translationKey = `daily_report.sections.pain.zones.${zoneId}`;
+        if (i18n.exists(translationKey)) {
+            return t(translationKey);
+        }
+
+        return formatZoneIdLabel(zoneId);
+    }, [i18n, t]);
 
     const toggleZone = React.useCallback((zoneId: string) => {
         if (readOnly || !onChange) {
@@ -217,7 +236,7 @@ export function PainZonesSelector({ value, onChange, readOnly = false }: PainZon
                     value.map((zoneId) => (
                         <Chip
                             key={zoneId}
-                            label={zoneId}
+                            label={getZoneLabel(zoneId)}
                             color="error"
                             variant="outlined"
                             onDelete={readOnly ? undefined : () => toggleZone(zoneId)}
