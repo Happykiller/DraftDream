@@ -47,7 +47,7 @@ export function DailyReportDetail(): React.JSX.Element {
     const navigate = useNavigate();
     const { reportId } = useParams<{ reportId: string }>();
     const { get } = useDailyReports();
-    const formatDate = useDateFormatter({ options: { dateStyle: 'full' } });
+    const formatDateTime = useDateFormatter({ options: { dateStyle: 'full', timeStyle: 'short' } });
 
     const [report, setReport] = React.useState<DailyReport | null>(null);
     const [loading, setLoading] = React.useState(true);
@@ -144,7 +144,7 @@ export function DailyReportDetail(): React.JSX.Element {
                 <Stack direction="row" spacing={1} alignItems="center" sx={{ color: 'text.secondary', mb: -2 }}>
                     <CalendarIcon sx={{ fontSize: 20 }} />
                     <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                        {formatDate(reportDate)}
+                        {formatDateTime(reportDate)}
                     </Typography>
                 </Stack>
 
