@@ -58,7 +58,7 @@ export function Calendar(): React.JSX.Element {
             id: report.id,
             type: 'health',
             title: 'Rapport Journalier',
-            startAt: `${report.reportDate}T12:00:00`, // Use noon local time to avoid date shift in most timezones
+            startAt: report.reportDate,
         }));
     }, [reports]);
 

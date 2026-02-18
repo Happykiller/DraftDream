@@ -100,8 +100,14 @@ export function DailyReport(): React.JSX.Element {
 
     const handleSubmit = async () => {
         try {
+            const submittedAt = new Date();
+            const submissionHours = String(submittedAt.getHours()).padStart(2, '0');
+            const submissionMinutes = String(submittedAt.getMinutes()).padStart(2, '0');
+            const submissionSeconds = String(submittedAt.getSeconds()).padStart(2, '0');
+            const reportDateTime = `${reportDateStr}T${submissionHours}:${submissionMinutes}:${submissionSeconds}`;
+
             await create({
-                reportDate: reportDateStr,
+                reportDate: reportDateTime,
                 trainingDone,
                 nutritionPlanCompliance: nutritionCompliance,
                 nutritionDeviations,

@@ -58,7 +58,7 @@ export class BddServiceDailyReportMongo {
 
   async create(dto: CreateDailyReportDto): Promise<DailyReport | null> {
     const now = new Date();
-    const reportDate = dto.reportDate?.trim() || this.todayAsYyyyMmDd();
+    const reportDate = this.normalizeReportDateTime(dto.reportDate);
     const doc: Omit<DailyReportDoc, '_id'> = {
       reportDate,
       trainingDone: dto.trainingDone,
@@ -123,7 +123,7 @@ export class BddServiceDailyReportMongo {
     }
 
     if (reportDate?.trim()) {
-      filter.reportDate = reportDate.trim();
+      filter.reportDate = this.buildReportDateFilter(reportDate);
     }
 
     const cursor = this.col().find(filter).sort(sort).skip((page - 1) * limit).limit(limit);
@@ -143,7 +143,7 @@ export class BddServiceDailyReportMongo {
   async update(id: string, patch: UpdateDailyReportDto): Promise<DailyReport | null> {
     const $set: Partial<DailyReportDoc> = { updatedAt: new Date() };
 
-    if (patch.reportDate !== undefined) $set.reportDate = patch.reportDate.trim();
+    if (patch.reportDate !== undefined) $set.reportDate = this.normalizeReportDateTime(patch.reportDate);
     if (patch.trainingDone !== undefined) $set.trainingDone = patch.trainingDone;
     if (patch.nutritionPlanCompliance !== undefined) $set.nutritionPlanCompliance = patch.nutritionPlanCompliance;
     if (patch.nutritionDeviations !== undefined) $set.nutritionDeviations = patch.nutritionDeviations;
@@ -198,12 +198,49 @@ export class BddServiceDailyReportMongo {
     }
   }
 
-  private todayAsYyyyMmDd(): string {
+  private normalizeReportDateTime(input?: string): string {
     const now = new Date();
-    const year = now.getUTCFullYear();
-    const month = String(now.getUTCMonth() + 1).padStart(2, '0');
-    const day = String(now.getUTCDate()).padStart(2, '0');
-    return `${year}${month}${day}`;
+    const trimmed = input?.trim();
+
+    if (!trimmed) {
+      return now.toISOString();
+    }
+
+    if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      return `${trimmed}T${hours}:${minutes}:${seconds}`;
+    }
+
+    if (/^\d{8}$/.test(trimmed)) {
+      const year = trimmed.slice(0, 4);
+      const month = trimmed.slice(4, 6);
+      const day = trimmed.slice(6, 8);
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+    }
+
+    return trimmed;
+  }
+
+  private buildReportDateFilter(rawReportDate: string): Filter<DailyReportDoc>['reportDate'] {
+    const trimmed = rawReportDate.trim();
+
+    if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+      return { $regex: `^${trimmed}` };
+    }
+
+    if (/^\d{8}$/.test(trimmed)) {
+      const year = trimmed.slice(0, 4);
+      const month = trimmed.slice(4, 6);
+      const day = trimmed.slice(6, 8);
+      return { $regex: `^${year}-${month}-${day}` };
+    }
+
+    return trimmed;
   }
 
   private toModel(doc: DailyReportDoc): DailyReport {
