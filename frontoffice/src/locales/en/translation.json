@@ -65,7 +65,10 @@
     },
     "athlete": {
       "title": "Athlete dashboard",
-      "subtitle": "Review your assigned programs and nutrition plans."
+      "subtitle": "Review your assigned programs and nutrition plans.",
+      "actions": {
+        "create_daily_report": "Create a daily report"
+      }
     },
     "summary": {
       "athletes": "Athletes",

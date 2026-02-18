@@ -67,7 +67,10 @@
     },
     "athlete": {
       "title": "Dashboard Athlète",
-      "subtitle": "Consultez vos programmes et vos plans nutritionnels."
+      "subtitle": "Consultez vos programmes et vos plans nutritionnels.",
+      "actions": {
+        "create_daily_report": "Créer un rapport quotidien"
+      }
     },
     "summary": {
       "athletes": "Athlètes",
