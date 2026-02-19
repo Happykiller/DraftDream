@@ -6,7 +6,7 @@
 
 ###
 # Program: create
-POST {{host}}/graphql
+POST {{host}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -41,7 +41,7 @@ Content-Type: application/json
 
 ###
 # Program: get by id
-POST {{host}}/graphql
+POST {{host}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -52,7 +52,7 @@ Content-Type: application/json
 
 ###
 # Program: list
-POST {{host}}/graphql
+POST {{host}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -69,7 +69,7 @@ Content-Type: application/json
 
 ###
 # Program: update
-POST {{host}}/graphql
+POST {{host}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -86,7 +86,7 @@ Content-Type: application/json
 
 ###
 # Program: soft delete
-POST {{host}}/graphql
+POST {{host}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -97,7 +97,7 @@ Content-Type: application/json
 
 ###
 # Program: hard delete (admin only)
-POST {{host}}/graphql
+POST {{host}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
