@@ -148,13 +148,18 @@ export class BddServiceProgramMongo {
       sort = { updatedAt: -1 },
     } = params;
 
-    const filter: Record<string, any> = {};
+    // Combine every optional filter with $and to avoid overriding $or clauses.
+    const conditions: Record<string, any>[] = [];
+
     if (q?.trim()) {
-      filter.$or = [
-        { slug: { $regex: new RegExp(q.trim(), 'i') } },
-        { label: { $regex: new RegExp(q.trim(), 'i') } },
-        { description: { $regex: new RegExp(q.trim(), 'i') } },
-      ];
+      const regex = new RegExp(q.trim(), 'i');
+      conditions.push({
+        $or: [
+          { slug: { $regex: regex } },
+          { label: { $regex: regex } },
+          { description: { $regex: regex } },
+        ],
+      });
     }
     const normalizedCreatedByIn = Array.isArray(createdByIn)
       ? createdByIn.map((id) => id?.trim()).filter((id): id is string => Boolean(id))
@@ -171,16 +176,18 @@ export class BddServiceProgramMongo {
 
     if (visibility) {
       const normalizedVisibility = toVisibility(visibility) ?? Visibility.PRIVATE;
-      filter.visibility = normalizedVisibility;
+      conditions.push({ visibility: normalizedVisibility });
     } else if (includePublicVisibility) {
       ownershipConditions.push({ visibility: Visibility.PUBLIC });
     }
 
     if (ownershipConditions.length) {
-      filter.$or = ownershipConditions;
+      conditions.push({ $or: ownershipConditions });
     }
-    if (userId) filter.userId = this.toObjectId(userId);
-    if (!includeArchived) filter.deletedAt = { $exists: false };
+    if (userId) conditions.push({ userId: this.toObjectId(userId) });
+    if (!includeArchived) conditions.push({ deletedAt: { $exists: false } });
+
+    const filter: Record<string, any> = conditions.length ? { $and: conditions } : {};
 
     try {
       const collection = this.col();
