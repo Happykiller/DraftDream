@@ -508,6 +508,7 @@
       "tabs": {
         "overview": "Overview",
         "calendar": "Calendar",
+        "wellbeing": "Well-being",
         "programs": "Programs",
         "nutritions": "Nutritions",
         "sessions": "Session feedback",
@@ -515,6 +516,10 @@
         "notes": "Notes",
         "programs_helper": "Attach training programs to this athlete to track their progress.",
         "nutritions_helper": "Link nutrition plans to centralize the athlete's dietary follow-up."
+      },
+      "wellbeing": {
+        "title": "Well-being",
+        "description": "Track your athlete's well-being indicators here."
       },
       "calendar": {
         "controls": {

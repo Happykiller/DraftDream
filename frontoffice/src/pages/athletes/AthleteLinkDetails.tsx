@@ -54,6 +54,7 @@ type AthleteLinkTab =
   | 'overview'
   | 'client-info'
   | 'calendar'
+  | 'wellbeing'
   | 'programs'
   | 'nutritions'
   | 'sessions'
@@ -493,6 +494,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
                     <MenuItem value="programs">{t('athletes.details.tabs.programs')}</MenuItem>
                     <MenuItem value="nutritions">{t('athletes.details.tabs.nutritions')}</MenuItem>
                     <MenuItem value="calendar">{t('athletes.details.tabs.calendar')}</MenuItem>
+                    <MenuItem value="wellbeing">{t('athletes.details.tabs.wellbeing')}</MenuItem>
                     <MenuItem value="sessions">{t('athletes.details.tabs.sessions')}</MenuItem>
                     <MenuItem value="meal-records">{t('athletes.details.tabs.meal_records')}</MenuItem>
                   </Select>
@@ -516,6 +518,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
                   <Tab value="programs" label={t('athletes.details.tabs.programs')} />
                   <Tab value="nutritions" label={t('athletes.details.tabs.nutritions')} />
                   <Tab value="calendar" label={t('athletes.details.tabs.calendar')} />
+                  <Tab value="wellbeing" label={t('athletes.details.tabs.wellbeing')} />
                   <Tab value="sessions" label={t('athletes.details.tabs.sessions')} />
                   <Tab value="meal-records" label={t('athletes.details.tabs.meal_records')} />
                 </Tabs>
@@ -801,6 +804,27 @@ export function AthleteLinkDetails(): React.JSX.Element {
                         />
                       </Box>
                     ) : null}
+                  </TabPanel>
+
+
+                  <TabPanel value="wellbeing" currentTab={currentTab}>
+                    <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3 } }}>
+                      <Card variant="outlined">
+                        <CardContent>
+                          <Stack spacing={1.5}>
+                            <Stack direction="row" spacing={1} alignItems="center">
+                              <MonitorHeart color="info" />
+                              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                                {t('athletes.details.wellbeing.title')}
+                              </Typography>
+                            </Stack>
+                            <Typography variant="body2" color="text.secondary">
+                              {t('athletes.details.wellbeing.description')}
+                            </Typography>
+                          </Stack>
+                        </CardContent>
+                      </Card>
+                    </Box>
                   </TabPanel>
 
                   <TabPanel value="sessions" currentTab={currentTab}>

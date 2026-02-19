@@ -510,6 +510,7 @@
       "tabs": {
         "overview": "Contrat",
         "calendar": "Calendrier",
+        "wellbeing": "Bien-être",
         "programs": "Programmes",
         "nutritions": "Nutritions",
         "sessions": "Retour sessions",
@@ -517,6 +518,10 @@
         "notes": "Notes",
         "programs_helper": "Associez vos programmes d'entraînement à cet athlète pour suivre sa progression.",
         "nutritions_helper": "Reliez les plans nutritionnels à cet athlète pour centraliser son suivi alimentaire."
+      },
+      "wellbeing": {
+        "title": "Bien-être",
+        "description": "Suivez ici les indicateurs de bien-être de votre athlète."
       },
       "calendar": {
         "controls": {
