@@ -159,18 +159,22 @@ export class BddServiceMealPlanMongo {
       sort = { updatedAt: -1 },
     } = params;
 
-    const filter: Record<string, any> = {};
+    // Combine all optional predicates with $and to keep search and authorization filters active together.
+    const conditions: Record<string, any>[] = [];
 
     if (q?.trim()) {
-      filter.$or = [
-        { slug: { $regex: new RegExp(q.trim(), 'i') } },
-        { label: { $regex: new RegExp(q.trim(), 'i') } },
-        { description: { $regex: new RegExp(q.trim(), 'i') } },
-      ];
+      const regex = new RegExp(q.trim(), 'i');
+      conditions.push({
+        $or: [
+          { slug: { $regex: regex } },
+          { label: { $regex: regex } },
+          { description: { $regex: regex } },
+        ],
+      });
     }
 
     if (locale?.trim()) {
-      filter.locale = locale.trim().toLowerCase();
+      conditions.push({ locale: locale.trim().toLowerCase() });
     }
 
     const normalizedCreatedByIn = Array.isArray(createdByIn)
@@ -189,22 +193,24 @@ export class BddServiceMealPlanMongo {
     }
 
     if (visibility) {
-      filter.visibility = visibility;
+      conditions.push({ visibility });
     } else if (includePublicVisibility) {
       ownershipConditions.push({ visibility: 'PUBLIC' });
     }
 
     if (ownershipConditions.length) {
-      filter.$or = ownershipConditions;
+      conditions.push({ $or: ownershipConditions });
     }
 
     if (userId) {
-      filter.userId = this.toObjectId(userId);
+      conditions.push({ userId: this.toObjectId(userId) });
     }
 
     if (!includeArchived) {
-      filter.deletedAt = { $exists: false };
+      conditions.push({ deletedAt: { $exists: false } });
     }
+
+    const filter: Record<string, any> = conditions.length ? { $and: conditions } : {};
 
     try {
       const collection = this.col();
