@@ -8,6 +8,7 @@ import {
   EventBusy,
   EventNote,
   Mail,
+  Addchart,
   MonitorHeart,
   Notes,
   Phone,
@@ -813,7 +814,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
                         <CardContent>
                           <Stack spacing={1.5}>
                             <Stack direction="row" spacing={1} alignItems="center">
-                              <MonitorHeart color="info" />
+                              <Addchart color="info" />
                               <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
                                 {t('athletes.details.wellbeing.title')}
                               </Typography>
