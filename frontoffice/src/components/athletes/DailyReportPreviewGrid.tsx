@@ -1,21 +1,22 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  CalendarMonth,
-  Favorite,
-  Mood,
+  Description,
+  FitnessCenter,
+  LocalDining,
+  NightsStay,
   Notes,
-  TrendingDown,
-  TrendingUp,
+  TrackChanges,
 } from '@mui/icons-material';
 import {
   Box,
-  Chip,
+  Divider,
   Grid,
   Stack,
   Tooltip,
   Typography,
 } from '@mui/material';
+import { alpha, useTheme } from '@mui/material/styles';
 
 import type { DailyReport } from '@app-types/dailyReport';
 import { GlassCard } from '@components/common/GlassCard';
@@ -28,6 +29,51 @@ interface DailyReportPreviewGridProps {
   readonly onReportClick: (report: DailyReport) => void;
 }
 
+interface IndicatorTileProps {
+  readonly backgroundColor: string;
+  readonly icon: React.ReactNode;
+  readonly label: string;
+  readonly value: string;
+  readonly helper?: string;
+}
+
+function IndicatorTile({
+  backgroundColor,
+  icon,
+  label,
+  value,
+  helper,
+}: IndicatorTileProps): React.JSX.Element {
+  return (
+    <Box
+      sx={{
+        borderRadius: 2,
+        bgcolor: backgroundColor,
+        p: 1.5,
+        minHeight: 84,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <Stack spacing={0.35} alignItems="center">
+        {icon}
+        <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1.1 }}>
+          {label}
+        </Typography>
+        <Typography variant="subtitle2" sx={{ fontWeight: 800, lineHeight: 1.1 }}>
+          {value}
+        </Typography>
+        {helper ? (
+          <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1.1 }}>
+            {helper}
+          </Typography>
+        ) : null}
+      </Stack>
+    </Box>
+  );
+}
+
 /** Displays well-being reports as responsive, clickable cards. */
 export function DailyReportPreviewGrid({
   reports,
@@ -36,35 +82,21 @@ export function DailyReportPreviewGrid({
   onReportClick,
 }: DailyReportPreviewGridProps): React.JSX.Element {
   const { t } = useTranslation();
+  const theme = useTheme();
 
-  const resolveScoreColor = React.useCallback((value: number) => {
-    if (value >= 7) return 'success';
-    if (value >= 4) return 'warning';
-    return 'error';
+  const formatTime = React.useCallback((value: string) => {
+    return new Intl.DateTimeFormat(undefined, {
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(new Date(value));
   }, []);
 
-  const resolveSummary = React.useCallback(
-    (report: DailyReport) => {
-      return t('athletes.details.wellbeing.summary', {
-        energy: report.energyLevel,
-        motivation: report.motivationLevel,
-        mood: report.moodLevel,
-        stress: report.stressLevel,
-        sleep: report.sleepHours,
-      });
-    },
-    [t],
-  );
-
-  const handleCardKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLDivElement>, report: DailyReport) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        onReportClick(report);
-      }
-    },
-    [onReportClick],
-  );
+  const moodValue = React.useCallback((score: number) => {
+    if (score >= 8) return '😄';
+    if (score >= 5) return '🙂';
+    if (score >= 3) return '😐';
+    return '😔';
+  }, []);
 
   if (!loading && reports.length === 0) {
     return (
@@ -81,14 +113,21 @@ export function DailyReportPreviewGrid({
       {/* General information */}
       <Grid container spacing={{ xs: 2, md: 2.5 }}>
         {reports.map((report) => {
-          const summary = resolveSummary(report);
           const hasNotes = Boolean(report.notes?.trim());
+          const trainingStatusKey = report.trainingDone ? 'done' : 'missed';
+          const nutritionStatusKey = report.nutritionPlanCompliance > 0 ? 'done' : 'missed';
+          const sleepQualityKey = report.sleepQuality >= 7 ? 'good' : report.sleepQuality >= 4 ? 'average' : 'poor';
 
           return (
             <Grid key={report.id} size={{ xs: 12, md: 6, xl: 4 }}>
               <GlassCard
                 onClick={() => onReportClick(report)}
-                onKeyDown={(event) => handleCardKeyDown(event, report)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    onReportClick(report);
+                  }
+                }}
                 role="button"
                 tabIndex={0}
                 aria-label={t('athletes.details.wellbeing.open_report', {
@@ -96,76 +135,112 @@ export function DailyReportPreviewGrid({
                 })}
                 sx={{
                   height: '100%',
-                  cursor: 'pointer',
+                  p: 0,
                 }}
               >
-                <Stack spacing={2} sx={{ height: '100%' }}>
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <CalendarMonth fontSize="small" color="action" />
-                    <TextWithTooltip
-                      tooltipTitle={formatDate(report.reportDate)}
-                      variant="subtitle1"
-                      sx={{ fontWeight: 700 }}
-                    />
+                <Stack spacing={1.8} sx={{ p: 1.6 }}>
+                  <Stack direction="row" spacing={1} alignItems="flex-start">
+                    <Box
+                      sx={{
+                        width: 30,
+                        height: 30,
+                        borderRadius: 1.2,
+                        bgcolor: alpha(theme.palette.primary.main, 0.12),
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'primary.main',
+                        flexShrink: 0,
+                      }}
+                    >
+                      <Description fontSize="small" />
+                    </Box>
+                    <Stack spacing={0.1} sx={{ minWidth: 0 }}>
+                      <TextWithTooltip
+                        tooltipTitle={t('athletes.details.wellbeing.report_title', {
+                          date: formatDate(report.reportDate),
+                        })}
+                        variant="subtitle1"
+                        sx={{ fontWeight: 800, lineHeight: 1.2 }}
+                      />
+                      <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.2 }}>
+                        {t('athletes.details.wellbeing.meta', {
+                          author: t('athletes.details.wellbeing.author_default'),
+                          time: formatTime(report.createdAt),
+                        })}
+                      </Typography>
+                    </Stack>
                   </Stack>
 
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{
-                      minHeight: 42,
-                      display: '-webkit-box',
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden',
-                    }}
-                  >
-                    {summary}
-                  </Typography>
+                  <Grid container spacing={1.2}>
+                    <Grid size={{ xs: 6 }}>
+                      <IndicatorTile
+                        backgroundColor={alpha(theme.palette.error.main, 0.08)}
+                        icon={<FitnessCenter fontSize="small" color="error" />}
+                        label={t('athletes.details.wellbeing.training')}
+                        value={t(`athletes.details.wellbeing.status.${trainingStatusKey}`)}
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 6 }}>
+                      <IndicatorTile
+                        backgroundColor={alpha(theme.palette.secondary.main, 0.08)}
+                        icon={<TrackChanges fontSize="small" color="secondary" />}
+                        label={t('athletes.details.wellbeing.intensity')}
+                        value={t('athletes.details.wellbeing.score_over_ten', { value: report.motivationLevel })}
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 6 }}>
+                      <IndicatorTile
+                        backgroundColor={alpha(theme.palette.success.main, 0.1)}
+                        icon={<LocalDining fontSize="small" color="success" />}
+                        label={t('athletes.details.wellbeing.nutrition')}
+                        value={t(`athletes.details.wellbeing.status.${nutritionStatusKey}`)}
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 6 }}>
+                      <IndicatorTile
+                        backgroundColor={alpha(theme.palette.info.main, 0.1)}
+                        icon={<NightsStay fontSize="small" color="info" />}
+                        label={t('athletes.details.wellbeing.sleep')}
+                        value={t('athletes.details.wellbeing.sleep_hours', { value: report.sleepHours })}
+                        helper={t(`athletes.details.wellbeing.sleep_quality.${sleepQualityKey}`)}
+                      />
+                    </Grid>
+                  </Grid>
 
-                  <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
-                    <Chip
-                      size="small"
-                      icon={<Favorite />}
-                      color={resolveScoreColor(report.energyLevel)}
-                      label={t('athletes.details.wellbeing.energy', { value: report.energyLevel })}
-                    />
-                    <Chip
-                      size="small"
-                      icon={<TrendingUp />}
-                      color={resolveScoreColor(report.motivationLevel)}
-                      label={t('athletes.details.wellbeing.motivation', { value: report.motivationLevel })}
-                    />
-                    <Chip
-                      size="small"
-                      icon={<Mood />}
-                      color={resolveScoreColor(report.moodLevel)}
-                      label={t('athletes.details.wellbeing.mood', { value: report.moodLevel })}
-                    />
-                    <Chip
-                      size="small"
-                      icon={<TrendingDown />}
-                      color={resolveScoreColor(10 - report.stressLevel)}
-                      label={t('athletes.details.wellbeing.stress', { value: report.stressLevel })}
-                    />
-                  </Stack>
+                  <Divider sx={{ mt: 0.2, mb: 0.2 }} />
 
-                  <Box sx={{ mt: 'auto', display: 'flex', justifyContent: 'flex-end' }}>
+                  <Stack direction="row" justifyContent="space-between" alignItems="center">
+                    <Stack direction="row" spacing={1.4} useFlexGap flexWrap="wrap">
+                      <Typography variant="body2" color="text.secondary">
+                        {t('athletes.details.wellbeing.energy', { value: report.energyLevel })}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {t('athletes.details.wellbeing.motivation', { value: report.motivationLevel })}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {t('athletes.details.wellbeing.mood_icon', { value: moodValue(report.moodLevel) })}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {t('athletes.details.wellbeing.stress', { value: report.stressLevel })}
+                      </Typography>
+                    </Stack>
+
                     {hasNotes ? (
                       <Tooltip title={report.notes?.trim() ?? ''}>
-                        <Stack direction="row" spacing={0.5} alignItems="center" sx={{ color: 'info.main' }}>
+                        <Stack direction="row" spacing={0.4} alignItems="center" sx={{ color: 'primary.main' }}>
                           <Notes fontSize="inherit" />
-                          <Typography variant="caption" sx={{ fontWeight: 600 }}>
+                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
                             {t('athletes.details.wellbeing.notes')}
                           </Typography>
                         </Stack>
                       </Tooltip>
                     ) : (
-                      <Typography variant="caption" color="text.disabled">
+                      <Typography variant="body2" color="text.disabled">
                         {t('athletes.details.wellbeing.notes')}
                       </Typography>
                     )}
-                  </Box>
+                  </Stack>
                 </Stack>
               </GlassCard>
             </Grid>

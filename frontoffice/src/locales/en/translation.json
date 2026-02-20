@@ -522,12 +522,31 @@
         "description": "Track your athlete's well-being indicators here.",
         "empty": "No well-being report is available yet.",
         "summary": "Energy {{energy}}/10 · Motivation {{motivation}}/10 · Mood {{mood}}/10 · Stress {{stress}}/10 · Sleep {{sleep}}h",
-        "energy": "Energy {{value}}/10",
-        "motivation": "Motivation {{value}}/10",
+        "energy": "Energy: {{value}}/10",
+        "motivation": "Motivation: {{value}}/10",
         "mood": "Mood {{value}}/10",
-        "stress": "Stress {{value}}/10",
+        "mood_icon": "Mood: {{value}}",
+        "stress": "Stress: {{value}}/10",
         "notes": "Notes",
-        "open_report": "Open report from {{date}}"
+        "open_report": "Open report from {{date}}",
+        "report_title": "Report from {{date}}",
+        "meta": "{{author}} · {{time}}",
+        "author_default": "Athlete",
+        "training": "Training",
+        "intensity": "Intensity",
+        "nutrition": "Nutrition",
+        "sleep": "Sleep",
+        "sleep_hours": "{{value}}h",
+        "score_over_ten": "{{value}}/10",
+        "status": {
+          "done": "Completed",
+          "missed": "To improve"
+        },
+        "sleep_quality": {
+          "good": "Good",
+          "average": "Average",
+          "poor": "Low"
+        }
       },
       "calendar": {
         "controls": {
