@@ -532,6 +532,7 @@
         "report_title": "Report from {{date}}",
         "meta": "{{author}} · {{time}}",
         "author_default": "Athlete",
+        "time_unknown": "Unknown time",
         "training": "Training",
         "intensity": "Intensity",
         "nutrition": "Nutrition",

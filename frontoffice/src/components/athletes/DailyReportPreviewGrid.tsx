@@ -84,12 +84,22 @@ export function DailyReportPreviewGrid({
   const { t } = useTranslation();
   const theme = useTheme();
 
-  const formatTime = React.useCallback((value: string) => {
+  // Format report times defensively to avoid runtime failures on invalid dates.
+  const formatTime = React.useCallback((value?: string) => {
+    if (!value) {
+      return t('athletes.details.wellbeing.time_unknown');
+    }
+
+    const parsedDate = new Date(value);
+    if (Number.isNaN(parsedDate.getTime())) {
+      return t('athletes.details.wellbeing.time_unknown');
+    }
+
     return new Intl.DateTimeFormat(undefined, {
       hour: '2-digit',
       minute: '2-digit',
-    }).format(new Date(value));
-  }, []);
+    }).format(parsedDate);
+  }, [t]);
 
   const moodValue = React.useCallback((score: number) => {
     if (score >= 8) return '😄';
@@ -166,7 +176,7 @@ export function DailyReportPreviewGrid({
                       <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.2 }}>
                         {t('athletes.details.wellbeing.meta', {
                           author: t('athletes.details.wellbeing.author_default'),
-                          time: formatTime(report.createdAt),
+                          time: formatTime(report.createdAt ?? report.reportDate),
                         })}
                       </Typography>
                     </Stack>
