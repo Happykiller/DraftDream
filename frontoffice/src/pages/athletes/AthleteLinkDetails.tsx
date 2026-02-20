@@ -8,7 +8,6 @@ import {
   EventBusy,
   EventNote,
   Mail,
-  Addchart,
   MonitorHeart,
   Notes,
   Phone,
@@ -37,6 +36,7 @@ import { alpha, useTheme } from '@mui/material/styles';
 
 import { ResponsiveButton } from '@components/common/ResponsiveButton';
 import { AthleteCalendar } from '@components/athletes/AthleteCalendar';
+import { DailyReportPreviewGrid } from '@components/athletes/DailyReportPreviewGrid';
 import { AthleteNotesTab } from '@components/athletes/AthleteNotesTab';
 import { MealRecordPreviewGrid } from '@components/athletes/MealRecordPreviewGrid';
 import { ProgramRecordPreviewGrid } from '@components/athletes/ProgramRecordPreviewGrid';
@@ -49,7 +49,9 @@ import { usePrograms, type Program } from '@hooks/programs/usePrograms';
 import { useMealPlans, type MealPlan } from '@hooks/nutrition/useMealPlans';
 import { useMealRecords, type MealRecord } from '@hooks/nutrition/useMealRecords';
 import { useProgramRecords, type ProgramRecord } from '@hooks/program-records/useProgramRecords';
+import { useDailyReports } from '@hooks/useDailyReports';
 import { useDateFormatter } from '@hooks/useDateFormatter';
+import type { DailyReport } from '@app-types/dailyReport';
 
 type AthleteLinkTab =
   | 'overview'
@@ -222,6 +224,10 @@ export function AthleteLinkDetails(): React.JSX.Element {
   const [mealRecords, setMealRecords] = React.useState<MealRecord[]>([]);
   const [mealRecordsLoading, setMealRecordsLoading] = React.useState(false);
 
+  const { list: listDailyReports } = useDailyReports();
+  const [dailyReports, setDailyReports] = React.useState<DailyReport[]>([]);
+  const [dailyReportsLoading, setDailyReportsLoading] = React.useState(false);
+
   const nutritionEmptyState = React.useMemo(
     () =>
       t('athletes.details.nutritions.empty_state', {
@@ -309,6 +315,23 @@ export function AthleteLinkDetails(): React.JSX.Element {
       .finally(() => setMealRecordsLoading(false));
   }, [athleteId, listMealRecords]);
 
+  React.useEffect(() => {
+    if (!athleteId) {
+      setDailyReports([]);
+      return;
+    }
+
+    setDailyReportsLoading(true);
+    listDailyReports({ athleteId, limit: 12, page: 1 })
+      .then(({ items }) => {
+        const sortedItems = [...items].sort(
+          (left, right) => new Date(right.reportDate).getTime() - new Date(left.reportDate).getTime(),
+        );
+        setDailyReports(sortedItems);
+      })
+      .finally(() => setDailyReportsLoading(false));
+  }, [athleteId, listDailyReports]);
+
   const handleViewProgram = React.useCallback(
     (program: Program) => {
       navigate(`/programs-coach/view/${program.id}`);
@@ -331,6 +354,13 @@ export function AthleteLinkDetails(): React.JSX.Element {
   const handleRecordClick = React.useCallback(
     (record: ProgramRecord) => {
       navigate(`/program-record/${record.id}`);
+    },
+    [navigate],
+  );
+
+  const handleDailyReportClick = React.useCallback(
+    (report: DailyReport) => {
+      navigate(`/agenda/daily-report/view/${report.id}`);
     },
     [navigate],
   );
@@ -809,23 +839,16 @@ export function AthleteLinkDetails(): React.JSX.Element {
 
 
                   <TabPanel value="wellbeing" currentTab={currentTab}>
-                    <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3 } }}>
-                      <Card variant="outlined">
-                        <CardContent>
-                          <Stack spacing={1.5}>
-                            <Stack direction="row" spacing={1} alignItems="center">
-                              <Addchart color="info" />
-                              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                                {t('athletes.details.wellbeing.title')}
-                              </Typography>
-                            </Stack>
-                            <Typography variant="body2" color="text.secondary">
-                              {t('athletes.details.wellbeing.description')}
-                            </Typography>
-                          </Stack>
-                        </CardContent>
-                      </Card>
-                    </Box>
+                    {link ? (
+                      <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2, sm: 3 } }}>
+                        <DailyReportPreviewGrid
+                          reports={dailyReports}
+                          loading={dailyReportsLoading}
+                          formatDate={formatDate}
+                          onReportClick={handleDailyReportClick}
+                        />
+                      </Box>
+                    ) : null}
                   </TabPanel>
 
                   <TabPanel value="sessions" currentTab={currentTab}>

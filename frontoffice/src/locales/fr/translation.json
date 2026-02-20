@@ -521,7 +521,14 @@
       },
       "wellbeing": {
         "title": "Bien-être",
-        "description": "Suivez ici les indicateurs de bien-être de votre athlète."
+        "description": "Suivez ici les indicateurs de bien-être de votre athlète.",
+        "empty": "Aucun rapport bien-être disponible pour le moment.",
+        "summary": "Énergie {{energy}}/10 · Motivation {{motivation}}/10 · Humeur {{mood}}/10 · Stress {{stress}}/10 · Sommeil {{sleep}}h",
+        "energy": "Énergie {{value}}/10",
+        "motivation": "Motivation {{value}}/10",
+        "mood": "Humeur {{value}}/10",
+        "stress": "Stress {{value}}/10",
+        "notes": "Notes"
       },
       "calendar": {
         "controls": {
