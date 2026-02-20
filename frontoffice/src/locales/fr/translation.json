@@ -528,7 +528,8 @@
         "motivation": "Motivation {{value}}/10",
         "mood": "Humeur {{value}}/10",
         "stress": "Stress {{value}}/10",
-        "notes": "Notes"
+        "notes": "Notes",
+        "open_report": "Ouvrir le rapport du {{date}}"
       },
       "calendar": {
         "controls": {

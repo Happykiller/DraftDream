@@ -25,7 +25,7 @@ interface DailyReportPreviewGridProps {
   readonly reports: DailyReport[];
   readonly loading: boolean;
   readonly formatDate: (value: string) => string;
-  readonly onReportClick?: (report: DailyReport) => void;
+  readonly onReportClick: (report: DailyReport) => void;
 }
 
 /** Displays well-being reports as responsive, clickable cards. */
@@ -56,6 +56,16 @@ export function DailyReportPreviewGrid({
     [t],
   );
 
+  const handleCardKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>, report: DailyReport) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        onReportClick(report);
+      }
+    },
+    [onReportClick],
+  );
+
   if (!loading && reports.length === 0) {
     return (
       <Box>
@@ -73,33 +83,20 @@ export function DailyReportPreviewGrid({
         {reports.map((report) => {
           const summary = resolveSummary(report);
           const hasNotes = Boolean(report.notes?.trim());
-          const reportDetailPath = `/agenda/daily-report/view/${report.id}`;
 
           return (
             <Grid key={report.id} size={{ xs: 12, md: 6, xl: 4 }}>
               <GlassCard
-                component="a"
-                href={reportDetailPath}
-                onClick={onReportClick
-                  ? (event) => {
-                    event.preventDefault();
-                    onReportClick(report);
-                  }
-                  : undefined}
-                onKeyDown={onReportClick
-                  ? (event) => {
-                    if (event.key === 'Enter' || event.key === ' ') {
-                      event.preventDefault();
-                      onReportClick(report);
-                    }
-                  }
-                  : undefined}
-                role={onReportClick ? 'button' : undefined}
-                tabIndex={onReportClick ? 0 : undefined}
+                onClick={() => onReportClick(report)}
+                onKeyDown={(event) => handleCardKeyDown(event, report)}
+                role="button"
+                tabIndex={0}
+                aria-label={t('athletes.details.wellbeing.open_report', {
+                  date: formatDate(report.reportDate),
+                })}
                 sx={{
                   height: '100%',
-                  cursor: onReportClick ? 'pointer' : 'default',
-                  textDecoration: 'none',
+                  cursor: 'pointer',
                 }}
               >
                 <Stack spacing={2} sx={{ height: '100%' }}>

@@ -526,7 +526,8 @@
         "motivation": "Motivation {{value}}/10",
         "mood": "Mood {{value}}/10",
         "stress": "Stress {{value}}/10",
-        "notes": "Notes"
+        "notes": "Notes",
+        "open_report": "Open report from {{date}}"
       },
       "calendar": {
         "controls": {
