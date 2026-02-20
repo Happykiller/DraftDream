@@ -17,9 +17,9 @@ import {
   Typography,
 } from '@mui/material';
 
+import type { DailyReport } from '@app-types/dailyReport';
 import { GlassCard } from '@components/common/GlassCard';
 import { TextWithTooltip } from '@components/common/TextWithTooltip';
-import type { DailyReport } from '@app-types/dailyReport';
 
 interface DailyReportPreviewGridProps {
   readonly reports: DailyReport[];
@@ -73,11 +73,19 @@ export function DailyReportPreviewGrid({
         {reports.map((report) => {
           const summary = resolveSummary(report);
           const hasNotes = Boolean(report.notes?.trim());
+          const reportDetailPath = `/agenda/daily-report/view/${report.id}`;
 
           return (
             <Grid key={report.id} size={{ xs: 12, md: 6, xl: 4 }}>
               <GlassCard
-                onClick={onReportClick ? () => onReportClick(report) : undefined}
+                component="a"
+                href={reportDetailPath}
+                onClick={onReportClick
+                  ? (event) => {
+                    event.preventDefault();
+                    onReportClick(report);
+                  }
+                  : undefined}
                 onKeyDown={onReportClick
                   ? (event) => {
                     if (event.key === 'Enter' || event.key === ' ') {
@@ -91,6 +99,7 @@ export function DailyReportPreviewGrid({
                 sx={{
                   height: '100%',
                   cursor: onReportClick ? 'pointer' : 'default',
+                  textDecoration: 'none',
                 }}
               >
                 <Stack spacing={2} sx={{ height: '100%' }}>
