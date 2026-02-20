@@ -117,6 +117,21 @@ export const router = createBrowserRouter([
       },
     ],
   },
+
+  {
+    path: '/daily-report',
+    element: <ProtectedLayout />,
+    loader: requireAuthLoader,
+    children: [
+      {
+        path: 'view/:reportId',
+        lazy: async () => {
+          const mod = await import('@src/pages/DailyReportDetail');
+          return { Component: withTitle(mod.DailyReportDetail, 'daily_report.header.title_view') };
+        },
+      },
+    ],
+  },
   {
     path: '/agenda-showcase',
     element: <ProtectedLayout />,

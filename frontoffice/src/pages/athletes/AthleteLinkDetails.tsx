@@ -360,7 +360,7 @@ export function AthleteLinkDetails(): React.JSX.Element {
 
   const handleDailyReportClick = React.useCallback(
     (report: DailyReport) => {
-      navigate(`/agenda/daily-report/view/${report.id}`);
+      navigate(`/daily-report/view/${report.id}`);
     },
     [navigate],
   );
