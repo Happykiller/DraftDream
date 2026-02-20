@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Description,
+  Addchart,
   FitnessCenter,
   LocalDining,
   NightsStay,
@@ -102,10 +102,9 @@ export function DailyReportPreviewGrid({
   }, [t]);
 
   const moodValue = React.useCallback((score: number) => {
-    if (score >= 8) return '😄';
-    if (score >= 5) return '🙂';
-    if (score >= 3) return '😐';
-    return '😔';
+    if (score === 1) return '🙂';
+    if (score === 2) return '😐';
+    return '🙁';
   }, []);
 
   if (!loading && reports.length === 0) {
@@ -163,7 +162,7 @@ export function DailyReportPreviewGrid({
                         flexShrink: 0,
                       }}
                     >
-                      <Description fontSize="small" />
+                      <Addchart fontSize="small" />
                     </Box>
                     <Stack spacing={0.1} sx={{ minWidth: 0 }}>
                       <TextWithTooltip
@@ -175,7 +174,6 @@ export function DailyReportPreviewGrid({
                       />
                       <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.2 }}>
                         {t('athletes.details.wellbeing.meta', {
-                          author: t('athletes.details.wellbeing.author_default'),
                           time: formatTime(report.createdAt ?? report.reportDate),
                         })}
                       </Typography>
