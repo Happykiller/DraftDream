@@ -123,11 +123,12 @@ export function DailyReportDetail(): React.JSX.Element {
     }
 
     const reportDate = new Date(report.reportDate);
+    const formattedReportDate = formatDateTime(reportDate);
 
     return (
         <FixedPageLayout
             title={t('daily_report.header.title_view')}
-            subtitle={t('daily_report.header.subtitle_view')}
+            subtitle={formattedReportDate}
             icon={<AssignmentIcon />}
             footer={
                 <Button
@@ -139,17 +140,18 @@ export function DailyReportDetail(): React.JSX.Element {
                 </Button>
             }
         >
-            <Stack spacing={4} sx={{ p: { xs: 2, sm: 3, md: 4 }, maxWidth: 800, mx: 'auto' }}>
-                {/* Date Reminder */}
-                <Stack direction="row" spacing={1} alignItems="center" sx={{ color: 'text.secondary', mb: -2 }}>
+            <Stack spacing={4} sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
+                <Stack direction="row" spacing={1} alignItems="center" sx={{ color: 'text.secondary', mb: -1 }}>
                     <CalendarIcon sx={{ fontSize: 20 }} />
                     <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                        {formatDateTime(reportDate)}
+                        {formattedReportDate}
                     </Typography>
                 </Stack>
 
-                {/* 1. TRAINING */}
-                <Card variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
+                <Grid container spacing={3}>
+                    {/* 1. TRAINING */}
+                    <Grid size={{ xs: 12, md: 6, xl: 3 }}>
+                        <Card variant="outlined" sx={{ p: 3, borderRadius: 3, height: '100%' }}>
                     <SectionHeader
                         icon={<TrainingIcon />}
                         title={t('daily_report.sections.training.title')}
@@ -167,10 +169,12 @@ export function DailyReportDetail(): React.JSX.Element {
                             <FormControlLabel value="no" control={<Radio color="error" />} label={t('daily_report.options.no')} />
                         </RadioGroup>
                     </FormControl>
-                </Card>
+                        </Card>
+                    </Grid>
 
-                {/* 2. NUTRITION */}
-                <Card variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
+                    {/* 2. NUTRITION */}
+                    <Grid size={{ xs: 12, md: 6, xl: 3 }}>
+                        <Card variant="outlined" sx={{ p: 3, borderRadius: 3, height: '100%' }}>
                     <SectionHeader
                         icon={<NutritionIcon />}
                         title={t('daily_report.sections.nutrition.title')}
@@ -254,10 +258,12 @@ export function DailyReportDetail(): React.JSX.Element {
                             </Grid>
                         </Grid>
                     </Stack>
-                </Card>
+                        </Card>
+                    </Grid>
 
-                {/* 3. SLEEP */}
-                <Card variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
+                    {/* 3. SLEEP */}
+                    <Grid size={{ xs: 12, md: 6, xl: 3 }}>
+                        <Card variant="outlined" sx={{ p: 3, borderRadius: 3, height: '100%' }}>
                     <SectionHeader
                         icon={<SleepIcon />}
                         title={t('daily_report.sections.sleep.title')}
@@ -305,10 +311,12 @@ export function DailyReportDetail(): React.JSX.Element {
                             />
                         </Stack>
                     </Stack>
-                </Card>
+                        </Card>
+                    </Grid>
 
-                {/* 4. MENTAL */}
-                <Card variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
+                    {/* 4. MENTAL */}
+                    <Grid size={{ xs: 12, md: 6, xl: 3 }}>
+                        <Card variant="outlined" sx={{ p: 3, borderRadius: 3, height: '100%' }}>
                     <SectionHeader
                         icon={<MentalIcon />}
                         title={t('daily_report.sections.mental.title')}
@@ -387,10 +395,12 @@ export function DailyReportDetail(): React.JSX.Element {
                             </RadioGroup>
                         </FormControl>
                     </Stack>
-                </Card>
+                        </Card>
+                    </Grid>
 
-                {/* 5. PAIN */}
-                <Card variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
+                    {/* 5. PAIN */}
+                    <Grid size={{ xs: 12, md: 6, xl: 3 }}>
+                        <Card variant="outlined" sx={{ p: 3, borderRadius: 3, height: '100%' }}>
                     <SectionHeader
                         icon={<PainIcon />}
                         title={t('daily_report.sections.pain.title')}
@@ -412,10 +422,12 @@ export function DailyReportDetail(): React.JSX.Element {
                         value={report.painZones}
                         readOnly
                     />
-                </Card>
+                        </Card>
+                    </Grid>
 
-                {/* 6. NOTES */}
-                <Card variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
+                    {/* 6. NOTES */}
+                    <Grid size={{ xs: 12, md: 6, xl: 3 }}>
+                        <Card variant="outlined" sx={{ p: 3, borderRadius: 3, height: '100%' }}>
                     <SectionHeader
                         icon={<NotesIcon />}
                         title={t('daily_report.sections.notes.title')}
@@ -431,7 +443,9 @@ export function DailyReportDetail(): React.JSX.Element {
                         disabled
                         sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
                     />
-                </Card>
+                        </Card>
+                    </Grid>
+                </Grid>
             </Stack>
         </FixedPageLayout>
     );
