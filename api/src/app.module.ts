@@ -30,8 +30,10 @@ import { MealRecordModule } from '@src/graphql/nutri/meal-record/meal-record.mod
 import { CoachAthleteModule } from '@graphql/athlete/coach-athlete/coach-athlete.module';
 import { AthleteInfoModule } from '@graphql/athlete/athlete-info/athlete-info.module';
 import { DailyReportModule } from '@graphql/athlete/daily-report/daily-report.module';
+import { CoachAthleteKpiController } from '@src/rest/coach-athlete-kpi/coach-athlete-kpi.controller';
 
 @Module({
+  controllers: [CoachAthleteKpiController],
   imports: [
     AppModule,
     TagModule,

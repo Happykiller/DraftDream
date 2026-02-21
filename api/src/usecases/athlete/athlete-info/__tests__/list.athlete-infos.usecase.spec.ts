@@ -7,6 +7,7 @@ import { Inversify } from '@src/inversify/investify';
 import { BddServiceMongo } from '@services/db/mongo/db.service.mongo';
 import { BddServiceAthleteInfoMongo } from '@services/db/mongo/repositories/athlete-info.repository';
 import { BddServiceCoachAthleteMongo } from '@services/db/mongo/repositories/coach-athlete.repository';
+import { ResolveCoachAthleteVisibilityUsecase } from '@usecases/athlete/coach-athlete/resolve-coach-athlete-visibility.usecase';
 import { ListAthleteInfosUsecase } from '@usecases/athlete/athlete-info/list.athlete-infos.usecase';
 import { AthleteInfoUsecaseModel } from '@usecases/athlete/athlete-info/athlete-info.usecase.model';
 
@@ -20,6 +21,7 @@ describe('ListAthleteInfosUsecase', () => {
     let repositoryMock: MockProxy<BddServiceAthleteInfoMongo>;
     let coachAthleteRepositoryMock: MockProxy<BddServiceCoachAthleteMongo>;
     let loggerMock: MockProxy<LoggerMock>;
+    let resolveCoachAthleteVisibilityUsecaseMock: MockProxy<ResolveCoachAthleteVisibilityUsecase>;
     let usecase: ListAthleteInfosUsecase;
 
     const athleteInfos: AthleteInfoUsecaseModel[] = [
@@ -53,13 +55,16 @@ describe('ListAthleteInfosUsecase', () => {
         repositoryMock = mock<BddServiceAthleteInfoMongo>();
         coachAthleteRepositoryMock = mock<BddServiceCoachAthleteMongo>();
         loggerMock = mock<LoggerMock>();
+        resolveCoachAthleteVisibilityUsecaseMock = mock<ResolveCoachAthleteVisibilityUsecase>();
 
         (bddServiceMock as unknown as { athleteInfo: BddServiceAthleteInfoMongo }).athleteInfo = repositoryMock;
         (bddServiceMock as unknown as { coachAthlete: BddServiceCoachAthleteMongo }).coachAthlete = coachAthleteRepositoryMock;
         inversifyMock.bddService = bddServiceMock as unknown as BddServiceMongo;
         inversifyMock.loggerService = loggerMock;
+        inversifyMock.resolveCoachAthleteVisibilityUsecase = resolveCoachAthleteVisibilityUsecaseMock as unknown as ResolveCoachAthleteVisibilityUsecase;
 
-        // Default mock for coachAthlete
+        // Default mock for coach-athlete visibility
+        (resolveCoachAthleteVisibilityUsecaseMock.execute as any).mockResolvedValue(true);
         (coachAthleteRepositoryMock.list as any).mockResolvedValue({ items: [], total: 0, page: 1, limit: 10 });
 
         usecase = new ListAthleteInfosUsecase(inversifyMock);
