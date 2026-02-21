@@ -44,6 +44,7 @@ Manage coaching relationships between coaches and athletes
 - Track active periods
 - Manage coaching notes
 - Relationship lifecycle
+- Coach/athlete KPI summary access (`GET /coach/athletes/:id/kpi-summary`)
 
 #### [Athlete Info Management](./athlete-info.md)
 Maintain athlete-specific intake files derived from prospect data

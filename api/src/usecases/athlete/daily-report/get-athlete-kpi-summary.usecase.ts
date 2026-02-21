@@ -71,7 +71,7 @@ export class GetAthleteKpiSummaryUsecase {
         throw error;
       }
       this.inversify.loggerService.error(`GetAthleteKpiSummaryUsecase#execute => ${error?.message ?? error}`);
-      throw normalizeError(error, ERRORS.LIST_DAILY_REPORTS_USECASE);
+      throw normalizeError(error, ERRORS.GET_ATHLETE_KPI_SUMMARY_USECASE);
     }
   }
 

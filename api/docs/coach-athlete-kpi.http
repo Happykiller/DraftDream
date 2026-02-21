@@ -1,0 +1,7 @@
+# docs/coach-athlete-kpi.http
+@apiBase = http://localhost:3000
+@athleteId = REPLACE_ATHLETE_ID
+
+### Coach/Athlete KPI summary (admin or coach with active link)
+GET {{apiBase}}/coach/athletes/{{athleteId}}/kpi-summary
+Authorization: Bearer {{token}}
