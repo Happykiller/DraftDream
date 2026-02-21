@@ -22,8 +22,7 @@ import {
     CircularProgress,
 } from '@mui/material';
 import {
-    Assignment as AssignmentIcon,
-    CalendarMonth as CalendarIcon,
+    Addchart as AddchartIcon,
     FitnessCenter as TrainingIcon,
     Restaurant as NutritionIcon,
     Bedtime as SleepIcon,
@@ -103,7 +102,7 @@ export function DailyReportDetail(): React.JSX.Element {
 
     if (loading) {
         return (
-            <FixedPageLayout title={t('daily_report.header.title')} icon={<AssignmentIcon />}>
+            <FixedPageLayout title={t('daily_report.header.title')} icon={<AddchartIcon />}>
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
                     <CircularProgress />
                 </Box>
@@ -113,7 +112,7 @@ export function DailyReportDetail(): React.JSX.Element {
 
     if (error || !report) {
         return (
-            <FixedPageLayout title={t('daily_report.header.title')} icon={<AssignmentIcon />}>
+            <FixedPageLayout title={t('daily_report.header.title')} icon={<AddchartIcon />}>
                 <Box sx={{ p: 4, textAlign: 'center' }}>
                     <Alert severity="error" sx={{ mb: 2 }}>{error || t('daily_report.errors.generic')}</Alert>
                     <Button onClick={handleBack} variant="contained">{t('daily_report.buttons.back')}</Button>
@@ -122,14 +121,13 @@ export function DailyReportDetail(): React.JSX.Element {
         );
     }
 
-    const reportDate = new Date(report.reportDate);
-    const formattedReportDate = formatDateTime(reportDate);
+    const formattedReportDate = formatDateTime(new Date(report.reportDate));
 
     return (
         <FixedPageLayout
             title={t('daily_report.header.title_view')}
             subtitle={formattedReportDate}
-            icon={<AssignmentIcon />}
+            icon={<AddchartIcon />}
             footer={
                 <Button
                     variant="outlined"
@@ -141,13 +139,6 @@ export function DailyReportDetail(): React.JSX.Element {
             }
         >
             <Stack spacing={4} sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
-                <Stack direction="row" spacing={1} alignItems="center" sx={{ color: 'text.secondary', mb: -1 }}>
-                    <CalendarIcon sx={{ fontSize: 20 }} />
-                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                        {formattedReportDate}
-                    </Typography>
-                </Stack>
-
                 <Grid container spacing={3}>
                     {/* 1. TRAINING */}
                     <Grid size={{ xs: 12, md: 6, xl: 3 }}>
