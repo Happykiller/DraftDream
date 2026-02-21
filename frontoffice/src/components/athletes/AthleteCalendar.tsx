@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Addchart, ChevronLeft, ChevronRight, MoreHoriz } from '@mui/icons-material';
+import { Addchart, ChevronLeft, ChevronRight, MoreHoriz, Restaurant } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -493,6 +493,11 @@ export function AthleteCalendar({
           ? theme.palette.warning.contrastText
           : theme.palette.getContrastText(wellbeingColor);
       const tooltipLabel = t(`athletes.details.calendar.event_types.${record.type}`);
+      const icon = record.type === 'wellbeing'
+        ? <Addchart sx={{ fontSize: 14 }} />
+        : record.type === 'meal'
+          ? <Restaurant sx={{ fontSize: 14 }} />
+          : null;
 
       return (
         <Tooltip key={record.id} title={tooltipLabel} arrow>
@@ -523,7 +528,7 @@ export function AthleteCalendar({
                 gap: 0.5,
               }}
             >
-              {record.type === 'wellbeing' ? <Addchart sx={{ fontSize: 14 }} /> : null}
+              {icon}
               <Typography
                 variant="caption"
                 noWrap
