@@ -29,8 +29,17 @@
 - Use cases own business authorization rules (ownership, visibility, assignments). Pure role-based access control (no additional business rules) must live in the GraphQL layer via `@Auth`, not in use cases.
 - Apply these business rules consistently:
   - **Create**: any authenticated role may create. Admins can choose public or private; coaches and front-office clients create private items only.
-  - **Read/Get**: callable by all roles.
-  - **List**: public items are listable by anyone; private items are listable only by their creator or an admin. Athletes may only list programs and nutrition plans where they are assigned as the athlete.
+  - **Read/Get**:
+    - Admins can read any item.
+    - Creators can read their own items.
+    - `public` items are readable by everyone.
+    - `private` items are readable by: the creator, an admin, or a coach who has an **active link** with the athlete associated with the item (verified via `is_active: true` in `CoachAthleteLink`).
+  - **List**:
+    - Admins can list any item.
+    - Creators can list their own items.
+    - `public` items are listable by everyone.
+    - `private` items are listable by: the creator, an admin, or a coach who has an **active link** with the athlete associated with the item.
+    - Athletes may only list programs and nutrition plans where they are explicitly assigned as the athlete.
   - **Update**: only the creator or an admin can update.
   - **Soft delete**: only the creator or an admin can soft-delete.
   - **Hard delete**: admins only.

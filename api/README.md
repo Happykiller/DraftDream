@@ -25,12 +25,48 @@ GraphQL API built with NestJS, Fastify (via Mercurius), and MongoDB to power the
 - Winston logging with development-friendly formatting and daily rotation in production.
 
 ## Architecture
+
+The DraftDream API follows a **Hexagonal Architecture** (Ports and Adapters) pattern. This ensures a strict separation between the core business logic and infrastructure concerns, making the system highly maintainable, testable, and resilient to technology changes.
+
+### Hexagonal Design
+
+```mermaid
+graph TD
+    subgraph Driving_Adapters ["Driving Adapters (Primary)"]
+        GQL["GraphQL Resolvers<br/>(src/graphql)"]
+        Guard["Auth & Roles Guards<br/>(src/graphql/common)"]
+    end
+
+    subgraph Core ["Application Core (Hexagon)"]
+        UC["Use Cases<br/>(src/usecases)"]
+        DomainModel["Domain Models / Interfaces<br/>(src/usecases/**/model)"]
+    end
+
+    subgraph Driven_Adapters ["Driven Adapters (Secondary)"]
+        DB["MongoDB Repositories & Models<br/>(src/services/db)"]
+        AuthService["Auth & JWT Service<br/>(src/services/auth)"]
+        Crypto["Argon2 Hashing<br/>(src/services/crypto)"]
+        Logger["Winston Logger<br/>(src/common/logger)"]
+    end
+
+    %% Interactions
+    Driving_Adapters --> UC
+    UC --> DomainModel
+    UC --> DB
+    UC --> AuthService
+    UC --> Crypto
+    UC --> Logger
+```
+
+- **Core (The Hexagon)**: Contains the pure business logic (`src/usecases`). It is independent of any external framework or database. It defines interfaces (Ports) that the adapters must implement.
+- **Driving Adapters**: The entry points to the application. In this project, it's primarily the **GraphQL layer** (`src/graphql`), which handles requests, authentication, and input validation before delegating to use cases.
+- **Driven Adapters**: Infrastructure implementations that the core depends on via abstractions. This includes **MongoDB repositories**, **Hashing services**, and **External APIs**.
+
+### Implementation Details
 - **Framework**: NestJS 11 using the Fastify adapter with Mercurius GraphQL driver.
-- **GraphQL**: Code-first approach; resolvers and DTOs live in `src/graphql`.
-- **Domain layer**: Use cases in `src/usecases` encapsulate business logic and call Mongo repositories in `src/services/db`.
-- **Dependency injection**: Manual Inversify container built in `src/inversify/investify.ts`, invoked from `main.ts`.
-- **TypeScript aliases**: `@src/*`, `@graphql/*`, `@usecases/*`, `@services/*` (see `tsconfig.json`).
-- **Configuration**: `defaults.ts` merged with environment-specific overrides (`dev.ts`, `prod.ts`, `test.ts`, `mock.ts`) based on `NODE_ENV`.
+- **Dependency injection**: A custom Inversify container (`src/inversify/investify.ts`) wires the layers together, ensuring that use cases only depend on abstractions.
+- **TypeScript aliases**: `@src/*`, `@graphql/*`, `@usecases/*`, `@services/*` are used to maintain clean imports.
+- **Configuration**: Layered approach starting with `defaults.ts`, merged with environment overrides based on `NODE_ENV`.
 
 ## Prerequisites
 - Node.js 20+ (Dockerfile targets `node:22-alpine`).
