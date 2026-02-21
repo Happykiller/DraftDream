@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChevronLeft, ChevronRight, MoreHoriz } from '@mui/icons-material';
+import { Addchart, ChevronLeft, ChevronRight, MoreHoriz } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -16,6 +16,7 @@ import { StandardDialog } from '@components/common/StandardDialog';
 import { useTheme } from '@mui/material/styles';
 import type { MealRecord } from '@hooks/nutrition/useMealRecords';
 import type { ProgramRecord } from '@hooks/program-records/useProgramRecords';
+import type { DailyReport } from '@app-types/dailyReport';
 
 const _CALENDAR_VIEWS = ['month', 'week', 'day'] as const;
 
@@ -89,14 +90,16 @@ function buildWeekDays(currentDate: Date): CalendarDay[] {
 interface AthleteCalendarProps {
   readonly programRecords: ProgramRecord[];
   readonly mealRecords: MealRecord[];
+  readonly dailyReports: DailyReport[];
   readonly onProgramRecordClick: (recordId: string) => void;
   readonly onMealRecordClick: (recordId: string) => void;
+  readonly onDailyReportClick: (reportId: string) => void;
 }
 
 interface CalendarRecordItem {
   readonly id: string;
   readonly label: string;
-  readonly type: 'program' | 'meal';
+  readonly type: 'program' | 'meal' | 'wellbeing';
 }
 
 interface ExpandedDay {
@@ -270,8 +273,10 @@ function DayCell({
 export function AthleteCalendar({
   programRecords,
   mealRecords,
+  dailyReports,
   onProgramRecordClick,
   onMealRecordClick,
+  onDailyReportClick,
 }: AthleteCalendarProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
@@ -296,12 +301,12 @@ export function AthleteCalendar({
   }, [theme.typography.caption.lineHeight]);
 
   const recordsByDate = React.useMemo(() => {
-    const grouped = new Map<string, { programs: ProgramRecord[]; meals: MealRecord[] }>();
+    const grouped = new Map<string, { programs: ProgramRecord[]; meals: MealRecord[]; wellbeingReports: DailyReport[] }>();
 
     programRecords.forEach((record) => {
       const dateLabel = normalizeDate(new Date(record.createdAt)).toISOString().slice(0, 10);
       if (!grouped.has(dateLabel)) {
-        grouped.set(dateLabel, { programs: [], meals: [] });
+        grouped.set(dateLabel, { programs: [], meals: [], wellbeingReports: [] });
       }
       grouped.get(dateLabel)?.programs.push(record);
     });
@@ -309,13 +314,21 @@ export function AthleteCalendar({
     mealRecords.forEach((record) => {
       const dateLabel = normalizeDate(new Date(record.createdAt)).toISOString().slice(0, 10);
       if (!grouped.has(dateLabel)) {
-        grouped.set(dateLabel, { programs: [], meals: [] });
+        grouped.set(dateLabel, { programs: [], meals: [], wellbeingReports: [] });
       }
       grouped.get(dateLabel)?.meals.push(record);
     });
 
+    dailyReports.forEach((report) => {
+      const dateLabel = normalizeDate(new Date(report.reportDate)).toISOString().slice(0, 10);
+      if (!grouped.has(dateLabel)) {
+        grouped.set(dateLabel, { programs: [], meals: [], wellbeingReports: [] });
+      }
+      grouped.get(dateLabel)?.wellbeingReports.push(report);
+    });
+
     return grouped;
-  }, [mealRecords, programRecords]);
+  }, [dailyReports, mealRecords, programRecords]);
 
   const responsiveView = React.useMemo<CalendarView>(() => {
     if (isXs) {
@@ -471,11 +484,18 @@ export function AthleteCalendar({
   const renderRecordPill = React.useCallback(
     (record: CalendarRecordItem, onRecordClick: (record: CalendarRecordItem) => void) => {
       const isProgram = record.type === 'program';
-      const backgroundColor = isProgram ? theme.palette.success.main : theme.palette.warning.main;
-      const textColor = isProgram ? theme.palette.success.contrastText : theme.palette.warning.contrastText;
+      const isMeal = record.type === 'meal';
+      const wellbeingColor = '#8e24aa';
+      const backgroundColor = isProgram ? theme.palette.success.main : isMeal ? theme.palette.warning.main : wellbeingColor;
+      const textColor = isProgram
+        ? theme.palette.success.contrastText
+        : isMeal
+          ? theme.palette.warning.contrastText
+          : theme.palette.getContrastText(wellbeingColor);
+      const tooltipLabel = t(`athletes.details.calendar.event_types.${record.type}`);
 
       return (
-        <Tooltip key={record.id} title={record.label} arrow>
+        <Tooltip key={record.id} title={tooltipLabel} arrow>
           <Box
             role="button"
             tabIndex={0}
@@ -500,8 +520,10 @@ export function AthleteCalendar({
                 borderRadius: 1,
                 bgcolor: backgroundColor,
                 color: textColor,
+                gap: 0.5,
               }}
             >
+              {record.type === 'wellbeing' ? <Addchart sx={{ fontSize: 14 }} /> : null}
               <Typography
                 variant="caption"
                 noWrap
@@ -520,6 +542,8 @@ export function AthleteCalendar({
     },
     [
       pillHeight,
+      t,
+      theme.palette,
       theme.palette.success.contrastText,
       theme.palette.success.main,
       theme.palette.warning.contrastText,
@@ -542,9 +566,14 @@ export function AthleteCalendar({
         return;
       }
 
+      if (record.type === 'wellbeing') {
+        onDailyReportClick(record.id);
+        return;
+      }
+
       onMealRecordClick(record.id);
     },
-    [onMealRecordClick, onProgramRecordClick],
+    [onDailyReportClick, onMealRecordClick, onProgramRecordClick],
   );
 
   return (
@@ -626,9 +655,15 @@ export function AthleteCalendar({
           const dailyRecords = recordsByDate.get(dayKey);
           const programItems = dailyRecords?.programs ?? [];
           const mealItems = dailyRecords?.meals ?? [];
+          const wellbeingItems = dailyRecords?.wellbeingReports ?? [];
           const recordItems = [
             ...programItems.map((record) => buildRecordItem(record, 'program')),
             ...mealItems.map((record) => buildRecordItem(record, 'meal')),
+            ...wellbeingItems.map((report) => ({
+              id: report.id,
+              label: t('athletes.details.calendar.event_types.wellbeing'),
+              type: 'wellbeing' as const,
+            })),
           ];
           const fullDateLabel = fullDateFormatter.format(day.date);
           return (

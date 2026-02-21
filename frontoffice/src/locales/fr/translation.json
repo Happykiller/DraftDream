@@ -564,6 +564,11 @@
         "records": {
           "title": "Enregistrements du {{date}}",
           "view_all": "Voir tous les enregistrements ({{count}})"
+        },
+        "event_types": {
+          "program": "Retour séance",
+          "meal": "Retour repas",
+          "wellbeing": "Rapport bien-être"
         }
       },
       "fields": {

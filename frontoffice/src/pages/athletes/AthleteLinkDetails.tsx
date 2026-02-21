@@ -783,8 +783,10 @@ export function AthleteLinkDetails(): React.JSX.Element {
                       <AthleteCalendar
                         programRecords={programRecords}
                         mealRecords={mealRecords}
+                        dailyReports={dailyReports}
                         onProgramRecordClick={(recordId) => navigate(`/program-record/${recordId}`)}
                         onMealRecordClick={(recordId) => navigate(`/meal-record/${recordId}`)}
+                        onDailyReportClick={(reportId) => navigate(`/daily-report/view/${reportId}`)}
                       />
                     ) : null}
                   </TabPanel>
