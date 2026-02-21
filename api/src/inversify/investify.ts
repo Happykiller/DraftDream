@@ -28,6 +28,7 @@ import { ListDailyReportsUsecase } from '@usecases/athlete/daily-report/list.dai
 import { CreateDailyReportUsecase } from '@usecases/athlete/daily-report/create.daily-report.usecase';
 import { UpdateDailyReportUsecase } from '@usecases/athlete/daily-report/update.daily-report.usecase';
 import { DeleteDailyReportUsecase } from '@usecases/athlete/daily-report/delete.daily-report.usecase';
+import { GetAthleteKpiSummaryUsecase } from '@usecases/athlete/daily-report/get-athlete-kpi-summary.usecase';
 import { ListUsersUsecase } from '@usecases/user/list.users.usecase';
 import { GetMealUsecase } from '@src/usecases/nutri/meal/get.meal.usecase';
 import { BddServiceMongo } from '@services/db/mongo/db.service.mongo';
@@ -92,6 +93,7 @@ import { DeleteCoachAthleteUsecase } from '@usecases/athlete/coach-athlete/delet
 import { CreateCoachAthleteUsecase } from '@usecases/athlete/coach-athlete/create.coach-athlete.usecase';
 import { GetCoachAthleteUsecase } from '@usecases/athlete/coach-athlete/get.coach-athlete.usecase';
 import { GetAthleteInfoUsecase } from '@usecases/athlete/athlete-info/get.athlete-info.usecase';
+import { ResolveCoachAthleteVisibilityUsecase } from '@usecases/athlete/coach-athlete/resolve-coach-athlete-visibility.usecase';
 import { ListCategoriesUsecase } from '@src/usecases/sport/category/list.category.usecase';
 import { UpdateCategoryUsecase } from '@src/usecases/sport/category/update.category.usecase';
 import { DeleteCategoryUsecase } from '@src/usecases/sport/category/delete.category.usecase';
@@ -257,6 +259,7 @@ export class Inversify {
   listCoachAthletesUsecase: ListCoachAthletesUsecase;
   updateCoachAthleteUsecase: UpdateCoachAthleteUsecase;
   deleteCoachAthleteUsecase: DeleteCoachAthleteUsecase;
+  resolveCoachAthleteVisibilityUsecase: ResolveCoachAthleteVisibilityUsecase;
   getAthleteInfoUsecase: GetAthleteInfoUsecase;
   createAthleteInfoUsecase: CreateAthleteInfoUsecase;
   listAthleteInfosUsecase: ListAthleteInfosUsecase;
@@ -306,6 +309,7 @@ export class Inversify {
   hardDeleteTaskUsecase: HardDeleteTaskUsecase;
   hardDeleteNoteUsecase: HardDeleteNoteUsecase;
   hardDeleteDailyReportUsecase: HardDeleteDailyReportUsecase;
+  getAthleteKpiSummaryUsecase: GetAthleteKpiSummaryUsecase;
   hardDeleteSessionUsecase: HardDeleteSessionUsecase;
   hardDeleteProgramUsecase: HardDeleteProgramUsecase;
   hardDeleteMuscleUsecase: HardDeleteMuscleUsecase;
@@ -450,6 +454,7 @@ export class Inversify {
     this.listCoachAthletesUsecase = new ListCoachAthletesUsecase(this);
     this.updateCoachAthleteUsecase = new UpdateCoachAthleteUsecase(this);
     this.deleteCoachAthleteUsecase = new DeleteCoachAthleteUsecase(this);
+    this.resolveCoachAthleteVisibilityUsecase = new ResolveCoachAthleteVisibilityUsecase(this);
     // usecases athlete info
     this.getAthleteInfoUsecase = new GetAthleteInfoUsecase(this);
     this.createAthleteInfoUsecase = new CreateAthleteInfoUsecase(this);
@@ -499,6 +504,7 @@ export class Inversify {
     this.hardDeleteTaskUsecase = new HardDeleteTaskUsecase(this);
     this.hardDeleteNoteUsecase = new HardDeleteNoteUsecase(this);
     this.hardDeleteDailyReportUsecase = new HardDeleteDailyReportUsecase(this);
+    this.getAthleteKpiSummaryUsecase = new GetAthleteKpiSummaryUsecase(this);
     this.hardDeleteSessionUsecase = new HardDeleteSessionUsecase(this);
     this.hardDeleteProgramUsecase = new HardDeleteProgramUsecase(this);
     this.hardDeleteMuscleUsecase = new HardDeleteMuscleUsecase(this);

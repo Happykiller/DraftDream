@@ -45,7 +45,10 @@ export class ListAthleteInfosUsecase {
 
       if (isCoach) {
         if (isFilteringByUser) {
-          const hasLink = await this.hasCoachAthleteLink(session.userId, filters.userId!);
+          const hasLink = await this.inversify.resolveCoachAthleteVisibilityUsecase.execute({
+            coachId: session.userId,
+            athleteId: filters.userId!,
+          });
           if (!hasLink) {
             return { items: [], total: 0, page: filters.page ?? 1, limit: filters.limit ?? 20 };
           }
@@ -99,18 +102,6 @@ export class ListAthleteInfosUsecase {
     }
   }
 
-  private async hasCoachAthleteLink(coachId: string, athleteId: string): Promise<boolean> {
-    const result = await this.inversify.bddService.coachAthlete.list({
-      coachId,
-      athleteId,
-      is_active: true,
-      includeArchived: false,
-      limit: 1,
-      page: 1,
-    });
-    return result.total > 0;
-  }
-
   private async listCoachAthleteIds(coachId: string): Promise<string[]> {
     const limit = 200;
     let page = 1;
@@ -122,6 +113,7 @@ export class ListAthleteInfosUsecase {
         coachId,
         is_active: true,
         includeArchived: false,
+        activeAt: new Date(),
         limit,
         page,
       });

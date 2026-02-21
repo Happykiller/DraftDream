@@ -31,7 +31,10 @@ export class UpdateAthleteInfoUsecase {
       }
 
       if (isCoach) {
-        const hasLink = await this.hasCoachAthleteLink(session.userId, existing.userId);
+        const hasLink = await this.inversify.resolveCoachAthleteVisibilityUsecase.execute({
+          coachId: session.userId,
+          athleteId: existing.userId,
+        });
         if (!hasLink) {
           return null;
         }
@@ -67,18 +70,6 @@ export class UpdateAthleteInfoUsecase {
     });
 
     return updated ? { ...updated } : null;
-  }
-
-  private async hasCoachAthleteLink(coachId: string, athleteId: string): Promise<boolean> {
-    const result = await this.inversify.bddService.coachAthlete.list({
-      coachId,
-      athleteId,
-      is_active: true,
-      includeArchived: false,
-      limit: 1,
-      page: 1,
-    });
-    return result.total > 0;
   }
 
   private async ensureAthlete(userId: string): Promise<void> {

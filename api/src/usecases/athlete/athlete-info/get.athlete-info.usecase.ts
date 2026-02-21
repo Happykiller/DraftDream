@@ -31,7 +31,10 @@ export class GetAthleteInfoUsecase {
       }
 
       if (isCoach) {
-        const hasLink = await this.hasCoachAthleteLink(session.userId, found.userId);
+        const hasLink = await this.inversify.resolveCoachAthleteVisibilityUsecase.execute({
+          coachId: session.userId,
+          athleteId: found.userId,
+        });
         if (!hasLink) {
           return null;
         }
@@ -46,17 +49,5 @@ export class GetAthleteInfoUsecase {
       this.inversify.loggerService.error(`GetAthleteInfoUsecase#execute => ${error?.message ?? error}`);
       throw normalizeError(error, ERRORS.GET_ATHLETE_INFO_USECASE);
     }
-  }
-
-  private async hasCoachAthleteLink(coachId: string, athleteId: string): Promise<boolean> {
-    const result = await this.inversify.bddService.coachAthlete.list({
-      coachId,
-      athleteId,
-      is_active: true,
-      includeArchived: false,
-      limit: 1,
-      page: 1,
-    });
-    return result.total > 0;
   }
 }
